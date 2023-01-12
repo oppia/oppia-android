@@ -30,17 +30,18 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -59,15 +60,16 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
@@ -76,7 +78,9 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -88,6 +92,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -119,6 +124,9 @@ class ProfileEditFragmentTest {
 
   @Inject
   lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var dataProviderTestMonitorFactory: DataProviderTestMonitor.Factory
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -188,7 +196,44 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
+  fun testProfileEdit_startWithUserHasDownloadAccess_downloadsDisabled_switchIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    profileManagementController.addProfile(
+      name = "James",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+    launch<ProfileEditFragmentTestActivity>(
+      ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
+        context = context,
+        profileId = 4
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadDisabled_switchIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    launch<ProfileEditFragmentTestActivity>(
+      ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
+        context = context,
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -209,15 +254,17 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_configChange_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
-    profileManagementController.addProfile(
+  fun testProfileEdit_configChange_userHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    val addProfileProvider = profileManagementController.addProfile(
       name = "James",
       pin = "123",
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).toLiveData()
+    )
+    dataProviderTestMonitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
@@ -231,7 +278,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_clickAllowDownloadContainer_checkChanged() {
+  fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_clickAllowDownloads_checkChanged() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -254,7 +302,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserDoesNotHaveDownloadAccess_switchIsNotClickable() {
+  fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotClickable() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -275,7 +324,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_switchContainerIsFocusable() {
+  fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_switchContainerIsFocusable() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -296,7 +346,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_switchContainerIsDisplayed() {
+  fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_switchContainerIsDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -317,7 +368,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserDoesNotHaveDownloadAccess_switchContainerIsNotDisplayed() {
+  fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
@@ -333,7 +385,7 @@ class ProfileEditFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -344,9 +396,9 @@ class ProfileEditFragmentTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -354,7 +406,9 @@ class ProfileEditFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
 

@@ -37,9 +37,7 @@ kt_android_library(
     srcs = [
         "ConsoleLoggerInjector.kt",
     ],
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":console_logger",
     ],
@@ -50,11 +48,21 @@ kt_android_library(
     srcs = [
         "ConsoleLoggerInjectorProvider.kt",
     ],
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":console_logger_injector",
+    ],
+)
+
+kt_android_library(
+    name = "current_app_screen_name_intent_decorator",
+    srcs = [
+        "CurrentAppScreenNameIntentDecorator.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model/src/main/proto:screens_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     ],
 )
 
@@ -65,16 +73,19 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":event_type_to_human_readable_name_converter",
         "//model/src/main/proto:event_logger_java_proto_lite",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
 
 kt_android_library(
     name = "event_logger",
     srcs = [
-        "EventLogger.kt",
+        "AnalyticsEventLogger.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
@@ -99,6 +110,16 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "event_type_to_human_readable_name_converter",
+    srcs = [
+        "EventTypeToHumanReadableNameConverter.kt",
+    ],
+    deps = [
+        "//model/src/main/proto:event_logger_java_proto_lite",
+    ],
+)
+
+kt_android_library(
     name = "prod_module",
     srcs = [
         "LoggerModule.kt",
@@ -115,9 +136,47 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "standard_event_logging_configuration_module",
+    srcs = [
+        "EventLoggingConfigurationModule.kt",
+        "StandardEventTypeToHumanReadableNameConverterImpl.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":event_type_to_human_readable_name_converter",
+    ],
+)
+
+kt_android_library(
+    name = "kenya_alpha_event_logging_configuration_module",
+    srcs = [
+        "KenyaAlphaEventLoggingConfigurationModule.kt",
+        "KenyaAlphaEventTypeToHumanReadableNameConverterImpl.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":event_type_to_human_readable_name_converter",
+    ],
+)
+
+kt_android_library(
     name = "log_uploader",
     srcs = [
         "LogUploader.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+kt_android_library(
+    name = "metric_log_scheduler",
+    srcs = [
+        "MetricLogScheduler.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
@@ -142,9 +201,7 @@ kt_android_library(
     srcs = [
         "SyncStatusManagerImpl.kt",
     ],
-    visibility = [
-        "//testing/src/main/java/org/oppia/android/testing/logging:__pkg__",
-    ],
+    visibility = ["//testing/src/main/java/org/oppia/android/testing/logging:__pkg__"],
     deps = [
         ":sync_status_manager",
         "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",

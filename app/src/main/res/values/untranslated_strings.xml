@@ -82,4 +82,6 @@
   <!-- Temporary learner strings. -->
   <string name="temporary_translate_to_swahili" translatable="false">Switch lesson to Swahili</string>
   <string name="temporary_translate_to_english" translatable="false">Switch lesson to English</string>
+  <!-- General test activity strings. -->
+  <string name="test_activity_label" translatable="false">Test-only activity</string>
 </resources>

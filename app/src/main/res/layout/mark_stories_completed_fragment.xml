@@ -17,7 +17,7 @@
     android:id="@+id/mark_stories_completed_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_shared_screen_primary_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/mark_stories_completed_app_bar_layout"
@@ -31,20 +31,20 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/mark_stories_completed_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppia_primary"
+        android:layout_height="wrap_content"
+        android:background="@color/component_color_shared_activity_toolbar_color"
+        android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/developer_options_mark_stories_completed"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/color_def_white" />
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/oppia_primary">
+        android:background="@color/component_color_shared_activity_toolbar_color">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/mark_stories_completed_all_check_box_container"
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:text="@string/modify_lesson_progress_all"
-            android:textColor="@color/color_def_white"
+            android:textColor="@color/component_color_shared_secondary_4_text_color"
             app:layout_constraintBottom_toTopOf="@id/mark_stories_completed_all_check_box"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -73,12 +73,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:button="@drawable/selector_checkbox"
             android:checked="@{isAllChecked}"
             android:clickable="false"
             android:focusable="false"
             android:paddingBottom="10dp"
-            app:buttonTint="@color/color_def_white"
+            app:buttonTint="@color/component_color_shared_secondary_4_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mark_stories_completed_all_text_view" />
@@ -93,7 +92,7 @@
           android:minWidth="48dp"
           android:minHeight="48dp"
           android:text="@string/modify_lesson_progress_mark_completed_uppercase"
-          android:textColor="@color/color_def_white"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -112,7 +111,7 @@
         android:id="@+id/mark_stories_completed_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/profile_edit_background"
+        android:background="@color/component_color_shared_screen_tertiary_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingVertical="40dp"

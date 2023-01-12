@@ -1,4 +1,3 @@
-subtopic_title: "What is a Ratio?"
 page_contents {
   html: "In mathematics, a ratio indicates how many times one number contains another. For example, if there are eight oranges and six lemons in a bowl of fruit, then the ratio of oranges to lemons is eight to six. Similarly, the ratio of lemons to oranges is 6\342\210\2668 and the ratio of oranges to the total amount of fruit is 8\342\210\26614."
   content_id: "content"
@@ -13,7 +12,16 @@ written_translation {
   value {
   }
 }
+written_translation {
+  key: "title"
+  value {
+  }
+}
 skill_ids: "NGZ89uMw0IGV"
 subtopic_thumbnail {
   background_color_rgb: 16741119
+}
+title {
+  html: "What is a Ratio?"
+  content_id: "title"
 }

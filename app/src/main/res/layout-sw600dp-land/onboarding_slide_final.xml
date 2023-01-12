@@ -29,11 +29,11 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:importantForAccessibility="no"
-        app:srcCompat="@drawable/ic_landscape_onboarding_3_tablet"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="40:39"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_landscape_onboarding_3_tablet" />
 
       <TextView
         android:id="@+id/slide_title_text_view"
@@ -42,6 +42,7 @@
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/onboarding_slide_3_title"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="32sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="@+id/slide_description_text_view"
@@ -54,6 +55,7 @@
         android:layout_width="0dp"
         android:layout_marginTop="12dp"
         android:text="@string/onboarding_slide_3_description"
+        android:textColor="@color/color_palette_secondary_1_text_color"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
@@ -69,11 +71,23 @@
         android:minHeight="48dp"
         android:onClick="@{(v) -> viewModel.clickOnGetStarted()}"
         android:text="@string/get_started"
-        android:textColor="@color/color_def_white"
+        android:textColor="@color/component_color_shared_primary_button_text_color"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/slide_title_text_view"
         app:layout_constraintStart_toStartOf="@+id/slide_title_text_view"
         app:layout_constraintTop_toBottomOf="@id/slide_description_text_view" />
+
+      <TextView
+        android:id="@+id/slide_terms_of_service_and_privacy_policy_links_text_view"
+        style="@style/Subtitle2ViewCenter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorLink="@color/component_color_shared_primary_text_color"
+        app:layout_constraintEnd_toEndOf="@+id/slide_title_text_view"
+        app:layout_constraintStart_toStartOf="@+id/slide_title_text_view"
+        app:layout_constraintTop_toBottomOf="@id/get_started_button" />
 
       <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

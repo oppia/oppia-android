@@ -1,12 +1,12 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
-import android.os.Bundle
-import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -15,18 +15,26 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.CheckpointState
-import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.EphemeralExploration
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -45,26 +53,24 @@ class ExplorationActivityPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-  private val oppiaLogger: OppiaLogger
+  private val translationController: TranslationController,
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var context: Context
-  private var backflowScreen: Int? = null
+  private lateinit var parentScreen: ExplorationActivityParams.ParentScreen
 
   private var isCheckpointingEnabled: Boolean = false
 
   private lateinit var oldestCheckpointExplorationId: String
   private lateinit var oldestCheckpointExplorationTitle: String
-
-  enum class ParentActivityForExploration(val value: Int) {
-    BACKFLOW_SCREEN_LESSONS(0),
-    BACKFLOW_SCREEN_STORY(1);
-  }
+  private lateinit var binding: ExplorationActivityBinding
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
@@ -72,14 +78,14 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun handleOnCreate(
     context: Context,
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
+    binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
       activity,
       R.layout.exploration_activity
     )
@@ -104,32 +110,66 @@ class ExplorationActivityPresenter @Inject constructor(
       getExplorationFragment()?.handlePlayAudio()
     }
 
-    updateToolbarTitle(explorationId)
-    this.internalProfileId = internalProfileId
+    binding.actionBottomSheetOptionsMenu.setOnClickListener {
+      val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
+      bottomSheetOptionsMenu.showNow(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
+    }
+
+    this.profileId = profileId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
     this.context = context
-    this.backflowScreen = backflowScreen
+    this.parentScreen = parentScreen
     this.isCheckpointingEnabled = isCheckpointingEnabled
+    updateToolbarTitle(explorationId)
 
     // Retrieve oldest saved checkpoint details.
     subscribeToOldestSavedExplorationDetails()
 
     if (getExplorationManagerFragment() == null) {
-      val explorationManagerFragment = ExplorationManagerFragment()
-      val args = Bundle()
-      args.putInt(
-        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-        internalProfileId
-      )
-      explorationManagerFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
-        explorationManagerFragment,
+        ExplorationManagerFragment.createNewInstance(profileId),
         TAG_EXPLORATION_MANAGER_FRAGMENT
       ).commitNow()
     }
+
+    if (getSpotlightManager() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_spotlight_fragment_placeholder,
+        SpotlightFragment.newInstance(profileId.internalId),
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+      ).commitNow()
+    }
+  }
+
+  fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
+    if (numberOfLogins >= 3) {
+      // Spotlight the voice-over icon after 3 or more logins, and only if it's visible. Note that
+      // the doOnPreDraw here ensures that the visibility check for the button is up-to-date before
+      // a decision is made on whether to show the button.
+      binding.actionAudioPlayer.doOnPreDraw {
+        if (it.visibility == View.VISIBLE) {
+          val audioPlayerSpotlightTarget = SpotlightTarget(
+            it,
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.voiceover_icon_spotlight_hint,
+              resourceHandler.getStringInLocale(R.string.app_name)
+            ),
+            SpotlightShape.Circle,
+            Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+          )
+          checkNotNull(getSpotlightManager()).requestSpotlight(audioPlayerSpotlightTarget)
+        }
+      }
+    }
+  }
+
+  private fun getSpotlightManager(): SpotlightManager? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
   }
 
   fun loadExplorationFragment(readingTextSize: ReadingTextSize) {
@@ -137,11 +177,7 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
-          topicId = topicId,
-          internalProfileId = internalProfileId,
-          storyId = storyId,
-          readingTextSize = readingTextSize.name,
-          explorationId = explorationId
+          profileId, topicId, storyId, explorationId, readingTextSize
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
@@ -157,24 +193,24 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Action for onOptionsItemSelected */
-  fun handleOnOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
-      R.id.action_preferences -> {
+  fun handleOnOptionsItemSelected(itemId: Int): Boolean {
+    return when (itemId) {
+      R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
-          internalProfileId,
+          profileId.internalId,
           /* isFromNavigationDrawer= */ false
         )
-        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
+        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
         context.startActivity(intent)
         true
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, internalProfileId,
+          activity, profileId.internalId,
           /* isFromNavigationDrawer= */false
         )
-        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
+        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
         context.startActivity(intent)
         true
       }
@@ -215,10 +251,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   /** Deletes the saved progress for the current exploration and then stops the exploration. */
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
-    explorationDataController.deleteExplorationProgressById(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      explorationId
-    )
+    explorationDataController.deleteExplorationProgressById(profileId, explorationId)
     stopExploration(isCompletion)
   }
 
@@ -226,18 +259,17 @@ class ExplorationActivityPresenter @Inject constructor(
   fun deleteOldestSavedProgressAndStopExploration() {
     // If oldestCheckpointExplorationId is not initialized, it means that there was an error while
     // retrieving the oldest saved checkpoint details. In this case, the exploration is exited
-    // without deleting the any checkpoints.
-    oldestCheckpointExplorationId.let {
+    // without deleting any checkpoints.
+    if (::oldestCheckpointExplorationId.isInitialized) {
       explorationDataController.deleteExplorationProgressById(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        oldestCheckpointExplorationId
+        profileId, oldestCheckpointExplorationId
       )
     }
     stopExploration(isCompletion = false)
   }
 
   fun stopExploration(isCompletion: Boolean) {
-    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
+    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
     explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
         activity,
@@ -248,7 +280,7 @@ class ExplorationActivityPresenter @Inject constructor(
               oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
             is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              backPressActivitySelector(backflowScreen)
+              backPressActivitySelector()
               (activity as ExplorationActivity).finish()
             }
           }
@@ -289,19 +321,21 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   private fun updateToolbarTitle(explorationId: String) {
-    subscribeToExploration(explorationDataController.getExplorationById(explorationId).toLiveData())
+    subscribeToExploration(
+      explorationDataController.getExplorationById(profileId, explorationId).toLiveData()
+    )
   }
 
   private fun subscribeToExploration(
-    explorationResultLiveData: LiveData<AsyncResult<Exploration>>
+    explorationResultLiveData: LiveData<AsyncResult<EphemeralExploration>>
   ) {
-    val explorationLiveData = getExploration(explorationResultLiveData)
-    explorationLiveData.observe(
-      activity,
-      Observer<Exploration> {
-        explorationToolbarTitle.text = it.title
-      }
-    )
+    val explorationLiveData = getEphemeralExploration(explorationResultLiveData)
+    explorationLiveData.observe(activity) {
+      explorationToolbarTitle.text =
+        translationController.extractString(
+          it.exploration.translatableTitle, it.writtenTranslationContext
+        )
+    }
   }
 
   private fun getExplorationViewModel(): ExplorationViewModel {
@@ -309,37 +343,39 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToExploration. */
-  private fun getExploration(
-    exploration: LiveData<AsyncResult<Exploration>>
-  ): LiveData<Exploration> {
-    return Transformations.map(exploration, ::processExploration)
+  private fun getEphemeralExploration(
+    exploration: LiveData<AsyncResult<EphemeralExploration>>
+  ): LiveData<EphemeralExploration> {
+    return Transformations.map(exploration, ::processEphemeralExploration)
   }
 
   /** Helper for subscribeToExploration. */
-  private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
-    return when (ephemeralStateResult) {
+  private fun processEphemeralExploration(
+    ephemeralExpResult: AsyncResult<EphemeralExploration>
+  ): EphemeralExploration {
+    return when (ephemeralExpResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralStateResult.error
+          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralExpResult.error
         )
-        Exploration.getDefaultInstance()
+        EphemeralExploration.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Exploration.getDefaultInstance()
-      is AsyncResult.Success -> ephemeralStateResult.value
+      is AsyncResult.Pending -> EphemeralExploration.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralExpResult.value
     }
   }
 
-  private fun backPressActivitySelector(backflowScreen: Int?) {
-    when (backflowScreen) {
-      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.finish()
-      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.finish()
-      else -> activity.startActivity(
-        TopicActivity.createTopicActivityIntent(
-          context,
-          internalProfileId,
-          topicId
+  private fun backPressActivitySelector() {
+    when (parentScreen) {
+      ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
+      ExplorationActivityParams.ParentScreen.STORY_SCREEN -> activity.finish()
+      ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
+      ExplorationActivityParams.ParentScreen.UNRECOGNIZED -> {
+        // Default to the topic activity.
+        activity.startActivity(
+          TopicActivity.createTopicActivityIntent(context, profileId.internalId, topicId)
         )
-      )
+      }
     }
   }
 
@@ -368,7 +404,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
     // If any one of oldestCheckpointExplorationId or oldestCheckpointExplorationTitle is not
     // initialized, it means that there was an error while retrieving the oldest saved checkpoint
-    // details. In that case the exploration will be exited without deleting the any checkpoints.
+    // details or no checkpoint was found. In this case, exit without deleting any checkpoints.
     if (
       !::oldestCheckpointExplorationId.isInitialized ||
       !::oldestCheckpointExplorationTitle.isInitialized
@@ -401,38 +437,40 @@ class ExplorationActivityPresenter @Inject constructor(
   /**
    * Listens to the result of [ExplorationDataController.getOldestExplorationDetailsDataProvider].
    *
-   * If the result is success it updates the value of the variables oldestCheckpointExplorationId
-   * and oldestCheckpointExplorationTitle. If the result fails, it does not initializes the
-   * variables oldestCheckpointExplorationId and oldestCheckpointExplorationTitle with any value.
+   * If the result is success it updates the value of the variables [oldestCheckpointExplorationId]
+   * and [oldestCheckpointExplorationTitle]. If the result fails, it does not initializes the
+   * variables [oldestCheckpointExplorationId] and [oldestCheckpointExplorationTitle] with any
+   * value. In cases when no checkpoint was found, [oldestCheckpointExplorationId] will remain
+   * uninitialized.
    *
-   * Since this function is kicked off before any other save operation, therefore it is expected
-   * to complete before any following save operation completes.
+   * Since this function is kicked off before any other save operation, it is expected to complete
+   * before any following save operations complete.
    *
-   * If operations fails or this function does not get enough time to complete, user is not blocked
-   * instead the flow of the application proceeds as if the checkpoints were not found. In that case,
-   * the variables oldestCheckpointExplorationId and oldestCheckpointExplorationTitle are not
-   * initialized and they remain uninitialized.
+   * If the operations fails or this function does not get enough time to complete, the user is not
+   * blocked. Instead, the flow of the application proceeds as if the checkpoints were not found. In
+   * that case, the variables [oldestCheckpointExplorationId] and [oldestCheckpointExplorationTitle]
+   * are not initialized.
    */
   private fun subscribeToOldestSavedExplorationDetails() {
     explorationDataController.getOldestExplorationDetailsDataProvider(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    ).toLiveData().observe(
-      activity,
-      Observer {
-        when (it) {
-          is AsyncResult.Success -> {
+      profileId
+    ).toLiveData().observe(activity) {
+      when (it) {
+        is AsyncResult.Success -> {
+          // Only set the exploration parameters if a checkpoint was found.
+          if (it.value.explorationId.isNotEmpty()) {
             oldestCheckpointExplorationId = it.value.explorationId
             oldestCheckpointExplorationTitle = it.value.explorationTitle
           }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "ExplorationActivity", "Failed to retrieve oldest saved checkpoint details.", it.error
-            )
-          }
-          is AsyncResult.Pending -> {} // Wait for an actual result.
         }
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "ExplorationActivity", "Failed to retrieve oldest saved checkpoint details.", it.error
+          )
+        }
+        is AsyncResult.Pending -> {} // Wait for an actual result.
       }
-    )
+    }
   }
 
   /**

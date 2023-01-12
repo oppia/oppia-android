@@ -18,7 +18,6 @@ class AdministratorControlsDownloadPermissionsViewModel(
   private val userProfileId: ProfileId,
   deviceSettings: DeviceSettings
 ) : AdministratorControlsItemViewModel() {
-
   val isTopicWifiUpdatePermission =
     ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
   val isTopicAutoUpdatePermission =

@@ -19,11 +19,12 @@ kt_android_library(
 kt_android_library(
     name = "prod_impl",
     srcs = [
-        "FirebaseEventLogger.kt",
+        "FirebaseAnalyticsEventLogger.kt",
         "FirebaseLogUploader.kt",
     ],
     deps = [
         "//model/src/main/proto:event_logger_java_proto_lite",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:androidx_work_work-runtime",
         "//third_party:androidx_work_work-runtime-ktx",
         "//third_party:com_google_firebase_firebase-analytics",
@@ -32,6 +33,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
     ],
 )
@@ -58,7 +60,7 @@ kt_android_library(
 kt_android_library(
     name = "debug_event_logger",
     srcs = [
-        "DebugEventLogger.kt",
+        "DebugAnalyticsEventLogger.kt",
     ],
     visibility = [
         "//app:__pkg__",

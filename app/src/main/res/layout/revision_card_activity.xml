@@ -21,13 +21,23 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/revision_card_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/component_color_revision_card_activity_toolbar_color"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
+
+        <ImageButton
+          android:id="@+id/action_bottom_sheet_options_menu"
+          style="?android:actionOverflowButtonStyle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          android:minWidth="48dp"
+          android:minHeight="48dp"
+          android:scaleType="center" />
 
         <TextView
           android:id="@+id/revision_card_toolbar_title"

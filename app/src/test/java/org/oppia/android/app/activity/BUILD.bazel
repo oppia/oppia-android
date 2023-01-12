@@ -1,5 +1,5 @@
 """
-Tests for root activity Dagger configuration classes.
+Tests for general activity routing functionality.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -15,6 +15,11 @@ oppia_android_test(
         ":dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
+        "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
@@ -33,6 +38,9 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 

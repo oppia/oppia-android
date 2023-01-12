@@ -29,7 +29,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -53,7 +53,6 @@ import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
-import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -99,67 +98,74 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_providesInitialStateForFractions0Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, FRACTIONS_EXPLORATION_ID_0)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("What is a Fraction?")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("What is a Fraction?")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(25)
   }
 
   @Test
   fun testController_providesInitialStateForFractions1Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, FRACTIONS_EXPLORATION_ID_1)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("The Meaning of \"Equal Parts\"")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("The Meaning of \"Equal Parts\"")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(18)
   }
 
   @Test
   fun testController_providesInitialStateForRatios0Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, RATIOS_EXPLORATION_ID_0)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("What is a Ratio?")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("What is a Ratio?")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(26)
   }
 
   @Test
   fun testController_providesInitialStateForRatios1Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, RATIOS_EXPLORATION_ID_1)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("Order is Important")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("Order is Important")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(22)
   }
 
   @Test
   fun testController_providesInitialStateForRatios2Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, RATIOS_EXPLORATION_ID_2)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("Equivalent Ratios")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("Equivalent Ratios")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(24)
   }
 
   @Test
   fun testController_providesInitialStateForRatios3Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, RATIOS_EXPLORATION_ID_3)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("Writing Ratios in Simplest Form")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("Writing Ratios in Simplest Form")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(21)
   }
 
   @Test
   fun testController_returnsFailedForNonExistentExploration() {
-    val explorationResult = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, "NON_EXISTENT_TEST")
 
     monitorFactory.waitForNextFailureResult(explorationResult)
     val exception = fakeExceptionLogger.getMostRecentException()
@@ -169,7 +175,8 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_returnsFailed_logsException() {
-    val explorationResult = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, "NON_EXISTENT_TEST")
 
     monitorFactory.waitForNextFailureResult(explorationResult)
     val exception = fakeExceptionLogger.getMostRecentException()
@@ -378,23 +385,6 @@ class ExplorationDataControllerTest {
       testEnvironmentConfig.isUsingBazel()
   }
 
-  @Module
-  class TestExplorationStorageModule {
-
-    /**
-     * Provides the size allocated to exploration checkpoint database.
-     *
-     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
-     *
-     * The size limit is set so that after the two fake checkpoints are saved with
-     * [ExplorationCheckpointTestHelper], the size of the exploration checkpoint database will
-     * exceed once the exploration with [TEST_EXPLORATION_ID_2] is saved after it has been loaded.
-     */
-    @Provides
-    @ExplorationStorageDatabaseSize
-    fun provideExplorationStorageDatabaseSize(): Int = 150
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -405,7 +395,7 @@ class ExplorationDataControllerTest {
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
+      ExplorationStorageTestModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,

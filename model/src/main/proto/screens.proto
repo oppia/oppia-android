@@ -1,0 +1,164 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// The list of names of all the UI-screens that are supported by the Android App.
+enum ScreenName {
+
+  // Default screen name value which is used when the screen_name isn't set.
+  SCREEN_NAME_UNSPECIFIED = 0;
+
+  // Screen name value for the scenario when the splash activity is visible to the user.
+  SPLASH_ACTIVITY = 1;
+
+  // Screen name value for the scenario when the profile chooser activity is visible to the user.
+  PROFILE_CHOOSER_ACTIVITY = 2;
+
+  // Screen name value for the scenario when the add profile activity is visible to the user.
+  ADD_PROFILE_ACTIVITY = 3;
+
+  // Screen name value for the scenario when the home activity is visible to the user.
+  HOME_ACTIVITY = 4;
+
+  // Screen name value for the scenario when the app is in background and no particular UI is
+  // visible to the user.
+  BACKGROUND_SCREEN = 5;
+
+  // Screen name value for the scenario when the app version activity is visible to the user.
+  APP_VERSION_ACTIVITY = 6;
+
+  // Screen name value for the scenario when the admin controls activity is visible to the user.
+  ADMINISTRATOR_CONTROLS_ACTIVITY = 7;
+
+  // Screen name value for the scenario when the profile and device id activity is visible to the user.
+  PROFILE_AND_DEVICE_ID_ACTIVITY = 8;
+
+  // Screen name value for the scenario when the completed story list activity is visible to the user.
+  COMPLETED_STORY_LIST_ACTIVITY = 9;
+
+  // Screen name value for the scenario when the faq single activity is visible to the user.
+  FAQ_SINGLE_ACTIVITY = 10;
+
+  // Screen name value for the scenario when the faq list activity is visible to the user.
+  FAQ_LIST_ACTIVITY = 11;
+
+  // Screen name value for the scenario when the license list activity is visible to the user.
+  LICENSE_LIST_ACTIVITY = 12;
+
+  // Screen name value for the scenario when the license text viewer activity is visible to the user.
+  LICENSE_TEXT_VIEWER_ACTIVITY = 13;
+
+  // Screen name value for the scenario when the third party dependency list activity is visible to the user.
+  THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY = 14;
+
+  // Screen name value for the scenario when the help activity is visible to the user.
+  HELP_ACTIVITY = 15;
+
+  // Screen name value for the scenario when the recently played activity is visible to the user.
+  RECENTLY_PLAYED_ACTIVITY = 16;
+
+  // Screen name value for the scenario when the my download activity is visible to the user.
+  MY_DOWNLOADS_ACTIVITY = 17;
+
+  // Screen name value for the scenario when the onboarding activity is visible to the user.
+  ONBOARDING_ACTIVITY = 18;
+
+  // Screen name value for the scenario when the ongoing topic list activity is visible to the user.
+  ONGOING_TOPIC_LIST_ACTIVITY = 19;
+
+  // Screen name value for the scenario when the audio language activity is visible to the user.
+  AUDIO_LANGUAGE_ACTIVITY = 20;
+
+  // Screen name value for the scenario when the app language activity is visible to the user.
+  APP_LANGUAGE_ACTIVITY = 21;
+
+  // Screen name value for the scenario when the options activity is visible to the user.
+  OPTIONS_ACTIVITY = 22;
+
+  // Screen name value for the scenario when the reading text size activity is visible to the user.
+  READING_TEXT_SIZE_ACTIVITY = 23;
+
+  // Screen name value for the scenario when the exploration activity is visible to the user.
+  EXPLORATION_ACTIVITY = 24;
+
+  // Screen name value for the scenario when the admin auth activity is visible to the user.
+  ADMIN_AUTH_ACTIVITY = 25;
+
+  // Screen name value for the scenario when the pin password activity is visible to the user.
+  PIN_PASSWORD_ACTIVITY = 26;
+
+  // Screen name value for the scenario when the profile picture activity is visible to the user.
+  PROFILE_PICTURE_ACTIVITY = 27;
+
+  // Screen name value for the scenario when the profile progress activity is visible to the user.
+  PROFILE_PROGRESS_ACTIVITY = 28;
+
+  // Screen name value for the scenario when the resume lesson activity is visible to the user.
+  RESUME_LESSON_ACTIVITY = 29;
+
+  // Screen name value for the scenario when the profile edit activity is visible to the user.
+  PROFILE_EDIT_ACTIVITY = 30;
+
+  // Screen name value for the scenario when the profile reset pin activity is visible to the user.
+  PROFILE_RESET_PIN_ACTIVITY = 31;
+
+  // Screen name value for the scenario when the profile rename activity is visible to the user.
+  PROFILE_RENAME_ACTIVITY = 32;
+
+  // Screen name value for the scenario when the profile list activity is visible to the user.
+  PROFILE_LIST_ACTIVITY = 33;
+
+  // Screen name value for the scenario when the story activity is visible to the user.
+  STORY_ACTIVITY = 34;
+
+  // Screen name value for the scenario when the topic activity is visible to the user.
+  TOPIC_ACTIVITY = 35;
+
+  // Screen name value for the scenario when the revision card activity is visible to the user.
+  REVISION_CARD_ACTIVITY = 36;
+
+  // Screen name value for the scenario when the question player activity is visible to the user.
+  QUESTION_PLAYER_ACTIVITY = 37;
+
+  // Screen name value for the scenario when the walkthrough activity is visible to the user.
+  WALKTHROUGH_ACTIVITY = 38;
+
+  // Screen name value for the scenario when the developer options activity is visible to the user.
+  DEVELOPER_OPTIONS_ACTIVITY = 39;
+
+  // Screen name value for the scenario when the view event logs activity is visible to the user.
+  VIEW_EVENT_LOGS_ACTIVITY = 40;
+
+  // Screen name value for the scenario when the mark topics completed activity is visible to the user.
+  MARK_TOPICS_COMPLETED_ACTIVITY = 41;
+
+  // Screen name value for the scenario when the math expression parser activity is visible to the user.
+  MATH_EXPRESSION_PARSER_ACTIVITY = 42;
+
+  // Screen name value for the scenario when the mark chapters completed activity is visible to the user.
+  MARK_CHAPTERS_COMPLETED_ACTIVITY = 43;
+
+  // Screen name value for the scenario when the mark stories completed activity is visible to the user.
+  MARK_STORIES_COMPLETED_ACTIVITY = 44;
+
+  // Screen name value for the scenario when the force network type activity is visible to the user.
+  FORCE_NETWORK_TYPE_ACTIVITY = 45;
+
+  // Screen name value for the scenario when the admin pin activity is visible to the user.
+  ADMIN_PIN_ACTIVITY = 46;
+
+  // Screen name value for the scenario when the policies activity is visible to the user.
+  POLICIES_ACTIVITY = 47;
+
+  // A generic foreground screen value for logging periodic metrics like CPU usage.
+  FOREGROUND_SCREEN = 48;
+}
+
+// Defines the current visible UI screen of the application.
+message CurrentAppScreen {
+  // Screen name value depicting the name of the currently visible UI screen.
+  ScreenName screen_name = 1;
+}

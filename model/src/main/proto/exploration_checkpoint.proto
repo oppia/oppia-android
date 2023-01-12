@@ -65,7 +65,7 @@ message CompletedStateInCheckpoint {
 // Structure that holds the the exploration_title and the exploration_id associated with a saved
 // checkpoint. This container is used to return the details required to delete the oldest checkpoint
 // when the space allocated to save the checkpoints runs out.
-message ExplorationCheckpointDetails{
+message ExplorationCheckpointDetails {
 
   // The ID of the stored exploration checkpoint.
   string exploration_id = 1;

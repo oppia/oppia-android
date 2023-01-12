@@ -41,17 +41,19 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -70,15 +72,16 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -86,6 +89,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -93,13 +97,16 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -126,7 +133,17 @@ class OnboardingFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
+
+  @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
+  @Inject
+  @field:DefaultResourceBucketName
+  lateinit var resourceBucketName: String
 
   @Before
   fun setUp() {
@@ -203,20 +220,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkDefaultSlide_skipButtonIsVisible() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.skip_text_view)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.skip_text_view)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -311,6 +314,7 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -418,6 +422,7 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -488,6 +493,7 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
@@ -542,6 +548,7 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -643,6 +650,23 @@ class OnboardingFragmentTest {
     }
   }
 
+  @Test
+  fun testOnboardingFragment_checkSlide3_policiesLinkIsVisible() {
+    launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.skip_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)).perform(
+        scrollTo()
+      )
+      onView(withId(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
   private fun getResources(): Resources =
     ApplicationProvider.getApplicationContext<Context>().resources
 
@@ -672,7 +696,7 @@ class OnboardingFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -683,9 +707,9 @@ class OnboardingFragmentTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -693,7 +717,9 @@ class OnboardingFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

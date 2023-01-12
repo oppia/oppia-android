@@ -169,7 +169,8 @@
       <TextView
         android:id="@+id/congratulations_text_view"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="wrap_content"
+        android:minHeight="54dp"
         android:layout_gravity="bottom"
         android:layout_marginStart="52dp"
         android:layout_marginEnd="52dp"
@@ -180,7 +181,7 @@
         android:lineSpacingExtra="1dp"
         android:text="@string/correct"
         android:textAllCaps="true"
-        android:textColor="@color/color_def_green_shade"
+        android:textColor="@color/component_color_shared_correct_text_color"
         android:textSize="20sp"
         android:visibility="invisible" />
 

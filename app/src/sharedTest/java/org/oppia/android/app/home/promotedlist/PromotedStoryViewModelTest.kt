@@ -14,19 +14,21 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeFragmentTestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -44,18 +46,21 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -68,6 +73,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -89,25 +95,22 @@ import javax.inject.Singleton
   manifest = Config.NONE
 )
 class PromotedStoryViewModelTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var translationController: TranslationController
 
   private val promotedStory1 = PromotedStory.newBuilder()
     .setStoryId("id_1")
-    .setStoryName("Story 1")
-    .setTopicName("topic_name")
+    .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 1"))
+    .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
     .setTotalChapterCount(1)
     .build()
   private val promotedStory2 = PromotedStory.newBuilder()
     .setStoryId("id_2")
-    .setStoryName("Story 2")
-    .setTopicName("topic_name")
+    .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 2"))
+    .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
     .setTotalChapterCount(1)
     .build()
 
@@ -208,14 +211,18 @@ class PromotedStoryViewModelTest {
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController,
+          index = 0
         )
         val promotedStoryViewModelProfile2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 2,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController,
+          index = 0
         )
 
         assertThat(promotedStoryViewModelProfile1).isNotEqualTo(promotedStoryViewModelProfile2)
@@ -234,14 +241,18 @@ class PromotedStoryViewModelTest {
           internalProfileId = 1,
           totalStoryCount = 2,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController,
+          index = 0
         )
         val promotedStoryViewModelStoryCount3 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController,
+          index = 0
         )
 
         assertThat(promotedStoryViewModelStoryCount2)
@@ -261,14 +272,18 @@ class PromotedStoryViewModelTest {
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity_1",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController,
+          index = 0
         )
         val promotedStoryViewModelEntity2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity_2",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController,
+          index = 0
         )
 
         assertThat(promotedStoryViewModelEntity1).isNotEqualTo(promotedStoryViewModelEntity2)
@@ -289,14 +304,18 @@ class PromotedStoryViewModelTest {
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController,
+          index = 0
         )
         val promotedStoryViewModelStory2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory2
+          promotedStory = promotedStory2,
+          translationController,
+          index = 0
         )
 
         assertThat(promotedStoryViewModelStory1).isNotEqualTo(promotedStoryViewModelStory2)
@@ -349,7 +368,9 @@ class PromotedStoryViewModelTest {
       internalProfileId = 1,
       totalStoryCount = 3,
       entityType = "entity",
-      promotedStory = promotedStory1
+      promotedStory = promotedStory1,
+      translationController,
+      index = 0
     )
   }
 
@@ -367,9 +388,9 @@ class PromotedStoryViewModelTest {
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -378,7 +399,9 @@ class PromotedStoryViewModelTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

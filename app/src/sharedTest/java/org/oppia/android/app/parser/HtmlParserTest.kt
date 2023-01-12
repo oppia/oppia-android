@@ -2,6 +2,7 @@ package org.oppia.android.app.parser
 
 import android.app.Activity
 import android.app.Application
+import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.text.Spannable
@@ -17,8 +18,10 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -26,11 +29,14 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
@@ -43,17 +49,24 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HtmlParserTestActivity
-import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -71,21 +84,27 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -96,15 +115,20 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.AndroidLocaleFactory
+import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaBidiFormatter
+import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.html.CustomBulletSpan
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
@@ -118,9 +142,23 @@ import kotlin.reflect.KClass
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HtmlParserTest.TestApplication::class, qualifiers = "port-xxhdpi")
+@DefineAppLanguageLocaleContext(
+  oppiaLanguageEnumId = OppiaLanguage.ENGLISH_VALUE,
+  appStringIetfTag = "en",
+  appStringAndroidLanguageId = "en"
+)
 class HtmlParserTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
+
+  @Inject
+  lateinit var androidLocaleFactory: AndroidLocaleFactory
+
+  @Inject
+  lateinit var formatterFactory: OppiaBidiFormatter.Factory
 
   @Rule
   @JvmField
@@ -128,13 +166,24 @@ class HtmlParserTest {
 
   @Mock
   lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
+
+  @Mock
+  lateinit var mockPolicyOppiaTagActionListener: HtmlParser.PolicyOppiaTagActionListener
+
   @Captor
   lateinit var viewCaptor: ArgumentCaptor<View>
+
   @Captor
   lateinit var stringCaptor: ArgumentCaptor<String>
 
+  @Captor
+  lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
+
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
@@ -147,10 +196,16 @@ class HtmlParserTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityRule: ActivityScenarioRule<HtmlParserTestActivity> =
+  var activityScenarioRule: ActivityScenarioRule<HtmlParserTestActivity> =
     ActivityScenarioRule(
       Intent(ApplicationProvider.getApplicationContext(), HtmlParserTestActivity::class.java)
     )
+
+  // Note that the locale rule must be initialized first since the scenario rule can depend on the
+  // locale being initialized.
+  @get:Rule
+  val chain: TestRule =
+    RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
 
   @Before
   fun setUp() {
@@ -164,14 +219,109 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withNoImageSupport_handleCustomPolicyTag_parsedHtmlDisplaysStyledText() {
+    val htmlParser = htmlParserFactory.create(
+      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView =
+        it.findViewById(R.id.test_html_content_text_view)
+
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">" +
+          " Terms of Service </oppia-noninteractive-policy> and <oppia-noninteractive-policy " +
+          "link=\"privacy\">Privacy Policy </oppia-noninteractive-policy>.",
+        textView,
+        supportsLinks = true,
+        supportsConceptCards = false
+      )
+      textView.text = htmlResult
+
+      // Verify the displayed text is correct & has a clickable span.
+      val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
+      assertThat(htmlResult.toString()).isEqualTo(
+        "By using %s, you agree to our \n" +
+          "Terms of Service and Privacy Policy."
+      )
+      assertThat(clickableSpans).hasLength(2)
+      clickableSpans.first().onClick(textView)
+
+      // Verify that the tag listener is called.
+      verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
+        capture(policyTypeCaptor)
+      )
+      assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.TERMS_OF_SERVICE)
+    }
+  }
+
+  @Test
+  fun testHtmlContent_withNoImageSupport_handleImage_notParsed() {
+    val htmlParser = htmlParserFactory.create(
+      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult = htmlParser.parseOppiaHtml(
+        "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
+          "</oppia-noninteractive-image>",
+        textView
+      )
+      return@runWithActivity textView to htmlResult
+    }
+
+    // Verify that the image span is 0 as image support is not enabled.
+    val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(0)
+    // The two strings aren't equal because this html parser does not support Oppia image tags.
+    assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
+    onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
+  }
+
+  @Test
+  fun testHtmlContent_withImageSupport_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult = htmlParser.parseOppiaHtml(
+        "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a " +
+          "pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image " +
+          "alt-with-value=\"\u0026amp;quot;Pineapple" +
+          " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;" +
+          "\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
+          "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
+          "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp" +
+          "\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
+          "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
+        textView
+      )
+      textView.text = htmlResult
+      return@runWithActivity textView to htmlResult
+    }
+    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
+    onView(withId(R.id.test_html_content_text_view))
+      .check(matches(isDisplayed()))
+    onView(withId(R.id.test_html_content_text_view))
+      .check(matches(withText(textView.text.toString())))
+  }
+
+  @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val (textView, htmlResult) = activityRule.scenario.runWithActivity {
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(
         "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a " +
@@ -201,9 +351,10 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val (textView, htmlResult) = activityRule.scenario.runWithActivity {
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(
         "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a " +
@@ -225,48 +376,28 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_customSpan_isAddedWithCorrectlySpacedLeadingMargin() {
+  fun testHtmlContent_bulletList_isAddedCorrectlyWithNewLine() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      return@runWithActivity htmlParser.parseOppiaHtml(
-        "<p>You should know the following before going on:<br></p>" +
-          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
-          "<li>How to tell whether one counting number is bigger or " +
-          "smaller than another<br></li></ul>",
+      val htmlResult = htmlParser.parseOppiaHtml(
+        "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li><li>How to tell whether one" +
+          " counting number is bigger or smaller than another.</li></ul>",
         textView
       )
+      textView.text = htmlResult
+      return@runWithActivity textView to htmlResult
     }
-
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
-    val bulletSpans =
-      htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
-    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
-
-    val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
-    assertThat(bulletSpan0).isNotNull()
-
-    val bulletRadius = activityRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.bullet_radius
+    assertThat(htmlResult.toString()).isEqualTo(
+      "The counting numbers (1, 2, 3, 4, 5 ….)\nHow to tell whether one counting " +
+        "number is bigger or smaller than another"
     )
-    val spacingBeforeBullet = activityRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_bullet
-    )
-    val spacingBeforeText = activityRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_text
-    )
-    val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
-
-    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
-    assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
-
-    val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
-    assertThat(bulletSpan1).isNotNull()
   }
 
   @Test
@@ -275,9 +406,10 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
@@ -301,7 +433,8 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val textView = arrangeTextViewWithLayoutDirection(
       htmlParser,
@@ -310,19 +443,29 @@ class HtmlParserTest {
     assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
+  // TODO(#3840): Make this test work on Espresso.
   @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHtmlContent_changeDeviceToRtl_textViewDirectionIsSetToRtl() {
+    val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = displayLocale
     )
     val textView = arrangeTextViewWithLayoutDirection(
       htmlParser,
       ViewCompat.LAYOUT_DIRECTION_RTL
     )
-    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_ANY_RTL)
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
   }
 
   @Test
@@ -331,7 +474,8 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
     val textView = arrangeTextViewWithLayoutDirection(
@@ -347,9 +491,10 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "A<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
@@ -374,8 +519,9 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "A<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
@@ -399,8 +545,9 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "A<oppia-noninteractive-image filepath-with-value=\"test.svg\">" +
@@ -423,9 +570,10 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -447,9 +595,11 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      customOppiaTagActionListener = mockCustomOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -466,15 +616,50 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
+    val htmlParser = htmlParserFactory.create(
+      gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult = htmlParser.parseOppiaHtml(
+        "You can read more about the CC-BY-SA 4.0 license " +
+          "<a href=\"https://creativecommons.org/licenses/by-sa/4.0/legalcode\"> here</a>",
+        textView,
+        supportsLinks = true,
+      )
+      textView.text = htmlResult
+      return@runWithActivity textView to htmlResult
+    }
+    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
+    onView(withId(R.id.test_html_content_text_view))
+      .check(matches(isDisplayed()))
+    onView(withId(R.id.test_html_content_text_view))
+      .check(matches(withText(textView.text.toString())))
+
+    val link = "https://creativecommons.org/licenses/by-sa/4.0/legalcode"
+    val expectingIntent = CoreMatchers.allOf(
+      IntentMatchers.hasAction(Intent.ACTION_VIEW),
+      IntentMatchers.hasData(link)
+    )
+    Intents.intending(expectingIntent).respondWith(Instrumentation.ActivityResult(0, null))
+    onView(withId(R.id.test_html_content_text_view))
+      .perform(openLinkWithText("here"))
+    Intents.intended(expectingIntent)
+  }
+
+  @Test
   fun testHtmlContent_withConceptCard_noLinkSupport_clickSpan_doesNothing() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
-      customOppiaTagActionListener = mockCustomOppiaTagActionListener
+      customOppiaTagActionListener = mockCustomOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -500,9 +685,10 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
-      customOppiaTagActionListener = mockCustomOppiaTagActionListener
+      customOppiaTagActionListener = mockCustomOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val textView = activityRule.scenario.runWithActivity {
+    val textView = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -512,6 +698,13 @@ class HtmlParserTest {
         supportsConceptCards = true
       )
       textView.text = htmlResult
+
+      // Verify the displayed text is correct & has a clickable span.
+      val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
+      assertThat(htmlResult.toString()).isEqualTo("Visit refresher lesson")
+      assertThat(clickableSpans).hasLength(1)
+      clickableSpans.first().onClick(textView)
+
       return@runWithActivity textView
     }
 
@@ -534,8 +727,9 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -559,8 +753,9 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-math render-type=\"inline\" math_content-with-value=\"{" +
@@ -587,8 +782,9 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-math render-type=\"block\" math_content-with-value=\"{" +
@@ -596,7 +792,7 @@ class HtmlParserTest {
           "</oppia-noninteractive-math>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true
+        supportsConceptCards = true,
       )
       textView.text = htmlResult
     }
@@ -615,8 +811,9 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-math math_content-with-value=\"{" +
@@ -639,7 +836,7 @@ class HtmlParserTest {
     htmlParser: HtmlParser,
     layoutDirection: Int
   ): TextView {
-    return activityRule.scenario.runWithActivity {
+    return activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       ViewCompat.setLayoutDirection(textView, layoutDirection)
       htmlParser.parseOppiaHtml(
@@ -652,6 +849,9 @@ class HtmlParserTest {
       return@runWithActivity textView
     }
   }
+
+  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
+    DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
 
   private fun <A : Activity> ActivityScenario<A>.getDimensionPixelSize(
     @DimenRes dimenResId: Int
@@ -700,9 +900,9 @@ class HtmlParserTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -710,7 +910,9 @@ class HtmlParserTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -740,5 +942,27 @@ class HtmlParserTest {
 
   private interface Consumer<T> {
     fun consume(value: T)
+  }
+
+  private companion object {
+
+    private val EGYPT_ARABIC_CONTEXT = OppiaLocaleContext.newBuilder().apply {
+      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
+        language = OppiaLanguage.ARABIC
+        minAndroidSdkVersion = 1
+        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+            ietfLanguageTag = "ar"
+          }.build()
+        }.build()
+      }.build()
+      regionDefinition = RegionSupportDefinition.newBuilder().apply {
+        region = OppiaRegion.REGION_UNSPECIFIED
+        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+          ietfRegionTag = "EG"
+        }.build()
+      }.build()
+    }.build()
   }
 }

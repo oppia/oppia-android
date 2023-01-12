@@ -22,6 +22,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -47,18 +48,20 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
-import org.oppia.android.app.application.ApplicationContext
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
@@ -74,15 +77,14 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -103,20 +105,22 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
@@ -132,6 +136,7 @@ import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiv
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
@@ -147,6 +152,7 @@ import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -191,7 +197,6 @@ class StateFragmentLocalTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  @field:ApplicationContext
   lateinit var context: Context
 
   @Inject
@@ -209,6 +214,9 @@ class StateFragmentLocalTest {
 
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
@@ -265,6 +273,175 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withSubstring("of the above circle is red?")).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_ClickContinueButton_checkAnimSeenStatusIsTrue() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      val continueButtonAnimationSeenStatus =
+        profileTestHelper.getContinueButtonAnimationSeenStatus(profileId)
+      assertThat(continueButtonAnimationSeenStatus).isTrue()
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_checkAnimIsNotShownInTheBeginning() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_ContButtonAnimAlreadySeen_checkAnimIsNotShown() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughTestState1()
+
+      it.onActivity { activity ->
+        activity.stopExploration(false)
+      }
+
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testNavBtnAnim_openProtExp_waitFor30Sec_pressCont_submitAnswer_checkContNavBtnDoesNotAnim() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      playThroughTestState1()
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimHasNotStarted() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testConIntAnim_openProtExp_orientLandAfter30Sec_checkAnimStartsIn15SecAfterOrientChange() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(CONTINUE_INTERACTION)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testContNavBtnAnim_openMathExp_checkContNavBtnAnimatesAfter45Seconds() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
+      clickSubmitAnswerButton()
+
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isAnimating()))
+    }
+  }
+
+  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
+  @Ignore("Continue navigation animation behavior fails during testing")
+  @Test
+  fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
+      clickSubmitAnswerButton()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
+  @Ignore("Continue navigation animation behavior fails during testing")
+  @Test
+  fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughTestState1()
+      submitFractionAnswer(answerText = "1/2")
+
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
     }
   }
 
@@ -638,19 +815,19 @@ class StateFragmentLocalTest {
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
       closeHintsAndSolutionsDialog()
 
       moveToPreviousAndBackToCurrentStateWithSubmitButton()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
+  fun testStateFragment_showFirstHint_prevState_currentState_checkFirstHintRevealed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
@@ -663,7 +840,7 @@ class StateFragmentLocalTest {
         .perform(scrollToPosition<ViewHolder>(0))
       testCoroutineDispatchers.runCurrent()
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        atPositionOnView(
           R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
         )
       ).perform(click())
@@ -676,6 +853,39 @@ class StateFragmentLocalTest {
           )
         )
       )
+    }
+  }
+
+  @Test
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_checkAnnouncesAfter5Seconds() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+      openHintsAndSolutionsDialog()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(5))
+      assertThat(fakeAccessibilityService.getLatestAnnouncement()).isEqualTo(
+        "Go to the bottom of the screen for a hint."
+      )
+    }
+  }
+
+  @Test
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_doesNotRepeatAnnouncementAfter30Sec() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+      openHintsAndSolutionsDialog()
+
+      // announcement played
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(5))
+      fakeAccessibilityService.resetLatestAnnouncement()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      assertThat(fakeAccessibilityService.getLatestAnnouncement()).isEqualTo(null)
     }
   }
 
@@ -979,13 +1189,11 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
-      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1034,20 +1242,18 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
-      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_nextState_viewSolution_clickRevealSolutionButton_showsDialog() {
+  fun testStateFragment_nextState_viewSolution_clickShowSolutionButton_showsDialog() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
@@ -1058,13 +1264,11 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
-      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -1109,9 +1313,74 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickConfirmRevealSolutionButton(scenario)
 
-      onView(withId(R.id.reveal_solution_button))
+      onView(withId(R.id.show_solution_button))
         .inRoot(isDialog())
         .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showSolution_hasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+
+      submitWrongAnswerToFractionsState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+
+      onView(withId(R.id.solution_summary)).check(
+        matches(
+          withContentDescription(
+            "Start by dividing the cake into equal parts:\n\nThree of " +
+              "the four equal parts are red. So, the answer is 3/4.\n\n"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_showSolution_checkExpandListIconWithScreenReader_isClickable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+
+      submitWrongAnswerToFractionsState2()
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_solution_list_icon)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showSolution_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+
+      submitWrongAnswerToFractionsState2()
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(false)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_solution_list_icon)).check(matches(not(isClickable())))
     }
   }
 
@@ -1136,7 +1405,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
+  fun testStateFragment_nextState_viewShowSolutionDialog_clickCancel_canViewShowSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughFractionsState1()
@@ -1149,7 +1418,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickCancelInRevealSolutionDialog(scenario)
 
-      onView(withSubstring("Reveal Solution"))
+      onView(withText("SHOW SOLUTION"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1290,6 +1559,32 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
+  fun testStateFragment_englishLocale_defaultContentLang_hint_titlesAreCorrectInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint title text should be in English with the correct number
+      onView(withId(R.id.hint_title))
+        .check(matches(withText(containsString("Hint 1"))))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
   fun testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1305,7 +1600,7 @@ class StateFragmentLocalTest {
       pressRevealHintButton(hintPosition = 0)
 
       // The hint button label should be in English.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
@@ -1325,7 +1620,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
@@ -1354,7 +1649,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
@@ -1408,13 +1703,13 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
       // The hint button label should be in English since the app string locale is unaffected by the
       // content string setting.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
@@ -1436,7 +1731,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
@@ -1737,6 +2032,18 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testStateFragment_openHintsAndSolution_checkReturnToLessonButtonIsVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      submitTwoWrongAnswersForFractionsState2()
+
+      openHintsAndSolutionsDialog()
+      onView(allOf(withId(R.id.return_to_lesson_button), isDisplayed())).inRoot(isDialog())
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1913,7 +2220,7 @@ class StateFragmentLocalTest {
   private fun clickContinueButton() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
     testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.continue_button)).perform(click())
+    onView(withId(R.id.continue_interaction_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -1941,32 +2248,28 @@ class StateFragmentLocalTest {
 
   private fun showRevealSolutionDialog() {
     // The reveal solution button should now be visible.
-    // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-    // introduces divider in UI as a separate item.
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
-      .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
-    onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
+    onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
   }
 
   private fun pressRevealHintButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.reveal_hint_button, hintPosition)
+    pressShowHintOrSolutionButton(R.id.reveal_hint_button, hintPosition)
   }
 
-  private fun pressRevealSolutionButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.reveal_solution_button, hintPosition)
+  private fun pressShowSolutionButton(hintPosition: Int) {
+    pressShowHintOrSolutionButton(R.id.show_solution_button, hintPosition)
   }
 
-  private fun pressRevealHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
+  private fun pressShowHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
     // There should only ever be a single reveal button currently displayed; click that one.
     // However, it may need to be scrolled to in case many hints are showing.
-    // NOTE: hintPosition is multiplied by 2, because the implementation of hints and solution
-    // introduces divider in UI as a separate item.
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
-      .perform(scrollToPosition<ViewHolder>(hintPosition * 2))
+      .perform(scrollToPosition<ViewHolder>(hintPosition))
     onView(allOf(withId(buttonId), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
@@ -2137,7 +2440,7 @@ class StateFragmentLocalTest {
   ) {
     submitWrongAnswerToFractionsState2AndWait()
     openHintsAndSolutionsDialog()
-    pressRevealSolutionButton(revealedHintCount)
+    pressShowSolutionButton(revealedHintCount)
     clickConfirmRevealSolutionButton(activityScenario)
     closeHintsAndSolutionsDialog()
   }
@@ -2216,6 +2519,20 @@ class StateFragmentLocalTest {
     Locale.setDefault(locale)
   }
 
+  private fun isAnimating(): TypeSafeMatcher<View> {
+    return ActiveAnimationMatcher()
+  }
+
+  private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("View is animating")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view.animation?.hasStarted() ?: false
+    }
+  }
+
   /**
    * Returns a [ViewAssertion] that can be used to check the specified matcher applies the specified
    * number of times for children against the view under test. If the count does not exactly match,
@@ -2277,7 +2594,7 @@ class StateFragmentLocalTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      RobolectricModule::class, PlatformParameterModule::class,
+      RobolectricModule::class, TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -2287,9 +2604,9 @@ class StateFragmentLocalTest {
       AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -2297,7 +2614,9 @@ class StateFragmentLocalTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

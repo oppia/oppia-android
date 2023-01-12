@@ -41,7 +41,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressController
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -50,7 +50,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
@@ -97,7 +97,7 @@ class AudioPlayerControllerTest {
   @Inject lateinit var audioPlayerController: AudioPlayerController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var explorationProgressController: ExplorationProgressController
@@ -108,6 +108,8 @@ class AudioPlayerControllerTest {
   private val TEST_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
   private val TEST_URL2 = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
   private val TEST_FAIL_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2"
+
+  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
 
   @Test
   fun testController_initializePlayer_invokePrepared_reportsSuccessfulInit() {
@@ -489,7 +491,7 @@ class AudioPlayerControllerTest {
 
     // No audio event is logged when an auto-play corresponds to a new content card (since it's
     // continuing a play from an earlier state that was already logged).
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
@@ -504,7 +506,7 @@ class AudioPlayerControllerTest {
 
     // This is the default case: when the user opens the audio bar it will auto-play audio (but not
     // 'reload' the main content since it's an initial load).
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val exploration = loadExploration(explorationId)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
@@ -536,7 +538,7 @@ class AudioPlayerControllerTest {
 
     // This case is only hypothetically possible, but shouldn't happen in practice (since main
     // content is always auto-played when reloaded).
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val exploration = loadExploration(explorationId)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
@@ -567,7 +569,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
 
     // This case corresponds to the user manually playing audio (e.g. after pausing).
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val exploration = loadExploration(explorationId)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
@@ -598,7 +600,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
 
     // If there's no content ID then it'll be missing from the log.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasPlayVoiceOverContextThat().hasContentIdThat().isEmpty()
   }
 
@@ -612,7 +614,7 @@ class AudioPlayerControllerTest {
 
     // No event should be logged if outside an exploration and playing audio (such as for
     // questions).
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   private fun arrangeMediaPlayer(contentId: String? = null) {
@@ -666,8 +668,8 @@ class AudioPlayerControllerTest {
 
   private fun loadExploration(explorationId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(explorationId)
-    )
+      explorationDataController.getExplorationById(profileId, explorationId)
+    ).exploration
   }
 
   private fun setUpMediaReadyApplicationWithLearnerStudy() {

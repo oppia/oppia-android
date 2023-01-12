@@ -13,7 +13,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_shared_screen_primary_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/topic_app_bar_layout"
@@ -27,8 +27,8 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/story_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/component_color_story_activity_toolbar_color"
+        android:layout_height="wrap_content"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
@@ -42,7 +42,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginEnd="20dp"
-          android:text="@{viewModel.storyNameLiveData}"/>
+          android:text="@{viewModel.storyNameLiveData}" />
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -59,7 +59,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:background="@color/component_color_story_activity_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/story_fragment_padding_bottom"

@@ -5,12 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
-import org.oppia.android.app.model.Topic
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -21,7 +22,8 @@ class TopicLessonViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -33,42 +35,44 @@ class TopicLessonViewModel @Inject constructor(
     Transformations.map(topicLiveData, ::processTopic)
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
+  private val topicLiveData: LiveData<EphemeralTopic> by lazy { getTopicList() }
 
-  private fun getTopicList(): LiveData<Topic> {
+  private fun getTopicList(): LiveData<EphemeralTopic> {
     return Transformations.map(topicResultLiveData, ::processTopicResult)
   }
 
-  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
+  private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId
     ).toLiveData()
   }
 
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    return when (topic) {
+  private fun processTopicResult(ephemeralResult: AsyncResult<EphemeralTopic>): EphemeralTopic {
+    return when (ephemeralResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e("TopicLessonFragment", "Failed to retrieve topic", topic.error)
-        Topic.getDefaultInstance()
+        oppiaLogger.e("TopicLessonFragment", "Failed to retrieve topic", ephemeralResult.error)
+        EphemeralTopic.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Topic.getDefaultInstance()
-      is AsyncResult.Success -> topic.value
+      is AsyncResult.Pending -> EphemeralTopic.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralResult.value
     }
   }
 
-  private fun processTopic(topic: Topic): List<TopicLessonsItemViewModel> {
-    if (topic.storyList.isNotEmpty()) {
-      topicStoryList = topic.storyList
+  private fun processTopic(ephemeralTopic: EphemeralTopic): List<TopicLessonsItemViewModel> {
+    if (ephemeralTopic.storiesList.isNotEmpty()) {
+      topicStoryList = ephemeralTopic.topic.storyList
       itemList.clear()
       itemList.add(TopicLessonsTitleViewModel())
-      for (storySummary in topic.storyList) {
+      ephemeralTopic.storiesList.forEachIndexed { index, ephemeralStorySummary ->
         itemList.add(
           StorySummaryViewModel(
-            storySummary,
+            ephemeralStorySummary,
             fragment as StorySummarySelector,
             fragment as ChapterSummarySelector,
-            resourceHandler
+            resourceHandler,
+            translationController,
+            index
           )
         )
       }

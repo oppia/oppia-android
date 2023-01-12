@@ -20,6 +20,8 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -31,7 +33,10 @@ class AdministratorControlsViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @EnableEditAccountsOptionsUi
+  private val enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>,
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -71,9 +76,13 @@ class AdministratorControlsViewModel @Inject constructor(
   private fun processAdministratorControlsList(
     deviceSettings: DeviceSettings
   ): List<AdministratorControlsItemViewModel> {
-    val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
-      AdministratorControlsGeneralViewModel()
-    )
+
+    val itemViewModelList = mutableListOf<AdministratorControlsItemViewModel>()
+
+    if (enableEditAccountsOptionsUi.value) {
+      itemViewModelList.add(AdministratorControlsGeneralViewModel())
+    }
+
     itemViewModelList.add(
       AdministratorControlsProfileViewModel(
         routeToProfileListListener,
@@ -84,15 +93,19 @@ class AdministratorControlsViewModel @Inject constructor(
     if (learnerStudyAnalytics.value) {
       itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
     }
-    itemViewModelList.add(
-      AdministratorControlsDownloadPermissionsViewModel(
-        fragment,
-        oppiaLogger,
-        profileManagementController,
-        userProfileId,
-        deviceSettings
+
+    if (enableDownloadsSupport.value) {
+      itemViewModelList.add(
+        AdministratorControlsDownloadPermissionsViewModel(
+          fragment,
+          oppiaLogger,
+          profileManagementController,
+          userProfileId,
+          deviceSettings
+        )
       )
-    )
+    }
+
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
     itemViewModelList.add(
       AdministratorControlsAccountActionsViewModel(

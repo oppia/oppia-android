@@ -12,11 +12,11 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingEnd="@{viewModel.hasConversationView ?@dimen/interaction_item_exploration_view_padding_end : @dimen/interaction_item_question_view_padding_end}"
-    android:paddingStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_padding_start : @dimen/interaction_item_question_view_padding_start}"
-    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:paddingStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_padding_start : @dimen/interaction_item_question_view_padding_start}"
+    android:paddingEnd="@{viewModel.hasConversationView ?@dimen/interaction_item_exploration_view_padding_end : @dimen/interaction_item_question_view_padding_end}"
+    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}">
 
     <org.oppia.android.app.customview.interaction.TextInputInteractionView
       android:id="@+id/text_input_interaction_view"
@@ -25,10 +25,10 @@
       android:hint="@{viewModel.hintText}"
       android:inputType="text"
       android:text="@={viewModel.answerText}"
-      app:textChangedListener="@{viewModel.answerTextWatcher}"
+      android:textColorHint="@color/component_color_shared_edit_text_hint_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
-    
+      app:layout_constraintTop_toTopOf="parent"
+      app:textChangedListener="@{viewModel.answerTextWatcher}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

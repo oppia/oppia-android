@@ -4,12 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 30
+  compileSdkVersion 31
   buildToolsVersion "29.0.2"
 
   defaultConfig {
     minSdkVersion 19
-    targetSdkVersion 30
+    targetSdkVersion 31
     versionCode 1
     versionName "1.0"
     javaCompileOptions {
@@ -57,6 +57,24 @@ android {
     }
   }
 }
+
+// These tests aren't supported in Gradle since they make use of test resources & AGP doesn't
+// support merging resources for test builds, or they rely on a compile-time built proto
+// configuration file which the current Gradle configuration doesn't support. This test runs
+// correctly for Bazel & is included in the CI workflow that runs Bazel tests.
+// https://stackoverflow.com/a/69141612 seems like the only solution that actually works (versus
+// trying to exclude via sourceSets), so the following is an adapted version that ensures all
+// generated sources that may reference the test also don't exist (such as Dagger running to
+// generate a test application component). Note that this must exist in tandem with the sourceSet
+// exclusion in order to properly work.
+def filesToExclude = [
+    '**/*DisplayLocaleImplTest*.kt'
+]
+tasks.withType(SourceTask.class).configureEach {
+  it.exclude(filesToExclude)
+}
+android.sourceSets.test.java.exclude(filesToExclude)
+android.sourceSets.test.kotlin.exclude(filesToExclude)
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])

@@ -6,7 +6,7 @@ The oppia_proto_library() rule creates a proto file library to be used in multip
 The java_lite_proto_library() rule takes in a proto_library target and generates java code.
 """
 
-load("@rules_java//java:defs.bzl", "java_lite_proto_library")
+load("@rules_java//java:defs.bzl", "java_lite_proto_library", "java_proto_library")
 load("//model:oppia_proto_library.bzl", "oppia_proto_library")
 
 # NOTE TO DEVELOPERS: When adding new protos, each proto will need to have both a proto_library
@@ -27,7 +27,9 @@ oppia_proto_library(
     name = "arguments_proto",
     srcs = ["arguments.proto"],
     deps = [
+        ":exploration_checkpoint_proto",
         ":exploration_proto",
+        ":profile_proto",
         ":translation_proto",
     ],
 )
@@ -48,6 +50,18 @@ java_lite_proto_library(
     name = "event_logger_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":event_logger_proto"],
+)
+
+oppia_proto_library(
+    name = "performance_metrics_event_logger_proto",
+    srcs = ["performance_metrics.proto"],
+    deps = [":screens_proto"],
+)
+
+java_lite_proto_library(
+    name = "performance_metrics_event_logger_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":performance_metrics_event_logger_proto"],
 )
 
 oppia_proto_library(
@@ -81,10 +95,28 @@ oppia_proto_library(
     visibility = ["//:oppia_api_visibility"],
 )
 
+java_proto_library(
+    name = "languages_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":languages_proto"],
+)
+
 java_lite_proto_library(
     name = "languages_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":languages_proto"],
+)
+
+oppia_proto_library(
+    name = "screens_proto",
+    srcs = ["screens.proto"],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+java_lite_proto_library(
+    name = "screens_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":screens_proto"],
 )
 
 oppia_proto_library(
@@ -101,12 +133,24 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "onboarding_proto",
     srcs = ["onboarding.proto"],
+    deps = [":version_proto"],
 )
 
 java_lite_proto_library(
     name = "onboarding_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":onboarding_proto"],
+)
+
+oppia_proto_library(
+    name = "spotlight_proto",
+    srcs = ["spotlight.proto"],
+)
+
+java_lite_proto_library(
+    name = "spotlight_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":spotlight_proto"],
 )
 
 oppia_proto_library(
@@ -169,15 +213,25 @@ oppia_proto_library(
     name = "translation_proto",
     srcs = ["translation.proto"],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":languages_proto",
-    ],
+    deps = [":languages_proto"],
 )
 
 java_lite_proto_library(
     name = "translation_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":translation_proto"],
+)
+
+oppia_proto_library(
+    name = "version_proto",
+    srcs = ["version.proto"],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+java_lite_proto_library(
+    name = "version_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":version_proto"],
 )
 
 oppia_proto_library(

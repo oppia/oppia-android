@@ -1,0 +1,81 @@
+"""
+Tests for general-purpose utilities for performance metrics logging.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "PerformanceMetricsAssessorImplTest",
+    srcs = ["PerformanceMetricsAssessorImplTest.kt"],
+    custom_package = "org.oppia.android.util.logging.performancemetrics",
+    test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorImplTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_activity_manager",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_traffic_stats",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_impl",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    ],
+)
+
+oppia_android_test(
+    name = "PerformanceMetricsAssessorModuleTest",
+    srcs = ["PerformanceMetricsAssessorModuleTest.kt"],
+    custom_package = "org.oppia.android.util.logging.performancemetrics",
+    test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModuleTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+    ],
+)
+
+oppia_android_test(
+    name = "PerformanceMetricsConfigurationsModuleTest",
+    srcs = ["PerformanceMetricsConfigurationsModuleTest.kt"],
+    custom_package = "org.oppia.android.util.logging.performancemetrics",
+    test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModuleTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+    ],
+)
+
+dagger_rules()

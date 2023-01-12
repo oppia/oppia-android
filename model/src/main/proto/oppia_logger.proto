@@ -123,6 +123,10 @@ message EventLog {
       // value here has no importance and is always 'true'.
       bool open_profile_chooser = 32;
 
+      // The event being logged indicates that the user has reached an invested level of learning
+      // engagement in a lesson.
+      ExplorationContext reach_invested_engagement = 34;
+
       // Indicates that something went wrong when trying to log a learner analytics even for the
       // device corresponding to the specified device ID.
       string install_id_for_failed_analytics_log = 33;
@@ -190,6 +194,9 @@ message EventLog {
   message SubmitAnswerContext {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
+
+    // A stringified representation of the answer submitted by the learner.
+    string stringified_answer = 2;
 
     // Whether the answer that the learner submitted is the correct answer.
     bool is_answer_correct = 3;

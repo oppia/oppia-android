@@ -10,35 +10,38 @@
       name="viewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel" />
   </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingEnd="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_padding_end : @dimen/interaction_item_question_view_padding_end}"
-    android:paddingStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_padding_start : @dimen/interaction_item_question_view_padding_start}"
-    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_padding_start : @dimen/interaction_item_question_view_padding_start}"
+    android:paddingEnd="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_padding_end : @dimen/interaction_item_question_view_padding_end}"
+    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}">
 
     <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
       android:id="@+id/math_expression_input_interaction_view"
       style="@style/InputInteractionEditText"
-      app:placeholder="@{viewModel.hintText}"
       android:inputType="text"
+      android:minHeight="48dp"
       android:text="@={viewModel.answerText}"
-      app:textChangedListener="@{viewModel.answerTextWatcher}"
+      android:textColorHint="@color/component_color_shared_edit_text_hint_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      android:minHeight="48dp"/>
+      app:placeholder="@{viewModel.hintText}"
+      app:textChangedListener="@{viewModel.answerTextWatcher}" />
 
     <TextView
       android:id="@+id/math_expression_input_error"
       style="@style/InputInteractionErrorTextView"
       android:text="@{viewModel.errorMessage}"
+      android:textColor="@color/component_color_shared_input_error_color"
+      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/math_expression_input_interaction_view"
-      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.GONE}" />
+      app:layout_constraintTop_toBottomOf="@+id/math_expression_input_interaction_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

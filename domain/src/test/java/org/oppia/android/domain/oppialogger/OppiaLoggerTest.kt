@@ -26,7 +26,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -99,7 +99,7 @@ class OppiaLoggerTest {
   }
 
   @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
@@ -116,7 +116,7 @@ class OppiaLoggerTest {
 
     oppiaLogger.logImportantEvent(openHomeEventContext)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
   }

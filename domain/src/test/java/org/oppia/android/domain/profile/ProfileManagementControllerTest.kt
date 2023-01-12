@@ -30,7 +30,7 @@ import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -59,7 +59,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
 import java.io.FileInputStream
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,7 +76,7 @@ class ProfileManagementControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -121,6 +120,8 @@ class ProfileManagementControllerTest {
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
     assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
   }
 
@@ -257,6 +258,103 @@ class ProfileManagementControllerTest {
     val learnerId = fetchSuccessfulAsyncValue(profileManagementController::fetchCurrentLearnerId)
 
     assertThat(learnerId).isNull()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_logInProfile1_checkStatusForProfile2IsFalse() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_2
+    )
+    assertThat(continueButtonSeenStatus).isFalse()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_notSeen_returnsFalse() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus, PROFILE_ID_1
+    )
+    assertThat(continueButtonSeenStatus).isFalse()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeen_returnsTrue() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_1
+    )
+    assertThat(continueButtonSeenStatus).isTrue()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeenTwice_returnsTrue() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_1
+    )
+    assertThat(continueButtonSeenStatus).isTrue()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeen_inDiffProfile_returnsFalse() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_2)
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_2
+    )
+    assertThat(continueButtonSeenStatus).isFalse()
   }
 
   @Test
@@ -521,7 +619,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testLoginToProfile_addProfiles_loginToProfile_checkGetProfileIdAndLoginTimestampIsCorrect() {
+  fun testLoginProfile_addedProfile_profileIdTimestampAndNumberOfLoginsIsCorrectlyUpdated() {
     setUpTestApplicationComponent()
     addTestProfiles()
 
@@ -532,6 +630,25 @@ class ProfileManagementControllerTest {
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
     assertThat(profile.lastLoggedInTimestampMs).isNotEqualTo(0)
+    assertThat(profile.numberOfLogins).isEqualTo(1)
+  }
+
+  @Test
+  fun testLoginToProfile_addProfile_loginToProfileTwice_checkNumberOfLoginsIsTwo() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    var loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
+
+    // log out of profile 2
+    loginProvider = profileManagementController.loginToProfile(PROFILE_ID_3)
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
+
+    loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
+    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+    assertThat(profile.numberOfLogins).isEqualTo(2)
   }
 
   @Test
@@ -634,8 +751,8 @@ class ProfileManagementControllerTest {
       profileManagementController.deleteProfile(PROFILE_ID_2)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
-    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
     assertThat(eventLog).hasDeleteProfileContextThat {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isNotEmpty()
@@ -824,6 +941,11 @@ class ProfileManagementControllerTest {
 
   private fun <T> fetchSuccessfulAsyncValue(block: suspend () -> T) =
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
+
+  private fun <T> fetchSuccessfulAsyncValue(
+    block: suspend (profileId: ProfileId) -> T,
+    profileId: ProfileId
+  ) = CoroutineScope(backgroundDispatcher).async { block(profileId) }.waitForSuccessfulResult()
 
   private fun <T> Deferred<T>.waitForSuccessfulResult(): T {
     return when (val result = waitForResult()) {

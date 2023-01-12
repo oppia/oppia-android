@@ -99,37 +99,20 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="bottom|start">
-
-      <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/hints_and_solution_fragment_container"
-        android:background="@color/color_palette_background_color"
-        android:visibility="@{viewModel.hasSwahiliTranslations ? View.VISIBLE : View.GONE}">
-        <androidx.appcompat.widget.AppCompatButton
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="16dp"
-          android:minWidth="@dimen/clickable_item_min_height"
-          android:minHeight="@dimen/clickable_item_min_height"
-          android:text="@{viewModel.hasEnabledSwahiliTranslations ? @string/temporary_translate_to_english : @string/temporary_translate_to_swahili}"
-          android:onClick="@{(v) -> viewModel.toggleContentLanguage(viewModel.hasEnabledSwahiliTranslations)}" />
-      </FrameLayout>
-
+      android:paddingTop="24dp"
+      android:layout_gravity="bottom|start"
+      android:clipChildren="false"
+      android:clipToPadding="false">
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/hints_and_solution_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/audio_component_background"
-        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
+        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
+        android:clipChildren="false">
 
         <ImageView
           android:id="@+id/hint_bulb"
@@ -166,7 +149,7 @@
           app:layout_constraintEnd_toEndOf="parent" />
 
       </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
     <FrameLayout
       android:layout_width="match_parent"
@@ -177,7 +160,8 @@
         android:id="@+id/congratulations_text_view"
         style="@style/TextViewCenter"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="wrap_content"
+        android:minHeight="54dp"
         android:layout_gravity="bottom"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
@@ -187,7 +171,7 @@
         android:lineSpacingExtra="1dp"
         android:text="@string/correct"
         android:textAllCaps="true"
-        android:textColor="@color/color_def_green_shade"
+        android:textColor="@color/component_color_shared_correct_text_color"
         android:textSize="20sp"
         android:visibility="invisible" />
 

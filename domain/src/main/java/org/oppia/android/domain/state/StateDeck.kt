@@ -12,7 +12,6 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
 
 // TODO(#59): Hide the visibility of this class to domain implementations.
-
 /**
  * Tracks the progress of a dynamic playing session through a graph of state cards. This class
  * treats the learner's progress like a deck of cards to simplify forward/backward navigation.
@@ -91,14 +90,22 @@ class StateDeck constructor(
   }
 
   /** Returns the current [EphemeralState] the learner is viewing. */
-  fun getCurrentEphemeralState(helpIndex: HelpIndex): EphemeralState {
+  fun getCurrentEphemeralState(
+    helpIndex: HelpIndex,
+    timestamp: Long,
+    isContinueButtonAnimationSeen: Boolean
+  ): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current
     // state is the top of the deck, and that state is the terminal one. Otherwise the terminal
     // check would never be triggered since the second case assumes the top of the deck must be
     // pending.
     return when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
-      isCurrentStateTopOfDeck() -> getCurrentPendingState(helpIndex)
+      isCurrentStateTopOfDeck() -> getCurrentPendingState(
+        helpIndex,
+        timestamp,
+        isContinueButtonAnimationSeen
+      )
       else -> getPreviousState()
     }
   }
@@ -115,7 +122,12 @@ class StateDeck constructor(
    * @param prohibitSameStateName whether to enable a sanity check to ensure the same state isn't
    *     routed to twice
    */
-  fun pushState(state: State, prohibitSameStateName: Boolean) {
+  fun pushState(
+    state: State,
+    prohibitSameStateName: Boolean,
+    timestamp: Long,
+    isContinueButtonAnimationSeen: Boolean
+  ) {
     check(isCurrentStateTopOfDeck()) {
       "Cannot push a new state unless the learner is at the most recent state."
     }
@@ -136,6 +148,8 @@ class StateDeck constructor(
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
       .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
+      .setContinueButtonAnimationTimestampMs(timestamp)
+      .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen && isCurrentStateInitial())
       .build()
     currentDialogInteractions.clear()
     pendingTopState = state
@@ -186,7 +200,11 @@ class StateDeck constructor(
     }.build()
   }
 
-  private fun getCurrentPendingState(helpIndex: HelpIndex): EphemeralState {
+  private fun getCurrentPendingState(
+    helpIndex: HelpIndex,
+    timestamp: Long,
+    isContinueButtonAnimationSeen: Boolean
+  ): EphemeralState {
     return EphemeralState.newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
@@ -195,6 +213,8 @@ class StateDeck constructor(
           .addAllWrongAnswer(currentDialogInteractions)
           .setHelpIndex(helpIndex)
       )
+      .setContinueButtonAnimationTimestampMs(timestamp)
+      .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen && isCurrentStateInitial())
       .build()
   }
 

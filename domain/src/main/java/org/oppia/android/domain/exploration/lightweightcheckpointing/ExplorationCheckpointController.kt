@@ -2,17 +2,25 @@ package org.oppia.android.domain.exploration.lightweightcheckpointing
 
 import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.Deferred
+import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.CheckpointState
+import org.oppia.android.app.model.CompletedStateInCheckpoint
+import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ExplorationCheckpointDatabase
 import org.oppia.android.app.model.ExplorationCheckpointDetails
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.State
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
+import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,8 +34,6 @@ private const val RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "record_exploration_checkpoint_provider_id"
 private const val DELETE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "delete_exploration_checkpoint_provider_id"
-private const val CHECK_IS_EXPLORATION_CHECKPOINT_COMPATIBLE_WITH_EXPLORATION_DATA_PROVIDER_ID =
-  "check_is_exploration_checkpoint_compatible_with_exploration_provider_id"
 
 /**
  * Controller for saving, retrieving, updating, and deleting exploration checkpoints.
@@ -38,7 +44,8 @@ class ExplorationCheckpointController @Inject constructor(
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger,
   @ExplorationStorageDatabaseSize private val explorationCheckpointDatabaseSizeLimit: Int,
-  private val explorationRetriever: ExplorationRetriever
+  private val explorationRetriever: ExplorationRetriever,
+  private val answerClassificationController: AnswerClassificationController
 ) {
 
   /** Indicates that no checkpoint was found for the specified explorationId and profileId. */
@@ -156,12 +163,16 @@ class ExplorationCheckpointController @Inject constructor(
             AsyncResult.Success(checkpoint)
           }
           checkpoint != null && exploration.version != checkpoint.explorationVersion -> {
-            AsyncResult.Failure(
-              OutdatedExplorationCheckpointException(
-                "checkpoint with version: ${checkpoint.explorationVersion} cannot be used to " +
-                  "resume exploration $explorationId with version: ${exploration.version}"
+            val migratedCheckpoint = replayCheckpoint(checkpoint, exploration)
+            if (migratedCheckpoint == null) {
+              AsyncResult.Failure(
+                OutdatedExplorationCheckpointException(
+                  "Checkpoint with version: ${checkpoint.explorationVersion} cannot be used to" +
+                    " resume exploration $explorationId with version: ${exploration.version}" +
+                    " (checkpoint has been deemed as incompatible with this exploration version)."
+                )
               )
-            )
+            } else AsyncResult.Success(migratedCheckpoint)
           }
           else -> {
             AsyncResult.Failure(
@@ -185,30 +196,19 @@ class ExplorationCheckpointController @Inject constructor(
     profileId: ProfileId
   ): DataProvider<ExplorationCheckpointDetails> {
     return retrieveCacheStore(profileId)
-      .transformAsync(
+      .transform(
         RETRIEVE_OLDEST_CHECKPOINT_DETAILS_DATA_PROVIDER_ID
       ) { explorationCheckpointDatabase ->
-
         // Find the oldest checkpoint by timestamp or null if no checkpoints is saved.
-        val oldestCheckpoint =
-          explorationCheckpointDatabase.explorationCheckpointMap.minByOrNull {
-            it.value.timestampOfFirstCheckpoint
-          }
-
-        if (oldestCheckpoint != null) {
-          val explorationCheckpointDetails = ExplorationCheckpointDetails.newBuilder()
-            .setExplorationId(oldestCheckpoint.key)
-            .setExplorationTitle(oldestCheckpoint.value.explorationTitle)
-            .setExplorationVersion(oldestCheckpoint.value.explorationVersion)
-            .build()
-          AsyncResult.Success(explorationCheckpointDetails)
-        } else {
-          AsyncResult.Failure(
-            ExplorationCheckpointNotFoundException(
-              "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
-            )
-          )
-        }
+        explorationCheckpointDatabase.explorationCheckpointMap.minByOrNull {
+          it.value.timestampOfFirstCheckpoint
+        }?.let { (expId, exp) ->
+          ExplorationCheckpointDetails.newBuilder().apply {
+            explorationId = expId
+            explorationTitle = exp.explorationTitle
+            explorationVersion = exp.explorationVersion
+          }.build()
+        } ?: ExplorationCheckpointDetails.getDefaultInstance()
       }
   }
 
@@ -282,7 +282,10 @@ class ExplorationCheckpointController @Inject constructor(
       cacheStore
     }
 
-    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
+    cacheStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion { throwable ->
       throwable?.let {
         oppiaLogger.e(
           "ExplorationCheckpointController",
@@ -292,6 +295,125 @@ class ExplorationCheckpointController @Inject constructor(
       }
     }
     return cacheStore
+  }
+
+  /**
+   * Attempts to "replay" the specified checkpoint for the corresponding specified exploration,
+   * returning the adjusted checkpoint or ``null`` if the checkpoint is incompatible with the
+   * provided exploration.
+   *
+   * 'Replay' means to make every reasonable attempt to migrate the checkpoint to the corresponding
+   * exploration (regardless of that exploration's version), and this is done as if the user replays
+   * the checkpoint verbatim from scratch. This approach ensures the captured feedback in the
+   * returned checkpoint is always the most up-to-date feedback (if the user decides to go back to
+   * any earlier card in order to revisit earlier feedback). All answers and routing must match, but
+   * the hint help index will always be dropped since there isn't enough information to confidently
+   * reconstitute it (since the hints in the state may have majorly changed), and learners can
+   * easily re-trigger the hints if they become stuck.
+   *
+   * Note that the current implementation does not support state renaming (but this could be added
+   * in a future revision for more a more robust migration attempt).
+   */
+  private fun replayCheckpoint(
+    checkpoint: ExplorationCheckpoint,
+    exploration: Exploration
+  ): ExplorationCheckpoint? {
+    val completedStates = checkpoint.completedStatesInCheckpointList
+    val nextStateNames = completedStates.indices.map {
+      completedStates.getOrNull(it + 1)?.stateName ?: checkpoint.pendingStateName
+    }
+    val updatedCompletedStates = completedStates.mapIndexed { idx, completedState ->
+      // All completed states must be compatible with the current version of the exploration.
+      replayCompletedState(completedState, exploration, nextStateNames[idx]) ?: return null
+    }
+
+    val updatedPendingAnswers =
+      replayPendingState(
+        checkpoint.pendingStateName, checkpoint.pendingUserAnswersList, exploration
+      ) ?: return null
+
+    return checkpoint.toBuilder().apply {
+      clearCompletedStatesInCheckpoint()
+      clearPendingUserAnswers()
+      clearHelpIndex()
+
+      addAllCompletedStatesInCheckpoint(updatedCompletedStates)
+      addAllPendingUserAnswers(updatedPendingAnswers)
+
+      // Ensure top-level exploration information is up-to-date.
+      explorationTitle = exploration.translatableTitle.html
+      explorationVersion = exploration.version
+    }.build()
+  }
+
+  private fun replayPendingState(
+    pendingStateName: String,
+    submittedAnswers: List<AnswerAndResponse>,
+    exploration: Exploration
+  ): List<AnswerAndResponse>? {
+    val pendingState = exploration.statesMap[pendingStateName] ?: return null // Doesn't exist.
+    return submittedAnswers.map {
+      // All answers must be compatible with the latest exploration. Note that the expected "next"
+      // state must always be the current state (since the state is pending and not yet completed).
+      replaySubmittedAnswer(
+        it,
+        lastAnswer = false,
+        pendingState,
+        nextStateName = pendingStateName
+      ) ?: return null
+    }
+  }
+
+  private fun replayCompletedState(
+    completedCheckpointState: CompletedStateInCheckpoint,
+    exploration: Exploration,
+    nextStateName: String
+  ): CompletedStateInCheckpoint? {
+    val stateName = completedCheckpointState.stateName
+    val completedState = completedCheckpointState.completedState
+    val mostCurrentState = exploration.statesMap[stateName] ?: return null // State doesn't exist.
+    val completedAnswers = completedState.answerList.mapIndexed { idx, answer ->
+      // All answers must be compatible with the latest exploration.
+      replaySubmittedAnswer(
+        answer,
+        lastAnswer = idx == completedState.answerList.lastIndex,
+        mostCurrentState,
+        nextStateName
+      ) ?: return null
+    }
+    return completedCheckpointState.toBuilder().apply {
+      this.completedState = completedState.toBuilder().apply {
+        clearAnswer()
+        addAllAnswer(completedAnswers)
+      }.build()
+    }.build()
+  }
+
+  private fun replaySubmittedAnswer(
+    answerAndResponse: AnswerAndResponse,
+    lastAnswer: Boolean,
+    state: State,
+    nextStateName: String
+  ): AnswerAndResponse? {
+    val userAnswer = answerAndResponse.userAnswer
+    val answerOutcome = answerClassificationController.classify(
+      state.interaction, userAnswer.answer, userAnswer.writtenTranslationContext
+    ).outcome
+
+    // The destination state must match for compatibility, as does both the feedback content ID &
+    // whether the answer is correct (it's okay if the feedback text has changed).
+    val expectedNextStateName = if (lastAnswer) nextStateName else state.name
+    if (answerOutcome.destStateName != expectedNextStateName ||
+      answerOutcome.feedback.contentId != answerAndResponse.feedback.contentId ||
+      answerOutcome.labelledAsCorrect != answerAndResponse.isCorrectAnswer
+    ) {
+      return null
+    }
+
+    return answerAndResponse.toBuilder().apply {
+      // Ensure the latest feedback text is taken if corrections have been made.
+      feedback = answerOutcome.feedback
+    }.build()
   }
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)

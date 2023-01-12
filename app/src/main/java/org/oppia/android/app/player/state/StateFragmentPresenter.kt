@@ -4,6 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.animation.BounceInterpolator
+import android.view.animation.Interpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -32,11 +35,15 @@ import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.SplitScreenManager
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
+import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.StoryProgressController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -60,6 +67,8 @@ class StateFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val context: Context,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+  private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
   private val oppiaLogger: OppiaLogger,
@@ -67,7 +76,9 @@ class StateFragmentPresenter @Inject constructor(
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
   private val oppiaClock: OppiaClock,
-  private val viewModel: StateViewModel
+  private val viewModel: StateViewModel,
+  private val accessibilityService: AccessibilityService,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -82,6 +93,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var helpIndex: HelpIndex
+  private var forceAnnouncedForHintsBar = false
 
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
@@ -331,7 +343,7 @@ class StateFragmentPresenter @Inject constructor(
           oppiaLogger.e("StateFragment", "Failed to retrieve hint/solution", result.error)
         } else {
           // If the hint/solution, was revealed remove dot and radar.
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          setHintOpenedAndUnRevealed(false)
         }
       }
     )
@@ -449,33 +461,94 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
-      viewModel.setHintOpenedAndUnRevealedVisibility(false)
+      setHintOpenedAndUnRevealed(false)
       viewModel.setHintBulbVisibility(false)
     } else {
       when (helpIndex.indexTypeCase) {
         HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX -> {
           viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+          setHintOpenedAndUnRevealed(true)
         }
         HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
           viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          setHintOpenedAndUnRevealed(false)
         }
         HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
           viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+          setHintOpenedAndUnRevealed(true)
         }
         HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          setHintOpenedAndUnRevealed(false)
           viewModel.setHintBulbVisibility(true)
         }
         else -> {
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          setHintOpenedAndUnRevealed(false)
           viewModel.setHintBulbVisibility(false)
         }
       }
+    }
+  }
+
+  private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
+    viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
+    if (isHintUnrevealed) {
+
+      val hintBulbAnimation = AnimationUtils.loadAnimation(
+        context,
+        R.anim.hint_bulb_animation
+      ).also { it.interpolator = BounceUpAndDownInterpolator() }
+
+      // The bulb should start bouncing every 30 seconds. Note that an initial delay is used for
+      // cases like configuration changes, or returning from a saved checkpoint.
+      lifecycleSafeTimerFactory.run {
+        activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
+          return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
+            if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
+            // Make a forced announcement when the hint bar becomes visible so that the non sighted
+            // users know about the availability of hints. Instead of suddenly changing the focus of
+            // the app (which is a bad practice) to the hints bar upon availability, make a forced
+            // announcement. The forced announcement should be called after 5 seconds after the
+            // hints bar appears otherwise it might interrupt with the submit button's content
+            // description during Talkback.
+            if (!forceAnnouncedForHintsBar) {
+              forceAnnouncedForHintsBar = true
+              accessibilityService.announceForAccessibilityForView(
+                binding.hintsAndSolutionFragmentContainer,
+                resourceHandler.getStringInLocale(
+                  R.string.state_fragment_hint_bar_forced_announcement_text
+                )
+              )
+            }
+          }
+        }
+      }
+    } else {
+      binding.hintBulb.clearAnimation()
+    }
+  }
+
+  /**
+   * An [Interpolator] when performs a reversed, then regular bounce interpolation using
+   * [BounceInterpolator].
+   *
+   * This interpolator maps input time from [0, 0.5] to [1.0, 0.0] and (0.5, 1.0] to (0.0, 1.0],
+   * allowing a clean continuous reverse bounce animation such that the item being bounced returns
+   * to its original position (which is expected to be the "final" transformation value). Note the
+   * start and end of the same time values for output--interpolators in Android normally don't allow
+   * this which is why modeling this animation behavior any other way is particularly challenging.
+   */
+  private class BounceUpAndDownInterpolator : Interpolator {
+    private val bounceInterpolator by lazy { BounceInterpolator() }
+
+    override fun getInterpolation(input: Float): Float {
+      // To get the correct continuous bounce, run the reverse bounce from 100% to 0% for the first
+      // 50% of time, then run the regular bounce from 0% to 100% for the remaining 50%.
+      return if (input <= 0.5f) {
+        bounceInterpolator.getInterpolation(1f - input * 2f)
+      } else bounceInterpolator.getInterpolation(input * 2f - 1f)
     }
   }
 }

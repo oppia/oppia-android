@@ -127,7 +127,6 @@
   <string name="ongoing_story_last_month">zilizochezwa ndani ya Mwezi uliopita</string>
   <string name="story_activity_title">Orodha ya Sura</string>
   <string name="lesson_thumbnail_content_description">Picha ya %s</string>
-  <string name="all_topics">Mada Zote</string>
   <string name="stories_you_can_play">Hadithi Unazoweza Kucheza</string>
   <string name="navigate_up">Nenda juu/enda juu</string>
   <string name="recently_played_activity">Hadithi Zilizochezwa Hivi Karibuni</string>
@@ -159,7 +158,7 @@
   <string name="ratio_error_invalid_size">Idadi ya masharti si sawa na masharti yanayohitajika.</string>
   <string name="ratio_error_includes_zero">Uwiano hauwezi kuwa na 0 kama kipengele.</string>
   <string name="unknown_size">Ukubwa usiojulikana</string>
-  <string name="size_bytes">Baiti %s</string>
+  <string name="size_bytes"> Baiti %s</string>
   <string name="size_kb">%s KB</string>
   <string name="size_mb">%s MB</string>
   <string name="size_gb">%s GB</string>
@@ -168,11 +167,11 @@
   <string name="chapter_count_with_story_name">%1$s katika %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">Sura 1\n    </item>
-    <item quantity="other">Sura %s \n    </item>
+    <item quantity="other">\n      Sura %s \n    </item>
   </plurals>
   <plurals name="story_count">
     <item quantity="one">Hadithi 1\n    </item>
-    <item quantity="other">Hadithi %s\n    </item>
+    <item quantity="other">      Hadithi %s\n    </item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="one">%s kati ya Sura %s Imekamilika</item>
@@ -180,7 +179,7 @@
   </plurals>
   <plurals name="lesson_count">
     <item quantity="one">Somo 1\n    </item>
-    <item quantity="other">Masomo %s \n    </item>
+    <item quantity="other">      Masomo %s \n    </item>
   </plurals>
   <string name="profile_chooser_activity_label">Ukurasa wa kuchagua wasifu</string>
   <string name="profile_chooser_admin">Msimamizi</string>
@@ -201,7 +200,7 @@
   <string name="admin_auth_null">Tafadhali weka Nambari ya Siri ya Msimamizi.</string>
   <string name="admin_auth_submit">Wasilisha</string>
   <string name="admin_auth_close">Funga</string>
-  <string name="admin_pin_requirement_description">Kabla ya kuongeza wasifu, tunahitaji kulinda akaunti yako kwa kuunda Nambari ya Siri. Hii hukupa uwezo wa kuidhinisha upakuaji na kudhibiti wasifu kwenye kifaa.</string>
+  <string name="admin_pin_requirement_description" fuzzy="true">Kabla ya kuongeza wasifu, tunahitaji kulinda akaunti yako kwa kuunda Nambari ya Siri. Hii hukupa uwezo wa kuidhinisha upakuaji na kudhibiti wasifu kwenye kifaa.</string>
   <string name="admin_pin_pin_description">Tumia Nambari yako ya siri uliyoweka kwa akaunti za kibinafsi kama vile benki au usalama wa kijamii.</string>
   <string name="admin_pin_new_pin">Nambari mpya ya Siri ya tarakimu 5</string>
   <string name="admin_pin_new_confirm">Thibitisha Nambari ya Siri ya tarakimu 5</string>
@@ -211,9 +210,9 @@
   <string name="admin_pin_activity_title">Idhinisha kuongeza wasifu</string>
   <string name="add_profile_activity_label">Ongeza Wasifu</string>
   <string name="add_profile_title">Ongeza Wasifu</string>
-  <string name="add_profile_input_name">Jina*</string>
-  <string name="add_profile_input_pin">Nambari ya Siri ya tarakimu 3*</string>
-  <string name="add_profile_input_confirm_pin">Thibitisha Nambari ya Siri ya tarakimu 3*</string>
+  <string name="add_profile_input_name" fuzzy="true">Jina</string>
+  <string name="add_profile_input_pin" fuzzy="true">Nambari ya Siri ya tarakimu 3</string>
+  <string name="add_profile_input_confirm_pin">Thibitisha Nambari ya Siri ya tarakimu 3</string>
   <string name="add_profile_allow_download_heading">Ruhusu Upakuaji wa Ufikiaji</string>
   <string name="add_profile_allow_download_sub">Mtumiaji anaweza kupakua na kufuta maudhui bila Nambari ya Siri ya Msimamizi.</string>
   <string name="add_profile_create_btn">Anzisha</string>
@@ -221,12 +220,11 @@
   <string name="add_profile_pin_info">Ukiwa na Nambari ya Siri, hakuna mtu mwingine anayeweza kufikia wasifu kando na mtumiaji huyu aliyekabidhiwa.</string>
   <string name="add_profile_error_image_failed_store">Tumeshindwa kuhifadhi picha yako. Tafadhali jaribu tena.</string>
   <string name="add_profile_error_name_not_unique">Jina hili tayari linatumiwa na wasifu mwingine.</string>
-  <string name="add_profile_error_name_empty">Tafadhali weka jina la wasifu huu.</string>
-  <string name="add_profile_error_name_only_letters">Majina yanaweza kuwa na herufi pekee. Jaribu jina lingine?</string>
+  <string name="add_profile_error_name_empty" fuzzy="true">Tafadhali weka jina la wasifu huu.</string>
+  <string name="add_profile_error_name_only_letters" fuzzy="true">Majina yanaweza kuwa na herufi pekee. Jaribu jina lingine?</string>
   <string name="add_profile_error_pin_length">Nambari yako ya Siri inapaswa kuwa na urefu wa tarakimu 3.</string>
   <string name="add_profile_error_pin_confirm_wrong">Tafadhali hakikisha kwamba Nambari za Siri zote mbili zinalingana.</string>
   <string name="add_profile_info_content_description">Maelezo zaidi kuhusu Nambari za Siri zenye tarakimu 3.</string>
-  <string name="required_fields_content_description">Sehemu zilizo na alama ya * zinahitajika.</string>
   <string name="current_profile_picture_content_description">Picha ya sasa ya wasifu</string>
   <string name="edit_profile_picture_content_description">Hariri picha ya wasifu</string>
   <string name="onboarding_slide_0_title">Karibu kwa %s!</string>
@@ -246,15 +244,14 @@
   <string name="pin_password_user_enter">Tafadhali weka Nambari yako ya Siri.</string>
   <string name="input_pin_password_as_admin">Nambari ya Siri ya Tarakimu 5 ya Msimamizi.</string>
   <string name="input_pin_password_as_user">Nambari ya Siri ya Tarakimu 3 ya Mtumiaji.</string>
-  <string name="pin_password_forgot_pin">Nilisahau nambari yangu.</string>
+  <string name="pin_password_forgot_pin" fuzzy="true">Nilisahau nambari yangu.</string>
   <string name="pin_password_incorrect_pin">Nambari ya Siri si sahihi.</string>
   <string name="pin_password_show">Onyesha</string>
   <string name="pin_password_hide">ficha</string>
   <string name="pin_password_close">Funga</string>
   <string name="pin_password_success">Mabadiliko ya Nambari ya Siri yamefaulu</string>
   <string name="pin_password_forgot_title">Je, umesahau Nambari ya Siri?</string>
-  <string name="pin_password_forgot_message">Ili kuweka upya Nambari yako ya Siri, tafadhali ondoa %s kisha uisakinishe upya.\n\nKumbuka kwamba ikiwa kifaa hakijakuwa mtandaoni, unaweza kupoteza maendeleo ya mtumiaji kwenye akaunti nyingi.</string>
-  <string name="pin_password_play_store">Nenda kwenye hifadhi ya Google play.</string>
+  <string name="admin_forgot_pin_message" fuzzy="true">Ili kuweka upya Nambari yako ya Siri, tafadhali ondoa %s kisha uisakinishe upya.\n\nKumbuka kwamba ikiwa kifaa hakijakuwa mtandaoni, unaweza kupoteza maendeleo ya mtumiaji kwenye akaunti nyingi.</string>
   <string name="show_hide_password_icon">Onyesha/Ficha ishara ya nenosiri</string>
   <string name="password_shown_icon">Ishara ya nenosiri iliyoonyeshwa</string>
   <string name="password_hidden_icon">Ishara ya nenosiri iliyofichwa</string>
@@ -353,7 +350,7 @@
   <string name="welcome">\"Karibu %s!\"</string>
   <string name="what_do_you_want_to_learn">Unataka kujifunza nini?</string>
   <string name="great">Makuu</string>
-  <string name="lets_get_started">Hebu \ntuanze.</string>
+  <string name="lets_get_started" fuzzy="true">Hebu tuanze.</string>
   <string name="yes">Ndiyo</string>
   <string name="no">Hapana…</string>
   <string name="pick_a_different_topic">Chagua \nmada tofauti.</string>
@@ -363,9 +360,7 @@
   <string name="hints_andSolution_close_icon_description">Nenda juu</string>
   <string name="hints_toolbar_title">Vidokezo</string>
   <string name="reveal_solution">Fichua Suluhisho</string>
-  <string name="reveal_hint">Fichua Kidokezo</string>
-  <string name="show_hide_hint_list">Onyesha/Ficha orodha ya vidokezo ya %s</string>
-  <string name="show_hide_solution_list">Onyesha/Ficha suluhisho</string>
+  <string name="reveal_hint" fuzzy="true">Fichua Kidokezo</string>
   <string name="the_only_solution_is">Suluhisho pekee ni:</string>
   <string name="this_will_reveal_the_solution">Hii itafichua suluhisho. Una uhakika?</string>
   <string name="reveal">Fichua</string>
@@ -397,7 +392,7 @@
   </plurals>
   <string name="topic_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
   <string name="ongoing_recycler_view_tag">Inaendelea_kuchakata tena_mtazamo_tag</string>
-  <string name="item_selection_text">Tafadhali chagua angalau chaguo moja.</string>
+  <string name="item_selection_text" fuzzy="true">Tafadhali chagua angalau chaguo moja.</string>
   <string name="unsupported_app_version_dialog_title">Toleo la programu lisilotumika</string>
   <string name="unsupported_app_version_dialog_message">Toleo hili la programu halitumiki tena. Tafadhali isasishe kupitia hifadhi ya michezo.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Funga programu</string>
@@ -438,15 +433,13 @@
   <string name="faq_question_5">Msimamizi ni nani?</string>
   <string name="faq_question_6">Kwa nini kicheza Uchunguzi hakipakii?</string>
   <string name="faq_question_7">Kwa nini sauti yangu haichezwi?</string>
-  <string name="faq_question_8">Nitapakua aje Mada?</string>
   <string name="faq_question_9">Sijapata swali langu hapa. Nini sasa?</string>
-  <string name="faq_answer_1">&lt;p&gt;Ikiwa ni mara yako ya kwanza kuunda wasifu na huna Nambari ya Siri: &lt;/p&gt; &lt;p&gt; 1. Kutoka kwa Kichagua Wasifu, gusa &lt;strong&gt;Weka Wasifu Nyingi&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 2. Unda Nambari ya Siri na &lt;strong&gt;Hifadhi&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 3. Jaza sehemu zote za wasifu. &lt;/p&gt; &lt;ol&gt; &lt;li&gt; (Si lazima) Pakia picha. &lt;/li&gt; &lt;li&gt; Weka jina. &lt;/li&gt; &lt;li&gt; (Si lazima) Weka Nambari ya Siri yenye tarakimu 3. &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. Gusa &lt;strong&gt;Unda&lt;/strong&gt;. Wasifu huu umeongezwa kwa Kichagua Wasifu wako! &lt;br/&gt; &lt;br/&gt; Ikiwa umeunda wasifu hapo awali na una Nambari ya Siri: &lt;/p&gt; &lt;p&gt; 1. Kutoka kwa Kichagua Wasifu, gusa &lt;strong&gt;Ongeza Wasifu&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 2. Weka Nambari yako ya Siri na uguse &lt;strong&gt;Wasilisha&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 3. Jaza sehemu zote za wasifu. &lt;/p&gt; &lt;ol&gt; &lt;li&gt; (Si lazima) Pakia picha. &lt;/li&gt; &lt;li&gt; Weka jina. &lt;/li&gt; &lt;li&gt; (Si lazima) Weka Nambari ya Siri yenye tarakimu 3. &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. Gusa &lt;strong&gt;Unda&lt;/strong&gt;. Wasifu huu umeongezwa kwa Kichagua Wasifu wako! &lt;br/&gt; &lt;br/&gt; Kumbuka: &lt;u&gt;Msimamizi pekee&lt;/u&gt; ndiye anayeweza kudhibiti wasifu.&lt;/p&gt;</string>
-  <string name="faq_answer_2">&lt;p&gt;Wasifu unapofutwa:&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt; &lt;li&gt; Wasifu hauwezi kurejeshwa. &lt;/li&gt; &lt;/p&gt; &lt;p&gt; &lt;li&gt; Taarifa ya wasifu kama vile jina, picha na maendeleo yatafutwa kabisa. &lt;/li&gt; &lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;Ili kufuta wasifu (bila kujumuisha &lt;u&gt;Msimamizi&lt;/u&gt;):&lt;/p&gt; &lt;p&gt;1. Kutoka kwa Ukurasa wa Mwanzo wa Msimamizi, gusa kitufe cha menyu kilicho upande wa juu kushoto.&lt;/p&gt; &lt;p&gt;2. Gusa &lt;strong&gt;Vidhibiti vya Msimamizi&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;3. Gusa &lt;strong&gt;Hariri Wasifu&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;4. Gonga Wasifu ambao ungependa kufuta.&lt;/p&gt; &lt;p&gt;5. Katika sehemu ya chini ya skrini, gusa &lt;strong&gt;Ufutaji wa Wasifu&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;6. Gusa &lt;strong&gt;Futa&lt;/strong&gt; ili kuthibitisha kufuta.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Kumbuka: &lt;u&gt;Msimamizi&lt;/u&gt; pekee ndiye anayeweza kudhibiti wasifu.&lt;/ p&gt;</string>
-  <string name="faq_answer_3">&lt;p&gt;Ili kubadilisha barua pepe/nambari yako ya simu:&lt;/p&gt; &lt;p&gt;1. Kutoka kwa Ukurasa wa Mwanzo wa Msimamizi, gusa kitufe cha menyu kilicho upande wa juu kushoto.&lt;/p&gt; &lt;p&gt;2. Gusa &lt;strong&gt;Vidhibiti vya Msimamizi&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;3. Gusa &lt;strong&gt;Hariri Akaunti&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;Ikiwa ungependa kubadilisha barua pepe yako:&lt;/p&gt; &lt;p&gt;4. Weka barua pepe yako mpya na uguse &lt;strong&gt;Hifadhi&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;5. Kiungo cha uthibitishaji kinatumwa ili kuthibitisha barua pepe yako mpya. Muda wa kiungo utaisha baada ya saa 24 na lazima ubofye ili kuhusishwa na akaunti yako. &lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;Ikiwa unabadilisha nambari yako ya simu:&lt;/p&gt; &lt;p&gt;4. Weka nambari yako mpya ya simu na uguse &lt;strong&gt;Thibitisha&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;5. Nambari ya kuthibitisha inatumwa ili kuthibitisha nambari yako mpya. Nambari ya kuthibitisha itaisha baada ya dakika 5 na lazima iwekwe kwenye skrini mpya ili kuhusishwa na akaunti yako.&lt;/p&gt;</string>
+  <string name="faq_answer_1" fuzzy="true">&lt;p&gt;Ikiwa ni mara yako ya kwanza kuunda wasifu na huna Nambari ya Siri: &lt;/p&gt; &lt;p&gt; 1. Kutoka kwa Kichagua Wasifu, gusa &lt;strong&gt;Weka Wasifu Nyingi&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 2. Unda Nambari ya Siri na &lt;strong&gt;Hifadhi&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 3. Jaza sehemu zote za wasifu. &lt;/p&gt; &lt;ol&gt; &lt;li&gt; (Si lazima) Pakia picha. &lt;/li&gt; &lt;li&gt; Weka jina. &lt;/li&gt; &lt;li&gt; (Si lazima) Weka Nambari ya Siri yenye tarakimu 3. &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. Gusa &lt;strong&gt;Unda&lt;/strong&gt;. Wasifu huu umeongezwa kwa Kichagua Wasifu wako! &lt;br/&gt; &lt;br/&gt; Ikiwa umeunda wasifu hapo awali na una Nambari ya Siri: &lt;/p&gt; &lt;p&gt; 1. Kutoka kwa Kichagua Wasifu, gusa &lt;strong&gt;Ongeza Wasifu&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 2. Weka Nambari yako ya Siri na uguse &lt;strong&gt;Wasilisha&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 3. Jaza sehemu zote za wasifu. &lt;/p&gt; &lt;ol&gt; &lt;li&gt; (Si lazima) Pakia picha. &lt;/li&gt; &lt;li&gt; Weka jina. &lt;/li&gt; &lt;li&gt; (Si lazima) Weka Nambari ya Siri yenye tarakimu 3. &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. Gusa &lt;strong&gt;Unda&lt;/strong&gt;. Wasifu huu umeongezwa kwa Kichagua Wasifu wako! &lt;br/&gt; &lt;br/&gt; Kumbuka: &lt;u&gt;Msimamizi pekee&lt;/u&gt; ndiye anayeweza kudhibiti wasifu.&lt;/p&gt;</string>
+  <string name="faq_answer_2" fuzzy="true">&lt;p&gt;Wasifu unapofutwa:&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt; &lt;li&gt; Wasifu hauwezi kurejeshwa. &lt;/li&gt; &lt;/p&gt; &lt;p&gt; &lt;li&gt; Taarifa ya wasifu kama vile jina, picha na maendeleo yatafutwa kabisa. &lt;/li&gt; &lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;Ili kufuta wasifu (bila kujumuisha &lt;u&gt;Msimamizi&lt;/u&gt;):&lt;/p&gt; &lt;p&gt;1. Kutoka kwa Ukurasa wa Mwanzo wa Msimamizi, gusa kitufe cha menyu kilicho upande wa juu kushoto.&lt;/p&gt; &lt;p&gt;2. Gusa &lt;strong&gt;Vidhibiti vya Msimamizi&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;3. Gusa &lt;strong&gt;Hariri Wasifu&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;4. Gonga Wasifu ambao ungependa kufuta.&lt;/p&gt; &lt;p&gt;5. Katika sehemu ya chini ya skrini, gusa &lt;strong&gt;Ufutaji wa Wasifu&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;6. Gusa &lt;strong&gt;Futa&lt;/strong&gt; ili kuthibitisha kufuta.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Kumbuka: &lt;u&gt;Msimamizi&lt;/u&gt; pekee ndiye anayeweza kudhibiti wasifu.&lt;/ p&gt;</string>
+  <string name="faq_answer_3" fuzzy="true">&lt;p&gt;Ili kubadilisha barua pepe/nambari yako ya simu:&lt;/p&gt; &lt;p&gt;1. Kutoka kwa Ukurasa wa Mwanzo wa Msimamizi, gusa kitufe cha menyu kilicho upande wa juu kushoto.&lt;/p&gt; &lt;p&gt;2. Gusa &lt;strong&gt;Vidhibiti vya Msimamizi&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;3. Gusa &lt;strong&gt;Hariri Akaunti&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;Ikiwa ungependa kubadilisha barua pepe yako:&lt;/p&gt; &lt;p&gt;4. Weka barua pepe yako mpya na uguse &lt;strong&gt;Hifadhi&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;5. Kiungo cha uthibitishaji kinatumwa ili kuthibitisha barua pepe yako mpya. Muda wa kiungo utaisha baada ya saa 24 na lazima ubofye ili kuhusishwa na akaunti yako. &lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;Ikiwa unabadilisha nambari yako ya simu:&lt;/p&gt; &lt;p&gt;4. Weka nambari yako mpya ya simu na uguse &lt;strong&gt;Thibitisha&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;5. Nambari ya kuthibitisha inatumwa ili kuthibitisha nambari yako mpya. Nambari ya kuthibitisha itaisha baada ya dakika 5 na lazima iwekwe kwenye skrini mpya ili kuhusishwa na akaunti yako.&lt;/p&gt;</string>
   <string name="faq_answer_4">&lt;p&gt;%1$s &lt;i&gt;\"O-pee-yah\"&lt;/i&gt; (Kifini) - \"kujifunza\"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$s\'s dhamira ni kumsaidia mtu yeyote kujifunza chochote anachotaka kwa njia bora na ya kufurahisha.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Kwa kuunda seti ya masomo yasiyolipishwa, ya ubora wa juu, na yenye matokeo kwa usaidizi. ya waelimishaji kutoka duniani kote, %1$s inalenga kuwapa wanafunzi elimu bora — bila kujali walipo au ni nyenzo gani za jadi wanazoweza kufikia.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt; Kama mwanafunzi, unaweza kuanza safari yako ya kujifunza kwa kuvinjari mada zilizoorodheshwa kwenye Ukurasa wa Mwanzo!&lt;/p&gt;</string>
-  <string name="faq_answer_5">&lt;p&gt;Msimamizi ndiye mtumiaji mkuu anayedhibiti wasifu na mipangilio ya kila wasifu kwenye akaunti yake.Uwezekano mkubwa ni mzazi, mwalimu au mlezi wako aliyekuundia wasifu huu. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Wasimamizi wana uwezo wa kudhibiti wasifu, kugawa Nambari ya Siri, na kubadilisha mipangilio mingine chini ya akaunti yao. Kulingana na wasifu wako, ruhusa za Msimamizi zinaweza kuhitajika kwa vipengele fulani kama vile kupakua Mada, kubadilisha Nambari yako ya Siri na zaidi. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Ili kujua Msimamizi wako ni nani, nenda kwa Kichagua Wasifu. Wasifu wa kwanza ulioorodheshwa na una \"Msimamizi\" iliyoandikwa chini ya jina lake ni Msimamizi. &lt;/ p&gt;</string>
-  <string name="faq_answer_6">&lt;p&gt;Ikiwa Kicheza Ugunduzi hakipakii&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Angalia kama programu imesasishwa:&lt;/p&gt;&lt;p&gt; &lt;ol&gt; &lt;li &gt; Nenda kwenye Hifadhi ya Michezo na uhakikishe kuwa programu imesasishwa hadi toleo lake jipya zaidi &lt;/li&gt; &lt;/ol&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Angalia muunganisho wako wa mtandao:&lt;/p &gt;&lt;p&gt; &lt;li&gt; Ikiwa muunganisho wako wa mtandao ni wa polepole, jaribu kuunganisha tena kwenye mtandao wako wa Wi-Fi au unganisha kwenye mtandao tofauti. &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Uliza Msimamizi aangalie kifaa chake na muunganisho wa mtandao:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Pata Msimamizi kusuluhisha kwa kutumia hatua hapo juu &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Tujulishe ikiwa bado una matatizo ya upakiaji:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Ripoti tatizo kwa kuwasiliana nasi kwa admin@oppia.org. &lt;/li&gt; &lt;/p&gt;</string>
-  <string name="faq_answer_7">&lt;p&gt;Ikiwa sauti yako haichezi&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Angalia ili kuona kama programu imesasishwa:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Nenda kwenye Hifadhi ya Michezo na uhakikishe kuwa programu imesasishwa hadi toleo lake jipya zaidi &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Angalia muunganisho wako wa mtandao:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Iwapo muunganisho wako wa mtandao ni wa polepole, jaribu kuunganisha tena kwenye mtandao wako wa Wi-Fi au unganisha kwenye mtandao tofauti. Mtandao wa polepole unaweza kusababisha sauti kupakia kwa njia isiyo ya kawaida, na kuifanya iwe vigumu kucheza. &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Uliza Msimamizi aangalie kifaa chake na muunganisho wa mtandao:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Wasiliana na Msimamizi ili asuluhishe kwa kutumia hatua hapo juu&lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Tujulishe ikiwa bado una matatizo ya upakiaji:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Ripoti tatizo kwa kuwasiliana nasi kwa admin@oppia.org. &lt;/li&gt;&lt;/p&gt;</string>
-  <string name="faq_answer_8">&lt;p&gt;Ili kupakua Uchunguzi:&lt;/p&gt;&lt;p&gt;1. Kutoka kwa Ukurasa wa Kwanza, gusa Mada au Uchunguzi.&lt;/p&gt;&lt;p&gt;2. Kutoka kwa Ukurasa huo wa Mada, gusa kichupo cha &lt;strong&gt;Maelezo&lt;/strong&gt;.&lt;/p&gt;&lt;p&gt;3. Gonga kwenye &lt;strong&gt;Pakua Mada&lt;/strong&gt;. &lt;/p&gt;&lt;p&gt;4. Kulingana na mipangilio ya programu yako, unaweza kuhitaji idhini ya Msimamizi au muunganisho thabiti wa Wifi ili kukamilisha upakuaji wako. Ikihitajika, mara tu mahitaji haya yatakapotimizwa, Mada imepakuliwa kwenye kifaa na inaweza kutumika nje ya mtandao na wasifu wote. &lt;p&gt;</string>
+  <string name="faq_answer_5" fuzzy="true">&lt;p&gt;Msimamizi ndiye mtumiaji mkuu anayedhibiti wasifu na mipangilio ya kila wasifu kwenye akaunti yake.Uwezekano mkubwa ni mzazi, mwalimu au mlezi wako aliyekuundia wasifu huu. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Wasimamizi wana uwezo wa kudhibiti wasifu, kugawa Nambari ya Siri, na kubadilisha mipangilio mingine chini ya akaunti yao. Kulingana na wasifu wako, ruhusa za Msimamizi zinaweza kuhitajika kwa vipengele fulani kama vile kupakua Mada, kubadilisha Nambari yako ya Siri na zaidi. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Ili kujua Msimamizi wako ni nani, nenda kwa Kichagua Wasifu. Wasifu wa kwanza ulioorodheshwa na una \"Msimamizi\" iliyoandikwa chini ya jina lake ni Msimamizi. &lt;/ p&gt;</string>
+  <string name="faq_answer_6" fuzzy="true">&lt;p&gt;Ikiwa Kicheza Ugunduzi hakipakii&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Angalia kama programu imesasishwa:&lt;/p&gt;&lt;p&gt; &lt;ol&gt; &lt;li &gt; Nenda kwenye Hifadhi ya Michezo na uhakikishe kuwa programu imesasishwa hadi toleo lake jipya zaidi &lt;/li&gt; &lt;/ol&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Angalia muunganisho wako wa mtandao:&lt;/p &gt;&lt;p&gt; &lt;li&gt; Ikiwa muunganisho wako wa mtandao ni wa polepole, jaribu kuunganisha tena kwenye mtandao wako wa Wi-Fi au unganisha kwenye mtandao tofauti. &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Uliza Msimamizi aangalie kifaa chake na muunganisho wa mtandao:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Pata Msimamizi kusuluhisha kwa kutumia hatua hapo juu &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Tujulishe ikiwa bado una matatizo ya upakiaji:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Ripoti tatizo kwa kuwasiliana nasi kwa admin@oppia.org. &lt;/li&gt; &lt;/p&gt;</string>
+  <string name="faq_answer_7" fuzzy="true">&lt;p&gt;Ikiwa sauti yako haichezi&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Angalia ili kuona kama programu imesasishwa:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Nenda kwenye Hifadhi ya Michezo na uhakikishe kuwa programu imesasishwa hadi toleo lake jipya zaidi &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Angalia muunganisho wako wa mtandao:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Iwapo muunganisho wako wa mtandao ni wa polepole, jaribu kuunganisha tena kwenye mtandao wako wa Wi-Fi au unganisha kwenye mtandao tofauti. Mtandao wa polepole unaweza kusababisha sauti kupakia kwa njia isiyo ya kawaida, na kuifanya iwe vigumu kucheza. &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Uliza Msimamizi aangalie kifaa chake na muunganisho wa mtandao:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Wasiliana na Msimamizi ili asuluhishe kwa kutumia hatua hapo juu&lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Tujulishe ikiwa bado una matatizo ya upakiaji:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Ripoti tatizo kwa kuwasiliana nasi kwa admin@oppia.org. &lt;/li&gt;&lt;/p&gt;</string>
   <string name="faq_answer_9">&lt;p&gt;Ikiwa huwezi kupata swali lako au ungependa kuripoti hitilafu, wasiliana nasi kwa admin@oppia.org.&lt;/p&gt;</string>
 </resources>

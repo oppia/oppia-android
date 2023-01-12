@@ -22,11 +22,23 @@ message Exploration {
   repeated ParamChange param_changes = 3;
   repeated ParamSpec param_specs = 4;
   string init_state_name = 5;
-  string objective = 6;
+  reserved 6; // objective string that was replaced with a translatable version.
   bool correctness_feedback_enabled = 7;
-  string title = 8;
+  reserved 8; // title string that was replaced with a translatable version.
   string language_code = 9;
   int32 version = 10;
+  map<string, TranslationMapping> written_translations = 11;
+  SubtitledHtml translatable_title = 12;
+  SubtitledHtml description = 13;
+}
+
+// Corresponds to an exploration that is currently being viewed.
+message EphemeralExploration {
+  // The exploration to view.
+  Exploration exploration = 1;
+
+  // The translation context that should be used for this exploration.
+  WrittenTranslationContext written_translation_context = 2;
 }
 
 // Structure for a param change.
@@ -258,6 +270,12 @@ message EphemeralState {
 
   // The identifier of the current session that'd be used for analytics logging.
   string session_id = 9;
+
+  // Determines if the continue button animation should be shown or not.
+  bool show_continue_button_animation = 10;
+
+  // The timestamp at which continue buttons (both interaction & navigation) should start animating.
+  int64 continue_button_animation_timestamp_ms = 11;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.

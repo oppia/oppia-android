@@ -340,7 +340,8 @@
   <dimen name="pin_password_activity_padding_top">48dp</dimen>
   <dimen name="pin_password_activity_hello_text_view_margin_start">0dp</dimen>
   <dimen name="pin_password_activity_hello_text_view_margin_end">0dp</dimen>
-  <dimen name="pin_password_activity_input_with_icon_width">0dp</dimen>
+  <!-- -1px is equivalent to match_parent (https://stackoverflow.com/a/37971851/12314934) -->
+  <dimen name="pin_password_activity_input_with_icon_width">-1px</dimen>
 
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">360dp</dimen>
@@ -467,6 +468,9 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">4dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>
+  <dimen name="hints_and_solution_summary_card_width">0dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_start">192dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_end">192dp</dimen>
 
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>

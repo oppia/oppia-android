@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
-import org.oppia.android.app.model.TopicSummary
+import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -35,10 +35,11 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
+import org.oppia.android.util.caching.testing.FakeAssetRepository
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -72,6 +73,7 @@ class TopicListControllerTest {
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var storyProgressController: StoryProgressController
+  @Inject lateinit var fakeAssetRepository: FakeAssetRepository
 
   private lateinit var profileId0: ProfileId
 
@@ -87,7 +89,7 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_isSuccessful() {
-    val topicListProvider = topicListController.getTopicList()
+    val topicListProvider = topicListController.getTopicList(profileId0)
 
     monitorFactory.waitForNextSuccessfulResult(topicListProvider)
   }
@@ -103,16 +105,16 @@ class TopicListControllerTest {
   fun testRetrieveTopicList_firstTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
 
-    val firstTopic = topicList.getTopicSummary(0)
+    val firstTopic = topicList.getTopicSummary(0).topicSummary
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
-    assertThat(firstTopic.name).isEqualTo("First Test Topic")
+    assertThat(firstTopic.title.html).isEqualTo("First Test Topic")
   }
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
 
-    val firstTopic = topicList.getTopicSummary(0)
+    val firstTopic = topicList.getTopicSummary(0).topicSummary
     assertThat(firstTopic.totalChapterCount).isEqualTo(3)
   }
 
@@ -120,16 +122,16 @@ class TopicListControllerTest {
   fun testRetrieveTopicList_secondTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
 
-    val secondTopic = topicList.getTopicSummary(1)
+    val secondTopic = topicList.getTopicSummary(1).topicSummary
     assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
-    assertThat(secondTopic.name).isEqualTo("Second Test Topic")
+    assertThat(secondTopic.title.html).isEqualTo("Second Test Topic")
   }
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
 
-    val secondTopic = topicList.getTopicSummary(1)
+    val secondTopic = topicList.getTopicSummary(1).topicSummary
     assertThat(secondTopic.totalChapterCount).isEqualTo(1)
   }
 
@@ -137,16 +139,16 @@ class TopicListControllerTest {
   fun testRetrieveTopicList_fractionsTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
 
-    val fractionsTopic = topicList.getTopicSummary(2)
+    val fractionsTopic = topicList.getTopicSummary(2).topicSummary
     assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(fractionsTopic.name).isEqualTo("Fractions")
+    assertThat(fractionsTopic.title.html).isEqualTo("Fractions")
   }
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
 
-    val fractionsTopic = topicList.getTopicSummary(2)
+    val fractionsTopic = topicList.getTopicSummary(2).topicSummary
     assertThat(fractionsTopic.totalChapterCount).isEqualTo(2)
   }
 
@@ -154,16 +156,16 @@ class TopicListControllerTest {
   fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
 
-    val ratiosTopic = topicList.getTopicSummary(3)
+    val ratiosTopic = topicList.getTopicSummary(3).topicSummary
     assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(ratiosTopic.name).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(ratiosTopic.title.html).isEqualTo("Ratios and Proportional Reasoning")
   }
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
 
-    val ratiosTopic = topicList.getTopicSummary(3)
+    val ratiosTopic = topicList.getTopicSummary(3).topicSummary
     assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
   }
 
@@ -173,7 +175,7 @@ class TopicListControllerTest {
 
     // Verify that the topic list does not contain a not-yet published topic (since it can't be
     // played by the user).
-    val topicIds = topicList.topicSummaryList.map(TopicSummary::getTopicId)
+    val topicIds = topicList.topicSummaryList.map { it.topicSummary }.map { it.getTopicId() }
     assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
   }
 
@@ -227,6 +229,23 @@ class TopicListControllerTest {
     verifyOngoingStoryAsFractionStory0Exploration1(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Only uses protos, so restrict to Bazel.
+  fun testGetPromotedActivityList_startFractions_thenUnpublish_doesNotIncludeFractionsInList() {
+    storyProgressTestHelper.markInProgressNotSavedFractionsStory0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    // Force the fractions topic to become unpublished (to simulate the failure case).
+    fakeAssetRepository.setProtoAssetOverride(
+      assetName = FRACTIONS_TOPIC_ID, proto = TopicRecord.getDefaultInstance()
+    )
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList).isEmpty()
   }
 
   @Test
@@ -661,8 +680,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_2)
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_0)
-    assertThat(promotedStory.topicName).isEqualTo("First Test Topic")
-    assertThat(promotedStory.nextChapterName).isEqualTo("Prototype Exploration")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("First Test Topic")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Prototype Exploration")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(3)
@@ -672,8 +691,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_2)
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_0)
-    assertThat(promotedStory.topicName).isEqualTo("First Test Topic")
-    assertThat(promotedStory.nextChapterName).isEqualTo("Prototype Exploration")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("First Test Topic")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Prototype Exploration")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(3)
@@ -683,8 +702,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_4)
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_2)
     assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_1)
-    assertThat(promotedStory.topicName).isEqualTo("Second Test Topic")
-    assertThat(promotedStory.nextChapterName).isEqualTo("Fifth Exploration")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Second Test Topic")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Fifth Exploration")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(1)
@@ -694,8 +713,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
     assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(promotedStory.topicName).isEqualTo("Fractions")
-    assertThat(promotedStory.nextChapterName).isEqualTo("What is a Fraction?")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Fractions")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Fraction?")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
@@ -705,8 +724,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
     assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(promotedStory.topicName).isEqualTo("Fractions")
-    assertThat(promotedStory.nextChapterName).isEqualTo("What is a Fraction?")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Fractions")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Fraction?")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
@@ -716,8 +735,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_1)
     assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(promotedStory.topicName).isEqualTo("Fractions")
-    assertThat(promotedStory.nextChapterName).isEqualTo("The Meaning of Equal Parts")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Fractions")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("The Meaning of Equal Parts")
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
@@ -726,8 +745,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_0)
     assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(promotedStory.nextChapterName).isEqualTo("What is a Ratio?")
-    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Ratio?")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
@@ -737,8 +756,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_0)
     assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(promotedStory.nextChapterName).isEqualTo("What is a Ratio?")
-    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Ratio?")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
@@ -748,8 +767,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_1)
     assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(promotedStory.nextChapterName).isEqualTo("Order is important")
-    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Order is important")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
@@ -757,7 +776,7 @@ class TopicListControllerTest {
 
   private fun verifyUpcomingTopic1(upcomingTopic: UpcomingTopic) {
     assertThat(upcomingTopic.topicId).isEqualTo(UPCOMING_TOPIC_ID_1)
-    assertThat(upcomingTopic.name).isEqualTo("Third Test Topic")
+    assertThat(upcomingTopic.title.html).isEqualTo("Third Test Topic")
   }
 
   private fun verifyOngoingStoryAsRatioStory1Exploration2(
@@ -767,8 +786,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_2)
     assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_1)
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(promotedStory.nextChapterName).isEqualTo("Equivalent Ratios")
-    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Equivalent Ratios")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isEqualTo(expectedToBeLearned)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
@@ -778,15 +797,15 @@ class TopicListControllerTest {
     assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_3)
     assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_1)
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(promotedStory.nextChapterName).isEqualTo("Writing Ratios in Simplest Form")
-    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Writing Ratios in Simplest Form")
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
   private fun retrieveTopicList() =
-    monitorFactory.waitForNextSuccessfulResult(topicListController.getTopicList())
+    monitorFactory.waitForNextSuccessfulResult(topicListController.getTopicList(profileId0))
 
   private fun retrievePromotedActivityList(): PromotedActivityList {
     return monitorFactory.waitForNextSuccessfulResult(
@@ -852,6 +871,9 @@ class TopicListControllerTest {
     @LoadLessonProtosFromAssets
     fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
       testEnvironmentConfig.isUsingBazel()
+
+    @Provides
+    fun provideFakeAssetRepository(fakeImpl: FakeAssetRepository): AssetRepository = fakeImpl
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -860,7 +882,7 @@ class TopicListControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class

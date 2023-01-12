@@ -17,6 +17,8 @@ import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
@@ -30,6 +32,7 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
+import org.oppia.android.util.profile.ProfileNameValidator
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
@@ -76,7 +79,8 @@ class ProfileManagementController @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val loggingIdentifierController: LoggingIdentifierController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  private val profileNameValidator: ProfileNameValidator
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -129,10 +133,13 @@ class ProfileManagementController @Inject constructor(
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
   init {
-    profileDataStore.primeInMemoryCacheAsync().invokeOnCompletion {
+    profileDataStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion {
       it?.let {
         oppiaLogger.e(
-          "DOMAIN",
+          "ProfileManagementController",
           "Failed to prime cache ahead of data retrieval for ProfileManagementController.",
           it
         )
@@ -205,7 +212,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!onlyLetters(name)) {
+      if (!learnerStudyAnalytics.value && !profileNameValidator.isNameValid(name)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(name, it)) {
@@ -231,6 +238,7 @@ class ProfileManagementController @Inject constructor(
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
         appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        numberOfLogins = 0
 
         if (learnerStudyAnalytics.value) {
           // Only set a learner ID if there's an ongoing user study.
@@ -323,7 +331,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!onlyLetters(newName)) {
+      if (!learnerStudyAnalytics.value && !profileNameValidator.isNameValid(newName)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(newName, it)) {
@@ -607,7 +615,8 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Log in to the user's Profile by setting the current profile Id and updating profile's last logged in time.
+   * Log in to the user's Profile by setting the current profile Id, updating profile's last logged in
+   * time and updating the total number of logins for the current profile Id.
    *
    * @param profileId the ID corresponding to the profile being logged into.
    * @return a [DataProvider] that indicates the success/failure of this login operation.
@@ -617,7 +626,7 @@ class ProfileManagementController @Inject constructor(
       return@transformAsync getDeferredResult(
         profileId,
         null,
-        updateLastLoggedInAsync(profileId)
+        updateLastLoggedInAsyncAndNumberOfLogins(profileId)
       )
     }
   }
@@ -638,19 +647,22 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
-  private fun updateLastLoggedInAsync(profileId: ProfileId): Deferred<ProfileActionStatus> {
-    return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId]
-        ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
-      val updatedProfile =
-        profile.toBuilder().setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs()).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
-        updatedProfile
-      )
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+  private fun updateLastLoggedInAsyncAndNumberOfLogins(profileId: ProfileId):
+    Deferred<ProfileActionStatus> {
+      return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val profile = it.profilesMap[profileId.internalId]
+          ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
+        val updatedProfile = profile.toBuilder()
+          .setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs())
+          .setNumberOfLogins(profile.numberOfLogins + 1)
+          .build()
+        val profileDatabaseBuilder = it.toBuilder().putProfiles(
+          profileId.internalId,
+          updatedProfile
+        )
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      }
     }
-  }
 
   /**
    * Deletes an existing profile.
@@ -659,9 +671,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this delete operation.
    */
   fun deleteProfile(profileId: ProfileId): DataProvider<Any?> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
-      updateInMemoryCache = true
-    ) {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       }
@@ -675,6 +685,30 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Deletes all profiles installed on the device (and logs out the current user).
+   *
+   * Note that this will not update the in-memory cache as the app is expected to be forcibly closed
+   * after deletion (since there's no mechanism to notify existing cache stores that they need to
+   * reload/reset from their on-disk copies).
+   *
+   * Finally, this method attempts to never fail by forcibly deleting all profiles even if some are
+   * in a bad state (and would normally failed if attempted to be deleted via [deleteProfile]).
+   */
+  fun deleteAllProfiles(): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync {
+      val installationId = loggingIdentifierController.fetchInstallationId()
+      it.profilesMap.forEach { (internalProfileId, profile) ->
+        directoryManagementUtil.deleteDir(internalProfileId.toString())
+        learnerAnalyticsLogger.logDeleteProfile(installationId, profile.learnerId)
+      }
+      Pair(ProfileDatabase.getDefaultInstance(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
+      getDeferredResult(profileId = null, name = null, deferred)
     }
   }
 
@@ -710,6 +744,31 @@ class ProfileManagementController @Inject constructor(
   suspend fun fetchLearnerId(profileId: ProfileId): String? {
     val profileDatabase = profileDataStore.readDataAsync().await()
     return profileDatabase.profilesMap[profileId.internalId]?.learnerId
+  }
+
+  /**
+   * Returns whether the exploration continue button animation has shown (or been disabled) for the
+   * specified [profileId], or null if the profile doesn't exist.
+   */
+  suspend fun fetchContinueAnimationSeenStatus(profileId: ProfileId): Boolean? {
+    val profileDatabase = profileDataStore.readDataAsync().await()
+    return profileDatabase.profilesMap[profileId.internalId]?.isContinueButtonAnimationSeen
+  }
+
+  /** Marks that the continue button animation has been seen for the specified profile. */
+  suspend fun markContinueButtonAnimationSeen(profileId: ProfileId) {
+    val updateDatabaseDeferred = profileDataStore.storeDataAsync(true) {
+      val profile = it.profilesMap[profileId.internalId]
+      if (profile != null) {
+        val updatedProfile = profile.toBuilder().setIsContinueButtonAnimationSeen(true).build()
+        val profileDatabaseBuilder = it.toBuilder().putProfiles(
+          profileId.internalId,
+          updatedProfile
+        )
+        return@storeDataAsync profileDatabaseBuilder.build()
+      } else it
+    }
+    updateDatabaseDeferred.await()
   }
 
   private suspend fun getDeferredResult(
@@ -802,10 +861,6 @@ class ProfileManagementController @Inject constructor(
       return null
     }
     return imageFile.absolutePath
-  }
-
-  private fun onlyLetters(name: String): Boolean {
-    return name.matches(Regex("^[ A-Za-z]+\$"))
   }
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {

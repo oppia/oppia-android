@@ -26,10 +26,13 @@
       android:layout_gravity="center"
       android:layout_marginTop="12dp"
       android:layout_marginBottom="12dp"
-      app:cardBackgroundColor="@color/color_def_white"
+      android:importantForAccessibility="no"
+      app:cardBackgroundColor="@color/component_color_lessons_tab_activity_background_color"
       app:cardCornerRadius="4dp"
       app:cardElevation="4dp"
-      app:rippleColor="@color/color_def_transparent">
+      app:rippleColor="@color/component_color_lessons_tab_activity_lesson_card_ripple_color"
+      app:strokeColor="@color/component_color_shared_card_border_stroke_color"
+      app:strokeWidth="1dp">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -48,14 +51,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:contentDescription="@{viewModel.computeProgressContainerContentDescription()}"
             android:gravity="center"
             android:orientation="vertical">
 
             <FrameLayout
               android:id="@+id/story_progress_container"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:contentDescription="@{viewModel.storyProgressPercentageText}">
+              android:layout_height="wrap_content">
 
               <org.oppia.android.app.customview.SegmentedCircularProgressView
                 android:id="@+id/story_progress_view"
@@ -70,7 +73,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif-medium"
                 android:text="@{viewModel.storyProgressPercentageText}"
-                android:textColor="@color/oppia_primary_text"
+                android:textColor="@color/component_color_shared_text_view_text_color"
                 android:textSize="14sp"
                 android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
             </FrameLayout>
@@ -82,7 +85,7 @@
               android:layout_marginTop="4dp"
               android:fontFamily="sans-serif"
               android:text="@{viewModel.storyPercentage != 100? @string/status_in_progress : @string/status_completed}"
-              android:textColor="@color/oppia_primary_text"
+              android:textColor="@color/component_color_shared_text_view_text_color"
               android:textSize="10sp"
               android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
           </LinearLayout>
@@ -98,7 +101,6 @@
               android:layout_height="wrap_content"
               android:layout_marginStart="@dimen/topic_lessons_summary_story_name_chapter_count_container_margin_start"
               android:layout_weight="1"
-              android:contentDescription="@{viewModel.computeStoryNameChapterCountContainerContentDescription()}"
               android:gravity="center_vertical"
               android:orientation="vertical">
 
@@ -111,8 +113,8 @@
                 android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
                 android:paddingTop="24dp"
                 android:paddingBottom="4dp"
-                android:text="@{viewModel.storySummary.storyName}"
-                android:textColor="@color/oppia_primary_text"
+                android:text="@{viewModel.storyTitle}"
+                android:textColor="@color/component_color_shared_text_view_text_color"
                 android:textSize="18sp" />
 
               <TextView
@@ -123,7 +125,7 @@
                 android:fontFamily="sans-serif"
                 android:importantForAccessibility="no"
                 android:text="@{viewModel.computeChapterCountText()}"
-                android:textColor="@color/oppia_primary_text"
+                android:textColor="@color/component_color_shared_text_view_text_color"
                 android:textSize="16sp" />
             </LinearLayout>
 
@@ -141,20 +143,30 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
                 android:contentDescription="@{isListExpanded ? @string/hide_chapter_list : @string/show_chapter_list}"
-                app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
                 app:isRotationAnimationClockwise="@{isListExpanded}"
-                app:rotationAnimationAngle="@{180f}" />
+                app:rotationAnimationAngle="@{180f}"
+                app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
+                app:tint="@color/component_color_lessons_tab_activity_lesson_card_drop_down_arrow_color" />
             </FrameLayout>
           </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
+        <!-- FrameLayout is used here instead of LinearLayout to properly adjust the spacing of the
+            dashed divider by allowing the divider to render slightly on top of the container. -->
+        <FrameLayout
           android:id="@+id/chapter_list_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/color_def_white_light"
+          android:background="@color/component_color_lessons_tab_activity_background_color"
           android:orientation="vertical"
           android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+
+          <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chapter_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:list="@{viewModel.chapterSummaryItemList}" />
 
           <View
             android:id="@+id/topic_play_story_dashed_line_view"
@@ -162,16 +174,7 @@
             android:layout_height="2dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/dashed_divider" />
-
-          <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chapter_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:list="@{viewModel.chapterSummaryItemList}" />
-        </LinearLayout>
+        </FrameLayout>
       </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
   </FrameLayout>

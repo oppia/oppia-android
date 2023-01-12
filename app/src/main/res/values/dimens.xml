@@ -64,7 +64,6 @@
   <dimen name="dot_gap">12dp</dimen>
   <dimen name="enter_text_view_padding_start">60dp</dimen>
   <dimen name="enter_text_view_padding_end">60dp</dimen>
-  <dimen name="promoted_story_card_width">280dp</dimen>
   <dimen name="home_padding_end">20dp</dimen>
   <dimen name="home_padding_start">20dp</dimen>
   <dimen name="home_outer_margin">28dp</dimen>
@@ -200,7 +199,8 @@
   <dimen name="pin_password_activity_padding_top">40dp</dimen>
   <dimen name="pin_password_activity_hello_text_view_margin_start">0dp</dimen>
   <dimen name="pin_password_activity_hello_text_view_margin_end">0dp</dimen>
-  <dimen name="pin_password_activity_input_with_icon_width">0dp</dimen>
+  <!-- -1px is equivalent to match_parent (https://stackoverflow.com/a/37971851/12314934) -->
+  <dimen name="pin_password_activity_input_with_icon_width">-1px</dimen>
 
   <dimen name="submitted_answer_question_view_margin_end">64dp</dimen>
   <dimen name="submitted_answer_question_view_margin_start">64dp</dimen>
@@ -377,7 +377,6 @@
   <dimen name="general_button_item_split_view_margin_top_left">20dp</dimen>
   <dimen name="general_button_item_split_view_margin_top_right">68dp</dimen>
   <dimen name="general_button_item_margin_top">20dp</dimen>
-  <dimen name="continue_submit_button_width">88dp</dimen>
 
   <!-- General Button Item: Exploration Split View -->
   <dimen name="general_button_item_exploration_split_view_margin_start">44dp</dimen>
@@ -442,6 +441,13 @@
   <dimen name="faq_single_padding_end">28dp</dimen>
   <dimen name="faq_single_padding_bottom">60dp</dimen>
   <dimen name="faq_single_activity_scroll_padding_bottom">80dp</dimen>
+
+  <!-- Privacy Policy -->
+  <dimen name="policies_fragment_page_padding_start">24dp</dimen>
+  <dimen name="policies_fragment_page_padding_top">22dp</dimen>
+  <dimen name="policies_fragment_page_padding_end">28dp</dimen>
+  <dimen name="policies_fragment_page_padding_bottom">60dp</dimen>
+  <dimen name="policies_fragment_page_scroll_padding_bottom">80dp</dimen>
 
   <!-- FAQ -->
   <dimen name="faq_list_scroll_padding_bottom">80dp</dimen>
@@ -534,7 +540,10 @@
 
   <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
   <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
-  <dimen name="promoted_story_card_layout_width">280dp</dimen>
+  <!-- The width is set to sp so that it will scale according to the device screen -->
+  <dimen name="promoted_story_card_layout_width">280sp</dimen>
+  <!-- The width is set to sp so that it will scale according to the device screen -->
+  <dimen name="promoted_story_card_width">280sp</dimen>
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">8dp</dimen>
 
@@ -684,7 +693,10 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
-  
+  <dimen name="hints_and_solution_summary_card_width">0dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_start">16dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_end">16dp</dimen>
+
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
@@ -748,4 +760,11 @@
 
   <!-- ProfileListFragment -->
   <dimen name="profile_list_fragment_recycler_view_padding_bottom">40dp</dimen>
+
+  <!-- SpotlightFragment -->
+  <dimen name="spotlight_arrow_height">57dp</dimen>
+  <dimen name="spotlight_arrow_width">21dp</dimen>
+  <dimen name="spotlight_overlay_arrow_left_margin">8dp</dimen>
+  <dimen name="spotlight_highlight_rectangle_corner_radius">8dp</dimen>
+  <dimen name="spotlight_done_button_corner_radius">4dp</dimen>
 </resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
+    android:clipToPadding="false"
+    android:overScrollMode="never"
+    android:paddingBottom="@dimen/policies_fragment_page_scroll_padding_bottom"
+    android:scrollbars="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/component_color_shared_content_container_background_color"
+      android:paddingStart="@dimen/policies_fragment_page_padding_start"
+      android:paddingTop="@dimen/policies_fragment_page_padding_top"
+      android:paddingEnd="@dimen/policies_fragment_page_padding_end"
+      android:paddingBottom="@dimen/policies_fragment_page_padding_bottom">
+
+      <TextView
+        android:id="@+id/policy_description_text_view"
+        style="@style/Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorLink="@color/component_color_shared_link_text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:id="@+id/policy_web_link_text_view"
+        style="@style/Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorLink="@color/component_color_shared_link_text_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/policy_description_text_view" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </ScrollView>
+</layout>

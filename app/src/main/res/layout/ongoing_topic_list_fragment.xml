@@ -12,7 +12,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_shared_screen_primary_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/ongoing_topic_list_app_bar_layout"
@@ -26,15 +26,15 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/ongoing_topic_list_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:layout_height="wrap_content"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/topics_in_progress"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/color_def_white" />
+        app:titleTextColor="@color/component_color_shared_activity_toolbar_text_color" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

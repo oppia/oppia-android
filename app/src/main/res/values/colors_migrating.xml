@@ -11,7 +11,6 @@
   <color name="concept_card_background">#FFFFF0</color>
   <color name="concept_toolbar_background">#BE563C</color>
   <color name="concept_toolbar_heading">#A6503A</color>
-  <color name="ic_launcher_background">#26A69A</color>
   <!-- OPPIA COLORS -->
   <color name="oppia_primary_text">#333333</color>
   <color name="oppia_primary_light">#009688</color>
@@ -24,7 +23,6 @@
   <color name="oppia_progress_chapter_in_progress">#E7AC9B</color>
   <color name="oppia_progress_chapter_not_finished">#999999</color>
   <color name="oppia_admin_auth_secondary_text">#555555</color>
-  <color name="oppia_onboarding_divider">#707070</color>
   <color name="oppia_disabled_button_background">#33999999</color>
   <color name="oppia_text_shadow">#1F000000</color>
   <color name="oppia_grey_border">#DDDDDD</color>
@@ -42,8 +40,6 @@
   <color name="audio_component_background">@color/color_def_oppia_dark_blue</color>
   <!-- PROFILE COMPONENT -->
   <color name="avatar_border">#707070</color>
-  <color name="profile_chooser_background">#212121</color>
-  <color name="profile_chooser_grey_text">#999999</color>
   <color name="profile_edit_background">#E5E5E5</color>
   <color name="general_navigation_background">#E5E5E5</color>
   <color name="app_version_background">#E5E5E5</color>
@@ -70,12 +66,12 @@
   <color name="question_player_progress_bar_gradient_end">#E4F2F1</color>
   <!-- AVATAR BACKGROUND COLORS -->
   <color name="avatar_background_1">#E65C5C</color>
-  <color name="avatar_background_2">#E6935C</color>
-  <color name="avatar_background_3">#FFDB4E</color>
-  <color name="avatar_background_4">#CAE65C</color>
-  <color name="avatar_background_5">#93E65C</color>
-  <color name="avatar_background_6">#5CE6CA</color>
-  <color name="avatar_background_7">#5CCAE6</color>
+  <color name="avatar_background_2">#EB701D</color>
+  <color name="avatar_background_3">#A48C2D</color>
+  <color name="avatar_background_4">#C1851D</color>
+  <color name="avatar_background_5">#5C9F2F</color>
+  <color name="avatar_background_6">#1A9F84</color>
+  <color name="avatar_background_7">#1F98B7</color>
   <color name="avatar_background_8">#5C93E6</color>
   <color name="avatar_background_9">#5C5CE6</color>
   <color name="avatar_background_10">#935CE6</color>
@@ -83,11 +79,11 @@
   <color name="avatar_background_12">#E65C97</color>
   <color name="avatar_background_13">#CC2929</color>
   <color name="avatar_background_14">#CC6A29</color>
-  <color name="avatar_background_15">#E6C12E</color>
-  <color name="avatar_background_16">#ABCC29</color>
-  <color name="avatar_background_17">#6ACC29</color>
-  <color name="avatar_background_18">#29CCAB</color>
-  <color name="avatar_background_19">#29ABCC</color>
+  <color name="avatar_background_15">#AE8B00</color>
+  <color name="avatar_background_16">#819205</color>
+  <color name="avatar_background_17">#47A00C</color>
+  <color name="avatar_background_18">#0D9176</color>
+  <color name="avatar_background_19">#159DBF</color>
   <color name="avatar_background_20">#296ACC</color>
   <color name="avatar_background_21">#6A29CC</color>
   <color name="avatar_background_22">#AB29CC</color>
@@ -113,4 +109,7 @@
   <color name="admin_highlighted">#A5D3EC</color>
   <color name="coming_soon_end">#674172</color>
   <color name="coming_soon_start">#7659B6</color>
+  <color name="spotlight_overlay_background">#BF000000</color>
+  <!-- SPOTLIGHT OVERLAY COLORS -->
+  <color name="spotlight_hint_background">#FFFFF0</color>
 </resources>

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/profile_rename_app_bar_layout"
@@ -20,15 +18,14 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/profile_rename_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:layout_height="wrap_content"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/profile_rename_activity_title"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/color_def_white" />
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -38,6 +35,6 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/profile_rename_app_bar_layout"></FrameLayout>
+      app:layout_constraintTop_toBottomOf="@+id/profile_rename_app_bar_layout" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
