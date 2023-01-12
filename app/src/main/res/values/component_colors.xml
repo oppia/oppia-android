@@ -13,7 +13,6 @@
   <color name="component_color_shared_revision_card_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_shared_topic_card_item_background_color">@color/color_palette_topic_card_item_background_color</color>
   <color name="component_color_shared_content_item_text_view_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_shared_feedback_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_topic_card_text_view_color">@color/color_palette_topic_card_text_color</color>
   <color name="component_color_shared_story_card_topic_name_text_color">@color/color_palette_card_topic_name_text_color</color>
   <color name="component_color_shared_story_card_background_color">@color/color_palette_primary_background_color</color>
@@ -27,7 +26,6 @@
   <color name="component_color_shared_input_error_color">@color/color_palette_input_error_color</color>
   <color name="component_color_shared_submitted_answer_item_solid_color">@color/color_palette_submitted_answer_item_solid_color</color>
   <color name="component_color_shared_submitted_answer_item_stroke_color">@color/color_palette_submitted_answer_item_stroke_color</color>
-  <color name="component_color_shared_submitted_answer_item_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_edit_text_hint_color">@color/color_palette_hint_text_input_interaction_color</color>
   <color name="component_color_shared_input_interaction_edit_text_border_color">@color/color_palette_input_interaction_edit_text_border_color</color>
   <color name="component_color_shared_input_interaction_edit_text_not_selected_border_color">@color/color_palette_input_interaction_edit_text_not_selected_border_color</color>
@@ -35,7 +33,6 @@
   <color name="component_color_shared_arrow_right_grey_color">@color/color_palette_arrow_right_grey_color</color>
   <color name="component_color_shared_rounded_rect_background_color">@color/color_palette_rounded_rect_background_color</color>
   <color name="component_color_shared_drag_drop_background_color">@color/color_palette_drag_drop_background_color</color>
-  <color name="component_color_shared_oppia_submitted_answer_text_color">@color/color_palette_oppia_submitted_answer_text_color</color>
   <color name="component_color_shared_drag_drop_single_item_stroke_color">@color/color_palette_drag_drop_single_item_stroke_color</color>
   <color name="component_color_shared_drag_drop_single_item_gradient_start_color">@color/color_palette_drag_drop_single_item_gradient_start_color</color>
   <color name="component_color_shared_drag_drop_single_item_gradient_center_color">@color/color_palette_drag_drop_single_item_gradient_center_color</color>
@@ -47,8 +44,7 @@
   <color name="component_color_shared_selection_interaction_item_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_item_selection_interaction_color">@color/color_palette_item_selection_color</color>
   <color name="component_color_shared_item_selection_interaction_text_color">@color/color_palette_item_selection_text_color</color>
-  <color name="component_color_shared_back_arrow_button_color">@color/color_palette_back_arrow_button_color</color>
-  <color name="component_color_shared_forward_arrow_button_color">@color/color_palette_forward_arrow_button_color</color>
+  <color name="component_color_shared_back_forward_arrow_button_color">@color/color_palette_back_forward_arrow_button_color</color>
   <color name="component_color_shared_replay_button_color">@color/color_palette_replay_button_color</color>
   <color name="component_color_shared_progress_bar_solid_color">@color/color_palette_progress_bar_solid_color</color>
   <color name="component_color_shared_progress_bar_stroke_color">@color/color_palette_progress_bar_stroke_color</color>
@@ -84,6 +80,7 @@
   <color name="component_color_shared_item_highlighted_background_solid_color">@color/color_palette_highlighted_background_color</color>
   <color name="component_color_shared_item_highlighted_background_stroke_color">@color/color_palette_item_background_stroke_color</color>
   <color name="component_color_shared_navbar_header_background_color">@color/color_palette_navbar_header_background_color</color>
+  <color name="component_color_shared_icon_white_color">@color/color_palette_icon_white_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_fragment_status_bar_color">@color/color_palette_fragment_status_bar_color</color>
@@ -103,7 +100,6 @@
   <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
-  <color name="component_color_shared_input_interaction_edit_text_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_input_interaction_edit_text_background_color">@color/color_palette_text_input_background_color</color>
   <color name="component_color_shared_text_input_layout_error_color">@color/color_palette_error_color</color>
   <color name="component_color_shared_text_input_layout_helper_text_color">@color/color_palette_helper_text_color</color>
@@ -214,11 +210,10 @@
   <!-- Concept Card Fragment -->
   <color name="component_color_concept_card_fragment_toolbar_color">@color/color_palette_concept_card_toolbar_color</color>
   <!-- Audio Fragment -->
-  <color name="component_color_audio_fragment_background_color">@color/color_palette_accent_background_color</color>
-  <color name="component_color_audio_fragment_icon_color">@color/color_palette_icon_background_secondary_color</color>
-  <color name="component_color_audio_fragment_thumb_background_color">@color/color_palette_icon_background_secondary_color</color>
+  <color name="component_color_audio_fragment_background_color">@color/color_palette_audio_fragment_background_color</color>
   <color name="component_color_audio_fragment_seekbar_progress_color">@color/color_palette_icon_background_secondary_color</color>
   <color name="component_color_audio_fragment_seekbar_color">@color/color_palette_seekbar_progress_background_color</color>
+  <color name="component_color_audio_fragment_seekbar_thumb_shadow_color">@color/color_palette_seekbar_thumb_shadow_color</color>
   <!-- Profile Progress Activity -->
   <color name="component_color_profile_progress_activity_view_all_text_color">@color/color_palette_view_all_text_color</color>
   <color name="component_color_profile_progress_activity_story_count_card_stroke_color">@color/color_palette_profile_progress_activity_story_count_card_stroke_color</color>

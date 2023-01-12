@@ -57,7 +57,7 @@
   <color name="color_palette_show_hide_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_info_icon_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_disabled_button_background_color">@color/color_def_black_grey</color>
-  <color name="color_palette_back_arrow_button_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_back_forward_arrow_button_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_replay_button_color">@color/color_def_dark_pink</color>
   <color name="color_palette_progress_bar_stroke_color">@color/color_def_light_turquoise</color>
   <color name="color_palette_progress_bar_solid_color">@color/color_def_oppia_turquoise</color>
@@ -119,8 +119,10 @@
   <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
   <color name="color_palette_icon_background_secondary_color">@color/color_def_oppia_turquoise</color>
-  <color name="color_palette_accent_background_color">@color/color_def_oppia_dark_grey</color>
-  <color name="color_palette_seekbar_progress_background_color">@color/color_def_maastricht_blue</color>
+  <color name="color_palette_icon_white_color">@color/color_def_white</color>
+  <color name="color_palette_audio_fragment_background_color">@color/color_def_oppia_metallic_blue</color>
+  <color name="color_palette_seekbar_progress_background_color">@color/color_def_japanese_indigo</color>
+  <color name="color_palette_seekbar_thumb_shadow_color">@color/color_def_stroke_silver</color>
   <color name="color_palette_toolbar_secondary_color">@color/color_def_forest_green</color>
   <color name="color_palette_secondary_dark_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_concept_card_toolbar_color">@color/color_def_dark_pink</color>
