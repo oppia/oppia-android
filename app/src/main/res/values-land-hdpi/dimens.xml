@@ -6,4 +6,6 @@
   <dimen name="profile_chooser_profile_view_view_margin_top">32dp</dimen>
   <dimen name="profile_chooser_add_view_margin_top_profile_not_added">32dp</dimen>
 
+  <dimen name="profile_chooser_profile_view_is_image_width">108dp</dimen>
+
 </resources>
