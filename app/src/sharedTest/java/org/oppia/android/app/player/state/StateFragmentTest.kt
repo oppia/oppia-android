@@ -3629,8 +3629,8 @@ class StateFragmentTest {
       playThroughPrototypeState4()
 
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
-      onView(withId(R.id.selection_interaction_textview)).check(matches(withText("Please select all correct choices.")))
-
+      onView(withId(R.id.selection_interaction_textview))
+        .check(matches(withText("Please select all correct choices.")))
     }
   }
 
@@ -3646,7 +3646,9 @@ class StateFragmentTest {
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
 
-      onView(withId(R.id.selection_interaction_textview)).check(matches(withText("You may select more choices.")))
+      onView(
+        withId(R.id.selection_interaction_textview))
+        .check(matches(withText("You may select more choices.")))
     }
   }
 
@@ -3663,7 +3665,8 @@ class StateFragmentTest {
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
 
-      onView(withId(R.id.selection_interaction_textview)).check(matches(withText("You may select more choices.")))
+      onView(withId(R.id.selection_interaction_textview))
+        .check(matches(withText("You may select more choices.")))
     }
   }
 
@@ -3681,8 +3684,8 @@ class StateFragmentTest {
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
       selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
 
-      onView(withId(R.id.selection_interaction_textview)).check(matches(withText("No more than 3 choices may be selected.")))
-
+      onView(withId(R.id.selection_interaction_textview))
+        .check(matches(withText("No more than 3 choices may be selected.")))
     }
   }
 
