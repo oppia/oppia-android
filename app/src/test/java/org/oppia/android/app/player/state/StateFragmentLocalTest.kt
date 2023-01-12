@@ -2,8 +2,11 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.text.Spannable
+import android.text.style.ClickableSpan
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
@@ -14,6 +17,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
@@ -2044,6 +2048,49 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testStateFragment_openHint_clickConceptCardLink_opensConceptCard() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      submitTwoWrongAnswersToTestExpState2()
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // Click on the link for opening the concept card.
+      onView(withId(R.id.hints_and_solution_summary))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText("Another important skill")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_openSolution_clickConceptCardLink_opensConceptCard() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      clickContinueButton()
+      produceAndViewNextHint(hintPosition = 0) { submitTwoWrongAnswersToTestExpState2() }
+      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState2() }
+
+      // Click on the link for opening the concept card.
+      onView(withId(R.id.solution_summary))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText("Another important skill")))
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -2395,6 +2442,15 @@ class StateFragmentLocalTest {
     )
   }
 
+  private fun submitWrongAnswerToTestExpState2() {
+    submitFractionAnswer(answerText = "1/4")
+  }
+
+  private fun submitTwoWrongAnswersToTestExpState2() {
+    submitWrongAnswerToTestExpState2()
+    submitWrongAnswerToTestExpState2()
+  }
+
   /**
    * Causes a hint after the first one to be shown (at approximately the specified recycler view
    * index for scrolling purposes), and then reveals it and closes the hints & solutions dialog.
@@ -2404,6 +2460,17 @@ class StateFragmentLocalTest {
     openHintsAndSolutionsDialog()
     pressRevealHintButton(hintPosition)
     closeHintsAndSolutionsDialog()
+  }
+
+  private fun produceAndViewSolution(
+    activityScenario: ActivityScenario<StateFragmentTestActivity>,
+    submitAnswer: () -> Unit
+  ) {
+    submitAnswer()
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    openHintsAndSolutionsDialog()
+    showRevealSolutionDialog()
+    clickConfirmRevealSolutionButton(activityScenario)
   }
 
   private fun produceAndViewThreeHintsInFractionsState13() {
@@ -2567,6 +2634,43 @@ class StateFragmentLocalTest {
         }
       })
   }
+
+  private fun openClickableSpan(text: String): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String = "openClickableSpan"
+
+      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // The view shouldn't be null if the constraints are being met.
+        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  private fun hasClickableSpanWithText(text: String): Matcher<View> {
+    return object : TypeSafeMatcher<View>(TextView::class.java) {
+      override fun describeTo(description: Description?) {
+        description?.appendText("has ClickableSpan with text")?.appendValue(text)
+      }
+
+      override fun matchesSafely(item: View?): Boolean {
+        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
+      }
+    }
+  }
+
+  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
+    val viewText = text
+    return (viewText as Spannable).getSpans(
+      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+    ).map {
+      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+    }
+  }
+
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) =
+    find { text in it.first }?.second
 
   // TODO(#89): Move this to a common test application component.
   @Module

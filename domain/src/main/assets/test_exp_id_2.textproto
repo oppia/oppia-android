@@ -682,13 +682,13 @@ states {
           numerator: 1
         }
         explanation {
-          html: "<p>Half of something has one part in the numerator for every two parts in the denominator.</p>"
+          html: "<p>Half of something has one part in the numerator for every two parts in the denominator.</p><p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
           content_id: "solution"
         }
       }
       hint {
         hint_content {
-          html: "<p>Remember that two halves, when added together, make one whole.</p>"
+          html: "<p>Remember that two halves, when added together, make one whole.</p><p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
           content_id: "hint_6"
         }
       }

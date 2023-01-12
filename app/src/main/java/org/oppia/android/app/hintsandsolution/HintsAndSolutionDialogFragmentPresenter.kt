@@ -11,9 +11,11 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
@@ -38,7 +40,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
-) {
+) : HtmlParser.CustomOppiaTagActionListener {
 
   @Inject
   lateinit var accessibilityService: AccessibilityService
@@ -52,6 +54,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private lateinit var state: State
   private lateinit var helpIndex: HelpIndex
   private lateinit var writtenTranslationContext: WrittenTranslationContext
+  private lateinit var profileId: ProfileId
   private lateinit var itemList: List<HintsAndSolutionItemViewModel>
   private lateinit var bindingAdapter: BindableAdapter<HintsAndSolutionItemViewModel>
 
@@ -75,7 +78,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     index: Int?,
     isHintRevealed: Boolean?,
     solutionIndex: Int?,
-    isSolutionRevealed: Boolean?
+    isSolutionRevealed: Boolean?,
+    profileId: ProfileId
   ): View {
     binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -100,6 +104,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     this.state = state
     this.helpIndex = helpIndex
     this.writtenTranslationContext = writtenTranslationContext
+    this.profileId = profileId
 
     val newAvailableHintIndex = computeNewAvailableHintIndex(helpIndex)
     viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
@@ -214,11 +219,14 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         resourceBucketName,
         entityType,
         hintsViewModel.explorationId.get()!!,
-        /* imageCenterAlign= */ true,
+        customOppiaTagActionListener = this,
+        imageCenterAlign = true,
         displayLocale = resourceHandler.getDisplayLocale()
       ).parseOppiaHtml(
         hintsViewModel.hintsAndSolutionSummary.get()!!,
-        binding.hintsAndSolutionSummary
+        binding.hintsAndSolutionSummary,
+        supportsLinks = true,
+        supportsConceptCards = true
       )
 
     if (hintsViewModel.hintCanBeRevealed.get()!!) {
@@ -231,13 +239,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
+    // TODO: removed root click listener--verify the UI still behaves correctly. Document in PR description.
     binding.expandHintListIcon.setOnClickListener {
-      if (hintsViewModel.isHintRevealed.get()!!) {
-        expandOrCollapseItem(position)
-      }
-    }
-
-    binding.root.setOnClickListener {
       if (hintsViewModel.isHintRevealed.get()!!) {
         expandOrCollapseItem(position)
       }
@@ -292,12 +295,20 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     } else {
       binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
     }
-    binding.solutionSummary.text = htmlParserFactory.create(
-      resourceBucketName, entityType, viewModel.explorationId.get()!!, /* imageCenterAlign= */ true,
-      displayLocale = resourceHandler.getDisplayLocale()
-    ).parseOppiaHtml(
-      solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
-    )
+    binding.solutionSummary.text =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType,
+        viewModel.explorationId.get()!!,
+        customOppiaTagActionListener = this,
+        imageCenterAlign = true,
+        displayLocale = resourceHandler.getDisplayLocale()
+      ).parseOppiaHtml(
+        solutionViewModel.solutionSummary.get()!!,
+        binding.solutionSummary,
+        supportsLinks = true,
+        supportsConceptCards = true
+      )
 
     if (solutionViewModel.solutionCanBeRevealed.get()!!) {
       binding.root.visibility = View.VISIBLE
@@ -306,13 +317,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
+    // TODO: Ditto here, removed root click listener so verify that it still works correctly.
     binding.expandSolutionListIcon.setOnClickListener {
-      if (solutionViewModel.isSolutionRevealed.get()!!) {
-        expandOrCollapseItem(position)
-      }
-    }
-
-    binding.root.setOnClickListener {
       if (solutionViewModel.isSolutionRevealed.get()!!) {
         expandOrCollapseItem(position)
       }
@@ -391,5 +397,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   fun onRevealSolutionClicked(solutionIndex: Int?, isSolutionRevealed: Boolean?) {
     this.solutionIndex = solutionIndex
     this.isSolutionRevealed = isSolutionRevealed
+  }
+
+  override fun onConceptCardLinkClicked(view: View, skillId: String) {
+    ConceptCardFragment
+      .newInstance(skillId, profileId)
+      .showNow(fragment.childFragmentManager, ConceptCardFragment.CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 }

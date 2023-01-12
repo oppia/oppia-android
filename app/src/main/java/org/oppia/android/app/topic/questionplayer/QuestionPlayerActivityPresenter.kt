@@ -5,7 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController
@@ -24,6 +29,8 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var profileId: ProfileId
+  private lateinit var state: State
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
 
   fun handleOnCreate(profileId: ProfileId) {
     this.profileId = profileId
@@ -155,6 +162,30 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     ) as QuestionPlayerFragment?
   }
 
+  fun loadQuestionState(state: State, writtenTranslationContext: WrittenTranslationContext) {
+    this.state = state
+    this.writtenTranslationContext = writtenTranslationContext
+  }
+
+  fun routeToHintsAndSolution(
+    questionId: String,
+    helpIndex: HelpIndex
+  ) {
+    if (getHintsAndSolutionDialogFragment() == null) {
+      val hintsAndSolutionDialogFragment =
+        HintsAndSolutionDialogFragment.newInstance(
+          questionId,
+          state,
+          helpIndex,
+          writtenTranslationContext,
+          profileId
+        )
+      hintsAndSolutionDialogFragment.showNow(
+        activity.supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG
+      )
+    }
+  }
+
   fun revealHint(hintIndex: Int) {
     val questionPlayerFragment =
       activity.supportFragmentManager.findFragmentByTag(
@@ -171,5 +202,15 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     questionPlayerFragment.revealSolution()
   }
 
+  fun dismissHintsAndSolutionDialog() {
+    getHintsAndSolutionDialogFragment()?.dismiss()
+  }
+
   fun dismissConceptCard() = getQuestionPlayerFragment()?.dismissConceptCard()
+
+  private fun getHintsAndSolutionDialogFragment(): HintsAndSolutionDialogFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_DIALOG
+    ) as? HintsAndSolutionDialogFragment
+  }
 }
