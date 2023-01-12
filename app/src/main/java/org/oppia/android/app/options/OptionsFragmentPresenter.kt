@@ -28,7 +28,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
-val APP_LANGUAGE = OppiaLanguage.ENGLISH
 private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
 private const val APP_LANGUAGE_TAG = "AppLanguage"
 private const val AUDIO_LANGUAGE_TAG = "AudioLanguage"

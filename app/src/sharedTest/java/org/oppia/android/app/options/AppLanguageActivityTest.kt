@@ -25,6 +25,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -108,8 +109,6 @@ class AppLanguageActivityTest {
   @Inject
   lateinit var context: Context
 
-  private val summaryValue = "English"
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -121,8 +120,8 @@ class AppLanguageActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createAppLanguageActivityIntent(summaryValue).extractCurrentAppScreenName()
-
+    val screenName =
+      createAppLanguageActivityIntent(OppiaLanguage.ENGLISH).extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.APP_LANGUAGE_ACTIVITY)
   }
 
@@ -130,7 +129,7 @@ class AppLanguageActivityTest {
   fun testAppLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createAppLanguageActivityIntent(
-        summaryValue
+        OppiaLanguage.ENGLISH
       )
     )
     val title = activityTestRule.activity.title
@@ -139,10 +138,10 @@ class AppLanguageActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.app_language_activity_title))
   }
 
-  private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
+  private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
     return AppLanguageActivity.createAppLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      APP_LANGUAGE
+      oppiaLanguage
     )
   }
 

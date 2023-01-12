@@ -70,8 +70,11 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -100,6 +103,7 @@ import javax.inject.Singleton
 
 /** Tests for [AppLanguageFragment]. */
 @RunWith(AndroidJUnit4::class)
+@RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageFragmentTest.TestApplication::class)
 class AppLanguageFragmentTest {
