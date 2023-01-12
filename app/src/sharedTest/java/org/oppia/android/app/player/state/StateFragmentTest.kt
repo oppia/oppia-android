@@ -3619,6 +3619,113 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_interactions_noRadioItemSelected_defaultSelectionTextIsDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(withText("Please select all correct choices.")))
+
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_oneRadioItemSelected_selectionTextIsDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+
+      onView(withId(R.id.selection_interaction_textview)).check(matches(withText("You may select more choices.")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_twoRadioItemSelected_selectionTextIsDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+
+      onView(withId(R.id.selection_interaction_textview)).check(matches(withText("You may select more choices.")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_maxRadioItemSelected_selectionTextIsDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+
+      onView(withId(R.id.selection_interaction_textview)).check(matches(withText("No more than 3 choices may be selected.")))
+
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_maxRadioItemSelected_nonSelectedCheckboxesAreDisabled() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(not(isEnabled())))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 4,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(not(isEnabled())))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 5,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(not(isEnabled())))
+    }
+  }
+
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
