@@ -70,7 +70,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -705,7 +705,7 @@ class AudioPlayerControllerTest {
     // within the same application instance.
     @Provides
     @Singleton
-    @LearnerStudyAnalytics
+    @EnableLearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
