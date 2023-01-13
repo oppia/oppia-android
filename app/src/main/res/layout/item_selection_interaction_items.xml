@@ -31,19 +31,19 @@
       android:clickable="false"
       android:focusable="false"
       android:labelFor="@id/item_selection_contents_text_view"
-      app:buttonTint="@color/component_color_shared_item_selection_interaction_color" />
+      app:buttonTint="@color/shared_interaction_selector" />
 
     <TextView
       android:id="@+id/item_selection_contents_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
-      android:layout_marginEnd="8dp"
       android:layout_marginTop="4dp"
+      android:layout_marginEnd="8dp"
       android:layout_toEndOf="@+id/item_selection_checkbox"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
-      android:textColor="@color/component_color_shared_item_selection_interaction_text_color"
+      android:textColor="@{viewModel.isAnswerSelected() ? @color/component_color_shared_selection_interaction_selected_text_color : @color/component_color_shared_selection_interaction_unselected_text_color}"
       android:textSize="16sp" />
   </RelativeLayout>
 </layout>
