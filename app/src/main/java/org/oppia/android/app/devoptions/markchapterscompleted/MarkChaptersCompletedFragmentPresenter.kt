@@ -3,6 +3,7 @@ package org.oppia.android.app.devoptions.markchapterscompleted
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,8 @@ import org.oppia.android.databinding.MarkChaptersCompletedFragmentBinding
 import org.oppia.android.databinding.MarkChaptersCompletedStorySummaryViewBinding
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
 import javax.inject.Inject
+import org.oppia.android.R
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [MarkChaptersCompletedFragment]. */
 @FragmentScope
@@ -23,19 +26,29 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModel: MarkChaptersCompletedViewModel,
   private val modifyLessonProgressController: ModifyLessonProgressController,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
-) : ChapterSelector {
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val resourceHandler: AppLanguageResourceHandler
+) {
   private lateinit var binding: MarkChaptersCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<MarkChaptersCompletedItemViewModel>
-  lateinit var selectedExplorationIdList: ArrayList<String>
   private lateinit var profileId: ProfileId
+  private lateinit var alertDialog: AlertDialog
+  private val selectedExplorationIds = mutableListOf<String>()
+  private val selectedExplorationTitles = mutableListOf<String>()
+
+  val serializableSelectedExplorationIds: ArrayList<String>
+    get() = ArrayList(selectedExplorationIds)
+  val serializableSelectedExplorationTitles: ArrayList<String>
+    get() = ArrayList(selectedExplorationTitles)
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
-    selectedExplorationIdList: ArrayList<String>
+    showConfirmationNotice: Boolean,
+    selectedExplorationIds: List<String>,
+    selectedExplorationTitles: List<String>
   ): View? {
     binding = MarkChaptersCompletedFragmentBinding.inflate(
       inflater,
@@ -52,7 +65,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       this.viewModel = this@MarkChaptersCompletedFragmentPresenter.viewModel
     }
 
-    this.selectedExplorationIdList = selectedExplorationIdList
+    this.selectedExplorationIds += selectedExplorationIds
+    this.selectedExplorationTitles += selectedExplorationTitles
 
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     viewModel.setProfileId(profileId)
@@ -74,7 +88,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
               chapterSelected(
                 viewModel.chapterIndex,
                 viewModel.nextStoryIndex,
-                viewModel.chapterSummary.explorationId
+                viewModel.chapterSummary.explorationId,
+                viewModel.chapterTitle
               )
           }
         }
@@ -91,11 +106,9 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     }
 
     binding.markChaptersCompletedMarkCompletedTextView.setOnClickListener {
-      modifyLessonProgressController.markMultipleChaptersCompleted(
-        profileId = profileId,
-        chapterMap = viewModel.getChapterMap().filterKeys { selectedExplorationIdList.contains(it) }
-      )
-      activity.finish()
+      if (showConfirmationNotice) {
+        showConfirmationDialog()
+      } else markChaptersAsCompleted()
     }
 
     return binding.root
@@ -140,21 +153,19 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       binding.isChapterChecked = true
       binding.isChapterCheckboxEnabled = false
     } else {
-      binding.isChapterChecked =
-        selectedExplorationIdList.contains(model.chapterSummary.explorationId)
+      binding.isChapterChecked = model.chapterSummary.explorationId in selectedExplorationIds
 
       binding.isChapterCheckboxEnabled = !model.chapterSummary.hasMissingPrerequisiteChapter() ||
         model.chapterSummary.hasMissingPrerequisiteChapter() &&
-        selectedExplorationIdList.contains(
-          model.chapterSummary.missingPrerequisiteChapter.explorationId
-        )
+        model.chapterSummary.missingPrerequisiteChapter.explorationId in selectedExplorationIds
 
       binding.markChaptersCompletedChapterCheckBox.setOnCheckedChangeListener { _, isChecked ->
         if (isChecked) {
           chapterSelected(
             model.chapterIndex,
             model.nextStoryIndex,
-            model.chapterSummary.explorationId
+            model.chapterSummary.explorationId,
+            model.chapterTitle
           )
         } else {
           chapterUnselected(model.chapterIndex, model.nextStoryIndex)
@@ -163,39 +174,34 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     }
   }
 
-  override fun chapterSelected(chapterIndex: Int, nextStoryIndex: Int, explorationId: String) {
-    if (!selectedExplorationIdList.contains(explorationId)) {
-      selectedExplorationIdList.add(explorationId)
+  private fun chapterSelected(chapterIdx: Int, nextStoryIdx: Int, expId: String, expTitle: String) {
+    if (expId !in selectedExplorationIds) {
+      selectedExplorationIds += expId
+      selectedExplorationTitles += expTitle
     }
-    if (selectedExplorationIdList.size ==
-      viewModel.getItemList().count {
-        it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
-      }
-    ) {
+    if (selectedExplorationIds.size == viewModel.getItemList().countIncompleteChapters()) {
       binding.isAllChecked = true
     }
     if (!binding.markChaptersCompletedRecyclerView.isComputingLayout &&
       binding.markChaptersCompletedRecyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE
     ) {
-      bindingAdapter.notifyItemChanged(chapterIndex)
-      if (chapterIndex + 1 < nextStoryIndex)
-        bindingAdapter.notifyItemChanged(chapterIndex + 1)
+      bindingAdapter.notifyItemChanged(chapterIdx)
+      if (chapterIdx + 1 < nextStoryIdx)
+        bindingAdapter.notifyItemChanged(chapterIdx + 1)
     }
   }
 
-  override fun chapterUnselected(chapterIndex: Int, nextStoryIndex: Int) {
+  private fun chapterUnselected(chapterIndex: Int, nextStoryIndex: Int) {
     for (index in chapterIndex until nextStoryIndex) {
       val explorationId =
         (viewModel.getItemList()[index] as ChapterSummaryViewModel).chapterSummary.explorationId
-      if (selectedExplorationIdList.contains(explorationId)) {
-        selectedExplorationIdList.remove(explorationId)
+      val expIndex = selectedExplorationIds.indexOf(explorationId)
+      if (expIndex != -1) {
+        selectedExplorationIds.removeAt(expIndex)
+        selectedExplorationTitles.removeAt(expIndex)
       }
     }
-    if (selectedExplorationIdList.size !=
-      viewModel.getItemList().count {
-        it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
-      }
-    ) {
+    if (selectedExplorationIds.size != viewModel.getItemList().countIncompleteChapters()) {
       binding.isAllChecked = false
     }
     if (!binding.markChaptersCompletedRecyclerView.isComputingLayout &&
@@ -208,8 +214,54 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun showConfirmationDialog() {
+    alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme).apply {
+      setTitle(R.string.mark_chapters_completed_confirm_setting_dialog_title)
+      setMessage(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.mark_chapters_completed_confirm_setting_dialog_message,
+          selectedExplorationTitles.joinToReadableString()
+        )
+      )
+      setNegativeButton(
+        R.string.mark_chapters_completed_confirm_setting_dialog_cancel_button_text
+      ) { dialog, _ -> dialog.dismiss() }
+      setPositiveButton(
+        R.string.mark_chapters_completed_confirm_setting_dialog_confirm_button_text
+      ) { dialog, _ ->
+        dialog.dismiss()
+        markChaptersAsCompleted()
+      }
+    }.create().also {
+      it.setCanceledOnTouchOutside(true)
+      it.show()
+    }
+  }
+
+  private fun markChaptersAsCompleted() {
+    modifyLessonProgressController.markMultipleChaptersCompleted(
+      profileId = profileId,
+      chapterMap = viewModel.getChapterMap().filterKeys { it in selectedExplorationIds }
+    )
+    activity.finish()
+  }
+
   private enum class ViewType {
     VIEW_TYPE_STORY,
     VIEW_TYPE_CHAPTER
+  }
+
+  private companion object {
+    private fun List<String>.joinToReadableString(): String {
+      return when (size) {
+        0 -> ""
+        1 -> single()
+        2 -> "${this[0]} and ${this[1]}"
+        else -> "${asSequence().take(size - 1).joinToString()}, and ${last()}"
+      }
+    }
+
+    private fun List<MarkChaptersCompletedItemViewModel>.countIncompleteChapters() =
+      filterIsInstance<ChapterSummaryViewModel>().count { !it.checkIfChapterIsCompleted() }
   }
 }

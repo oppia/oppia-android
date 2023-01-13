@@ -23,6 +23,10 @@
   <string name="force_network_type_cellular_network" translatable="false">Cellular</string>
   <string name="force_network_type_no_network" translatable="false">No network</string>
   <string name="mark_chapters_completed_activity_title" translatable="false">Mark Chapters Completed</string>
+  <string name="mark_chapters_completed_confirm_setting_dialog_title" translatable="false">Confirm Chapter Completions</string>
+  <string name="mark_chapters_completed_confirm_setting_dialog_message" translatable="false">The following chapters will be marked as finished: %s. Note that this is irreversible and will erase any partial lesson progress.</string>
+  <string name="mark_chapters_completed_confirm_setting_dialog_cancel_button_text" translatable="false">Cancel</string>
+  <string name="mark_chapters_completed_confirm_setting_dialog_confirm_button_text" translatable="false">Confirm completions</string>
   <string name="mark_stories_completed_activity_title" translatable="false">Mark Stories Completed</string>
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>

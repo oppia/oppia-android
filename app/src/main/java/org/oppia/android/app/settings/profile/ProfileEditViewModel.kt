@@ -14,13 +14,15 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 
 /** The ViewModel for [ProfileEditActivity]. */
 @FragmentScope
 class ProfileEditViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
+  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
+  @LearnerStudyAnalytics private val enableLearnerStudySupport: PlatformParameterValue<Boolean>
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
@@ -28,6 +30,9 @@ class ProfileEditViewModel @Inject constructor(
 
   /** Download access enabled for the profile by the administrator. */
   val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
+
+  /** Whether the admin is allowed to mark chapters as finished. */
+  val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudySupport.value
 
   /** List of all the current profiles registered in the app [ProfileListFragment]. */
   val profile: LiveData<Profile> by lazy {

@@ -355,6 +355,7 @@
   <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>
   <string name="profile_edit_reset">Reset PIN</string>
+  <string name="profile_edit_mark_chapter_completion">Mark Chapters Completed</string>
   <string name="profile_edit_delete">Profile Deletion</string>
   <string name="profile_edit_delete_dialog_title">Permanently delete this profile?</string>
   <string name="profile_edit_delete_dialog_message">All progress will be deleted and cannot be recovered.</string>

@@ -21,13 +21,13 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
-  private var internalProfileId = -1
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
-    markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId)
+    val internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, /* defaultValue= */ -1)
+    val showConfirmationNotice =
+      intent.getBooleanExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, /* defaultValue= */ false)
+    markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId, showConfirmationNotice)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
   }
 
@@ -39,11 +39,16 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedActivity.profile_id"
+    private const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedActivity.profile_id"
+    private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
+      "MarkChaptersCompletedActivity.show_confirmation_notice"
 
-    fun createMarkChaptersCompletedIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkChaptersCompletedIntent(
+      context: Context, internalProfileId: Int, showConfirmationNotice: Boolean
+    ): Intent {
       return Intent(context, MarkChaptersCompletedActivity::class.java).apply {
         putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        putExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, showConfirmationNotice)
         decorateWithScreenName(MARK_CHAPTERS_COMPLETED_ACTIVITY)
       }
     }

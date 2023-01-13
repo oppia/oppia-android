@@ -11,14 +11,14 @@ class MarkChaptersCompletedActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
-  fun handleOnCreate(internalProfileId: Int) {
+  fun handleOnCreate(internalProfileId: Int, showConfirmationNotice: Boolean) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     activity.setContentView(R.layout.mark_chapters_completed_activity)
 
     if (getMarkChaptersCompletedFragment() == null) {
-      val markChaptersCompletedFragment = MarkChaptersCompletedFragment
-        .newInstance(internalProfileId)
+      val markChaptersCompletedFragment =
+        MarkChaptersCompletedFragment.newInstance(internalProfileId, showConfirmationNotice)
       activity.supportFragmentManager.beginTransaction().add(
         R.id.mark_chapters_completed_container,
         markChaptersCompletedFragment

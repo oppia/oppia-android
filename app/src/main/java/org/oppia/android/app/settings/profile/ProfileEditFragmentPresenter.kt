@@ -18,6 +18,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
@@ -70,6 +71,14 @@ class ProfileEditFragmentPresenter @Inject constructor(
           activity,
           internalProfileId,
           profileEditViewModel.isAdmin
+        )
+      )
+    }
+
+    binding.profileMarkChaptersForCompletionButton?.setOnClickListener {
+      activity.startActivity(
+        MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
+          activity, internalProfileId, showConfirmationNotice = true
         )
       )
     }

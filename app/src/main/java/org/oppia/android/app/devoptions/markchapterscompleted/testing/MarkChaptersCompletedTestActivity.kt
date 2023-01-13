@@ -21,8 +21,8 @@ class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
     setContentView(R.layout.mark_chapters_completed_activity)
     internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     if (getMarkChaptersCompletedFragment() == null) {
-      val markChaptersCompletedFragment = MarkChaptersCompletedFragment
-        .newInstance(internalProfileId)
+      val markChaptersCompletedFragment =
+        MarkChaptersCompletedFragment.newInstance(internalProfileId, showConfirmationNotice = false)
       supportFragmentManager.beginTransaction().add(
         R.id.mark_chapters_completed_container,
         markChaptersCompletedFragment
