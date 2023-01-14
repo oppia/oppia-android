@@ -110,7 +110,7 @@
         android:id="@+id/hints_and_solution_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/audio_component_background"
+        android:background="@color/component_color_shared_hints_background_color"
         android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
         android:clipChildren="false">
 
@@ -132,7 +132,7 @@
           android:layout_marginStart="16dp"
           android:text="@string/hints_toolbar_title"
           android:textSize="24sp"
-          android:textColor="@color/color_def_white"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toEndOf="@+id/hint_bulb" />
