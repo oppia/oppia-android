@@ -45,6 +45,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> هذه هي النهاية & nbsp؛ </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Huu ndio mwisho & nbsp; </p>"},
+                "needs_update": false
               }
             }
           }
@@ -349,6 +354,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> يتكون نظامنا الشمسي من تسعة كواكب تدور حول الشمس: الزئبق، فينوس، الأرض، المريخ، كوكب المشتري، زحل، أورانوس، نبتون، بلوتو. وهي تتراوح بين عمالقة الغاز الضخمة إلى كواكب الأقزم القزم الصغيرة. </p> <p> </p> <p> انقر على الكواكب أدناه لمعرفة المزيد عن كل واحد! </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Mfumo wetu wa jua una sayari tisa zinazozunguka Jua letu: Mercury, Venus, Dunia, Mars, Jupita, Saturn, Uranus, Neptune na Pluto. Zinatokana na makubwa makubwa ya gesi hadi sayari ndogo za mchanga. </p> <p> </p> <p> Bonyeza kwenye sayari hapa chini ili kujua zaidi juu ya kila moja!"},
+                "needs_update": false
               }
             },
             "feedback_2": {
@@ -360,6 +370,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> هذا هو فينوس، والكوكب الثاني من الشمس. إنه ألمع كوكب في النظام الشمسي، ويمكن أن ينظر إليه في بعض الأحيان خلال اليوم. على الرغم من أن الزئبق أقرب إلى الشمس من فينوس، فإن فينوس هو سخونة كوكب في النظام الشمسي، لأن جو سميكة ثاني أكسيد الكربون الفخاخ الحرارة على سطحه. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Hii ni Venus, sayari ya pili kutoka jua. Ni sayari safi zaidi katika mfumo wa jua, na wakati mwingine inaweza kuonekana hata wakati wa mchana. Ingawa Mercury iko karibu na jua kuliko Venus, Venus ndio sayari ya moto zaidi katika mfumo wa jua, kwa sababu mazingira yake mazito ya kaboni dioksidi huvuta joto kwenye uso wake. </p>"},
                 "needs_update": false
               }
             },
@@ -373,6 +388,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> الأرض! كوكبنا الرئيسي هو الكوكب الثالث من الشمس. على الرغم من استمرار النظام الشمسي وبقية المساحة، فإن المكان الوحيد الذي نعرفه أن الحياة موجودة. في المسافة اليمنى فقط من الشمس لضمان درجة حرارة مريحة بالنسبة لنا موجودة فيها. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Dunia! Sayari yetu ya nyumbani ni sayari ya tatu kutoka jua. Licha ya ukubwa wa mfumo wa jua na nafasi iliyobaki, ndio mahali pekee ambayo tunajua maisha yapo. Ni katika umbali sahihi kutoka jua ili kuhakikisha joto la starehe kwetu kuwapo. </p>"},
+                "needs_update": false
               }
             },
             "feedback_1": {
@@ -384,6 +404,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<!DOCTYPE html>\n<html lang="},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Hii ni Mercury, sayari ndogo ya chuma karibu na jua. Kwa kuwa iko karibu sana na jua, inachukua siku 88 tu kusafiri kwa mzunguko mmoja, kwa hivyo mwaka juu ya Mercury ungekuwa na siku 88 tu. </p>"},
                 "needs_update": false
               }
             },
@@ -397,6 +422,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<P> Saturn، الكوكب السادس من الشمس، هو معروف جيدا لحلقاتها الجميلة من الجليد والغبار المدار حولها. مثل كوكب المشتري، فهي عملاقة غازية، معظمها مصنوعة من طبقات الهيدروجين التي تحصل على كثافة تدريجية نحو جوهرها الصلب. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Saturn, sayari ya sita kutoka jua, inajulikana sana kwa pete zake nzuri za barafu na vumbi linalozunguka. Kama Jupita, ni kubwa ya gesi, iliyotengenezwa zaidi ya tabaka za hidrojeni ambayo hupata hatua kwa hatua kuelekea msingi wake thabiti. </p>"},
+                "needs_update": false
               }
             },
             "feedback_7": {
@@ -408,6 +438,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> أورانوس هو الكوكب السابع من الشمس. كان أول كوكب يتم اكتشافه باستخدام التلسكوب ، لأنه عادة ما يكون خافتًا جدًا بحيث لا يمكن رؤيته بالعين المجردة. إنه أبرد كوكب ، ويتكون من طبقات من غاز الهيدروجين تحيط بنواة متجمدة من الصخور والجليد. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Uranus ni sayari ya saba kutoka jua. Ilikuwa sayari ya kwanza ambayo iligunduliwa kwa kutumia darubini, kwani kawaida ni dhaifu sana kuonekana na jicho uchi. Ni sayari baridi zaidi, na imeundwa kutoka kwa tabaka za gesi ya hidrojeni inayofunika msingi wa mwamba na barafu. </p>"},
                 "needs_update": false
               }
             },
@@ -421,6 +456,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> المريخ هو الكوكب الرابع من الشمس. غالبا ما يطلق عليه \"الكوكب الأحمر\" بسبب لونه، وهو نتيجة كميات كبيرة من أكسيد الحديد على سطحها. يحتوي على جو رقيق من ثاني أكسيد الكربون والقبعات الجليدية في أي من الطرفين، ولديه اثنين من أقمار صغيرة على شكل غير منتظم يسمى فوبوس وديموس. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Mars ni sayari ya nne kutoka jua. Mara nyingi huitwa \"sayari nyekundu\" kwa sababu ya rangi yake, ambayo ni matokeo ya idadi kubwa ya oksidi ya chuma kwenye uso wake. Inayo mazingira nyembamba ya kaboni dioksidi na kofia za barafu pande zote mbili, na ina mwezi mbili ndogo-zenye umbo linaloitwa Phobos na Deimos. </p>"},
+                "needs_update": false
               }
             },
             "feedback_5": {
@@ -432,6 +472,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<P> كوكب المشتري، الكوكب الخامس من الشمس، هو كوكب ضخم يبلغ من العمر 2.5 مرة من كل الكواكب الأخرى في نظامنا الشمسي مجتمعة. يتم تشكيلها في الغالب من الغازات السميكة حول جوهر صلب. ميزة واحدة مشهورة بها هي \"بقعة حمراء رائعة\"، وهي عاصفة كبيرة على سطحها الذي اندلعت لمدة 350 عاما على الأقل، وهو كبير بما يكفي لابتلاع ثلاثة أذرع بأكملها. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jupita, sayari ya tano kutoka Jua, ni sayari kubwa ambayo ni nzito mara 2.5 kuliko sayari zingine zote kwenye mfumo wetu wa jua pamoja. Imeundwa zaidi ya gesi nene karibu na msingi thabiti. Kipengele kimoja maarufu juu yake ni \"Spot Nyekundu\", ambayo ni dhoruba kubwa juu ya uso wake ambao umejaa kwa angalau miaka 350, na ni kubwa ya kutosha kumeza ulimwengu wote. </p>"},
                 "needs_update": false
               }
             },
@@ -445,6 +490,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> هذا لا يبدو وكأنه الاختيار الصحيح. مرة أخرى </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Hii haionekani kama chaguo sahihi.Te tena </p>"},
+                "needs_update": false
               }
             },
             "feedback_8": {
@@ -457,6 +507,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> نبتون هو الكوكب الثامن من الشمس. إنه \"عملاق ثلج\"، مثل أورانوس، بطبقة خارجية من الهيدروجين والهيليوم والميثان يغليف جوهر جليدي. يمتص الميثان في جوها الضوء الأحمر، مما يمنحه اللون الأزرق الجميل. تم توقع وجوده لأول مرة من حسابات الجاذبية، وتم اكتشافه فقط بواسطة التلسكوب في وقت لاحق. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Neptune ni sayari ya nane kutoka jua. Ni \"barafu kubwa\", kama Uranus, na safu ya nje ya hidrojeni, heliamu, na methane kufunika msingi wa Icy. Methane katika anga yake inachukua taa nyekundu, ikiipa rangi nzuri ya bluu. Ilitabiriwa kwa mara ya kwanza kutoka kwa mahesabu ya mvuto, na iligunduliwa tu na darubini baadaye. </p>"},
+                "needs_update": false
               }
             },
             "feedback_9": {
@@ -468,6 +523,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<P> كان بلوتو يعتبر مرة واحدة الكوكب التاسع من الشمس، لكن تم إعادة تصنيفه الآن باعتباره \"كوكب قزم\". يتم تشكيله من الجليد والصخور، وهو أصغر من قمرنا. من المقرر أن يصل المركبة الفضائية الأولى إلى زيارة بلوتو في يوليو 2015. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Pluto wakati mmoja ilizingatiwa sayari ya tisa kutoka jua, lakini sasa imebadilishwa tena kama \"sayari ndogo\". Imeundwa kutoka barafu na mwamba, na ni ndogo hata kuliko mwezi wetu. Spacecraft ya kwanza ya kutembelea Pluto ni kwa sababu ya kufikia Julai 2015. </p>"},
                 "needs_update": false
               }
             }

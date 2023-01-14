@@ -82,6 +82,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -93,6 +98,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هو التعبير الرقمي يمثل واحد زائد اثنين دون إعادة ترتيب المسموح به؟ ملاحظة: يتم التعامل مع الانقسامات ككسور لهذه الولاية. </ p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Je! Ni usemi gani wa nambari unawakilisha moja pamoja na mbili bila kupanga upya kuruhusiwa? Kumbuka: Mgawanyiko unachukuliwa kama sehemu za hali hii. </p>"},
                 "needs_update": false
               }
             },
@@ -106,6 +116,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
+                "needs_update": false
               }
             },
             "ca_placeholder_0": {
@@ -117,6 +132,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "إدخال تعبير رقمي."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Ingiza usemi wa nambari."},
                 "needs_update": false
               }
             }
@@ -189,6 +209,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -201,6 +226,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هو التعبير الرقمي يمثل واحد زائد اثنين؟ لاحظ أن إعادة ترتيب التوزيع والزملية مسموح بها. </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Je! Ni usemi gani wa nambari unawakilisha moja pamoja na mbili? Kumbuka kuwa kupanga upya na kuhusika kunaruhusiwa. </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -212,6 +242,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
             }
@@ -284,6 +319,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sawa!</p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -296,6 +336,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هو التعبير الرقمي يمثل واحد زائد اثنين؟ لاحظ أن أي تعبير معادل مسموح به. </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Je! Ni usemi gani wa nambari unawakilisha moja pamoja na mbili? Kumbuka kuwa usemi wowote sawa unaruhusiwa. </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -307,6 +352,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
             }
@@ -386,6 +436,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -398,6 +453,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هو التعبير الجبري يمثل نتاج (x + 1) (x-2)؟ ملاحظة: يتم التعامل مع الانقسامات ككسور لهذه الولاية. </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>Je, usemi gani wa aljebra unawakilisha bidhaa ya (x+1)(x-2)? Kumbuka: mgawanyiko unachukuliwa kama sehemu za jimbo hili.</p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -409,6 +469,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> هذه الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
             }
@@ -485,6 +550,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -497,6 +567,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هو التعبير الجبري يمثل نتاج (x + 1) (x-2)؟ لاحظ أن إعادة ترتيب التوزيع والزملية مسموح بها. </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Nini usemi wa algebraic unawakilisha bidhaa ya (x+1) (x-2)? Kumbuka kuwa kupanga upya na kuhusika kunaruhusiwa. </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -508,6 +583,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>Jibu hilo si sahihi. Jaribu tena.</p>"},
                 "needs_update": false
               }
             }
@@ -584,6 +664,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -596,6 +681,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هو التعبير الجبري يمثل نتاج (x + 1) (x-2)؟ لاحظ أن أي تعبير معادل مسموح به. </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Nini usemi wa algebraic unawakilisha bidhaa ya (x+1) (x-2)? Kumbuka kuwa usemi wowote sawa unaruhusiwa. </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -607,6 +697,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
             }
@@ -686,6 +781,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -698,6 +798,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هي المعادلة الجبرية تمثل كمية اثنين من y و (x + 1) (x-2)؟ ملاحظة: يتم التعامل مع الانقسامات ككسور لهذه الولاية. </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Je! Equation ya algebraic inawakilisha idadi ya y mbili na (x+1) (x-2)? Kumbuka: Mgawanyiko unachukuliwa kama sehemu za hali hii. </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -709,6 +814,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
             }
@@ -785,6 +895,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -797,6 +912,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما المعادلة الجبرية التي تمثل كمية اثنين y و (x + 1) (x-2)؟ لاحظ أنه يُسمح بإعادة الترتيب التبادلي والرابطي. </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Je! Equation ya algebraic inawakilisha idadi ya y mbili na (x+1) (x-2)? Kumbuka kuwa kupanga upya na kuhusika kunaruhusiwa. </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -808,6 +928,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
             }
@@ -884,6 +1009,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -896,6 +1026,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هي المعادلة الجبرية تمثل كمية اثنين من y و (x + 1) (x-2)؟ لاحظ أن أي تعبير معادل مسموح به، بما في ذلك إعادة ترتيب حول علامة التساوي. </ p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Je! Equation ya algebraic inawakilisha idadi ya y mbili na (x+1) (x-2)? Kumbuka kuwa usemi wowote unaofanana unaruhusiwa, pamoja na kupanga upya karibu na ishara sawa. </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -907,6 +1042,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
             }
@@ -951,6 +1091,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "تهانينا، لقد انتهيت!"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Hongera, umemaliza!"},
                 "needs_update": false
               }
             }

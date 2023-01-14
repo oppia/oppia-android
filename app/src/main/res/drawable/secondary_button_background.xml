@@ -5,5 +5,5 @@
   <solid android:color="@color/component_color_shared_white_background_color" />
   <stroke
     android:width="2dp"
-    android:color="@color/component_color_start_over_button_stroke_color" />
+    android:color="@color/component_color_shared_secondary_button_background_color" />
 </shape>

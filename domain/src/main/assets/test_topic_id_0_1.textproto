@@ -8,6 +8,29 @@ recorded_voiceover {
   }
 }
 written_translation {
+  key: "title"
+  value {
+    translation_mapping {
+      key: "pt"
+      value {
+        html: "Teste subt\303\263pico"
+      }
+    }
+    translation_mapping {
+      key: "ar"
+      value {
+        html: "\330\247\330\256\330\252\330\250\330\247\330\261 \331\201\330\261\330\271\331\212"
+      }
+    }
+    translation_mapping {
+      key: "sw"
+      value {
+        html: "Jaribio la subtopic"
+      }
+    }
+  }
+}
+written_translation {
   key: "content"
   value {
     translation_mapping {
@@ -22,11 +45,12 @@ written_translation {
         html: "<p> \331\210\330\265\331\201 subtopic \331\207\331\206\330\247. </p> <p> \331\207\330\260\330\247 \331\207\331\210 \331\206\331\205\331\210\330\260\330\254 subtopic \331\205\330\271 \331\205\330\255\330\252\331\210\331\211 \331\210\331\207\331\205\331\212\330\251 \331\204\330\247 \331\212\330\261\330\252\330\250\330\267 \330\250\330\243\331\212 \330\264\331\212\330\241 \330\271\331\204\331\211 \331\210\330\254\331\207 \330\247\331\204\330\256\330\265\331\210\330\265. \331\204\330\247\330\255\330\270 \330\243\331\206 \331\207\330\260\331\207 \331\201\331\202\330\261\330\247\330\252 \331\205\330\252\330\271\330\257\330\257\330\251 \331\205\330\255\330\247\331\203\330\247\330\251 \331\205\330\255\330\252\331\210\331\211 \330\243\331\203\330\253\330\261 \331\210\330\247\331\202\330\271\331\212\330\251. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot; \331\206\330\265 \331\205\330\271 \330\247\331\204\331\202\331\212\331\205\330\251 test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>. </p> <p> <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot; \331\206\330\265 \331\205\330\271 \330\247\331\204\331\202\331\212\331\205\330\251 test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview></p>"
       }
     }
-  }
-}
-written_translation {
-  key: "title"
-  value {
+    translation_mapping {
+      key: "sw"
+      value {
+        html: "<p> Maelezo ya subtopic iko hapa. Kumbuka kuwa hii ni aya nyingi kuiga yaliyomo zaidi ya chini. <opdia-noninteractive-skillreview skill_id-na-thamani = \"& amp; quot; test_skill_id_0 & amp; quot;\" maandishi-na-thamani = \"& amp; quot; test_skill_id_0 kadi ya dhana & amp; quot;\" quot; test_skill_id_1 & amp; quot; \" maandishi-na-thamani = \"& amp; quot; test_skill_id_1 kadi ya dhana & amp; quot;\">"
+      }
+    }
   }
 }
 skill_ids: "test_skill_id_0"

@@ -1,6 +1,6 @@
 {
   "topic_id": "test_topic_id_0",
-  "topic_name": "First Test Topic",
+  "topic_name": "",
   "page_contents": {
     "subtitled_html": {
       "content_id": "content",
@@ -13,6 +13,23 @@
     },
     "written_translations": {
       "translations_mapping": {
+        "title": {
+          "pt": {
+            "data_format": "html",
+            "translation": {"translation" : "Teste subtópico"},
+            "needs_update": false
+          },
+          "ar": {
+            "data_format": "html",
+            "translation": {"translation" : "اختبار فرعي"},
+            "needs_update": false
+          },
+          "sw": {
+            "data_format": "html",
+            "translation": {"translation" : "Jaribio la subtopic"},
+            "needs_update": false
+          }
+        },
         "content": {
           "pt": {
             "data_format": "html",
@@ -22,6 +39,11 @@
           "ar": {
             "data_format": "html",
             "translation": {"translation" : "<p> وصف subtopic هنا. </p> <p> هذا هو نموذج subtopic مع محتوى وهمية لا يرتبط بأي شيء على وجه الخصوص. لاحظ أن هذه فقرات متعددة محاكاة محتوى أكثر واقعية. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot; نص مع القيمة test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>. </p> <p> <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot; نص مع القيمة test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview></p>"},
+            "needs_update": false
+          },
+          "sw": {
+            "data_format": "html",
+            "translation": {"translation" : "<p> Maelezo ya subtopic iko hapa. Kumbuka kuwa hii ni aya nyingi kuiga yaliyomo zaidi ya chini. <opdia-noninteractive-skillreview skill_id-na-thamani = \"& amp; quot; test_skill_id_0 & amp; quot;\" maandishi-na-thamani = \"& amp; quot; test_skill_id_0 kadi ya dhana & amp; quot;\" quot; test_skill_id_1 & amp; quot; \" maandishi-na-thamani = \"& amp; quot; test_skill_id_1 kadi ya dhana & amp; quot;\">"},
             "needs_update": false
           }
         }

@@ -25,6 +25,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** [ViewModel] for state-fragment. */
 @FragmentScope
@@ -33,7 +35,8 @@ class StateViewModel @Inject constructor(
   private val translationController: TranslationController,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val oppiaLogger: OppiaLogger,
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
   val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
@@ -46,6 +49,7 @@ class StateViewModel @Inject constructor(
   val isHintBulbVisible = ObservableField(false)
   val isHintOpenedAndUnRevealed = ObservableField(false)
 
+  val hasSupportForSwitchingToSwahili: Boolean = learnerStudyAnalytics.value
   val hasSwahiliTranslations: LiveData<Boolean> by lazy {
     Transformations.map(
       explorationProgressController.getCurrentState().toLiveData(),

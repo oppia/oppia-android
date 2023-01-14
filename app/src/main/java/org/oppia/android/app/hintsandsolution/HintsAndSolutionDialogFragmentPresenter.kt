@@ -239,7 +239,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    // TODO: removed root click listener--verify the UI still behaves correctly. Document in PR description.
+    binding.expandableHintHeader.setOnClickListener {
+      if (hintsViewModel.isHintRevealed.get()!!) {
+        expandOrCollapseItem(position)
+      }
+    }
     binding.expandHintListIcon.setOnClickListener {
       if (hintsViewModel.isHintRevealed.get()!!) {
         expandOrCollapseItem(position)
@@ -317,7 +321,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    // TODO: Ditto here, removed root click listener so verify that it still works correctly.
+    binding.expandableSolutionHeader.setOnClickListener {
+      if (solutionViewModel.isSolutionRevealed.get()!!) {
+        expandOrCollapseItem(position)
+      }
+    }
     binding.expandSolutionListIcon.setOnClickListener {
       if (solutionViewModel.isSolutionRevealed.get()!!) {
         expandOrCollapseItem(position)

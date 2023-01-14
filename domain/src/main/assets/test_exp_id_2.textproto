@@ -42,6 +42,12 @@ states {
             html: "\331\212\330\271\330\252\330\250\330\261 <p> \330\247\331\204\330\243\330\265\331\201\330\261 \331\204\331\210\331\206\330\247 \330\243\330\263\330\247\330\263\331\212\330\247 \331\201\331\212 \330\267\331\212\331\201 \331\204\331\210\331\206 RYB\330\214 \331\210\331\204\331\203\331\206 \331\207\330\260\330\247 \331\204\330\247 \331\212\330\252\331\210\330\247\331\201\331\202 \331\205\330\271 \330\247\331\204\330\266\331\210\330\241. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211! </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> \'Njano\' inachukuliwa kuwa rangi ya msingi katika wigo wa rangi ya RYB, lakini hiyo haihusiani na mwanga. Jaribu tena! </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -57,6 +63,12 @@ states {
           key: "ar"
           value {
             html: "<b> \330\265\330\255\331\212\330\255! </b>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<b> Sahihi! </b>"
           }
         }
       }
@@ -76,6 +88,12 @@ states {
             html: "<p> \331\205\330\247 \331\207\331\212 \330\247\331\204\330\243\331\204\331\210\330\247\331\206 \330\247\331\204\330\243\330\263\330\247\330\263\331\212\330\251 \331\204\331\204\330\266\331\210\330\241\330\237 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Je! Ni rangi gani za msingi za mwanga? </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -91,6 +109,12 @@ states {
           key: "ar"
           value {
             html: "<p> \331\207\330\260\330\247 \331\204\331\212\330\263 \330\265\330\255\331\212\330\255\330\247 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Hiyo sio sawa kabisa. Jaribu tena. </p>"
           }
         }
       }
@@ -110,6 +134,12 @@ states {
             html: "<p> \330\243\330\255\331\205\330\261 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> nyekundu </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -125,6 +155,12 @@ states {
           key: "ar"
           value {
             html: "<p> \330\247\331\204\330\243\330\265\331\201\330\261 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Njano </p>"
           }
         }
       }
@@ -144,6 +180,12 @@ states {
             html: "<p> \330\243\330\256\330\266\330\261 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> kijani </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -159,6 +201,12 @@ states {
           key: "ar"
           value {
             html: "<p> \330\247\331\204\330\243\330\262\330\261\331\202 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p>Bluu</p>"
           }
         }
       }
@@ -178,6 +226,12 @@ states {
             html: "<p> \330\247\331\204\330\250\330\261\330\252\331\202\330\247\331\204 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> machungwa </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -193,6 +247,12 @@ states {
           key: "ar"
           value {
             html: "<p> \330\247\331\204\330\243\330\261\330\254\331\210\330\247\331\206\331\212 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> zambarau </p>"
           }
         }
       }
@@ -366,6 +426,12 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! \331\212\331\205\331\203\331\206 \330\243\331\206 \331\212\330\257\330\271\331\205 \330\247\331\204\331\206\330\263\331\210\330\261 \330\247\331\204\330\261\330\255\331\204\330\251. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sahihi! Tai zinaweza kuendeleza ndege. </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -381,6 +447,12 @@ states {
           key: "ar"
           value {
             html: "<p> \330\243\331\212 \330\267\330\247\330\246\330\261 \331\212\331\205\331\203\331\206 \330\243\331\206 \331\212\330\257\330\271\331\205 \330\247\331\204\330\261\330\255\331\204\330\251 \331\204\331\201\330\252\330\261\330\247\330\252 \330\267\331\210\331\212\331\204\330\251 \331\205\331\206 \330\247\331\204\330\262\331\205\331\206\330\237 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Ni ndege gani anayeweza kuendeleza ndege kwa muda mrefu? </p>"
           }
         }
       }
@@ -400,6 +472,12 @@ states {
             html: "<p> \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Jaribu tena. </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -415,6 +493,12 @@ states {
           key: "ar"
           value {
             html: "<p> penguin </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Penguin </p>"
           }
         }
       }
@@ -434,6 +518,12 @@ states {
             html: "<p> \330\247\331\204\330\257\330\254\330\247\330\254 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Kuku </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -449,6 +539,12 @@ states {
           key: "ar"
           value {
             html: "<p> \330\247\331\204\331\206\330\263\330\261 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p>Tai</p>"
           }
         }
       }
@@ -564,6 +660,12 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sahihi! </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -579,6 +681,12 @@ states {
           key: "ar"
           value {
             html: "<p> \330\252\330\260\331\203\330\261 \330\243\331\206 \331\206\330\265\331\201\331\212\331\212\331\206\330\214 \330\271\331\206\330\257 \330\245\330\266\330\247\331\201\330\252\331\207 \331\205\330\271\330\247\330\214 \331\202\331\205 \330\250\330\245\330\254\330\261\330\247\330\241 \331\210\330\247\330\255\330\257\330\251 \331\203\330\247\331\205\331\204\330\251. </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Kumbuka kuwa nusu mbili, zinapoongezwa pamoja, fanya moja. maandishi-na-thamani = \"& amp; quot; test_skill_id_1 kadi ya dhana & amp; quot;\">"
           }
         }
       }
@@ -598,6 +706,12 @@ states {
             html: "<p> \331\206\330\265\331\201 \330\264\331\212\330\241 \331\212\330\255\330\252\331\210\331\212 \330\271\331\204\331\211 \330\254\330\262\330\241 \331\210\330\247\330\255\330\257 \331\201\331\212 \330\247\331\204\330\250\330\263\330\267 \331\204\331\203\331\204 \331\202\330\263\331\205\331\212\331\206 \331\201\331\212 \330\247\331\204\331\205\331\202\330\247\331\205. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Nusu ya kitu kina sehemu moja katika nambari kwa kila sehemu mbili kwenye dhehebu. ; \" maandishi-na-thamani = \"& amp; quot; test_skill_id_1 kadi ya dhana & amp; quot;\">"
+          }
+        }
       }
     }
     written_translations {
@@ -613,6 +727,12 @@ states {
           key: "ar"
           value {
             html: "<p> \331\205\330\247 \330\247\331\204\331\203\330\263\330\261 \331\212\331\205\330\253\331\204 \331\206\330\265\331\201 \330\264\331\212\330\241 \331\205\330\247\330\237 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Ni sehemu gani inayowakilisha nusu ya kitu? </p>"
           }
         }
       }
@@ -632,6 +752,12 @@ states {
             html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -647,6 +773,12 @@ states {
           key: "ar"
           value {
             html: "\330\245\330\257\330\256\330\247\331\204 \330\247\331\204\331\203\330\263\330\261."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Ingiza sehemu."
           }
         }
       }
@@ -765,6 +897,12 @@ states {
             html: "<p> \330\247\330\256\330\252\330\250\330\247\330\261 \330\247\331\204\330\247\330\263\330\252\331\203\330\264\330\247\331\201 \331\205\330\271 \330\247\331\204\330\252\331\201\330\247\330\271\331\204\330\247\330\252. <oppia-nonirtive-link \330\247\331\204\331\206\330\265 \331\205\330\271 \330\247\331\204\331\202\331\212\331\205\330\251 = \"& quot\330\233 oppia & quot\330\233\" \330\271\331\206\331\210\330\247\331\206 URL \331\205\330\271 \330\247\331\204\331\202\331\212\331\205\330\251 = \"& quot\330\233 https: //oppia.github.io&quot\330\233\"> </oppia-noninteractive-link> </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> uchunguzi wa uchunguzi na mwingiliano. <Opdia-noninteractive-link maandishi-na-thamani = \"& quot; Oppia & quot;\" url-na-thamani = \"& quot; https: //oppia.github.io&quot;\">"
+          }
+        }
       }
     }
     written_translations {
@@ -780,6 +918,12 @@ states {
           key: "ar"
           value {
             html: "\330\247\330\263\330\252\331\205\330\261\330\247\330\261 \331\201\330\265\330\247\330\271\330\257\330\247."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Kuendelea mbele."
           }
         }
       }
@@ -862,6 +1006,12 @@ states {
             html: "\331\212\331\205\331\203\331\206 \330\245\330\271\330\247\330\257\330\251 \330\265\331\212\330\247\330\272\330\251 <p> 11 * 11 \330\271\331\204\331\211 \330\243\331\206\331\207\330\247 11 * 10\330\214 \330\253\331\205 \330\243\330\266\331\201 11 \331\201\331\212 \330\247\331\204\331\206\331\207\330\247\331\212\330\251. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> 11 * 11 inaweza kutolewa tena kama 11 * 10, kisha ongeza 11 mwishoni. </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -877,6 +1027,12 @@ states {
           key: "ar"
           value {
             html: "<p> 11 \331\205\330\261\330\247\330\252 11 \331\207\331\210 121. </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> mara 11 11 ni 121. </p>"
           }
         }
       }
@@ -896,6 +1052,12 @@ states {
             html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\247\331\206\331\207\330\247 \331\201\331\212 \330\247\331\204\331\210\330\247\331\202\330\271 \330\243\331\203\330\250\330\261 \331\205\331\206 \330\260\331\204\331\203. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sio kabisa. Kwa kweli ni kubwa kuliko hiyo. Jaribu tena. </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -911,6 +1073,12 @@ states {
           key: "ar"
           value {
             html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\247\331\206\331\207\330\247 \330\243\331\202\331\204 \331\205\331\206 \330\260\331\204\331\203. </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sio kabisa. Ni chini ya hiyo. </p>"
           }
         }
       }
@@ -930,6 +1098,12 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sahihi! </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -947,6 +1121,12 @@ states {
             html: "<p> \331\205\330\247 \331\207\331\210 11 \331\205\330\261\330\251 11\330\237 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Ni nini mara 11? </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -962,6 +1142,12 @@ states {
           key: "ar"
           value {
             html: "<p> \330\255\330\257\330\253 \330\256\330\267\330\243 \331\205\330\247. \330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 121 - \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Kuna kitu kilienda vibaya. Jibu ni 121-Jaribu tena. </p>"
           }
         }
       }
@@ -1095,6 +1281,12 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sahihi </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1110,6 +1302,12 @@ states {
           key: "ar"
           value {
             html: "<p> \330\265\330\255\331\212\330\255 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sahihi </p>"
           }
         }
       }
@@ -1129,6 +1327,12 @@ states {
             html: "<p> \331\204\330\247 \331\212\330\250\330\257\331\210 \331\207\330\260\330\247 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Hapana hii haionekani kuwa sawa </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1144,6 +1348,12 @@ states {
           key: "ar"
           value {
             html: "<p> \330\261\331\202\331\205\331\212\331\206 \330\271\331\204\331\211 \330\247\331\204\330\252\331\210\330\247\331\204\331\212 20\331\252 \331\210 50\331\252 \330\243\331\203\330\253\330\261 \331\205\331\206 \330\261\331\202\331\205 \330\253\330\247\331\204\330\253. \331\206\330\263\330\250\330\251 \330\247\331\204\330\243\330\261\331\202\330\247\331\205\331\212\331\206 \331\207\331\212: </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Nambari mbili ni 20% na 50% zaidi ya idadi ya tatu. Uwiano wa nambari mbili ni: </p>"
           }
         }
       }
@@ -1163,6 +1373,12 @@ states {
             html: "<p> \330\272\331\212\330\261 \330\265\330\255\331\212\330\255 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> sio sahihi </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1178,6 +1394,12 @@ states {
           key: "ar"
           value {
             html: "\330\243\330\257\330\256\331\204 \330\250\330\252\331\206\330\263\331\212\331\202 X: Y"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Ingiza katika umbizo la x:y"
           }
         }
       }
@@ -1312,6 +1534,12 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sahihi! </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1327,6 +1555,12 @@ states {
           key: "ar"
           value {
             html: "<p> \331\201\331\212 \330\243\331\212 \331\204\330\272\330\251 \330\252\330\271\331\206\331\212 Oppia \"\330\247\331\204\330\252\330\271\331\204\331\205\"\330\237 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Je! Onpia inamaanisha \'kujifunza\'? </p>"
           }
         }
       }
@@ -1346,6 +1580,12 @@ states {
             html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211 (\330\243\331\210 \330\261\330\250\331\205\330\247 \330\247\330\263\330\252\330\256\330\257\331\205 \331\205\330\255\330\261\331\203 \330\250\330\255\330\253). </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sio kabisa. Jaribu tena (au labda utumie injini ya utaftaji). </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1361,6 +1601,12 @@ states {
           key: "ar"
           value {
             html: "\330\243\330\257\330\256\331\204 \331\204\330\272\330\251"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Ingiza lugha"
           }
         }
       }
@@ -1381,6 +1627,14 @@ states {
           value {
             html_list {
               html: "\330\247\331\204\331\201\331\206\331\204\331\206\330\257\331\212\330\251"
+            }
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html_list {
+              html: "Kifini"
             }
           }
         }
@@ -1476,6 +1730,12 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sahihi! </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1491,6 +1751,12 @@ states {
           key: "ar"
           value {
             html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\331\204\331\210\331\206 \"G\" \331\201\331\212 \"RGB\" \330\252\330\252\331\210\330\247\331\201\331\202 \331\205\330\271 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Je! \'G\' katika \'RGB\' inahusiana na rangi gani? </p>"
           }
         }
       }
@@ -1510,6 +1776,12 @@ states {
             html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Sio kabisa. Jaribu tena. </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1525,6 +1797,12 @@ states {
           key: "ar"
           value {
             html: "<p> <strong> \330\243\330\256\330\266\330\261 </strong> </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> <strong> kijani </strong> </p>"
           }
         }
       }
@@ -1544,6 +1822,12 @@ states {
             html: "<p> <strong> \330\243\330\255\331\205\330\261 </strong> </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> <strong> nyekundu </strong> </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1559,6 +1843,12 @@ states {
           key: "ar"
           value {
             html: "<p> <strong> \330\247\331\204\330\243\330\262\330\261\331\202 </strong> </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> <strong> bluu </strong> </p>"
           }
         }
       }
@@ -1690,6 +1980,12 @@ states {
             html: "<p> \331\201\330\261\330\262 \331\205\330\247 \331\212\331\204\331\212 \331\201\331\212 \330\252\330\261\330\252\331\212\330\250 \330\252\331\206\330\247\330\262\331\204\331\212. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Panga yafuatayo kwa mpangilio wa kushuka. </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1705,6 +2001,12 @@ states {
           key: "ar"
           value {
             html: "<p> \331\212\330\250\330\257\331\210 \330\243\331\206\331\203 \331\201\330\271\331\204\330\252 \330\247\331\204\331\206\330\270\330\247\331\205 \330\247\331\204\330\265\330\271\331\210\330\257\331\212 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Inaonekana kama ulifanya agizo la kupaa </p>"
           }
         }
       }
@@ -1724,6 +2026,12 @@ states {
             html: "<p> \331\207\330\260\330\247 \331\204\330\247 \331\212\330\250\330\257\331\210 \330\265\330\255\331\212\330\255\330\247 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Hii haionekani kuwa sawa kwangu </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1739,6 +2047,12 @@ states {
           key: "ar"
           value {
             html: "<p> \331\207\330\260\330\247 \330\265\330\255\331\212\330\255 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Hiyo ni sahihi </p>"
           }
         }
       }
@@ -1758,6 +2072,12 @@ states {
             html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p>Sio kabisa. Jaribu tena.</p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1771,6 +2091,12 @@ states {
         }
         translation_mapping {
           key: "ar"
+          value {
+            html: "<p> 0.35 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
           value {
             html: "<p> 0.35 </p>"
           }
@@ -1792,6 +2118,12 @@ states {
             html: "<p> 3/5 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p>3/5</p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1809,6 +2141,12 @@ states {
             html: "<p> 0.5 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> 0.5 </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1822,6 +2160,12 @@ states {
         }
         translation_mapping {
           key: "ar"
+          value {
+            html: "<p> 0.46 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
           value {
             html: "<p> 0.46 </p>"
           }
@@ -2028,6 +2372,12 @@ states {
             html: "<p> \331\201\330\261\330\262 \331\205\330\247 \331\212\331\204\331\212 \331\201\331\212 \330\252\330\261\330\252\331\212\330\250 \330\252\331\206\330\247\330\262\331\204\331\212\330\214 \331\210\330\266\330\271 \330\247\331\204\330\271\331\206\330\247\330\265\330\261 \330\247\331\204\331\205\330\252\330\263\330\247\331\210\331\212\330\251 \331\201\331\212 \331\206\331\201\330\263 \330\247\331\204\331\205\331\210\330\266\330\271. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p>Panga zifuatazo kwa mpangilio wa kushuka, ukiweka vitu sawa katika nafasi sawa.</p>"
+          }
+        }
       }
     }
     written_translations {
@@ -2043,6 +2393,12 @@ states {
           key: "ar"
           value {
             html: "<p> \331\212\330\250\330\257\331\210 \330\243\331\206\331\203 \331\201\330\271\331\204\330\252 \330\252\330\261\330\252\331\212\330\250\331\213\330\247 \330\252\330\265\330\247\330\271\330\257\331\212\331\213\330\247 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p>Inaonekana kama ulifanya agizo la kupanda</p>"
           }
         }
       }
@@ -2067,6 +2423,12 @@ states {
             html: "<p> \331\207\330\260\330\247 \330\265\330\255\331\212\330\255 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Hiyo ni sahihi </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -2084,6 +2446,12 @@ states {
             html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p>Sio kabisa. Jaribu tena.</p>"
+          }
+        }
       }
     }
     written_translations {
@@ -2097,6 +2465,12 @@ states {
         }
         translation_mapping {
           key: "ar"
+          value {
+            html: "<p> 3/5 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
           value {
             html: "<p> 3/5 </p>"
           }
@@ -2118,6 +2492,12 @@ states {
             html: "<p> 0.6 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> 0.6 </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -2135,6 +2515,12 @@ states {
             html: "<p> 0.35 </p>"
           }
         }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> 0.35 </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -2148,6 +2534,12 @@ states {
         }
         translation_mapping {
           key: "ar"
+          value {
+            html: "<p> 0.46 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
           value {
             html: "<p> 0.46 </p>"
           }
@@ -2302,6 +2694,12 @@ states {
           key: "ar"
           value {
             html: "\330\252\331\207\330\247\331\206\331\212\331\206\330\247\330\214 \331\204\331\202\330\257 \330\247\331\206\330\252\331\207\331\212\330\252!"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Hongera, umemaliza!"
           }
         }
       }
