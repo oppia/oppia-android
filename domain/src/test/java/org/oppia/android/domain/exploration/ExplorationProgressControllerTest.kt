@@ -107,7 +107,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -3031,7 +3031,7 @@ class ExplorationProgressControllerTest {
       testEnvironmentConfig.isUsingBazel()
 
     @Provides
-    @LearnerStudyAnalytics
+    @EnableLearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       // Enable the study by default in tests.
       return PlatformParameterValue.createDefaultParameter(defaultValue = true)
