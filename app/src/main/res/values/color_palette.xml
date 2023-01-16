@@ -46,10 +46,11 @@
   <color name="color_palette_content_background_solid_color">@color/color_def_oppia_solid_blue</color>
   <color name="color_palette_content_background_stroke_color">@color/color_def_oppia_stroke_blue</color>
   <color name="color_palette_rounded_rect_background_color">@color/color_def_white</color>
-  <color name="color_palette_multiple_choice_color">@color/color_def_oppia_dark_blue</color>
-  <color name="color_palette_multiple_choice_text_color">@color/color_def_oppia_dark_blue</color>
-  <color name="color_palette_item_selection_color">@color/color_def_oppia_dark_blue</color>
-  <color name="color_palette_item_selection_text_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_rounded_rect_stroke_color">@color/color_def_oppia_grey_border</color>
+  <color name="color_palette_item_selection_selected_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_item_selection_unselected_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_item_selection_selected_text_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_item_selection_unselected_text_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_multiple_choice_selected_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_multiple_choice_selected_text_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_forgot_pin_color">@color/color_def_oppia_green</color>
@@ -58,7 +59,7 @@
   <color name="color_palette_show_hide_color">@color/color_def_oppia_green</color>
   <color name="color_palette_info_icon_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_disabled_button_background_color">@color/color_def_black_grey</color>
-  <color name="color_palette_back_arrow_button_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_back_forward_arrow_button_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_replay_button_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_progress_bar_stroke_color">@color/color_def_oppia_green</color>
   <color name="color_palette_progress_bar_solid_color">@color/color_def_oppia_green</color>
@@ -110,6 +111,8 @@
   <color name="color_palette_drag_drop_single_item_gradient_center_color">@color/color_def_drag_drop_single_item_gradient_center</color>
   <color name="color_palette_drag_drop_single_item_gradient_start_color">@color/color_def_white</color>
   <color name="color_palette_drag_drop_single_item_stroke_color">@color/color_def_stroke_silver</color>
+  <color name="color_palette_merge_icon_enabled_color">@color/color_def_black</color>
+  <color name="color_palette_merge_icon_disabled_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_confetti_red_color">@color/color_def_confetti_ruby_red</color>
   <color name="color_palette_confetti_yellow_color">@color/color_def_confetti_light_gold</color>
   <color name="color_palette_confetti_blue_color">@color/color_def_oppia_dark_blue</color>
@@ -119,13 +122,16 @@
   <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_white</color>
   <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
   <color name="color_palette_icon_background_secondary_color">@color/color_def_white</color>
-  <color name="color_palette_accent_background_color">@color/color_def_oppia_dark_blue</color>
-  <color name="color_palette_seekbar_progress_background_color">@color/color_def_ocean_blue</color>
+  <color name="color_palette_icon_white_color">@color/color_def_white</color>
+  <color name="color_palette_icon_color">@color/color_def_black</color>
+  <color name="color_palette_audio_fragment_background_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_seekbar_progress_background_color">@color/color_def_stroke_silver</color>
+  <color name="color_palette_seekbar_thumb_shadow_color">@color/color_def_black_54</color>
   <color name="color_palette_toolbar_secondary_color">@color/color_def_oppia_green</color>
   <color name="color_palette_secondary_dark_background_color">@color/color_def_oppia_light_green</color>
   <color name="color_palette_concept_card_toolbar_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_revision_card_toolbar_color">@color/color_def_oppia_brown_dark</color>
-  <color name="color_palette_menu_selected_text_color">@color/color_def_oppia_red</color>
+  <color name="color_palette_menu_selected_text_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_developer_option_menu_selected_color">@color/color_def_persian_blue</color>
   <color name="color_palette_underline_view_color">@color/color_def_oppia_light_brown</color>
   <color name="color_palette_menu_text_color">@color/color_def_black</color>
@@ -181,4 +187,5 @@
   <color name="color_palette_story_chapter_not_start_stroke_color">@color/color_def_grey</color>
   <color name="color_palette_story_chapter_default_progress_stroke_color">@color/color_def_light_grey</color>
   <color name="color_palette_topic_thumbnail_background_color">@color/color_def_columbia_blue</color>
+  <color name="color_palette_navbar_header_background_color">@color/color_def_japanese_indigo</color>
 </resources>
