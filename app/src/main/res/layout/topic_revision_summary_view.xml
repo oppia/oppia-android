@@ -22,7 +22,7 @@
     android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
     android:clipToPadding="true"
     android:onClick="@{(v) -> viewModel.onRevisionItemPressed.onTopicRevisionSummaryClicked(viewModel.subtopic)}"
-    app:cardBackgroundColor="@color/color_def_white"
+    app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:cardMaxElevation="4dp">
@@ -49,7 +49,7 @@
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_def_oppia_brown_dark"
+        android:background="@color/component_color_shared_revision_card_text_background_color"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
         android:lines="3"
@@ -58,7 +58,7 @@
         android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
         android:paddingBottom="16dp"
         android:text="@{viewModel.subtopicTitle}"
-        android:textColor="@color/color_def_white"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/subtopic_image_view" />

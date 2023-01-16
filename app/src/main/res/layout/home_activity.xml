@@ -24,7 +24,7 @@
       android:minHeight="?attr/actionBarSize"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
       app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:titleTextAppearance="@style/ToolbarTitle" />
+      app:titleTextAppearance="@style/ToolbarTextAppearance" />
 
     <FrameLayout
       android:id="@+id/home_fragment_placeholder"
