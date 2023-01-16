@@ -124,8 +124,8 @@ class ContinueButtonView @JvmOverloads constructor(
       // Repeat the animation after a fixed interval.
       lifecycleSafeTimerFactory.createTimer(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS)
         .observe(fragment) {
-        startAnimating()
-      }
+          startAnimating()
+        }
     }
   }
 }
