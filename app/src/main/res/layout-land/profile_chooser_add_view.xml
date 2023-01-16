@@ -43,15 +43,19 @@
 
       <TextView
         android:id="@+id/add_profile_text"
-        style="@style/AddMultiProfileHeading"
+        style="@style/Caption"
         android:layout_gravity="center"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
         android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}" />
 
       <TextView
         android:id="@+id/add_profile_description_text"
-        style="@style/AddMultiProfileBody"
+        style="@style/TextViewStart"
         android:layout_gravity="center"
         android:textAlignment="center"
+        android:fontFamily="sans-serif"
+        android:textSize="12sp"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
         android:text="@string/set_up_multiple_profiles_description"
         android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
     </LinearLayout>
