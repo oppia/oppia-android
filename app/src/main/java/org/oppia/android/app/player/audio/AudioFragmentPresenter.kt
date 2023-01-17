@@ -66,10 +66,9 @@ class AudioFragmentPresenter @Inject constructor(
   private val viewModel by lazy {
     getAudioViewModel()
   }
-  
+
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
-
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
   fun handleCreateView(
