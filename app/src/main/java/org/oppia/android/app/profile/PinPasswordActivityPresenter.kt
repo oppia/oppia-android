@@ -10,8 +10,8 @@ import org.oppia.android.R
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.PinPasswordActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -74,7 +74,7 @@ class PinPasswordActivityPresenter @Inject constructor(
     binding.pinPasswordInputPinEditText.onTextChanged { pin ->
       pin?.let { inputtedPin ->
         if (inputtedPin.isNotEmpty()) {
-          pinViewModel.showError.set(false)
+          pinViewModel.errorMessage.set("")
         }
         if (inputtedPin.length == pinViewModel.correctPin.get()!!.length &&
           inputtedPin.isNotEmpty() && pinViewModel.correctPin.get()!!
@@ -94,6 +94,9 @@ class PinPasswordActivityPresenter @Inject constructor(
                 }
               )
           } else {
+            pinViewModel.errorMessage.set(
+              resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin)
+            )
             binding.pinPasswordInputPinEditText.startAnimation(
               AnimationUtils.loadAnimation(
                 activity,
@@ -106,7 +109,6 @@ class PinPasswordActivityPresenter @Inject constructor(
                 binding.pinPasswordInputPinEditText.setText("")
               }
             )
-            pinViewModel.showError.set(true)
           }
         }
       }

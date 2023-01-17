@@ -50,7 +50,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private var internalProfileId: Int = -1
   private lateinit var binding: RecentlyPlayedFragmentBinding
-  private lateinit var ongoingListAdapter: OngoingListAdapter
+  private lateinit var promotedStoryListAdapter: PromotedStoryListAdapter
   private val itemList: MutableList<RecentlyPlayedItemViewModel> = ArrayList()
 
   fun handleCreateView(
@@ -62,17 +62,17 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
     this.internalProfileId = internalProfileId
 
-    ongoingListAdapter = OngoingListAdapter(activity, itemList)
+    promotedStoryListAdapter = PromotedStoryListAdapter(itemList)
     binding.ongoingStoryRecyclerView.apply {
-      adapter = ongoingListAdapter
+      adapter = promotedStoryListAdapter
     }
     binding.lifecycleOwner = fragment
 
-    subscribeToOngoingStoryList()
+    subscribeToPromotedStoryList()
     return binding.root
   }
 
-  private val ongoingStoryListSummaryResultLiveData:
+  private val promotedStoryListSummaryResultLiveData:
     LiveData<AsyncResult<PromotedActivityList>>
     by lazy {
       topicListController.getPromotedActivityList(
@@ -80,7 +80,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       ).toLiveData()
     }
 
-  private fun subscribeToOngoingStoryList() {
+  private fun subscribeToPromotedStoryList() {
     getAssumedSuccessfulPromotedActivityList().observe(
       fragment,
       {
@@ -102,7 +102,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             it.promotedStoryList.olderPlayedStoryCount,
             it.promotedStoryList.suggestedStoryCount
           )
-        ongoingListAdapter.notifyDataSetChanged()
+        promotedStoryListAdapter.notifyDataSetChanged()
       }
     )
   }
@@ -126,11 +126,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     promotedStory: PromotedStory,
     index: Int
   ): RecentlyPlayedItemViewModel {
-    return OngoingStoryViewModel(
+    return PromotedStoryViewModel(
       activity,
       promotedStory,
       entityType,
-      fragment as OngoingStoryClickListener,
+      fragment as PromotedStoryClickListener,
       index,
       resourceHandler,
       translationController
@@ -166,7 +166,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {
-    return Transformations.map(ongoingStoryListSummaryResultLiveData) {
+    return Transformations.map(promotedStoryListSummaryResultLiveData) {
       when (it) {
         // If there's an error loading the data, assume the default.
         is AsyncResult.Failure, is AsyncResult.Pending -> PromotedActivityList.getDefaultInstance()
@@ -210,7 +210,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     }
 
     val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)
-    ongoingListAdapter.setSpanCount(spanCount)
+    promotedStoryListAdapter.setSpanCount(spanCount)
 
     val layoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -228,7 +228,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     return layoutManager
   }
 
-  fun onOngoingStoryClicked(promotedStory: PromotedStory) {
+  fun promotedStoryClicked(promotedStory: PromotedStory) {
     val profileId = ProfileId.newBuilder().apply {
       internalId = internalProfileId
     }.build()

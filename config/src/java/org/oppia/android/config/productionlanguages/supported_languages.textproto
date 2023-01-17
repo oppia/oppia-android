@@ -1,0 +1,59 @@
+language_definitions {
+  language: ENGLISH
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "en"
+    }
+    android_resources_language_id {
+      # Note that while English is the default language for Oppia & no special language code is
+      # needed for it, "en" is still used here for consistency. Technically this will match strings
+      # against "values-en", but because the team will never define strings with that qualifier they
+      # will always fallback to the default English strings under "values".
+      language_code: "en"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "en"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "en"
+    }
+  }
+}
+language_definitions {
+  language: PORTUGUESE
+  min_android_sdk_version: 1
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt"
+    }
+  }
+}
+language_definitions {
+  language: BRAZILIAN_PORTUGUESE
+  fallback_macro_language: PORTUGUESE
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt-BR"
+    }
+    android_resources_language_id {
+      language_code: "pt"
+      region_code: "BR"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt-BR"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt-BR"
+    }
+  }
+}

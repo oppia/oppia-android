@@ -13,7 +13,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_shared_screen_primary_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/topic_app_bar_layout"
@@ -28,7 +28,7 @@
         android:id="@+id/story_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_story_activity_toolbar_color"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
@@ -36,21 +36,13 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
-        <asia.ivity.android.marqueeview.MarqueeView
-          android:id="@+id/story_marquee_view"
-          android:layout_width="match_parent"
+        <TextView
+          android:id="@+id/story_toolbar_title"
+          style="@style/MarqueeToolbarTitleTextView"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          app:animationDelay="500"
-          app:animationSpeed="10">
-
-          <TextView
-            android:id="@+id/story_toolbar_title"
-            style="@style/MarqueeToolbarTitleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:text="@{viewModel.storyNameLiveData}" />
-        </asia.ivity.android.marqueeview.MarqueeView>
+          android:layout_marginEnd="20dp"
+          android:text="@{viewModel.storyNameLiveData}" />
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -67,7 +59,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:background="@color/component_color_story_activity_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/story_fragment_padding_bottom"

@@ -21,12 +21,12 @@
 
   <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
-    <item name="colorPrimaryDark">@color/component_color_concept_card_fragment_status_bar_color</item>
+    <item name="colorPrimaryDark">@color/component_color_shared_fragment_status_bar_color</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
     <item name="android:windowIsFloating">false</item>
     <!-- This is important! Don't forget to set window background -->
-    <item name="android:windowBackground">@color/concept_card_background</item>
+    <item name="android:windowBackground">@color/component_color_shared_screen_secondary_background_color</item>
     <!-- Additionally if you want animations when dialog opening -->
     <item name="android:windowEnterAnimation">@anim/slide_up</item>
     <item name="android:windowExitAnimation">@anim/slide_down</item>
@@ -34,12 +34,12 @@
 
   <style name="FullScreenReviewDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
-    <item name="colorPrimaryDark">@color/oppia_primary_dark</item>
+    <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
     <item name="android:windowIsFloating">false</item>
     <!-- This is important! Don't forget to set window background -->
-    <item name="android:windowBackground">@color/color_def_white</item>
+    <item name="android:windowBackground">@color/component_color_shared_screen_primary_background_color</item>
     <!-- Additionally if you want animations when dialog opening -->
     <item name="android:windowEnterAnimation">@anim/slide_up</item>
     <item name="android:windowExitAnimation">@anim/slide_down</item>
@@ -47,12 +47,12 @@
 
   <style name="FullScreenHintDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
-    <item name="colorPrimaryDark">@color/hint_full_dialog_status_bar</item>
+    <item name="colorPrimaryDark">@color/component_color_shared_hint_dialog_status_bar_color</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
     <item name="android:windowIsFloating">false</item>
     <!-- This is important! Don't forget to set window background -->
-    <item name="android:windowBackground">@color/color_def_white</item>
+    <item name="android:windowBackground">@color/component_color_shared_screen_primary_background_color</item>
     <!-- Additionally if you want animations when dialog opening -->
     <item name="android:windowEnterAnimation">@anim/slide_up</item>
     <item name="android:windowExitAnimation">@anim/slide_down</item>
@@ -69,7 +69,7 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:textColor">@color/color_def_white</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
 
@@ -108,7 +108,7 @@
 
   <style name="ToolbarTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
     <item name="android:textSize">20sp</item>
-    <item name="android:textColor">@color/color_def_white</item>
+    <item name="android:textColor">@color/component_color_shared_activity_toolbar_text_color</item>
   </style>
 
   <style name="TabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
@@ -175,6 +175,7 @@
     <item name="errorEnabled">true</item>
     <item name="errorIconTint">@color/component_color_shared_text_input_layout_error_color</item>
     <item name="errorTextColor">@color/component_color_shared_text_input_layout_error_color</item>
+    <item name="helperTextTextColor">@color/component_color_shared_text_input_layout_helper_text_color</item>
     <item name="boxStrokeErrorColor">@color/component_color_shared_text_input_layout_error_color</item>
     <item name="hintTextColor">@color/component_color_shared_text_input_layout_text_color</item>
     <item name="android:textAlignment">viewStart</item>
@@ -196,7 +197,7 @@
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">24sp</item>
     <item name="fontFamily">sans-serif</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading1ViewStart" parent="Heading1">
@@ -219,7 +220,7 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">20sp</item>
     <item name="fontFamily">sans-serif-medium</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading2ViewStart" parent="Heading2">
@@ -239,7 +240,7 @@
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif-medium</item>
     <item name="android:gravity">center_vertical</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading3ViewCenterVertical" parent="Heading3">
@@ -254,7 +255,7 @@
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading4ViewCenter" parent="Heading4">
@@ -273,7 +274,7 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">14sp</item>
     <item name="fontFamily">sans-serif-medium</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading5ViewCenterVertical" parent="Heading5">
@@ -386,8 +387,8 @@
     <item name="android:paddingStart">12dp</item>
     <item name="android:paddingTop">8dp</item>
     <item name="android:singleLine">true</item>
-    <item name="android:textColor">@color/component_color_shared_input_interaction_edit_text_text_color</item>
-    <item name="android:textColorHint">@color/edit_text_hint</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+    <item name="android:textColorHint">@color/component_color_shared_edit_text_hint_color</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">italic</item>
     <item name="fontFamily">sans-serif</item>
@@ -397,7 +398,7 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:fontFamily">sans-serif</item>
-    <item name="android:textColor">@color/edit_text_error</item>
+    <item name="android:textColor">@color/component_color_shared_input_error_color</item>
     <item name="android:textSize">12sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
@@ -410,14 +411,11 @@
   </style>
   <!-- Start Over Lesson Button -->
   <style name="StartOverLessonButton" parent="TextAppearance.AppCompat.Widget.Button">
-    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_width">144dp</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:paddingEnd">12dp</item>
     <item name="android:paddingStart">12dp</item>
-    <item name="android:paddingTop">8dp</item>
-    <item name="android:paddingBottom">8dp</item>
-    <item name="android:minWidth">48dp</item>
-    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:minWidth">144dp</item>
     <item name="android:background">@drawable/start_over_button_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="drawableStartCompat">@drawable/ic_start_over_24dp</item>
@@ -429,34 +427,38 @@
   </style>
   <!-- Continue Lesson Button -->
   <style name="ContinueLessonButton" parent="TextAppearance.AppCompat.Widget.Button">
-    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_width">144dp</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:drawablePadding">4dp</item>
     <item name="android:paddingEnd">12dp</item>
     <item name="android:paddingStart">12dp</item>
-    <item name="android:paddingTop">8dp</item>
-    <item name="android:paddingBottom">8dp</item>
-    <item name="android:minWidth">48dp</item>
+    <item name="android:minWidth">144dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="drawableEndCompat">@drawable/ic_arrow_right_alt_24dp</item>
-    <item name="drawableTint">@color/color_def_white</item>
+    <item name="drawableTint">@color/component_color_shared_white_background_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:textColor">@color/color_def_white</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
 
   <style name="BorderlessMaterialButton" parent="Widget.AppCompat.Button.Borderless" />
 
   <style name="MarqueeToolbarTitleTextView" parent="TextView.Common1">
+    <item name="android:ellipsize">marquee</item>
+    <item name="android:fadingEdge">horizontal</item>
+    <item name="android:fadingEdgeLength">20dp</item>
     <item name="android:focusable">false</item>
     <item name="android:focusableInTouchMode">true</item>
     <item name="android:fontFamily">sans-serif</item>
+    <item name="android:marqueeRepeatLimit">1</item>
     <item name="android:minHeight">48dp</item>
     <item name="android:textAlignment">viewStart</item>
     <item name="android:textColor">@color/color_def_white</item>
     <item name="android:textSize">20sp</item>
+    <item name="android:requiresFadingEdge">horizontal</item>
+    <item name="android:scrollHorizontally">true</item>
     <item name="android:singleLine">true</item>
     <item name="fontFamily">sans-serif</item>
     <item name="textAllCaps">false</item>

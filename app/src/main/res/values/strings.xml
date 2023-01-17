@@ -37,6 +37,9 @@
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
+  <string name="exploration_exit_button_spotlight_hint">Exit anytime using this button. We will save your progress.</string>
+  <string name="voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try it!</string>
+  <string name="voiceover_language_icon_spotlight_hint">Tap to change the voiceover language.</string>
   <string name="progress_database_full_dialog_title">Maximum storage capacity reached</string>
   <string name="progress_database_full_dialog_description">Saved progress for the lesson \"%s\" will be deleted.</string>
   <string name="progress_database_full_dialog_continue_button">Continue</string>
@@ -46,6 +49,13 @@
   <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
   <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_practice_start">Start</string>
+  <string name="info_tab_content_description">Details about the topic.</string>
+  <string name="revision_tab_content_description">Revise concepts learned from completed lessons here.</string>
+  <string name="practice_tab_content_description">Practice the concepts learned from completed lessons.</string>
+  <string name="lessons_tab_content_description">Tap here to start playing a lesson.</string>
+  <string name="topic_lessons_tab_spotlight_hint">Find all your lessons here.</string>
+  <string name="topic_revision_tab_spotlight_hint">Revise concepts learned from completed lessons here.</string>
+  <string name="first_chapter_spotlight_hint">Tap here to start playing a lesson.</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
   <string name="previous_state_description">Navigate to the previous card</string>
@@ -250,7 +260,7 @@
   <string name="admin_auth_submit">Submit</string>
   <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->
-  <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
+  <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize manage profiles on the device.</string>
   <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
   <string name="admin_pin_new_pin">New 5-Digit PIN</string>
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
@@ -261,9 +271,9 @@
   <!-- AddProfileActivity -->
   <string name="add_profile_activity_label">Add Profile</string>
   <string name="add_profile_title">Add Profile</string>
-  <string name="add_profile_input_name">Name*</string>
-  <string name="add_profile_input_pin">3-Digit PIN*</string>
-  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
+  <string name="add_profile_input_name">Name</string>
+  <string name="add_profile_input_pin">3-Digit PIN</string>
+  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator PIN.</string>
   <string name="add_profile_create_btn">Create</string>
@@ -276,7 +286,6 @@
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
-  <string name="required_fields_content_description">Fields marked with an * are required.</string>
   <string name="current_profile_picture_content_description">Current profile picture</string>
   <string name="edit_profile_picture_content_description">Edit profile picture</string>
   <!-- OnboardingActivity -->
@@ -337,6 +346,8 @@
   <string name="home_activity_back_dialog_exit">Exit</string>
   <!-- HomeActivity -->
   <string name="home_activity_title">Home</string>
+  <string name="promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
+  <string name="select_a_topic_to_start">Select a Topic to Start</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->
@@ -440,11 +451,11 @@
   <string name="hint_list_item_number">Hint %s</string>
   <string name="hints_andSolution_close_icon_description">Navigate up</string>
   <string name="hints_toolbar_title">Hints</string>
-  <string name="show_solution">Show</string>
+  <string name="show_solution">Show solution</string>
   <string name="reveal_solution">Reveal Solution</string>
   <string name="reveal_hint">Show Hint</string>
-  <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
-  <string name="show_hide_solution_list">Show/Hide solution</string>
+  <string name="hide_hint">Hide Hint</string>
+  <string name="hide_solution">Hide solution</string>
   <string name="the_only_solution_is">The only solution is :  </string>
   <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
   <string name="reveal">Reveal</string>
@@ -560,19 +571,17 @@
   <string name="faq_question_5">Who is an Administrator?</string>
   <string name="faq_question_6">Why is the Exploration player not loading?</string>
   <string name="faq_question_7">Why is my audio not playing?</string>
-  <string name="faq_question_8">How do I download a Topic?</string>
   <string name="faq_question_9">I can\'t find my question here. What now?</string>
   <string name="faq_answer_1"><![CDATA[<p>If it is your first time creating a profile and not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
   <string name="faq_answer_2"><![CDATA[<p>Once a profile is deleted:</p><ol><li>The profile cannot be recovered. </li><li> Profile information such as name, photos, and progress will be permanently deleted. </li></ol><p>To delete a profile (excluding the <u>Administrator\'s</u>):</p><ol><li> From the Administrator\'s Home Page, tap on the menu button on the top left. </li><li>Tap on <strong>Administrator Controls</strong>. </li><li>Tap on <strong>Edit Profiles</strong>. </li><li>Tap on the Profile you would like to delete. </li><li>At the bottom of the screen, tap <strong>Profile Deletion</strong>. </li><li>Tap <strong>Delete</strong> to confirm deletion. </li></ol><p><br></p><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
   <string name="faq_answer_3"><![CDATA[<p>To change your email/phone number:</p><ol><li>From the Administrator\'s Home Page, tap on the menu button on the top left.</li><li>Tap on <strong>Administrator Controls</strong>.</li><li>Tap on <strong>Edit Account</strong>.</li></ol><p><br></p> <p>If you want to change your email:</p><ol><li>Enter your new email and tap <strong>Save</strong>.</li><li>A confirmation link is sent to confirm your new email. The link will expire after 24 hours and must be clicked on to be associated with your account.</li></ol><p><br></p> <p>If changing your phone number:</p><ol><li> Enter your new phone number and tap <strong>Verify</strong>.</li><li> A code is sent to confirm your new number. The code will expire after 5 minutes and must be entered in the new screen to be associated with your account.</li></ol>]]></string>
   <string name="faq_answer_4"><![CDATA[<p>%1$s <i>\"O-pee-yah\"</i> (Finnish) - \"to learn\"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
-  <string name="faq_answer_5"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as downloading Topics, changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has \"Administrator\" written under their name is the Administrator. </p>]]></string>
+  <string name="faq_answer_5"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has \"Administrator\" written under their name is the Administrator. </p>]]></string>
   <string name="faq_answer_6"><![CDATA[<p>If the Exploration Player is not loading</p><p><br></p><p>Check to see if the app is up to date:</p><p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. </li></ul><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above </li></ul><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
   <string name="faq_answer_7"><![CDATA[<p>If your audio is not playing</p><p><br></p><p>Check to see if the app is up to date:</p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet may cause the audio to load irregularly, making it difficult to play. </li></ul><p><br></p><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above</li></ul><p><br></p><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
-  <string name="faq_answer_8"><![CDATA[<p>To download an Exploration:</p><ol><li>From the Home Page, tap on a Topic or Exploration.</li><li>From that Topic Page, tap on the <strong>Info</strong> tab.</li><li>Tap on <strong>Download Topic</strong>. </li><li>Depending on your app settings, you may need Administrator approval or stable Wifi connection to complete your download. If needed, once these requirements are satisfied, the Topic has been downloaded onto the device and can be used offline by all profiles.</li></ol><p>]]></string>
   <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
-  <string name="select_a_topic_to_start">Select a Topic to Start</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
+  <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
 </resources>

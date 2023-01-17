@@ -10,6 +10,7 @@ import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.DelegatingWorkerFactory
 import androidx.work.NetworkType
+import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
@@ -27,6 +28,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.analytics.testing.FakeLogScheduler
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
@@ -34,7 +36,6 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWork
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -76,9 +77,6 @@ class LogReportWorkManagerInitializerTest {
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
-
-  @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @Inject
@@ -116,7 +114,7 @@ class LogReportWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    logReportWorkManagerInitializer.onCreate()
+    logReportWorkManagerInitializer.onCreate(WorkManager.getInstance(context))
     testCoroutineDispatchers.runCurrent()
 
     val enqueuedEventWorkRequestId = logReportWorkManagerInitializer.getWorkRequestForEventsId()
@@ -301,7 +299,8 @@ class LogReportWorkManagerInitializerTest {
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusModule::class, ApplicationLifecycleModule::class
+      SyncStatusModule::class, ApplicationLifecycleModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent {

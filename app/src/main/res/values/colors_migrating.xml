@@ -23,7 +23,6 @@
   <color name="oppia_progress_chapter_in_progress">#E7AC9B</color>
   <color name="oppia_progress_chapter_not_finished">#999999</color>
   <color name="oppia_admin_auth_secondary_text">#555555</color>
-  <color name="oppia_onboarding_divider">#707070</color>
   <color name="oppia_disabled_button_background">#33999999</color>
   <color name="oppia_text_shadow">#1F000000</color>
   <color name="oppia_grey_border">#DDDDDD</color>
@@ -41,8 +40,6 @@
   <color name="audio_component_background">@color/color_def_oppia_dark_blue</color>
   <!-- PROFILE COMPONENT -->
   <color name="avatar_border">#707070</color>
-  <color name="profile_chooser_background">#212121</color>
-  <color name="profile_chooser_grey_text">#999999</color>
   <color name="profile_edit_background">#E5E5E5</color>
   <color name="general_navigation_background">#E5E5E5</color>
   <color name="app_version_background">#E5E5E5</color>
@@ -112,4 +109,7 @@
   <color name="admin_highlighted">#A5D3EC</color>
   <color name="coming_soon_end">#674172</color>
   <color name="coming_soon_start">#7659B6</color>
+  <color name="spotlight_overlay_background">#BF000000</color>
+  <!-- SPOTLIGHT OVERLAY COLORS -->
+  <color name="spotlight_hint_background">#FFFFF0</color>
 </resources>

@@ -19,13 +19,13 @@
       android:id="@+id/profile_edit_toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/oppia_primary"
+      android:background="@color/component_color_shared_activity_toolbar_color"
+      android:minHeight="?attr/actionBarSize"
       android:textSize="20sp"
       app:navigationContentDescription="@string/navigate_up"
       app:navigationIcon="?attr/homeAsUpIndicator"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-      app:titleTextAppearance="@style/ToolbarTextAppearance"
-      app:titleTextColor="@color/color_def_white" />
+      app:titleTextAppearance="@style/ToolbarTextAppearance" />
   </com.google.android.material.appbar.AppBarLayout>
 
   <FrameLayout

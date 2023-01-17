@@ -14,7 +14,7 @@ private const val RECENTLY_PLAYED_FRAGMENT_INTERNAL_PROFILE_ID_KEY =
   "RecentlyPlayedFragment.internal_profile_id"
 
 /** Fragment that contains all recently played stories. */
-class RecentlyPlayedFragment : InjectableFragment(), OngoingStoryClickListener {
+class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener {
   companion object {
     const val TAG_RECENTLY_PLAYED_FRAGMENT = "TAG_RECENTLY_PLAYED_FRAGMENT"
 
@@ -47,7 +47,7 @@ class RecentlyPlayedFragment : InjectableFragment(), OngoingStoryClickListener {
     return recentlyPlayedFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 
-  override fun onOngoingStoryClicked(promotedStory: PromotedStory) {
-    recentlyPlayedFragmentPresenter.onOngoingStoryClicked(promotedStory)
+  override fun promotedStoryClicked(promotedStory: PromotedStory) {
+    recentlyPlayedFragmentPresenter.promotedStoryClicked(promotedStory)
   }
 }

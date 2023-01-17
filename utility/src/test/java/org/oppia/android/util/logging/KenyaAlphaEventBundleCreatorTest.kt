@@ -58,8 +58,8 @@ import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.app.model.EventLog.StoryContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.TopicContext
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -1406,7 +1406,7 @@ class KenyaAlphaEventBundleCreatorTest {
     // within the same application instance.
     @Provides
     @Singleton
-    @LearnerStudyAnalytics
+    @EnableLearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics

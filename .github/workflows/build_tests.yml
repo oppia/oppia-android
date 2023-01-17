@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -148,24 +148,18 @@ jobs:
       - name: Copy Oppia dev APKs for uploading
         run: |
           cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia_kitkat.apk /home/runner/work/oppia-android/oppia-android/
 
       - uses: actions/upload-artifact@v2
         with:
           name: oppia-bazel.apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: oppia-bazel-kitkat.apk
-          path: /home/runner/work/oppia-android/oppia-android/oppia_kitkat.apk
-
   build_oppia_dev_aab:
     name: Build Oppia AAB (developer flavors)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -294,27 +288,12 @@ jobs:
         run: |
           bazel build -- //:oppia_dev_kitkat
 
-      - name: Copy Oppia developer AABs for uploading
-        run: |
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia_dev.aab /home/runner/work/oppia-android/oppia-android/
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia_dev_kitkat.aab /home/runner/work/oppia-android/oppia-android/
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: oppia_dev.aab
-          path: /home/runner/work/oppia-android/oppia-android/oppia_dev.aab
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: oppia_dev_kitkat.aab
-          path: /home/runner/work/oppia-android/oppia-android/oppia_dev_kitkat.aab
-
   build_oppia_alpha_aab:
     name: Build Oppia AAB (alpha flavors)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -456,33 +435,12 @@ jobs:
         run: |
           bazel build --compilation_mode=opt -- //:oppia_alpha_kenya
 
-      - name: Copy Oppia alpha AABs for uploading
-        run: |
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia_alpha.aab /home/runner/work/oppia-android/oppia-android/
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia_alpha_kitkat.aab /home/runner/work/oppia-android/oppia-android/
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia_alpha_kenya.aab /home/runner/work/oppia-android/oppia-android/
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: oppia_alpha.aab
-          path: /home/runner/work/oppia-android/oppia-android/oppia_alpha.aab
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: oppia_alpha_kitkat.aab
-          path: /home/runner/work/oppia-android/oppia-android/oppia_alpha_kitkat.aab
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: oppia_alpha_kenya.aab
-          path: /home/runner/work/oppia-android/oppia-android/oppia_alpha_kenya.aab
-
   build_oppia_beta_aab:
     name: Build Oppia AAB (beta flavor)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -598,21 +556,12 @@ jobs:
         run: |
           bazel build --compilation_mode=opt -- //:oppia_beta
 
-      - name: Copy Oppia beta AAB for uploading
-        run: |
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia_beta.aab /home/runner/work/oppia-android/oppia-android/
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: oppia_beta.aab
-          path: /home/runner/work/oppia-android/oppia-android/oppia_beta.aab
-
   build_oppia_ga_aab:
     name: Build Oppia AAB (GA flavor)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -727,12 +676,3 @@ jobs:
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
           bazel build --compilation_mode=opt -- //:oppia_ga
-
-      - name: Copy Oppia GA AAB for uploading
-        run: |
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia_ga.aab /home/runner/work/oppia-android/oppia-android/
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: oppia_ga.aab
-          path: /home/runner/work/oppia-android/oppia-android/oppia_ga.aab

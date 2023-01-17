@@ -29,7 +29,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
@@ -79,7 +79,8 @@ class ProfileManagementController @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val loggingIdentifierController: LoggingIdentifierController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  @EnableLearnerStudyAnalytics
+  private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
   private val profileNameValidator: ProfileNameValidator
 ) {
   private var currentProfileId: Int = -1
@@ -212,7 +213,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!learnerStudyAnalytics.value && !profileNameValidator.isNameValid(name)) {
+      if (!enableLearnerStudyAnalytics.value && !profileNameValidator.isNameValid(name)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(name, it)) {
@@ -240,7 +241,7 @@ class ProfileManagementController @Inject constructor(
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
         numberOfLogins = 0
 
-        if (learnerStudyAnalytics.value) {
+        if (enableLearnerStudyAnalytics.value) {
           // Only set a learner ID if there's an ongoing user study.
           learnerId = loggingIdentifierController.createLearnerId()
         }
@@ -331,7 +332,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!learnerStudyAnalytics.value && !profileNameValidator.isNameValid(newName)) {
+      if (!enableLearnerStudyAnalytics.value && !profileNameValidator.isNameValid(newName)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(newName, it)) {
@@ -566,7 +567,8 @@ class ProfileManagementController @Inject constructor(
         )
       val updatedProfile = profile.toBuilder().apply {
         learnerId = when {
-          !learnerStudyAnalytics.value -> "" // There should be no learner ID if no ongoing study.
+          // There should be no learner ID if no ongoing study.
+          !enableLearnerStudyAnalytics.value -> ""
           learnerId.isEmpty() -> loggingIdentifierController.createLearnerId() // Generate new ID.
           else -> learnerId // Keep it unchanged.
         }
@@ -744,6 +746,31 @@ class ProfileManagementController @Inject constructor(
   suspend fun fetchLearnerId(profileId: ProfileId): String? {
     val profileDatabase = profileDataStore.readDataAsync().await()
     return profileDatabase.profilesMap[profileId.internalId]?.learnerId
+  }
+
+  /**
+   * Returns whether the exploration continue button animation has shown (or been disabled) for the
+   * specified [profileId], or null if the profile doesn't exist.
+   */
+  suspend fun fetchContinueAnimationSeenStatus(profileId: ProfileId): Boolean? {
+    val profileDatabase = profileDataStore.readDataAsync().await()
+    return profileDatabase.profilesMap[profileId.internalId]?.isContinueButtonAnimationSeen
+  }
+
+  /** Marks that the continue button animation has been seen for the specified profile. */
+  suspend fun markContinueButtonAnimationSeen(profileId: ProfileId) {
+    val updateDatabaseDeferred = profileDataStore.storeDataAsync(true) {
+      val profile = it.profilesMap[profileId.internalId]
+      if (profile != null) {
+        val updatedProfile = profile.toBuilder().setIsContinueButtonAnimationSeen(true).build()
+        val profileDatabaseBuilder = it.toBuilder().putProfiles(
+          profileId.internalId,
+          updatedProfile
+        )
+        return@storeDataAsync profileDatabaseBuilder.build()
+      } else it
+    }
+    updateDatabaseDeferred.await()
   }
 
   private suspend fun getDeferredResult(

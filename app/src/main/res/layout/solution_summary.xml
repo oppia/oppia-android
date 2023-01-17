@@ -17,7 +17,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:importantForAccessibility="no">
 
     <com.google.android.material.card.MaterialCardView
       android:id="@+id/solution_summary_container"
@@ -84,8 +85,8 @@
             app:layout_constraintStart_toEndOf="@+id/hint_title"
             app:layout_constraintTop_toTopOf="parent" />
 
-          <ImageView
-            android:id="@+id/expand_list_icon"
+          <ImageButton
+            android:id="@+id/expand_solution_list_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -93,7 +94,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:contentDescription="@string/show_hide_solution_list"
+            android:contentDescription="@{isListExpanded? @string/hide_solution : @string/show_solution}"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:padding="8dp"
@@ -107,6 +108,7 @@
             app:layout_constraintVertical_bias="0.0"
             app:rotationAnimationAngle="@{180f}"
             app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
+            android:background="@color/component_color_shared_transparent_background_color"
             app:tint="@color/component_color_hints_and_solutions_drawable_tint_color" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -131,6 +133,7 @@
           <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:importantForAccessibility="yes"
             android:orientation="horizontal">
 
             <TextView
@@ -157,6 +160,7 @@
           <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:importantForAccessibility="yes"
             android:orientation="vertical">
 
             <TextView
@@ -175,6 +179,7 @@
               style="@style/TextViewStart"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:contentDescription="@{viewModel.computeSolutionContentDescription()}"
               android:fontFamily="sans-serif"
               android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
               android:textSize="16sp" />

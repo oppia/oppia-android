@@ -19,7 +19,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -27,7 +27,7 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEvent
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
@@ -50,7 +50,7 @@ class LogReportingModuleTest {
   lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
 
   @Inject
-  lateinit var eventLogger: EventLogger
+  lateinit var analyticsEventLogger: AnalyticsEventLogger
 
   @Before
   fun setUp() {
@@ -59,12 +59,12 @@ class LogReportingModuleTest {
 
   @Test
   fun testModule_injectsProductionImplementationOfEventLogger() {
-    assertThat(eventLogger).isInstanceOf(FirebaseEventLogger::class.java)
+    assertThat(analyticsEventLogger).isInstanceOf(FirebaseAnalyticsEventLogger::class.java)
   }
 
   @Test
   fun testModule_injectsProductionImplementationOfPerformanceMetricsEventLogger() {
-    assertThat(performanceMetricsEventLogger).isInstanceOf(FirebaseEventLogger::class.java)
+    assertThat(performanceMetricsEventLogger).isInstanceOf(FirebaseAnalyticsEventLogger::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -108,7 +108,7 @@ class LogReportingModuleTest {
     }
 
     @Provides
-    @LearnerStudyAnalytics
+    @EnableLearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
     }

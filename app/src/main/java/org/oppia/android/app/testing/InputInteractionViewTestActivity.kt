@@ -163,7 +163,8 @@ class InputInteractionViewTestActivity :
       answerErrorReceiver = this@InputInteractionViewTestActivity,
       hasPreviousButton = false,
       isSplitView = false,
-      writtenTranslationContext
+      writtenTranslationContext,
+      timeToStartNoticeAnimationMs = null
     ) as T
   }
 

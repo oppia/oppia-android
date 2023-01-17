@@ -27,28 +27,20 @@
         android:id="@+id/topic_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_topic_fragment_primary_toolbar_color"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
-        <asia.ivity.android.marqueeview.MarqueeView
-          android:id="@+id/topic_marquee_view"
-          android:layout_width="match_parent"
+        <TextView
+          android:id="@+id/topic_toolbar_title"
+          style="@style/MarqueeToolbarTitleTextView"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          app:animationDelay="500"
-          app:animationSpeed="10">
-
-          <TextView
-            android:id="@+id/topic_toolbar_title"
-            style="@style/MarqueeToolbarTitleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:text="@{viewModel.topicToolbarTitleLiveData}" />
-        </asia.ivity.android.marqueeview.MarqueeView>
+          android:layout_marginEnd="20dp"
+          android:text="@{viewModel.topicToolbarTitleLiveData}" />
       </androidx.appcompat.widget.Toolbar>
 
       <com.google.android.material.tabs.TabLayout
@@ -60,7 +52,7 @@
         android:layout_marginEnd="@dimen/topic_fragment_tab_layout_margin_end"
         android:textSize="14sp"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabBackground="@color/component_color_topic_fragment_primary_tab_color"
+        app:tabBackground="@color/component_color_shared_activity_toolbar_color"
         app:tabGravity="fill"
         app:tabIconTint="@color/tab_icon_color_selector"
         app:tabIndicatorColor="@android:color/white"

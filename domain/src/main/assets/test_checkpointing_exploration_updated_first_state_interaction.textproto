@@ -1,0 +1,75 @@
+id: "test_checkpointing_exploration_updated_first_state_interaction"
+states {
+  key: "first_state"
+  value {
+    name: "first_state"
+    content {
+      html: "What is the value of PI to 3 significant digits?"
+      content_id: "content"
+    }
+    interaction {
+      id: "TextInput"
+      solution {
+        interaction_id: "TextInput"
+        correct_answer {
+          correct_answer: "3.14"
+        }
+        explanation {
+        }
+      }
+      hint {
+        hint_content {
+          html: "PI can be approximated to 3 correct digits by computing 22/7."
+          content_id: "hint_0"
+        }
+      }
+      default_outcome {
+        dest_state_name: "first_state"
+        feedback {
+          html: "Wrong answer"
+          content_id: "feedback_0"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "second_state"
+  value {
+    name: "second_state"
+    content {
+      html: "Click on the continue button"
+      content_id: "content"
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "end"
+        feedback {
+          html: "Feedback for continue button"
+          content_id: "feedback_0"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "end"
+  value {
+    name: "end"
+    content {
+    }
+    interaction {
+      id: "EndExploration"
+    }
+  }
+}
+init_state_name: "first_state"
+version: 2
+translatable_title {
+  html: "Exploration for checkpointing tests"
+  content_id: "title"
+}
+description {
+  content_id: "description"
+}

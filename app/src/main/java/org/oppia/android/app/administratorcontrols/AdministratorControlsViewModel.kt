@@ -20,9 +20,9 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
@@ -35,8 +35,9 @@ class AdministratorControlsViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   @EnableEditAccountsOptionsUi
   private val enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
-  @AutomaticUpdateTopicSetting private val automaticallyUpdateTopic: PlatformParameterValue<Boolean>
+  @EnableLearnerStudyAnalytics
+  private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -64,7 +65,9 @@ class AdministratorControlsViewModel @Inject constructor(
     return when (deviceSettingsResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "AdministratorControlsFragment", "Failed to retrieve profile", deviceSettingsResult.error
+          "AdministratorControlsFragment",
+          "Failed to retrieve profile",
+          deviceSettingsResult.error
         )
         DeviceSettings.getDefaultInstance()
       }
@@ -76,7 +79,6 @@ class AdministratorControlsViewModel @Inject constructor(
   private fun processAdministratorControlsList(
     deviceSettings: DeviceSettings
   ): List<AdministratorControlsItemViewModel> {
-
     val itemViewModelList = mutableListOf<AdministratorControlsItemViewModel>()
 
     if (enableEditAccountsOptionsUi.value) {
@@ -90,20 +92,21 @@ class AdministratorControlsViewModel @Inject constructor(
       )
     )
     // TODO(#4345): Add tests to verify this behavior both for the study flag being on & off.
-    if (learnerStudyAnalytics.value) {
+    if (enableLearnerStudyAnalytics.value) {
       itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
     }
 
-    itemViewModelList.add(
-      AdministratorControlsDownloadPermissionsViewModel(
-        fragment,
-        oppiaLogger,
-        profileManagementController,
-        userProfileId,
-        deviceSettings,
-        automaticallyUpdateTopic.value
+    if (enableDownloadsSupport.value) {
+      itemViewModelList.add(
+        AdministratorControlsDownloadPermissionsViewModel(
+          fragment,
+          oppiaLogger,
+          profileManagementController,
+          userProfileId,
+          deviceSettings
+        )
       )
-    )
+    }
 
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
     itemViewModelList.add(

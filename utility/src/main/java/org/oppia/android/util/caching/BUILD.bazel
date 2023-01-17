@@ -34,6 +34,9 @@ kt_android_library(
     srcs = [
         "AssetRepositoryImpl.kt",
     ],
+    visibility = [
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:__pkg__",
+    ],
     deps = [
         ":asset_repository",
         ":dagger",

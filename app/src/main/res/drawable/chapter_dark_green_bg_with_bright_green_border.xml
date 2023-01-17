@@ -3,6 +3,6 @@
   android:shape="rectangle">
   <stroke
     android:width="4dp"
-    android:color="@color/color_def_bright_green" />
-  <solid android:color="@color/color_def_oppia_green" />
+    android:color="@color/component_color_lessons_tab_activity_lesson_not_started_stroke_color" />
+  <solid android:color="@color/component_color_lessons_tab_activity_lesson_not_started_chapter_index_background_color" />
 </shape>
