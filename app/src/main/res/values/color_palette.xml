@@ -14,6 +14,7 @@
   <color name="color_palette_card_topic_name_text_color">@color/color_def_black_80</color>
   <color name="color_palette_text_input_background_color">@color/color_def_white</color>
   <color name="color_palette_shared_white_background_color">@color/color_def_white</color>
+  <color name="color_palette_shared_hints_background_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_dark_text_color">@color/color_def_black_87</color>
   <color name="color_palette_error_color">@color/color_def_oppia_red</color>
   <color name="color_palette_helper_text_color">@color/color_def_accessible_light_grey_2</color>
@@ -23,6 +24,7 @@
   <color name="color_palette_toolbar_shadow_color">@color/color_def_black_24</color>
   <color name="color_palette_toolbar_text_color">@color/color_def_white</color>
   <color name="color_palette_secondary_toolbar_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_shared_resume_lesson_start_over_button_color">@color/color_def_oppia_green</color>
   <color name="color_palette_status_bar_color">@color/color_def_dark_green</color>
   <color name="color_palette_action_bar_color">@color/color_def_oppia_green</color>
   <color name="color_palette_highlighted_background_color">@color/color_def_highlight_blue</color>
