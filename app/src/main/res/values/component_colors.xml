@@ -2,6 +2,7 @@
 <resources>
   <color name="component_color_shared_edit_text_cursor_color">@color/color_palette_cursor_color</color>
   <color name="component_color_shared_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_shared_secondary_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
   <color name="component_color_shared_activity_toolbar_shadow_color">@color/color_palette_toolbar_shadow_color</color>
   <color name="component_color_shared_activity_toolbar_text_color">@color/color_palette_toolbar_text_color</color>
   <color name="component_color_shared_screen_primary_background_color">@color/color_palette_primary_background_color</color>
@@ -21,6 +22,7 @@
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_transparent_background_color">@color/color_palette_transparent_background_color</color>
   <color name="component_color_shared_white_background_color">@color/color_palette_shared_white_background_color</color>
+  <color name="component_color_shared_hints_background_color">@color/color_palette_shared_hints_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_input_interaction_edit_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_input_error_color">@color/color_palette_input_error_color</color>
@@ -83,6 +85,7 @@
   <color name="component_color_shared_navbar_header_background_color">@color/color_palette_navbar_header_background_color</color>
   <color name="component_color_shared_icon_white_color">@color/color_palette_icon_white_color</color>
   <color name="component_color_shared_icon_color">@color/color_palette_icon_color</color>
+  <color name="component_color_shared_resume_lesson_start_over_button_color">@color/color_palette_shared_resume_lesson_start_over_button_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_fragment_status_bar_color">@color/color_palette_fragment_status_bar_color</color>
@@ -142,21 +145,11 @@
   <color name="component_color_story_activity_story_chapter_card_not_start_stroke_color">@color/color_palette_story_chapter_not_start_stroke_color</color>
   <!-- Resume Lesson Activity -->
   <color name="component_color_resume_lesson_topic_thumbnail_background_color">@color/color_palette_topic_thumbnail_background_color</color>
-  <color name="component_color_continue_button_border_color">@color/color_palette_button_border_color</color>
-  <color name="component_color_continue_button_background_color">@color/color_palette_secondary_toolbar_color</color>
-  <color name="component_color_start_over_button_text_color">@color/color_palette_secondary_toolbar_color</color>
-  <color name="component_color_start_over_button_stroke_color">@color/color_palette_secondary_toolbar_color</color>
-  <color name="component_color_start_over_button_drawable_tint_color">@color/color_palette_secondary_toolbar_color</color>
   <!-- Exploration Activity -->
-  <color name="component_color_exploration_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
-  <color name="component_color_exploration_activity_background_color">@color/color_palette_exploration_background_color</color>
-  <color name="component_color_exploration_activity_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_exploration_activity_content_background_stroke_color">@color/color_palette_content_background_stroke_color</color>
   <color name="component_color_exploration_activity_content_background_solid_color">@color/color_palette_content_background_solid_color</color>
   <!-- Question Player Activity -->
-  <color name="component_color_question_player_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
   <color name="component_color_question_player_activity_background_color">@color/color_palette_exploration_background_color</color>
-  <color name="component_color_question_player_activity_text_color">@color/color_palette_highlighted_text_color</color>
   <!-- Revision Card Activity -->
   <color name="component_color_revision_card_activity_status_bar_color">@color/color_palette_revision_card_fragment_status_bar_color</color>
   <color name="component_color_revision_card_activity_toolbar_color">@color/color_palette_revision_card_toolbar_color</color>
