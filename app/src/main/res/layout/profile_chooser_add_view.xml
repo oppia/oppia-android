@@ -23,15 +23,15 @@
       android:id="@+id/add_profile_item"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
       android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
       app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_end_profile_already_added : @dimen/profile_view_not_added_margin}"
       app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_start_profile_already_added : @dimen/profile_view_not_added_margin}"
-      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_top_profile_not_added}">
-      
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_top_profile_not_added}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
       <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_add_button"
         style="@style/ShapeAbleImageView"
@@ -42,25 +42,25 @@
         android:layout_height="wrap_content"
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
-        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
+        android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}"
         android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_end_profile_not_added}"
-        android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
+        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}">
 
         <TextView
           android:id="@+id/add_profile_text"
           style="@style/Caption"
-          android:textColor="@color/component_color_shared_secondary_4_text_color"
-          android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}" />
+          android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
+          android:textColor="@color/component_color_shared_secondary_4_text_color" />
 
         <TextView
           android:id="@+id/add_profile_description_text"
           style="@style/TextViewStart"
           android:layout_marginTop="4dp"
           android:fontFamily="sans-serif"
-          android:textAlignment="viewStart"
-          android:textSize="12sp"
-          android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:text="@string/set_up_multiple_profiles_description"
+          android:textAlignment="viewStart"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
+          android:textSize="12sp"
           android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
       </LinearLayout>
     </LinearLayout>
