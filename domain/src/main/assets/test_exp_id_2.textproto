@@ -808,14 +808,16 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
-        correct_answer {
-          denominator: 2
-          numerator: 1
-        }
+        answer_is_exclusive: true
         explanation {
           html: "<p>Half of something has one part in the numerator for every two parts in the denominator.</p><p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 1
+            denominator: 2
+          }
         }
       }
       hint {
@@ -1210,10 +1212,13 @@ states {
         }
       }
       solution {
-        interaction_id: "NumericInput"
+        answer_is_exclusive: true
         explanation {
           html: "<p>11 times 11 is 121.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          real: 121.0
         }
       }
       hint {
@@ -1404,6 +1409,52 @@ states {
         }
       }
     }
+    written_translations {
+      key: "hint_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Se voc\303\252 o configurou pela primeira vez como uma s\303\251rie de equa\303\247\303\265es, pode ser mais f\303\241cil resolver: a = 1,2x, b = 1,5x, raz\303\243o = a/b =? </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\245\330\260\330\247 \331\202\331\205\330\252 \330\250\330\245\330\271\330\257\330\247\330\257\331\207\330\247 \331\204\330\243\331\210\331\204 \331\205\330\261\330\251 \331\203\330\263\331\204\330\263\331\204\330\251 \331\205\331\206 \330\247\331\204\331\205\330\271\330\247\330\257\331\204\330\247\330\252 \330\214 \331\201\331\202\330\257 \331\212\331\203\331\210\331\206 \331\205\331\206 \330\247\331\204\330\243\330\263\331\207\331\204 \330\255\331\204: a = 1.2x \330\214 b = 1.5x \330\214 ratio = a/b =\330\237 </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> Ikiwa utaiweka kwanza kama safu ya hesabu, inaweza kuwa rahisi kusuluhisha: a = 1.2x, b = 1.5x, uwiano = a/b =? </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> a = 1,2x, b = 1,5x, raz\303\243o = a/b = (1,2x)/(1,5x) = 1.2/1.5 = 12/15 = 4/5 -> 4: 5. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> a = 1.2x \330\214 b = 1.5x \330\214 \331\206\330\263\330\250\330\251 = a/b = (1.2x)/(1.5x) = 1.2/1.5 = 12/15 = 4/5 -> 4: 5. </p>"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "<p> a = 1.2x, b = 1.5x, uwiano = a/b = (1.2x)/(1.5x) = 1.2/1.5 = 12/15 = 4/5 -> 4: 5. </p>"
+          }
+        }
+      }
+    }
     interaction {
       id: "RatioExpressionInput"
       answer_groups {
@@ -1466,6 +1517,24 @@ states {
             }
           }
           rule_type: "IsEquivalent"
+        }
+      }
+      solution {
+        explanation {
+          html: "<p>A = 1.2x, B = 1.5x, ratio = A/B = (1.2x)/(1.5x) = 1.2/1.5 = 12/15 = 4/5 -> 4:5.</p>"
+          content_id: "solution"
+        }
+        correct_answer {
+          ratio_expression {
+            ratio_component: 4
+            ratio_component: 5
+          }
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>If you first set it up as a series of equations, it may be easier to solve: A = 1.2x, B = 1.5x, ratio = A/B = ?</p>"
+          content_id: "hint_1"
         }
       }
       default_outcome {
@@ -1640,6 +1709,52 @@ states {
         }
       }
     }
+    written_translations {
+      key: "hint_1"
+      value {
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\250\331\204\330\257 \330\250\330\247\331\204\331\202\330\261\330\250 \331\205\331\206 \330\247\331\204\331\206\330\261\331\210\331\212\330\254."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Nchi iko karibu na Norway."
+          }
+        }
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "O pa\303\255s est\303\241 perto da Noruega."
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 \"\330\247\331\204\331\201\331\206\331\204\331\206\330\257\331\212\"."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni \'Kifini\'."
+          }
+        }
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 \'finlandesa\'."
+          }
+        }
+      }
+    }
     interaction {
       id: "TextInput"
       answer_groups {
@@ -1662,6 +1777,22 @@ states {
             }
           }
           rule_type: "Equals"
+        }
+      }
+      solution {
+        answer_is_exclusive: true
+        explanation {
+          html: "The answer is \'finnish\'."
+          content_id: "solution"
+        }
+        correct_answer {
+          normalized_string: "finnish"
+        }
+      }
+      hint {
+        hint_content {
+          html: "The country is near Norway."
+          content_id: "hint_1"
         }
       }
       default_outcome {

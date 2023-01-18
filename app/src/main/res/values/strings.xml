@@ -454,10 +454,12 @@
   <string name="hints_toolbar_title">Hints</string>
   <string name="show_solution">Show solution</string>
   <string name="reveal_solution">Show Solution</string>
+  <string name="hint_list_solution_title">Solution</string>
   <string name="reveal_hint">Show Hint</string>
   <string name="hide_hint">Hide Hint</string>
   <string name="hide_solution">Hide solution</string>
-  <string name="the_only_solution_is">The only solution is:</string>
+  <string name="hints_list_exclusive_solution_text">The only solution is: %s</string>
+  <string name="hints_list_possible_solution_text">One solution is: %s</string>
   <string name="this_will_reveal_the_solution">This will show the solution. Are you sure?</string>
   <string name="reveal">Show</string>
   <!-- TextViewBindingAdapters -->
@@ -532,7 +534,6 @@
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
-  <string name="hints_android_solution_correct_answer">%s/%s</string>
   <string name="correct_submitted_answer">Correct submitted answer</string>
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>

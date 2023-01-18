@@ -12,7 +12,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.hintsandsolution.HintsViewModel" />
+      type="org.oppia.android.app.hintsandsolution.HintViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -126,7 +126,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@color/component_color_hints_and_solution_summary_bottom_background_color"
-          android:contentDescription="@{viewModel.computeHintContentDescription()}"
+          android:contentDescription="@{viewModel.hintContentDescription}"
           android:fontFamily="sans-serif"
           android:paddingStart="12dp"
           android:paddingTop="16dp"

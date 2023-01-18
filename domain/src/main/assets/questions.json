@@ -114,7 +114,9 @@
         }],
         "solution": {
           "answer_is_exclusive": false,
-          "correct_answer": "1/4",
+          "correct_answer": {
+            "normalized_string": "1/4"
+          },
           "explanation": {
             "content_id": "solution",
             "html": "<p>Removing one of the lines on the right results in a square that is divided into 4 equal pieces:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;A square divided into four pieces by the diagonals. The left piece is shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_012904_7vi149rtw5_height_132_width_145.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>So, the fraction represented by the shaded area is 1/4.</p>"
@@ -145,7 +147,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 3,
@@ -258,7 +261,9 @@
         }],
         "solution": {
           "answer_is_exclusive": false,
-          "correct_answer": "1/4",
+          "correct_answer": {
+            "normalized_string": "1/4"
+          },
           "explanation": {
             "content_id": "solution",
             "html": "<p>First, let's divide the picture into equal parts:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;An equilateral triangle divided into 4 equal parts. 1 part is shaded red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_011934_xbds5ar8ma_height_130_width_106.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>There are 4 parts in total, and 1 of them is red, so the fraction is <strong>1/4</strong>.</p>"
@@ -289,7 +294,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 3,
@@ -418,7 +424,9 @@
         }],
         "solution": {
           "answer_is_exclusive": false,
-          "correct_answer": "6/8",
+          "correct_answer": {
+            "normalized_string": "6/8"
+          },
           "explanation": {
             "content_id": "solution",
             "html": "<p>You can divide the picture into equal-sized triangles by drawing an extra diagonal line:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;A square divided into eight equal triangles. Six of the triangles are green.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_011013_fqn27hl9aq_height_96_width_93.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>There are 8 parts in total, and 6 of them are green. So, the fraction represented is&nbsp;<strong>6/8</strong>.</p>"
@@ -449,7 +457,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 4,
@@ -614,7 +623,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 6,
@@ -791,7 +801,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 3,
@@ -866,7 +877,9 @@
         }],
         "solution": {
           "answer_is_exclusive": true,
-          "correct_answer": "",
+          "correct_answer": {
+            "real": 3.0
+          },
           "explanation": {
             "content_id": "solution",
             "html": "<p>The denominator of a fraction is the second number in the fraction. (It counts the total number of pieces in the whole.)</p>\n\n<p>So, for 2/3, the denominator is <strong>3</strong>.</p>"
@@ -895,7 +908,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 3,
@@ -1032,7 +1046,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 3,
@@ -1107,7 +1122,9 @@
         }],
         "solution": {
           "answer_is_exclusive": true,
-          "correct_answer": "",
+          "correct_answer": {
+            "real": 8.0
+          },
           "explanation": {
             "content_id": "solution",
             "html": "<p>The numerator, which counts the number of pieces in the fraction, is always the <strong>first</strong>&nbsp;number in the fraction. So, for the fraction 8/5, the numerator is <strong>8</strong>.</p>"
@@ -1136,7 +1153,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 3,
@@ -1249,7 +1267,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 4,
@@ -1378,7 +1397,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 4,
@@ -1515,7 +1535,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 3,
@@ -1660,7 +1681,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 3,
@@ -1751,7 +1773,9 @@
         }],
         "solution": {
           "answer_is_exclusive": false,
-          "correct_answer": "1/4",
+          "correct_answer": {
+            "normalized_string": "1/4"
+          },
           "explanation": {
             "content_id": "solution",
             "html": "<p>A quarter is 1/4th of something</p>"
@@ -1782,7 +1806,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 1,
@@ -1872,13 +1897,7 @@
       },
       "written_translations": {
         "translations_mapping": {
-          "content": {
-            "ar": {
-              "data_format": "html",
-              "translation": { "translation": "<p> إذا تحدثنا عن الرغبة في 4/7 من الكعكة ، فماذا يمثل السبعة؟ </p>" },
-              "needs_update": false
-            }
-          },
+          "content": {},
           "solution": {},
           "feedback_1": {},
           "ca_choices_0": {},
@@ -1890,7 +1909,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 1,
@@ -1947,7 +1967,9 @@
         }],
         "solution": {
           "answer_is_exclusive": false,
-          "correct_answer": 3.0,
+          "correct_answer": {
+            "normalized_string": "3.0"
+          },
           "explanation": {
             "content_id": "solution",
             "html": "<p>The solution comes out to be 3/4 and the numerator of that is 3.</p>"
@@ -1974,7 +1996,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 1,
@@ -2043,7 +2066,9 @@
         }],
         "solution": {
           "answer_is_exclusive": false,
-          "correct_answer": "1/2",
+          "correct_answer": {
+            "normalized_string": "1/2"
+          },
           "explanation": {
             "content_id": "solution",
             "html": "<p>A half is 1/2 of something</p>"
@@ -2070,7 +2095,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 1,
@@ -2159,7 +2185,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 1,
@@ -2216,7 +2243,9 @@
         }],
         "solution": {
           "answer_is_exclusive": false,
-          "correct_answer": "",
+          "correct_answer": {
+            "real": 5.0
+          },
           "explanation": {
             "content_id": "solution",
             "html": "<p>The solution comes out to be 5/6 and the numerator of that is 5.</p>"
@@ -2243,7 +2272,8 @@
         }
       },
       "solicit_answer_details": false,
-      "next_content_id_index": -1
+      "next_content_id_index": -1,
+      "linked_skill_id": null
     },
     "language_code": "en",
     "version": 1,

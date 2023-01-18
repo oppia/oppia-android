@@ -60,7 +60,16 @@
             "missing_prerequisite_skill_id": ""
           },
           "hints": [],
-          "solution": null
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "math_expression": "1 + 2"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is 1 + 2."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -139,6 +148,23 @@
                 "translation": {"translation" : "Ingiza usemi wa nambari."},
                 "needs_update": false
               }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é 1 + 2."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو 1 + 2."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni 1 + 2."},
+                "needs_update": false
+              }
             }
           }
         },
@@ -187,7 +213,16 @@
             "missing_prerequisite_skill_id": ""
           },
           "hints": [],
-          "solution": null
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "math_expression": "1 + 2"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is 1 + 2."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -249,6 +284,23 @@
                 "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é 1 + 2."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو 1 + 2."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni 1 + 2."},
+                "needs_update": false
+              }
             }
           }
         },
@@ -297,7 +349,16 @@
             "missing_prerequisite_skill_id": ""
           },
           "hints": [],
-          "solution": null
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "math_expression": "1 + 2"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is 1 + 2."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -359,6 +420,23 @@
                 "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é 1 + 2."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو 1 + 2."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni 1 + 2."},
+                "needs_update": false
+              }
             }
           }
         },
@@ -414,7 +492,16 @@
             "missing_prerequisite_skill_id": ""
           },
           "hints": [],
-          "solution": null
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "math_expression": "x^2 - x - 2"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is x^2 - x - 2."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -476,6 +563,23 @@
                 "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é x^2 - x - 2."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو x^2 - x - 2."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni x^2 - x - 2."},
+                "needs_update": false
+              }
             }
           }
         },
@@ -528,7 +632,16 @@
             "missing_prerequisite_skill_id": ""
           },
           "hints": [],
-          "solution": null
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "math_expression": "x^2 - x - 2"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is x^2 - x - 2."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -590,6 +703,23 @@
                 "translation": {"translation" : "<p>Jibu hilo si sahihi. Jaribu tena.</p>"},
                 "needs_update": false
               }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é x^2 - x - 2."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو x^2 - x - 2."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni x^2 - x - 2."},
+                "needs_update": false
+              }
             }
           }
         },
@@ -642,7 +772,16 @@
             "missing_prerequisite_skill_id": ""
           },
           "hints": [],
-          "solution": null
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "math_expression": "x^2 - x - 2"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is x^2 - x - 2."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -704,6 +843,23 @@
                 "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é x^2 - x - 2."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو x^2 - x - 2."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni x^2 - x - 2."},
+                "needs_update": false
+              }
             }
           }
         },
@@ -759,7 +915,16 @@
             "missing_prerequisite_skill_id": ""
           },
           "hints": [],
-          "solution": null
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "math_expression": "2y = x^2 - x - 2"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is 2y = x^2 - x - 2."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -821,6 +986,23 @@
                 "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é 2y = x^2 - x - 2."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو 2y = x^2 - x - 2."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni 2y = x^2 - x - 2."},
+                "needs_update": false
+              }
             }
           }
         },
@@ -873,7 +1055,16 @@
             "missing_prerequisite_skill_id": ""
           },
           "hints": [],
-          "solution": null
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "math_expression": "2y = x^2 - x - 2"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is 2y = x^2 - x - 2."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -935,6 +1126,23 @@
                 "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
                 "needs_update": false
               }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é 2y = x^2 - x - 2."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو 2y = x^2 - x - 2."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni 2y = x^2 - x - 2."},
+                "needs_update": false
+              }
             }
           }
         },
@@ -987,7 +1195,16 @@
             "missing_prerequisite_skill_id": ""
           },
           "hints": [],
-          "solution": null
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "math_expression": "2y = x^2 - x - 2"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is 2y = x^2 - x - 2."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -1047,6 +1264,23 @@
               "sw": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
+                "needs_update": false
+              }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é 2y = x^2 - x - 2."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو 2y = x^2 - x - 2."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni 2y = x^2 - x - 2."},
                 "needs_update": false
               }
             }

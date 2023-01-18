@@ -1358,13 +1358,12 @@ states {
         }
       }
       solution {
-        interaction_id: "TextInput"
-        correct_answer {
-          correct_answer: "1:2"
-        }
         explanation {
           html: "<p>A common factor of 4\302\240and 8\302\240is 2. So, we can divide both sides of the ratio 4:8\302\240by 2 to get 2:4.</p>\n\n<p>But this is not the simplest form yet, because 2 and 4 are both\302\240divisible by 2. So, we can divide both sides of the ratio 2:4 by 2 to get 1:2.</p>\n\n<p>We can\'t simplify this ratio any more, so <strong>1:2</strong> is the correct answer.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          normalized_string: "1:2"
         }
       }
       hint {

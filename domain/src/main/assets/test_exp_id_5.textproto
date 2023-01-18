@@ -114,6 +114,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 1 + 2."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 1 + 2."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni 1 + 2."
+          }
+        }
+      }
+    }
     interaction {
       id: "NumericExpressionInput"
       answer_groups {
@@ -133,6 +156,15 @@ states {
             }
           }
           rule_type: "MatchesExactlyWith"
+        }
+      }
+      solution {
+        explanation {
+          html: "The answer is 1 + 2."
+          content_id: "solution"
+        }
+        correct_answer {
+          math_expression: "1 + 2"
         }
       }
       default_outcome {
@@ -255,6 +287,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 1 + 2."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 1 + 2."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni 1 + 2."
+          }
+        }
+      }
+    }
     interaction {
       id: "NumericExpressionInput"
       answer_groups {
@@ -274,6 +329,15 @@ states {
             }
           }
           rule_type: "MatchesUpToTrivialManipulations"
+        }
+      }
+      solution {
+        explanation {
+          html: "The answer is 1 + 2."
+          content_id: "solution"
+        }
+        correct_answer {
+          math_expression: "1 + 2"
         }
       }
       default_outcome {
@@ -379,6 +443,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 1 + 2."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 1 + 2."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni 1 + 2."
+          }
+        }
+      }
+    }
     interaction {
       id: "NumericExpressionInput"
       answer_groups {
@@ -398,6 +485,15 @@ states {
             }
           }
           rule_type: "IsEquivalentTo"
+        }
+      }
+      solution {
+        explanation {
+          html: "The answer is 1 + 2."
+          content_id: "solution"
+        }
+        correct_answer {
+          math_expression: "1 + 2"
         }
       }
       default_outcome {
@@ -503,6 +599,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni x^2 - x - 2."
+          }
+        }
+      }
+    }
     interaction {
       id: "AlgebraicExpressionInput"
       answer_groups {
@@ -522,6 +641,15 @@ states {
             }
           }
           rule_type: "MatchesExactlyWith"
+        }
+      }
+      solution {
+        explanation {
+          html: "The answer is x^2 - x - 2."
+          content_id: "solution"
+        }
+        correct_answer {
+          math_expression: "x^2 - x - 2"
         }
       }
       default_outcome {
@@ -643,6 +771,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni x^2 - x - 2."
+          }
+        }
+      }
+    }
     interaction {
       id: "AlgebraicExpressionInput"
       answer_groups {
@@ -662,6 +813,15 @@ states {
             }
           }
           rule_type: "MatchesUpToTrivialManipulations"
+        }
+      }
+      solution {
+        explanation {
+          html: "The answer is x^2 - x - 2."
+          content_id: "solution"
+        }
+        correct_answer {
+          math_expression: "x^2 - x - 2"
         }
       }
       default_outcome {
@@ -777,6 +937,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni x^2 - x - 2."
+          }
+        }
+      }
+    }
     interaction {
       id: "AlgebraicExpressionInput"
       answer_groups {
@@ -796,6 +979,15 @@ states {
             }
           }
           rule_type: "IsEquivalentTo"
+        }
+      }
+      solution {
+        explanation {
+          html: "The answer is x^2 - x - 2."
+          content_id: "solution"
+        }
+        correct_answer {
+          math_expression: "x^2 - x - 2"
         }
       }
       default_outcome {
@@ -911,6 +1103,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 2y = x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 2y = x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni 2y = x^2 - x - 2."
+          }
+        }
+      }
+    }
     interaction {
       id: "MathEquationInput"
       answer_groups {
@@ -930,6 +1145,15 @@ states {
             }
           }
           rule_type: "MatchesExactlyWith"
+        }
+      }
+      solution {
+        explanation {
+          html: "The answer is 2y = x^2 - x - 2."
+          content_id: "solution"
+        }
+        correct_answer {
+          math_expression: "2y = x^2 - x - 2"
         }
       }
       default_outcome {
@@ -1054,6 +1278,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 2y = x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 2y = x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni 2y = x^2 - x - 2."
+          }
+        }
+      }
+    }
     interaction {
       id: "MathEquationInput"
       answer_groups {
@@ -1073,6 +1320,15 @@ states {
             }
           }
           rule_type: "MatchesUpToTrivialManipulations"
+        }
+      }
+      solution {
+        explanation {
+          html: "The answer is 2y = x^2 - x - 2."
+          content_id: "solution"
+        }
+        correct_answer {
+          math_expression: "2y = x^2 - x - 2"
         }
       }
       default_outcome {
@@ -1191,6 +1447,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "A resposta \303\251 2y = x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 2y = x^2 - x - 2."
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Jibu ni 2y = x^2 - x - 2."
+          }
+        }
+      }
+    }
     interaction {
       id: "MathEquationInput"
       answer_groups {
@@ -1210,6 +1489,15 @@ states {
             }
           }
           rule_type: "IsEquivalentTo"
+        }
+      }
+      solution {
+        explanation {
+          html: "The answer is 2y = x^2 - x - 2."
+          content_id: "solution"
+        }
+        correct_answer {
+          math_expression: "2y = x^2 - x - 2"
         }
       }
       default_outcome {

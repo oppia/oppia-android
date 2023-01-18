@@ -1,6 +1,9 @@
 {
   "topic_id": "omzF4oqgeTXd",
-  "topic_name": "Ratios and Proportional Reasoning",
+  "topic_title": {
+    "content_id": "title",
+    "html": "What is a Ratio?"
+  },
   "page_contents": {
     "subtitled_html": {
       "content_id": "content",
@@ -13,6 +16,7 @@
     },
     "written_translations": {
       "translations_mapping": {
+        "title": {},
         "content": {}
       }
     }

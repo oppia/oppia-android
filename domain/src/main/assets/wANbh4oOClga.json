@@ -1,6 +1,6 @@
 {
   "story_nodes": [{
-    "description": "Matthew learns about fractions.",
+    "description": "<unknown>",
     "exploration_id": "umPkwp0L1M0-",
     "destination_node_ids": [],
     "thumbnail_filename": "",
@@ -8,11 +8,11 @@
     "id": "umPkwp0L1M0-",
     "prerequisite_skill_ids": [],
     "thumbnail_bg_color": "#d68f78",
-    "outline": "This is outline/summary for <b>What is a Fraction?</b>",
+    "outline": "Matthew learns about fractions.",
     "title": "What is a Fraction?",
     "acquired_skill_ids": []
   }, {
-    "description": "Matthew learns about equal parts in fractions.",
+    "description": "<unknown>",
     "exploration_id": "MjZzEVOG47_1",
     "destination_node_ids": [],
     "thumbnail_filename": "",
@@ -20,7 +20,7 @@
     "id": "MjZzEVOG47_1",
     "prerequisite_skill_ids": [],
     "thumbnail_bg_color": "#d678f8",
-    "outline": "This is outline/summary for <b>The Meaning of Equal Parts</b>",
+    "outline": "Matthew learns about equal parts in fractions.",
     "title": "The Meaning of Equal Parts",
     "acquired_skill_ids": []
   }],

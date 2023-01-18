@@ -1,6 +1,9 @@
 {
   "topic_id": "GJ2rLXRKD5hw",
-  "topic_name": "Fractions",
+  "topic_title": {
+    "content_id": "title",
+    "html": "Fractions of a group"
+  },
   "page_contents": {
     "subtitled_html": {
       "content_id": "content",
@@ -13,6 +16,7 @@
     },
     "written_translations": {
       "translations_mapping": {
+        "title": {},
         "content": {}
       }
     }

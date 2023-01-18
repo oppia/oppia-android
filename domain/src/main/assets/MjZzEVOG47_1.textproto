@@ -735,14 +735,15 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
-        correct_answer {
-          denominator: 8
-          numerator: 5
-        }
         explanation {
           html: "<p>Start by drawing a rectangle cut into 8 equal pieces.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;2x4 rectangle with 3 squares shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_001749_txtq5umhxy_height_140_width_237.png&amp;quot;\"></oppia-noninteractive-image><p>3 pieces are shaded. The pieces that are left over are white. There are 5 white pieces, and there are 8 pieces in total. So the answer is 5/8.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 5
+            denominator: 8
+          }
         }
       }
       hint {
@@ -1243,14 +1244,15 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
-        correct_answer {
-          denominator: 9
-          numerator: 4
-        }
         explanation {
           html: "<p>Let\'s start by drawing a picture. We can represent the cake using 9 equal parts, since that will make it easy to colour Matthew\'s and Mr. Baker\'s parts later. Here\'s a drawing:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;3x3 grid with 2 pieces shaded brown and 3 shaded green.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_001207_zz3uj8elu2_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image><p>\302\240</p><p>Matthew gets 2/9 of the cake (the brown parts) and Mr. Baker gets 3/9 of the cake (the green parts). There are 4 squares left over (the white parts), and there are 9 squares in total. So the answer is 4/9.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 4
+            denominator: 9
+          }
         }
       }
       hint {
@@ -1754,15 +1756,16 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
         answer_is_exclusive: true
-        correct_answer {
-          denominator: 9
-          numerator: 7
-        }
         explanation {
           html: "<p>Here\'s a picture showing the 2/9 of the cake that Crumb gave Matthew:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;3x3 grid with two squares shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180110_234657_n9pplulvrx_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image><p>The fraction of the cake that\'s left over is represented by the white pieces. There are 7 white pieces, and there are 9 pieces in total. So the answer is 7/9.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 7
+            denominator: 9
+          }
         }
       }
       hint {
@@ -2240,15 +2243,16 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
         answer_is_exclusive: true
-        correct_answer {
-          denominator: 4
-          numerator: 3
-        }
         explanation {
           html: "<p>We can draw a square and colour\302\2401/2\302\240and\302\2401/4\302\240of it, like this:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 + 1/4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003734_d0p3w9pl9j_height_108_width_110.png&amp;quot;\"></oppia-noninteractive-image><p>To find the resulting fraction, we divide the square into equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square divided into 4 equal parts, with 3 coloured red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003831_i9pje0cg68_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>There are 4 equal parts, and 3 of them are red, so the correct answer is <strong>3/4</strong>.</p><p>\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240-----------------------------------------------------\302\240</p><p>Note: You may think that you could just add\302\240the numerators and denominators of the fractions\302\240to get 2/6, but that\302\240is the <strong>wrong\302\240answer</strong>! The important thing is the<strong>\302\240amount</strong> represented by the fraction, not the actual numbers (like 1 and 2) that are used to write the fraction.</p><p><strong>Drawing a clear picture</strong>\302\240is a good strategy to help you \"see\" that amount.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 3
+            denominator: 4
+          }
         }
       }
       hint {
@@ -2955,6 +2959,7 @@ states {
         outcome {
           dest_state_name: "Question 1"
           feedback {
+            html: "<p>Yes, that\'s right! Well done.</p>"
             content_id: "feedback_1"
           }
           labelled_as_correct: true
@@ -3154,15 +3159,16 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
         answer_is_exclusive: true
-        correct_answer {
-          denominator: 4
-          numerator: 3
-        }
         explanation {
           html: "<p>Start by dividing the cake into equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle divided into four quadrants; three of them are shaded red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180110_222526_mz5fedlya5_height_236_width_225.png&amp;quot;\"></oppia-noninteractive-image><p>Three of the four equal parts are red. So, the answer is 3/4.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 3
+            denominator: 4
+          }
         }
       }
       hint {
@@ -4115,14 +4121,15 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
-        correct_answer {
-          denominator: 16
-          numerator: 8
-        }
         explanation {
           html: "<p>The smallest piece is a triangle, so let\'s start by dividing the square into triangles. Here is the result:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square fully divided into triangles&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180110_233341_9vhldai18y_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image><p>There are 16 equal pieces. 8 of them are blue. So the answer is 8/16.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 8
+            denominator: 16
+          }
         }
       }
       hint {
@@ -5396,14 +5403,15 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
-        correct_answer {
-          denominator: 8
-          numerator: 2
-        }
         explanation {
           html: "<p>Start by dividing the cake into equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;The same cake, divided into 8 equal pieces.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180110_225537_8lq4yktbcd_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image><p>Two of the eight equal parts are darkened. So the answer is 2/8.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 2
+            denominator: 8
+          }
         }
       }
       hint {
@@ -6251,14 +6259,15 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
-        correct_answer {
-          denominator: 8
-          numerator: 1
-        }
         explanation {
           html: "<p>First, divide the whole square into <strong>equal parts</strong>:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square divided into eight equal rectangles, with one of them coloured green.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180110_230950_orynqmeohw_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image><p>Of these 8 equal parts, exactly 1 is green. So the answer is 1/8.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 1
+            denominator: 8
+          }
         }
       }
       hint {
@@ -7092,15 +7101,16 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
         answer_is_exclusive: true
-        correct_answer {
-          denominator: 9
-          numerator: 4
-        }
         explanation {
           html: "<p>First, divide the cake up into equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square cake divided into 9 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180110_223145_41bn17po8w_height_240_width_240.png&amp;quot;\"></oppia-noninteractive-image><p>Four of the nine equal parts are darkened. So, the answer is 4/9.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 4
+            denominator: 9
+          }
         }
       }
       hint {

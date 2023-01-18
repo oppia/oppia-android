@@ -528,12 +528,14 @@
             }
           }],
           "solution": {
-            "answer_is_exclusive": false,
+            "answer_is_exclusive": true,
             "correct_answer": {
-              "isNegative": false,
-              "wholeNumber": 0,
-              "numerator": 1,
-              "denominator": 2
+              "fraction": {
+                "isNegative": false,
+                "wholeNumber": 0,
+                "numerator": 1,
+                "denominator": 2
+              }
             },
             "explanation": {
               "content_id": "solution",
@@ -823,8 +825,10 @@
             }
           }],
           "solution": {
-            "answer_is_exclusive": false,
-            "correct_answer": "",
+            "answer_is_exclusive": true,
+            "correct_answer": {
+              "real": 121.0
+            },
             "explanation": {
               "content_id": "solution",
               "html": "<p>11 times 11 is 121.</p>"
@@ -1058,8 +1062,22 @@
             "refresher_exploration_id": "",
             "missing_prerequisite_skill_id": ""
           },
-          "hints": [],
-          "solution": null
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>If you first set it up as a series of equations, it may be easier to solve: A = 1.2x, B = 1.5x, ratio = A/B = ?</p>"
+            }
+          }],
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "ratio_expression": [4, 5]
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "<p>A = 1.2x, B = 1.5x, ratio = A/B = (1.2x)/(1.5x) = 1.2/1.5 = 12/15 = 4/5 -> 4:5.</p>"
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -1174,6 +1192,40 @@
                 "translation": {"translation" : "Ingiza katika umbizo la x:y"},
                 "needs_update": false
               }
+            },
+            "hint_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Se você o configurou pela primeira vez como uma série de equações, pode ser mais fácil resolver: a = 1,2x, b = 1,5x, razão = a/b =? </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> إذا قمت بإعدادها لأول مرة كسلسلة من المعادلات ، فقد يكون من الأسهل حل: a = 1.2x ، b = 1.5x ، ratio = a/b =؟ </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Ikiwa utaiweka kwanza kama safu ya hesabu, inaweza kuwa rahisi kusuluhisha: a = 1.2x, b = 1.5x, uwiano = a/b =? </p>"},
+                "needs_update": false
+              }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> a = 1,2x, b = 1,5x, razão = a/b = (1,2x)/(1,5x) = 1.2/1.5 = 12/15 = 4/5 -> 4: 5. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> a = 1.2x ، b = 1.5x ، نسبة = a/b = (1.2x)/(1.5x) = 1.2/1.5 = 12/15 = 4/5 -> 4: 5. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> a = 1.2x, b = 1.5x, uwiano = a/b = (1.2x)/(1.5x) = 1.2/1.5 = 12/15 = 4/5 -> 4: 5. </p>"},
+                "needs_update": false
+              }
             }
           }
         },
@@ -1234,8 +1286,22 @@
             "refresher_exploration_id": "",
             "missing_prerequisite_skill_id": ""
           },
-          "hints": [],
-          "solution": null
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "The country is near Norway."
+            }
+          }],
+          "solution": {
+            "answer_is_exclusive": true,
+            "correct_answer": {
+              "normalized_string": "finnish"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is 'finnish'."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -1329,6 +1395,40 @@
               "sw": {
                 "data_format": "set_of_normalized_string",
                 "translation": {"translations" : ["Kifini"]},
+                "needs_update": false
+              }
+            },
+            "hint_1": {
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "البلد بالقرب من النرويج."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Nchi iko karibu na Norway."},
+                "needs_update": false
+              },
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "O país está perto da Noruega."},
+                "needs_update": false
+              }
+            },
+            "solution": {
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو \"الفنلندي\"."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni 'Kifini'."},
+                "needs_update": false
+              },
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é 'finlandesa'."},
                 "needs_update": false
               }
             }

@@ -220,7 +220,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 3": {
         "content": {
@@ -393,7 +394,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 2": {
         "content": {
@@ -519,7 +521,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 5": {
         "content": {
@@ -659,7 +662,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 4": {
         "content": {
@@ -902,7 +906,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "The simplest form": {
         "content": {
@@ -987,7 +992,9 @@
           }],
           "solution": {
             "answer_is_exclusive": false,
-            "correct_answer": "1:2",
+            "correct_answer": {
+              "normalized_string": "1:2"
+            },
             "explanation": {
               "content_id": "solution",
               "html": "<p>A common factor of 4 and 8 is 2. So, we can divide both sides of the ratio 4:8 by 2 to get 2:4.</p>\n\n<p>But this is not the simplest form yet, because 2 and 4 are both divisible by 2. So, we can divide both sides of the ratio 2:4 by 2 to get 1:2.</p>\n\n<p>We can't simplify this ratio any more, so <strong>1:2</strong> is the correct answer.</p>"
@@ -1058,7 +1065,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Introduction": {
         "content": {
@@ -1109,7 +1117,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "James makes his own recipe": {
         "content": {
@@ -1160,7 +1169,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Final Test": {
         "content": {
@@ -1297,7 +1307,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "dividing all three sides": {
         "content": {
@@ -1348,7 +1359,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "2 to 4 is 3 to 6": {
         "content": {
@@ -1530,7 +1542,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Simplest form of the simplest form": {
         "content": {
@@ -1656,7 +1669,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "3.5": {
         "content": {
@@ -1813,7 +1827,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Cliffhanger and Congratulations": {
         "content": {
@@ -1852,7 +1867,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 2": {
         "content": {
@@ -2000,7 +2016,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 3": {
         "content": {
@@ -2188,7 +2205,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Mom comes home": {
         "content": {
@@ -2239,7 +2257,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Happy ending": {
         "content": {
@@ -2290,7 +2309,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 6": {
         "content": {
@@ -2422,7 +2442,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Checking equivalent ratio using the simplest form": {
         "content": {
@@ -2534,7 +2555,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 1": {
         "content": {
@@ -2671,7 +2693,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       }
     },
     "objective": "Learn how to reduce ratios to simplest form, and use that to check if two ratios are equivalent.",

@@ -3,7 +3,6 @@ package org.oppia.android.domain.util
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.AnswerGroup
-import org.oppia.android.app.model.CorrectAnswer
 import org.oppia.android.app.model.CustomSchemaValue
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Hint
@@ -79,7 +78,7 @@ class StateRetriever @Inject constructor() {
       addAllHint(createListOfHintsFromJson(interactionJson.getJSONArray("hints")))
 
       // Only set the solution if one has been defined.
-      createSolutionFromJson(interactionJson.optJSONObject("solution"))?.let { solution = it }
+      createSolutionFromJson(interactionJson.optJSONObject("solution"), id)?.let { solution = it }
     }.build()
   }
 
@@ -150,33 +149,16 @@ class StateRetriever @Inject constructor() {
   }
 
   // Creates a solution object from JSON
-  private fun createSolutionFromJson(optionalSolutionJson: JSONObject?): Solution? {
+  private fun createSolutionFromJson(
+    optionalSolutionJson: JSONObject?, interactionId: String
+  ): Solution? {
     return optionalSolutionJson?.let { solutionJson ->
       return Solution.newBuilder().apply {
-        correctAnswer = createCorrectAnswer(solutionJson)
+        correctAnswer =
+          parseExactSolutionObject(solutionJson.getJSONObject("correct_answer"), interactionId)
         explanation = parseSubtitledHtml(solutionJson.getJSONObject("explanation"))
         answerIsExclusive = solutionJson.getBoolean("answer_is_exclusive")
       }.build()
-    }
-  }
-
-  private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
-    val correctAnswerObject = containerObject.optJSONObject("correct_answer")
-    return when {
-      correctAnswerObject != null -> {
-        CorrectAnswer.newBuilder()
-          .setNumerator(correctAnswerObject.getInt("numerator"))
-          .setDenominator(correctAnswerObject.getInt("denominator"))
-          .setWholeNumber(correctAnswerObject.getInt("wholeNumber"))
-          .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
-          .build()
-      }
-      containerObject.optString("correct_answer", /* fallback= */ null) != null -> {
-        CorrectAnswer.newBuilder()
-          .setCorrectAnswer(containerObject.getStringFromObject("correct_answer"))
-          .build()
-      }
-      else -> CorrectAnswer.getDefaultInstance() // For incompatible types.
     }
   }
 
@@ -398,6 +380,40 @@ class StateRetriever @Inject constructor() {
         InteractionObject.newBuilder()
           .setRatioExpression(parseRatio(inputJson.getJSONArray(keyName)))
           .build()
+    }
+  }
+
+  private fun parseExactSolutionObject(
+    inputJson: JSONObject,
+    interactionId: String
+  ): InteractionObject {
+    return when (interactionId) {
+      "TextInput" -> {
+        InteractionObject.newBuilder().apply {
+          normalizedString = inputJson.getStringFromObject("normalized_string")
+        }.build()
+      }
+      "NumericInput" -> {
+        InteractionObject.newBuilder().apply {
+          real = inputJson.getDouble("real")
+        }.build()
+      }
+      "FractionInput" -> {
+        InteractionObject.newBuilder().apply {
+          fraction = parseFraction(inputJson.getJSONObject("fraction"))
+        }.build()
+      }
+      "RatioExpressionInput" ->{
+        InteractionObject.newBuilder().apply {
+          ratioExpression = parseRatio(inputJson.getJSONArray("ratio_expression"))
+        }.build()
+      }
+      "NumericExpressionInput", "AlgebraicExpressionInput", "MathEquationInput" -> {
+        InteractionObject.newBuilder().apply {
+          mathExpression = inputJson.getStringFromObject("math_expression")
+        }.build()
+      }
+      else -> error("Encountered unsupported interaction ID for solutions: $interactionId")
     }
   }
 

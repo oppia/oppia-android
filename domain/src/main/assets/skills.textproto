@@ -54,6 +54,12 @@ concept_cards {
           html: "\330\243\331\207\331\204\330\247. \331\205\330\261\330\255\330\250\330\247 \330\250\331\203\331\205 \331\201\331\212 \330\243\331\210\331\201\331\212\330\247."
         }
       }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "Hello. Karibu katika Oppia."
+        }
+      }
     }
   }
   written_translation {
@@ -75,6 +81,12 @@ concept_cards {
         key: "ar"
         value {
           html: "\331\207\330\260\330\247 \331\207\331\210 \330\247\331\204\331\205\330\253\330\247\331\204 \330\247\331\204\330\243\331\210\331\204."
+        }
+      }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "Huu ni mfano wa kwanza."
         }
       }
     }
@@ -145,6 +157,12 @@ concept_cards {
           html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
         }
       }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "<iliondolewa>"
+        }
+      }
     }
   }
 }
@@ -184,6 +202,12 @@ concept_cards {
           html: "Explanation \331\205\330\271 <b> Rich Text </b>."
         }
       }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "Maelezo na <b> maandishi tajiri </b>."
+        }
+      }
     }
   }
   written_translation {
@@ -199,6 +223,12 @@ concept_cards {
         key: "ar"
         value {
           html: "\331\205\330\253\330\247\331\204 \330\271\331\205\331\204 \331\205\330\271 <I> \331\206\330\265 \330\261\331\212\330\252\330\264 </I>."
+        }
+      }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "Mfano uliotumika na <i>maandishi tajiri</i>."
         }
       }
     }
@@ -269,6 +299,12 @@ concept_cards {
           html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
         }
       }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "<iliondolewa>"
+        }
+      }
     }
   }
 }
@@ -312,6 +348,12 @@ concept_cards {
           html: "\330\252\331\201\330\263\331\212\330\261 \330\257\331\210\331\206 \331\206\330\265 \330\272\331\206\331\212."
         }
       }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "Maelezo bila maandishi tajiri."
+        }
+      }
     }
   }
   written_translation {
@@ -327,6 +369,12 @@ concept_cards {
         key: "ar"
         value {
           html: "\331\205\330\253\330\247\331\204 \330\271\331\204\331\211 \330\260\331\204\331\203 \330\257\331\210\331\206 \331\206\330\265 \330\272\331\206\331\212."
+        }
+      }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "Mfano uliofanya kazi bila maandishi tajiri."
         }
       }
     }
@@ -378,6 +426,12 @@ concept_cards {
         key: "ar"
         value {
           html: "\331\205\330\253\330\247\331\204 \331\212\330\271\331\205\331\204 \330\247\331\204\330\253\330\247\331\206\331\212."
+        }
+      }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "Mfano wa pili uliofanya kazi."
         }
       }
     }
@@ -465,6 +519,12 @@ concept_cards {
           html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
         }
       }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "<iliondolewa>"
+        }
+      }
     }
   }
   written_translation {
@@ -480,6 +540,12 @@ concept_cards {
         key: "ar"
         value {
           html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+      translation_mapping {
+        key: "sw"
+        value {
+          html: "<iliondolewa>"
         }
       }
     }

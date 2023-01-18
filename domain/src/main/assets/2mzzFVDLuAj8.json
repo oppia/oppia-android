@@ -224,7 +224,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 10": {
         "content": {
@@ -510,7 +511,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Introduction": {
         "content": {
@@ -579,7 +581,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Final Test": {
         "content": {
@@ -779,7 +782,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Writing ratio with 3 quantities": {
         "content": {
@@ -1071,7 +1075,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Definition of ratio": {
         "content": {
@@ -1134,7 +1139,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Writing ratio in colon notation": {
         "content": {
@@ -1504,7 +1510,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Congratulations": {
         "content": {
@@ -1555,7 +1562,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Ratio shows relative relationship 2": {
         "content": {
@@ -1618,7 +1626,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Ratio shows relative relationship 1": {
         "content": {
@@ -1792,7 +1801,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Solution": {
         "content": {
@@ -1855,7 +1865,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Fruit purees": {
         "content": {
@@ -1918,7 +1929,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Uncle Berry": {
         "content": {
@@ -1981,7 +1993,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 1": {
         "content": {
@@ -2324,7 +2337,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "A problem": {
         "content": {
@@ -2387,7 +2401,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 3": {
         "content": {
@@ -2711,7 +2726,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 2": {
         "content": {
@@ -3054,7 +3070,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 5": {
         "content": {
@@ -3330,7 +3347,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 4": {
         "content": {
@@ -3538,7 +3556,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 7": {
         "content": {
@@ -3855,7 +3874,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 6": {
         "content": {
@@ -4112,7 +4132,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 9": {
         "content": {
@@ -4415,7 +4436,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 8": {
         "content": {
@@ -4638,7 +4660,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Happy ending": {
         "content": {
@@ -4701,7 +4724,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Tool for describing quantities": {
         "content": {
@@ -4764,7 +4788,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 3.5": {
         "content": {
@@ -4981,7 +5006,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       }
     },
     "objective": "Learn about how ratios can be used to show the relative relationship between quantities.",

@@ -549,7 +549,6 @@ states {
               image_path: "Screen Shot 2015-02-18 at 3.51.49 AM_height_400_width_816.png"
               label_regions {
                 label: "Mercury"
-                content_description: "You have selected planet Mercury"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -563,10 +562,10 @@ states {
                     }
                   }
                 }
+                content_description: "You have selected planet Mercury"
               }
               label_regions {
                 label: "Venus"
-                content_description: "You have selected planet Venus"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -580,10 +579,10 @@ states {
                     }
                   }
                 }
+                content_description: "You have selected planet Venus"
               }
               label_regions {
                 label: "Earth"
-                content_description: "You have selected planet Earth"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -597,10 +596,10 @@ states {
                     }
                   }
                 }
+                content_description: "You have selected planet Earth"
               }
               label_regions {
                 label: "Mars"
-                content_description: "You have selected planet Mars"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -614,10 +613,10 @@ states {
                     }
                   }
                 }
+                content_description: "You have selected planet Mars"
               }
               label_regions {
                 label: "Jupiter"
-                content_description: "You have selected planet Jupiter"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -631,10 +630,10 @@ states {
                     }
                   }
                 }
+                content_description: "You have selected planet Jupiter"
               }
               label_regions {
                 label: "Saturn"
-                content_description: "You have selected planet Saturn"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -648,10 +647,10 @@ states {
                     }
                   }
                 }
+                content_description: "You have selected planet Saturn"
               }
               label_regions {
                 label: "Uranus"
-                content_description: "You have selected planet Uranus"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -665,10 +664,10 @@ states {
                     }
                   }
                 }
+                content_description: "You have selected planet Uranus"
               }
               label_regions {
                 label: "Neptune"
-                content_description: "You have selected planet Neptune"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -682,10 +681,10 @@ states {
                     }
                   }
                 }
+                content_description: "You have selected planet Neptune"
               }
               label_regions {
                 label: "Pluto"
-                content_description: "You have selected planet Pluto"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -699,6 +698,7 @@ states {
                     }
                   }
                 }
+                content_description: "You have selected planet Pluto"
               }
             }
           }

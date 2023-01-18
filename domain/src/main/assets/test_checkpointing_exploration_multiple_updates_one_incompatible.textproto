@@ -56,7 +56,6 @@ states {
         }
       }
       solution {
-        interaction_id: "NumericInput"
         explanation {
         }
       }

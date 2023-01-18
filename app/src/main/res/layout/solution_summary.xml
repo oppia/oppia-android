@@ -60,6 +60,7 @@
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/component_color_hints_and_solutions_fragment_text_color"
             android:textSize="20sp"
+            android:text="@string/hint_list_solution_title"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -131,32 +132,14 @@
           android:paddingBottom="16dp"
           android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
-          <LinearLayout
-            android:layout_width="match_parent"
+          <TextView
+            android:id="@+id/solution_correct_answer"
+            style="@style/TextViewStart"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:importantForAccessibility="yes"
-            android:orientation="horizontal">
-
-            <TextView
-              android:id="@+id/solution_correct_answer_label"
-              style="@style/TextViewStart"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:fontFamily="sans-serif"
-              android:text="@string/the_only_solution_is"
-              android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
-              android:textSize="16sp" />
-
-            <TextView
-              android:id="@+id/solution_correct_answer"
-              style="@style/TextViewStart"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginStart="8dp"
-              android:fontFamily="sans-serif"
-              android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
-              android:textSize="16sp" />
-          </LinearLayout>
+            android:fontFamily="sans-serif"
+            android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
+            android:textSize="16sp" />
 
           <LinearLayout
             android:layout_width="match_parent"
@@ -180,7 +163,7 @@
               style="@style/TextViewStart"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:contentDescription="@{viewModel.computeSolutionContentDescription()}"
+              android:contentDescription="@{viewModel.solutionSummaryContentDescription}"
               android:fontFamily="sans-serif"
               android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
               android:textSize="16sp" />

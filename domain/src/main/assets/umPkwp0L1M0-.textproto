@@ -1103,15 +1103,16 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
         answer_is_exclusive: true
-        correct_answer {
-          denominator: 10
-          numerator: 3
-        }
         explanation {
           html: "<p>The cake is divided into 10 equal pieces, so the denominator is 10.</p><p>3 of those pieces have mangoes, so the numerator is 3.</p><p>Therefore, the fraction we want is 3/10.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 3
+            denominator: 10
+          }
         }
       }
       hint {
@@ -1770,14 +1771,15 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
-        correct_answer {
-          denominator: 6
-          numerator: 4
-        }
         explanation {
           html: "<p>There are 4 pieces with dhal on them, so the numerator is 4. (We don\'t care about the pieces which are burnt, since the question is only about the pieces with dhal on them.)</p><p>There are 6 pieces of roti in total, so the denominator is 6.</p><p>Therefore, the answer is 4/6.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 4
+            denominator: 6
+          }
         }
       }
       hint {
@@ -5451,15 +5453,16 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
         answer_is_exclusive: true
-        correct_answer {
-          denominator: 12
-          numerator: 5
-        }
         explanation {
           html: "<p>The whole cake is divided into 12 equal pieces.. So, the <strong>denominator</strong> is 12.</p><p>5 pieces have mangoes and chocolate chips, but no cherries. So, the <strong>numerator</strong> is 5.</p><p>Therefore, the answer is 5/12.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 5
+            denominator: 12
+          }
         }
       }
       hint {
@@ -7254,15 +7257,16 @@ states {
         }
       }
       solution {
-        interaction_id: "FractionInput"
         answer_is_exclusive: true
-        correct_answer {
-          denominator: 6
-          numerator: 1
-        }
         explanation {
           html: "<p>The first number is the number of<strong> selected </strong>pieces, which is 1.</p><p>The second number is the <strong>total</strong> number of pieces, which is 6.</p><p>So, the fraction is 1/6.</p>"
           content_id: "solution"
+        }
+        correct_answer {
+          fraction {
+            numerator: 1
+            denominator: 6
+          }
         }
       }
       hint {

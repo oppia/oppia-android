@@ -1,6 +1,9 @@
 {
   "topic_id": "test_topic_id_0",
-  "topic_name": "",
+  "topic_title": {
+    "content_id": "title",
+    "html": "Test subtopic"
+  },
   "page_contents": {
     "subtitled_html": {
       "content_id": "content",

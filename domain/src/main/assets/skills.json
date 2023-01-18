@@ -54,6 +54,11 @@
               "data_format": "html",
               "translation": {"translation" : "أهلا. مرحبا بكم في أوفيا."},
               "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "Hello. Karibu katika Oppia."},
+              "needs_update": false
             }
           },
           "test_skill_content_id_1": {
@@ -70,6 +75,11 @@
             "ar": {
               "data_format": "html",
               "translation": {"translation" : "هذا هو المثال الأول."},
+              "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "Huu ni mfano wa kwanza."},
               "needs_update": false
             }
           },
@@ -119,6 +129,11 @@
               "data_format": "html",
               "translation": {"translation" : "<تمت إزالة>"},
               "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "<iliondolewa>"},
+              "needs_update": false
             }
           }
         }
@@ -160,6 +175,11 @@
               "data_format": "html",
               "translation": {"translation" : "Explanation مع <b> Rich Text </b>."},
               "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "Maelezo na <b> maandishi tajiri </b>."},
+              "needs_update": false
             }
           },
           "worked_example_1": {
@@ -171,6 +191,11 @@
             "ar": {
               "data_format": "html",
               "translation": {"translation" : "مثال عمل مع <I> نص ريتش </I>."},
+              "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "Mfano uliotumika na <i>maandishi tajiri</i>."},
               "needs_update": false
             }
           },
@@ -219,6 +244,11 @@
             "ar": {
               "data_format": "html",
               "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "<iliondolewa>"},
               "needs_update": false
             }
           }
@@ -270,6 +300,11 @@
               "data_format": "html",
               "translation": {"translation" : "تفسير دون نص غني."},
               "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "Maelezo bila maandishi tajiri."},
+              "needs_update": false
             }
           },
           "worked_example_1": {
@@ -281,6 +316,11 @@
             "ar": {
               "data_format": "html",
               "translation": {"translation" : "مثال على ذلك دون نص غني."},
+              "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "Mfano uliofanya kazi bila maandishi tajiri."},
               "needs_update": false
             }
           },
@@ -317,6 +357,11 @@
             "ar": {
               "data_format": "html",
               "translation": {"translation" : "مثال يعمل الثاني."},
+              "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "Mfano wa pili uliofanya kazi."},
               "needs_update": false
             }
           },
@@ -378,6 +423,11 @@
               "data_format": "html",
               "translation": {"translation" : "<تمت إزالة>"},
               "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "<iliondolewa>"},
+              "needs_update": false
             }
           },
           "question-related-to-worked_example_2": {
@@ -389,6 +439,11 @@
             "ar": {
               "data_format": "html",
               "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            },
+            "sw": {
+              "data_format": "html",
+              "translation": {"translation" : "<iliondolewa>"},
               "needs_update": false
             }
           }
