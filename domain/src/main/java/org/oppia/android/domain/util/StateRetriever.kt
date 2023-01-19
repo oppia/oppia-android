@@ -150,7 +150,8 @@ class StateRetriever @Inject constructor() {
 
   // Creates a solution object from JSON
   private fun createSolutionFromJson(
-    optionalSolutionJson: JSONObject?, interactionId: String
+    optionalSolutionJson: JSONObject?,
+    interactionId: String
   ): Solution? {
     return optionalSolutionJson?.let { solutionJson ->
       return Solution.newBuilder().apply {
@@ -403,7 +404,7 @@ class StateRetriever @Inject constructor() {
           fraction = parseFraction(inputJson.getJSONObject("fraction"))
         }.build()
       }
-      "RatioExpressionInput" ->{
+      "RatioExpressionInput" -> {
         InteractionObject.newBuilder().apply {
           ratioExpression = parseRatio(inputJson.getJSONArray("ratio_expression"))
         }.build()

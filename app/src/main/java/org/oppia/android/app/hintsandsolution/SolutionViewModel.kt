@@ -1,10 +1,8 @@
 package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableField
-import androidx.lifecycle.ViewModel
 import org.oppia.android.R
-import javax.inject.Inject
+import org.oppia.android.app.hintsandsolution.HintsAndSolutionViewModel.Factory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE
@@ -41,8 +39,16 @@ import org.oppia.android.util.math.toAnswerString
 import org.oppia.android.util.math.toPlainString
 import org.oppia.android.util.math.toRawLatex
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
+import javax.inject.Inject
 
-/** [ViewModel] for Solution in [HintsAndSolutionDialogFragment]. */
+/**
+ * [HintsAndSolutionItemViewModel] that represents a solution that the user may reveal.
+ *
+ * Instances of this class are created using its [Factory].
+ *
+ * @property solutionSummary the solution's explanation text (which may contain HTML)
+ * @property isSolutionRevealed whether the solution is currently expanded and viewable
+ */
 class SolutionViewModel private constructor(
   val solutionSummary: String,
   private val correctAnswer: InteractionObject,
@@ -53,6 +59,10 @@ class SolutionViewModel private constructor(
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
 ) : HintsAndSolutionItemViewModel() {
+  /**
+   * A screenreader-friendly version of [solutionSummary] that should be used for readout, in place
+   * of the original summary.
+   */
   val solutionSummaryContentDescription by lazy {
     CustomHtmlContentHandler.fromHtml(
       solutionSummary,
@@ -60,8 +70,13 @@ class SolutionViewModel private constructor(
       customTagHandlers = mapOf()
     ).toString()
   }
+
+  /** A displayable HTML representation of the correct answer presented by this model's solution. */
   val correctAnswerHtml: String by lazy { computeCorrectAnswerHtml() }
+
+  /** A screenreader-friendly readable version of [correctAnswerHtml]. */
   val correctAnswerContentDescription: String by lazy { computeCorrectAnswerContentDescription() }
+
   private val correctAnswerTextStringResId = if (isSolutionExclusive) {
     R.string.hints_list_exclusive_solution_text
   } else R.string.hints_list_possible_solution_text
@@ -217,10 +232,17 @@ class SolutionViewModel private constructor(
       customizationArgsMap["useFractionForDivision"]?.boolValue ?: false
   }
 
+  /** Application-injectable factory to create [SolutionViewModel]s (see [create]). */
   class Factory @Inject constructor(
     private val appLanguageResourceHandler: AppLanguageResourceHandler,
     private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
   ) {
+    /**
+     * Returns a new [SolutionViewModel] with the specified summary HTML text, correct answer,
+     * [isSolutionRevealed] tracking [ObservableBoolean], whether the solution is exclusive, and its
+     * answer context (such as the [interaction] that the answer can be submitted to and the
+     * displayed state's current [writtenTranslationContext] for localization).
+     */
     fun create(
       solutionSummary: String,
       correctAnswer: InteractionObject,

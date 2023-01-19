@@ -25,7 +25,8 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
 
     /** Returns a new [MarkChaptersCompletedFragment]. */
     fun newInstance(
-      internalProfileId: Int, showConfirmationNotice: Boolean
+      internalProfileId: Int,
+      showConfirmationNotice: Boolean
     ): MarkChaptersCompletedFragment {
       val markChaptersCompletedFragment = MarkChaptersCompletedFragment()
       val args = Bundle()

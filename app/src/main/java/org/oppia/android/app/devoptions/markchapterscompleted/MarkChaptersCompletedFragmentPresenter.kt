@@ -8,16 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.MarkChaptersCompletedChapterSummaryViewBinding
 import org.oppia.android.databinding.MarkChaptersCompletedFragmentBinding
 import org.oppia.android.databinding.MarkChaptersCompletedStorySummaryViewBinding
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
 import javax.inject.Inject
-import org.oppia.android.R
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [MarkChaptersCompletedFragment]. */
 @FragmentScope
