@@ -17,6 +17,7 @@
     android:layout_marginStart="@dimen/promoted_story_card_layout_margin_start"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:promotedStoryIndex="@{viewModel.index}">
@@ -25,8 +26,7 @@
       android:id="@+id/promoted_story_card_container"
       android:layout_width="@{viewModel.computeLayoutWidth(), default=match_parent}"
       android:layout_height="wrap_content"
-      android:onClick="@{(v) -> viewModel.clickOnStoryTile()}"
-      app:roundedRectDrawableWithColor="@{viewModel.promotedStory.lessonThumbnail.backgroundColorRgb}">
+      android:onClick="@{(v) -> viewModel.clickOnStoryTile()}">
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
