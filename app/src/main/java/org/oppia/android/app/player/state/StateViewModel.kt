@@ -24,7 +24,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
@@ -36,7 +36,7 @@ class StateViewModel @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val oppiaLogger: OppiaLogger,
   private val fragment: Fragment,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @EnableLearnerStudyAnalytics private val enableLearnerStudy: PlatformParameterValue<Boolean>
 ) : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
   val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
@@ -49,7 +49,7 @@ class StateViewModel @Inject constructor(
   val isHintBulbVisible = ObservableField(false)
   val isHintOpenedAndUnRevealed = ObservableField(false)
 
-  val hasSupportForSwitchingToSwahili: Boolean = learnerStudyAnalytics.value
+  val hasSupportForSwitchingToSwahili: Boolean = enableLearnerStudy.value
   val hasSwahiliTranslations: LiveData<Boolean> by lazy {
     Transformations.map(
       explorationProgressController.getCurrentState().toLiveData(),
@@ -96,6 +96,18 @@ class StateViewModel @Inject constructor(
         getAnswerItemList()
       )
     ) ?: UserAnswer.getDefaultInstance()
+  }
+
+  fun canQuicklyToggleBetweenSwahiliAndEnglish(
+    hasSwahiliTranslations: Boolean,
+    hasEnabledSwahiliTranslations: Boolean
+  ): Boolean {
+    // This logic has to be done in Kotlin since there seems to be a bug in the generated Java by
+    // the databinding compiler that can result in a NPE being thrown in code that shouldn't
+    // actually be throwing it (see https://issuetracker.google.com/issues/144246528 for context).
+    // Essentially, the following example of generated code results in an NPE unexpectedly:
+    //   Boolean value = boolean_value ? Boolean_value : false (Boolean_value can be null)
+    return hasSwahiliTranslations && hasEnabledSwahiliTranslations
   }
 
   fun toggleContentLanguage(isSwahiliEnabled: Boolean) {

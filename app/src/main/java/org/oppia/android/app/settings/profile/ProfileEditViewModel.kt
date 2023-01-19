@@ -12,7 +12,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ class ProfileEditViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
   @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
-  @LearnerStudyAnalytics private val enableLearnerStudySupport: PlatformParameterValue<Boolean>
+  @EnableLearnerStudyAnalytics private val enableLearnerStudy: PlatformParameterValue<Boolean>
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
@@ -32,7 +32,7 @@ class ProfileEditViewModel @Inject constructor(
   val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
 
   /** Whether the admin is allowed to mark chapters as finished. */
-  val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudySupport.value
+  val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudy.value
 
   /** List of all the current profiles registered in the app [ProfileListFragment]. */
   val profile: LiveData<Profile> by lazy {
