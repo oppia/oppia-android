@@ -145,7 +145,7 @@
     "skill_contents": {
       "explanation": {
         "content_id": "explanation",
-        "html": "Explanation with <b>rich text</b>."
+        "html": "Explanation with <b>rich text</b>.<p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
       },
       "worked_examples": [{
         "question": {

@@ -602,7 +602,7 @@ class TopicController @Inject constructor(
       }
       val subtopicTitle = SubtitledHtml.newBuilder().apply {
         contentId = "title"
-        html = currentSubtopicJsonObject.optString("title") ?: ""
+        html = currentSubtopicJsonObject.getRemovableOptionalString("title") ?: ""
       }.build()
       // No written translations are included since none are retrieved from JSON.
       val subtopic = Subtopic.newBuilder()
@@ -703,7 +703,7 @@ class TopicController @Inject constructor(
     val storyDataJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")
     val storyTitle = SubtitledHtml.newBuilder().apply {
       contentId = "title"
-      html = storyDataJsonObject?.optString("story_title") ?: ""
+      html = storyDataJsonObject?.getRemovableOptionalString("story_title") ?: ""
     }.build()
     val chapterList = storyDataJsonObject?.getJSONArray("story_nodes")?.let {
       createChaptersFromJson(it)
@@ -751,11 +751,11 @@ class TopicController @Inject constructor(
       val explorationId = chapter.getStringFromObject("exploration_id")
       val chapterTitle = SubtitledHtml.newBuilder().apply {
         contentId = "title"
-        html = chapter.optString("title") ?: ""
+        html = chapter.getRemovableOptionalString("title") ?: ""
       }.build()
       val chapterDescription = SubtitledHtml.newBuilder().apply {
         contentId = "description"
-        html = chapter.optString("description") ?: ""
+        html = chapter.getFirstRemovableOptionalString("description", "outline") ?: ""
       }.build()
       // No written translations are included since none are retrieved from JSON.
       chapterList.add(
@@ -918,5 +918,13 @@ class TopicController @Inject constructor(
           subtopic.writtenTranslationsMap, contentLocale
         )
     }.build()
+  }
+
+  private companion object {
+    private fun JSONObject.getRemovableOptionalString(name: String) =
+      optString(name).takeIf { it.isNotEmpty() && it != "<removed>" && it != "<unknown>" }
+
+    private fun JSONObject.getFirstRemovableOptionalString(vararg names: String) =
+      names.asSequence().map { getRemovableOptionalString(it) }.firstOrNull { it != null }
   }
 }

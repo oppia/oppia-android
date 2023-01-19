@@ -1277,7 +1277,7 @@ class StateFragmentLocalTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText("This will reveal the solution. Are you sure?"))
+      onView(withText("This will show the solution. Are you sure?"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }

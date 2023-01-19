@@ -45,10 +45,6 @@ states {
           rule_type: "Equals"
         }
       }
-      solution {
-        explanation {
-        }
-      }
       hint {
         hint_content {
           html: "PI can be approximated to 3 correct digits by computing 22/7."

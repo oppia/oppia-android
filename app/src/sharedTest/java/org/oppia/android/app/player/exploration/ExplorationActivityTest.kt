@@ -1925,12 +1925,13 @@ class ExplorationActivityTest {
       pressRevealHintButton(hintPosition = 0)
 
       // Ensure the hint description is correct and doesn't contain any HTML.
+      // TODO: File an issue for the broken content description rendering from HTML (needs more work & needs to be generically).
       onView(withId(R.id.hints_and_solution_summary))
         .check(
           matches(
             withContentDescription(
               "Remember that two halves, when added together," +
-                " make one whole.\n\n"
+                " make one whole.\n\nClick on this .\n\n"
             )
           )
         )

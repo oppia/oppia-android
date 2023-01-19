@@ -55,7 +55,9 @@ class StateRetriever @Inject constructor() {
           createWrittenTranslationMappingsFromJson(stateJson.getJSONObject("written_translations"))
         )
       }
-      stateJson.optString("linked_skill_id")?.let { linkedSkillId = it }
+      stateJson.optString("linked_skill_id").takeIf {
+        it.isNotEmpty() && it != "null"
+      }?.let { linkedSkillId = it }
     }.build()
 
   // Creates an interaction from JSON

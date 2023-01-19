@@ -1518,7 +1518,7 @@ class QuestionAssessmentProgressControllerTest {
 
   private fun viewSolutionForQuestion2(ephemeralQuestion: EphemeralQuestion) {
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.normalizedString).isEqualTo("3.0")
+    assertThat(solution.correctAnswer.real).isWithin(1e-5).of(3.0)
     monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitSolutionIsRevealed()
     )

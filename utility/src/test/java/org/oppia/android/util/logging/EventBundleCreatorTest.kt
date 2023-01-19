@@ -133,6 +133,7 @@ class EventBundleCreatorTest {
     private const val TEST_IS_ANSWER_CORRECT = true
     private const val TEST_IS_ANSWER_CORRECT_STR = "true"
     private const val TEST_CONTENT_ID = "test_content_id"
+    private const val TEST_LANGUAGE_CODE = "en"
     private const val TEST_APP_VERSION_NAME = "oppia-android-test-0123456789"
     private const val TEST_APP_VERSION_CODE = 125
     private const val TEST_CPU_USAGE = Double.MAX_VALUE
@@ -1096,7 +1097,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_play_voiceover_button")
-    assertThat(bundle).hasSize(13)
+    assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
@@ -1110,6 +1111,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
     assertThat(bundle).string("content_id").isEqualTo(TEST_CONTENT_ID)
+    assertThat(bundle).string("language_code").isEqualTo(TEST_LANGUAGE_CODE)
   }
 
   @Test
@@ -1121,7 +1123,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_play_voiceover_button")
-    assertThat(bundle).hasSize(15)
+    assertThat(bundle).hasSize(16)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
@@ -1135,6 +1137,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
     assertThat(bundle).string("content_id").isEqualTo(TEST_CONTENT_ID)
+    assertThat(bundle).string("language_code").isEqualTo(TEST_LANGUAGE_CODE)
     assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
     assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
@@ -1925,10 +1928,12 @@ class EventBundleCreatorTest {
 
   private fun createPlayVoiceOverContextDetails(
     explorationDetails: ExplorationContext = createExplorationContext(),
-    contentId: String = TEST_CONTENT_ID
+    contentId: String = TEST_CONTENT_ID,
+    languageCode: String = TEST_LANGUAGE_CODE
   ) = PlayVoiceOverContext.newBuilder().apply {
     this.explorationDetails = explorationDetails
     this.contentId = contentId
+    this.languageCode = languageCode
   }.build()
 
   private fun registerTestApplication() {

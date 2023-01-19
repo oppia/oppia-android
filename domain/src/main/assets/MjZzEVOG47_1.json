@@ -2710,7 +2710,7 @@
               "dest": "Matthew gets conned",
               "feedback": {
                 "content_id": "feedback_1",
-                "html": "<p>Yes, that's right -- congratulations, you figured out Crumb's trick!</p><p>Let's see what happens to Matthew, though...</p>"
+                "html": ""
               },
               "labelled_as_correct": true,
               "param_changes": [],

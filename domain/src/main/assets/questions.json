@@ -1897,7 +1897,13 @@
       },
       "written_translations": {
         "translations_mapping": {
-          "content": {},
+          "content": {
+            "ar": {
+              "data_format": "html",
+              "translation": { "translation": "<p> إذا تحدثنا عن الرغبة في 4/7 من الكعكة ، فماذا يمثل السبعة؟ </p>" },
+              "needs_update": false
+            }
+          },
           "solution": {},
           "feedback_1": {},
           "ca_choices_0": {},
@@ -1968,7 +1974,7 @@
         "solution": {
           "answer_is_exclusive": false,
           "correct_answer": {
-            "normalized_string": "3.0"
+            "real": 3.0
           },
           "explanation": {
             "content_id": "solution",

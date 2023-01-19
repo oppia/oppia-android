@@ -2639,7 +2639,7 @@ questions {
           content_id: "solution"
         }
         correct_answer {
-          normalized_string: "3.0"
+          real: 3.0
         }
       }
       hint {
