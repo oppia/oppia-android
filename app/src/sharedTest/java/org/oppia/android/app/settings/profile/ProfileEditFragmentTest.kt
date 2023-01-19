@@ -381,6 +381,11 @@ class ProfileEditFragmentTest {
     }
   }
 
+  // TODO: Add tests.
+  // - testProfileEdit_studyOff_doesNotHaveMarkChaptersCompletedButton
+  // - testProfileEdit_studyOn_hasMarkChaptersCompletedButton
+  // - testProfileEdit_studyOn_clickMarkChapsCompleted_opensMarkCompleteActivityForProfile (include verifying the notice)
+
   @Singleton
   @Component(
     modules = [

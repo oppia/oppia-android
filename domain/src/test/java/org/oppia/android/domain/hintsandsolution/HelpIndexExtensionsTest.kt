@@ -225,6 +225,46 @@ class HelpIndexExtensionsTest {
     assertThat(hintIsRevealed).isFalse()
   }
 
+  // TODO: Add tests.
+  // - testDropLastUnavailable_defaultHelpIndex_emptyList_returnsEmptyList
+  // - testDropLastUnavailable_defaultHelpIndex_nonEmptyList_returnsEmptyList
+  // - testDropLastUnavailable_availableHintIndex0_emptyList_returnsEmptyList
+  // - testDropLastUnavailable_availableHintIndex0_singletonList_returnsSingletonList
+  // - testDropLastUnavailable_availableHintIndex0_twoHintsList_returnsSingletonList
+  // - testDropLastUnavailable_availableHintIndex1_emptyList_returnsEmptyList
+  // - testDropLastUnavailable_availableHintIndex1_singletonList_returnsSingletonList
+  // - testDropLastUnavailable_availableHintIndex1_twoHintsList_returnsTwoItemList
+  // - testDropLastUnavailable_availableHintIndex1_threeHintsList_returnsTwoItemList
+  // - testDropLastUnavailable_lastRevealedHintIndex0_emptyList_returnsEmptyList
+  // - testDropLastUnavailable_lastRevealedHintIndex0_singletonList_returnsSingletonList
+  // - testDropLastUnavailable_lastRevealedHintIndex0_twoHintsList_returnsSingletonList
+  // - testDropLastUnavailable_lastRevealedHintIndex1_emptyList_returnsEmptyList
+  // - testDropLastUnavailable_lastRevealedHintIndex1_singletonList_returnsSingletonList
+  // - testDropLastUnavailable_lastRevealedHintIndex1_twoHintsList_returnsTwoItemList
+  // - testDropLastUnavailable_lastRevealedHintIndex1_threeHintsList_returnsTwoItemList
+  // - testDropLastUnavailable_showSolution_emptyList_returnsEmptyList
+  // - testDropLastUnavailable_showSolution_singletonList_returnsSingletonList
+  // - testDropLastUnavailable_showSolution_twoHintsList_returnsTwoHintsList
+  // - testDropLastUnavailable_showSolution_emptyList_returnsEmptyList
+  // - testDropLastUnavailable_showSolution_singletonList_returnsSingletonList
+  // - testDropLastUnavailable_showSolution_twoHintsList_returnsTwoItemList
+  // - testDropLastUnavailable_showSolution_threeHintsList_returnsThreeItemList
+  // - testDropLastUnavailable_everythingRevealed_emptyList_returnsEmptyList
+  // - testDropLastUnavailable_everythingRevealed_singletonList_returnsSingletonList
+  // - testDropLastUnavailable_everythingRevealed_twoHintsList_returnsTwoHintsList
+  // - testDropLastUnavailable_everythingRevealed_emptyList_returnsEmptyList
+  // - testDropLastUnavailable_everythingRevealed_singletonList_returnsSingletonList
+  // - testDropLastUnavailable_everythingRevealed_twoHintsList_returnsTwoItemList
+  // - testDropLastUnavailable_everythingRevealed_threeHintsList_returnsThreeItemList
+  //
+  // - testIsSolutionAvailable_defaultHelpIndex_returnsFalse
+  // - testIsSolutionAvailable_availableHint0_returnsFalse
+  // - testIsSolutionAvailable_availableHint1_returnsFalse
+  // - testIsSolutionAvailable_viewedHint0_returnsFalse
+  // - testIsSolutionAvailable_viewedHint1_returnsFalse
+  // - testIsSolutionAvailable_showSolution_returnsTrue
+  // - testIsSolutionAvailable_everythingIsRevealed_returnsTrue
+
   @Test
   fun testIsSolutionRevealed_defaultHelpIndex_returnsFalse() {
     val helpIndex = HelpIndex.getDefaultInstance()

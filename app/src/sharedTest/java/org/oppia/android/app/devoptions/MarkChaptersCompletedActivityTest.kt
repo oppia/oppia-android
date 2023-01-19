@@ -168,6 +168,10 @@ class MarkChaptersCompletedActivityTest {
     }
   }
 
+  // TODO: Add tests
+  // - testActivity_showConfirmationTrueInIntent_selectChapters_markCompleted_confirmationShown
+  // - testActivity_showConfirmationFalseInIntent_selectChapters_markCompleted_confirmationNotShown
+
   private fun createMarkChaptersCompletedActivityIntent(internalProfileId: Int): Intent {
     return MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
       context, internalProfileId

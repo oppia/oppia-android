@@ -752,6 +752,17 @@ class MarkChaptersCompletedFragmentTest {
     }
   }
 
+  // TODO: Add tests
+  // - testFragment_showConfirmationTrueInArgs_selectChapters_markCompleted_confirmationShown
+  // - testFragment_showConfirmationFalseInArgs_selectChapters_markCompleted_confirmationNotShown
+  // - testFragment_withNotice_selectNoChapters_markCompleted_activityClosedWithoutConfirmation
+  // - testFragment_withNotice_selectOneChapter_markCompleted_confirmationIncludesLessonTitle
+  // - testFragment_withNotice_selectTwoChapters_markCompleted_confirmationIncludesLessonTitles
+  // - testFragment_withNotice_selectThreeChapters_markCompleted_confirmationIncludesLessonTitles
+  // - testFragment_withNotice_selectChapters_markCompleted_cancelConfirmation_activityStillOpen
+  // - testFragment_withNotice_selectChapters_markCompleted_confirmSelection_activityClosed
+  // - testFragment_withNotice_selectChapters_markCompleted_confirmSelection_expsMarkedAsDone
+
   private fun createMarkChaptersCompletedTestActivityIntent(internalProfileId: Int): Intent {
     return MarkChaptersCompletedTestActivity.createMarkChaptersCompletedTestIntent(
       context, internalProfileId

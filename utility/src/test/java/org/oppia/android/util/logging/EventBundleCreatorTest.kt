@@ -1139,6 +1139,11 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
+  // TODO: Add tests.
+  // - Update all "studyOn" cases to match the new one below.
+  // - testFillEventBundle_pauseVoiceOverEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName
+  // - testFillEventBundle_pauseVoiceOverEvent_studyOn_fillsAllFieldsAndReturnsName
+
   @Test
   fun testFillEventBundle_appInBackgroundEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()

@@ -924,6 +924,14 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).hasPlayVoiceOverContextThat().hasContentIdThat().isEmpty()
   }
 
+  // TODO: Add tests.
+  // - Update testStateAnalyticsLogger_logPlayVoiceOver_logsStateEventWithContentId & testStateAnalyticsLogger_logPlayVoiceOver_diffContentId_logsStateEventWithContentId to include language codes.
+  // - testStateAnalyticsLogger_logPlayVoiceOver_nullLanguageCode_logsStateEventWithoutLanguageCode
+  // - testStateAnalyticsLogger_logPauseVoiceOver_logsStateEventWithContentId
+  // - testStateAnalyticsLogger_logPauseVoiceOver_diffContentId_logsStateEventWithContentId
+  // - testStateAnalyticsLogger_logPauseVoiceOver_nullContentId_logsStateEventWithoutContentId
+  // - testStateAnalyticsLogger_logPauseVoiceOver_nullLanguageCode_logsStateEventWithoutLanguageCode
+
   @Test
   @RunParameterized(
     Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
@@ -1399,6 +1407,10 @@ class LearnerAnalyticsLoggerTest {
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
     assertThat(log.type).isEqualTo(Log.ERROR)
   }
+
+  // TODO: Add tests.
+  // - testStateAnalyticsLogger_logPauseVoiceOver_missingOneId_logsEventWithMissingId (parameterized)
+  // - testStateAnalyticsLogger_logPauseVoiceOver_noInstallOrLearnerIds_logsEventAndConsoleErrors
 
   @Test
   fun testStateAnalyticsLogger_logReachInvestedEngagement_logsStateEventWithStateName() {

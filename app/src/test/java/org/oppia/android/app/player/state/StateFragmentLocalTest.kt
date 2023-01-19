@@ -1554,6 +1554,16 @@ class StateFragmentLocalTest {
     }
   }
 
+  // TODO: Add tests
+  // - testStateFragment_stateWithFractionInput_showSolution_exclusive_solutionHasCorrectAnswerText
+  // - testStateFragment_stateWithNumericInput_showSolution_exclusive_solutionHasCorrectAnswerText
+  // - testStateFragment_stateWithTextInput_showSolution_exclusive_solutionHasCorrectAnswerText
+  // - testStateFragment_stateWithRatioInput_showSolution_notExclusive_solutionHasCorrectAnswerText
+  // - testStateFragment_stateWithNumericExpr_showSolution_solutionHasCorrectHtmlAnswerText
+  // - testStateFragment_stateWithNumericExpr_showSolution_solutionHasCorrectAnswerContentDescription
+  // - testStateFragment_stateWithAlgebraicExpr_showSolution_solutionHasCorrectHtmlAnswerText
+  // - testStateFragment_stateWithAlgebraicEq_showSolution_solutionHasCorrectHtmlAnswerText
+
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ENGLISH_VALUE,

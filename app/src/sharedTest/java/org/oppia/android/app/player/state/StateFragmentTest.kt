@@ -2417,6 +2417,15 @@ class StateFragmentTest {
     }
   }
 
+  // TODO: Add tests
+  // - testStateFragment_studyOff_inEnglish_doesNotHaveSwitchToSwahiliButton
+  // - testStateFragment_studyOn_inEnglish_lessonWithoutSwahili_doesNotHaveSwitchToSwahiliButton
+  // - testStateFragment_studyOn_inEnglish_hasSwitchToSwahiliButton
+  // - testStateFragment_studyOn_inSwahili_hasSwitchToEnglishButton
+  // - testStateFragment_inEnglish_clickSwitchToSwahili_contentIsInSwahili
+  // - testStateFragment_inSwahili_clickSwitchToEnglish_contentIsInEnglish
+  // - testStateFragment_inEnglish_clickSwitchToSwahili_thenBackToEnglish_contentIsInEnglish
+
   @Test
   fun testStateFragment_mathInteractions_numericExp_matchesExactly_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {

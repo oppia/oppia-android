@@ -617,6 +617,15 @@ class AudioPlayerControllerTest {
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
+  // TODO: add/update tests
+  // - Update tests above to include verification for language code.
+  // - testPause_playing_explicitUserAction_studyOn_logsPauseEvent
+  // - testPause_playing_explicitAction_missingContentId_studyOn_logsPauseEventWithoutContentId
+  // - testPause_playing_explicitUserAction_outsideExp_studyOn_doesNotLogEvent
+  // - testPause_playing_notExplicitUserAction_studyOn_doesNotLogEvent
+  // - testPause_notPlaying_explicitUserAction_studyOn_doesNotLogEvent
+  // - testPause_notPlaying_notExplicitUserAction_studyOn_doesNotLogEvent
+
   private fun arrangeMediaPlayer(contentId: String? = null) {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
     audioPlayerController.changeDataSource(TEST_URL, contentId)
