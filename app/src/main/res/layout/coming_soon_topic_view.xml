@@ -13,7 +13,6 @@
     android:id="@+id/topic_container"
     android:layout_width="144dp"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="4dp"
     app:layoutMarginEnd="@{viewModel.endMargin}">
 
