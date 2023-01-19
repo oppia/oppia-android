@@ -1505,9 +1505,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  // TODO(#1050): Add a test for verifying that the solution is correct for non-text & non-fraction
-  //  interactions.
-
   @Test
   fun testStateFragment_stateWithNumericSolution_revealHint_reopenDialog_onlyOneHintShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
