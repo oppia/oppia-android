@@ -695,7 +695,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(3)
 
     val hintAndSolution = currentQuestion.ephemeralState.state.interaction.solution
-    assertThat(hintAndSolution.correctAnswer.correctAnswer).contains("1/4")
+    assertThat(hintAndSolution.correctAnswer.normalizedString).contains("1/4")
 
     monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitSolutionIsRevealed()
@@ -1518,7 +1518,7 @@ class QuestionAssessmentProgressControllerTest {
 
   private fun viewSolutionForQuestion2(ephemeralQuestion: EphemeralQuestion) {
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("3.0")
+    assertThat(solution.correctAnswer.normalizedString).isEqualTo("3.0")
     monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitSolutionIsRevealed()
     )
@@ -1534,7 +1534,7 @@ class QuestionAssessmentProgressControllerTest {
 
   private fun viewSolutionForQuestion3(ephemeralQuestion: EphemeralQuestion) {
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("1/2")
+    assertThat(solution.correctAnswer.normalizedString).isEqualTo("1/2")
     monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitSolutionIsRevealed()
     )

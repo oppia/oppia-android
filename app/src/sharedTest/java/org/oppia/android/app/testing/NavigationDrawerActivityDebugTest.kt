@@ -317,7 +317,7 @@ class NavigationDrawerActivityDebugTest {
       intended(hasComponent(DeveloperOptionsActivity::class.java.name))
       intended(
         hasExtra(
-          DeveloperOptionsActivity.getIntentKey(),
+          "NavigationDrawerFragmentPresenter.navigation_profile_id",
           internalProfileId
         )
       )

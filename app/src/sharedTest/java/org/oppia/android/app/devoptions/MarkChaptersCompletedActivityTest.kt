@@ -174,7 +174,7 @@ class MarkChaptersCompletedActivityTest {
 
   private fun createMarkChaptersCompletedActivityIntent(internalProfileId: Int): Intent {
     return MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-      context, internalProfileId
+      context, internalProfileId, showConfirmationNotice = false
     )
   }
 

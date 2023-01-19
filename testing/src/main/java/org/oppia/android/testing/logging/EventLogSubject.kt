@@ -1089,6 +1089,14 @@ class EventLogSubject private constructor(
      */
     fun hasContentIdThat(): StringSubject = assertThat(actual.contentId)
 
+    /**
+     * Returns a [StringSubject] to test [EventLog.PlayVoiceOverContext.getLanguageCode].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasLanguageCodeThat(): StringSubject = assertThat(actual.languageCode)
+
     companion object {
       /**
        * Returns a new [PlayVoiceOverContextSubject] to verify aspects of the specified

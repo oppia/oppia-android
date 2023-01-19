@@ -872,12 +872,12 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logPlayVoiceOver_logsStateEventWithContentId() {
+  fun testStateAnalyticsLogger_logPlayVoiceOver_logsStateEventWithContentIdAndLangugaeCode() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
 
-    stateLogger.logPlayVoiceOver(contentId = "test_content_id_1")
+    stateLogger.logPlayVoiceOver(contentId = "test_content_id_1", languageCode = "en")
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -895,20 +895,22 @@ class LearnerAnalyticsLoggerTest {
         }
       }
       hasContentIdThat().isEqualTo("test_content_id_1")
+      hasLanguageCodeThat().isEqualTo("en")
     }
   }
 
   @Test
-  fun testStateAnalyticsLogger_logPlayVoiceOver_diffContentId_logsStateEventWithContentId() {
+  fun testStateAnalyticsLogger_logPlayVoiceOver_diffContentId_logsStateEventWithContentIdAndLang() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
 
-    stateLogger.logPlayVoiceOver(contentId = "content_id_2")
+    stateLogger.logPlayVoiceOver(contentId = "content_id_2", languageCode = "sw")
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat().hasContentIdThat().isEqualTo("content_id_2")
+    assertThat(eventLog).hasPlayVoiceOverContextThat().hasLanguageCodeThat().isEqualTo("sw")
   }
 
   @Test
@@ -917,7 +919,7 @@ class LearnerAnalyticsLoggerTest {
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
 
-    stateLogger.logPlayVoiceOver(contentId = null)
+    stateLogger.logPlayVoiceOver(contentId = null, languageCode = "en")
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -925,10 +927,9 @@ class LearnerAnalyticsLoggerTest {
   }
 
   // TODO: Add tests.
-  // - Update testStateAnalyticsLogger_logPlayVoiceOver_logsStateEventWithContentId & testStateAnalyticsLogger_logPlayVoiceOver_diffContentId_logsStateEventWithContentId to include language codes.
   // - testStateAnalyticsLogger_logPlayVoiceOver_nullLanguageCode_logsStateEventWithoutLanguageCode
-  // - testStateAnalyticsLogger_logPauseVoiceOver_logsStateEventWithContentId
-  // - testStateAnalyticsLogger_logPauseVoiceOver_diffContentId_logsStateEventWithContentId
+  // - testStateAnalyticsLogger_logPauseVoiceOver_logsStateEventWithContentIdAndLanguageCode
+  // - testStateAnalyticsLogger_logPauseVoiceOver_diffContentId_logsStateEventWithContentIdAndLang
   // - testStateAnalyticsLogger_logPauseVoiceOver_nullContentId_logsStateEventWithoutContentId
   // - testStateAnalyticsLogger_logPauseVoiceOver_nullLanguageCode_logsStateEventWithoutLanguageCode
 
@@ -1378,7 +1379,7 @@ class LearnerAnalyticsLoggerTest {
       )
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logPlayVoiceOver(contentId = "test_content_id_1")
+    stateLogger.logPlayVoiceOver(contentId = "test_content_id_1", languageCode = "en")
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
@@ -1398,7 +1399,7 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logPlayVoiceOver(contentId = "test_content_id_1")
+    stateLogger.logPlayVoiceOver(contentId = "test_content_id_1", languageCode = "en")
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()

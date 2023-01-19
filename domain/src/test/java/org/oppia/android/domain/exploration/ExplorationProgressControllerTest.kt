@@ -848,8 +848,8 @@ class ExplorationProgressControllerTest {
     val hint = ephemeralState.state.interaction.getHint(0)
     assertThat(hint.hintContent.html).contains("Remember that two halves")
     val solution = ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.numerator).isEqualTo(1)
-    assertThat(solution.correctAnswer.denominator).isEqualTo(2)
+    assertThat(solution.correctAnswer.fraction.numerator).isEqualTo(1)
+    assertThat(solution.correctAnswer.fraction.denominator).isEqualTo(2)
     assertThat(solution.explanation.html)
       .contains("Half of something has one part in the numerator for every two parts")
   }
