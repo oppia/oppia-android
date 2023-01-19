@@ -84,7 +84,6 @@
   <color name="component_color_shared_navbar_header_background_color">@color/color_palette_navbar_header_background_color</color>
   <color name="component_color_shared_icon_white_color">@color/color_palette_icon_white_color</color>
   <color name="component_color_shared_icon_color">@color/color_palette_icon_color</color>
-  <color name="component_color_shared_resume_lesson_start_over_button_color">@color/color_palette_shared_resume_lesson_start_over_button_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_fragment_status_bar_color">@color/color_palette_fragment_status_bar_color</color>
