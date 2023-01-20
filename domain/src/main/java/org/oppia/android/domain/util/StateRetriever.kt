@@ -158,7 +158,7 @@ class StateRetriever @Inject constructor() {
     return optionalSolutionJson?.let { solutionJson ->
       return Solution.newBuilder().apply {
         correctAnswer =
-          parseExactSolutionObject(solutionJson.getJSONObject("correct_answer"), interactionId)
+          parseExactSolutionObject(solutionJson.optJSONObject("correct_answer"), interactionId)
         explanation = parseSubtitledHtml(solutionJson.getJSONObject("explanation"))
         answerIsExclusive = solutionJson.getBoolean("answer_is_exclusive")
       }.build()
@@ -387,9 +387,10 @@ class StateRetriever @Inject constructor() {
   }
 
   private fun parseExactSolutionObject(
-    inputJson: JSONObject,
+    inputJson: JSONObject?,
     interactionId: String
   ): InteractionObject {
+    if (inputJson == null) return InteractionObject.getDefaultInstance()
     return when (interactionId) {
       "TextInput" -> {
         InteractionObject.newBuilder().apply {

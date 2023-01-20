@@ -52,7 +52,9 @@
           "hints": [],
           "solution": {
             "answer_is_exclusive": false,
-            "correct_answer": "Finnish",
+            "correct_answer": {
+              "normalized_string": "Finnish"
+            },
             "explanation": {
               "content_id": "solution",
               "html": "<p>'Oppia' is translated from Finnish.</p>"
