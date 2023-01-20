@@ -108,13 +108,15 @@
       android:clipToPadding="false"
       android:paddingTop="24dp">
       <FrameLayout
+        android:id="@+id/quick_switch_exploration_language_button_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/animable_hints_and_solution_fragment_container"
         android:background="@color/color_palette_transparent_background_color"
-        android:visibility="@{viewModel.canQuicklyToggleBetweenSwahiliAndEnglish(viewModel.hasSupportForSwitchingToSwahili, viewModel.hasSwahiliTranslations) ? View.VISIBLE : View.GONE}">
+        android:visibility="@{viewModel.canQuicklyToggleBetweenSwahiliAndEnglish(viewModel.hasSwahiliTranslations) ? View.VISIBLE : View.GONE}">
         <androidx.appcompat.widget.AppCompatButton
+          android:id="@+id/quick_switch_exploration_language_button"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/SecondaryButton"

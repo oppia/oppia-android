@@ -34,7 +34,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchap
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedViewModel.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/testing/MarkChaptersCompletedTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedFragment.kt"

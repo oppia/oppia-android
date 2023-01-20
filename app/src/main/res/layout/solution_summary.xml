@@ -139,6 +139,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
+            android:contentDescription="@{viewModel.correctAnswerContentDescription}"
             android:textSize="16sp" />
 
           <LinearLayout

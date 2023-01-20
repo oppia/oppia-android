@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.SubtitledHtml
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -15,13 +16,16 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class HelpIndexExtensionsTest {
-  @Suppress("PrivatePropertyName")
-  private val HINT_LIST_OF_SIZE_2 = listOf(Hint.getDefaultInstance(), Hint.getDefaultInstance())
 
-  @Suppress("PrivatePropertyName")
-  private val HINT_LIST_OF_SIZE_3 = listOf(
-    Hint.getDefaultInstance(), Hint.getDefaultInstance(), Hint.getDefaultInstance()
-  )
+  private companion object {
+    private val HINT_0 = createHint(text = "First hint")
+    private val HINT_1 = createHint(text = "Second hint")
+    private val HINT_2 = createHint(text = "Third hint")
+
+    private val HINT_LIST_OF_SIZE_1 = listOf(HINT_0)
+    private val HINT_LIST_OF_SIZE_2 = HINT_LIST_OF_SIZE_1 + HINT_1
+    private val HINT_LIST_OF_SIZE_3 = HINT_LIST_OF_SIZE_2 + HINT_2
+  }
 
   @Test
   fun testIsHintRevealed_defaultHelpIndex_returnsFalse() {
@@ -225,45 +229,385 @@ class HelpIndexExtensionsTest {
     assertThat(hintIsRevealed).isFalse()
   }
 
-  // TODO: Add tests.
-  // - testDropLastUnavailable_defaultHelpIndex_emptyList_returnsEmptyList
-  // - testDropLastUnavailable_defaultHelpIndex_nonEmptyList_returnsEmptyList
-  // - testDropLastUnavailable_availableHintIndex0_emptyList_returnsEmptyList
-  // - testDropLastUnavailable_availableHintIndex0_singletonList_returnsSingletonList
-  // - testDropLastUnavailable_availableHintIndex0_twoHintsList_returnsSingletonList
-  // - testDropLastUnavailable_availableHintIndex1_emptyList_returnsEmptyList
-  // - testDropLastUnavailable_availableHintIndex1_singletonList_returnsSingletonList
-  // - testDropLastUnavailable_availableHintIndex1_twoHintsList_returnsTwoItemList
-  // - testDropLastUnavailable_availableHintIndex1_threeHintsList_returnsTwoItemList
-  // - testDropLastUnavailable_lastRevealedHintIndex0_emptyList_returnsEmptyList
-  // - testDropLastUnavailable_lastRevealedHintIndex0_singletonList_returnsSingletonList
-  // - testDropLastUnavailable_lastRevealedHintIndex0_twoHintsList_returnsSingletonList
-  // - testDropLastUnavailable_lastRevealedHintIndex1_emptyList_returnsEmptyList
-  // - testDropLastUnavailable_lastRevealedHintIndex1_singletonList_returnsSingletonList
-  // - testDropLastUnavailable_lastRevealedHintIndex1_twoHintsList_returnsTwoItemList
-  // - testDropLastUnavailable_lastRevealedHintIndex1_threeHintsList_returnsTwoItemList
-  // - testDropLastUnavailable_showSolution_emptyList_returnsEmptyList
-  // - testDropLastUnavailable_showSolution_singletonList_returnsSingletonList
-  // - testDropLastUnavailable_showSolution_twoHintsList_returnsTwoHintsList
-  // - testDropLastUnavailable_showSolution_emptyList_returnsEmptyList
-  // - testDropLastUnavailable_showSolution_singletonList_returnsSingletonList
-  // - testDropLastUnavailable_showSolution_twoHintsList_returnsTwoItemList
-  // - testDropLastUnavailable_showSolution_threeHintsList_returnsThreeItemList
-  // - testDropLastUnavailable_everythingRevealed_emptyList_returnsEmptyList
-  // - testDropLastUnavailable_everythingRevealed_singletonList_returnsSingletonList
-  // - testDropLastUnavailable_everythingRevealed_twoHintsList_returnsTwoHintsList
-  // - testDropLastUnavailable_everythingRevealed_emptyList_returnsEmptyList
-  // - testDropLastUnavailable_everythingRevealed_singletonList_returnsSingletonList
-  // - testDropLastUnavailable_everythingRevealed_twoHintsList_returnsTwoItemList
-  // - testDropLastUnavailable_everythingRevealed_threeHintsList_returnsThreeItemList
-  //
-  // - testIsSolutionAvailable_defaultHelpIndex_returnsFalse
-  // - testIsSolutionAvailable_availableHint0_returnsFalse
-  // - testIsSolutionAvailable_availableHint1_returnsFalse
-  // - testIsSolutionAvailable_viewedHint0_returnsFalse
-  // - testIsSolutionAvailable_viewedHint1_returnsFalse
-  // - testIsSolutionAvailable_showSolution_returnsTrue
-  // - testIsSolutionAvailable_everythingIsRevealed_returnsTrue
+  @Test
+  fun testDropLastUnavailable_defaultHelpIndex_emptyList_returnsEmptyList() {
+    val helpIndex = HelpIndex.getDefaultInstance()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
+
+    assertThat(hintList).isEmpty()
+  }
+
+  @Test
+  fun testDropLastUnavailable_defaultHelpIndex_nonEmptyList_returnsEmptyList() {
+    val helpIndex = HelpIndex.getDefaultInstance()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
+
+    assertThat(hintList).isEmpty()
+  }
+
+  @Test
+  fun testDropLastUnavailable_availableHintIndex0_emptyList_returnsEmptyList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      nextAvailableHintIndex = 0
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
+
+    assertThat(hintList).isEmpty()
+  }
+
+  @Test
+  fun testDropLastUnavailable_availableHintIndex0_singletonList_returnsSingletonList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      nextAvailableHintIndex = 0
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
+
+    assertThat(hintList).hasSize(1)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+  }
+
+  @Test
+  fun testDropLastUnavailable_availableHintIndex0_twoHintsList_returnsSingletonList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      nextAvailableHintIndex = 0
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
+
+    // Only the first hint is available to be seen.
+    assertThat(hintList).hasSize(1)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+  }
+
+  @Test
+  fun testDropLastUnavailable_availableHintIndex1_emptyList_returnsEmptyList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      nextAvailableHintIndex = 1
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
+
+    assertThat(hintList).isEmpty()
+  }
+
+  @Test
+  fun testDropLastUnavailable_availableHintIndex1_singletonList_returnsSingletonList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      nextAvailableHintIndex = 1
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
+
+    assertThat(hintList).hasSize(1)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+  }
+
+  @Test
+  fun testDropLastUnavailable_availableHintIndex1_twoHintsList_returnsTwoItemList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      nextAvailableHintIndex = 1
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
+
+    assertThat(hintList).hasSize(2)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+    assertThat(hintList[1]).isEqualTo(HINT_1)
+  }
+
+  @Test
+  fun testDropLastUnavailable_availableHintIndex1_threeHintsList_returnsTwoItemList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      nextAvailableHintIndex = 1
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_3)
+
+    // Only the first two hints are available.
+    assertThat(hintList).hasSize(2)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+    assertThat(hintList[1]).isEqualTo(HINT_1)
+  }
+
+  @Test
+  fun testDropLastUnavailable_lastRevealedHintIndex0_emptyList_returnsEmptyList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      latestRevealedHintIndex = 0
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
+
+    assertThat(hintList).isEmpty()
+  }
+
+  @Test
+  fun testDropLastUnavailable_lastRevealedHintIndex0_singletonList_returnsSingletonList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      latestRevealedHintIndex = 0
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
+
+    assertThat(hintList).hasSize(1)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+  }
+
+  @Test
+  fun testDropLastUnavailable_lastRevealedHintIndex0_twoHintsList_returnsSingletonList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      latestRevealedHintIndex = 0
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
+
+    // Only the first hint is available.
+    assertThat(hintList).hasSize(1)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+  }
+
+  @Test
+  fun testDropLastUnavailable_lastRevealedHintIndex1_emptyList_returnsEmptyList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      latestRevealedHintIndex = 1
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
+
+    assertThat(hintList).isEmpty()
+  }
+
+  @Test
+  fun testDropLastUnavailable_lastRevealedHintIndex1_singletonList_returnsSingletonList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      latestRevealedHintIndex = 1
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
+
+    assertThat(hintList).hasSize(1)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+  }
+
+  @Test
+  fun testDropLastUnavailable_lastRevealedHintIndex1_twoHintsList_returnsTwoItemList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      latestRevealedHintIndex = 1
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
+
+    assertThat(hintList).hasSize(2)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+    assertThat(hintList[1]).isEqualTo(HINT_1)
+  }
+
+  @Test
+  fun testDropLastUnavailable_lastRevealedHintIndex1_threeHintsList_returnsTwoItemList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      latestRevealedHintIndex = 1
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_3)
+
+    // Only the first two hints are available.
+    assertThat(hintList).hasSize(2)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+    assertThat(hintList[1]).isEqualTo(HINT_1)
+  }
+
+  @Test
+  fun testDropLastUnavailable_showSolution_emptyList_returnsEmptyList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      showSolution = true
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
+
+    // There are no hints to show.
+    assertThat(hintList).isEmpty()
+  }
+
+  @Test
+  fun testDropLastUnavailable_showSolution_singletonList_returnsSingletonList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      showSolution = true
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
+
+    // The only hint is available.
+    assertThat(hintList).hasSize(1)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+  }
+
+  @Test
+  fun testDropLastUnavailable_showSolution_twoHintsList_returnsTwoHintsList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      showSolution = true
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
+
+    // All hints are available.
+    assertThat(hintList).hasSize(2)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+    assertThat(hintList[1]).isEqualTo(HINT_1)
+  }
+
+  @Test
+  fun testDropLastUnavailable_showSolution_threeHintsList_returnsThreeHintsList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      showSolution = true
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_3)
+
+    // All hints are available.
+    assertThat(hintList).hasSize(3)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+    assertThat(hintList[1]).isEqualTo(HINT_1)
+    assertThat(hintList[2]).isEqualTo(HINT_2)
+  }
+
+  @Test
+  fun testDropLastUnavailable_everythingRevealed_emptyList_returnsEmptyList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      everythingRevealed = true
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
+
+    // There are no hints to show.
+    assertThat(hintList).isEmpty()
+  }
+
+  @Test
+  fun testDropLastUnavailable_everythingRevealed_singletonList_returnsSingletonList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      everythingRevealed = true
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
+
+    // The only hint is available.
+    assertThat(hintList).hasSize(1)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+  }
+
+  @Test
+  fun testDropLastUnavailable_everythingRevealed_twoHintsList_returnsTwoHintsList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      everythingRevealed = true
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
+
+    // All hints are available.
+    assertThat(hintList).hasSize(2)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+    assertThat(hintList[1]).isEqualTo(HINT_1)
+  }
+
+  @Test
+  fun testDropLastUnavailable_everythingRevealed_threeHintsList_returnsThreeHintsList() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      everythingRevealed = true
+    }.build()
+
+    val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_3)
+
+    // All hints are available.
+    assertThat(hintList).hasSize(3)
+    assertThat(hintList[0]).isEqualTo(HINT_0)
+    assertThat(hintList[1]).isEqualTo(HINT_1)
+    assertThat(hintList[2]).isEqualTo(HINT_2)
+  }
+
+  @Test
+  fun testIsSolutionAvailable_defaultHelpIndex_returnsFalse() {
+    val helpIndex = HelpIndex.getDefaultInstance()
+
+    val solutionIsAvailable = helpIndex.isSolutionAvailable()
+
+    // By default, the solution is not available to be revealed.
+    assertThat(solutionIsAvailable).isFalse()
+  }
+
+  @Test
+  fun testIsSolutionAvailable_availableHint0_returnsFalse() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      nextAvailableHintIndex = 0
+    }.build()
+
+    val solutionIsAvailable = helpIndex.isSolutionAvailable()
+
+    // If there's an available hint to be shown, the solution is not yet available to reveal.
+    assertThat(solutionIsAvailable).isFalse()
+  }
+
+  @Test
+  fun testIsSolutionAvailable_availableHint1_returnsFalse() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      nextAvailableHintIndex = 1
+    }.build()
+
+    val solutionIsAvailable = helpIndex.isSolutionAvailable()
+
+    // If there's an available hint to be shown, the solution is not yet available to reveal.
+    assertThat(solutionIsAvailable).isFalse()
+  }
+
+  @Test
+  fun testIsSolutionAvailable_viewedHint0_returnsFalse() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      latestRevealedHintIndex = 0
+    }.build()
+
+    val solutionIsAvailable = helpIndex.isSolutionAvailable()
+
+    // If a hint has been viewed and there are yet more hints, the solution isn't yet available.
+    assertThat(solutionIsAvailable).isFalse()
+  }
+
+  @Test
+  fun testIsSolutionAvailable_viewedHint1_returnsFalse() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      latestRevealedHintIndex = 1
+    }.build()
+
+    val solutionIsAvailable = helpIndex.isSolutionAvailable()
+
+    // If a hint has been viewed and there are yet more hints, the solution isn't yet available.
+    assertThat(solutionIsAvailable).isFalse()
+  }
+
+  @Test
+  fun testIsSolutionAvailable_showSolution_returnsTrue() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      showSolution = true
+    }.build()
+
+    val solutionIsAvailable = helpIndex.isSolutionAvailable()
+
+    // If the solution can be shown, it's available.
+    assertThat(solutionIsAvailable).isTrue()
+  }
+
+  @Test
+  fun testIsSolutionAvailable_everythingIsRevealed_returnsTrue() {
+    val helpIndex = HelpIndex.newBuilder().apply {
+      everythingRevealed = true
+    }.build()
+
+    val solutionIsAvailable = helpIndex.isSolutionAvailable()
+
+    // If the solution has been revealed already, it's still available to be viewed.
+    assertThat(solutionIsAvailable).isTrue()
+  }
 
   @Test
   fun testIsSolutionRevealed_defaultHelpIndex_returnsFalse() {
@@ -348,4 +692,12 @@ class HelpIndexExtensionsTest {
     // If everything has been revealed, that ensures the solution has also been revealed.
     assertThat(solutionIsRevealed).isTrue()
   }
+}
+
+private fun createHint(text: String): Hint {
+  return Hint.newBuilder().apply {
+    hintContent = SubtitledHtml.newBuilder().apply {
+      html = text
+    }.build()
+  }.build()
 }

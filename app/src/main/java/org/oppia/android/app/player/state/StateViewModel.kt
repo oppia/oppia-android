@@ -98,16 +98,13 @@ class StateViewModel @Inject constructor(
     ) ?: UserAnswer.getDefaultInstance()
   }
 
-  fun canQuicklyToggleBetweenSwahiliAndEnglish(
-    hasSwahiliTranslations: Boolean,
-    hasEnabledSwahiliTranslations: Boolean
-  ): Boolean {
+  fun canQuicklyToggleBetweenSwahiliAndEnglish(hasSwahiliTranslations: Boolean): Boolean {
     // This logic has to be done in Kotlin since there seems to be a bug in the generated Java by
     // the databinding compiler that can result in a NPE being thrown in code that shouldn't
     // actually be throwing it (see https://issuetracker.google.com/issues/144246528 for context).
     // Essentially, the following example of generated code results in an NPE unexpectedly:
     //   Boolean value = boolean_value ? Boolean_value : false (Boolean_value can be null)
-    return hasSwahiliTranslations && hasEnabledSwahiliTranslations
+    return hasSwahiliTranslations && hasSupportForSwitchingToSwahili
   }
 
   fun toggleContentLanguage(isSwahiliEnabled: Boolean) {

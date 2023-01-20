@@ -562,7 +562,7 @@ class AudioPlayerControllerTest {
   fun testPlay_prepared_notReloadingMainContent_notAutoPlaying_studyOn_logsPlayEvent() {
     setUpMediaReadyApplicationWithLearnerStudy()
     val explorationId = TEST_EXPLORATION_ID_5
-    arrangeMediaPlayer(contentId = "test_content_id")
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
 
@@ -574,6 +574,7 @@ class AudioPlayerControllerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
       hasContentIdThat().isEqualTo("test_content_id")
+      hasLanguageCodeThat().isEqualTo("sw")
       hasExplorationDetailsThat {
         hasTopicIdThat().isEqualTo("test_topic_id")
         hasStoryIdThat().isEqualTo("test_story_id")
@@ -612,19 +613,121 @@ class AudioPlayerControllerTest {
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
 
-    // No event should be logged if outside an exploration and playing audio (such as for
+    // No event should be logged if outside an exploration when playing/pausing audio (such as for
     // questions).
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
-  // TODO: add/update tests
-  // - Update tests above to include verification for language code.
-  // - testPause_playing_explicitUserAction_studyOn_logsPauseEvent
-  // - testPause_playing_explicitAction_missingContentId_studyOn_logsPauseEventWithoutContentId
-  // - testPause_playing_explicitUserAction_outsideExp_studyOn_doesNotLogEvent
-  // - testPause_playing_notExplicitUserAction_studyOn_doesNotLogEvent
-  // - testPause_notPlaying_explicitUserAction_studyOn_doesNotLogEvent
-  // - testPause_notPlaying_notExplicitUserAction_studyOn_doesNotLogEvent
+  @Test
+  fun testPause_playing_explicitUserAction_studyOn_logsPauseEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+
+    audioPlayerController.pause(isFromExplicitUserAction = true)
+
+    // This case corresponds to the user manually pausing audio.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val exploration = loadExploration(explorationId)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasPauseVoiceOverContextThat {
+      hasContentIdThat().isEqualTo("test_content_id")
+      hasLanguageCodeThat().isEqualTo("sw")
+      hasExplorationDetailsThat {
+        hasTopicIdThat().isEqualTo("test_topic_id")
+        hasStoryIdThat().isEqualTo("test_story_id")
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+        hasVersionThat().isEqualTo(exploration.version)
+        hasStateNameThat().isEqualTo(exploration.initStateName)
+        hasSessionIdThat().isNotEmpty()
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isNotEmpty()
+          hasInstallationIdThat().isNotEmpty()
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testPause_playing_explicitAction_missingContentId_studyOn_logsPauseEventWithoutContentId() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = null)
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+
+    audioPlayerController.pause(isFromExplicitUserAction = true)
+
+    // If there's no content ID then it'll be missing from the log.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasPauseVoiceOverContextThat().hasContentIdThat().isEmpty()
+  }
+
+  @Test
+  fun testPause_playing_explicitUserAction_outsideExp_studyOn_doesNotLogEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    arrangeMediaPlayer(contentId = "test_content_id")
+    logIntoAnalyticsReadyAdminProfile()
+    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
+
+    audioPlayerController.pause(isFromExplicitUserAction = true)
+
+    // No event should be logged if outside an exploration when playing/pausing audio (such as for
+    // questions).
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testPause_playing_notExplicitUserAction_studyOn_doesNotLogEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
+
+    audioPlayerController.pause(isFromExplicitUserAction = false)
+
+    // Automatic pausing (such as navigating away from a lesson) should not logged an event.
+    // This case corresponds to the user manually pausing audio.
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testPause_notPlaying_explicitUserAction_studyOn_doesNotLogEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
+
+    audioPlayerController.pause(isFromExplicitUserAction = true)
+
+    // Pausing when not actually playing should never log an event since it's an invalid state.
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testPause_notPlaying_notExplicitUserAction_studyOn_doesNotLogEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
+
+    audioPlayerController.pause(isFromExplicitUserAction = false)
+
+    // Pausing when not actually playing should never log an event since it's an invalid state.
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+  }
 
   private fun arrangeMediaPlayer(contentId: String? = null, languageCode: String = "en") {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)

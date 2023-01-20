@@ -4,17 +4,25 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.containsString
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +40,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -70,6 +79,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -100,13 +110,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class MarkChaptersCompletedActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  private val internalProfileId = 0
-
-  @Inject
-  lateinit var context: Context
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   val activityTestRule = ActivityTestRule(
@@ -115,12 +120,20 @@ class MarkChaptersCompletedActivityTest {
     /* launchActivity= */ false
   )
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val internalProfileId = 0
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -168,13 +181,65 @@ class MarkChaptersCompletedActivityTest {
     }
   }
 
-  // TODO: Add tests
-  // - testActivity_showConfirmationTrueInIntent_selectChapters_markCompleted_confirmationShown
-  // - testActivity_showConfirmationFalseInIntent_selectChapters_markCompleted_confirmationNotShown
+  @Test
+  fun testActivity_showConfirmationTrueInIntent_selectChapters_markCompleted_confirmationShown() {
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId, showConfirmationNotice = true)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      clickOnRecyclerViewItemAtPosition(itemPosition = 1)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 2)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 3)
 
-  private fun createMarkChaptersCompletedActivityIntent(internalProfileId: Int): Intent {
+      onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+
+      onView(withText(containsString("The following chapters will be marked as finished")))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testActivity_showConfirmationFalseInIntent_selectChapters_markCompleted_confNotShown() {
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId, showConfirmationNotice = false)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      clickOnRecyclerViewItemAtPosition(itemPosition = 1)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 2)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 3)
+
+      onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+
+      // The notice dialog should not be showing.
+      onView(withText(containsString("The following chapters will be marked as finished")))
+        .check(doesNotExist())
+    }
+  }
+
+  private fun createMarkChaptersCompletedActivityIntent(
+    internalProfileId: Int,
+    showConfirmationNotice: Boolean = false
+  ): Intent {
     return MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-      context, internalProfileId, showConfirmationNotice = false
+      context, internalProfileId, showConfirmationNotice
+    )
+  }
+
+  private fun clickOnRecyclerViewItemAtPosition(itemPosition: Int) {
+    scrollToPosition(position = itemPosition)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.mark_chapters_completed_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+      )
+    ).perform(click())
+  }
+
+  private fun scrollToPosition(position: Int) {
+    onView(withId(R.id.mark_chapters_completed_recycler_view)).perform(
+      scrollToPosition<ViewHolder>(position)
     )
   }
 

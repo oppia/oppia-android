@@ -31,6 +31,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
@@ -540,6 +541,32 @@ class EventLogSubject private constructor(
    */
   fun hasPlayVoiceOverContextThat(block: PlayVoiceOverContextSubject.() -> Unit) {
     hasPlayVoiceOverContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [PAUSE_VOICE_OVER_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasPauseVoiceOverContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(PAUSE_VOICE_OVER_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasPauseVoiceOverContext] and returns a
+   * [PlayVoiceOverContextSubject] to test the corresponding context.
+   */
+  fun hasPauseVoiceOverContextThat(): PlayVoiceOverContextSubject {
+    hasPauseVoiceOverContext()
+    return PlayVoiceOverContextSubject.assertThat(actual.context.pauseVoiceOverContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasPauseVoiceOverContextThat].
+   */
+  fun hasPauseVoiceOverContextThat(block: PlayVoiceOverContextSubject.() -> Unit) {
+    hasPauseVoiceOverContextThat().block()
   }
 
   /**

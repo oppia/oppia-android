@@ -106,7 +106,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     }
 
     binding.markChaptersCompletedMarkCompletedTextView.setOnClickListener {
-      if (showConfirmationNotice) {
+      if (showConfirmationNotice && this.selectedExplorationIds.isNotEmpty()) {
         showConfirmationDialog()
       } else markChaptersAsCompleted()
     }

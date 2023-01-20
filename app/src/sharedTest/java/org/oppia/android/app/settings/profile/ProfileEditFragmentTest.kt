@@ -10,6 +10,9 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
@@ -39,6 +42,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
@@ -381,10 +385,68 @@ class ProfileEditFragmentTest {
     }
   }
 
-  // TODO: Add tests.
-  // - testProfileEdit_studyOff_doesNotHaveMarkChaptersCompletedButton
-  // - testProfileEdit_studyOn_hasMarkChaptersCompletedButton
-  // - testProfileEdit_studyOn_clickMarkChapsCompleted_opensMarkCompleteActivityForProfile (include verifying the notice)
+  @Test
+  fun testProfileEdit_studyOff_doesNotHaveMarkChaptersCompletedButton() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    launch<ProfileEditFragmentTestActivity>(
+      ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
+        context = context,
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_mark_chapters_for_completion_button))
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_studyOn_hasMarkChaptersCompletedButton() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    launch<ProfileEditFragmentTestActivity>(
+      ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
+        context = context,
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_studyOn_landscape_hasMarkChaptersCompletedButton() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    launch<ProfileEditFragmentTestActivity>(
+      ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
+        context = context,
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_studyOn_clickMarkChapsCompleted_opensMarkCompleteActivityForProfile() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    launch<ProfileEditFragmentTestActivity>(
+      ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
+        context = context,
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
+
+      intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
+      intended(hasExtra("MarkChaptersCompletedActivity.profile_id", 0))
+      intended(hasExtra("MarkChaptersCompletedActivity.show_confirmation_notice", true))
+    }
+  }
 
   @Singleton
   @Component(

@@ -40,6 +40,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
@@ -383,7 +384,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_openExpActivityEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_openExpActivityEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -752,7 +753,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_startCardContextEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_startCardContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -804,7 +805,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_endCardContextEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_endCardContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -856,7 +857,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_hintOfferedEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_hintOfferedEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -908,7 +909,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessHintContextEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_accessHintContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -959,7 +960,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_solutionOfferedEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_solutionOfferedEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1009,7 +1010,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessSolutionEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_accessSolutionEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1061,7 +1062,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_submitAnswerEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_submitAnswerEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1115,7 +1116,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_playVoiceOverEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_playVoiceOverEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1142,10 +1143,59 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
-  // TODO: Add tests.
-  // - Update all "studyOn" cases to match the new one below.
-  // - testFillEventBundle_pauseVoiceOverEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName
-  // - testFillEventBundle_pauseVoiceOverEvent_studyOn_fillsAllFieldsAndReturnsName
+  @Test
+  fun testFillEventBundle_pauseVoiceOverEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createPauseVoiceOverContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("click_pause_voiceover_button")
+    assertThat(bundle).hasSize(14)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(PAUSE_VOICE_OVER_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("content_id").isEqualTo(TEST_CONTENT_ID)
+    assertThat(bundle).string("language_code").isEqualTo(TEST_LANGUAGE_CODE)
+  }
+
+  @Test
+  fun testFillEventBundle_pauseVoiceOverEvent_studyOn_fillsAllFieldsAndReturnsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createPauseVoiceOverContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("click_pause_voiceover_button")
+    assertThat(bundle).hasSize(16)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(PAUSE_VOICE_OVER_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("content_id").isEqualTo(TEST_CONTENT_ID)
+    assertThat(bundle).string("language_code").isEqualTo(TEST_LANGUAGE_CODE)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
+  }
 
   @Test
   fun testFillEventBundle_appInBackgroundEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
@@ -1166,7 +1216,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_appInBackgroundEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_appInBackgroundEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1204,7 +1254,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_appInForegroundEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_appInForegroundEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1248,7 +1298,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_exitExplorationEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_exitExplorationEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1298,7 +1348,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_finishExplorationEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_finishExplorationEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1342,7 +1392,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_resumeExplorationEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_resumeExplorationEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1380,7 +1430,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_startOverExpEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_startOverExpEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1418,7 +1468,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_deleteProfileEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_deleteProfileEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1542,7 +1592,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_failedEventInstallId_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_failedEventInstallId_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -1799,6 +1849,10 @@ class EventBundleCreatorTest {
     playVoiceOverContext: PlayVoiceOverContext = createPlayVoiceOverContextDetails()
   ) = createEventContext(playVoiceOverContext, EventContextBuilder::setPlayVoiceOverContext)
 
+  private fun createPauseVoiceOverContext(
+    playVoiceOverContext: PlayVoiceOverContext = createPauseVoiceOverContextDetails()
+  ) = createEventContext(playVoiceOverContext, EventContextBuilder::setPauseVoiceOverContext)
+
   private fun createAppInBackgroundContext(
     learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
   ) = createEventContext(learnerDetails, EventContextBuilder::setAppInBackgroundContext)
@@ -1927,6 +1981,16 @@ class EventBundleCreatorTest {
   }.build()
 
   private fun createPlayVoiceOverContextDetails(
+    explorationDetails: ExplorationContext = createExplorationContext(),
+    contentId: String = TEST_CONTENT_ID,
+    languageCode: String = TEST_LANGUAGE_CODE
+  ) = PlayVoiceOverContext.newBuilder().apply {
+    this.explorationDetails = explorationDetails
+    this.contentId = contentId
+    this.languageCode = languageCode
+  }.build()
+
+  private fun createPauseVoiceOverContextDetails(
     explorationDetails: ExplorationContext = createExplorationContext(),
     contentId: String = TEST_CONTENT_ID,
     languageCode: String = TEST_LANGUAGE_CODE

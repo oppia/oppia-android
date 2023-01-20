@@ -926,12 +926,86 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).hasPlayVoiceOverContextThat().hasContentIdThat().isEmpty()
   }
 
-  // TODO: Add tests.
-  // - testStateAnalyticsLogger_logPlayVoiceOver_nullLanguageCode_logsStateEventWithoutLanguageCode
-  // - testStateAnalyticsLogger_logPauseVoiceOver_logsStateEventWithContentIdAndLanguageCode
-  // - testStateAnalyticsLogger_logPauseVoiceOver_diffContentId_logsStateEventWithContentIdAndLang
-  // - testStateAnalyticsLogger_logPauseVoiceOver_nullContentId_logsStateEventWithoutContentId
-  // - testStateAnalyticsLogger_logPauseVoiceOver_nullLanguageCode_logsStateEventWithoutLanguageCode
+  @Test
+  fun testStateAnalyticsLogger_logPlayVoiceOver_nullLanguageCode_logsStateEventWithNoLangCode() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+
+    stateLogger.logPlayVoiceOver(contentId = "content_id_2", languageCode = null)
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasPlayVoiceOverContextThat().hasLanguageCodeThat().isEmpty()
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logPauseVoiceOver_logsStateEventWithContentIdAndLanguageCode() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+
+    stateLogger.logPauseVoiceOver(contentId = "test_content_id_1", languageCode = "en")
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasPauseVoiceOverContextThat {
+      hasExplorationDetailsThat {
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(5)
+        hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasContentIdThat().isEqualTo("test_content_id_1")
+      hasLanguageCodeThat().isEqualTo("en")
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logPauseVoiceOver_diffContentIdAndLang_logsEventNewContentAndLang() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+
+    stateLogger.logPauseVoiceOver(contentId = "content_id_2", languageCode = "sw")
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasPauseVoiceOverContextThat().hasContentIdThat().isEqualTo("content_id_2")
+    assertThat(eventLog).hasPauseVoiceOverContextThat().hasLanguageCodeThat().isEqualTo("sw")
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logPauseVoiceOver_nullContentId_logsStateEventWithoutContentId() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+
+    stateLogger.logPauseVoiceOver(contentId = null, languageCode = "en")
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasPauseVoiceOverContextThat().hasContentIdThat().isEmpty()
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logPauseVoiceOver_nullLanguageCode_logsStateEventWithNoLangCode() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+
+    stateLogger.logPauseVoiceOver(contentId = "content_id_2", languageCode = null)
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasPauseVoiceOverContextThat().hasLanguageCodeThat().isEmpty()
+  }
 
   @Test
   @RunParameterized(
@@ -1409,9 +1483,48 @@ class LearnerAnalyticsLoggerTest {
     assertThat(log.type).isEqualTo(Log.ERROR)
   }
 
-  // TODO: Add tests.
-  // - testStateAnalyticsLogger_logPauseVoiceOver_missingOneId_logsEventWithMissingId (parameterized)
-  // - testStateAnalyticsLogger_logPauseVoiceOver_noInstallOrLearnerIds_logsEventAndConsoleErrors
+  @Test
+  @RunParameterized(
+    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
+    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
+  )
+  fun testStateAnalyticsLogger_logPauseVoiceOver_missingOneId_logsEventWithMissingId() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger =
+      learnerAnalyticsLogger.beginExploration(
+        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+      )
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
+
+    stateLogger.logPauseVoiceOver(contentId = "test_content_id_1", languageCode = "en")
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasPauseVoiceOverContextThat {
+      hasExplorationDetailsThat {
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
+          hasInstallationIdThat().isEqualTo(expectedInstallIdParameter)
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logPauseVoiceOver_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger =
+      learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
+
+    stateLogger.logPauseVoiceOver(contentId = "test_content_id_1", languageCode = "en")
+
+    // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
+    assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
+    assertThat(log.msg).contains("Event is being dropped due to incomplete event")
+    assertThat(log.type).isEqualTo(Log.ERROR)
+  }
 
   @Test
   fun testStateAnalyticsLogger_logReachInvestedEngagement_logsStateEventWithStateName() {
