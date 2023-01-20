@@ -112,8 +112,10 @@ class TranslationController @Inject constructor(
   fun getAllAppLanguageDefinitions(): List<OppiaLanguage> {
     val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
     val supportedLanguageList = arrayListOf<OppiaLanguage>()
-    for (LangaugeSupportDefinition in supportedLanguages.languageDefinitionsList) {
-      supportedLanguageList.add(LangaugeSupportDefinition.language)
+    for (LanguageSupportDefinition in supportedLanguages.languageDefinitionsList) {
+      if (LanguageSupportDefinition.hasAppStringId()) {
+        supportedLanguageList.add(LanguageSupportDefinition.language)
+      }
     }
     return supportedLanguageList
   }

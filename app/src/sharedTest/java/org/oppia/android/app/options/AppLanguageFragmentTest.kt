@@ -13,6 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -110,7 +111,8 @@ class AppLanguageFragmentTest {
 
   private companion object {
     private const val ENGLISH_BUTTON_INDEX = 1
-    private const val PORTUGUESE_BUTTON_INDEX = 4
+    private const val KISWAHILI_BUTTON_INDEX = 4
+    private const val PORTUGUESE_BUTTON_INDEX = 3
   }
 
   @get:Rule
@@ -194,8 +196,32 @@ class AppLanguageFragmentTest {
     }
   }
 
+  @Test
+  fun testAppLanguage_changeLanguageToSwahili_selectedLanguageObservedIsSwahili() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyEnglishIsSelected()
+      selectKiswahili()
+      var appLanguageActivity: AppLanguageActivity? = null
+      it.onActivity { it1 -> appLanguageActivity = it1 }
+      testCoroutineDispatchers.runCurrent()
+      appLanguageActivity?.recreate()
+      verifyKiswahiliIsSelected(appLanguageActivity)
+    }
+  }
+
+  private fun verifyKiswahiliIsSelected(appLanguageActivity: AppLanguageActivity?) {
+    checkSelectedLanguage(index = KISWAHILI_BUTTON_INDEX, expectedLanguageName = "Kiswahili")
+    assertThat(appLanguageActivity?.appLanguageActivityPresenter?.getLanguageSelected()?.name)
+      .isEqualTo("SWAHILI")
+  }
+
   private fun selectPortuguese() {
     selectLanguage(PORTUGUESE_BUTTON_INDEX)
+  }
+
+  private fun selectKiswahili() {
+    selectLanguage(KISWAHILI_BUTTON_INDEX)
   }
 
   private fun verifyEnglishIsSelected() {
@@ -203,7 +229,7 @@ class AppLanguageFragmentTest {
   }
 
   private fun verifyPortugueseIsSelected() {
-    checkSelectedLanguage(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
+    checkSelectedLanguage(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Portuguese")
   }
 
   private fun checkSelectedLanguage(index: Int, expectedLanguageName: String) {
