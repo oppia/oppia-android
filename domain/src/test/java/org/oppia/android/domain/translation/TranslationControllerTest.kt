@@ -1276,6 +1276,14 @@ class TranslationControllerTest {
     assertThat(extractedTranslationMap[TEST_CONTENT_ID]?.html).isEqualTo(TEST_PT_TRANSLATION)
   }
 
+  @Test
+  fun testLoadAvailableLanguageDefinitions_returnsAvailableLanguageDefinitions() {
+    val languageDefinitionsList = translationController.getAllAppLanguageDefinitions()
+    assertThat(languageDefinitionsList[0].name).isEqualTo("ARABIC")
+    assertThat(languageDefinitionsList[4].name).isEqualTo("SWAHILI")
+    assertThat(languageDefinitionsList.size).isEqualTo(5)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
