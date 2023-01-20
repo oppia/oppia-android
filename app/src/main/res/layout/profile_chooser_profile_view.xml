@@ -19,6 +19,7 @@
       name="viewModel"
       type="org.oppia.android.app.model.ProfileChooserUiModel" />
   </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -47,8 +48,8 @@
         android:layout_height="wrap_content"
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
-        android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_end_profile_not_added}"
-        android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
+        android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}"
+        android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_end_profile_not_added}">
 
         <TextView
           android:id="@+id/profile_name_text"
@@ -60,19 +61,17 @@
           android:text="@{viewModel.profile.name}"
           android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
           app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_name_margin_top_profile_already_added : @dimen/space_0dp}" />
-
         <!-- Note: The style set here is without the Gravity property, as the gravity set for this TextView is conditional and its not doable through styles. -->
         <TextView
           android:id="@+id/profile_last_visited"
           style="@style/SubtitleLight1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
           android:layout_marginTop="4dp"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
           android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
           profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
-
         <!-- Note: The style set here is without the Gravity property, as the gravity set for this TextView is conditional and its not doable through styles. -->
         <TextView
           android:id="@+id/profile_is_admin_text"
