@@ -1924,8 +1924,9 @@ class ExplorationActivityTest {
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
+      // TODO(#4848): Fix content description generation & update this test to verify using the
+      //  correct text.
       // Ensure the hint description is correct and doesn't contain any HTML.
-      // TODO: File an issue for the broken content description rendering from HTML (needs more work & needs to be generically).
       onView(withId(R.id.hints_and_solution_summary))
         .check(
           matches(

@@ -18,7 +18,7 @@
     <!-- NOTE TO DEVELOPER: You can enable debug logs for fast upload & better inspection in Firebase console using https://support.google.com/analytics/answer/7201382. -->
     <meta-data
       android:name="firebase_analytics_collection_deactivated"
-      android:value="false" />
+      android:value="true" />
     <meta-data
       android:name="firebase_crashlytics_collection_enabled"
       android:value="false" />
