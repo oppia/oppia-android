@@ -1664,6 +1664,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_stateWithAlgebraicExpr_showSolution_solutionHasCorrectHtmlContentDesc() {
     launchForExploration(TEST_EXPLORATION_ID_5).use { scenario ->
       // Play through the first three states.

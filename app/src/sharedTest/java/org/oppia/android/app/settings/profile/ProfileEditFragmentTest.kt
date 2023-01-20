@@ -168,6 +168,7 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
   fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
@@ -184,6 +185,7 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
   fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkDeletionDialogIsVisible() {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
@@ -258,6 +260,7 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
   fun testProfileEdit_configChange_userHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     val addProfileProvider = profileManagementController.addProfile(
@@ -415,6 +418,7 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
   fun testProfileEdit_studyOn_landscape_hasMarkChaptersCompletedButton() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     launch<ProfileEditFragmentTestActivity>(
