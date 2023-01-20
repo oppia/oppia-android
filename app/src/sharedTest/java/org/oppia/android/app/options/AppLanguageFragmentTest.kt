@@ -229,7 +229,7 @@ class AppLanguageFragmentTest {
   }
 
   private fun verifyPortugueseIsSelected() {
-    checkSelectedLanguage(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Portuguese")
+    checkSelectedLanguage(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
   }
 
   private fun checkSelectedLanguage(index: Int, expectedLanguageName: String) {
