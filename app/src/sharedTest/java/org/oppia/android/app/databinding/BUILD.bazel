@@ -27,8 +27,6 @@ _TEST_FILES = [
     for file in _TEST_FILES
 ]
 
-)
-
 genrule(
     name = "update_AppCompatCheckBoxBindingAdaptersTest",
     srcs = ["AppCompatCheckBoxBindingAdaptersTest.kt"],
