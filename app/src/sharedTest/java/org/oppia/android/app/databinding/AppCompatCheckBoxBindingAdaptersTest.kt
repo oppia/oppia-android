@@ -11,7 +11,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -86,6 +85,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Singleton
 
 /** Test for [AppCompatCheckBoxBindingAdapters] */
 @RunWith(AndroidJUnit4::class)

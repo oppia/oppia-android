@@ -117,7 +117,7 @@ interface ActivityComponentImpl :
   fun inject(adminPinActivity: AdminPinActivity)
   fun inject(
     appCompatCheckBoxBindingAdaptersTestActivity:
-    AppCompatCheckBoxBindingAdaptersTestActivity
+      AppCompatCheckBoxBindingAdaptersTestActivity
   )
   fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(appVersionActivity: AppVersionActivity)
@@ -182,12 +182,12 @@ interface ActivityComponentImpl :
   fun inject(splashTestActivity: SplashTestActivity)
   fun inject(
     stateAssemblerMarginBindingAdaptersTestActivity:
-    StateAssemblerMarginBindingAdaptersTestActivity
+      StateAssemblerMarginBindingAdaptersTestActivity
   )
 
   fun inject(
     stateAssemblerPaddingBindingAdaptersTestActivity:
-    StateAssemblerPaddingBindingAdaptersTestActivity
+      StateAssemblerPaddingBindingAdaptersTestActivity
   )
 
   fun inject(spotlightFragmentTestActivity: SpotlightFragmentTestActivity)
