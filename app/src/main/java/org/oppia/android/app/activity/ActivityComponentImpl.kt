@@ -55,6 +55,7 @@ import org.oppia.android.app.settings.profile.ProfileResetPinActivity
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
+import org.oppia.android.app.testing.AppCompatCheckBoxBindingAdaptersTestActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
@@ -114,6 +115,10 @@ interface ActivityComponentImpl :
   fun inject(administratorControlsActivity: AdministratorControlsActivity)
   fun inject(administratorControlsFragmentTestActivity: AdministratorControlsFragmentTestActivity)
   fun inject(adminPinActivity: AdminPinActivity)
+  fun inject(
+    appCompatCheckBoxBindingAdaptersTestActivity:
+    AppCompatCheckBoxBindingAdaptersTestActivity
+  )
   fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(appVersionActivity: AppVersionActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
@@ -177,12 +182,12 @@ interface ActivityComponentImpl :
   fun inject(splashTestActivity: SplashTestActivity)
   fun inject(
     stateAssemblerMarginBindingAdaptersTestActivity:
-      StateAssemblerMarginBindingAdaptersTestActivity
+    StateAssemblerMarginBindingAdaptersTestActivity
   )
 
   fun inject(
     stateAssemblerPaddingBindingAdaptersTestActivity:
-      StateAssemblerPaddingBindingAdaptersTestActivity
+    StateAssemblerPaddingBindingAdaptersTestActivity
   )
 
   fun inject(spotlightFragmentTestActivity: SpotlightFragmentTestActivity)
