@@ -430,6 +430,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/story/StoryViewMode
 exempted_file_path: "app/src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryHeaderViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryItemViewModel.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/AppCompatCheckBoxBindingAdaptersTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/AudioFragmentTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/AudioFragmentTestActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/BindableAdapterTestActivity.kt"
