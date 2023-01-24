@@ -1,36 +1,58 @@
 _These instructions are for developers who'd like to contribute code to improve the Oppia platform. If you'd prefer to help out with other things, please see our [[general contribution guidelines|Home]]._
 
 Thanks for your interest in contributing to the Oppia Android project, and making it easier for students to learn online in an effective and enjoyable way!
+
+If you run into any problems along the way, we're here to help! Check out our [[wiki page on getting help|Get-Help]] for the communication channels you can use. If you find any bugs, you can also file an issue on our [issue tracker](https://github.com/oppia/oppia-android/issues). There are also lots of helpful resources in the sidebar, check that out too!
+
+**Important! Please read this page in its entirety before making any code changes.** It contains lots of really important information. You should also read through our [guide to making pull requests](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR).
+
 ## Table of Contents
 
-* [Onboarding instructions](#onboarding-instructions)
-  * [Guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)
-* [Install oppia-android](#install-oppia-android)
-* [Run the app from Android Studio](#run-the-app-from-android-studio)
-* [Finding something to do](#finding-something-to-do)
-* [Developing your skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
-* [Important: Ongoing Bazel migration](#important-ongoing-bazel-migration)
-* [Installing the Oppia web app](#installing-the-oppia-web-app)
-* [Communication channels](#communication-channels)
+- [Onboarding instructions](#onboarding-instructions)
+  - [Guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)
+- [Install oppia-android](#install-oppia-android)
+- [Run the app from Android Studio](#run-the-app-from-android-studio)
+- [Finding something to do](#finding-something-to-do)
+- [Developing your skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
+- [Important: Ongoing Bazel migration](#important-ongoing-bazel-migration)
+- [Installing the Oppia web app](#installing-the-oppia-web-app)
+- [Communication channels](#communication-channels)
 
 ## Onboarding instructions
+
 If you'd like to help out with the Android project, please follow the following steps to get started:
 
 1. Sign the CLA, so that we can accept your contributions. If you're contributing as an individual, use the [individual CLA](https://goo.gl/forms/AttNH80OV0). If your company owns the copyright to your contributions, a company representative should sign the [corporate CLA](https://goo.gl/forms/xDq9gK3Zcv).
+
 2. Fill in the [Oppia contributor survey](https://goo.gl/forms/otv30JV3Ihv0dT3C3) to let us know what your interests are. (You can always change your responses later.) **Make sure to indicate prominently that you are interested in helping out with Android.**
-3. Download/Install the latest version of [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads). 
-4. Download and Install **Java 8** using the links from [the Java website](https://www.java.com/en/download/).
+
+3. Say hi and introduce yourself on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions/4788)!
+
+4. Download/Install the latest version of [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads). 
+
+5. Download and Install **Java 8** using the links from [the Java website](https://www.java.com/en/download/).
    - **Note for Windows users:** Make sure to also set up the PATH system variable correctly for `Java`, following [these instructions](https://www.java.com/en/download/help/path.html).
    - [Instructions](https://www.java.com/en/download/help/linux_install.html) for Linux users.
    - [Instructions](https://www.java.com/en/download/help/mac_install.html) for Mac users.
-5. In Android Studio, open Tools > SDK Manager.
+
+6. In Android Studio, open Tools > SDK Manager.
    - In the "SDK Platforms" tab (which is the default), select `API Level 28`.
    - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 31" and select 29.0.2 (this is needed for Bazel support).
 
    Then, click "Apply" to download and install these two SDKs/Tools.
 
-6. Read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR) carefully. You'll need to understand this process well in order to submit PRs to the project!
+7. Familiarize yourself with the resources linked to from the sidebar of this page, especially the [overview of the codebase](https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture), the [[coding style guide|Coding-style-guide]], and the [[Frequent Errors and Solutions|Frequent-Errors-and-Solutions]]. You don't have to read all the other stuff right now, but it's a good idea to be aware of what's available, so that you can refer to it later if needed.
 
+8. Take up your first Oppia Android starter issue! (See [below](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#finding-something-to-do) on how to do this.) Make sure to read and follow the [[PR instructions|Guidance-on-submitting-a-PR]] closely so that your PR review proceeds smoothly.
+
+   - In your browser, consider bookmarking the [[guide to making pull requests|Guidance-on-submitting-a-PR]] for easy reference later, as well as the ["my issues" page](https://github.com/issues/assigned) (so that you can keep track of the issues assigned to you).
+
+   - Facing any problems (including non-coding ones)? Please feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community. You can use this avenue for asking anything -- questions about any issue, who to contact for specific things, etc.
+
+   - We also have onboarding mentors who would be more than happy to help you take your first steps in open source. If you'd like individual support, feel free to request a mentor [using this form](https://forms.gle/udsRP4WQgLcez9Zm8).
+ 
+9. When you have merged PRs that correspond to two different pre-existing GitHub issues, please fill in [this form](https://forms.gle/NxPjimCMqsSTNUgu5) to become an Oppia collaborator! This will grant you access to the repository, and allow you to join a team. (But please don't create your own issues and then make PRs for them -- that won't count.)
+ 
 
 **Note:** Make sure you have good Internet connectivity when developing on Oppia Android, since this project uses third party libraries which will be needed to build the app.
 
@@ -40,7 +62,7 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 1. Create a new, empty folder called `opensource/` within your home folder. Navigate to it (`cd opensource`), then [fork and clone](https://github.com/oppia/oppia-android/wiki/Fork-and-Clone-Oppia-Android) the Oppia-Android repo. This will create a new folder named `opensource/oppia-android`. Note that contributors who have write access to the repository may either create branches directly on oppia/oppia-android or use a fork.
 
-    **Note**: Please keep the folder name as `oppia-android`. Changing the project folder name might lead to future issues with running the pre-push checks on your machine.
+   **Note**: Please keep the folder name as `oppia-android`. Changing the project folder name might lead to future issues with running the pre-push checks on your machine.
 
 2. Run the setup script, which adds some development tools for Oppia Android (ktlint, checkstyle, etc.):
 
@@ -70,6 +92,7 @@ Please follow these steps to set up Oppia Android on your local machine.
 ## Run the app from Android Studio
 
 1. Go to Tools > AVD Manager, click "Create Virtual Device...". Then:
+
    - Select a preferred device definition. In general, any device is fine, but you can use Pixel 3a as a default (if you're developing for phones) or Nexus 7 (if you're developing for tablets). After selecting a device, click "Next" at the bottom right to continue.
    - Select a system image (in general, API Level 28, unless you're an M1 Mac user, in which case use API Level 29). Then click "Next".
    - Click "Finish" to complete setup.
@@ -78,8 +101,8 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 3. Finally, click the "Run" button.
 
-
 ## Finding something to do
+
 **Good first issues for new contributors**
 
 Welcome! Please make sure to follow the onboarding instructions above if you haven’t already.
@@ -106,12 +129,12 @@ You may also tackle other [good first issues](https://github.com/oppia/oppia-and
 The team is currently using two build systems for the project: Gradle and Bazel. We're in the process of actively migrating to Bazel.
 
 Please note that:
-* It's currently recommended that all team members use **Gradle** for their active development in Android Studio. While some team members use the Bazel Android Studio plugin instead of Android Gradle Plugin (AGP), we make this recommendation because day-to-day Bazel development currently suffers from:
-  * Significant memory overhead that continues to grow without careful pruning (i.e. periodic shutdowns of the local Bazel build server). On some Linux distros, this can result in a Kernel panic when memory is fully exhausted.
-  * Various symbolic errors throughout the codebase that can make it much more difficult to jump to specific symbols (though, unlike Gradle, all code including scripts are editable and runnable within Android Studio).
-* That said, when submitting a PR for review, you may notice that some Bazel-specific tests or workflows fail. Investigating and fixing these will require setting up Bazel in your local environment (see the instructions [here](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions)), and then running the specific Bazel commands in your local repository (most team members just use the console within Android Studio to run their Bazel commands).
-* Bazel & Gradle sometimes don't play nicely with one another. So, when you're verifying Bazel-specific things, we recommend doing so in one go, and then deleting the corresponding Bazel build artifacts using ``bazel clean`` before switching back over to Gradle (to avoid any issues with the two build systems crossing). Note that Bazel generally doesn't have any problems with Gradle build artifacts, so there's no need to clean the Gradle project first.
-* As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time for moving development environments away from Gradle so that we can officially deprecate it.
+- It's currently recommended that all team members use **Gradle** for their active development in Android Studio. While some team members use the Bazel Android Studio plugin instead of Android Gradle Plugin (AGP), we make this recommendation because day-to-day Bazel development currently suffers from:
+  - Significant memory overhead that continues to grow without careful pruning (i.e. periodic shutdowns of the local Bazel build server). On some Linux distros, this can result in a Kernel panic when memory is fully exhausted.
+  - Various symbolic errors throughout the codebase that can make it much more difficult to jump to specific symbols (though, unlike Gradle, all code including scripts are editable and runnable within Android Studio).
+- That said, when submitting a PR for review, you may notice that some Bazel-specific tests or workflows fail. Investigating and fixing these will require setting up Bazel in your local environment (see the instructions [here](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions)), and then running the specific Bazel commands in your local repository (most team members just use the console within Android Studio to run their Bazel commands).
+- Bazel & Gradle sometimes don't play nicely with one another. So, when you're verifying Bazel-specific things, we recommend doing so in one go, and then deleting the corresponding Bazel build artifacts using ``bazel clean`` before switching back over to Gradle (to avoid any issues with the two build systems crossing). Note that Bazel generally doesn't have any problems with Gradle build artifacts, so there's no need to clean the Gradle project first.
+- As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time for moving development environments away from Gradle so that we can officially deprecate it.
 
 ## Installing the Oppia web app
 
