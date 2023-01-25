@@ -14,7 +14,8 @@
     android:layout_width="144dp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="4dp"
-    app:layoutMarginEnd="@{viewModel.endMargin}">
+    app:layoutMarginEnd="@{viewModel.endMargin}"
+    app:cardBackgroundColor="@android:color/transparent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
