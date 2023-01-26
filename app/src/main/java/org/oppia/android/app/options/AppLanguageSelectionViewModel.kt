@@ -24,7 +24,7 @@ class AppLanguageSelectionViewModel @Inject constructor(
   val recyclerViewAppLanguageList: List<AppLanguageItemViewModel> by lazy {
     createItemViewModel(
       translationController
-        .getAllAppLanguageDefinitions()
+        .getSupportedAppLanguages()
     )
   }
 

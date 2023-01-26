@@ -11,6 +11,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,9 +26,11 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
+import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.AUDIO_TRANSLATIONS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
+import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.OppiaRegion.BRAZIL
 import org.oppia.android.app.model.OppiaRegion.INDIA
 import org.oppia.android.app.model.OppiaRegion.REGION_UNSPECIFIED
@@ -184,6 +187,25 @@ class TranslationControllerTest {
   }
 
   @Test
+  fun testUpdateAppLanguage_getAppLanguage_returnsUpdatedLanguage() {
+    forceDefaultLocale(Locale.ROOT)
+    // The result must be observed immediately otherwise it won't execute (which will result in the
+    // language not being updated).
+    val resultProvider =
+      translationController.updateAppLanguage(
+        PROFILE_ID_0, createAppLanguageSelection(BRAZILIAN_PORTUGUESE)
+      )
+    val updateMonitor = monitorFactory.createMonitor(resultProvider)
+    updateMonitor.waitForNextSuccessResult()
+
+    val languageProvider = translationController.getAppLanguage(PROFILE_ID_0)
+    val langMonitor = monitorFactory.createMonitor(languageProvider)
+    val getAppLanguageResults = langMonitor.waitForNextSuccessResult()
+
+    assertThat(getAppLanguageResults).isEqualTo(BRAZILIAN_PORTUGUESE)
+  }
+
+  @Test
   fun testGetAppLanguage_uninitialized_returnsSystemLanguage() {
     forceDefaultLocale(Locale.ROOT)
 
@@ -298,6 +320,38 @@ class TranslationControllerTest {
     assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
     // This region comes from the default locale.
     assertThat(context.regionDefinition.region).isEqualTo(BRAZIL)
+  }
+
+  @Test
+  fun testGetAppLanguageLocale_updateLanguageToKiswahili_returnsKiswahiliLocale() {
+    forceDefaultLocale(KENYA_KISWAHILI_LOCALE)
+    ensureAppLanguageIsUpdatedTo(PROFILE_ID_0, SWAHILI)
+
+    val localeProvider = translationController.getAppLanguageLocale(PROFILE_ID_0)
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    assertThat(context.usageMode).isEqualTo(APP_STRINGS)
+    assertThat(context.languageDefinition.language).isEqualTo(SWAHILI)
+    // This region comes from the default locale.
+    assertThat(context.regionDefinition.region).isEqualTo(OppiaRegion.KENYA)
+  }
+
+  @Test
+  fun testGetAppLanguageLocale_updateLanguagePerProfile_returnsLanguageForProfile() {
+    ensureAppLanguageIsUpdatedTo(PROFILE_ID_0, SWAHILI)
+    ensureAppLanguageIsUpdatedTo(PROFILE_ID_1, BRAZILIAN_PORTUGUESE)
+
+    val localeProviderOne = translationController.getAppLanguageLocale(PROFILE_ID_0)
+    val localeProviderTwo = translationController.getAppLanguageLocale(PROFILE_ID_1)
+
+    val localeOne = monitorFactory.waitForNextSuccessfulResult(localeProviderOne)
+    val localeTwo = monitorFactory.waitForNextSuccessfulResult(localeProviderTwo)
+    val contextOne = localeOne.localeContext
+    val contextTwo = localeTwo.localeContext
+
+    assertThat(contextOne.languageDefinition.language).isEqualTo(SWAHILI)
+    assertThat(contextTwo.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
   }
 
   @Test
@@ -1278,9 +1332,13 @@ class TranslationControllerTest {
 
   @Test
   fun testLoadAvailableLanguageDefinitions_returnsAvailableLanguageDefinitions() {
-    val languageDefinitionsList = translationController.getAllAppLanguageDefinitions()
-    assertThat(languageDefinitionsList[0].name).isEqualTo("ARABIC")
-    assertThat(languageDefinitionsList[4].name).isEqualTo("SWAHILI")
+    val languageDefinitionsList =
+      runBlocking {
+        translationController.getSupportedAppLanguages()
+      }
+
+    assertThat(languageDefinitionsList[0].name).isEqualTo(ARABIC.name)
+    assertThat(languageDefinitionsList[4].name).isEqualTo(SWAHILI.name)
     assertThat(languageDefinitionsList.size).isEqualTo(5)
   }
 
@@ -1313,7 +1371,6 @@ class TranslationControllerTest {
   private fun createAppLanguageSelection(language: OppiaLanguage): AppLanguageSelection {
     return AppLanguageSelection.newBuilder().apply {
       selectedLanguage = language
-      selectedLanguageValue = language.number
     }.build()
   }
 
@@ -1423,6 +1480,7 @@ class TranslationControllerTest {
   private companion object {
     private val BRAZIL_ENGLISH_LOCALE = Locale("en", "BR")
     private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
+    private val KENYA_KISWAHILI_LOCALE = Locale("sw", "KE")
 
     private val PROFILE_ID_0 = ProfileId.newBuilder().apply {
       internalId = 0

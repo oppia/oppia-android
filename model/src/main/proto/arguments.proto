@@ -295,17 +295,17 @@ message AppLanguageFragmentStateBundle {
 // Params required when creating a new AppLanguageActivity.
 message AppLanguageActivityParams {
   // The default app language previously selected by the user (upon opening the activity).
-  OppiaLanguage oppia_language = 2;
+  OppiaLanguage oppia_language = 1;
 }
 
 // The bundle of properties that are returned by AppLanguageActivity after it's finished.
 message AppLanguageActivityResultBundle {
-  // The new default audio language selected by the user.
-  OppiaLanguage oppia_language = 2;
+  // The new default app language selected by the user.
+  OppiaLanguage oppia_language = 1;
 }
 
 // The bundle of properties that are saved upon configuration changes in AppLanguageActivity.
 message AppLanguageActivityStateBundle {
-  // The default audio language selected by the user.
-  OppiaLanguage oppia_language = 2;
+  // The default app language selected by the user.
+  OppiaLanguage oppia_language = 1;
 }
