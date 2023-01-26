@@ -24,7 +24,7 @@
       android:minHeight="?attr/actionBarSize"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
       app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:titleTextAppearance="@style/ToolbarTitle" />
+      app:titleTextAppearance="@style/ToolbarTextAppearance" />
 
     <FrameLayout
       android:layout_width="match_parent"
@@ -238,7 +238,7 @@
             android:gravity="center"
             android:text="@string/add_profile_create_btn"
             android:textAllCaps="true"
-            android:textColor="@{viewModel.isButtonActive() ? @color/component_color_shared_button_active_text_color : @color/component_color_shared_button_inactive_text_color }"
+            android:textColor="@{viewModel.isButtonActive() ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_constraint_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
