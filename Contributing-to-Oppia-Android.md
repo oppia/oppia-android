@@ -105,23 +105,16 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 **Good first issues for new contributors**
 
-Welcome! Please make sure to follow the onboarding instructions above if you haven’t already.
+Welcome! Please make sure to follow the onboarding instructions above if you haven’t already. Also, read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). 
 
-Also, read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). 
+After that, you can choose a good first issue from the [list of good first issues](https://github.com/oppia/oppia-android/labels/good%20first%20issue). These issues are hand-picked to ensure that you don't run into unexpected roadblocks while working on them, and each of them should have clear instructions for new contributors. If you see one that doesn't, please let us know via [GitHub Discussions](https://github.com/oppia/oppia-android/discussions) and we'll try to fix it. For other issues, you might need to be more independent because we might not know how to solve them either.
 
-After that, we’d strongly recommend tackling some part of one of the following good first issues.
+When you've found an issue you'd like to tackle, please leave a comment on it that:
 
-**Testing**
- - [Add missing tests](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+tests)
+- @-mentions the team lead (typically **@BenHenning**), letting them know you'd like to work on it.
+- describes in detail how you'd tackle the issue (e.g. explain which file(s) you would modify and what changes you would make). 
 
-**UI**
- - [Merge different versions of a xml into a single xml file](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+single+xml+file)
- - [Supporting dark mode](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+in%3Atitle+add+dark+mode+is%3Aopen) (see also [these instructions](https://github.com/oppia/oppia-android/wiki/Dark-Mode)).
-
-**Accessibility**
- - [Accessibility support](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+a11y+no%3Aassignee)
-
-You may also tackle other [good first issues](https://github.com/oppia/oppia-android/labels/good%20first%20issue). When claiming an issue, please explain how you would tackle the issue (if there aren't pre-existing instructions) and tag the corresponding team lead (typically **@BenHenning**) if you wish to be assigned to it.
+If your explanation makes sense, we'll assign the issue to you. Feel free to go ahead and submit a PR for it by following the instructions for making a PR! If you run into any issues, feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community, or [request a mentor](https://forms.gle/udsRP4WQgLcez9Zm8) if you'd like individual support.
 
 
 ## Important: Ongoing Bazel migration
