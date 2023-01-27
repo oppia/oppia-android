@@ -35,10 +35,6 @@
   <dimen name="profile_chooser_profile_view_parent_margin_start_profile_not_added">298dp</dimen>
   <dimen name="profile_chooser_profile_view_parent_margin_end_profile_not_added">298dp</dimen>
 
-  <dimen name="profile_chooser_fragment_margin_top_profile_not_added">124dp</dimen>
-
-  <dimen name="profile_chooser_margin_top_profile_not_added">84dp</dimen>
-
   <dimen name="drag_drop_item_exploration_split_view_margin_end">40dp</dimen>
   <dimen name="drag_drop_item_exploration_view_margin_start">40dp</dimen>
   <dimen name="drag_drop_item_question_split_view_margin_top">40dp</dimen>
@@ -486,6 +482,11 @@
   <dimen name="profile_chooser_fragment_profile_select_text_margin_top">64dp</dimen>
   <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">36dp</dimen>
   <dimen name="profile_chooser_profile_view_view_margin_top">60dp</dimen>
+  <dimen name="profile_chooser_profile_select_text_margin_start">96dp</dimen>
+  <dimen name="profile_chooser_margin_top_profile_already_added">0dp</dimen>
+  <dimen name="profile_chooser_margin_top_profile_not_added">84dp</dimen>
+  <dimen name="profile_chooser_administrator_controls_margin_bottom">28dp</dimen>
+  <dimen name="profile_chooser_setting_icon_margin_end">96dp</dimen>
 
   <!-- Coming Soon Topic List -->
   <dimen name="coming_soon_topic_list_constraint_layout_padding_start">0dp</dimen>
