@@ -24,6 +24,7 @@
     android:clickable="true"
     android:focusable="true"
     android:onClick="@{(v) -> viewModel.onTopicItemClicked()}"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
