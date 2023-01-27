@@ -38,9 +38,13 @@
 
       <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_avatar_img"
-        style="@style/ShapeAbleImageView"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        app:strokeWidth="1dp"
         android:layout_marginBottom="8dp"
-        app:srcCompat="@{@drawable/ic_add_profile}" />
+        profile:src="@{viewModel.profile.avatar}"
+        app:strokeColor="@color/component_color_shared_divider_color"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape" />
 
       <LinearLayout
         android:layout_width="match_parent"
