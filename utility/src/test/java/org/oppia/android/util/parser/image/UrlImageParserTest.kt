@@ -80,6 +80,15 @@ class UrlImageParserTest {
   }
 
   @Test
+  fun testGetDrawable_svg_loadsSvgzBlockImage() {
+    urlImageParser.getDrawable("test_image.svgz")
+
+    val loadedBitmaps = testGlideImageLoader.getLoadedBlockSvgs()
+    assertThat(loadedBitmaps).hasSize(1)
+    assertThat(loadedBitmaps.first()).contains("test_image.svgz")
+  }
+
+  @Test
   fun testLoadDrawable_bitmap_blockType_loadsBitmapImage() {
     urlImageParser.loadDrawable("test_image.png", BLOCK_IMAGE)
 
@@ -110,6 +119,15 @@ class UrlImageParserTest {
   }
 
   @Test
+  fun testLoadDrawable_svg_blockType_loadsSvgzBlockImage() {
+    urlImageParser.loadDrawable("test_image.svgz", BLOCK_IMAGE)
+
+    val loadedBitmaps = testGlideImageLoader.getLoadedBlockSvgs()
+    assertThat(loadedBitmaps).hasSize(1)
+    assertThat(loadedBitmaps.first()).contains("test_image.svgz")
+  }
+
+  @Test
   fun testLoadDrawable_svg_inlineType_loadsSvgTextImage() {
     urlImageParser.loadDrawable("test_image.svg", INLINE_TEXT_IMAGE)
 
@@ -117,6 +135,16 @@ class UrlImageParserTest {
     val loadedBitmaps = testGlideImageLoader.getLoadedTextSvgs()
     assertThat(loadedBitmaps).hasSize(1)
     assertThat(loadedBitmaps.first()).contains("test_image.svg")
+  }
+
+  @Test
+  fun testLoadDrawable_svg_inlineType_loadsSvgzTextImage() {
+    urlImageParser.loadDrawable("test_image.svgz", INLINE_TEXT_IMAGE)
+
+    // The request to load the bitmap inline is ignored since inline bitmaps aren't supported.
+    val loadedBitmaps = testGlideImageLoader.getLoadedTextSvgs()
+    assertThat(loadedBitmaps).hasSize(1)
+    assertThat(loadedBitmaps.first()).contains("test_image.svgz")
   }
 
   @Test
