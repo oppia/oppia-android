@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.StateFragment
@@ -21,6 +22,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -33,6 +35,7 @@ import javax.inject.Inject
 class ExplorationFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val profileManagementController: ProfileManagementController,
   private val resourceHandler: AppLanguageResourceHandler
@@ -144,8 +147,9 @@ class ExplorationFragmentPresenter @Inject constructor(
   }
 
   private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String) {
-    oppiaLogger.logImportantEvent(
-      oppiaLogger.createOpenExplorationActivityContext(topicId, storyId, explorationId)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenExplorationActivityContext(topicId, storyId, explorationId),
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }
 

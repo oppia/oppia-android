@@ -132,6 +132,67 @@
         app:layout_constraintTop_toBottomOf="@+id/profile_reset_button" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_edit_enable_in_lesson_language_switching_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/general_item_background_border"
+        android:focusable="true"
+        android:importantForAccessibility="yes"
+        android:visibility="@{viewModel.isAllowedToEnableQuickLessonLanguageSwitching ? View.VISIBLE : View.GONE}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_mark_chapters_for_completion_button">
+
+        <TextView
+          android:id="@+id/profile_edit_enable_in_lesson_language_switching_header"
+          style="@style/TextViewStart"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif"
+          android:paddingStart="16dp"
+          android:paddingTop="12dp"
+          android:paddingEnd="24dp"
+          android:text="@string/profile_edit_enable_quick_lesson_language_switching_label"
+          android:textColor="@color/component_color_shared_primary_text_color"
+          android:textSize="16sp"
+          app:layout_constraintEnd_toStartOf="@+id/profile_edit_enable_in_lesson_language_switching_switch"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/profile_edit_enable_in_lesson_language_switching_label"
+          style="@style/TextViewStart"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif"
+          android:paddingStart="16dp"
+          android:paddingEnd="24dp"
+          android:paddingBottom="12dp"
+          android:text="@string/profile_edit_enable_quick_lesson_language_switching_explanation"
+          android:textColor="@color/component_color_shared_secondary_3_text_color"
+          android:textSize="14sp"
+          app:layout_constraintEnd_toStartOf="@+id/profile_edit_enable_in_lesson_language_switching_switch"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/profile_edit_enable_in_lesson_language_switching_header" />
+
+        <androidx.appcompat.widget.SwitchCompat
+          android:id="@+id/profile_edit_enable_in_lesson_language_switching_switch"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:clickable="false"
+          android:focusable="false"
+          android:minWidth="48dp"
+          android:minHeight="48dp"
+          android:paddingStart="12dp"
+          android:paddingTop="0dp"
+          android:paddingEnd="12dp"
+          android:theme="@style/OppiaSwitchCompatTheme"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="@+id/profile_edit_enable_in_lesson_language_switching_header" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_edit_allow_download_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -141,7 +202,7 @@
         android:visibility="@{viewModel.showEditDownloadAccess ? View.VISIBLE : View.GONE}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_mark_chapters_for_completion_button">
+        app:layout_constraintTop_toBottomOf="@id/profile_edit_enable_in_lesson_language_switching_container">
 
         <TextView
           android:id="@+id/profile_edit_allow_download_heading"

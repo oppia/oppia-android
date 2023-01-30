@@ -13,6 +13,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -98,27 +99,17 @@ class OppiaLoggerTest {
     private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
   }
 
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     ShadowLog.reset()
-  }
-
-  @Test
-  fun testLogImportantEvent_forOpenHomeEvent_logsEssentialEventWithCurrentTime() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
-    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
-
-    oppiaLogger.logImportantEvent(openHomeEventContext)
-
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
   }
 
   @Test
@@ -311,12 +302,20 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createOpenRevisionCardContext_returnsCorrectRevisionCardContext() {
-    val eventContext =
-      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+    val eventContext = oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(OPEN_REVISION_CARD)
     assertThat(eventContext.openRevisionCard.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.openRevisionCard.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
+  }
+
+  @Test
+  fun testController_createCloseRevisionCardContext_returnsCorrectRevisionCardContext() {
+    val eventContext = oppiaLogger.createCloseRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(CLOSE_REVISION_CARD)
+    assertThat(eventContext.closeRevisionCard.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.closeRevisionCard.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
   }
 
   private fun setUpTestApplicationComponent() {

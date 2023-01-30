@@ -488,6 +488,7 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer(contentId = "test_content_id")
 
     audioPlayerController.play(isPlayingFromAutoPlay = true, reloadingMainContent = true)
+    testCoroutineDispatchers.runCurrent()
 
     // No audio event is logged when an auto-play corresponds to a new content card (since it's
     // continuing a play from an earlier state that was already logged).
@@ -503,6 +504,7 @@ class AudioPlayerControllerTest {
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
 
     audioPlayerController.play(isPlayingFromAutoPlay = true, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
     // This is the default case: when the user opens the audio bar it will auto-play audio (but not
     // 'reload' the main content since it's an initial load).
@@ -535,6 +537,7 @@ class AudioPlayerControllerTest {
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = true)
+    testCoroutineDispatchers.runCurrent()
 
     // This case is only hypothetically possible, but shouldn't happen in practice (since main
     // content is always auto-played when reloaded).
@@ -567,6 +570,7 @@ class AudioPlayerControllerTest {
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
     // This case corresponds to the user manually playing audio (e.g. after pausing).
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -599,6 +603,7 @@ class AudioPlayerControllerTest {
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
     // If there's no content ID then it'll be missing from the log.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -612,6 +617,7 @@ class AudioPlayerControllerTest {
     logIntoAnalyticsReadyAdminProfile()
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
     // No event should be logged if outside an exploration when playing/pausing audio (such as for
     // questions).
@@ -626,8 +632,10 @@ class AudioPlayerControllerTest {
     logIntoAnalyticsReadyAdminProfile()
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
     audioPlayerController.pause(isFromExplicitUserAction = true)
+    testCoroutineDispatchers.runCurrent()
 
     // This case corresponds to the user manually pausing audio.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -659,8 +667,10 @@ class AudioPlayerControllerTest {
     logIntoAnalyticsReadyAdminProfile()
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
     audioPlayerController.pause(isFromExplicitUserAction = true)
+    testCoroutineDispatchers.runCurrent()
 
     // If there's no content ID then it'll be missing from the log.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -673,9 +683,11 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer(contentId = "test_content_id")
     logIntoAnalyticsReadyAdminProfile()
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
 
     audioPlayerController.pause(isFromExplicitUserAction = true)
+    testCoroutineDispatchers.runCurrent()
 
     // No event should be logged if outside an exploration when playing/pausing audio (such as for
     // questions).
@@ -690,9 +702,11 @@ class AudioPlayerControllerTest {
     logIntoAnalyticsReadyAdminProfile()
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
 
     audioPlayerController.pause(isFromExplicitUserAction = false)
+    testCoroutineDispatchers.runCurrent()
 
     // Automatic pausing (such as navigating away from a lesson) should not logged an event.
     // This case corresponds to the user manually pausing audio.
@@ -706,9 +720,11 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
 
     audioPlayerController.pause(isFromExplicitUserAction = true)
+    testCoroutineDispatchers.runCurrent()
 
     // Pausing when not actually playing should never log an event since it's an invalid state.
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
@@ -721,9 +737,11 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
 
     audioPlayerController.pause(isFromExplicitUserAction = false)
+    testCoroutineDispatchers.runCurrent()
 
     // Pausing when not actually playing should never log an event since it's an invalid state.
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()

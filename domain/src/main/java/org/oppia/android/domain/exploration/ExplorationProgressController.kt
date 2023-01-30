@@ -24,6 +24,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_I
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.LOADING_EXPLORATION
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.NOT_PLAYING
@@ -42,6 +43,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -65,6 +67,8 @@ private const val MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID =
   "ExplorationProgressController.move_to_next_state_result"
 private const val CURRENT_STATE_PROVIDER_ID = "ExplorationProgressController.current_state"
 private const val LOCALIZED_STATE_PROVIDER_ID = "ExplorationProgressController.localized_state"
+private const val UPDATE_WRITTEN_TRANSLATION_CONTENT_PROVIDER_ID =
+  "ExplorationProgressController.update_written_translation_content"
 
 /**
  * A default session ID to be used before a session has been initialized.
@@ -382,6 +386,34 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  /**
+   * Updates the current written content language for the specified [profileId] and [selection]
+   * mid-lesson.
+   *
+   * See [TranslationController.updateWrittenTranslationContentLanguage] for specifics.
+   *
+   * Note that this function should be used for special-cased in-lesson language switching (that is,
+   * language switching that's only enabled via a per-profile setting and as part of a user study).
+   *
+   * @return a [DataProvider] that indicates the success/failure of attempting to update the content
+   *     language
+   */
+  fun updateWrittenTranslationContentLanguageMidLesson(
+    profileId: ProfileId,
+    selection: WrittenTranslationLanguageSelection
+  ): DataProvider<Any> {
+    return translationController.updateWrittenTranslationContentLanguage(
+      profileId, selection
+    ).transform(UPDATE_WRITTEN_TRANSLATION_CONTENT_PROVIDER_ID) { previousSelection ->
+      val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
+      val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
+      stateLogger?.logSwitchInLessonLanguage(
+        fromLanguage = previousSelection.selectedLanguage,
+        toLanguage = selection.selectedLanguage
+      ) ?: Unit
+    }
+  }
+
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
 
@@ -415,6 +447,7 @@ class ExplorationProgressController @Inject constructor(
                   message.ephemeralStateFlow,
                   commandQueue,
                   installationId,
+                  message.profileId,
                   learnerId,
                   learnerAnalyticsLogger,
                   startSessionTimeMs = oppiaClock.getCurrentTimeMs(),
@@ -1058,6 +1091,7 @@ class ExplorationProgressController @Inject constructor(
     val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
     val commandQueue: SendChannel<ControllerMessage<*>>,
     private val installationId: String?,
+    private val profileId: ProfileId,
     private val learnerId: String?,
     private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
     val startSessionTimeMs: Long,
@@ -1096,6 +1130,7 @@ class ExplorationProgressController @Inject constructor(
     fun initializeEventLogger(exploration: Exploration) {
       explorationAnalyticsLogger = learnerAnalyticsLogger.beginExploration(
         installationId,
+        profileId,
         learnerId,
         exploration,
         explorationProgress.currentTopicId,
@@ -1152,10 +1187,10 @@ class ExplorationProgressController @Inject constructor(
         // new HelpIndex indicates its previous state and therefore what changed.
         when (newHelpIndex.indexTypeCase) {
           NEXT_AVAILABLE_HINT_INDEX ->
-            stateAnalyticsLogger?.logHintOffered(newHelpIndex.nextAvailableHintIndex)
+            stateAnalyticsLogger?.logHintUnlocked(newHelpIndex.nextAvailableHintIndex)
           LATEST_REVEALED_HINT_INDEX ->
             stateAnalyticsLogger?.logViewHint(newHelpIndex.latestRevealedHintIndex)
-          SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionOffered()
+          SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionUnlocked()
           EVERYTHING_REVEALED -> when (helpIndex.indexTypeCase) {
             SHOW_SOLUTION -> stateAnalyticsLogger?.logViewSolution()
             NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.

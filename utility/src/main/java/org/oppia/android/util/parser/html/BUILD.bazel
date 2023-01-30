@@ -36,7 +36,6 @@ kt_android_library(
     deps = [
         ":custom_html_content_handler",
         ":list_item_leading_margin_span",
-        ":list_item_mark",
         ":policy_type",
         "//third_party:io_github_karino2_kotlitex",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
@@ -61,19 +60,6 @@ kt_android_library(
     name = "policy_type",
     srcs = [
         "PolicyType.kt",
-    ],
-    visibility = [
-        "//app:__subpackages__",
-    ],
-    deps = [
-        "//utility",
-    ],
-)
-
-kt_android_library(
-    name = "list_item_mark",
-    srcs = [
-        "ListItemMark.kt",
     ],
     visibility = [
         "//app:__subpackages__",

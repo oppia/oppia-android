@@ -10,9 +10,11 @@ import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -77,12 +79,14 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -110,6 +114,8 @@ import javax.inject.Singleton
 private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
 
 /** Tests for [RevisionCardActivity]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -117,23 +123,14 @@ private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
   qualifiers = "port-xxhdpi"
 )
 class RevisionCardActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -239,6 +236,114 @@ class RevisionCardActivityTest {
     ).use { scenario ->
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
+    }
+  }
+
+  @Test
+  fun testActivity_requestReturnToTopic_finishesActivity() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.onReturnToTopicRequested()
+        testCoroutineDispatchers.runCurrent()
+
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_requestReturnToTopic_logsCloseRevisionEvent() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.onReturnToTopicRequested()
+        testCoroutineDispatchers.runCurrent()
+
+        val latestEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+        assertThat(latestEvent).hasCloseRevisionCardContextThat {
+          hasTopicIdThat().isEqualTo(FRACTIONS_TOPIC_ID)
+          hasSubtopicIndexThat().isEqualTo(1)
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_clickNavigationBack_finishesActivity() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      onView(withContentDescription("Navigate up")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_clickNavigationBack_logsCloseRevisionEvent() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      onView(withContentDescription("Navigate up")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        val latestEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+        assertThat(latestEvent).hasCloseRevisionCardContextThat {
+          hasTopicIdThat().isEqualTo(FRACTIONS_TOPIC_ID)
+          hasSubtopicIndexThat().isEqualTo(1)
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_pressBack_finishesActivity() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_pressBack_logsCloseRevisionEvent() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        val latestEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+        assertThat(latestEvent).hasCloseRevisionCardContextThat {
+          hasTopicIdThat().isEqualTo(FRACTIONS_TOPIC_ID)
+          hasSubtopicIndexThat().isEqualTo(1)
+        }
+      }
     }
   }
 

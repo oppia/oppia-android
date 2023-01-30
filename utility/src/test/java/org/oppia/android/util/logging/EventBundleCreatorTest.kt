@@ -15,6 +15,8 @@ import dagger.Provides
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
@@ -23,11 +25,12 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_S
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
@@ -44,10 +47,11 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
@@ -58,7 +62,9 @@ import org.oppia.android.app.model.EventLog.QuestionContext
 import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.app.model.EventLog.StoryContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
+import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier
@@ -75,6 +81,7 @@ import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
@@ -136,7 +143,7 @@ class EventBundleCreatorTest {
     private const val TEST_CONTENT_ID = "test_content_id"
     private const val TEST_LANGUAGE_CODE = "en"
     private const val TEST_APP_VERSION_NAME = "oppia-android-test-0123456789"
-    private const val TEST_APP_VERSION_CODE = 125
+    private const val TEST_APP_VERSION_CODE = 125L
     private const val TEST_CPU_USAGE = Double.MAX_VALUE
     private const val TEST_APK_SIZE = Long.MAX_VALUE
     private const val TEST_STORAGE_USAGE = Long.MAX_VALUE
@@ -145,19 +152,16 @@ class EventBundleCreatorTest {
     private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
   }
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var eventBundleCreator: EventBundleCreator
 
-  @Inject
-  lateinit var eventBundleCreator: EventBundleCreator
-
-  @Parameter
-  lateinit var name: String
-
-  @Parameter
-  lateinit var expNameStr: String
+  @Parameter lateinit var name: String
+  @Parameter lateinit var expNameStr: String
+  @Parameter lateinit var inLang: String
+  @Parameter lateinit var expLang: String
 
   private val screenName by lazy { ScreenName.valueOf(name) }
+  private val inputLanguage by lazy { OppiaLanguage.valueOf(inLang) }
 
   @After
   fun tearDown() {
@@ -172,13 +176,18 @@ class EventBundleCreatorTest {
     val typeName = eventBundleCreator.fillEventBundle(EventLog.getDefaultInstance(), bundle)
 
     assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(0)
     assertThat(bundle).string("priority").isEqualTo("unspecified_priority")
     assertThat(bundle).integer("event_type").isEqualTo(ACTIVITYCONTEXT_NOT_SET.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("oppia_app_lang").isEqualTo("unset_app_language_selection")
+    assertThat(bundle).string("oppia_content_lang")
+      .isEqualTo("unset_written_translation_language_selection")
+    assertThat(bundle).string("oppia_audio_lang")
+      .isEqualTo("unset_audio_translation_language_selection")
   }
 
   @Test
@@ -213,13 +222,18 @@ class EventBundleCreatorTest {
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
 
     assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACTIVITYCONTEXT_NOT_SET.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("oppia_app_lang").isEqualTo("unset_app_language_selection")
+    assertThat(bundle).string("oppia_content_lang")
+      .isEqualTo("unset_written_translation_language_selection")
+    assertThat(bundle).string("oppia_audio_lang")
+      .isEqualTo("unset_audio_translation_language_selection")
   }
 
   @Test
@@ -242,6 +256,151 @@ class EventBundleCreatorTest {
     eventBundleCreator.fillEventBundle(eventLog, bundle)
 
     assertThat(bundle).string("priority").isEqualTo("optional")
+  }
+
+  @Test
+  fun testFillEventBundle_eventWithSystemAppLanguage_savesCorrectAppLanguageInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val eventLog =
+      createEventLog(
+        appLanguageSelection = AppLanguageSelection.newBuilder().apply {
+          useSystemLanguageOrAppDefault = true
+        }.build()
+      )
+
+    eventBundleCreator.fillEventBundle(eventLog, bundle)
+
+    assertThat(bundle).string("oppia_app_lang").isEqualTo("use_system_language_or_app_default")
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("lang_unspecified", "inLang=LANGUAGE_UNSPECIFIED", "expLang=unspecified_language"),
+    Iteration("ar", "inLang=ARABIC", "expLang=Arabic"),
+    Iteration("en", "inLang=ENGLISH", "expLang=English"),
+    Iteration("hi", "inLang=HINDI", "expLang=Hindi"),
+    Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish"),
+    Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese"),
+    Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese"),
+    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili")
+  )
+  fun testFillEventBundle_eventWithSelectedAppLanguage_savesCorrectAppLanguageInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val eventLog =
+      createEventLog(
+        appLanguageSelection = AppLanguageSelection.newBuilder().apply {
+          selectedLanguage = inputLanguage
+        }.build()
+      )
+
+    eventBundleCreator.fillEventBundle(eventLog, bundle)
+
+    assertThat(bundle).string("oppia_app_lang").isEqualTo(expLang)
+  }
+
+  @Test
+  fun testFillEventBundle_eventWithUseAppLanguageForWrittenTranslations_savesCorrectWrittenLang() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val languageSelection = WrittenTranslationLanguageSelection.newBuilder().apply {
+      useAppLanguage = true
+    }.build()
+    val eventLog = createEventLog(writtenTranslationLanguageSelection = languageSelection)
+
+    eventBundleCreator.fillEventBundle(eventLog, bundle)
+
+    assertThat(bundle).string("oppia_content_lang").isEqualTo("use_app_language")
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("lang_unspecified", "inLang=LANGUAGE_UNSPECIFIED", "expLang=unspecified_language"),
+    Iteration("ar", "inLang=ARABIC", "expLang=Arabic"),
+    Iteration("en", "inLang=ENGLISH", "expLang=English"),
+    Iteration("hi", "inLang=HINDI", "expLang=Hindi"),
+    Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish"),
+    Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese"),
+    Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese"),
+    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili")
+  )
+  fun testFillEventBundle_eventWithSelectedWrittenTranslationsLanguage_savesCorrectWrittenLang() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val languageSelection = WrittenTranslationLanguageSelection.newBuilder().apply {
+      selectedLanguage = inputLanguage
+    }.build()
+    val eventLog = createEventLog(writtenTranslationLanguageSelection = languageSelection)
+
+    eventBundleCreator.fillEventBundle(eventLog, bundle)
+
+    assertThat(bundle).string("oppia_content_lang").isEqualTo(expLang)
+  }
+
+  @Test
+  fun testFillEventBundle_eventWithUseAppLanguageForAudioTranslations_savesCorrectAudioLang() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val languageSelection = AudioTranslationLanguageSelection.newBuilder().apply {
+      useAppLanguage = true
+    }.build()
+    val eventLog = createEventLog(audioTranslationLanguageSelection = languageSelection)
+
+    eventBundleCreator.fillEventBundle(eventLog, bundle)
+
+    assertThat(bundle).string("oppia_audio_lang").isEqualTo("use_app_language")
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("lang_unspecified", "inLang=LANGUAGE_UNSPECIFIED", "expLang=unspecified_language"),
+    Iteration("ar", "inLang=ARABIC", "expLang=Arabic"),
+    Iteration("en", "inLang=ENGLISH", "expLang=English"),
+    Iteration("hi", "inLang=HINDI", "expLang=Hindi"),
+    Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish"),
+    Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese"),
+    Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese"),
+    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili")
+  )
+  fun testFillEventBundle_eventWithSelectedAudioTranslationsLanguage_savesCorrectAudioLang() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val languageSelection = AudioTranslationLanguageSelection.newBuilder().apply {
+      selectedLanguage = inputLanguage
+    }.build()
+    val eventLog = createEventLog(audioTranslationLanguageSelection = languageSelection)
+
+    eventBundleCreator.fillEventBundle(eventLog, bundle)
+
+    assertThat(bundle).string("oppia_audio_lang").isEqualTo(expLang)
+  }
+
+  @Test
+  fun testFillEventBundle_eventWithMultipleLanguageConfigurations_savesCorrectLanguages() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
+      selectedLanguage = OppiaLanguage.SWAHILI
+    }.build()
+    val writtenLanguageSelection = WrittenTranslationLanguageSelection.newBuilder().apply {
+      selectedLanguage = OppiaLanguage.ENGLISH
+    }.build()
+    val audioLanguageSelection = AudioTranslationLanguageSelection.newBuilder().apply {
+      selectedLanguage = OppiaLanguage.HINGLISH
+    }.build()
+    val eventLog =
+      createEventLog(
+        appLanguageSelection = appLanguageSelection,
+        writtenTranslationLanguageSelection = writtenLanguageSelection,
+        audioTranslationLanguageSelection = audioLanguageSelection
+      )
+
+    eventBundleCreator.fillEventBundle(eventLog, bundle)
+
+    assertThat(bundle).string("oppia_app_lang").isEqualTo("Swahili")
+    assertThat(bundle).string("oppia_content_lang").isEqualTo("English")
+    assertThat(bundle).string("oppia_audio_lang").isEqualTo("Hinglish")
   }
 
   @Test
@@ -368,7 +527,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_exploration_player_screen")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_EXPLORATION_ACTIVITY.number)
@@ -392,7 +551,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_exploration_player_screen")
-    assertThat(bundle).hasSize(14)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_EXPLORATION_ACTIVITY.number)
@@ -418,7 +577,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("select_topic_info_tab")
-    assertThat(bundle).hasSize(7)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_INFO_TAB.number)
@@ -437,7 +596,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("select_topic_lessons_tab")
-    assertThat(bundle).hasSize(7)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_LESSONS_TAB.number)
@@ -619,7 +778,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("select_topic_practice_tab")
-    assertThat(bundle).hasSize(7)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_PRACTICE_TAB.number)
@@ -638,7 +797,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("select_topic_revision_tab")
-    assertThat(bundle).hasSize(7)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_REVISION_TAB.number)
@@ -657,7 +816,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_question_player_screen")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_QUESTION_PLAYER.number)
@@ -677,7 +836,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_story_chapter_list_screen")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_STORY_ACTIVITY.number)
@@ -697,7 +856,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_concept_card")
-    assertThat(bundle).hasSize(7)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_CONCEPT_CARD.number)
@@ -716,10 +875,30 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_revision_card")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_REVISION_CARD.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("subtopic_index").isEqualTo(TEST_SUB_TOPIC_INDEX_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_closeRevisionCardContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createCloseRevisionCard())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("close_revision_card")
+    assertThat(bundle).hasSize(11)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(CLOSE_REVISION_CARD.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -736,7 +915,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_exploration_card")
-    assertThat(bundle).hasSize(13)
+    assertThat(bundle).hasSize(16)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_CARD_CONTEXT.number)
@@ -761,7 +940,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_exploration_card")
-    assertThat(bundle).hasSize(15)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_CARD_CONTEXT.number)
@@ -788,7 +967,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("end_exploration_card")
-    assertThat(bundle).hasSize(13)
+    assertThat(bundle).hasSize(16)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(END_CARD_CONTEXT.number)
@@ -813,7 +992,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("end_exploration_card")
-    assertThat(bundle).hasSize(15)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(END_CARD_CONTEXT.number)
@@ -832,18 +1011,18 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_hintOfferedEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_hintUnlockedEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createHintOfferedContext())
+    val eventLog = createEventLog(context = createHintUnlockedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("receive_hint_offer")
-    assertThat(bundle).hasSize(13)
+    assertThat(typeName).isEqualTo("unlock_hint")
+    assertThat(bundle).hasSize(16)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(HINT_OFFERED_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(HINT_UNLOCKED_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -857,18 +1036,18 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_hintOfferedEvent_studyOn_fillsAllFieldsAndReturnsName() {
+  fun testFillEventBundle_hintUnlockedEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createHintOfferedContext())
+    val eventLog = createEventLog(context = createHintUnlockedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("receive_hint_offer")
-    assertThat(bundle).hasSize(15)
+    assertThat(typeName).isEqualTo("unlock_hint")
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(HINT_OFFERED_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(HINT_UNLOCKED_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -892,7 +1071,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_hint")
-    assertThat(bundle).hasSize(13)
+    assertThat(bundle).hasSize(16)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
@@ -917,7 +1096,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_hint")
-    assertThat(bundle).hasSize(15)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
@@ -936,18 +1115,18 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_solutionOfferedEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_solutionUnlockedEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createSolutionOfferedContext())
+    val eventLog = createEventLog(context = createSolutionUnlockedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("receive_solution_offer")
-    assertThat(bundle).hasSize(12)
+    assertThat(typeName).isEqualTo("unlock_solution")
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_OFFERED_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_UNLOCKED_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -960,18 +1139,18 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_solutionOfferedEvent_studyOn_fillsAllFieldsAndReturnsName() {
+  fun testFillEventBundle_solutionUnlockedEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createSolutionOfferedContext())
+    val eventLog = createEventLog(context = createSolutionUnlockedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("receive_solution_offer")
-    assertThat(bundle).hasSize(14)
+    assertThat(typeName).isEqualTo("unlock_solution")
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_OFFERED_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_UNLOCKED_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -994,7 +1173,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_solution")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
@@ -1018,7 +1197,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_solution")
-    assertThat(bundle).hasSize(14)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
@@ -1044,7 +1223,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("submit_answer")
-    assertThat(bundle).hasSize(14)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SUBMIT_ANSWER_CONTEXT.number)
@@ -1070,7 +1249,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("submit_answer")
-    assertThat(bundle).hasSize(16)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SUBMIT_ANSWER_CONTEXT.number)
@@ -1098,7 +1277,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_play_voiceover_button")
-    assertThat(bundle).hasSize(14)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
@@ -1124,7 +1303,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_play_voiceover_button")
-    assertThat(bundle).hasSize(16)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
@@ -1152,7 +1331,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_pause_voiceover_button")
-    assertThat(bundle).hasSize(14)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PAUSE_VOICE_OVER_CONTEXT.number)
@@ -1178,7 +1357,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_pause_voiceover_button")
-    assertThat(bundle).hasSize(16)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PAUSE_VOICE_OVER_CONTEXT.number)
@@ -1206,7 +1385,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("send_app_to_background")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(APP_IN_BACKGROUND_CONTEXT.number)
@@ -1224,7 +1403,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("send_app_to_background")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(APP_IN_BACKGROUND_CONTEXT.number)
@@ -1244,7 +1423,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("bring_app_to_foreground")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(APP_IN_FOREGROUND_CONTEXT.number)
@@ -1262,7 +1441,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("bring_app_to_foreground")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(APP_IN_FOREGROUND_CONTEXT.number)
@@ -1282,7 +1461,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("leave_exploration")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(EXIT_EXPLORATION_CONTEXT.number)
@@ -1306,7 +1485,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("leave_exploration")
-    assertThat(bundle).hasSize(14)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(EXIT_EXPLORATION_CONTEXT.number)
@@ -1332,7 +1511,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("complete_exploration")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(FINISH_EXPLORATION_CONTEXT.number)
@@ -1356,7 +1535,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("complete_exploration")
-    assertThat(bundle).hasSize(14)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(FINISH_EXPLORATION_CONTEXT.number)
@@ -1382,7 +1561,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("resume_in_progress_exploration")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(RESUME_EXPLORATION_CONTEXT.number)
@@ -1400,7 +1579,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("resume_in_progress_exploration")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(RESUME_EXPLORATION_CONTEXT.number)
@@ -1420,7 +1599,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("restart_in_progress_exploration")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_OVER_EXPLORATION_CONTEXT.number)
@@ -1438,7 +1617,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("restart_in_progress_exploration")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_OVER_EXPLORATION_CONTEXT.number)
@@ -1458,7 +1637,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("delete_profile")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(DELETE_PROFILE_CONTEXT.number)
@@ -1476,7 +1655,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("delete_profile")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(DELETE_PROFILE_CONTEXT.number)
@@ -1496,7 +1675,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_home_screen")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_HOME.number)
@@ -1514,7 +1693,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_profile_chooser_screen")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_PROFILE_CHOOSER.number)
@@ -1532,7 +1711,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reach_invested_engagement")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(REACH_INVESTED_ENGAGEMENT.number)
@@ -1556,7 +1735,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reach_invested_engagement")
-    assertThat(bundle).hasSize(14)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(REACH_INVESTED_ENGAGEMENT.number)
@@ -1574,6 +1753,60 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  fun testFillEventBundle_switchInLessonLanguageEvent_studyOff_fillsAllFieldsAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createSwitchInLessonLanguageContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("click_switch_language_in_lesson")
+    assertThat(bundle).hasSize(17)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(SWITCH_IN_LESSON_LANGUAGE.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("from_language").isEqualTo("English")
+    assertThat(bundle).string("to_language").isEqualTo("Swahili")
+  }
+
+  @Test
+  fun testFillEventBundle_switchInLessonLanguageEvent_studyOn_fillsNonSensitiveDataAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createSwitchInLessonLanguageContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("click_switch_language_in_lesson")
+    assertThat(bundle).hasSize(19)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(SWITCH_IN_LESSON_LANGUAGE.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
+    assertThat(bundle).string("from_language").isEqualTo("English")
+    assertThat(bundle).string("to_language").isEqualTo("Swahili")
+  }
+
+  @Test
   fun testFillEventBundle_failedEventInstallId_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
@@ -1582,7 +1815,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
-    assertThat(bundle).hasSize(6)
+    assertThat(bundle).hasSize(9)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(INSTALL_ID_FOR_FAILED_ANALYTICS_LOG.number)
@@ -1600,7 +1833,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
-    assertThat(bundle).hasSize(7)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(INSTALL_ID_FOR_FAILED_ANALYTICS_LOG.number)
@@ -1764,10 +1997,18 @@ class EventBundleCreatorTest {
   private fun createEventLog(
     timestamp: Long = TEST_TIMESTAMP_1,
     priority: EventLog.Priority = ESSENTIAL,
-    context: EventLog.Context = EventLog.Context.getDefaultInstance()
+    context: EventLog.Context = EventLog.Context.getDefaultInstance(),
+    appLanguageSelection: AppLanguageSelection = AppLanguageSelection.getDefaultInstance(),
+    writtenTranslationLanguageSelection: WrittenTranslationLanguageSelection =
+      WrittenTranslationLanguageSelection.getDefaultInstance(),
+    audioTranslationLanguageSelection: AudioTranslationLanguageSelection =
+      AudioTranslationLanguageSelection.getDefaultInstance()
   ) = EventLog.newBuilder().apply {
     this.timestamp = timestamp
     this.priority = priority
+    this.appLanguageSelection = appLanguageSelection
+    this.writtenTranslationLanguageSelection = writtenTranslationLanguageSelection
+    this.audioTranslationLanguageSelection = audioTranslationLanguageSelection
     this.context = context
   }.build()
 
@@ -1821,21 +2062,25 @@ class EventBundleCreatorTest {
     revisionCardContext: RevisionCardContext = createRevisionCardContext()
   ) = createEventContext(revisionCardContext, EventContextBuilder::setOpenRevisionCard)
 
+  private fun createCloseRevisionCard(
+    revisionCardContext: RevisionCardContext = createRevisionCardContext()
+  ) = createEventContext(revisionCardContext, EventContextBuilder::setCloseRevisionCard)
+
   private fun createStartCardContext(cardContext: CardContext = createCardContext()) =
     createEventContext(cardContext, EventContextBuilder::setStartCardContext)
 
   private fun createEndCardContext(cardContext: CardContext = createCardContext()) =
     createEventContext(cardContext, EventContextBuilder::setEndCardContext)
 
-  private fun createHintOfferedContext(hintContext: HintContext = createHintContext()) =
-    createEventContext(hintContext, EventContextBuilder::setHintOfferedContext)
+  private fun createHintUnlockedContext(hintContext: HintContext = createHintContext()) =
+    createEventContext(hintContext, EventContextBuilder::setHintUnlockedContext)
 
   private fun createAccessHintContext(hintContext: HintContext = createHintContext()) =
     createEventContext(hintContext, EventContextBuilder::setAccessHintContext)
 
-  private fun createSolutionOfferedContext(
+  private fun createSolutionUnlockedContext(
     explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setSolutionOfferedContext)
+  ) = createEventContext(explorationContext, EventContextBuilder::setSolutionUnlockedContext)
 
   private fun createAccessSolutionContext(
     explorationContext: ExplorationContext = createExplorationContext()
@@ -1890,6 +2135,11 @@ class EventBundleCreatorTest {
   private fun createReachInvestedEngagementContext(
     explorationContext: ExplorationContext = createExplorationContext()
   ) = createEventContext(explorationContext, EventContextBuilder::setReachInvestedEngagement)
+
+  private fun createSwitchInLessonLanguageContext(
+    switchLanguageContext: SwitchInLessonLanguageEventContext =
+      createSwitchInLessonLanguageEventContext(),
+  ) = createEventContext(switchLanguageContext, EventContextBuilder::setSwitchInLessonLanguage)
 
   private fun createInstallationIdForFailedAnalyticsLogContext(
     installationId: String = TEST_INSTALLATION_ID
@@ -2000,6 +2250,16 @@ class EventBundleCreatorTest {
     this.languageCode = languageCode
   }.build()
 
+  private fun createSwitchInLessonLanguageEventContext(
+    explorationDetails: ExplorationContext = createExplorationContext(),
+    switchFromLanguage: OppiaLanguage = OppiaLanguage.ENGLISH,
+    switchToLanguage: OppiaLanguage = OppiaLanguage.SWAHILI
+  ) = SwitchInLessonLanguageEventContext.newBuilder().apply {
+    this.explorationDetails = explorationDetails
+    this.switchFromLanguage = switchFromLanguage
+    this.switchToLanguage = switchToLanguage
+  }.build()
+
   private fun registerTestApplication() {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
@@ -2012,11 +2272,11 @@ class EventBundleCreatorTest {
         .setApplicationInfo(applicationInfo)
         .build()
     packageInfo.versionName = TEST_APP_VERSION_NAME
-    packageInfo.versionCode = TEST_APP_VERSION_CODE
+    packageInfo.longVersionCode = TEST_APP_VERSION_CODE
     packageManager.installPackage(packageInfo)
   }
 
-  private fun createApkSizeLoggableMetric() = OppiaMetricLog.LoggableMetric.newBuilder()
+  private fun createApkSizeLoggableMetric() = LoggableMetric.newBuilder()
     .setApkSizeMetric(
       OppiaMetricLog.ApkSizeMetric.newBuilder()
         .setApkSizeBytes(TEST_APK_SIZE)

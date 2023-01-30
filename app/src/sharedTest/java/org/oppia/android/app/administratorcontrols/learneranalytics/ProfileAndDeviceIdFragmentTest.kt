@@ -4,13 +4,22 @@ import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -161,6 +170,7 @@ class ProfileAndDeviceIdFragmentTest {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
+    Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
 
@@ -174,6 +184,7 @@ class ProfileAndDeviceIdFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   @Test
@@ -181,7 +192,7 @@ class ProfileAndDeviceIdFragmentTest {
     initializeActivityAndAddFragment()
 
     // There should be three items: a header, a profile, and the sync status.
-    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 3))
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 4))
   }
 
   @Test
@@ -266,7 +277,7 @@ class ProfileAndDeviceIdFragmentTest {
     initializeActivityAndAddFragment()
 
     // Header + admin + 5 new profiles + sync status = 8 items.
-    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 8))
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 9))
   }
 
   @Test
@@ -385,7 +396,7 @@ class ProfileAndDeviceIdFragmentTest {
     onView(isRoot()).perform(orientationLandscape())
     testCoroutineDispatchers.runCurrent()
 
-    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 8))
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 9))
   }
 
   @Test
@@ -523,6 +534,32 @@ class ProfileAndDeviceIdFragmentTest {
       )
   }
 
+  @Test
+  fun testFragment_multipleProfiles_clickShareIds_sendsIntentWithIdsText() {
+    profileTestHelper.addMoreProfiles(numProfiles = 5)
+    initializeActivityAndAddFragment()
+
+    onView(withId(R.id.profile_and_device_id_recycler_view)).perform(
+      actionOnItemAtPosition<RecyclerView.ViewHolder>(8, scrollTo())
+    )
+    onView(withText(R.string.learner_analytics_share_ids_button_text)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    val expectedShareText =
+      """
+      Oppia app installation ID: c62db3c65fb1
+      - Profile name: Admin, learner ID: a9fe66ab
+      - Profile name: A, learner ID: c368b501
+      - Profile name: B, learner ID: 74facac7
+      - Profile name: C, learner ID: 413f22b0
+      - Profile name: D, learner ID: 63f83ba4
+      - Profile name: E, learner ID: 3772df24
+      """.trimIndent()
+    intended(hasAction(Intent.ACTION_SEND))
+    intended(hasType("text/plain"))
+    intended(hasExtra(Intent.EXTRA_TEXT, expectedShareText))
+  }
+
   private fun initializeActivityAndAddFragment() {
     activityRule.scenario.onActivity { activity ->
       activity.setContentView(R.layout.test_activity)
@@ -572,8 +609,9 @@ class ProfileAndDeviceIdFragmentTest {
 
   private fun queueAnalyticsEvent() {
     learnerAnalyticsLogger.logAppInForeground(
-      installationId = "test_install_id", learnerId = "test_learner_id"
+      installationId = "test_install_id", profileId = null, learnerId = "test_learner_id"
     )
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun flushEventWorkerQueue() {

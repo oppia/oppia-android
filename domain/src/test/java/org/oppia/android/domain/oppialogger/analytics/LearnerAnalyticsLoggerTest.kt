@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
@@ -52,6 +53,7 @@ import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -90,6 +92,7 @@ class LearnerAnalyticsLoggerTest {
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Parameter lateinit var iid: String
   @Parameter lateinit var lid: String
@@ -121,6 +124,7 @@ class LearnerAnalyticsLoggerTest {
     val exploration = loadExploration(TEST_EXPLORATION_ID_5)
 
     val logger = learnerAnalyticsLogger.beginExploration(exploration)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(logger).isNotNull()
   }
@@ -130,6 +134,7 @@ class LearnerAnalyticsLoggerTest {
     val exploration = loadExploration(TEST_EXPLORATION_ID_5)
 
     learnerAnalyticsLogger.beginExploration(exploration)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
@@ -139,6 +144,7 @@ class LearnerAnalyticsLoggerTest {
     val exploration = loadExploration(TEST_EXPLORATION_ID_5)
 
     val logger = learnerAnalyticsLogger.beginExploration(exploration)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(learnerAnalyticsLogger.explorationAnalyticsLogger.value).isEqualTo(logger)
   }
@@ -148,8 +154,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val firstLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    testCoroutineDispatchers.runCurrent()
 
     val secondLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(firstLogger).isNotEqualTo(secondLogger)
   }
@@ -160,6 +168,7 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
 
     val logger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(learnerAnalyticsLogger.explorationAnalyticsLogger.value).isEqualTo(logger)
   }
@@ -167,8 +176,10 @@ class LearnerAnalyticsLoggerTest {
   @Test
   fun testBeginExploration_withOngoingSession_logsConsoleWarning() {
     learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_2))
+    testCoroutineDispatchers.runCurrent()
 
     learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_5))
+    testCoroutineDispatchers.runCurrent()
 
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(log.msg).contains("Attempting to start an exploration without ending the previous")
@@ -178,6 +189,7 @@ class LearnerAnalyticsLoggerTest {
   @Test
   fun testEndExploration_noOngoingSession_logsConsoleWarning() {
     learnerAnalyticsLogger.endExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(log.msg).contains("Attempting to end an exploration that hasn't been started")
@@ -187,8 +199,10 @@ class LearnerAnalyticsLoggerTest {
   @Test
   fun testEndExploration_ongoingSession_setsGlobalAnalyticsLoggerToNull() {
     learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_5))
+    testCoroutineDispatchers.runCurrent()
 
     learnerAnalyticsLogger.endExploration()
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(learnerAnalyticsLogger.explorationAnalyticsLogger.value).isNull()
   }
@@ -196,15 +210,18 @@ class LearnerAnalyticsLoggerTest {
   @Test
   fun testEndExploration_ongoingSession_doesNotLogEvent() {
     learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_5))
+    testCoroutineDispatchers.runCurrent()
 
     learnerAnalyticsLogger.endExploration()
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
   fun testLogAppInBackground_noOngoingSession_logsEventWithIds() {
-    learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
@@ -217,8 +234,10 @@ class LearnerAnalyticsLoggerTest {
   @Test
   fun testLogAppInBackground_ongoingSession_logsEventWithIds() {
     learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_5))
+    testCoroutineDispatchers.runCurrent()
 
-    learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
@@ -230,7 +249,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInBackground_withoutInstallationId_logsEventWithoutInstallationId() {
-    learnerAnalyticsLogger.logAppInBackground(installationId = null, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInBackground(installationId = null, profileId, TEST_LEARNER_ID)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isNotEmpty()
@@ -240,7 +260,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInBackground_withoutLearnerId_logsEventWithoutLearnerId() {
-    learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, learnerId = null)
+    learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, profileId, learnerId = null)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isEmpty()
@@ -250,7 +271,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInBackground_withoutIds_logsEventWithoutIds() {
-    learnerAnalyticsLogger.logAppInBackground(installationId = null, learnerId = null)
+    learnerAnalyticsLogger.logAppInBackground(installationId = null, profileId, learnerId = null)
+    testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasAppInBackgroundContextThat().isEqualToDefaultInstance()
@@ -258,7 +280,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInForeground_noOngoingSession_logsEventWithIds() {
-    learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
@@ -271,8 +294,10 @@ class LearnerAnalyticsLoggerTest {
   @Test
   fun testLogAppInForeground_ongoingSession_logsEventWithIds() {
     learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_5))
+    testCoroutineDispatchers.runCurrent()
 
-    learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
@@ -284,7 +309,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInForeground_withoutInstallationId_logsEventWithoutInstallationId() {
-    learnerAnalyticsLogger.logAppInForeground(installationId = null, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInForeground(installationId = null, profileId, TEST_LEARNER_ID)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInForegroundContextThat {
       hasLearnerIdThat().isNotEmpty()
@@ -294,7 +320,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInForeground_withoutLearnerId_logsEventWithoutLearnerId() {
-    learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, learnerId = null)
+    learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, profileId, learnerId = null)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInForegroundContextThat {
       hasLearnerIdThat().isEmpty()
@@ -304,7 +331,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInForeground_withoutIds_logsEventWithoutIds() {
-    learnerAnalyticsLogger.logAppInForeground(installationId = null, learnerId = null)
+    learnerAnalyticsLogger.logAppInForeground(installationId = null, profileId, learnerId = null)
+    testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasAppInForegroundContextThat().isEqualToDefaultInstance()
@@ -312,7 +340,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogDeleteProfile_noOngoingSession_logsEventWithIds() {
-    learnerAnalyticsLogger.logDeleteProfile(TEST_INSTALL_ID, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logDeleteProfile(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
@@ -325,8 +354,10 @@ class LearnerAnalyticsLoggerTest {
   @Test
   fun testLogDeleteProfile_ongoingSession_logsEventWithIds() {
     learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_5))
+    testCoroutineDispatchers.runCurrent()
 
-    learnerAnalyticsLogger.logDeleteProfile(TEST_INSTALL_ID, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logDeleteProfile(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
@@ -338,7 +369,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogDeleteProfile_withoutInstallationId_logsEventWithoutInstallationId() {
-    learnerAnalyticsLogger.logDeleteProfile(installationId = null, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logDeleteProfile(installationId = null, profileId, TEST_LEARNER_ID)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasDeleteProfileContextThat {
       hasLearnerIdThat().isNotEmpty()
@@ -348,7 +380,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogDeleteProfile_withoutLearnerId_logsEventWithoutLearnerId() {
-    learnerAnalyticsLogger.logDeleteProfile(TEST_INSTALL_ID, learnerId = null)
+    learnerAnalyticsLogger.logDeleteProfile(TEST_INSTALL_ID, profileId, learnerId = null)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasDeleteProfileContextThat {
       hasLearnerIdThat().isEmpty()
@@ -358,7 +391,8 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogDeleteProfile_withoutIds_logsEventWithoutIds() {
-    learnerAnalyticsLogger.logDeleteProfile(installationId = null, learnerId = null)
+    learnerAnalyticsLogger.logDeleteProfile(installationId = null, profileId, learnerId = null)
+    testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasDeleteProfileContextThat().isEqualToDefaultInstance()
@@ -367,6 +401,7 @@ class LearnerAnalyticsLoggerTest {
   @Test
   fun testExpLogger_afterStarting_stateLoggerIsNull() {
     val expLogger = learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_5))
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(expLogger.stateAnalyticsLogger.value).isNull()
   }
@@ -376,8 +411,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val initState = exploration5.getStateByName(exploration5.initStateName)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     val stateLogger = expLogger.startCard(initState)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(stateLogger).isNotNull()
   }
@@ -387,8 +424,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val initState = exploration5.getStateByName(exploration5.initStateName)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.startCard(initState)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
@@ -398,8 +437,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val initState = exploration5.getStateByName(exploration5.initStateName)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     val stateLogger = expLogger.startCard(initState)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(expLogger.stateAnalyticsLogger.value).isEqualTo(stateLogger)
   }
@@ -411,8 +452,10 @@ class LearnerAnalyticsLoggerTest {
     val fourthState = exploration5.getStateByName(TEST_EXP_5_STATE_FOUR_NAME)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger3 = expLogger.startCard(thirdState)
+    testCoroutineDispatchers.runCurrent()
 
     val stateLogger4 = expLogger.startCard(fourthState)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(stateLogger3).isNotEqualTo(stateLogger4)
   }
@@ -423,9 +466,12 @@ class LearnerAnalyticsLoggerTest {
     val thirdState = exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME)
     val fourthState = exploration5.getStateByName(TEST_EXP_5_STATE_FOUR_NAME)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
     expLogger.startCard(thirdState)
+    testCoroutineDispatchers.runCurrent()
 
     val stateLogger = expLogger.startCard(fourthState)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(expLogger.stateAnalyticsLogger.value).isEqualTo(stateLogger)
   }
@@ -436,9 +482,12 @@ class LearnerAnalyticsLoggerTest {
     val thirdState = exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME)
     val fourthState = exploration5.getStateByName(TEST_EXP_5_STATE_FOUR_NAME)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
     expLogger.startCard(thirdState)
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.startCard(fourthState)
+    testCoroutineDispatchers.runCurrent()
 
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(log.msg).contains("Attempting to start a card without ending the previous")
@@ -449,8 +498,10 @@ class LearnerAnalyticsLoggerTest {
   fun testExpLogger_endCard_noOngoingState_logsConsoleWarning() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.endCard()
+    testCoroutineDispatchers.runCurrent()
 
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(log.msg).contains("Attempting to end a card not yet started")
@@ -462,8 +513,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.endCard()
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(expLogger.stateAnalyticsLogger.value).isNull()
   }
@@ -473,8 +526,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.endCard()
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
@@ -483,8 +538,10 @@ class LearnerAnalyticsLoggerTest {
   fun testExpLogger_logResumeExploration_outsideCard_logsExpEvent() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logResumeExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -499,8 +556,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logResumeExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -514,8 +573,10 @@ class LearnerAnalyticsLoggerTest {
   fun testExpLogger_logStartExplorationOver_outsideCard_logsExpEvent() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logStartExplorationOver()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -530,8 +591,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logStartExplorationOver()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -545,8 +608,10 @@ class LearnerAnalyticsLoggerTest {
   fun testExpLogger_logExitExploration_outsideCard_logsConsoleWarningAndNoEvents() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logExitExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(log.msg).contains("Attempting to log a state event outside state")
@@ -559,8 +624,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logExitExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -582,8 +649,10 @@ class LearnerAnalyticsLoggerTest {
   fun testExpLogger_logFinishExploration_outsideCard_logsConsoleWarningAndNoEvents() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logFinishExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(log.msg).contains("Attempting to log a state event outside state")
@@ -596,8 +665,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logFinishExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -620,8 +691,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logStartCard()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -647,8 +720,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
     val stateLogger = expLogger.startCard(exploration2.getStateByName(exploration2.initStateName))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logStartCard()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -660,8 +735,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logEndCard()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -687,8 +764,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
     val stateLogger = expLogger.startCard(exploration2.getStateByName(exploration2.initStateName))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logEndCard()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -696,16 +775,18 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logHintOffered_logsStateEventWithHintIndex() {
+  fun testStateAnalyticsLogger_logHintUnlocked_logsStateEventWithHintIndex() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
-    stateLogger.logHintOffered(hintIndex = 1)
+    stateLogger.logHintUnlocked(hintIndex = 1)
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasHintOfferedContextThat {
+    assertThat(eventLog).hasHintUnlockedContextThat {
       hasExplorationDetailsThat {
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
@@ -723,16 +804,18 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logHintOffered_diffIndex_logsStateEventWithHintIndex() {
+  fun testStateAnalyticsLogger_logHintUnlocked_diffIndex_logsStateEventWithHintIndex() {
     val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
     val stateLogger = expLogger.startCard(exploration2.getStateByName(exploration2.initStateName))
+    testCoroutineDispatchers.runCurrent()
 
-    stateLogger.logHintOffered(hintIndex = 2)
+    stateLogger.logHintUnlocked(hintIndex = 2)
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasHintOfferedContextThat().hasHintIndexThat().isEqualTo(2)
+    assertThat(eventLog).hasHintUnlockedContextThat().hasHintIndexThat().isEqualTo(2)
   }
 
   @Test
@@ -740,8 +823,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logViewHint(hintIndex = 1)
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -767,8 +852,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logViewHint(hintIndex = 2)
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -776,16 +863,18 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logSolutionOffered_logsStateEvent() {
+  fun testStateAnalyticsLogger_logSolutionUnlocked_logsStateEvent() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
-    stateLogger.logSolutionOffered()
+    stateLogger.logSolutionUnlocked()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasSolutionOfferedContextThat {
+    assertThat(eventLog).hasSolutionUnlockedContextThat {
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -804,8 +893,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logViewSolution()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -828,12 +919,14 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logSubmitAnswer(
       interaction = Interaction.getDefaultInstance(),
       userAnswer = UserAnswer.getDefaultInstance(),
       isCorrect = false
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -859,12 +952,14 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logSubmitAnswer(
       interaction = Interaction.getDefaultInstance(),
       userAnswer = UserAnswer.getDefaultInstance(),
       isCorrect = true
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -876,8 +971,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logPlayVoiceOver(contentId = "test_content_id_1", languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -904,8 +1001,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logPlayVoiceOver(contentId = "content_id_2", languageCode = "sw")
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -918,8 +1017,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logPlayVoiceOver(contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -931,8 +1032,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logPlayVoiceOver(contentId = "content_id_2", languageCode = null)
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -944,8 +1047,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logPauseVoiceOver(contentId = "test_content_id_1", languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -972,8 +1077,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logPauseVoiceOver(contentId = "content_id_2", languageCode = "sw")
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -986,8 +1093,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logPauseVoiceOver(contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -999,8 +1108,10 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
 
     stateLogger.logPauseVoiceOver(contentId = "content_id_2", languageCode = null)
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -1019,8 +1130,10 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logResumeExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasResumeExplorationContextThat {
@@ -1041,8 +1154,10 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
 
     expLogger.logStartExplorationOver()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasStartOverExplorationContextThat {
@@ -1062,9 +1177,11 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     expLogger.logExitExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasExitExplorationContextThat {
@@ -1080,9 +1197,11 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     expLogger.logExitExploration()
+    testCoroutineDispatchers.runCurrent()
 
     // Since both the learner & installation IDs are missing, the event logging fails since it would
     // have no context. An unknown installation ID is used to indicate the installation ID was
@@ -1105,9 +1224,11 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     expLogger.logFinishExploration()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFinishExplorationContextThat {
@@ -1123,9 +1244,11 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     expLogger.logFinishExploration()
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1146,9 +1269,11 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logStartCard()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasStartCardContextThat {
@@ -1166,9 +1291,11 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logStartCard()
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1189,9 +1316,11 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logEndCard()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasEndCardContextThat {
@@ -1209,9 +1338,11 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logEndCard()
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1226,18 +1357,20 @@ class LearnerAnalyticsLoggerTest {
     Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
     Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   )
-  fun testStateAnalyticsLogger_logHintOffered_missingOneId_logsEventWithMissingId() {
+  fun testStateAnalyticsLogger_logHintUnlocked_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logHintOffered(hintIndex = 1)
+    stateLogger.logHintUnlocked(hintIndex = 1)
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasHintOfferedContextThat {
+    assertThat(eventLog).hasHintUnlockedContextThat {
       hasExplorationDetailsThat {
         hasLearnerDetailsThat {
           hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
@@ -1248,13 +1381,15 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logHintOffered_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
+  fun testStateAnalyticsLogger_logHintUnlocked_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logHintOffered(hintIndex = 1)
+    stateLogger.logHintUnlocked(hintIndex = 1)
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1275,9 +1410,11 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logViewHint(hintIndex = 1)
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasAccessHintContextThat {
@@ -1295,9 +1432,11 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logViewHint(hintIndex = 1)
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1312,18 +1451,20 @@ class LearnerAnalyticsLoggerTest {
     Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
     Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   )
-  fun testStateAnalyticsLogger_logSolutionOffered_missingOneId_logsEventWithMissingId() {
+  fun testStateAnalyticsLogger_logSolutionUnlocked_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logSolutionOffered()
+    stateLogger.logSolutionUnlocked()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasSolutionOfferedContextThat {
+    assertThat(eventLog).hasSolutionUnlockedContextThat {
       hasLearnerDetailsThat {
         hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
         hasInstallationIdThat().isEqualTo(expectedInstallIdParameter)
@@ -1332,13 +1473,15 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logSolutionOffered_noInstallOrLearnerIds_logsEvtAndConsoleErrors() {
+  fun testStateAnalyticsLogger_logSolutionUnlocked_noInstallOrLearnerIds_logsEvtAndConsoleErrors() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logSolutionOffered()
+    stateLogger.logSolutionUnlocked()
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1359,9 +1502,11 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logViewSolution()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasAccessSolutionContextThat {
@@ -1377,9 +1522,11 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logViewSolution()
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1400,6 +1547,7 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logSubmitAnswer(
@@ -1407,6 +1555,7 @@ class LearnerAnalyticsLoggerTest {
       userAnswer = UserAnswer.getDefaultInstance(),
       isCorrect = true
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasSubmitAnswerContextThat {
@@ -1424,6 +1573,7 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logSubmitAnswer(
@@ -1431,6 +1581,7 @@ class LearnerAnalyticsLoggerTest {
       userAnswer = UserAnswer.getDefaultInstance(),
       isCorrect = true
     )
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1451,9 +1602,11 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logPlayVoiceOver(contentId = "test_content_id_1", languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
@@ -1471,9 +1624,11 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logPlayVoiceOver(contentId = "test_content_id_1", languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1494,9 +1649,11 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(
         exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
       )
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logPauseVoiceOver(contentId = "test_content_id_1", languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasPauseVoiceOverContextThat {
@@ -1514,9 +1671,11 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
     stateLogger.logPauseVoiceOver(contentId = "test_content_id_1", languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1530,9 +1689,11 @@ class LearnerAnalyticsLoggerTest {
   fun testStateAnalyticsLogger_logReachInvestedEngagement_logsStateEventWithStateName() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
 
     stateLogger.logInvestedEngagement()
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -1550,6 +1711,70 @@ class LearnerAnalyticsLoggerTest {
     }
   }
 
+  @Test
+  fun testStateAnalyticsLogger_logSwitchInLessonLanguage_englishToSwahili_logsSwitchLangEvent() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+
+    stateLogger.logSwitchInLessonLanguage(
+      fromLanguage = OppiaLanguage.ENGLISH, toLanguage = OppiaLanguage.SWAHILI
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasSwitchInLessonLanguageContextThat {
+      hasExplorationDetailsThat {
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(5)
+        hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.ENGLISH)
+      hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.SWAHILI)
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logSwitchInLessonLanguage_swahiliToEnglish_logsSwitchLangEvent() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+
+    stateLogger.logSwitchInLessonLanguage(
+      fromLanguage = OppiaLanguage.SWAHILI, toLanguage = OppiaLanguage.ENGLISH
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasSwitchInLessonLanguageContextThat {
+      hasExplorationDetailsThat {
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(5)
+        hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.SWAHILI)
+      hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.ENGLISH)
+    }
+  }
+
   private fun loadExploration(expId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
       explorationDataController.getExplorationById(profileId, expId)
@@ -1561,10 +1786,11 @@ class LearnerAnalyticsLoggerTest {
   private fun LearnerAnalyticsLogger.beginExploration(
     exploration: Exploration,
     installationId: String? = TEST_INSTALL_ID,
+    profileId: ProfileId = this@LearnerAnalyticsLoggerTest.profileId,
     learnerId: String? = TEST_LEARNER_ID,
     topicId: String = TEST_TOPIC_ID,
     storyId: String = TEST_STORY_ID
-  ) = beginExploration(installationId, learnerId, exploration, topicId, storyId)
+  ) = beginExploration(installationId, profileId, learnerId, exploration, topicId, storyId)
 
   private fun List<ShadowLog.LogItem>.getMostRecentWithTag(tag: String) = last { it.tag == tag }
 

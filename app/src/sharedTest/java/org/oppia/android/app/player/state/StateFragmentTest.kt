@@ -134,6 +134,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -146,6 +147,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
@@ -156,6 +158,7 @@ import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
@@ -197,39 +200,20 @@ import javax.inject.Singleton
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
 class StateFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
-  @Inject
-  @field:BackgroundDispatcher
-  lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
-
-  @Inject
-  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -2395,7 +2379,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_portuguese_dragAndDrop_optionsAreInPortuguese() {
     setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2504,7 +2488,6 @@ class StateFragmentTest {
     }
   }
 
-  // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOff_inEnglish_doesNotHaveSwitchToSwahiliButton() {
@@ -2518,7 +2501,6 @@ class StateFragmentTest {
     }
   }
 
-  // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOn_inEnglish_lessonWithoutSwahili_doesNotHaveSwitchToSwahiliButton() {
@@ -2533,11 +2515,25 @@ class StateFragmentTest {
     }
   }
 
-  // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  fun testStateFragment_studyOn_inEnglish_hasSwitchToSwahiliButton() {
+  fun testStateFragment_studyOn_inEnglish_notEnabledForProfile_doesNotHaveSwitchToSwahiliButton() {
     setUpTestWithStudyOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Verify that the "switch to Swahili" button is gone since the profile hasn't been allowed to
+      // switch languages quickly in-lesson.
+      onView(withId(R.id.quick_switch_exploration_language_button_container))
+        .check(matches(withEffectiveVisibility(GONE)))
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_studyOn_enabledForProfile_inEnglish_hasSwitchToSwahiliButton() {
+    setUpTestWithStudyOn()
+    enableInLessonLanguageSwitching()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2546,15 +2542,15 @@ class StateFragmentTest {
       onView(withId(R.id.quick_switch_exploration_language_button_container))
         .check(matches(isDisplayed()))
       onView(withId(R.id.quick_switch_exploration_language_button))
-        .check(matches(withText("Switch lesson to Swahili")))
+        .check(matches(withText("Badilisha lugha hadi Kiswahili")))
     }
   }
 
-  // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  fun testStateFragment_studyOn_inSwahili_hasSwitchToEnglishButton() {
+  fun testStateFragment_studyOn_enabledForProfile_inSwahili_hasSwitchToEnglishButton() {
     setUpTestWithStudyOn()
+    enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2572,6 +2568,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inEnglish_clickSwitchToSwahili_contentIsInSwahili() {
     setUpTestWithStudyOn()
+    enableInLessonLanguageSwitching()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2590,6 +2587,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inSwahili_clickSwitchToEnglish_contentIsInEnglish() {
     setUpTestWithStudyOn()
+    enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2599,7 +2597,7 @@ class StateFragmentTest {
 
       // Switching the language to English should result in both the button & text being updated.
       onView(withId(R.id.quick_switch_exploration_language_button))
-        .check(matches(withText("Switch lesson to Swahili")))
+        .check(matches(withText("Badilisha lugha hadi Kiswahili")))
       verifyContentContains("What fraction represents half of something?")
     }
   }
@@ -2609,6 +2607,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inEnglish_clickSwitchToSwahili_thenBackToEnglish_contentIsInEnglish() {
     setUpTestWithStudyOn()
+    enableInLessonLanguageSwitching()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2620,8 +2619,52 @@ class StateFragmentTest {
 
       // Switching from English to Swahili, then back, should result in content being in English.
       onView(withId(R.id.quick_switch_exploration_language_button))
-        .check(matches(withText("Switch lesson to Swahili")))
+        .check(matches(withText("Badilisha lugha hadi Kiswahili")))
       verifyContentContains("What fraction represents half of something?")
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_inEnglish_clickSwitchToSwahili_logsSwitchLanguageEvent() {
+    setUpTestWithStudyOn()
+    enableInLessonLanguageSwitching()
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Switch to Swahili.
+      onView(withId(R.id.quick_switch_exploration_language_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the "switch language" event was logged, and with the correct values.
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(event).hasSwitchInLessonLanguageContextThat {
+        hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.ENGLISH)
+        hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.SWAHILI)
+      }
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_inSwahili_clickSwitchToEnglish_logsSwitchLanguageEvent() {
+    setUpTestWithStudyOn()
+    enableInLessonLanguageSwitching()
+    updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Switch to English.
+      onView(withId(R.id.quick_switch_exploration_language_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the "switch language" event was logged, and with the correct values.
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(event).hasSwitchInLessonLanguageContextThat {
+        hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.SWAHILI)
+        hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.ENGLISH)
+      }
     }
   }
 
@@ -4360,6 +4403,13 @@ class StateFragmentTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
+  private fun enableInLessonLanguageSwitching() {
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId, allowInLessonQuickLanguageSwitching = true
+    )
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+  }
+
   private fun verifyContentContains(expectedHtml: String) {
     scrollToViewType(CONTENT)
     onView(
@@ -4444,7 +4494,7 @@ class StateFragmentTest {
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
     val executorService = MockGlideExecutor.newTestExecutor(
-      CoroutineExecutorService(backgroundCoroutineDispatcher)
+      CoroutineExecutorService(backgroundDispatcher)
     )
     Glide.init(
       context,

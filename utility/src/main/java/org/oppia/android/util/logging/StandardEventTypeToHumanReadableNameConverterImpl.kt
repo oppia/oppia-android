@@ -34,11 +34,12 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.OPEN_STORY_ACTIVITY -> "open_story_chapter_list_screen"
       ActivityContextCase.OPEN_CONCEPT_CARD -> "open_concept_card"
       ActivityContextCase.OPEN_REVISION_CARD -> "open_revision_card"
+      ActivityContextCase.CLOSE_REVISION_CARD -> "close_revision_card"
       ActivityContextCase.START_CARD_CONTEXT -> "start_exploration_card"
       ActivityContextCase.END_CARD_CONTEXT -> "end_exploration_card"
-      ActivityContextCase.HINT_OFFERED_CONTEXT -> "receive_hint_offer"
+      ActivityContextCase.HINT_UNLOCKED_CONTEXT -> "unlock_hint"
       ActivityContextCase.ACCESS_HINT_CONTEXT -> "reveal_hint"
-      ActivityContextCase.SOLUTION_OFFERED_CONTEXT -> "receive_solution_offer"
+      ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT -> "unlock_solution"
       ActivityContextCase.ACCESS_SOLUTION_CONTEXT -> "reveal_solution"
       ActivityContextCase.SUBMIT_ANSWER_CONTEXT -> "submit_answer"
       ActivityContextCase.PLAY_VOICE_OVER_CONTEXT -> "click_play_voiceover_button"
@@ -53,6 +54,7 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.OPEN_HOME -> "open_home_screen"
       ActivityContextCase.OPEN_PROFILE_CHOOSER -> "open_profile_chooser_screen"
       ActivityContextCase.REACH_INVESTED_ENGAGEMENT -> "reach_invested_engagement"
+      ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE -> "click_switch_language_in_lesson"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "ERROR_internal_logging_failure"
     }

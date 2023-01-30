@@ -29,6 +29,7 @@ kt_android_library(
     deps = [
         ":app_language_locale_handler",
         ":dagger",
+        "//model/src/main/proto:profile_java_proto_lite",
         "//third_party:androidx_appcompat_appcompat",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],

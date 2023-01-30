@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
@@ -18,6 +19,7 @@ import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -29,6 +31,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
@@ -111,7 +114,6 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun setCurrentTab(tab: TopicTab) {
     viewPager.setCurrentItem(computeTabPosition(tab), true)
-    logTopicEvents(tab)
   }
 
   private fun computeTabPosition(tab: TopicTab): Int {
@@ -135,30 +137,22 @@ class TopicFragmentPresenter @Inject constructor(
         setCurrentTab(TopicTab.LESSONS)
       }
     }
+    viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+      override fun onPageSelected(position: Int) {
+        logTopicEvents(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value))
+      }
+    })
   }
 
   private fun logTopicEvents(tab: TopicTab) {
-    when (tab) {
-      TopicTab.INFO -> logInfoFragmentEvent(topicId)
-      TopicTab.LESSONS -> logLessonsFragmentEvent(topicId)
-      TopicTab.PRACTICE -> logPracticeFragmentEvent(topicId)
-      TopicTab.REVISION -> logRevisionFragmentEvent(topicId)
+    val eventContext = when (tab) {
+      TopicTab.INFO -> oppiaLogger.createOpenInfoTabContext(topicId)
+      TopicTab.LESSONS -> oppiaLogger.createOpenLessonsTabContext(topicId)
+      TopicTab.PRACTICE -> oppiaLogger.createOpenPracticeTabContext(topicId)
+      TopicTab.REVISION -> oppiaLogger.createOpenRevisionTabContext(topicId)
     }
-  }
-
-  private fun logInfoFragmentEvent(topicId: String) {
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenInfoTabContext(topicId))
-  }
-
-  private fun logLessonsFragmentEvent(topicId: String) {
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenLessonsTabContext(topicId))
-  }
-
-  private fun logPracticeFragmentEvent(topicId: String) {
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenPracticeTabContext(topicId))
-  }
-
-  private fun logRevisionFragmentEvent(topicId: String) {
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenRevisionTabContext(topicId))
+    analyticsController.logImportantEvent(
+      eventContext, ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    )
   }
 }

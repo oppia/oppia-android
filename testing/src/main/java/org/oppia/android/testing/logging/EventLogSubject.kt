@@ -1,6 +1,7 @@
 package org.oppia.android.testing.logging
 
 import com.google.common.truth.BooleanSubject
+import com.google.common.truth.ComparableSubject
 import com.google.common.truth.FailureMetadata
 import com.google.common.truth.IntegerSubject
 import com.google.common.truth.IterableSubject
@@ -9,16 +10,20 @@ import com.google.common.truth.StringSubject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoSubject
+import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT
+import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
@@ -35,10 +40,13 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 
 // TODO(#4272): Add tests for this class.
 
@@ -77,6 +85,33 @@ class EventLogSubject private constructor(
    */
   fun isOptionalPriority() {
     assertThat(actual.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+  }
+
+  /**
+   * Returns an [AppLanguageSelectionSubject] to verify the under-test [EventLog]'s
+   * [EventLog.getAppLanguageSelection] field.
+   */
+  fun hasAppLanguageSelectionThat(): AppLanguageSelectionSubject =
+    AppLanguageSelectionSubject.assertThat(actual.appLanguageSelection)
+
+  /**
+   * Returns an [WrittenTranslationLanguageSelectionSubject] to verify the under-test [EventLog]'s
+   * [EventLog.getWrittenTranslationLanguageSelection] field.
+   */
+  fun hasWrittenTranslationLanguageSelectionThat(): WrittenTranslationLanguageSelectionSubject {
+    return WrittenTranslationLanguageSelectionSubject.assertThat(
+      actual.writtenTranslationLanguageSelection
+    )
+  }
+
+  /**
+   * Returns an [AudioTranslationLanguageSelectionSubject] to verify the under-test [EventLog]'s
+   * [EventLog.getAudioTranslationLanguageSelection] field.
+   */
+  fun hasAudioTranslationLanguageSelectionThat(): AudioTranslationLanguageSelectionSubject {
+    return AudioTranslationLanguageSelectionSubject.assertThat(
+      actual.audioTranslationLanguageSelection
+    )
   }
 
   /**
@@ -336,6 +371,32 @@ class EventLogSubject private constructor(
   }
 
   /**
+   * Verifies that the [EventLog] under test has a context corresponding to [CLOSE_REVISION_CARD]
+   * (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasCloseRevisionCardContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(CLOSE_REVISION_CARD)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasCloseRevisionCardContext] and returns a
+   * [RevisionCardContextSubject] to test the corresponding context.
+   */
+  fun hasCloseRevisionCardContextThat(): RevisionCardContextSubject {
+    hasCloseRevisionCardContext()
+    return RevisionCardContextSubject.assertThat(actual.context.closeRevisionCard)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasCloseRevisionCardContextThat].
+   */
+  fun hasCloseRevisionCardContextThat(block: RevisionCardContextSubject.() -> Unit) {
+    hasCloseRevisionCardContextThat().block()
+  }
+
+  /**
    * Verifies that the [EventLog] under test has a context corresponding to [START_CARD_CONTEXT]
    * (per [EventLog.Context.getActivityContextCase]).
    */
@@ -388,29 +449,29 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies that the [EventLog] under test has a context corresponding to [HINT_OFFERED_CONTEXT]
+   * Verifies that the [EventLog] under test has a context corresponding to [HINT_UNLOCKED_CONTEXT]
    * (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasHintOfferedContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(HINT_OFFERED_CONTEXT)
+  fun hasHintUnlockedContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(HINT_UNLOCKED_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasHintOfferedContext] and returns a
+   * Verifies the [EventLog]'s context per [hasHintUnlockedContext] and returns a
    * [HintContextSubject] to test the corresponding context.
    */
-  fun hasHintOfferedContextThat(): HintContextSubject {
-    hasHintOfferedContext()
-    return HintContextSubject.assertThat(actual.context.hintOfferedContext)
+  fun hasHintUnlockedContextThat(): HintContextSubject {
+    hasHintUnlockedContext()
+    return HintContextSubject.assertThat(actual.context.hintUnlockedContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasHintOfferedContextThat].
+   * [hasHintUnlockedContextThat].
    */
-  fun hasHintOfferedContextThat(block: HintContextSubject.() -> Unit) {
-    hasHintOfferedContextThat().block()
+  fun hasHintUnlockedContextThat(block: HintContextSubject.() -> Unit) {
+    hasHintUnlockedContextThat().block()
   }
 
   /**
@@ -441,28 +502,28 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies that the [EventLog] under test has a context corresponding to
-   * [SOLUTION_OFFERED_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   * [SOLUTION_UNLOCKED_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasSolutionOfferedContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(SOLUTION_OFFERED_CONTEXT)
+  fun hasSolutionUnlockedContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(SOLUTION_UNLOCKED_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasSolutionOfferedContext] and returns an
+   * Verifies the [EventLog]'s context per [hasSolutionUnlockedContext] and returns an
    * [ExplorationContextSubject] to test the corresponding context.
    */
-  fun hasSolutionOfferedContextThat(): ExplorationContextSubject {
-    hasSolutionOfferedContext()
-    return ExplorationContextSubject.assertThat(actual.context.solutionOfferedContext)
+  fun hasSolutionUnlockedContextThat(): ExplorationContextSubject {
+    hasSolutionUnlockedContext()
+    return ExplorationContextSubject.assertThat(actual.context.solutionUnlockedContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasSolutionOfferedContextThat].
+   * [hasSolutionUnlockedContextThat].
    */
-  fun hasSolutionOfferedContextThat(block: ExplorationContextSubject.() -> Unit) {
-    hasSolutionOfferedContextThat().block()
+  fun hasSolutionUnlockedContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasSolutionUnlockedContextThat().block()
   }
 
   /**
@@ -813,6 +874,36 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies that the [EventLog] under test has a context corresponding to
+   * [SWITCH_IN_LESSON_LANGUAGE] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasSwitchInLessonLanguageContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(SWITCH_IN_LESSON_LANGUAGE)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasSwitchInLessonLanguageContext] and returns a
+   * [SwitchInLessonLanguageEventContextSubject] to test the corresponding context.
+   */
+  fun hasSwitchInLessonLanguageContextThat(): SwitchInLessonLanguageEventContextSubject {
+    hasSwitchInLessonLanguageContext()
+    return SwitchInLessonLanguageEventContextSubject.assertThat(
+      actual.context.switchInLessonLanguage
+    )
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned
+   * by, [hasSwitchInLessonLanguageContextThat].
+   */
+  fun hasSwitchInLessonLanguageContextThat(
+    block: SwitchInLessonLanguageEventContextSubject.() -> Unit
+  ) {
+    hasSwitchInLessonLanguageContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
    * [INSTALL_ID_FOR_FAILED_ANALYTICS_LOG] (per [EventLog.Context.getActivityContextCase]).
    */
   fun hasInstallIdForAnalyticsLogFailure() {
@@ -826,6 +917,154 @@ class EventLogSubject private constructor(
   fun hasInstallIdForAnalyticsLogFailureThat(): StringSubject {
     hasInstallIdForAnalyticsLogFailure()
     return assertThat(actual.context.installIdForFailedAnalyticsLog)
+  }
+
+  /**
+   * Truth subject for verifying properties of [AppLanguageSelection]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [AppLanguageSelection] proto can be verified through inherited methods.
+   *
+   * Call [AppLanguageSelectionSubject.assertThat] to create the subject.
+   */
+  class AppLanguageSelectionSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: AppLanguageSelection
+  ) : LiteProtoSubject(metadata, actual) {
+    /** Asserts that this selection corresponds to [USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT]. */
+    fun isUseSystemLanguageOrAppDefault(): Unit =
+      assertThat(actual.selectionTypeCase).isEqualTo(USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT)
+
+    /**
+     * Asserts that this selection corresponds to
+     * [AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE].
+     */
+    fun isSelectedLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE)
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test [AppLanguageSelection.getSelectedLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.selectedLanguage)
+
+    companion object {
+      /**
+       * Returns a new [AppLanguageSelectionSubject] to verify aspects of the specified
+       * [AppLanguageSelection] value.
+       */
+      fun assertThat(actual: AppLanguageSelection): AppLanguageSelectionSubject =
+        assertAbout(::AppLanguageSelectionSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [WrittenTranslationLanguageSelection]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [WrittenTranslationLanguageSelection] proto can be verified through inherited methods.
+   *
+   * Call [WrittenTranslationLanguageSelectionSubject.assertThat] to create the subject.
+   */
+  class WrittenTranslationLanguageSelectionSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: WrittenTranslationLanguageSelection
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Asserts that this selection corresponds to
+     * [WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE].
+     */
+    fun isUseAppLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE)
+    }
+
+    /**
+     * Asserts that this selection corresponds to
+     * [WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE].
+     */
+    fun isSelectedLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE)
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [WrittenTranslationLanguageSelection.getSelectedLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.selectedLanguage)
+
+    companion object {
+      /**
+       * Returns a new [WrittenTranslationLanguageSelectionSubject] to verify aspects of the
+       * specified [WrittenTranslationLanguageSelection] value.
+       */
+      fun assertThat(
+        actual: WrittenTranslationLanguageSelection
+      ): WrittenTranslationLanguageSelectionSubject =
+        assertAbout(::WrittenTranslationLanguageSelectionSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [AudioTranslationLanguageSelection]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [AudioTranslationLanguageSelection] proto can be verified through inherited methods.
+   *
+   * Call [AudioTranslationLanguageSelectionSubject.assertThat] to create the subject.
+   */
+  class AudioTranslationLanguageSelectionSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: AudioTranslationLanguageSelection
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Asserts that this selection corresponds to
+     * [AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE].
+     */
+    fun isUseAppLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE)
+    }
+
+    /**
+     * Asserts that this selection corresponds to
+     * [AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE].
+     */
+    fun isSelectedLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE)
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [AudioTranslationLanguageSelection.getSelectedLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.selectedLanguage)
+
+    companion object {
+      /**
+       * Returns a new [AudioTranslationLanguageSelectionSubject] to verify aspects of the
+       * specified [AudioTranslationLanguageSelection] value.
+       */
+      fun assertThat(
+        actual: AudioTranslationLanguageSelection
+      ): AudioTranslationLanguageSelectionSubject =
+        assertAbout(::AudioTranslationLanguageSelectionSubject).that(actual)
+    }
   }
 
   /**
@@ -1323,6 +1562,68 @@ class EventLogSubject private constructor(
        */
       fun assertThat(actual: EventLog.TopicContext): TopicContextSubject =
         assertAbout(::TopicContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.SwitchInLessonLanguageEventContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.SwitchInLessonLanguageEventContext] proto can be verified through inherited methods.
+   *
+   * Call [SwitchInLessonLanguageEventContextSubject.assertThat] to create the subject.
+   */
+  class SwitchInLessonLanguageEventContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.SwitchInLessonLanguageEventContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [ExplorationContextSubject] to test
+     * [EventLog.SwitchInLessonLanguageEventContext.getExplorationDetails].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasExplorationDetailsThat(): ExplorationContextSubject =
+      ExplorationContextSubject.assertThat(actual.explorationDetails)
+
+    /**
+     * Executes [block] in the context returned by [hasExplorationDetailsThat], similar to
+     * [hasOpenExplorationActivityContextThat].
+     */
+    fun hasExplorationDetailsThat(block: ExplorationContextSubject.() -> Unit) {
+      hasExplorationDetailsThat().block()
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.SwitchInLessonLanguageEventContext.getSwitchFromLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSwitchFromLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.switchFromLanguage)
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.SwitchInLessonLanguageEventContext.getSwitchToLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSwitchToLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.switchToLanguage)
+
+    companion object {
+      /**
+       * Returns a new [TopicContextSubject] to verify aspects of the specified
+       * [EventLog.TopicContext] value.
+       */
+      fun assertThat(
+        actual: EventLog.SwitchInLessonLanguageEventContext
+      ): SwitchInLessonLanguageEventContextSubject =
+        assertAbout(::SwitchInLessonLanguageEventContextSubject).that(actual)
     }
   }
 

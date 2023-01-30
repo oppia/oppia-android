@@ -2326,7 +2326,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasHintOfferedContextThat {
+    assertThat(eventLog).hasHintUnlockedContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasHintIndexThat().isEqualTo(0)
@@ -2369,7 +2369,7 @@ class ExplorationProgressControllerTest {
     submitMultipleChoiceAnswer(choiceIndex = 0)
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasHintOfferedContextThat {
+    assertThat(eventLog).hasHintUnlockedContextThat {
       hasExplorationDetailsThat().containsFractionsExp0Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
       hasHintIndexThat().isEqualTo(0)
@@ -2419,8 +2419,8 @@ class ExplorationProgressControllerTest {
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasSolutionOfferedContextThat().containsTestExp2Details()
-    assertThat(eventLog).hasSolutionOfferedContextThat().hasStateNameThat().isEqualTo("Fractions")
+    assertThat(eventLog).hasSolutionUnlockedContextThat().containsTestExp2Details()
+    assertThat(eventLog).hasSolutionUnlockedContextThat().hasStateNameThat().isEqualTo("Fractions")
   }
 
   @Test
@@ -2473,6 +2473,122 @@ class ExplorationProgressControllerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFinishExplorationContextThat().containsTestExp2Details()
     assertThat(eventLog).hasFinishExplorationContextThat().hasStateNameThat().isEqualTo("End")
+  }
+
+  @Test
+  fun testUpdateLanguageMidLesson_englishToSwahili_updatesProfilesContentLanguage() {
+    logIntoAnalyticsReadyAdminProfile()
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val updateProv = explorationProgressController.updateWrittenTranslationContentLanguageMidLesson(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = OppiaLanguage.SWAHILI
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProv)
+
+    // Verify that the learner's profile-wide content language has changed.
+    val contentLangProvider = translationController.getWrittenTranslationContentLanguage(profileId)
+    val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
+    assertThat(contentLanguage).isEqualTo(OppiaLanguage.SWAHILI)
+  }
+
+  @Test
+  fun testUpdateLanguageMidLesson_englishToSwahili_logsLanguageSwitchEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val updateProv = explorationProgressController.updateWrittenTranslationContentLanguageMidLesson(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = OppiaLanguage.SWAHILI
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProv)
+
+    // Verify that the language switch event was correctly logged.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasSwitchInLessonLanguageContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.ENGLISH)
+      hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.SWAHILI)
+    }
+  }
+
+  @Test
+  fun testUpdateLanguageMidLesson_englishToSwahili_diffProfile_doesNotChangeOtherProfilesLang() {
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, profileId = englishProfileId
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val updateProv = explorationProgressController.updateWrittenTranslationContentLanguageMidLesson(
+      englishProfileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = OppiaLanguage.SWAHILI
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProv)
+
+    // Verify that the other learner's profile-wide content language hasn't changed.
+    val contentLangProvider =
+      translationController.getWrittenTranslationContentLanguage(arabicProfileId)
+    val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
+    assertThat(contentLanguage).isEqualTo(OppiaLanguage.ARABIC)
+  }
+
+  @Test
+  fun testUpdateLanguageMidLesson_swahiliToEnglish_updatesProfilesContentLanguage() {
+    logIntoAnalyticsReadyAdminProfile()
+    updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val updateProv = explorationProgressController.updateWrittenTranslationContentLanguageMidLesson(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = OppiaLanguage.ENGLISH
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProv)
+
+    // Verify that the learner's profile-wide content language has changed.
+    val contentLangProvider = translationController.getWrittenTranslationContentLanguage(profileId)
+    val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
+    assertThat(contentLanguage).isEqualTo(OppiaLanguage.ENGLISH)
+  }
+
+  @Test
+  fun testUpdateLanguageMidLesson_swahiliToEnglish_logsLanguageSwitchEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val updateProv = explorationProgressController.updateWrittenTranslationContentLanguageMidLesson(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = OppiaLanguage.ENGLISH
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProv)
+
+    // Verify that the language switch event was correctly logged.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasSwitchInLessonLanguageContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.SWAHILI)
+      hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.ENGLISH)
+    }
   }
 
   private fun setUpTestApplicationComponent() {

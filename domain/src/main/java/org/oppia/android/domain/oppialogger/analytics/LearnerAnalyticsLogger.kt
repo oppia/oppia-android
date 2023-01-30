@@ -3,6 +3,7 @@ package org.oppia.android.domain.oppialogger.analytics
 import com.google.protobuf.MessageLite
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
@@ -12,6 +13,8 @@ import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
@@ -37,6 +40,7 @@ import org.oppia.android.app.model.EventLog.Context.Builder as EventBuilder
 @Singleton
 class LearnerAnalyticsLogger @Inject constructor(
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   private val loggingIdentifierController: LoggingIdentifierController
 ) {
   /**
@@ -59,6 +63,7 @@ class LearnerAnalyticsLogger @Inject constructor(
    *
    * @param installationId the device installation ID corresponding to the new play session, or null
    *     if not known (which may impact whether events are logged)
+   * @param profileId the ID of the Oppia profile starting the new exploration session
    * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
    *     null if not known (which may impact whether events are logged)
    * @param exploration the [Exploration] for which a play session is starting
@@ -67,6 +72,7 @@ class LearnerAnalyticsLogger @Inject constructor(
    */
   fun beginExploration(
     installationId: String?,
+    profileId: ProfileId,
     learnerId: String?,
     exploration: Exploration,
     topicId: String,
@@ -74,12 +80,14 @@ class LearnerAnalyticsLogger @Inject constructor(
   ): ExplorationAnalyticsLogger {
     return ExplorationAnalyticsLogger(
       installationId,
+      profileId,
       learnerId,
       topicId,
       storyId,
       exploration.id,
       exploration.version,
       oppiaLogger,
+      analyticsController,
       loggingIdentifierController
     ).also {
       if (!mutableExpAnalyticsLogger.compareAndSet(expect = null, update = it)) {
@@ -112,14 +120,17 @@ class LearnerAnalyticsLogger @Inject constructor(
    *
    * @param installationId the device installation ID corresponding to the new play session, or null
    *     if not known (which may impact whether the event is logged)
+   * @param profileId the ID of the Oppia profile currently logged in, or null if none
    * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
    *     null if not known (which may impact whether the event is logged)
    */
-  fun logAppInBackground(installationId: String?, learnerId: String?) {
+  fun logAppInBackground(installationId: String?, profileId: ProfileId?, learnerId: String?) {
     val learnerDetailsContext = createLearnerDetailsContextWithIdsPresent(installationId, learnerId)
-    oppiaLogger.maybeLogEvent(
+    analyticsController.maybeLogEvent(
       installationId,
-      createAnalyticsEvent(learnerDetailsContext, EventBuilder::setAppInBackgroundContext)
+      createAnalyticsEvent(learnerDetailsContext, EventBuilder::setAppInBackgroundContext),
+      profileId,
+      oppiaLogger
     )
   }
 
@@ -128,14 +139,17 @@ class LearnerAnalyticsLogger @Inject constructor(
    *
    * @param installationId the device installation ID corresponding to the new play session, or null
    *     if not known (which may impact whether the event is logged)
+   * @param profileId the ID of the Oppia profile currently logged in, or null if none
    * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
    *     null if not known (which may impact whether the event is logged)
    */
-  fun logAppInForeground(installationId: String?, learnerId: String?) {
+  fun logAppInForeground(installationId: String?, profileId: ProfileId?, learnerId: String?) {
     val learnerDetailsContext = createLearnerDetailsContextWithIdsPresent(installationId, learnerId)
-    oppiaLogger.maybeLogEvent(
+    analyticsController.maybeLogEvent(
       installationId,
-      createAnalyticsEvent(learnerDetailsContext, EventBuilder::setAppInForegroundContext)
+      createAnalyticsEvent(learnerDetailsContext, EventBuilder::setAppInForegroundContext),
+      profileId,
+      oppiaLogger
     )
   }
 
@@ -145,14 +159,18 @@ class LearnerAnalyticsLogger @Inject constructor(
    *
    * @param installationId the device installation ID corresponding to the new play session, or null
    *     if not known (which may impact whether the event is logged)
+   * @param profileId the ID of the Oppia profile deleting a profile, or null if no profiles are
+   *     currently logged in
    * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
    *     null if not known (which may impact whether the event is logged)
    */
-  fun logDeleteProfile(installationId: String?, learnerId: String?) {
+  fun logDeleteProfile(installationId: String?, profileId: ProfileId?, learnerId: String?) {
     val learnerDetailsContext = createLearnerDetailsContextWithIdsPresent(installationId, learnerId)
-    oppiaLogger.maybeLogEvent(
+    analyticsController.maybeLogEvent(
       installationId,
-      createAnalyticsEvent(learnerDetailsContext, EventBuilder::setDeleteProfileContext)
+      createAnalyticsEvent(learnerDetailsContext, EventBuilder::setDeleteProfileContext),
+      profileId,
+      oppiaLogger
     )
   }
 
@@ -165,12 +183,14 @@ class LearnerAnalyticsLogger @Inject constructor(
    */
   class ExplorationAnalyticsLogger internal constructor(
     installationId: String?,
+    profileId: ProfileId,
     learnerId: String?,
     topicId: String,
     storyId: String,
     explorationId: String,
     explorationVersion: Int,
     private val oppiaLogger: OppiaLogger,
+    private val analyticsController: AnalyticsController,
     private val loggingIdentifierController: LoggingIdentifierController
   ) {
     /**
@@ -181,7 +201,9 @@ class LearnerAnalyticsLogger @Inject constructor(
 
     private val mutableStateAnalyticsLogger = MutableStateFlow<StateAnalyticsLogger?>(null)
 
-    private val baseLogger by lazy { BaseLogger(oppiaLogger, installationId) }
+    private val baseLogger by lazy {
+      BaseLogger(oppiaLogger, analyticsController, profileId, installationId)
+    }
     private val learnerDetailsContext by lazy {
       createLearnerDetailsContext(installationId, learnerId)
     }
@@ -294,9 +316,9 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(linkedSkillId, ::createCardContext, EventBuilder::setEndCardContext)
     }
 
-    /** Logs that the hint corresponding to [hintIndex] has been offered to the learner. */
-    fun logHintOffered(hintIndex: Int) {
-      logStateEvent(hintIndex, ::createHintContext, EventBuilder::setHintOfferedContext)
+    /** Logs that the hint corresponding to [hintIndex] has been unlocked by the learner. */
+    fun logHintUnlocked(hintIndex: Int) {
+      logStateEvent(hintIndex, ::createHintContext, EventBuilder::setHintUnlockedContext)
     }
 
     /** Logs that the hint corresponding to [hintIndex] has been viewed by the learner. */
@@ -304,9 +326,9 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(hintIndex, ::createHintContext, EventBuilder::setAccessHintContext)
     }
 
-    /** Logs that the solution to the current card has been offered to the learner. */
-    fun logSolutionOffered() {
-      logStateEvent(EventBuilder::setSolutionOfferedContext)
+    /** Logs that the solution to the current card has been unlocked by the learner. */
+    fun logSolutionUnlocked() {
+      logStateEvent(EventBuilder::setSolutionUnlockedContext)
     }
 
     /** Logs that the solution to the current card has been viewed by the learner. */
@@ -409,6 +431,19 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(EventBuilder::setReachInvestedEngagement)
     }
 
+    /**
+     * Logs that the learner has switched an ongoing lesson's content language from the language
+     * indicated by [fromLanguage] to the language indicated by [toLanguage].
+     */
+    fun logSwitchInLessonLanguage(fromLanguage: OppiaLanguage, toLanguage: OppiaLanguage) {
+      logStateEvent(
+        fromLanguage,
+        toLanguage,
+        ::createSwitchInLessonLanguageContext,
+        EventBuilder::setSwitchInLessonLanguage
+      )
+    }
+
     private fun logStateEvent(setter: EventBuilder.(ExplorationContext) -> EventBuilder) =
       logStateEvent(Unit, { _, context -> context }, setter)
 
@@ -457,6 +492,8 @@ class LearnerAnalyticsLogger @Inject constructor(
    */
   internal class BaseLogger internal constructor(
     private val oppiaLogger: OppiaLogger,
+    private val analyticsController: AnalyticsController,
+    private val profileId: ProfileId,
     private val installationId: String?
   ) {
     /**
@@ -478,24 +515,30 @@ class LearnerAnalyticsLogger @Inject constructor(
       )
     }
 
-    /** See [OppiaLogger.maybeLogEvent]. */
-    fun maybeLogEvent(context: EventContext?) = oppiaLogger.maybeLogEvent(installationId, context)
+    /** See [AnalyticsController.maybeLogEvent]. */
+    fun maybeLogEvent(context: EventContext?) =
+      analyticsController.maybeLogEvent(installationId, context, profileId, oppiaLogger)
 
     internal companion object {
       /**
-       * Conditionally logs the event specified by [context] for the provided [installationId] in
-       * this logger if [context] is not null, otherwise logs an error analytics event for error
-       * tracking in the analytics pipeline.
+       * Conditionally logs the event specified by [context] for the provided [installId] in this
+       * logger if [context] is not null, otherwise logs an error analytics event for error tracking
+       * in the analytics pipeline.
        */
-      internal fun OppiaLogger.maybeLogEvent(installationId: String?, context: EventContext?) {
+      internal fun AnalyticsController.maybeLogEvent(
+        installId: String?,
+        context: EventContext?,
+        profileId: ProfileId?,
+        oppiaLogger: OppiaLogger
+      ) {
         if (context != null) {
-          logImportantEvent(context)
+          logImportantEvent(context, profileId)
         } else {
-          this.e(
+          oppiaLogger.e(
             "LearnerAnalyticsLogger",
             "Event is being dropped due to incomplete event (or missing learner ID for profile)."
           )
-          logImportantEvent(createFailedToLogLearnerAnalyticsEvent(installationId))
+          logImportantEvent(createFailedToLogLearnerAnalyticsEvent(installId), profileId)
         }
       }
     }
@@ -559,6 +602,16 @@ class LearnerAnalyticsLogger @Inject constructor(
     ) = PlayVoiceOverContext.newBuilder().apply {
       contentId?.let { this.contentId = it }
       languageCode?.let { this.languageCode = languageCode }
+      this.explorationDetails = explorationDetails
+    }.build()
+
+    private fun createSwitchInLessonLanguageContext(
+      fromLanguage: OppiaLanguage,
+      toLanguage: OppiaLanguage,
+      explorationDetails: ExplorationContext
+    ) = EventLog.SwitchInLessonLanguageEventContext.newBuilder().apply {
+      switchFromLanguage = fromLanguage
+      switchToLanguage = toLanguage
       this.explorationDetails = explorationDetails
     }.build()
 

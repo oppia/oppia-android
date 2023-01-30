@@ -89,7 +89,7 @@ class LoggingIdentifierController @Inject constructor(
   /**
    * Returns an in-memory data provider pointing to a class variable of [sessionId].
    *
-   * This ID is unique to each session. A session starts when an exploration begins.
+   * This ID is unique to each session. A session starts when a learner logs in.
    */
   fun getSessionId(): DataProvider<String> = sessionIdDataProvider
 
@@ -106,7 +106,7 @@ class LoggingIdentifierController @Inject constructor(
    * Regenerates [sessionId] and notifies the data provider.
    *
    * The [sessionId] is generally updated when:
-   *  1. An exploration is started/resumed/started-over.
+   *  1. A learner logs into their profile.
    *  2. Inactivity duration exceeds the maximum time limit for an active session.
    */
   fun updateSessionId() {

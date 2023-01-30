@@ -3,17 +3,20 @@ package org.oppia.android.util.logging
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
@@ -30,10 +33,13 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
@@ -44,6 +50,7 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
@@ -58,6 +65,7 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Re
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SensitiveStringContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.StoryContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SubmitAnswerContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SwitchInLessonLanguageContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.TopicContext
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.ApkSizeLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.CpuUsageLoggableMetric
@@ -119,6 +127,13 @@ class EventBundleCreator @Inject constructor(
     bundle.putInt("android_sdk", androidSdkVersion)
     bundle.putString("app_version_name", appVersionName)
     bundle.putInt("app_version_code", appVersionCode)
+    bundle.putString("oppia_app_lang", eventLog.appLanguageSelection.toAnalyticsText())
+    bundle.putString(
+      "oppia_content_lang", eventLog.writtenTranslationLanguageSelection.toAnalyticsText()
+    )
+    bundle.putString(
+      "oppia_audio_lang", eventLog.audioTranslationLanguageSelection.toAnalyticsText()
+    )
     return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
       eventContext.storeValue(
@@ -164,11 +179,12 @@ class EventBundleCreator @Inject constructor(
       OPEN_STORY_ACTIVITY -> StoryContext(activityName, openStoryActivity)
       OPEN_CONCEPT_CARD -> ConceptCardContext(activityName, openConceptCard)
       OPEN_REVISION_CARD -> RevisionCardContext(activityName, openRevisionCard)
+      CLOSE_REVISION_CARD -> RevisionCardContext(activityName, closeRevisionCard)
       START_CARD_CONTEXT -> CardContext(activityName, startCardContext)
       END_CARD_CONTEXT -> CardContext(activityName, endCardContext)
-      HINT_OFFERED_CONTEXT -> HintContext(activityName, hintOfferedContext)
+      HINT_UNLOCKED_CONTEXT -> HintContext(activityName, hintUnlockedContext)
       ACCESS_HINT_CONTEXT -> HintContext(activityName, accessHintContext)
-      SOLUTION_OFFERED_CONTEXT -> ExplorationContext(activityName, solutionOfferedContext)
+      SOLUTION_UNLOCKED_CONTEXT -> ExplorationContext(activityName, solutionUnlockedContext)
       ACCESS_SOLUTION_CONTEXT -> ExplorationContext(activityName, accessSolutionContext)
       SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext(activityName, submitAnswerContext)
       PLAY_VOICE_OVER_CONTEXT -> PlayPauseVoiceOverContext(activityName, playVoiceOverContext)
@@ -184,6 +200,8 @@ class EventBundleCreator @Inject constructor(
       OPEN_HOME -> EmptyContext(activityName)
       OPEN_PROFILE_CHOOSER -> EmptyContext(activityName)
       REACH_INVESTED_ENGAGEMENT -> ExplorationContext(activityName, reachInvestedEngagement)
+      SWITCH_IN_LESSON_LANGUAGE ->
+        SwitchInLessonLanguageContext(activityName, switchInLessonLanguage)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
@@ -383,6 +401,18 @@ class EventBundleCreator @Inject constructor(
       }
     }
 
+    /** The [EventActivityContext] corresponding to [SwitchInLessonLanguageEventContext]s. */
+    class SwitchInLessonLanguageContext(
+      activityName: String,
+      value: SwitchInLessonLanguageEventContext
+    ) : EventActivityContext<SwitchInLessonLanguageEventContext>(activityName, value) {
+      override fun SwitchInLessonLanguageEventContext.storeValue(store: PropertyStore) {
+        store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
+        store.putNonSensitiveValue("from_language", switchFromLanguage.toAnalyticsName())
+        store.putNonSensitiveValue("to_language", switchToLanguage.toAnalyticsName())
+      }
+    }
+
     /** The [EventActivityContext] corresponding to [QuestionEventContext]s. */
     class QuestionContext(
       activityName: String,
@@ -536,95 +566,143 @@ class EventBundleCreator @Inject constructor(
     }
   }
 
-  private fun EventLog.Priority.toAnalyticsName() = when (this) {
-    EventLog.Priority.PRIORITY_UNSPECIFIED -> "unspecified_priority"
-    EventLog.Priority.ESSENTIAL -> "essential"
-    EventLog.Priority.OPTIONAL -> "optional"
-    EventLog.Priority.UNRECOGNIZED -> "unknown_priority"
-  }
+  private companion object {
+    private fun EventLog.Priority.toAnalyticsName() = when (this) {
+      EventLog.Priority.PRIORITY_UNSPECIFIED -> "unspecified_priority"
+      EventLog.Priority.ESSENTIAL -> "essential"
+      EventLog.Priority.OPTIONAL -> "optional"
+      EventLog.Priority.UNRECOGNIZED -> "unknown_priority"
+    }
 
-  private fun OppiaMetricLog.Priority.toAnalyticsName() = when (this) {
-    OppiaMetricLog.Priority.PRIORITY_UNSPECIFIED -> "unspecified_priority"
-    OppiaMetricLog.Priority.LOW_PRIORITY -> "low_priority"
-    OppiaMetricLog.Priority.MEDIUM_PRIORITY -> "medium_priority"
-    OppiaMetricLog.Priority.HIGH_PRIORITY -> "high_priority"
-    OppiaMetricLog.Priority.UNRECOGNIZED -> "unknown_priority"
-  }
+    private fun OppiaMetricLog.Priority.toAnalyticsName() = when (this) {
+      OppiaMetricLog.Priority.PRIORITY_UNSPECIFIED -> "unspecified_priority"
+      OppiaMetricLog.Priority.LOW_PRIORITY -> "low_priority"
+      OppiaMetricLog.Priority.MEDIUM_PRIORITY -> "medium_priority"
+      OppiaMetricLog.Priority.HIGH_PRIORITY -> "high_priority"
+      OppiaMetricLog.Priority.UNRECOGNIZED -> "unknown_priority"
+    }
 
-  private fun OppiaMetricLog.MemoryTier.toAnalyticsName() = when (this) {
-    OppiaMetricLog.MemoryTier.MEMORY_TIER_UNSPECIFIED -> "unspecified_memory_tier"
-    OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER -> "low_memory"
-    OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER -> "medium_memory"
-    OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER -> "high_memory"
-    OppiaMetricLog.MemoryTier.UNRECOGNIZED -> "unknown_memory_tier"
-  }
+    private fun OppiaMetricLog.MemoryTier.toAnalyticsName() = when (this) {
+      OppiaMetricLog.MemoryTier.MEMORY_TIER_UNSPECIFIED -> "unspecified_memory_tier"
+      OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER -> "low_memory"
+      OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER -> "medium_memory"
+      OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER -> "high_memory"
+      OppiaMetricLog.MemoryTier.UNRECOGNIZED -> "unknown_memory_tier"
+    }
 
-  private fun OppiaMetricLog.StorageTier.toAnalyticsName() = when (this) {
-    OppiaMetricLog.StorageTier.STORAGE_TIER_UNSPECIFIED -> "unspecified_storage_tier"
-    OppiaMetricLog.StorageTier.LOW_STORAGE -> "low_storage"
-    OppiaMetricLog.StorageTier.MEDIUM_STORAGE -> "medium_storage"
-    OppiaMetricLog.StorageTier.HIGH_STORAGE -> "high_storage"
-    OppiaMetricLog.StorageTier.UNRECOGNIZED -> "unknown_storage_tier"
-  }
+    private fun OppiaMetricLog.StorageTier.toAnalyticsName() = when (this) {
+      OppiaMetricLog.StorageTier.STORAGE_TIER_UNSPECIFIED -> "unspecified_storage_tier"
+      OppiaMetricLog.StorageTier.LOW_STORAGE -> "low_storage"
+      OppiaMetricLog.StorageTier.MEDIUM_STORAGE -> "medium_storage"
+      OppiaMetricLog.StorageTier.HIGH_STORAGE -> "high_storage"
+      OppiaMetricLog.StorageTier.UNRECOGNIZED -> "unknown_storage_tier"
+    }
 
-  private fun OppiaMetricLog.NetworkType.toAnalyticsName() = when (this) {
-    OppiaMetricLog.NetworkType.NETWORK_UNSPECIFIED -> "unspecified_network_type"
-    OppiaMetricLog.NetworkType.WIFI -> "wifi"
-    OppiaMetricLog.NetworkType.CELLULAR -> "cellular"
-    OppiaMetricLog.NetworkType.NONE -> "none"
-    OppiaMetricLog.NetworkType.UNRECOGNIZED -> "unknown_network_type"
-  }
+    private fun OppiaMetricLog.NetworkType.toAnalyticsName() = when (this) {
+      OppiaMetricLog.NetworkType.NETWORK_UNSPECIFIED -> "unspecified_network_type"
+      OppiaMetricLog.NetworkType.WIFI -> "wifi"
+      OppiaMetricLog.NetworkType.CELLULAR -> "cellular"
+      OppiaMetricLog.NetworkType.NONE -> "none"
+      OppiaMetricLog.NetworkType.UNRECOGNIZED -> "unknown_network_type"
+    }
 
-  private fun ScreenName.toAnalyticsName() = when (this) {
-    ScreenName.SCREEN_NAME_UNSPECIFIED -> "screen_name_unspecified"
-    ScreenName.SPLASH_ACTIVITY -> "splash_activity"
-    ScreenName.PROFILE_CHOOSER_ACTIVITY -> "profile_chooser_activity"
-    ScreenName.ADD_PROFILE_ACTIVITY -> "add_profile_activity"
-    ScreenName.HOME_ACTIVITY -> "home_activity"
-    ScreenName.BACKGROUND_SCREEN -> "background_screen"
-    ScreenName.APP_VERSION_ACTIVITY -> "app_version_activity"
-    ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY -> "administrator_controls_activity"
-    ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY -> "profile_and_device_id_activity"
-    ScreenName.COMPLETED_STORY_LIST_ACTIVITY -> "completed_story_list_activity"
-    ScreenName.FAQ_SINGLE_ACTIVITY -> "faq_single_activity"
-    ScreenName.FAQ_LIST_ACTIVITY -> "faq_list_activity"
-    ScreenName.LICENSE_LIST_ACTIVITY -> "license_list_activity"
-    ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY -> "license_text_viewer_activity"
-    ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY -> "third_party_dependency_list_activity"
-    ScreenName.HELP_ACTIVITY -> "help_activity"
-    ScreenName.RECENTLY_PLAYED_ACTIVITY -> "recently_played_activity"
-    ScreenName.MY_DOWNLOADS_ACTIVITY -> "my_downloads_activity"
-    ScreenName.ONBOARDING_ACTIVITY -> "onboarding_activity"
-    ScreenName.ONGOING_TOPIC_LIST_ACTIVITY -> "ongoing_topic_list_activity"
-    ScreenName.AUDIO_LANGUAGE_ACTIVITY -> "audio_language_activity"
-    ScreenName.APP_LANGUAGE_ACTIVITY -> "app_language_activity"
-    ScreenName.OPTIONS_ACTIVITY -> "options_activity"
-    ScreenName.READING_TEXT_SIZE_ACTIVITY -> "reading_text_size_activity"
-    ScreenName.EXPLORATION_ACTIVITY -> "exploration_activity"
-    ScreenName.ADMIN_AUTH_ACTIVITY -> "admin_auth_activity"
-    ScreenName.PIN_PASSWORD_ACTIVITY -> "pin_password_activity"
-    ScreenName.PROFILE_PICTURE_ACTIVITY -> "profile_picture_activity"
-    ScreenName.PROFILE_PROGRESS_ACTIVITY -> "profile_progress_activity"
-    ScreenName.RESUME_LESSON_ACTIVITY -> "resume_lesson_activity"
-    ScreenName.PROFILE_EDIT_ACTIVITY -> "profile_edit_activity"
-    ScreenName.PROFILE_RESET_PIN_ACTIVITY -> "profile_reset_pin_activity"
-    ScreenName.PROFILE_RENAME_ACTIVITY -> "profile_rename_activity"
-    ScreenName.PROFILE_LIST_ACTIVITY -> "profile_list_activity"
-    ScreenName.STORY_ACTIVITY -> "story_activity"
-    ScreenName.TOPIC_ACTIVITY -> "topic_activity"
-    ScreenName.REVISION_CARD_ACTIVITY -> "revision_card_activity"
-    ScreenName.QUESTION_PLAYER_ACTIVITY -> "question_player_activity"
-    ScreenName.WALKTHROUGH_ACTIVITY -> "walkthrough_activity"
-    ScreenName.DEVELOPER_OPTIONS_ACTIVITY -> "developer_options_activity"
-    ScreenName.VIEW_EVENT_LOGS_ACTIVITY -> "view_event_logs_activity"
-    ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY -> "mark_topics_completed_activity"
-    ScreenName.MATH_EXPRESSION_PARSER_ACTIVITY -> "math_expression_parser_activity"
-    ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY -> "mark_chapters_completed_activity"
-    ScreenName.MARK_STORIES_COMPLETED_ACTIVITY -> "mark_stories_completed_activity"
-    ScreenName.FORCE_NETWORK_TYPE_ACTIVITY -> "force_network_type_activity"
-    ScreenName.ADMIN_PIN_ACTIVITY -> "admin_pin_activity"
-    ScreenName.POLICIES_ACTIVITY -> "policies_activity"
-    ScreenName.UNRECOGNIZED -> "unrecognized"
-    ScreenName.FOREGROUND_SCREEN -> "foreground_screen"
+    private fun ScreenName.toAnalyticsName() = when (this) {
+      ScreenName.SCREEN_NAME_UNSPECIFIED -> "screen_name_unspecified"
+      ScreenName.SPLASH_ACTIVITY -> "splash_activity"
+      ScreenName.PROFILE_CHOOSER_ACTIVITY -> "profile_chooser_activity"
+      ScreenName.ADD_PROFILE_ACTIVITY -> "add_profile_activity"
+      ScreenName.HOME_ACTIVITY -> "home_activity"
+      ScreenName.BACKGROUND_SCREEN -> "background_screen"
+      ScreenName.APP_VERSION_ACTIVITY -> "app_version_activity"
+      ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY -> "administrator_controls_activity"
+      ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY -> "profile_and_device_id_activity"
+      ScreenName.COMPLETED_STORY_LIST_ACTIVITY -> "completed_story_list_activity"
+      ScreenName.FAQ_SINGLE_ACTIVITY -> "faq_single_activity"
+      ScreenName.FAQ_LIST_ACTIVITY -> "faq_list_activity"
+      ScreenName.LICENSE_LIST_ACTIVITY -> "license_list_activity"
+      ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY -> "license_text_viewer_activity"
+      ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY -> "third_party_dependency_list_activity"
+      ScreenName.HELP_ACTIVITY -> "help_activity"
+      ScreenName.RECENTLY_PLAYED_ACTIVITY -> "recently_played_activity"
+      ScreenName.MY_DOWNLOADS_ACTIVITY -> "my_downloads_activity"
+      ScreenName.ONBOARDING_ACTIVITY -> "onboarding_activity"
+      ScreenName.ONGOING_TOPIC_LIST_ACTIVITY -> "ongoing_topic_list_activity"
+      ScreenName.AUDIO_LANGUAGE_ACTIVITY -> "audio_language_activity"
+      ScreenName.APP_LANGUAGE_ACTIVITY -> "app_language_activity"
+      ScreenName.OPTIONS_ACTIVITY -> "options_activity"
+      ScreenName.READING_TEXT_SIZE_ACTIVITY -> "reading_text_size_activity"
+      ScreenName.EXPLORATION_ACTIVITY -> "exploration_activity"
+      ScreenName.ADMIN_AUTH_ACTIVITY -> "admin_auth_activity"
+      ScreenName.PIN_PASSWORD_ACTIVITY -> "pin_password_activity"
+      ScreenName.PROFILE_PICTURE_ACTIVITY -> "profile_picture_activity"
+      ScreenName.PROFILE_PROGRESS_ACTIVITY -> "profile_progress_activity"
+      ScreenName.RESUME_LESSON_ACTIVITY -> "resume_lesson_activity"
+      ScreenName.PROFILE_EDIT_ACTIVITY -> "profile_edit_activity"
+      ScreenName.PROFILE_RESET_PIN_ACTIVITY -> "profile_reset_pin_activity"
+      ScreenName.PROFILE_RENAME_ACTIVITY -> "profile_rename_activity"
+      ScreenName.PROFILE_LIST_ACTIVITY -> "profile_list_activity"
+      ScreenName.STORY_ACTIVITY -> "story_activity"
+      ScreenName.TOPIC_ACTIVITY -> "topic_activity"
+      ScreenName.REVISION_CARD_ACTIVITY -> "revision_card_activity"
+      ScreenName.QUESTION_PLAYER_ACTIVITY -> "question_player_activity"
+      ScreenName.WALKTHROUGH_ACTIVITY -> "walkthrough_activity"
+      ScreenName.DEVELOPER_OPTIONS_ACTIVITY -> "developer_options_activity"
+      ScreenName.VIEW_EVENT_LOGS_ACTIVITY -> "view_event_logs_activity"
+      ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY -> "mark_topics_completed_activity"
+      ScreenName.MATH_EXPRESSION_PARSER_ACTIVITY -> "math_expression_parser_activity"
+      ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY -> "mark_chapters_completed_activity"
+      ScreenName.MARK_STORIES_COMPLETED_ACTIVITY -> "mark_stories_completed_activity"
+      ScreenName.FORCE_NETWORK_TYPE_ACTIVITY -> "force_network_type_activity"
+      ScreenName.ADMIN_PIN_ACTIVITY -> "admin_pin_activity"
+      ScreenName.POLICIES_ACTIVITY -> "policies_activity"
+      ScreenName.UNRECOGNIZED -> "unrecognized"
+      ScreenName.FOREGROUND_SCREEN -> "foreground_screen"
+    }
+
+    private fun AppLanguageSelection.toAnalyticsText(): String {
+      return when (selectionTypeCase) {
+        AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT ->
+          "use_system_language_or_app_default"
+        AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
+          selectedLanguage.toAnalyticsName()
+        AppLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET ->
+          "unset_app_language_selection"
+        null -> "invalid_app_language_selection"
+      }
+    }
+
+    private fun WrittenTranslationLanguageSelection.toAnalyticsText(): String {
+      return when (selectionTypeCase) {
+        WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE -> "use_app_language"
+        WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
+          selectedLanguage.toAnalyticsName()
+        WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET ->
+          "unset_written_translation_language_selection"
+        null -> "invalid_written_translation_language_selection"
+      }
+    }
+
+    private fun AudioTranslationLanguageSelection.toAnalyticsText(): String {
+      return when (selectionTypeCase) {
+        AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE -> "use_app_language"
+        AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
+          selectedLanguage.toAnalyticsName()
+        AudioTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET ->
+          "unset_audio_translation_language_selection"
+        null -> "invalid_audio_translation_language_selection"
+      }
+    }
+
+    private fun OppiaLanguage.toAnalyticsName() = when (this) {
+      OppiaLanguage.LANGUAGE_UNSPECIFIED -> "unspecified_language"
+      OppiaLanguage.ARABIC -> "Arabic"
+      OppiaLanguage.ENGLISH -> "English"
+      OppiaLanguage.HINDI -> "Hindi"
+      OppiaLanguage.HINGLISH -> "Hinglish"
+      OppiaLanguage.PORTUGUESE -> "Portuguese"
+      OppiaLanguage.BRAZILIAN_PORTUGUESE -> "Brazilian Portuguese"
+      OppiaLanguage.SWAHILI -> "Swahili"
+      OppiaLanguage.UNRECOGNIZED -> "unrecognized_language"
+    }
   }
 }

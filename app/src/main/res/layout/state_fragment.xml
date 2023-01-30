@@ -114,7 +114,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/animable_hints_and_solution_fragment_container"
         android:background="@color/color_palette_transparent_background_color"
-        android:visibility="@{viewModel.canQuicklyToggleBetweenSwahiliAndEnglish(viewModel.hasSwahiliTranslations) ? View.VISIBLE : View.GONE}">
+        android:visibility="@{viewModel.canQuicklyToggleBetweenSwahiliAndEnglish(viewModel.hasSwahiliTranslations, viewModel.allowInLessonQuickLanguageSwitching) ? View.VISIBLE : View.GONE}">
         <androidx.appcompat.widget.AppCompatButton
           android:id="@+id/quick_switch_exploration_language_button"
           android:layout_width="wrap_content"

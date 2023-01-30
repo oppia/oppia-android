@@ -30,6 +30,7 @@ import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.question.QuestionAssessmentProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -45,6 +46,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager
@@ -64,6 +66,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
   private lateinit var helpIndex: HelpIndex
+  private lateinit var profileId: ProfileId
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -75,6 +78,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
+    this.profileId = profileId
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill", profileId),
@@ -354,8 +358,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
-    oppiaLogger.logImportantEvent(
-      oppiaLogger.createOpenQuestionPlayerContext(questionId, skillIds)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenQuestionPlayerContext(questionId, skillIds),
+      profileId
     )
   }
 

@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -25,8 +26,26 @@ import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetrieve
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import javax.inject.Inject
 import kotlin.math.max
+import kotlin.math.sqrt
 
 // TODO(#169): Replace this with exploration asset downloader.
+
+/**
+ * The pixels-per-inch used on @seanlip's monitor with which Oppia content images have been
+ * calibrated to be the correct scale.
+ *
+ * This measurement is used to convert image sizes such that they have the same physical display
+ * size when rendered on a local Android device.
+ */
+private const val REFERENCE_MONITOR_PPI = 81.589f
+
+/**
+ * A factor to adjust for the fact that phones are physically smaller than the display used to
+ * calibrate [REFERENCE_MONITOR_PPI] by downsizing the images to be more appropriately sized.
+ *
+ * Image sizes will still be consistent with the original calibration display.
+ */
+private const val RELATIVE_SIZE_ADJUSTMENT_FACTOR = 0.15f
 
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser private constructor(
@@ -42,6 +61,15 @@ class UrlImageParser private constructor(
   private val consoleLogger: ConsoleLogger,
   private val machineLocale: OppiaLocale.MachineLocale
 ) : Html.ImageGetter, ImageRetriever {
+  private val diagonalPixelsPerInch by lazy {
+    context.resources.displayMetrics.computeDiagonalPpi()
+  }
+  private val oppiaLocalImageSpaceConversionFactor by lazy {
+    // The conversion here is from Oppia pixel to MDPI pixel (which can be treated as dp since
+    // 1px=1dp in MDPI) for later scaling according to the user's set display density.
+    (diagonalPixelsPerInch / REFERENCE_MONITOR_PPI) * RELATIVE_SIZE_ADJUSTMENT_FACTOR
+  }
+
   override fun getDrawable(urlString: String): Drawable {
     // Only block images can be loaded through the standard ImageGetter.
     return loadDrawable(urlString, BLOCK_IMAGE)
@@ -125,7 +153,11 @@ class UrlImageParser private constructor(
     createTarget: (AutoAdjustingImageTarget.TargetConfiguration) -> C
   ): CustomImageTarget<T> {
     val configuration = AutoAdjustingImageTarget.TargetConfiguration(
-      context, htmlContentTextView, imageCenterAlign, proxyDrawable
+      context,
+      htmlContentTextView,
+      imageCenterAlign,
+      proxyDrawable,
+      oppiaLocalImageSpaceConversionFactor
     )
     return CustomImageTarget(createTarget(configuration))
   }
@@ -144,6 +176,9 @@ class UrlImageParser private constructor(
     protected val htmlContentTextView by lazy { targetConfiguration.htmlContentTextView }
     protected val imageCenterAlign by lazy { targetConfiguration.imageCenterAlign }
     protected val proxyDrawable by lazy { targetConfiguration.proxyDrawable }
+    private val oppiaLocalImageSpaceConversionFactor by lazy {
+      targetConfiguration.oppiaLocalImageSpaceConversionFactor
+    }
 
     override fun onLoadCleared(placeholder: Drawable?) {
       // No resources to clear.
@@ -180,6 +215,13 @@ class UrlImageParser private constructor(
       viewWidth: Int,
       padding: Rect
     ): Rect
+
+    /**
+     * Returns a conversion of [this] from "Oppia" image space to local Android screen space (to
+     * ensure images take up the same physical space locally as they do on @seanlip's monitor).
+     */
+    protected fun Float.oppiaPxToLocalAndroidPx() =
+      context.dpToPx(this * oppiaLocalImageSpaceConversionFactor)
 
     /**
      * A [AutoAdjustingImageTarget] that may automatically center and/or resize loaded images to
@@ -221,8 +263,8 @@ class UrlImageParser private constructor(
         if (autoResizeImage) {
           // Treat the drawable's dimensions as dp so that the image scales for higher density
           // displays.
-          drawableWidth = context.dpToPx(drawable.intrinsicWidth)
-          drawableHeight = context.dpToPx(drawable.intrinsicHeight)
+          drawableWidth = drawableWidth.oppiaPxToLocalAndroidPx()
+          drawableHeight = drawableHeight.oppiaPxToLocalAndroidPx()
 
           val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
           if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
@@ -360,16 +402,21 @@ class UrlImageParser private constructor(
     /**
      * Configures a [AutoAdjustingImageTarget]. See the specified parameters for what needs to be
      * provided.
+     *
+     * @property context the application context
+     * @property htmlContentTextView the [TextView] in which the retrieved images are being rendered
+     * @property imageCenterAlign whether to automatically align block-displayed images
+     * @property proxyDrawable the [ProxyDrawable] corresponding to the drawable that will be loaded
+     *     for displaying
+     * @property oppiaLocalImageSpaceConversionFactor the conversion factor from Oppia image space
+     *     pixels into the local Android device's screen space dp
      */
     data class TargetConfiguration(
-      /** The application context. */
       val context: Context,
-      /** The [TextView] in which the retrieved images are being rendered. */
       val htmlContentTextView: TextView,
-      /** Whether to automatically align block-displayed images. */
       val imageCenterAlign: Boolean,
-      /** The [ProxyDrawable] corresponding to the drawable that will be loaded for displaying. */
-      val proxyDrawable: ProxyDrawable
+      val proxyDrawable: ProxyDrawable,
+      val oppiaLocalImageSpaceConversionFactor: Float
     )
   }
 
@@ -479,5 +526,7 @@ private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
   }
 }
 
-private fun Context.dpToPx(dp: Int): Float =
-  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), resources.displayMetrics)
+private fun Context.dpToPx(dp: Float): Float =
+  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
+
+private fun DisplayMetrics.computeDiagonalPpi() = sqrt(xdpi * xdpi + ydpi * ydpi)

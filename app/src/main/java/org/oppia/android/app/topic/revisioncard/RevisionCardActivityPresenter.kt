@@ -16,6 +16,7 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
 import org.oppia.android.databinding.RevisionCardActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class RevisionCardActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   private val topicController: TopicController,
   private val translationController: TranslationController
 ) {
@@ -62,7 +64,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     activity.supportActionBar?.setDisplayShowTitleEnabled(false)
 
     binding.revisionCardToolbar.setNavigationOnClickListener {
-      (activity as RevisionCardActivity).finish()
+      (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
     }
     binding.revisionCardToolbarTitle.setOnClickListener {
       binding.revisionCardToolbarTitle.isSelected = true
@@ -105,6 +107,13 @@ class RevisionCardActivityPresenter @Inject constructor(
 
   /** Dismisses the concept card fragment if it's currently active in this activity. */
   fun dismissConceptCard() = getReviewCardFragment()?.dismissConceptCard()
+
+  fun logExitRevisionCard() {
+    analyticsController.logImportantEvent(
+      oppiaLogger.createCloseRevisionCardContext(topicId, subtopicId),
+      profileId
+    )
+  }
 
   private fun subscribeToSubtopicTitle() {
     subtopicLiveData.observe(

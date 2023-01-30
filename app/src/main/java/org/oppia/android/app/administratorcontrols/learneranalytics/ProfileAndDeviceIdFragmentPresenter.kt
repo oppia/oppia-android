@@ -10,6 +10,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ProfileAndDeviceIdFragmentBinding
 import org.oppia.android.databinding.ProfileListDeviceIdItemBinding
 import org.oppia.android.databinding.ProfileListLearnerIdItemBinding
+import org.oppia.android.databinding.ProfileListShareIdsItemBinding
 import org.oppia.android.databinding.ProfileListSyncStatusItemBinding
 import javax.inject.Inject
 
@@ -46,27 +47,29 @@ class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
         is DeviceIdItemViewModel -> ProfileListItemViewType.DEVICE_ID
         is ProfileLearnerIdItemViewModel -> ProfileListItemViewType.LEARNER_ID
         is SyncStatusItemViewModel -> ProfileListItemViewType.SYNC_STATUS
+        is ShareIdsViewModel -> ProfileListItemViewType.SHARE_IDS
         else -> error("Encountered unexpected view model: $viewModel")
       }
-    }
-      .registerViewDataBinder(
-        viewType = ProfileListItemViewType.DEVICE_ID,
-        inflateDataBinding = ProfileListDeviceIdItemBinding::inflate,
-        setViewModel = ProfileListDeviceIdItemBinding::setViewModel,
-        transformViewModel = { it as DeviceIdItemViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ProfileListItemViewType.LEARNER_ID,
-        inflateDataBinding = ProfileListLearnerIdItemBinding::inflate,
-        setViewModel = ProfileListLearnerIdItemBinding::setViewModel,
-        transformViewModel = { it as ProfileLearnerIdItemViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ProfileListItemViewType.SYNC_STATUS,
-        inflateDataBinding = ProfileListSyncStatusItemBinding::inflate,
-        setViewModel = ProfileListSyncStatusItemBinding::setViewModel,
-        transformViewModel = { it as SyncStatusItemViewModel }
-      )
-      .build()
+    }.registerViewDataBinder(
+      viewType = ProfileListItemViewType.DEVICE_ID,
+      inflateDataBinding = ProfileListDeviceIdItemBinding::inflate,
+      setViewModel = ProfileListDeviceIdItemBinding::setViewModel,
+      transformViewModel = { it as DeviceIdItemViewModel }
+    ).registerViewDataBinder(
+      viewType = ProfileListItemViewType.LEARNER_ID,
+      inflateDataBinding = ProfileListLearnerIdItemBinding::inflate,
+      setViewModel = ProfileListLearnerIdItemBinding::setViewModel,
+      transformViewModel = { it as ProfileLearnerIdItemViewModel }
+    ).registerViewDataBinder(
+      viewType = ProfileListItemViewType.SYNC_STATUS,
+      inflateDataBinding = ProfileListSyncStatusItemBinding::inflate,
+      setViewModel = ProfileListSyncStatusItemBinding::setViewModel,
+      transformViewModel = { it as SyncStatusItemViewModel }
+    ).registerViewDataBinder(
+      viewType = ProfileListItemViewType.SHARE_IDS,
+      inflateDataBinding = ProfileListShareIdsItemBinding::inflate,
+      setViewModel = ProfileListShareIdsItemBinding::setViewModel,
+      transformViewModel = { it as ShareIdsViewModel }
+    ).build()
   }
 }

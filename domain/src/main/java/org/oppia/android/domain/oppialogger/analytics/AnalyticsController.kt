@@ -1,10 +1,16 @@
 package org.oppia.android.domain.oppialogger.analytics
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ConsoleLogger
@@ -12,6 +18,8 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.threading.BlockingDispatcher
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
@@ -28,7 +36,10 @@ class AnalyticsController @Inject constructor(
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
   private val syncStatusManager: SyncStatusManager,
-  @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int
+  private val oppiaClock: OppiaClock,
+  private val translationController: TranslationController,
+  @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int,
+  @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher
 ) {
   private val eventLogStore =
     cacheStoreFactory.create("event_logs", OppiaEventLogs.getDefaultInstance())
@@ -42,8 +53,22 @@ class AnalyticsController @Inject constructor(
    * This method should only be used for events which are important to log and should be prioritized
    * over events logged via [logLowPriorityEvent].
    */
-  fun logImportantEvent(timestamp: Long, eventContext: EventLog.Context) {
-    uploadOrCacheEventLog(createEventLog(timestamp, eventContext, Priority.ESSENTIAL))
+  fun logImportantEvent(
+    eventContext: EventLog.Context,
+    profileId: ProfileId?,
+    timestamp: Long = oppiaClock.getCurrentTimeMs()
+  ) {
+    CoroutineScope(blockingDispatcher).async {
+      uploadOrCacheEventLog(createEventLog(profileId, timestamp, eventContext, Priority.ESSENTIAL))
+    }.invokeOnCompletion { failure ->
+      failure?.let {
+        consoleLogger.e(
+          "AnalyticsController",
+          "Failed to upload or cache important event: $eventContext (at time $timestamp).",
+          it
+        )
+      }
+    }
   }
 
   /**
@@ -59,12 +84,27 @@ class AnalyticsController @Inject constructor(
    * it's unexpected for events to actually be dropped since the app is configured to support a
    * large number of cached events at one time).
    */
-  fun logLowPriorityEvent(timestamp: Long, eventContext: EventLog.Context) {
-    uploadOrCacheEventLog(createEventLog(timestamp, eventContext, Priority.OPTIONAL))
+  fun logLowPriorityEvent(
+    eventContext: EventLog.Context,
+    profileId: ProfileId?,
+    timestamp: Long = oppiaClock.getCurrentTimeMs()
+  ) {
+    CoroutineScope(blockingDispatcher).async {
+      uploadOrCacheEventLog(createEventLog(profileId, timestamp, eventContext, Priority.OPTIONAL))
+    }.invokeOnCompletion { failure ->
+      failure?.let {
+        consoleLogger.w(
+          "AnalyticsController",
+          "Failed to upload or cache low-priority event: $eventContext (at time $timestamp).",
+          it
+        )
+      }
+    }
   }
 
   /** Returns an event log containing relevant data for event reporting. */
-  private fun createEventLog(
+  private suspend fun createEventLog(
+    profileId: ProfileId?,
     timestamp: Long,
     context: EventLog.Context,
     priority: Priority
@@ -73,11 +113,20 @@ class AnalyticsController @Inject constructor(
       this.timestamp = timestamp
       this.priority = priority
       this.context = context
+      resolveProfileOperation(
+        profileId, translationController::getAppLanguageSelection
+      )?.let { this.appLanguageSelection = it }
+      resolveProfileOperation(
+        profileId, translationController::getWrittenTranslationContentLanguageSelection
+      )?.let { this.writtenTranslationLanguageSelection = it }
+      resolveProfileOperation(
+        profileId, translationController::getAudioTranslationContentLanguageSelection
+      )?.let { this.audioTranslationLanguageSelection = it }
     }.build()
   }
 
   /** Either uploads or caches [eventLog] depending on current internet connectivity. */
-  private fun uploadOrCacheEventLog(eventLog: EventLog) {
+  private suspend fun uploadOrCacheEventLog(eventLog: EventLog) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NONE -> {
         syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.NO_CONNECTIVITY)
@@ -98,7 +147,7 @@ class AnalyticsController @Inject constructor(
    * limit is exceeded then the least recent event is removed from the [eventLogStore]. After this,
    * the [eventLog] is added to the store.
    */
-  private fun cacheEventLog(eventLog: EventLog) {
+  private suspend fun cacheEventLog(eventLog: EventLog) {
     eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       val storeSize = oppiaEventLogs.eventLogList.size
       if (storeSize + 1 > eventLogStorageCacheSize) {
@@ -117,9 +166,7 @@ class AnalyticsController @Inject constructor(
         }
       }
       return@storeDataAsync oppiaEventLogs.toBuilder().addEventLog(eventLog).build()
-    }.invokeOnCompletion {
-      it?.let { consoleLogger.e("AnalyticsController", "Failed to store event log.", it) }
-    }
+    }.await()
   }
 
   /**
@@ -160,6 +207,17 @@ class AnalyticsController @Inject constructor(
       return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLog(0).build()
     }.invokeOnCompletion {
       it?.let { consoleLogger.e("AnalyticsController", "Failed to remove event log.", it) }
+    }
+  }
+
+  private companion object {
+    private suspend fun <T> resolveProfileOperation(
+      profileId: ProfileId?,
+      createProvider: (ProfileId) -> DataProvider<T>
+    ): T? {
+      return profileId?.let {
+        (createProvider(it).retrieveData() as? AsyncResult.Success<T>)?.value
+      }
     }
   }
 }

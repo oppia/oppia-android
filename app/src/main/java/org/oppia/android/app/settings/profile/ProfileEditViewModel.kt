@@ -1,7 +1,6 @@
 package org.oppia.android.app.settings.profile
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
@@ -26,13 +25,11 @@ class ProfileEditViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
-  private val isAllowedDownloadAccessMutableLiveData = MutableLiveData<Boolean>()
-
-  /** Download access enabled for the profile by the administrator. */
-  val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
-
   /** Whether the admin is allowed to mark chapters as finished. */
   val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudy.value
+
+  /** Whether the admin can allow learners to quickly switch content languages within a lesson. */
+  val isAllowedToEnableQuickLessonLanguageSwitching: Boolean = enableLearnerStudy.value
 
   /** List of all the current profiles registered in the app [ProfileListFragment]. */
   val profile: LiveData<Profile> by lazy {
@@ -71,7 +68,6 @@ class ProfileEditViewModel @Inject constructor(
       is AsyncResult.Pending -> Profile.getDefaultInstance()
       is AsyncResult.Success -> profileResult.value
     }
-    isAllowedDownloadAccessMutableLiveData.value = profile.allowDownloadAccess
     isAdmin = profile.isAdmin
     return profile
   }
