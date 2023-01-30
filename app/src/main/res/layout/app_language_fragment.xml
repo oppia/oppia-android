@@ -17,6 +17,7 @@
     android:overScrollMode="never"
     android:paddingBottom="@dimen/app_language_recycler_view_padding_bottom"
     android:scrollbars="none"
+    app:data="@{viewModel.recyclerViewAppLanguageList}"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    app:list="@{viewModel.recyclerViewAppLanguageList}" />
+    />
 </layout>

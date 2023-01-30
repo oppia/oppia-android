@@ -11,7 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -1332,14 +1331,12 @@ class TranslationControllerTest {
 
   @Test
   fun testLoadAvailableLanguageDefinitions_returnsAvailableLanguageDefinitions() {
-    val languageDefinitionsList =
-      runBlocking {
-        translationController.getSupportedAppLanguages()
-      }
+    val languageListProvider = translationController.getSupportedAppLanguages()
+    val languageListData = monitorFactory.waitForNextSuccessfulResult(languageListProvider)
 
-    assertThat(languageDefinitionsList[0].name).isEqualTo(ARABIC.name)
-    assertThat(languageDefinitionsList[4].name).isEqualTo(SWAHILI.name)
-    assertThat(languageDefinitionsList.size).isEqualTo(5)
+    assertThat(languageListData[0].name).isEqualTo(ARABIC.name)
+    assertThat(languageListData[4].name).isEqualTo(SWAHILI.name)
+    assertThat(languageListData.size).isEqualTo(5)
   }
 
   private fun setUpTestApplicationComponent() {

@@ -47,6 +47,8 @@ private const val AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID =
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
 private const val CACHE_NAME = "content_language_database"
+private const val RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID =
+  "retrieved_content_language_data_provider_id"
 
 /**
  * Domain controller for performing operations corresponding to translations.
@@ -109,11 +111,12 @@ class TranslationController @Inject constructor(
   /**
    * Returns List data for [OppiaLanguage] which is filtered to exclude languages without appStringId tag.
    */
-  fun getSupportedAppLanguages(): List<OppiaLanguage> {
-    val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
-    return supportedLanguages.languageDefinitionsList.filter {
-      it.hasAppStringId()
-    }.map { it.language }
+  fun getSupportedAppLanguages(): DataProvider<List<OppiaLanguage>> {
+    return dataProviders.createInMemoryDataProvider(RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID) {
+      languageConfigRetriever.loadSupportedLanguages().languageDefinitionsList.filter {
+        it.hasAppStringId()
+      }.map { it.language }
+    }
   }
 
   /**
@@ -385,27 +388,26 @@ class TranslationController @Inject constructor(
   private fun retrieveLanguageContentCacheStore(
     profileId: ProfileId
   ): PersistentCacheStore<AppLanguageSelection> {
-    val cacheStore = cacheStoreMap.getOrPut(profileId) {
+    return cacheStoreMap.getOrPut(profileId) {
       cacheStoreFactory.createPerProfile(
         CACHE_NAME,
         AppLanguageSelection.getDefaultInstance(),
         profileId
-      )
-    }
-
-    cacheStore.primeInMemoryAndDiskCacheAsync(
-      updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
-      publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
-    ).invokeOnCompletion { throwable ->
-      throwable?.let {
-        oppiaLogger.e(
-          "TranslationController",
-          "Failed to prime cache ahead of data retrieval for TranslationController.",
-          it
-        )
+      ).also<PersistentCacheStore<AppLanguageSelection>> {
+        it.primeInMemoryAndDiskCacheAsync(
+          updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
+          publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+        ).invokeOnCompletion { throwable ->
+          throwable?.let {
+            oppiaLogger.e(
+              "TranslationController",
+              "Failed to prime cache ahead of data retrieval for TranslationController.",
+              it
+            )
+          }
+        }
       }
     }
-    return cacheStore
   }
 
   private fun retrieveWrittenTranslationContentLanguageSelection(

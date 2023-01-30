@@ -41,8 +41,6 @@ class OptionControlsViewModel @Inject constructor(
   val uiLiveData = MutableLiveData<Boolean>()
   val selectedFragmentIndex = ObservableField<Int>()
 
-  private val optionList = MutableLiveData<List<OptionsItemViewModel>>()
-
   /**
    * Should be called with `false` when the UI starts to load, then with `true` after the UI
    * finishes loading.

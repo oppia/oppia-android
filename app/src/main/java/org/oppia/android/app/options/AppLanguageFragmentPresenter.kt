@@ -1,5 +1,6 @@
 package org.oppia.android.app.options
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,8 +37,12 @@ class AppLanguageFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     this.appLanguage = prefSummaryValue
+    Log.e("app language", prefSummaryValue.toString())
+
     binding.viewModel = appLanguageSelectionViewModel
     appLanguageSelectionViewModel.selectedLanguage.value = prefSummaryValue
+    binding.lifecycleOwner = fragment
+
     binding.languageRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
