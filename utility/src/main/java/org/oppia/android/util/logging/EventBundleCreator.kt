@@ -59,7 +59,6 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Em
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ExplorationContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.HintContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
-import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.PlayPauseVoiceOverContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.QuestionContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.RevisionCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SensitiveStringContext
@@ -67,6 +66,7 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.St
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SubmitAnswerContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SwitchInLessonLanguageContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.TopicContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.VoiceoverActionContext
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.ApkSizeLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.CpuUsageLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.MemoryUsageLoggableMetric
@@ -82,12 +82,12 @@ import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEve
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
-import org.oppia.android.app.model.EventLog.PlayVoiceOverContext as PlayVoiceOverEventContext
 import org.oppia.android.app.model.EventLog.QuestionContext as QuestionEventContext
 import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
 import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerEventContext
 import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
+import org.oppia.android.app.model.EventLog.VoiceoverActionContext as VoiceoverActionEventContext
 import org.oppia.android.app.model.OppiaMetricLog.ApkSizeMetric as ApkSizePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.CpuUsageMetric as CpuUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsagePerformanceLoggableMetric
@@ -187,8 +187,8 @@ class EventBundleCreator @Inject constructor(
       SOLUTION_UNLOCKED_CONTEXT -> ExplorationContext(activityName, solutionUnlockedContext)
       ACCESS_SOLUTION_CONTEXT -> ExplorationContext(activityName, accessSolutionContext)
       SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext(activityName, submitAnswerContext)
-      PLAY_VOICE_OVER_CONTEXT -> PlayPauseVoiceOverContext(activityName, playVoiceOverContext)
-      PAUSE_VOICE_OVER_CONTEXT -> PlayPauseVoiceOverContext(activityName, pauseVoiceOverContext)
+      PLAY_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, playVoiceOverContext)
+      PAUSE_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, pauseVoiceOverContext)
       APP_IN_BACKGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInBackgroundContext)
       APP_IN_FOREGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInForegroundContext)
       EXIT_EXPLORATION_CONTEXT -> ExplorationContext(activityName, exitExplorationContext)
@@ -389,12 +389,12 @@ class EventBundleCreator @Inject constructor(
       }
     }
 
-    /** The [EventActivityContext] corresponding to [PlayVoiceOverEventContext]s. */
-    class PlayPauseVoiceOverContext(
+    /** The [EventActivityContext] corresponding to [VoiceoverActionEventContext]s. */
+    class VoiceoverActionContext(
       activityName: String,
-      value: PlayVoiceOverEventContext
-    ) : EventActivityContext<PlayVoiceOverEventContext>(activityName, value) {
-      override fun PlayVoiceOverEventContext.storeValue(store: PropertyStore) {
+      value: VoiceoverActionEventContext
+    ) : EventActivityContext<VoiceoverActionEventContext>(activityName, value) {
+      override fun VoiceoverActionEventContext.storeValue(store: PropertyStore) {
         store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
         store.putNonSensitiveValue("content_id", contentId)
         store.putNonSensitiveValue("language_code", languageCode)

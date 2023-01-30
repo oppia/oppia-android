@@ -53,7 +53,6 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_I
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
-import org.oppia.android.app.model.EventLog.PlayVoiceOverContext
 import org.oppia.android.app.model.EventLog.Priority.ESSENTIAL
 import org.oppia.android.app.model.EventLog.Priority.OPTIONAL
 import org.oppia.android.app.model.EventLog.QuestionContext
@@ -62,6 +61,7 @@ import org.oppia.android.app.model.EventLog.StoryContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
+import org.oppia.android.app.model.EventLog.VoiceoverActionContext
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
@@ -1362,12 +1362,12 @@ class KenyaAlphaEventBundleCreatorTest {
   ) = createEventContext(submitAnswerContext, EventContextBuilder::setSubmitAnswerContext)
 
   private fun createPlayVoiceOverContext(
-    playVoiceOverContext: PlayVoiceOverContext = createPlayVoiceOverContextDetails()
+    playVoiceOverContext: VoiceoverActionContext = createPlayVoiceOverContextDetails()
   ) = createEventContext(playVoiceOverContext, EventContextBuilder::setPlayVoiceOverContext)
 
   private fun createPauseVoiceOverContext(
-    playVoiceOverContext: PlayVoiceOverContext = createPauseVoiceOverContextDetails()
-  ) = createEventContext(playVoiceOverContext, EventContextBuilder::setPauseVoiceOverContext)
+    pauseVoiceOverContext: VoiceoverActionContext = createPauseVoiceOverContextDetails()
+  ) = createEventContext(pauseVoiceOverContext, EventContextBuilder::setPauseVoiceOverContext)
 
   private fun createAppInBackgroundContext(
     learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
@@ -1501,7 +1501,7 @@ class KenyaAlphaEventBundleCreatorTest {
     explorationDetails: ExplorationContext = createExplorationContext(),
     contentId: String = TEST_CONTENT_ID,
     languageCode: String = TEST_LANGUAGE_CODE
-  ) = PlayVoiceOverContext.newBuilder().apply {
+  ) = VoiceoverActionContext.newBuilder().apply {
     this.explorationDetails = explorationDetails
     this.contentId = contentId
     this.languageCode = languageCode
@@ -1511,7 +1511,7 @@ class KenyaAlphaEventBundleCreatorTest {
     explorationDetails: ExplorationContext = createExplorationContext(),
     contentId: String = TEST_CONTENT_ID,
     languageCode: String = TEST_LANGUAGE_CODE
-  ) = PlayVoiceOverContext.newBuilder().apply {
+  ) = VoiceoverActionContext.newBuilder().apply {
     this.explorationDetails = explorationDetails
     this.contentId = contentId
     this.languageCode = languageCode

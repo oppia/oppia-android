@@ -108,10 +108,10 @@ message EventLog {
       SubmitAnswerContext submit_answer_context = 22;
 
       // The event being logged is related to playing a voiceover.
-      PlayVoiceOverContext play_voice_over_context = 23;
+      VoiceoverActionContext play_voice_over_context = 23;
 
       // The event being logged is related to pausing a voiceover.
-      PlayVoiceOverContext pause_voice_over_context = 35;
+      VoiceoverActionContext pause_voice_over_context = 35;
 
       // The event being logged is related to backgrounding of the application.
       LearnerDetailsContext app_in_background_context = 24;
@@ -225,8 +225,9 @@ message EventLog {
     bool is_answer_correct = 3;
   }
 
-  // Represents the event context for playing a voiceover within an exploration.
-  message PlayVoiceOverContext {
+  // Represents the event context for performing an action pertaining to a voiceover within an
+  // exploration.
+  message VoiceoverActionContext {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
 

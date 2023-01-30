@@ -107,24 +107,26 @@
       android:clipChildren="false"
       android:clipToPadding="false"
       android:paddingTop="24dp">
+
       <FrameLayout
         android:id="@+id/quick_switch_exploration_language_button_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/component_color_shared_transparent_background_color"
+        android:visibility="@{viewModel.canQuicklyToggleBetweenSwahiliAndEnglish(viewModel.hasSwahiliTranslations, viewModel.allowInLessonQuickLanguageSwitching) ? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toTopOf="@+id/animable_hints_and_solution_fragment_container"
-        android:background="@color/color_palette_transparent_background_color"
-        android:visibility="@{viewModel.canQuicklyToggleBetweenSwahiliAndEnglish(viewModel.hasSwahiliTranslations, viewModel.allowInLessonQuickLanguageSwitching) ? View.VISIBLE : View.GONE}">
+        app:layout_constraintStart_toStartOf="parent">
+
         <androidx.appcompat.widget.AppCompatButton
           android:id="@+id/quick_switch_exploration_language_button"
+          style="@style/SecondaryButton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          style="@style/SecondaryButton"
           android:layout_margin="16dp"
           android:minWidth="@dimen/clickable_item_min_height"
           android:minHeight="@dimen/clickable_item_min_height"
-          android:text="@{viewModel.hasEnabledSwahiliTranslations ? @string/temporary_translate_to_english : @string/temporary_translate_to_swahili}"
-          android:onClick="@{(v) -> viewModel.toggleContentLanguage(viewModel.hasEnabledSwahiliTranslations)}" />
+          android:onClick="@{(v) -> viewModel.toggleContentLanguage(viewModel.hasEnabledSwahiliTranslations)}"
+          android:text="@{viewModel.hasEnabledSwahiliTranslations ? @string/temporary_translate_to_english : @string/temporary_translate_to_swahili}" />
       </FrameLayout>
 
       <FrameLayout
@@ -133,8 +135,9 @@
         android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/hints_and_solution_fragment_container"
           android:layout_width="match_parent"

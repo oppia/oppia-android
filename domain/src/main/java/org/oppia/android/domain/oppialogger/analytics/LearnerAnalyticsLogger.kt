@@ -8,8 +8,8 @@ import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
-import org.oppia.android.app.model.EventLog.PlayVoiceOverContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
+import org.oppia.android.app.model.EventLog.VoiceoverActionContext
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -404,7 +404,10 @@ class LearnerAnalyticsLogger @Inject constructor(
      */
     fun logPlayVoiceOver(contentId: String?, languageCode: String?) {
       logStateEvent(
-        contentId, languageCode, ::createPlayVoiceOverContext, EventBuilder::setPlayVoiceOverContext
+        contentId,
+        languageCode,
+        ::createVoiceoverActionContext,
+        EventBuilder::setPlayVoiceOverContext
       )
     }
 
@@ -417,7 +420,7 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(
         contentId,
         languageCode,
-        ::createPlayVoiceOverContext,
+        ::createVoiceoverActionContext,
         EventBuilder::setPauseVoiceOverContext
       )
     }
@@ -595,11 +598,11 @@ class LearnerAnalyticsLogger @Inject constructor(
       this.explorationDetails = explorationDetails
     }.build()
 
-    private fun createPlayVoiceOverContext(
+    private fun createVoiceoverActionContext(
       contentId: String?,
       languageCode: String?,
       explorationDetails: ExplorationContext
-    ) = PlayVoiceOverContext.newBuilder().apply {
+    ) = VoiceoverActionContext.newBuilder().apply {
       contentId?.let { this.contentId = it }
       languageCode?.let { this.languageCode = languageCode }
       this.explorationDetails = explorationDetails

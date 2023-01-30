@@ -588,11 +588,11 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies the [EventLog]'s context per [hasPlayVoiceOverContext] and returns a
-   * [PlayVoiceOverContextSubject] to test the corresponding context.
+   * [VoiceoverActionContextSubject] to test the corresponding context.
    */
-  fun hasPlayVoiceOverContextThat(): PlayVoiceOverContextSubject {
+  fun hasPlayVoiceOverContextThat(): VoiceoverActionContextSubject {
     hasPlayVoiceOverContext()
-    return PlayVoiceOverContextSubject.assertThat(actual.context.playVoiceOverContext)
+    return VoiceoverActionContextSubject.assertThat(actual.context.playVoiceOverContext)
   }
 
   /**
@@ -600,7 +600,7 @@ class EventLogSubject private constructor(
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasPlayVoiceOverContextThat].
    */
-  fun hasPlayVoiceOverContextThat(block: PlayVoiceOverContextSubject.() -> Unit) {
+  fun hasPlayVoiceOverContextThat(block: VoiceoverActionContextSubject.() -> Unit) {
     hasPlayVoiceOverContextThat().block()
   }
 
@@ -614,11 +614,11 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies the [EventLog]'s context per [hasPauseVoiceOverContext] and returns a
-   * [PlayVoiceOverContextSubject] to test the corresponding context.
+   * [VoiceoverActionContextSubject] to test the corresponding context.
    */
-  fun hasPauseVoiceOverContextThat(): PlayVoiceOverContextSubject {
+  fun hasPauseVoiceOverContextThat(): VoiceoverActionContextSubject {
     hasPauseVoiceOverContext()
-    return PlayVoiceOverContextSubject.assertThat(actual.context.pauseVoiceOverContext)
+    return VoiceoverActionContextSubject.assertThat(actual.context.pauseVoiceOverContext)
   }
 
   /**
@@ -626,7 +626,7 @@ class EventLogSubject private constructor(
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasPauseVoiceOverContextThat].
    */
-  fun hasPauseVoiceOverContextThat(block: PlayVoiceOverContextSubject.() -> Unit) {
+  fun hasPauseVoiceOverContextThat(block: VoiceoverActionContextSubject.() -> Unit) {
     hasPauseVoiceOverContextThat().block()
   }
 
@@ -1318,20 +1318,20 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Truth subject for verifying properties of [EventLog.PlayVoiceOverContext]s.
+   * Truth subject for verifying properties of [EventLog.VoiceoverActionContext]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
-   * [EventLog.PlayVoiceOverContext] proto can be verified through inherited methods.
+   * [EventLog.VoiceoverActionContext] proto can be verified through inherited methods.
    *
-   * Call [PlayVoiceOverContextSubject.assertThat] to create the subject.
+   * Call [VoiceoverActionContextSubject.assertThat] to create the subject.
    */
-  class PlayVoiceOverContextSubject private constructor(
+  class VoiceoverActionContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.PlayVoiceOverContext
+    private val actual: EventLog.VoiceoverActionContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test
-     * [EventLog.PlayVoiceOverContext.getExplorationDetails].
+     * [EventLog.VoiceoverActionContext.getExplorationDetails].
      *
      * This method never fails since the underlying property defaults to empty proto if it's not
      * defined in the context.
@@ -1348,7 +1348,7 @@ class EventLogSubject private constructor(
     }
 
     /**
-     * Returns a [StringSubject] to test [EventLog.PlayVoiceOverContext.getContentId].
+     * Returns a [StringSubject] to test [EventLog.VoiceoverActionContext.getContentId].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
@@ -1356,7 +1356,7 @@ class EventLogSubject private constructor(
     fun hasContentIdThat(): StringSubject = assertThat(actual.contentId)
 
     /**
-     * Returns a [StringSubject] to test [EventLog.PlayVoiceOverContext.getLanguageCode].
+     * Returns a [StringSubject] to test [EventLog.VoiceoverActionContext.getLanguageCode].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
@@ -1365,11 +1365,11 @@ class EventLogSubject private constructor(
 
     companion object {
       /**
-       * Returns a new [PlayVoiceOverContextSubject] to verify aspects of the specified
-       * [EventLog.PlayVoiceOverContext] value.
+       * Returns a new [VoiceoverActionContextSubject] to verify aspects of the specified
+       * [EventLog.VoiceoverActionContext] value.
        */
-      fun assertThat(actual: EventLog.PlayVoiceOverContext): PlayVoiceOverContextSubject =
-        assertAbout(::PlayVoiceOverContextSubject).that(actual)
+      fun assertThat(actual: EventLog.VoiceoverActionContext): VoiceoverActionContextSubject =
+        assertAbout(::VoiceoverActionContextSubject).that(actual)
     }
   }
 

@@ -419,9 +419,9 @@
     <item name="android:background">@drawable/secondary_button_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:drawablePadding">4dp</item>
-    <item name="drawableTint">@color/component_color_shared_secondary_button_background_color</item>
+    <item name="drawableTint">@color/component_color_shared_secondary_button_background_trim_color</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:textColor">@color/component_color_shared_secondary_button_background_color</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_button_background_trim_color</item>
     <item name="android:textSize">14sp</item>
   </style>
   <style name="StartOverLessonButton" parent="SecondaryButton">

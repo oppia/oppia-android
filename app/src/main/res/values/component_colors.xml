@@ -22,7 +22,7 @@
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_transparent_background_color">@color/color_palette_transparent_background_color</color>
   <color name="component_color_shared_white_background_color">@color/color_palette_shared_white_background_color</color>
-  <color name="component_color_shared_secondary_button_background_color">@color/color_palette_secondary_button_background_color</color>
+  <color name="component_color_shared_secondary_button_background_trim_color">@color/color_palette_secondary_button_background_trim_color</color>
   <color name="component_color_shared_hints_background_color">@color/color_palette_shared_hints_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_input_interaction_edit_text_color">@color/color_palette_highlighted_text_color</color>
