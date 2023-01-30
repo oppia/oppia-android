@@ -23,7 +23,8 @@
       android:layout_height="@dimen/spotlight_arrow_height"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:srcCompat="@drawable/ic_rounded_arrow_up_right" />
+      app:srcCompat="@drawable/ic_rounded_arrow_up_right"
+      app:tint="@color/component_color_shared_spotlight_overlay_arrow_color" />
 
     <com.google.android.material.card.MaterialCardView
       android:layout_width="0dp"
@@ -37,7 +38,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/spotlight_hint_background">
+        android:background="@color/component_color_shared_spotlight_hint_background_color">
 
         <TextView
           android:id="@+id/spotlight_hint_text"
@@ -50,6 +51,7 @@
           android:paddingTop="8dp"
           android:paddingEnd="4dp"
           android:paddingBottom="8dp"
+          android:textColor="@color/component_color_shared_secondary_5_text_color"
           android:textSize="20sp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@id/close_spotlight_button"
@@ -64,7 +66,8 @@
           android:onClick="@{(v) -> listener.clickOnDone()}"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          app:srcCompat="@drawable/ic_close_black_24" />
+          app:srcCompat="@drawable/ic_close_black_24"
+          app:tint="@color/component_color_shared_close_spotlight_button_color" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
   </androidx.constraintlayout.widget.ConstraintLayout>
