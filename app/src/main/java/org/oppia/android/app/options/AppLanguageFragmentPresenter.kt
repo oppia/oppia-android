@@ -36,9 +36,8 @@ class AppLanguageFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     this.appLanguage = prefSummaryValue
-
-    binding.viewModel = appLanguageSelectionViewModel
     appLanguageSelectionViewModel.selectedLanguage.value = prefSummaryValue
+    binding.viewModel = appLanguageSelectionViewModel
     binding.lifecycleOwner = fragment
 
     binding.languageRecyclerView.apply {

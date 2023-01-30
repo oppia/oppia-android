@@ -145,6 +145,7 @@ class AppLanguageFragmentTest {
   @Test
   fun testAppLanguage_selectedLanguageIsEnglish() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
       verifyEnglishIsSelected()
     }
   }
@@ -152,6 +153,7 @@ class AppLanguageFragmentTest {
   @Test
   fun testAppLanguage_configChange_selectedLanguageIsEnglish() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
       rotateToLandscape()
       verifyEnglishIsSelected()
     }
@@ -169,6 +171,7 @@ class AppLanguageFragmentTest {
   @Test
   fun testAppLanguage_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
       verifyEnglishIsSelected()
       selectPortuguese()
       verifyPortugueseIsSelected()
@@ -178,6 +181,7 @@ class AppLanguageFragmentTest {
   @Test
   fun testAppLanguage_changeLanguageToPortuguese_configChange_selectedLanguageIsPortuguese() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
       verifyEnglishIsSelected()
       selectPortuguese()
       rotateToLandscape()
@@ -206,6 +210,7 @@ class AppLanguageFragmentTest {
       it.onActivity { it1 -> appLanguageActivity = it1 }
       testCoroutineDispatchers.runCurrent()
       appLanguageActivity?.recreate()
+      testCoroutineDispatchers.runCurrent()
       verifyKiswahiliIsSelected(appLanguageActivity)
     }
   }
@@ -213,7 +218,7 @@ class AppLanguageFragmentTest {
   private fun verifyKiswahiliIsSelected(appLanguageActivity: AppLanguageActivity?) {
     checkSelectedLanguage(index = KISWAHILI_BUTTON_INDEX, expectedLanguageName = "Kiswahili")
     assertThat(appLanguageActivity?.appLanguageActivityPresenter?.getLanguageSelected()?.name)
-      .isEqualTo("SWAHILI")
+      .isEqualTo(OppiaLanguage.SWAHILI.name)
   }
 
   private fun selectPortuguese() {
