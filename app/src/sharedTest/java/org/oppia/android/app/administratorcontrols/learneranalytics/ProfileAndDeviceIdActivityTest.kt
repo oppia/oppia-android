@@ -175,7 +175,7 @@ class ProfileAndDeviceIdActivityTest {
   fun testActivity_withOnlyAdminProfile_hasOneProfileListed() {
     // Verify that the fragment has actually loaded by checking to make sure there are items listed
     // in its recycler view.
-    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 3))
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 4))
   }
 
   private fun setUpTestApplicationComponent() {

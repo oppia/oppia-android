@@ -99,12 +99,9 @@ class OppiaLoggerTest {
     private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
   }
 
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
