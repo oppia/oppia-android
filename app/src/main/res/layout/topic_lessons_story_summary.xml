@@ -28,8 +28,8 @@
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:rippleColor="@color/component_color_lessons_tab_activity_lesson_card_ripple_color"
-    app:strokeWidth="1dp"
-    app:strokeColor="@color/component_color_shared_card_border_stroke_color">
+    app:strokeColor="@color/component_color_shared_card_border_stroke_color"
+    app:strokeWidth="1dp">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -71,7 +71,7 @@
               android:layout_gravity="center"
               android:fontFamily="sans-serif-medium"
               android:text="@{viewModel.storyProgressPercentageText}"
-              android:textColor="@color/component_color_shared_text_view_text_color"
+              android:textColor="@color/component_color_shared_primary_text_color"
               android:textSize="14sp"
               android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
           </FrameLayout>
@@ -83,7 +83,7 @@
             android:layout_marginTop="4dp"
             android:fontFamily="sans-serif"
             android:text="@{viewModel.storyPercentage != 100? @string/status_in_progress : @string/status_completed}"
-            android:textColor="@color/component_color_shared_text_view_text_color"
+            android:textColor="@color/component_color_shared_primary_text_color"
             android:textSize="10sp"
             android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
         </LinearLayout>
@@ -112,7 +112,7 @@
               android:paddingTop="24dp"
               android:paddingBottom="4dp"
               android:text="@{viewModel.storyTitle}"
-              android:textColor="@color/component_color_shared_text_view_text_color"
+              android:textColor="@color/component_color_shared_primary_text_color"
               android:textSize="18sp" />
 
             <TextView
@@ -122,7 +122,7 @@
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif"
               android:text="@{viewModel.computeChapterCountText()}"
-              android:textColor="@color/component_color_shared_text_view_text_color"
+              android:textColor="@color/component_color_shared_primary_text_color"
               android:textSize="16sp" />
           </LinearLayout>
 
@@ -143,7 +143,7 @@
               app:isRotationAnimationClockwise="@{isListExpanded}"
               app:rotationAnimationAngle="@{180f}"
               app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
-              app:tint="@color/component_color_lessons_tab_activity_lesson_card_drop_down_arrow_color"/>
+              app:tint="@color/component_color_lessons_tab_activity_lesson_card_drop_down_arrow_color" />
           </FrameLayout>
         </LinearLayout>
       </LinearLayout>
