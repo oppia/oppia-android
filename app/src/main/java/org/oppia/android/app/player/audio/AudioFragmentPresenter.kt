@@ -111,6 +111,13 @@ class AudioFragmentPresenter @Inject constructor(
       Observer {
         prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
         binding.audioProgressSeekBar.isEnabled = prepared
+
+        // This check will execute any pending pause request that causes
+        // issue with audio not being paused as user navigates through
+        // lessons in a topic check below issue for more details
+        // https://github.com/oppia/oppia-android/issues/1801
+        // Link to notes on why this fix works can be found on link below
+        // https://github.com/oppia/oppia-android/pull/4629#issuecomment-1410005186
         if (prepared && isPauseAudioRequestPending) {
           pauseAudio()
         }
