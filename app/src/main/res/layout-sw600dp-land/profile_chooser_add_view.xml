@@ -59,7 +59,7 @@
         <TextView
           android:id="@+id/add_profile_text"
           style="@style/Caption"
-          android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
+          android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_activity_profile_chooser_add : @string/profile_chooser_activity_set_up_multiple_profiles}"
           android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="20sp" />
 
