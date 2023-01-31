@@ -2476,6 +2476,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLanguageMidLesson_englishToSwahili_updatesProfilesContentLanguage() {
     logIntoAnalyticsReadyAdminProfile()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
@@ -2521,6 +2522,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLanguageMidLesson_englishToSwahili_diffProfile_doesNotChangeOtherProfilesLang() {
     val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
@@ -2547,6 +2549,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLanguageMidLesson_swahiliToEnglish_updatesProfilesContentLanguage() {
     logIntoAnalyticsReadyAdminProfile()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
