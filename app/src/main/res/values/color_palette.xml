@@ -5,6 +5,7 @@
   <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_primary_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_white_text_color">@color/color_def_white</color>
+  <color name="color_palette_black_text_color">@color/color_def_black</color>
   <color name="color_palette_highlighted_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_skip_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_background_color">@color/color_def_oppia_light_yellow</color>
@@ -190,4 +191,7 @@
   <color name="color_palette_story_chapter_default_progress_stroke_color">@color/color_def_light_grey</color>
   <color name="color_palette_topic_thumbnail_background_color">@color/color_def_columbia_blue</color>
   <color name="color_palette_navbar_header_background_color">@color/color_def_japanese_indigo</color>
+  <color name="color_palette_shared_spotlight_hint_background_color">@color/color_def_oppia_light_yellow</color>
+  <color name="color_palette_shared_close_spotlight_button_color">@color/color_def_black</color>
+  <color name="color_palette_shared_spotlight_overlay_arrow_color">@color/color_def_white</color>
 </resources>
