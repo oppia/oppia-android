@@ -78,6 +78,9 @@
   <color name="component_color_shared_icon_white_color">@color/color_palette_icon_white_color</color>
   <color name="component_color_shared_icon_color">@color/color_palette_icon_color</color>
   <color name="component_color_shared_resume_lesson_start_over_button_color">@color/color_palette_shared_resume_lesson_start_over_button_color</color>
+  <color name="component_color_shared_spotlight_hint_background_color">@color/color_palette_shared_spotlight_hint_background_color</color>
+  <color name="component_color_shared_close_spotlight_button_color">@color/color_palette_shared_close_spotlight_button_color</color>
+  <color name="component_color_shared_spotlight_overlay_arrow_color">@color/color_palette_shared_spotlight_overlay_arrow_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_fragment_status_bar_color">@color/color_palette_fragment_status_bar_color</color>
@@ -91,6 +94,7 @@
   <color name="component_color_shared_secondary_2_text_color">@color/color_palette_secondary_2_text_color</color>
   <color name="component_color_shared_secondary_3_text_color">@color/color_palette_secondary_3_text_color</color>
   <color name="component_color_shared_secondary_4_text_color">@color/color_palette_white_text_color</color>
+  <color name="component_color_shared_secondary_5_text_color">@color/color_palette_black_text_color</color>
   <color name="component_color_shared_link_text_color">@color/color_palette_link_text_color</color>
   <color name="component_color_shared_active_text_color">@color/color_palette_primary_color</color>
   <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
