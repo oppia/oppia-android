@@ -117,7 +117,7 @@
           android:enabled="@{viewModel.isSubmitButtonActive}"
           android:minHeight="48dp"
           android:text="@string/admin_auth_submit"
-          android:textColor="@{viewModel.isSubmitButtonActive() ? @color/component_color_shared_button_active_text_color : @color/component_color_shared_button_inactive_text_color }"
+          android:textColor="@{viewModel.isSubmitButtonActive() ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
           app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
           app:layout_constraintHorizontal_bias="1.0"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_input_pin" />
