@@ -117,7 +117,6 @@ class AudioFragmentPresenter @Inject constructor(
         // Check #1801 for more details, and specifically
         // https://github.com/oppia/oppia-android/pull/4629#issuecomment-1410005186
         // for notes on why this fix works.
-
         if (prepared && isPauseAudioRequestPending) {
           pauseAudio()
         }
