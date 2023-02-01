@@ -59,7 +59,7 @@
       android:paddingEnd="8dp"
       android:text="@{viewModel.computePreviousResponsesHeaderText()}"
       android:textAllCaps="true"
-      android:textColor="@color/component_color_shared_previous_responses_header_item_text_color"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="14sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
