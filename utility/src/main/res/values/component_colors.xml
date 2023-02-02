@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="component_color_shared_equation_color">@color/color_palette_shared_equation_color</color>
+</resources>
