@@ -23,11 +23,6 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.request.target.Target
 import io.github.karino2.kotlitex.view.DrawableSurface
 import io.github.karino2.kotlitex.view.MathExpressionSpan
-import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.roundToInt
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -36,6 +31,11 @@ import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ConsoleLoggerInjectorProvider
 import org.oppia.android.util.threading.DispatcherInjectorProvider
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
  * [ModelLoader] for rendering and caching bitmap representations of LaTeX represented by
