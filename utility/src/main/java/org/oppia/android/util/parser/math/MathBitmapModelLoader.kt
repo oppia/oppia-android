@@ -4,7 +4,6 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
@@ -24,19 +23,19 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.request.target.Target
 import io.github.karino2.kotlitex.view.DrawableSurface
 import io.github.karino2.kotlitex.view.MathExpressionSpan
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.logging.ConsoleLoggerInjectorProvider
-import org.oppia.android.util.threading.DispatcherInjectorProvider
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.oppia.android.util.R
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.logging.ConsoleLoggerInjectorProvider
+import org.oppia.android.util.threading.DispatcherInjectorProvider
 
 /**
  * [ModelLoader] for rendering and caching bitmap representations of LaTeX represented by
@@ -116,7 +115,11 @@ class MathBitmapModelLoader private constructor(
             model.lineHeight,
             application.assets,
             !model.useInlineRendering,
-            ResourcesCompat.getColor(application.resources, R.color.component_color_shared_equation_color, null)
+            ResourcesCompat.getColor(
+              application.resources,
+              R.color.component_color_shared_equation_color,
+              null
+            )
           ).also { it.ensureDrawable() }
         }
         val renderableText = SpannableStringBuilder("\uFFFC").apply {

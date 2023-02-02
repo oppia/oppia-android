@@ -2,7 +2,6 @@ package org.oppia.android.util.parser.html
 
 import android.app.Application
 import android.content.res.AssetManager
-import android.graphics.Color
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
@@ -74,7 +73,11 @@ class MathTagHandler(
             lineHeight,
             assetManager,
             isMathMode = !useInlineRendering,
-            ResourcesCompat.getColor(application.resources, R.color.component_color_shared_equation_color, null)
+            ResourcesCompat.getColor(
+              application.resources,
+              R.color.component_color_shared_equation_color,
+              null
+            )
           )
         }
       }
