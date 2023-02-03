@@ -66,6 +66,8 @@ class AudioFragmentPresenter @Inject constructor(
   private val viewModel by lazy {
     getAudioViewModel()
   }
+
+  private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
@@ -109,6 +111,15 @@ class AudioFragmentPresenter @Inject constructor(
       Observer {
         prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
         binding.audioProgressSeekBar.isEnabled = prepared
+
+        // This check will execute any pending pause request that causes issues with
+        // audio not being paused as the user navigates through lessons in a topic.
+        // Check #1801 for more details, and specifically
+        // https://github.com/oppia/oppia-android/pull/4629#issuecomment-1410005186
+        // for notes on why this fix works.
+        if (prepared && isPauseAudioRequestPending) {
+          pauseAudio()
+        }
       }
     )
 
@@ -225,8 +236,11 @@ class AudioFragmentPresenter @Inject constructor(
     viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
-    if (prepared)
+    isPauseAudioRequestPending = true
+    if (prepared && isPauseAudioRequestPending) {
       viewModel.pauseAudio()
+      isPauseAudioRequestPending = false
+    }
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
