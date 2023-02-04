@@ -3,7 +3,7 @@
   android:shape="oval">
   <stroke
     android:width="2dp"
-    android:color="@color/color_def_black_54" />
+    android:color="@color/component_color_shared_radio_button_unchecked_color" />
   <size
     android:width="20dp"
     android:height="20dp" />
