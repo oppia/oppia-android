@@ -143,7 +143,7 @@
               app:isRotationAnimationClockwise="@{isListExpanded}"
               app:rotationAnimationAngle="@{180f}"
               app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
-              app:tint="@color/component_color_lessons_tab_activity_lesson_card_drop_down_arrow_color" />
+              app:tint="@color/component_color_shared_multipane_icon_color" />
           </FrameLayout>
         </LinearLayout>
       </LinearLayout>

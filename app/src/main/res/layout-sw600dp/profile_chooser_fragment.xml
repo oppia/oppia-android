@@ -60,7 +60,7 @@
           android:layout_marginTop="80dp"
           android:fontFamily="sans-serif"
           android:text="@string/profile_chooser_select"
-          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="36sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
