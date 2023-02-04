@@ -2,6 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.home.recentlyplayed.RecentlyPlayedViewModel" />
+  </data>
+
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +26,8 @@
       android:overScrollMode="never"
       android:paddingTop="@dimen/recently_played_fragment_padding_top"
       android:paddingBottom="@dimen/recently_played_fragment_padding_bottom"
-      android:scrollbars="none" />
+      android:scrollbars="none"
+      app:data="@{viewModel.recentlyPlayedLiveData}" />
 
     <View
       android:id="@+id/recently_played__shadow_view"
