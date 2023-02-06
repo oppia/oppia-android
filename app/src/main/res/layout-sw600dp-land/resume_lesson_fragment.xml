@@ -21,7 +21,7 @@
       android:layout_width="0dp"
       android:layout_height="match_parent"
       android:layout_weight="1"
-      android:background="@color/component_color_resume_lesson_topic_thumbnail_background_color"
+      android:background="@color/component_color_shared_topic_thumbnail_background_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline6"
