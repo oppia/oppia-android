@@ -81,6 +81,8 @@
   <color name="component_color_shared_spotlight_hint_background_color">@color/color_palette_shared_spotlight_hint_background_color</color>
   <color name="component_color_shared_close_spotlight_button_color">@color/color_palette_shared_close_spotlight_button_color</color>
   <color name="component_color_shared_spotlight_overlay_arrow_color">@color/color_palette_shared_spotlight_overlay_arrow_color</color>
+  <color name="component_color_shared_download_story_text_color">@color/color_palette_shared_download_story_text_color</color>
+  <color name="component_color_shared_topic_thumbnail_background_color">@color/color_palette_topic_thumbnail_background_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_fragment_status_bar_color">@color/color_palette_fragment_status_bar_color</color>
@@ -137,8 +139,6 @@
   <color name="component_color_story_chapter_not_start_progress_solid_color">@color/color_palette_shared_white_background_color</color>
   <color name="component_color_story_chapter_default_progress_stroke_color">@color/color_palette_story_chapter_default_progress_stroke_color</color>
   <color name="component_color_story_activity_story_chapter_card_not_start_stroke_color">@color/color_palette_story_chapter_not_start_stroke_color</color>
-  <!-- Resume Lesson Activity -->
-  <color name="component_color_resume_lesson_topic_thumbnail_background_color">@color/color_palette_topic_thumbnail_background_color</color>
   <!-- Exploration Activity -->
   <color name="component_color_exploration_activity_content_background_stroke_color">@color/color_palette_content_background_stroke_color</color>
   <color name="component_color_exploration_activity_content_background_solid_color">@color/color_palette_content_background_solid_color</color>
@@ -175,20 +175,14 @@
   <!-- Home Activity -->
   <color name="component_color_home_activity_view_all_text_color">@color/color_palette_view_all_text_color</color>
   <color name="component_color_home_activity_layout_greeting_text_line_color">@color/color_palette_layout_below_greeting_text_color</color>
-  <!--  CONFETTI COLORS -->
+  <!-- CONFETTI COLORS -->
   <color name="component_color_confetti_red_color">@color/color_palette_confetti_red_color</color>
   <color name="component_color_confetti_yellow_color">@color/color_palette_confetti_yellow_color</color>
   <color name="component_color_confetti_blue_color">@color/color_palette_confetti_blue_color</color>
   <!-- Topic Info Fragment -->
-  <color name="component_color_topic_info_fragment_background_color">@color/color_palette_primary_background_color</color>
-  <color name="component_color_topic_info_fragment_topic_name_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_topic_info_fragment_story_count_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_topic_info_fragment_thumbnail_gradient_end_color">@color/color_palette_thumbnail_gradient_end_color</color>
   <color name="component_color_topic_info_fragment_thumbnail_gradient_start_color">@color/color_palette_thumbnail_gradient_start_color</color>
-  <color name="component_color_topic_info_fragment_see_more_text_color">@color/color_palette_primary_color</color>
   <color name="component_color_topic_info_fragment_download_status_image_color">@color/color_palette_primary_color</color>
-  <color name="component_color_topic_info_fragment_download_story_count_text_color">@color/color_palette_show_text_color</color>
-  <color name="component_color_topic_info_fragment_download_story_size_text_color">@color/color_palette_show_text_color</color>
   <!-- Drawer Fragment -->
   <color name="component_color_drawer_fragment_selected_text_color">@color/color_palette_menu_selected_text_color</color>
   <color name="component_color_drawer_fragment_developer_options_selected_text_color">@color/color_palette_developer_option_menu_selected_color</color>
@@ -206,9 +200,7 @@
   <color name="component_color_profile_progress_activity_view_all_text_color">@color/color_palette_view_all_text_color</color>
   <color name="component_color_profile_progress_activity_story_count_card_stroke_color">@color/color_palette_profile_progress_activity_story_count_card_stroke_color</color>
   <!-- Topic Practice Fragment -->
-  <color name="component_color_topic_practice_fragment_background_color">@color/color_palette_topic_fragments_background_color</color>
   <color name="component_color_topic_practice_header_view_description_text_color">@color/color_palette_topic_practice_header_description_color</color>
-  <color name="component_color_topic_practice_subtopic_checkbox_text_color">@color/color_palette_primary_container_background_color</color>
   <!-- Profile Edit Activity -->
   <color name="component_color_profile_edit_activity_delete_button_text_color">@color/color_palette_error_color</color>
   <color name="component_color_profile_edit_activity_profile_rename_button_background_color">@color/color_palette_item_background_solid_color</color>
