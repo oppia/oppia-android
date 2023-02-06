@@ -4,17 +4,14 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageActivityInjector
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider
 import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent
@@ -28,7 +25,6 @@ abstract class InjectableAppCompatActivity :
    * during activity creation (which is recommended to be done in an override of [onCreate]).
    */
   lateinit var activityComponent: ActivityComponent
-  lateinit var profileId: ProfileId
 
   override fun attachBaseContext(newBase: Context?) {
     val applicationContext = checkNotNull(newBase?.applicationContext) {
@@ -42,8 +38,6 @@ abstract class InjectableAppCompatActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     ensureLayoutDirection()
     super.onCreate(savedInstanceState)
-    profileId = intent.extractCurrentUserProfileId()
-    Log.e("current profile id", profileId.internalId.toString())
   }
 
   override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
