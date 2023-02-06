@@ -136,3 +136,9 @@ enum AudioLanguage {
   CHINESE_AUDIO_LANGUAGE =  5;
   BRAZILIAN_PORTUGUESE_LANGUAGE = 6;
 }
+
+// Defines the current user profile for a given user.
+message CurrentUserProfile {
+  // ProfileId value depicting the profileId of the currently user.
+  ProfileId profile_id = 1;
+}

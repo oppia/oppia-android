@@ -20,6 +20,7 @@ import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
@@ -44,6 +45,13 @@ class HomeActivity :
       return Intent(context, HomeActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
         decorateWithScreenName(HOME_ACTIVITY)
+        decorateWithUserProfileId(
+          ProfileId.newBuilder().apply {
+            if (profileId != null) {
+              internalId = profileId
+            }
+          }.build()
+        )
       }
     }
   }
