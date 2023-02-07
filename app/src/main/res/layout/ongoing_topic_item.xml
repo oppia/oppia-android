@@ -24,6 +24,7 @@
     android:clickable="true"
     android:focusable="true"
     android:onClick="@{(v) -> viewModel.onTopicItemClicked()}"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
@@ -67,7 +68,7 @@
           android:gravity="start"
           android:lines="2"
           android:text="@{viewModel.topicTitle}"
-          android:textColor="@color/component_color_shared_topic_card_text_view_color"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="14sp"
           android:textStyle="bold"
           app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +83,7 @@
           android:fontFamily="sans-serif-light"
           android:paddingBottom="12dp"
           android:text="@{viewModel.computeStoryCountText()}"
-          android:textColor="@color/component_color_shared_topic_card_text_view_color"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="14sp"
           android:textStyle="italic"
           app:layout_constraintEnd_toEndOf="@id/topic_name_text_view"
