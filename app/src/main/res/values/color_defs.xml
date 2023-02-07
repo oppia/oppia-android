@@ -77,6 +77,7 @@
   <color name="color_def_dark_mode_question_player_progress_bar_gradient_end">#00C7B6</color>
   <color name="color_def_whitish_grey">#E5E5E5</color>
   <color name="color_def_checkbox_green">#008577</color>
+  <color name="color_def_radio_green">#00A89F</color>
   <color name="color_def_stroke_silver">#777777</color>
   <color name="color_def_drag_drop_single_item_gradient_center">#F7F7F7</color>
   <color name="color_def_drag_drop_single_item_gradient_end">#DCDCDC</color>
