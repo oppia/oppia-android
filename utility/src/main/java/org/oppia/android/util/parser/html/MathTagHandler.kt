@@ -76,7 +76,7 @@ class MathTagHandler(
             ResourcesCompat.getColor(
               application.resources,
               R.color.component_color_shared_equation_color,
-              null
+              /* paramName= theme */ null
             )
           )
         }
