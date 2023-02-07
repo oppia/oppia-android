@@ -8,7 +8,6 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
@@ -21,6 +20,7 @@ import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
@@ -38,18 +38,15 @@ class HomeActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   companion object {
     fun createHomeActivity(context: Context, profileId: Int?): Intent {
       return Intent(context, HomeActivity::class.java).apply {
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
         decorateWithScreenName(HOME_ACTIVITY)
         decorateWithUserProfileId(
           ProfileId.newBuilder().apply {
-            if (profileId != null) {
-              internalId = profileId
-            }
+            internalId = profileId!!
           }.build()
         )
       }
@@ -59,8 +56,8 @@ class HomeActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
-    homeActivityPresenter.handleOnCreate(internalProfileId)
+    profileId = intent.extractCurrentUserProfileId()
+    homeActivityPresenter.handleOnCreate(profileId.internalId)
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 
@@ -104,7 +101,7 @@ class HomeActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(ProfileId.newBuilder().setInternalId(profileId.internalId).build())
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
     activityRouter.routeToScreen(

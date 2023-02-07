@@ -7,12 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -29,6 +29,7 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -48,21 +49,21 @@ class HomeFragmentPresenter @Inject constructor(
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: HomeFragmentBinding
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    profileId = activity.intent.extractCurrentUserProfileId()
     logHomeActivityEvent()
 
     val homeViewModel = HomeViewModel(
       activity,
       fragment,
       oppiaLogger,
-      internalProfileId,
+      profileId.internalId,
       profileManagementController,
       topicListController,
       topicEntityType,
@@ -150,7 +151,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      internalProfileId,
+      profileId.internalId,
       topicSummary.topicId,
       topicSummary.firstStoryId
     )

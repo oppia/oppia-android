@@ -7,7 +7,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivityPresenter
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
@@ -18,6 +17,8 @@ import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 class NavigationDrawerTestActivity :
@@ -34,12 +35,16 @@ class NavigationDrawerTestActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   companion object {
     fun createNavigationDrawerTestActivity(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
+      intent.decorateWithUserProfileId(
+        ProfileId.newBuilder().apply {
+          internalId = profileId!!
+        }.build()
+      )
       return intent
     }
   }
@@ -47,8 +52,8 @@ class NavigationDrawerTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
-    homeActivityPresenter.handleOnCreate(internalProfileId)
+    profileId = intent.extractCurrentUserProfileId()
+    homeActivityPresenter.handleOnCreate(profileId.internalId)
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 
@@ -76,7 +81,7 @@ class NavigationDrawerTestActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(ProfileId.newBuilder().setInternalId(profileId.internalId).build())
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 

@@ -6,13 +6,13 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
@@ -20,6 +20,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
@@ -96,9 +97,13 @@ class HelpActivity :
       isFromNavigationDrawer: Boolean
     ): Intent {
       val intent = Intent(context, HelpActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       intent.decorateWithScreenName(HELP_ACTIVITY)
+      intent.decorateWithUserProfileId(
+        ProfileId.newBuilder().apply {
+          internalId = profileId!!
+        }.build()
+      )
       return intent
     }
   }

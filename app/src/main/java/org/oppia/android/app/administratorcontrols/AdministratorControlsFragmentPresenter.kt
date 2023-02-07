@@ -13,7 +13,6 @@ import org.oppia.android.app.administratorcontrols.administratorcontrolsitemview
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileAndDeviceIdViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -24,6 +23,7 @@ import org.oppia.android.databinding.AdministratorControlsFragmentBinding
 import org.oppia.android.databinding.AdministratorControlsGeneralViewBinding
 import org.oppia.android.databinding.AdministratorControlsLearnerAnalyticsViewBinding
 import org.oppia.android.databinding.AdministratorControlsProfileViewBinding
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -56,8 +56,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
           /* attachToRoot= */ false
         )
 
-    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = activity.intent.extractCurrentUserProfileId()
     administratorControlsViewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)

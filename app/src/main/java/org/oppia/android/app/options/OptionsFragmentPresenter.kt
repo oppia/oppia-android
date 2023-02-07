@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
@@ -23,6 +22,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -49,7 +49,6 @@ class OptionsFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
   private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
   private var audioLanguage = AudioLanguage.NO_AUDIO
@@ -71,8 +70,7 @@ class OptionsFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = activity.intent.extractCurrentUserProfileId()
     viewModel.setProfileId(profileId)
 
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter(isMultipane)

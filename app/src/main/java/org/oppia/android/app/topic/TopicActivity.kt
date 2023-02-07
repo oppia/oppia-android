@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
@@ -19,6 +18,8 @@ import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
@@ -33,7 +34,7 @@ class TopicActivity :
   RouteToResumeLessonListener,
   RouteToRevisionCardListener {
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private var storyId: String? = null
 
@@ -43,12 +44,12 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
+    profileId = intent.extractCurrentUserProfileId()
     topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
-    topicActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
+    topicActivityPresenter.handleOnCreate(profileId.internalId, topicId, storyId)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -56,7 +57,7 @@ class TopicActivity :
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
         skillIdList,
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        ProfileId.newBuilder().setInternalId(profileId.internalId).build()
       )
     )
   }
@@ -147,10 +148,6 @@ class TopicActivity :
 
   companion object {
 
-    fun getProfileIdKey(): String {
-      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-    }
-
     fun getTopicIdKey(): String {
       return TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
     }
@@ -166,7 +163,11 @@ class TopicActivity :
       topicId: String
     ): Intent {
       return Intent(context, TopicActivity::class.java).apply {
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+        decorateWithUserProfileId(
+          ProfileId.newBuilder().apply {
+            internalId = internalProfileId
+          }.build()
+        )
         putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
         decorateWithScreenName(TOPIC_ACTIVITY)
       }

@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.ADMIN_PIN_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 const val ADMIN_PIN_PROFILE_ID_EXTRA_KEY = "AdminPinActivity.admin_pin_profile_id"
@@ -26,10 +28,10 @@ class AdminPinActivity : InjectableAppCompatActivity() {
       adminPinEnum: Int
     ): Intent {
       return Intent(context, AdminPinActivity::class.java).apply {
-        putExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, profileId)
         putExtra(ADMIN_PIN_COLOR_RGB_EXTRA_KEY, colorRgb)
         putExtra(ADMIN_PIN_ENUM_EXTRA_KEY, adminPinEnum)
         decorateWithScreenName(ADMIN_PIN_ACTIVITY)
+        decorateWithUserProfileId(ProfileId.newBuilder().apply { internalId = profileId }.build())
       }
     }
   }

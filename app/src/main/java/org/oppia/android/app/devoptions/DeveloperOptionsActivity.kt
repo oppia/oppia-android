@@ -12,10 +12,12 @@ import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesComplete
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for Developer Options. */
@@ -35,12 +37,12 @@ class DeveloperOptionsActivity :
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
-  private var internalProfileId = -1
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    profileId = intent.extractCurrentUserProfileId()
     developerOptionsActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.developer_options_activity_title)
   }
@@ -48,21 +50,21 @@ class DeveloperOptionsActivity :
   override fun routeToMarkChaptersCompleted() {
     startActivity(
       MarkChaptersCompletedActivity
-        .createMarkChaptersCompletedIntent(this, internalProfileId)
+        .createMarkChaptersCompletedIntent(this, profileId.internalId)
     )
   }
 
   override fun routeToMarkStoriesCompleted() {
     startActivity(
       MarkStoriesCompletedActivity
-        .createMarkStoriesCompletedIntent(this, internalProfileId)
+        .createMarkStoriesCompletedIntent(this, profileId.internalId)
     )
   }
 
   override fun routeToMarkTopicsCompleted() {
     startActivity(
       MarkTopicsCompletedActivity
-        .createMarkTopicsCompletedIntent(this, internalProfileId)
+        .createMarkTopicsCompletedIntent(this, profileId.internalId)
     )
   }
 
@@ -82,13 +84,13 @@ class DeveloperOptionsActivity :
     /** Function to create intent for DeveloperOptionsActivity */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
+        decorateWithUserProfileId(
+          ProfileId.newBuilder().apply {
+            internalId = internalProfileId
+          }.build()
+        )
       }
-    }
-
-    fun getIntentKey(): String {
-      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
   }
 
