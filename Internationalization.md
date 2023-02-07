@@ -4,11 +4,15 @@ We are grateful for the support of [Translatewiki](https://translatewiki.net/w/i
 
 If you would like to help out with translations, you can do so by visiting the [Translatewiki dashboard](https://translatewiki.net/w/i.php?title=Special:Translate&group=oppia-android-app&filter=%21translated&action=translate) and picking a supported language from the dropdown menu on the right.
 
+## Minimal set of topics
+
+In addition to platform translations, we need the Oppia lessons themselves to be sufficiently translated before we can offer the app in a given language.
+
+Currently, we define this **minimal set** of topics as: Place Values, Addition and Subtraction, Multiplication, Division, Fractions and Ratios.
+
 ## Policy for enabling new languages
 
-Note that we only enable a select set of languages for Translatewiki. This is because we also need the lessons themselves to be sufficiently translated before we can offer the app in a given language. (We currently define this **minimal set** of topics as: Place Values, Addition and Subtraction, Multiplication, Division, Fractions and Ratios.)
-
-In order not to waste translators' efforts, the policy for enabling languages for translation on Translatewiki is as follows:
+Note that we only enable a select set of languages for Translatewiki, since releasing the lessons on the Android app is gated by the lessons themselves needing to be translated (see above). Therefore, in order not to waste translators' efforts, the policy for enabling languages for translation on Translatewiki is as follows:
 
   - The translations for all topics in the minimal set on Oppia.org should be complete, or very close to complete.
 
