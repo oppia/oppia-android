@@ -43,7 +43,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -104,6 +103,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -376,7 +376,9 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      intended(hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, /* internalProfileId= */ 0))
+      it.onActivity { it1 ->
+        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
+      }
     }
   }
 

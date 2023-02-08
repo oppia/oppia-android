@@ -40,6 +40,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.navigation.NavigationView
+import com.google.common.truth.Truth
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matchers.allOf
@@ -130,6 +131,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -757,7 +759,9 @@ class NavigationDrawerActivityProdTest {
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
         .check(matches(isDisplayed())).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
+      it.onActivity { it1 ->
+        Truth.assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
+      }
     }
   }
 

@@ -943,9 +943,14 @@ class HomeActivityTest {
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      it.onActivity { it1 ->
+        assertThat(
+          it1.intent.extractCurrentUserProfileId()
+            .internalId
+        ).isEqualTo(internalProfileId1)
+      }
     }
   }
 
@@ -1020,9 +1025,14 @@ class HomeActivityTest {
         )
       ).check(matches(withText(containsString("Fractions")))).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      it.onActivity { it1 ->
+        assertThat(
+          it1.intent.extractCurrentUserProfileId()
+            .internalId
+        ).isEqualTo(internalProfileId1)
+      }
     }
   }
 

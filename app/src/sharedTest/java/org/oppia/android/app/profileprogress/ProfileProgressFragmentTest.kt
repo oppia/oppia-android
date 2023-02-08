@@ -135,6 +135,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -652,9 +653,11 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 1, targetViewId = R.id.topic_name_text_view)
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      it.onActivity { it1 ->
+        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(internalProfileId)
+      }
     }
   }
 

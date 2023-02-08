@@ -104,6 +104,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -243,8 +244,10 @@ class OngoingTopicListActivityTest {
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
       intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
+      it.onActivity { it1 ->
+        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(internalProfileId)
+      }
     }
   }
 
@@ -270,8 +273,10 @@ class OngoingTopicListActivityTest {
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
       intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
+      it.onActivity { it1 ->
+        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(internalProfileId)
+      }
     }
   }
 

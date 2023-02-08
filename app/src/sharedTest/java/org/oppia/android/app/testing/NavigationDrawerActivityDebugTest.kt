@@ -24,7 +24,6 @@ import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasTextColor
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
@@ -38,6 +37,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.navigation.NavigationView
+import com.google.common.truth.Truth
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matchers.allOf
@@ -120,6 +120,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -315,12 +316,12 @@ class NavigationDrawerActivityDebugTest {
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
         .check(matches(isDisplayed())).perform(click())
       intended(hasComponent(DeveloperOptionsActivity::class.java.name))
-      intended(
-        hasExtra(
-          DeveloperOptionsActivity.getIntentKey(),
-          internalProfileId
-        )
-      )
+      it.onActivity { it1 ->
+        Truth.assertThat(
+          it1.intent.extractCurrentUserProfileId()
+            .internalId
+        ).isEqualTo(internalProfileId)
+      }
     }
   }
 
