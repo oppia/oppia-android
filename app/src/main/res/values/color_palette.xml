@@ -57,7 +57,7 @@
   <color name="color_palette_multiple_choice_selected_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_multiple_choice_selected_text_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_forgot_pin_color">@color/color_def_oppia_green</color>
-  <color name="color_palette_show_text_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_shared_download_story_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_error_text_color">@color/color_def_error_text</color>
   <color name="color_palette_show_hide_color">@color/color_def_oppia_green</color>
   <color name="color_palette_info_icon_color">@color/color_def_chooser_grey</color>
@@ -139,6 +139,8 @@
   <color name="color_palette_secondary_container_background_color">@color/color_def_teal_blue</color>
   <color name="color_palette_fragment_status_bar_color">@color/color_def_oppia_reddish_brown</color>
   <color name="color_palette_hint_dialog_status_bar_color">@color/color_def_catalina_blue</color>
+  <color name="color_palette_shared_radio_button_unchecked_color">@color/color_def_black_54</color>
+  <color name="color_palette_shared_radio_button_checked_color">@color/color_def_radio_green</color>
   <color name="color_palette_topic_revision_background_color">@color/color_def_oppia_white</color>
   <color name="color_palette_view_all_text_color">@color/color_def_oppia_green</color>
   <color name="color_palette_completed_progress_activity_background_color">@color/color_def_white</color>
