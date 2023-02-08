@@ -29,7 +29,13 @@ class RecentlyPlayedViewModel @Inject constructor(
 
   private var internalProfileId: Int = -1
 
+  /**
+   * Warning: it is required to call @{link #setInternalProfileId} before accessing this property.
+   */
   val recentlyPlayedLiveData: LiveData<List<RecentlyPlayedItemViewModel>> by lazy {
+    // Lazy is required here so that @{link #setInternalProfileId} can be called before. This
+    // pattern is followed in other view models as well. A more flexible solution would be to use
+    // @{link Transformations#switchMap}; it would allow changing the profile id at any time.
     Transformations.map(promotedActivityListLiveData, ::processPromotedStoryList)
   }
 
@@ -37,6 +43,10 @@ class RecentlyPlayedViewModel @Inject constructor(
     getAssumedSuccessfulPromotedActivityList()
   }
 
+  /**
+   * Sets the profile id. Calling this method has no effect if done after accessing
+   * @{link #recentlyPlayedLiveData}
+   */
   fun setInternalProfileId(internalProfileId: Int) {
     this.internalProfileId = internalProfileId
   }
