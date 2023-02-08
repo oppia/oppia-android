@@ -1,11 +1,15 @@
 package org.oppia.android.domain.profile
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
+import android.provider.OpenableColumns
+import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.AppLanguage
@@ -844,15 +848,56 @@ class ProfileManagementController @Inject constructor(
     return false
   }
 
-  private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String? {
-    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
-    val fileName = avatarImagePath.pathSegments.last()
-    val imageFile = File(profileDir, fileName)
+
+
+  private fun getRealPathFromUri(context: Context, fileUri: Uri): String? {
+    val realPath: String
+    realPath = getRealPathFromURI_API19(context, fileUri)
+    return realPath
+  }
+
+  private fun getRealPathFromURI_API19(context: Context, uri: Uri): String {
+    @SuppressLint("Recycle") val returnCursor =
+      context.contentResolver.query(uri, null, null, null, null)!!
+    val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+    val sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE)
+    returnCursor.moveToFirst()
+    val name = returnCursor.getString(nameIndex)
+    val file = File(context.filesDir, name)
     try {
-      FileOutputStream(imageFile).use { fos ->
-        rotateAndCompressBitmap(avatarImagePath, bitmap, /* cropSize= */ 300)
-          .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
+      val inputStream = context.contentResolver.openInputStream(uri)
+      val outputStream = FileOutputStream(file)
+      var read = 0
+      val maxBufferSize = 1024 * 1024
+      assert(inputStream != null)
+      val bytesAvailable = inputStream!!.available()
+
+      //int bufferSize = 1024;
+      val bufferSize = Math.min(bytesAvailable, maxBufferSize)
+      val buffers = ByteArray(bufferSize)
+      while (inputStream.read(buffers).also { read = it } != -1) {
+        outputStream.write(buffers, 0, read)
       }
+      Log.e("File Size", "Size " + file.length())
+      inputStream.close()
+      outputStream.close()
+      Log.e("File Path", "Path " + file.path)
+      Log.e("File Size", "Size " + file.length())
+    } catch (e: java.lang.Exception) {
+    }
+    return file.path
+  }
+
+  private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String? {
+
+    val fileName = avatarImagePath.lastPathSegment!!.substringAfterLast('/')
+    val imageFile = File(context.getExternalFilesDir(null), fileName)
+    val path = getRealPathFromUri(context, avatarImagePath)
+    try {
+      val outputStream = FileOutputStream(imageFile)
+      val bitmap = BitmapFactory.decodeFile(path)
+      bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+      outputStream.close()
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       oppiaLogger.e(
