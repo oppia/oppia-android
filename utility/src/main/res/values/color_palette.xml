@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- TODO(#59): Consolidate color resource files once Bazel migration is done -->
 <resources>
   <color name="color_palette_shared_equation_color">@color/color_def_black</color>
 </resources>
