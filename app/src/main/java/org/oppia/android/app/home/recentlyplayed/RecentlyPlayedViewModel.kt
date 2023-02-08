@@ -17,6 +17,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
 
+/** View model for [RecentlyPlayedFragment]. */
 @FragmentScope
 class RecentlyPlayedViewModel @Inject constructor(
   private val activity: AppCompatActivity,
@@ -30,12 +31,12 @@ class RecentlyPlayedViewModel @Inject constructor(
   private var internalProfileId: Int = -1
 
   /**
-   * Warning: it is required to call @{link #setInternalProfileId} before accessing this property.
+   * Warning: it is required to call [setInternalProfileId] before accessing this property.
    */
   val recentlyPlayedLiveData: LiveData<List<RecentlyPlayedItemViewModel>> by lazy {
-    // Lazy is required here so that @{link #setInternalProfileId} can be called before. This
+    // Lazy is required here so that [setInternalProfileId] can be called before. This
     // pattern is followed in other view models as well. A more flexible solution would be to use
-    // @{link Transformations#switchMap}; it would allow changing the profile id at any time.
+    // [Transformations#switchMap]; it would allow changing the profile id at any time.
     Transformations.map(promotedActivityListLiveData, ::processPromotedStoryList)
   }
 
@@ -45,7 +46,7 @@ class RecentlyPlayedViewModel @Inject constructor(
 
   /**
    * Sets the profile id. Calling this method has no effect if done after accessing
-   * @{link #recentlyPlayedLiveData}
+   * [recentlyPlayedLiveData]
    */
   fun setInternalProfileId(internalProfileId: Int) {
     this.internalProfileId = internalProfileId
