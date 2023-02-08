@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
@@ -16,6 +15,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import javax.inject.Inject
 
 @FragmentScope
 class RecentlyPlayedViewModel @Inject constructor(
