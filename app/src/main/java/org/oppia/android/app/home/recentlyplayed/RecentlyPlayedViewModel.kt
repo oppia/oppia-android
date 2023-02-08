@@ -69,31 +69,31 @@ class RecentlyPlayedViewModel @Inject constructor(
     }
   }
 
-  private fun processPromotedStoryList(
-      promotedActivityList: PromotedActivityList): List<RecentlyPlayedItemViewModel> {
-    val itemList: MutableList<RecentlyPlayedItemViewModel> = mutableListOf()
-    if (promotedActivityList.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
-      addRecentlyPlayedStoryListSection(
-        promotedActivityList.promotedStoryList.recentlyPlayedStoryList,
-        itemList
-      )
-    }
+  private fun processPromotedStoryList(promotedActivityList: PromotedActivityList):
+    List<RecentlyPlayedItemViewModel> {
+      val itemList: MutableList<RecentlyPlayedItemViewModel> = mutableListOf()
+      if (promotedActivityList.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
+        addRecentlyPlayedStoryListSection(
+          promotedActivityList.promotedStoryList.recentlyPlayedStoryList,
+          itemList
+        )
+      }
 
-    if (promotedActivityList.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
-      addOlderStoryListSection(
-        promotedActivityList.promotedStoryList.olderPlayedStoryList,
-        itemList
-      )
-    }
+      if (promotedActivityList.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
+        addOlderStoryListSection(
+          promotedActivityList.promotedStoryList.olderPlayedStoryList,
+          itemList
+        )
+      }
 
-    if (promotedActivityList.promotedStoryList.suggestedStoryList.isNotEmpty()) {
-      addRecommendedStoryListSection(
-        promotedActivityList.promotedStoryList.suggestedStoryList,
-        itemList
-      )
+      if (promotedActivityList.promotedStoryList.suggestedStoryList.isNotEmpty()) {
+        addRecommendedStoryListSection(
+          promotedActivityList.promotedStoryList.suggestedStoryList,
+          itemList
+        )
+      }
+      return itemList
     }
-    return itemList
-  }
 
   private fun addRecentlyPlayedStoryListSection(
     recentlyPlayedStoryList: MutableList<PromotedStory>,
