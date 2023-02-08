@@ -25,6 +25,7 @@ kt_android_library(
     ],
     visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
     deps = [
+        "//utility:resources"
         ":math_latex_model",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:io_github_karino2_kotlitex",
