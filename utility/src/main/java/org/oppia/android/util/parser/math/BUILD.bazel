@@ -24,7 +24,7 @@ kt_android_library(
         "MathBitmapModelLoader.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
+        "//utility:__subpackages__",
         "//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__",
     ],
     deps = [
