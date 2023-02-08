@@ -69,7 +69,8 @@ class RecentlyPlayedViewModel @Inject constructor(
     }
   }
 
-  private fun processPromotedStoryList(promotedActivityList: PromotedActivityList): List<RecentlyPlayedItemViewModel> {
+  private fun processPromotedStoryList(
+      promotedActivityList: PromotedActivityList): List<RecentlyPlayedItemViewModel> {
     val itemList: MutableList<RecentlyPlayedItemViewModel> = mutableListOf()
     if (promotedActivityList.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
       addRecentlyPlayedStoryListSection(
