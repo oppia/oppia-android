@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -17,6 +16,7 @@ import org.oppia.android.databinding.AdminPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [AdminPinActivity]. */
@@ -107,10 +107,7 @@ class AdminPinActivityPresenter @Inject constructor(
       if (failed) {
         return@setOnClickListener
       }
-      val profileId =
-        ProfileId.newBuilder()
-          .setInternalId(activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1))
-          .build()
+      val profileId = activity.intent.extractCurrentUserProfileId()
 
       profileManagementController.updatePin(profileId, inputPin).toLiveData().observe(
         activity,
