@@ -27,7 +27,7 @@
       android:paddingTop="@dimen/recently_played_fragment_padding_top"
       android:paddingBottom="@dimen/recently_played_fragment_padding_bottom"
       android:scrollbars="none"
-      app:data="@{viewModel.recentlyPlayedLiveData}" />
+      app:data="@{viewModel.recentlyPlayedItems}" />
 
     <View
       android:id="@+id/recently_played__shadow_view"

@@ -28,12 +28,13 @@ class RecentlyPlayedViewModel @Inject constructor(
   private val translationController: TranslationController,
 ) {
 
-  private var internalProfileId: Int = -1
+  private lateinit var internalProfileId: ProfileId
 
   /**
+   * [LiveData] with the list of recently played items for a ProfileId, organized in sections.
    * Warning: it is required to call [setInternalProfileId] before accessing this property.
    */
-  val recentlyPlayedLiveData: LiveData<List<RecentlyPlayedItemViewModel>> by lazy {
+  val recentlyPlayedItems: LiveData<List<RecentlyPlayedItemViewModel>> by lazy {
     // Lazy is required here so that [setInternalProfileId] can be called before. This
     // pattern is followed in other view models as well. A more flexible solution would be to use
     // [Transformations#switchMap]; it would allow changing the profile id at any time.
@@ -46,18 +47,16 @@ class RecentlyPlayedViewModel @Inject constructor(
 
   /**
    * Sets the profile id. Calling this method has no effect if done after accessing
-   * [recentlyPlayedLiveData]
+   * [recentlyPlayedItems]
    */
-  fun setInternalProfileId(internalProfileId: Int) {
+  fun setInternalProfileId(internalProfileId: ProfileId) {
     this.internalProfileId = internalProfileId
   }
 
   private val promotedStoryListSummaryResultLiveData:
     LiveData<AsyncResult<PromotedActivityList>>
     by lazy {
-      topicListController.getPromotedActivityList(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      ).toLiveData()
+      topicListController.getPromotedActivityList(internalProfileId).toLiveData()
     }
 
   private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {

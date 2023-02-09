@@ -43,15 +43,15 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
-  private var internalProfileId: Int = -1
+  private lateinit var internalProfileId: ProfileId
   private lateinit var binding: RecentlyPlayedFragmentBinding
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    profileId: Int
   ): View? {
-    this.internalProfileId = internalProfileId
+    this.internalProfileId = ProfileId.newBuilder().setInternalId(profileId).build()
     recentlyPlayedViewModel.setInternalProfileId(internalProfileId)
     binding =
       RecentlyPlayedFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).apply {
@@ -68,15 +68,14 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private fun createLayoutManager(
     adapter: BindableAdapter<RecentlyPlayedItemViewModel>
   ): RecyclerView.LayoutManager {
-
     val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)
     val layoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
         return if (adapter.getItemViewType(position) == ViewType.VIEW_TYPE_TITLE.ordinal) {
-          /* number of spaces this item should occupy = */ spanCount
+          spanCount
         } else {
-          /* number of spaces this item should occupy = */ 1
+          1
         }
       }
     }
@@ -84,9 +83,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   fun promotedStoryClicked(promotedStory: PromotedStory) {
-    val profileId = ProfileId.newBuilder().apply {
-      internalId = internalProfileId
-    }.build()
     val canHavePartialProgressSaved =
       when (promotedStory.chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
@@ -98,7 +94,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          profileId, promotedStory.explorationId
+          internalProfileId, promotedStory.explorationId
         ).toLiveData()
 
       explorationCheckpointLiveData.observe(
@@ -108,7 +104,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               routeToResumeLessonListener.routeToResumeLesson(
-                profileId,
+                internalProfileId,
                 promotedStory.topicId,
                 promotedStory.storyId,
                 promotedStory.explorationId,
@@ -149,20 +145,17 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         is SectionTitleViewModel -> ViewType.VIEW_TYPE_TITLE
         else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
-    }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_TITLE,
-        inflateDataBinding = SectionTitleBinding::inflate,
-        setViewModel = SectionTitleBinding::setViewModel,
-        transformViewModel = { it as SectionTitleViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_PROMOTED_STORY,
-        inflateDataBinding = RecentlyPlayedStoryCardBinding::inflate,
-        setViewModel = RecentlyPlayedStoryCardBinding::setViewModel,
-        transformViewModel = { it as PromotedStoryViewModel }
-      )
-      .build()
+    }.registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_TITLE,
+      inflateDataBinding = SectionTitleBinding::inflate,
+      setViewModel = SectionTitleBinding::setViewModel,
+      transformViewModel = { it as SectionTitleViewModel }
+    ).registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_PROMOTED_STORY,
+      inflateDataBinding = RecentlyPlayedStoryCardBinding::inflate,
+      setViewModel = RecentlyPlayedStoryCardBinding::setViewModel,
+      transformViewModel = { it as PromotedStoryViewModel }
+    ).build()
   }
 
   private fun playExploration(
@@ -178,13 +171,13 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       // cases, lessons played from this fragment are known to be in progress, and that progress
       // can't be resumed here (hence the restart).
       explorationDataController.restartExploration(
-        internalProfileId, topicId, storyId, explorationId
+        internalProfileId.internalId, topicId, storyId, explorationId
       )
     } else {
       // The only lessons that can't have their progress saved are those that were already
       // completed.
       explorationDataController.replayExploration(
-        internalProfileId, topicId, storyId, explorationId
+        internalProfileId.internalId, topicId, storyId, explorationId
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->
@@ -195,7 +188,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+            internalProfileId,
             topicId,
             storyId,
             explorationId,
