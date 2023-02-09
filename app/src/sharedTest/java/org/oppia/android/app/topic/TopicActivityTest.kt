@@ -104,6 +104,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -162,6 +163,20 @@ class TopicActivityTest {
 
     assertThat(currentScreenNameWithIntentOne).isEqualTo(ScreenName.TOPIC_ACTIVITY)
     assertThat(currentScreenNameWithIntentTwo).isEqualTo(ScreenName.TOPIC_ACTIVITY)
+  }
+
+  @Test
+  fun testTopicActivity_createIntent_verifyProfileIdInIntent() {
+    val profileIdOne = TopicActivity.createTopicActivityIntent(
+      context, 1, FRACTIONS_TOPIC_ID
+    ).extractCurrentUserProfileId()
+
+    val profileIdTwo = TopicActivity.createTopicPlayStoryActivityIntent(
+      context, 1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
+    ).extractCurrentUserProfileId()
+
+    assertThat(profileIdOne.internalId).isEqualTo(1)
+    assertThat(profileIdTwo.internalId).isEqualTo(1)
   }
 
   @Test

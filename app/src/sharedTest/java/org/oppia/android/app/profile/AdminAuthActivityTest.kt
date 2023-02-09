@@ -104,6 +104,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -166,6 +167,19 @@ class AdminAuthActivityTest {
     ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.ADMIN_AUTH_ACTIVITY)
+  }
+
+  @Test
+  fun testAdminAuthActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = AdminAuthActivity.createAdminAuthActivityIntent(
+      context = context,
+      adminPin = "12345",
+      profileId = internalProfileId,
+      colorRgb = -10710042,
+      adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
+    ).extractCurrentUserProfileId()
+
+    assertThat(profileId.internalId).isEqualTo(internalProfileId)
   }
 
   @Test

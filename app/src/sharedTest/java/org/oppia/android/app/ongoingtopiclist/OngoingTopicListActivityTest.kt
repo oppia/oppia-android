@@ -160,6 +160,14 @@ class OngoingTopicListActivityTest {
     assertThat(screenName).isEqualTo(ScreenName.ONGOING_TOPIC_LIST_ACTIVITY)
   }
 
+  @Test
+  fun testOngoingTopicListActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = createOngoingTopicListActivityIntent(internalProfileId)
+      .extractCurrentUserProfileId()
+
+    assertThat(profileId.internalId).isEqualTo(internalProfileId)
+  }
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 

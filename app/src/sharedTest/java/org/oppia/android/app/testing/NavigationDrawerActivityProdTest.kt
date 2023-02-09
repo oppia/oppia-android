@@ -877,6 +877,15 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
+  @Test
+  fun testNavigationDrawerActivityProd_createIntent_verifyProfileIdInIntent() {
+    val profileId = createNavigationDrawerActivityIntent(
+      internalProfileId
+    ).extractCurrentUserProfileId()
+
+    Truth.assertThat(profileId.internalId).isEqualTo(internalProfileId)
+  }
+
   private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {
     onView(withContentDescription(R.string.drawer_open_content_description))
       .check(matches(isCompletelyDisplayed()))

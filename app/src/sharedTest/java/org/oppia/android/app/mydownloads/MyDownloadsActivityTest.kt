@@ -80,6 +80,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -130,6 +131,16 @@ class MyDownloadsActivityTest {
     ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.MY_DOWNLOADS_ACTIVITY)
+  }
+
+  @Test
+  fun testMyDownloadsActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = MyDownloadsActivity.createMyDownloadsActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      1
+    ).extractCurrentUserProfileId()
+
+    assertThat(profileId.internalId).isEqualTo(1)
   }
 
   @Singleton

@@ -184,6 +184,15 @@ class CompletedStoryListActivityTest {
   }
 
   @Test
+  fun testCompletedStoryListActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = createCompletedStoryListActivityIntent(
+      internalProfileId
+    ).extractCurrentUserProfileId()
+
+    assertThat(profileId.internalId).isEqualTo(internalProfileId)
+  }
+
+  @Test
   fun testCompletedStoryList_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(createCompletedStoryListActivityIntent(internalProfileId))
     val title = activityTestRule.activity.title

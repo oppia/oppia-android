@@ -1,7 +1,6 @@
 package org.oppia.android.util.profile
 
 import android.content.Intent
-import org.oppia.android.app.model.CurrentUserProfile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
@@ -19,7 +18,7 @@ object CurrentUserProfileIdIntentDecorator {
   fun Intent.decorateWithUserProfileId(profileId: ProfileId) {
     putProtoExtra(
       PROFILE_ID_INTENT_DECORATOR,
-      CurrentUserProfile.newBuilder().setProfileId(profileId).build()
+      profileId
     )
   }
 
@@ -27,7 +26,7 @@ object CurrentUserProfileIdIntentDecorator {
   fun Intent.extractCurrentUserProfileId(): ProfileId {
     return getProtoExtra(
       PROFILE_ID_INTENT_DECORATOR,
-      CurrentUserProfile.getDefaultInstance()
-    ).profileId
+      ProfileId.getDefaultInstance()
+    )
   }
 }
