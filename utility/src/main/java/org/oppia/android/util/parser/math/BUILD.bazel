@@ -23,10 +23,7 @@ kt_android_library(
     srcs = [
         "MathBitmapModelLoader.kt",
     ],
-    visibility = [
-        "//visibility:public",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__",
-    ],
+    visibility = ["//visibility:public"],
     deps = [
         ":math_latex_model",
         "//third_party:com_github_bumptech_glide_glide",
