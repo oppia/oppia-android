@@ -54,7 +54,7 @@
   <color name="color_palette_item_selection_selected_text_color">@color/color_def_white</color>
   <color name="color_palette_item_selection_unselected_text_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_forgot_pin_color">@color/color_def_oppia_turquoise</color>
-  <color name="color_palette_show_text_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_shared_download_story_text_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_error_text_color">@color/color_def_oppia_pink</color>
   <color name="color_palette_show_hide_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_info_icon_color">@color/color_def_oppia_silver</color>
