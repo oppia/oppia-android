@@ -1,11 +1,9 @@
 package org.oppia.android.app.home.recentlyplayed
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
@@ -18,39 +16,55 @@ import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** View model for [RecentlyPlayedFragment]. */
-@FragmentScope
-class RecentlyPlayedViewModel @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
+class RecentlyPlayedViewModel constructor(
+  private val context: Context,
   private val topicListController: TopicListController,
   @StoryHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
+  private val promotedStoryClickListener: PromotedStoryClickListener,
+  private val internalProfileId: ProfileId,
 ) {
 
-  private lateinit var internalProfileId: ProfileId
+  /**
+   * Factory of RecentlyPlayedViewModel.
+   *
+   * Dagger's AssistedInject would do all the wiring automatically, unfortunately it is not imported
+   * in oppia-android.
+   */
+  class Factory @Inject constructor(
+    private val context: Context,
+    private val topicListController: TopicListController,
+    @StoryHtmlParserEntityType private val entityType: String,
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController,
+  ) {
+
+    fun create(
+      promotedStoryClickListener: PromotedStoryClickListener,
+      internalProfileId: ProfileId
+    ): RecentlyPlayedViewModel {
+      return RecentlyPlayedViewModel(
+        context,
+        topicListController,
+        entityType,
+        resourceHandler,
+        translationController,
+        promotedStoryClickListener,
+        internalProfileId,
+      )
+    }
+  }
 
   /**
    * [LiveData] with the list of recently played items for a ProfileId, organized in sections.
-   * Warning: it is required to call [setInternalProfileId] before accessing this property.
    */
   val recentlyPlayedItems: LiveData<List<RecentlyPlayedItemViewModel>> by lazy {
-    // Lazy is required here so that [setInternalProfileId] can be called before. This
-    // pattern is followed in other view models as well. A more flexible solution would be to use
-    // [Transformations#switchMap]; it would allow changing the profile id at any time.
     Transformations.map(promotedActivityListLiveData, ::processPromotedStoryList)
   }
 
   private val promotedActivityListLiveData: LiveData<PromotedActivityList> by lazy {
     getAssumedSuccessfulPromotedActivityList()
-  }
-
-  /**
-   * Sets the profile id. Calling this method has no effect if done after accessing
-   * [recentlyPlayedItems]
-   */
-  fun setInternalProfileId(internalProfileId: ProfileId) {
-    this.internalProfileId = internalProfileId
   }
 
   private val promotedStoryListSummaryResultLiveData:
@@ -71,29 +85,29 @@ class RecentlyPlayedViewModel @Inject constructor(
 
   private fun processPromotedStoryList(promotedActivityList: PromotedActivityList):
     List<RecentlyPlayedItemViewModel> {
-      val itemList: MutableList<RecentlyPlayedItemViewModel> = mutableListOf()
-      if (promotedActivityList.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
-        addRecentlyPlayedStoryListSection(
-          promotedActivityList.promotedStoryList.recentlyPlayedStoryList,
-          itemList
-        )
-      }
-
-      if (promotedActivityList.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
-        addOlderStoryListSection(
-          promotedActivityList.promotedStoryList.olderPlayedStoryList,
-          itemList
-        )
-      }
-
-      if (promotedActivityList.promotedStoryList.suggestedStoryList.isNotEmpty()) {
-        addRecommendedStoryListSection(
-          promotedActivityList.promotedStoryList.suggestedStoryList,
-          itemList
-        )
-      }
-      return itemList
+    val itemList: MutableList<RecentlyPlayedItemViewModel> = mutableListOf()
+    if (promotedActivityList.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
+      addRecentlyPlayedStoryListSection(
+        promotedActivityList.promotedStoryList.recentlyPlayedStoryList,
+        itemList
+      )
     }
+
+    if (promotedActivityList.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
+      addOlderStoryListSection(
+        promotedActivityList.promotedStoryList.olderPlayedStoryList,
+        itemList
+      )
+    }
+
+    if (promotedActivityList.promotedStoryList.suggestedStoryList.isNotEmpty()) {
+      addRecommendedStoryListSection(
+        promotedActivityList.promotedStoryList.suggestedStoryList,
+        itemList
+      )
+    }
+    return itemList
+  }
 
   private fun addRecentlyPlayedStoryListSection(
     recentlyPlayedStoryList: MutableList<PromotedStory>,
@@ -149,10 +163,10 @@ class RecentlyPlayedViewModel @Inject constructor(
     index: Int
   ): RecentlyPlayedItemViewModel {
     return PromotedStoryViewModel(
-      activity,
+      context,
       promotedStory,
       entityType,
-      fragment as PromotedStoryClickListener,
+      promotedStoryClickListener,
       index,
       resourceHandler,
       translationController

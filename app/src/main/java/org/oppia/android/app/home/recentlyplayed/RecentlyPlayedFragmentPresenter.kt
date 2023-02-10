@@ -37,7 +37,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val explorationCheckpointController: ExplorationCheckpointController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  private val recentlyPlayedViewModel: RecentlyPlayedViewModel
+  private val recentlyPlayedViewModelFactory: RecentlyPlayedViewModel.Factory
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -52,7 +52,10 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     profileId: Int
   ): View? {
     this.internalProfileId = ProfileId.newBuilder().setInternalId(profileId).build()
-    recentlyPlayedViewModel.setInternalProfileId(internalProfileId)
+    val recentlyPlayedViewModel = recentlyPlayedViewModelFactory.create(
+      fragment as PromotedStoryClickListener,
+      internalProfileId
+    )
     binding =
       RecentlyPlayedFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).apply {
         lifecycleOwner = fragment
