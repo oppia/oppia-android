@@ -4,6 +4,6 @@
   <dimen name="profile_chooser_fragment_profile_select_text_margin_top">20dp</dimen>
   <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">8dp</dimen>
   <dimen name="profile_chooser_profile_view_view_margin_top">32dp</dimen>
-  <dimen name="profile_chooser_add_view_margin_top_profile_not_added">32dp</dimen>
+  <dimen name="profile_chooser_add_view_margin_top_profile_not_added">24dp</dimen>
 
 </resources>
