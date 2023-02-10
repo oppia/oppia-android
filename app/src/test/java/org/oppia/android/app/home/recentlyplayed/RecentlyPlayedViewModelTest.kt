@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import kotlin.test.fail
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -86,6 +85,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import kotlin.test.fail
 import javax.inject.Inject
 import javax.inject.Singleton
 
