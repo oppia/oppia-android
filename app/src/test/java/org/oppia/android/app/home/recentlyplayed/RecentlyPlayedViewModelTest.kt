@@ -85,9 +85,9 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import kotlin.test.fail
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.test.fail
 
 /** Tests for [RecentlyPlayedViewModel] data. */
 @RunWith(RobolectricTestRunner::class)
