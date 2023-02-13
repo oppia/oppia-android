@@ -13,5 +13,5 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@{`Value: ` + viewModel.boundIntValue}"
-    android:textColor="@color/oppia_primary_dark" />
+    android:textColor="@color/component_color_shared_dialogs_secondary_color" />
 </layout>

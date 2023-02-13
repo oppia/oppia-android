@@ -138,6 +138,7 @@
   <color name="color_palette_menu_text_color">@color/color_def_black</color>
   <color name="color_palette_secondary_container_background_color">@color/color_def_teal_blue</color>
   <color name="color_palette_fragment_status_bar_color">@color/color_def_oppia_reddish_brown</color>
+  <color name="color_palette_profile_status_bar_color">@color/color_def_black</color>
   <color name="color_palette_hint_dialog_status_bar_color">@color/color_def_catalina_blue</color>
   <color name="color_palette_shared_radio_button_unchecked_color">@color/color_def_black_54</color>
   <color name="color_palette_shared_radio_button_checked_color">@color/color_def_radio_green</color>
@@ -189,8 +190,17 @@
   <color name="color_palette_story_chapter_not_start_stroke_color">@color/color_def_grey</color>
   <color name="color_palette_story_chapter_default_progress_stroke_color">@color/color_def_light_grey</color>
   <color name="color_palette_topic_thumbnail_background_color">@color/color_def_columbia_blue</color>
+  <color name="color_palette_slide_drawer_open_status_bar_color">@color/color_def_root_beer_blue</color>
   <color name="color_palette_navbar_header_background_color">@color/color_def_japanese_indigo</color>
   <color name="color_palette_shared_spotlight_hint_background_color">@color/color_def_oppia_light_yellow</color>
   <color name="color_palette_shared_close_spotlight_button_color">@color/color_def_black</color>
   <color name="color_palette_shared_spotlight_overlay_arrow_color">@color/color_def_white</color>
+  <color name="color_palette_color_palette_walkthrough_status_bar_color">@color/color_def_grey</color>
+  <color name="color_palette_walkthrough_activity_rounded_corners_color">@color/color_def_grey</color>
+  <color name="color_palette_onboarding_1_status_bar">@color/color_def_onboarding_1_status_bar</color>
+  <color name="color_palette_onboarding_2_status_bar">@color/color_def_onboarding_2_status_bar</color>
+  <color name="color_palette_onboarding_3_status_bar">@color/color_def_onboarding_3_status_bar</color>
+  <color name="color_palette_onboarding_4_status_bar">@color/color_def_onboarding_4_status_bar</color>
+  <color name="color_palette_coming_soon_rect_background_end_color">@color/color_def_grape_violet</color>
+  <color name="color_palette_coming_soon_rect_background_start_color">@color/color_def_bright_violet</color>
 </resources>
