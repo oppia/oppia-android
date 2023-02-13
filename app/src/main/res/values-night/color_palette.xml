@@ -194,10 +194,10 @@
   <color name="color_palette_shared_spotlight_overlay_arrow_color">@color/color_def_white</color>
   <color name="color_palette_color_palette_walkthrough_status_bar_color">@color/color_def_grey</color>
   <color name="color_palette_walkthrough_activity_rounded_corners_color">@color/color_def_grey</color>
-  <color name="color_palette_onboarding_1_status_bar">@color/color_def_onboarding_1_status_bar</color>
-  <color name="color_palette_onboarding_2_status_bar">@color/color_def_onboarding_2_status_bar</color>
-  <color name="color_palette_onboarding_3_status_bar">@color/color_def_onboarding_3_status_bar</color>
-  <color name="color_palette_onboarding_4_status_bar">@color/color_def_onboarding_4_status_bar</color>
+  <color name="color_palette_onboarding_1_status_bar_color">@color/color_def_onboarding_1_status_bar</color>
+  <color name="color_palette_onboarding_2_status_bar_color">@color/color_def_onboarding_2_status_bar</color>
+  <color name="color_palette_onboarding_3_status_bar_color">@color/color_def_onboarding_3_status_bar</color>
+  <color name="color_palette_onboarding_4_status_bar_color">@color/color_def_onboarding_4_status_bar</color>
   <color name="color_palette_coming_soon_rect_background_end_color">@color/color_def_grape_violet</color>
   <color name="color_palette_coming_soon_rect_background_start_color">@color/color_def_bright_violet</color>
 </resources>
