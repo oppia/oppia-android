@@ -47,6 +47,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
@@ -158,13 +159,14 @@ class TopicInfoFragmentTest {
   )
 
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.getDefaultInstance()
   }
 
   @After
@@ -179,7 +181,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -190,7 +192,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -211,7 +213,7 @@ class TopicInfoFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         context = context,
-        internalProfileId = internalProfileId,
+        profileId,
         topicId = TEST_TOPIC_ID
       )
     )
@@ -230,7 +232,7 @@ class TopicInfoFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         context = context,
-        internalProfileId = internalProfileId,
+        profileId,
         topicId = TEST_TOPIC_ID
       )
     )
@@ -247,7 +249,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -258,7 +260,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -273,7 +275,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -294,7 +296,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -307,7 +309,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = TEST_TOPIC_ID
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -319,7 +321,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.topic_description_text_view))
@@ -337,7 +339,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_moreThanFiveLines_seeMoreIsVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -355,7 +357,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible_and_fiveLinesVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -380,7 +382,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_seeLessVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -399,7 +401,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
@@ -412,7 +414,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
@@ -423,13 +425,13 @@ class TopicInfoFragmentTest {
   }
 
   private fun launchTopicActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        profileId,
         topicId
       )
     return ActivityScenario.launch(intent)

@@ -52,6 +52,7 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -131,10 +132,13 @@ class HelpFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var profileId: ProfileId
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -145,12 +149,12 @@ class HelpFragmentTest {
   }
 
   private fun createHelpActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     isFromNavigationDrawer: Boolean
   ): Intent {
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       isFromNavigationDrawer
     )
   }
@@ -159,7 +163,7 @@ class HelpFragmentTest {
   fun testHelpFragment_parentIsExploration_checkBackArrowVisible() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = false
       )
     ).use {
@@ -170,7 +174,7 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_notFromNavigationDrawer_navigationDrawerIsNotPresent() {
-    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+    launch<HelpActivity>(createHelpActivityIntent(profileId, false)).use {
       onView(withId(R.id.help_activity_fragment_navigation_drawer))
         .check(doesNotExist())
     }
@@ -178,7 +182,7 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
-    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+    launch<HelpActivity>(createHelpActivityIntent(profileId, false)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_activity_fragment_navigation_drawer))
         .check(doesNotExist())
@@ -189,7 +193,7 @@ class HelpFragmentTest {
   fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -202,7 +206,7 @@ class HelpFragmentTest {
   fun testHelpFragment_faqListTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -225,7 +229,7 @@ class HelpFragmentTest {
   fun testHelpFragment_configChanged_faqListTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -247,7 +251,7 @@ class HelpFragmentTest {
   fun openHelpActivity_selectFAQ_showFAQActivitySuccessfully() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -265,7 +269,7 @@ class HelpFragmentTest {
   fun testHelpFragment_thirdPartyDependencyListTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -288,7 +292,7 @@ class HelpFragmentTest {
   fun testHelpFragment_phoneConfig_multipaneOptionsDoesNotExist() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -302,7 +306,7 @@ class HelpFragmentTest {
   fun testHelpFragment_defaultTabletConfig_multipaneButtonIsGone() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -317,7 +321,7 @@ class HelpFragmentTest {
   fun testHelpFragment_defaultTabletConfig_displaysMultipaneOptions() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -339,7 +343,7 @@ class HelpFragmentTest {
   fun testHelpFragment_tabletConfigChange_displaysMultipaneOptions() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -362,7 +366,7 @@ class HelpFragmentTest {
   fun testHelpFragment_defaultTabletConfig_displaysFAQList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -375,7 +379,7 @@ class HelpFragmentTest {
   fun testHelpFragment_tabletConfigChanged_displaysFAQList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -389,7 +393,7 @@ class HelpFragmentTest {
   fun testHelpFragment_selectFAQs_displaysFAQList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -413,7 +417,7 @@ class HelpFragmentTest {
   fun testHelpFragment_selectFAQs_tabletConfigChanged_displaysFAQList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -438,7 +442,7 @@ class HelpFragmentTest {
   fun testHelpFragment_selectThirdPartyDeps_displaysThirdPartyDepsList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -469,7 +473,7 @@ class HelpFragmentTest {
   fun testHelpFragment_selectThirdPartyDeps_tabletConfigChanged_displaysThirdPartyDepsList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -501,7 +505,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicensesList_licenseListIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -538,7 +542,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicensesList_tabletConfigChanged_licenseListIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -576,7 +580,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicensesList_multipaneOptionsAreDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -614,7 +618,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicensesList_tabletConfigChanged_multipaneOptionsAreDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -653,7 +657,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicenseText_licenseTextIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -696,7 +700,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicenseText_tabletConfigChanged_licenseListIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -740,7 +744,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicenseText_multipaneOptionsAreDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -784,7 +788,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicenseText_tabletConfigChanged_multipaneOptionsAreDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -829,7 +833,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicenseList_backButtonWorks() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -868,7 +872,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicenseList_tabletConfigChanged_backButtonWorks() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -908,7 +912,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicenseText_backButtonWorks() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -960,7 +964,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicenseText_tabletConfigChanged_backButtonWorks() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1012,7 +1016,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openLicenseList_changeConfig_pressBack_openLicenseList_showsLicenseList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1057,7 +1061,7 @@ class HelpFragmentTest {
   fun testHelpFragment_configChanged_thirdPartyDependencyListTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1079,7 +1083,7 @@ class HelpFragmentTest {
   fun openHelpActivity_selectThirdPartyActivity_showThirdPartyDependencyListActivity() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1097,7 +1101,7 @@ class HelpFragmentTest {
   fun testHelpFragment_configChanged_privacyPolicyTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1119,7 +1123,7 @@ class HelpFragmentTest {
   fun testHelpFragment_configChanged_termsOfServiceTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1140,9 +1144,10 @@ class HelpFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testHelpFragment_defaultTabletConfig_displaysTermsOfService() {
+    val profileId = ProfileId.newBuilder().apply { internalId = 3 }.build()
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 3,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1164,9 +1169,10 @@ class HelpFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testHelpFragment_tabletConfigChanged_displaysTermsOfService() {
+    val profileId = ProfileId.newBuilder().apply { internalId = 3 }.build()
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 3,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1190,7 +1196,7 @@ class HelpFragmentTest {
   fun testHelpFragment_privacyPolicyTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1213,7 +1219,7 @@ class HelpFragmentTest {
   fun testHelpFragment_termsOfServiceTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1236,7 +1242,7 @@ class HelpFragmentTest {
   fun testHelpFragment_selectPolicyActivity_openPoliciesActivityLoadPrivacyPolicy() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1266,7 +1272,7 @@ class HelpFragmentTest {
   fun testHelpFragment_selectPoliciesActivity_openPoliciesActivityLoadTermsOfServicePage() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1297,7 +1303,7 @@ class HelpFragmentTest {
   fun testHelpFragment_selectPolicies_displaysPolicy() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1321,7 +1327,7 @@ class HelpFragmentTest {
   fun testHelpFragment_selectPolicies_tabletConfigChanged_displaysPolicy() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1345,7 +1351,7 @@ class HelpFragmentTest {
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -1361,7 +1367,7 @@ class HelpFragmentTest {
   fun testHelpFragment_openNavDrawerAndClose_navDrawerIsClosed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {

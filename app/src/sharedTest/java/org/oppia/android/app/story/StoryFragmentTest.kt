@@ -891,7 +891,7 @@ class StoryFragmentTest {
   private fun createFractionsStoryActivityIntent(): Intent {
     return StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     )
@@ -900,7 +900,7 @@ class StoryFragmentTest {
   private fun createTestStoryActivityIntent(): Intent {
     return StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0
     )
@@ -909,7 +909,7 @@ class StoryFragmentTest {
   private fun createRatiosStoryActivityIntent(): Intent {
     return StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0
     )

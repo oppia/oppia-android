@@ -971,7 +971,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -1492,7 +1492,7 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    val profileId1 = createProfileId(profileId.internalId)
+
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId1, timestampOlderThanOneWeek = false
     )
