@@ -306,7 +306,13 @@ class MathTagHandlerTest {
 
   private fun createMathTagHandler(cacheLatexRendering: Boolean): MathTagHandler {
     // Pick an arbitrary line height since rendering doesn't actually happen in tests.
-    return MathTagHandler(consoleLogger, context.assets, lineHeight = 10.0f, cacheLatexRendering, application = context.applicationContext as Application)
+    return MathTagHandler(
+      consoleLogger,
+      context.assets,
+      lineHeight = 10.0f,
+      cacheLatexRendering,
+      application = context.applicationContext as Application
+    )
   }
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
