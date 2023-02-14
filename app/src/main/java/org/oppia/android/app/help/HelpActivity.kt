@@ -93,17 +93,13 @@ class HelpActivity :
 
     fun createHelpActivityIntent(
       context: Context,
-      profileId: Int?,
+      profileId: ProfileId,
       isFromNavigationDrawer: Boolean
     ): Intent {
       val intent = Intent(context, HelpActivity::class.java)
       intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       intent.decorateWithScreenName(HELP_ACTIVITY)
-      intent.decorateWithUserProfileId(
-        ProfileId.newBuilder().apply {
-          internalId = profileId!!
-        }.build()
-      )
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }

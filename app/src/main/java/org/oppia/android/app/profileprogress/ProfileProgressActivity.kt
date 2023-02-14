@@ -16,6 +16,8 @@ import org.oppia.android.app.model.ScreenName.PROFILE_PROGRESS_ACTIVITY
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity to display profile progress. */
@@ -28,7 +30,7 @@ class ProfileProgressActivity :
 
   @Inject
   lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
-  private var internalProfileId = -1
+  private lateinit var profileId: ProfileId
 
   @Inject
   lateinit var activityRouter: ActivityRouter
@@ -39,15 +41,15 @@ class ProfileProgressActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
-    profileProgressActivityPresenter.handleOnCreate(internalProfileId)
+    profileId = intent.extractCurrentUserProfileId()
+    profileProgressActivityPresenter.handleOnCreate(profileId)
   }
 
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(ProfileId.newBuilder().setInternalId(profileId.internalId).build())
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 
@@ -63,7 +65,7 @@ class ProfileProgressActivity :
     startActivity(
       CompletedStoryListActivity.createCompletedStoryListActivityIntent(
         this,
-        internalProfileId
+        profileId
       )
     )
   }
@@ -72,7 +74,7 @@ class ProfileProgressActivity :
     startActivity(
       OngoingTopicListActivity.createOngoingTopicListActivityIntent(
         this,
-        internalProfileId
+        profileId
       )
     )
   }
@@ -81,9 +83,9 @@ class ProfileProgressActivity :
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val PROFILE_ID_EXTRA_KEY = "ProfileProgressActivity.profile_id"
 
-    fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createProfileProgressActivityIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, ProfileProgressActivity::class.java).apply {
-        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(PROFILE_PROGRESS_ACTIVITY)
       }
     }
@@ -93,7 +95,7 @@ class ProfileProgressActivity :
     startActivity(
       ProfilePictureActivity.createProfilePictureActivityIntent(
         this,
-        internalProfileId
+        profileId
       )
     )
   }

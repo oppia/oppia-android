@@ -49,7 +49,6 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     return topicReviewFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId,
       topicId
     )
   }

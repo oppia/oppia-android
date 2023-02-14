@@ -57,16 +57,16 @@ class TopicActivity :
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
         skillIdList,
-        ProfileId.newBuilder().setInternalId(profileId.internalId).build()
+        profileId
       )
     )
   }
 
-  override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToStory(profileId: ProfileId, topicId: String, storyId: String) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         storyId
       )
@@ -74,7 +74,7 @@ class TopicActivity :
   }
 
   override fun routeToRevisionCard(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
@@ -82,7 +82,7 @@ class TopicActivity :
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         subtopicId,
         subtopicListSize
@@ -140,10 +140,10 @@ class TopicActivity :
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.TopicActivityIntentFactory {
     override fun createIntent(profileId: ProfileId, topicId: String): Intent =
-      createTopicActivityIntent(activity, profileId.internalId, topicId)
+      createTopicActivityIntent(activity, profileId, topicId)
 
     override fun createIntent(profileId: ProfileId, topicId: String, storyId: String): Intent =
-      createTopicPlayStoryActivityIntent(activity, profileId.internalId, topicId, storyId)
+      createTopicPlayStoryActivityIntent(activity, profileId, topicId, storyId)
   }
 
   companion object {
@@ -159,15 +159,11 @@ class TopicActivity :
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
     fun createTopicActivityIntent(
       context: Context,
-      internalProfileId: Int,
+      profileId: ProfileId,
       topicId: String
     ): Intent {
       return Intent(context, TopicActivity::class.java).apply {
-        decorateWithUserProfileId(
-          ProfileId.newBuilder().apply {
-            internalId = internalProfileId
-          }.build()
-        )
+        decorateWithUserProfileId(profileId)
         putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
         decorateWithScreenName(TOPIC_ACTIVITY)
       }
@@ -176,11 +172,11 @@ class TopicActivity :
     /** Returns a new [Intent] to route to [TopicLessonsFragment] for a specified story ID. */
     fun createTopicPlayStoryActivityIntent(
       context: Context,
-      internalProfileId: Int,
+      profileId: ProfileId,
       topicId: String,
       storyId: String
     ): Intent {
-      return createTopicActivityIntent(context, internalProfileId, topicId).apply {
+      return createTopicActivityIntent(context, profileId, topicId).apply {
         putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       }
     }

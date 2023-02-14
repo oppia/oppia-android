@@ -81,7 +81,6 @@ class TopicLessonsFragment :
       container,
       currentExpandedChapterListIndex,
       this as ExpandedChapterListIndexListener,
-      internalProfileId,
       topicId,
       storyId,
       isDefaultStoryExpanded

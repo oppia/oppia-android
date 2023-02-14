@@ -104,7 +104,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
         drawerLayout.closeDrawers()
         getFooterViewModel().isDeveloperOptionsSelected.set(true)
-        val intent = starter.createIntent(activity, profileId.internalId)
+        val intent = starter.createIntent(activity, profileId)
         fragment.activity!!.startActivity(intent)
         if (previousMenuItemId == 0) fragment.activity!!.finish()
         else if (previousMenuItemId != null &&
@@ -144,7 +144,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           val intent =
             AdministratorControlsActivity.createAdministratorControlsActivityIntent(
               activity,
-              profileId.internalId
+              profileId
             )
           fragment.activity!!.startActivity(intent)
           if (previousMenuItemId == -1) fragment.activity!!.finish()
@@ -241,13 +241,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
-          val intent = HomeActivity.createHomeActivity(activity, profileId.internalId)
+          val intent = HomeActivity.createHomeActivity(activity, profileId)
           fragment.activity!!.startActivity(intent)
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.OPTIONS -> {
           val intent = OptionsActivity.createOptionsActivity(
-            activity, profileId.internalId,
+            activity, profileId,
             /* isFromNavigationDrawer= */ true
           )
           fragment.activity!!.startActivity(intent)
@@ -258,7 +258,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(
-            activity, profileId.internalId,
+            activity, profileId,
             /* isFromNavigationDrawer= */ true
           )
           fragment.activity!!.startActivity(intent)
@@ -269,7 +269,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.DOWNLOADS -> {
           val intent =
-            MyDownloadsActivity.createMyDownloadsActivityIntent(activity, profileId.internalId)
+            MyDownloadsActivity.createMyDownloadsActivityIntent(activity, profileId)
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
@@ -315,7 +315,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     }
   }
 
-  fun openProfileProgress(profileId: Int) {
+  fun openProfileProgress(profileId: ProfileId) {
     activity.startActivity(
       ProfileProgressActivity.createProfileProgressActivityIntent(
         activity,

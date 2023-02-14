@@ -124,7 +124,7 @@ class OngoingTopicListActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Inject
   lateinit var context: Context
@@ -144,7 +144,7 @@ class OngoingTopicListActivityTest {
 
   @Test
   fun testOngoingTopicList_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createOngoingTopicListActivityIntent(internalProfileId))
+    activityTestRule.launchActivity(createOngoingTopicListActivityIntent(profileId))
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -155,17 +155,17 @@ class OngoingTopicListActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      createOngoingTopicListActivityIntent(internalProfileId).extractCurrentAppScreenName()
+      createOngoingTopicListActivityIntent(profileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.ONGOING_TOPIC_LIST_ACTIVITY)
   }
 
   @Test
   fun testOngoingTopicListActivity_createIntent_verifyProfileIdInIntent() {
-    val profileId = createOngoingTopicListActivityIntent(internalProfileId)
+    val profileId = createOngoingTopicListActivityIntent(profileId = this.profileId)
       .extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(internalProfileId)
+    assertThat(profileId.internalId).isEqualTo(this.profileId.internalId)
   }
 
   @Inject
@@ -176,7 +176,7 @@ class OngoingTopicListActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setInternalId(0).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
@@ -208,7 +208,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_checkItem0_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -235,7 +235,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_clickItem0_intentIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -254,7 +254,10 @@ class OngoingTopicListActivityTest {
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
       it.onActivity { it1 ->
-        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(internalProfileId)
+        assertThat(
+          it1.intent.extractCurrentUserProfileId()
+            .internalId
+        ).isEqualTo(profileId.internalId)
       }
     }
   }
@@ -263,7 +266,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_clickItem0_intentIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
+        profileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -283,7 +286,10 @@ class OngoingTopicListActivityTest {
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
       it.onActivity { it1 ->
-        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(internalProfileId)
+        assertThat(
+          it1.intent.extractCurrentUserProfileId()
+            .internalId
+        ).isEqualTo(profileId.internalId)
       }
     }
   }
@@ -292,7 +298,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_checkItem0_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -319,7 +325,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_checkItem1_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
+        profileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -346,7 +352,7 @@ class OngoingTopicListActivityTest {
   @Test
   fun testOngoingTopicList_checkItem1_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
-      createOngoingTopicListActivityIntent(internalProfileId)
+      createOngoingTopicListActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
@@ -372,7 +378,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -399,7 +405,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
+        profileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -427,7 +433,7 @@ class OngoingTopicListActivityTest {
   fun testTopicPracticeFragment_loadFragment_changeConfiguration_topicNameIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
+        profileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -451,10 +457,10 @@ class OngoingTopicListActivityTest {
     }
   }
 
-  private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent {
+  private fun createOngoingTopicListActivityIntent(profileId: ProfileId): Intent {
     return OngoingTopicListActivity.createOngoingTopicListActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId = internalProfileId
+      profileId
     )
   }
 

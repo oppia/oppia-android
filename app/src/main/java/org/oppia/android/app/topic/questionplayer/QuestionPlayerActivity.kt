@@ -21,13 +21,11 @@ import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
-import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-private const val QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
-  "QuestionPlayerActivity.profile_id"
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
   "QuestionPlayerActivity.skill_id_list"
 private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIALOG"
@@ -55,10 +53,7 @@ class QuestionPlayerActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     checkNotNull(intent.extras) { "Expected extras to be defined for QuestionPlayerActivity" }
-    val profileId =
-      intent.getProtoExtra(
-        QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance()
-      )
+    val profileId = intent.extractCurrentUserProfileId()
     questionPlayerActivityPresenter.handleOnCreate(profileId)
   }
 
@@ -93,7 +88,7 @@ class QuestionPlayerActivity :
       profileId: ProfileId
     ): Intent {
       return Intent(context, QuestionPlayerActivity::class.java).apply {
-        putProtoExtra(QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
+        decorateWithUserProfileId(profileId)
         putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList)
         decorateWithScreenName(QUESTION_PLAYER_ACTIVITY)
       }

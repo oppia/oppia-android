@@ -17,6 +17,7 @@ import org.oppia.android.databinding.PinPasswordActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
@@ -34,18 +35,18 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val pinViewModel by lazy {
     getPinPasswordViewModel()
   }
-  private var profileId = -1
+  private lateinit var profileId: ProfileId
   private lateinit var alertDialog: AlertDialog
   private var confirmedDeletion = false
 
   fun handleOnCreate() {
     val adminPin = activity.intent.getStringExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY)
-    profileId = activity.intent.getIntExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, -1)
+    profileId = activity.intent.extractCurrentUserProfileId()
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
       activity,
       R.layout.pin_password_activity
     )
-    pinViewModel.setProfileId(profileId)
+    pinViewModel.setProfileId(profileId.internalId)
     binding.apply {
       lifecycleOwner = activity
       viewModel = pinViewModel
@@ -83,7 +84,7 @@ class PinPasswordActivityPresenter @Inject constructor(
           if (inputtedPin == pinViewModel.correctPin.get()) {
             profileManagementController
               .loginToProfile(
-                ProfileId.newBuilder().setInternalId(profileId).build()
+                profileId
               ).toLiveData()
               .observe(
                 activity,
@@ -143,7 +144,7 @@ class PinPasswordActivityPresenter @Inject constructor(
         ) as DialogFragment
       ).dismiss()
     val dialogFragment = ResetPinDialogFragment.newInstance(
-      profileId,
+      profileId.internalId,
       pinViewModel.name.get()!!
     )
     dialogFragment.showNow(activity.supportFragmentManager, TAG_RESET_PIN_DIALOG)

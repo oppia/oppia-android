@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
 import javax.inject.Inject
 
 /** [NavigationDrawerFragment] to show navigation drawer. */
@@ -37,7 +38,7 @@ class NavigationDrawerFragment :
     navigationDrawerFragmentPresenter.setUpDrawer(drawerLayout, toolbar, menuItemId)
   }
 
-  override fun routeToProfileProgress(profileId: Int) {
+  override fun routeToProfileProgress(profileId: ProfileId) {
     navigationDrawerFragmentPresenter.openProfileProgress(profileId)
   }
 

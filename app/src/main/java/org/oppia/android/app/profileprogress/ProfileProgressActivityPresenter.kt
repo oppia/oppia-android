@@ -20,13 +20,13 @@ class ProfileProgressActivityPresenter @Inject constructor(
 ) {
   private lateinit var profileId: ProfileId
 
-  fun handleOnCreate(internalProfileId: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  fun handleOnCreate(profileId: ProfileId) {
+    this.profileId = profileId
     activity.setContentView(R.layout.profile_progress_activity)
     if (getProfileProgressFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_progress_fragment_placeholder,
-        ProfileProgressFragment.newInstance(internalProfileId)
+        ProfileProgressFragment.newInstance(profileId.internalId)
       ).commitNow()
     }
     setUpNavigationDrawer()

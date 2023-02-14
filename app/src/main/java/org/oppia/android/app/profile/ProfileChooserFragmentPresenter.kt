@@ -27,6 +27,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -183,7 +184,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
                 (
                   HomeActivity.createHomeActivity(
                     activity,
-                    model.profile.id.internalId
+                    model.profile.id
                   )
                   )
               )
@@ -194,7 +195,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
           activity,
           chooserViewModel.adminPin,
-          model.profile.id.internalId
+          model.profile.id
         )
         activity.startActivity(pinPasswordIntent)
       }
@@ -211,7 +212,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         activity.startActivity(
           AdminPinActivity.createAdminPinActivityIntent(
             activity,
-            chooserViewModel.adminProfileId.internalId,
+            activity.intent.extractCurrentUserProfileId(),
             selectUniqueRandomColor(),
             AdminAuthEnum.PROFILE_ADD_PROFILE.value
           )
@@ -221,7 +222,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           AdminAuthActivity.createAdminAuthActivityIntent(
             activity,
             chooserViewModel.adminPin,
-            -1,
+            activity.intent.extractCurrentUserProfileId(),
             selectUniqueRandomColor(),
             AdminAuthEnum.PROFILE_ADD_PROFILE.value
           )
@@ -235,7 +236,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,
-          chooserViewModel.adminProfileId.internalId
+          activity.intent.extractCurrentUserProfileId()
         )
       )
     } else {
@@ -243,7 +244,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         AdminAuthActivity.createAdminAuthActivityIntent(
           activity,
           chooserViewModel.adminPin,
-          chooserViewModel.adminProfileId.internalId,
+          activity.intent.extractCurrentUserProfileId(),
           selectUniqueRandomColor(),
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
         )

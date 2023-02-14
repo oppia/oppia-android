@@ -61,6 +61,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.drawer.NavigationDrawerItem
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -149,13 +150,14 @@ class NavigationDrawerActivityDebugTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -165,10 +167,10 @@ class NavigationDrawerActivityDebugTest {
     Intents.release()
   }
 
-  private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent {
+  private fun createNavigationDrawerActivityIntent(profileId: ProfileId): Intent {
     return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
       context,
-      internalProfileId
+      profileId
     )
   }
 
@@ -179,7 +181,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_navDrawerIsOpened() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(profileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
@@ -190,7 +192,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_configChange_navDrawerIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(profileId)
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -203,7 +205,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_devOptionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(profileId)
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.developer_options)).perform(click())
@@ -228,7 +230,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_configChange_devOptionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(profileId)
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.developer_options)).perform(click())
@@ -255,7 +257,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_debug_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(profileId)
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.developer_options)).perform(click())
@@ -271,7 +273,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_debug_pressBack_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(profileId)
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.developer_options)).perform(click())
@@ -286,7 +288,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_inDebugMode_openNavDrawer_devOptionsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(profileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).check(matches(isDisplayed()))
@@ -296,7 +298,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_inDebugMode_openNavDrawer_configChange_devOptionsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(profileId)
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -309,7 +311,7 @@ class NavigationDrawerActivityDebugTest {
   fun testNavDrawer_inDebugMode_devOptionsMenuItem_opensDeveloperOptionsActivity() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
-        internalProfileId
+        profileId
       )
     ).use {
       it.openNavigationDrawer()
@@ -320,7 +322,7 @@ class NavigationDrawerActivityDebugTest {
         Truth.assertThat(
           it1.intent.extractCurrentUserProfileId()
             .internalId
-        ).isEqualTo(internalProfileId)
+        ).isEqualTo(profileId)
       }
     }
   }
@@ -328,10 +330,10 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavigationDrawerActivityDebug_createIntent_verifyProfileIdInIntent() {
     val profileId = createNavigationDrawerActivityIntent(
-      internalProfileId
+      this.profileId
     ).extractCurrentUserProfileId()
 
-    Truth.assertThat(profileId.internalId).isEqualTo(internalProfileId)
+    Truth.assertThat(profileId.internalId).isEqualTo(this.profileId.internalId)
   }
 
   private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {

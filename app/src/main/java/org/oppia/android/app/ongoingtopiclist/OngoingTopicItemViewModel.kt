@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.model.EphemeralTopic
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -27,7 +28,8 @@ class OngoingTopicItemViewModel(
   }
 
   fun onTopicItemClicked() {
-    routeToTopic(internalProfileId, topic.topicId)
+    val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    routeToTopic(profileId, topic.topicId)
   }
 
   fun computeStoryCountText(): String {
@@ -36,10 +38,10 @@ class OngoingTopicItemViewModel(
     )
   }
 
-  override fun routeToTopic(internalProfileId: Int, topicId: String) {
+  override fun routeToTopic(profileId: ProfileId, topicId: String) {
     val intent = intentFactoryShim.createTopicActivityIntent(
       activity.applicationContext,
-      internalProfileId,
+      profileId.internalId,
       topicId
     )
     activity.startActivity(intent)

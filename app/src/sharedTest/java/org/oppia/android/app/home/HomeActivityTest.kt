@@ -211,9 +211,7 @@ class HomeActivityTest {
   @Inject
   lateinit var fontScaleConfigurationUtil: FontScaleConfigurationUtil
 
-  private val internalProfileId: Int = 0
-  private val internalProfileId1: Int = 1
-  private val longNameInternalProfileId: Int = 3
+  private lateinit var longNameInternalProfileId: ProfileId
   private lateinit var profileId: ProfileId
   private lateinit var profileId1: ProfileId
 
@@ -221,8 +219,9 @@ class HomeActivityTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    profileId1 = ProfileId.newBuilder().setInternalId(internalProfileId1).build()
+    profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    longNameInternalProfileId = ProfileId.newBuilder().setInternalId(3).build()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
   }
@@ -239,29 +238,29 @@ class HomeActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createHomeActivityIntent(internalProfileId).extractCurrentAppScreenName()
+    val screenName = createHomeActivityIntent(profileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.HOME_ACTIVITY)
   }
 
   @Test
   fun testHomeActivity_createIntent_verifyProfileIdInIntent() {
-    val profileId = createHomeActivityIntent(internalProfileId)
+    val profileId = createHomeActivityIntent(profileId)
       .extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(internalProfileId)
+    assertThat(profileId.internalId).isEqualTo(profileId)
   }
 
   @Test
   fun testActivity_createIntent_verifyCurrentUserProfileId() {
-    val profileId = createHomeActivityIntent(internalProfileId).extractCurrentUserProfileId()
+    val profileId = createHomeActivityIntent(profileId).extractCurrentUserProfileId()
 
     assertThat(profileId.internalId).isEqualTo(0)
   }
 
   @Test
   fun testHomeActivity_withAdminProfile_profileNameIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
@@ -284,7 +283,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_withAdminProfile_configChange_profileNameIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
@@ -300,7 +299,7 @@ class HomeActivityTest {
   fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
@@ -315,7 +314,7 @@ class HomeActivityTest {
   fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
@@ -330,7 +329,7 @@ class HomeActivityTest {
   fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
@@ -343,7 +342,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_logUserInFirstTime_checkPromotedStoriesIsNotDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.recently_played_stories_text_view)).check(doesNotExist())
     }
@@ -352,7 +351,7 @@ class HomeActivityTest {
   @Test
   fun testPromotedStorySpotlight_setToShowOnSecondLogin_notSeenBefore_checkSpotlightShown() {
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.promoted_story_spotlight_hint))
         .check(matches(isDisplayed()))
@@ -362,14 +361,14 @@ class HomeActivityTest {
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_pressDone_checkSpotlightNotShown() {
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_spotlight_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
     }
 
     // Re-launch the activity.
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
     }
@@ -377,7 +376,7 @@ class HomeActivityTest {
 
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
     }
@@ -395,7 +394,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -418,7 +417,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = true
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 1)
@@ -443,7 +442,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = true
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -462,7 +461,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
 
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -494,7 +493,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -514,7 +513,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_noTopicProgress_initialRecommendationFractionsAndRatiosIsCorrect() {
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -545,7 +544,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -569,7 +568,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -606,7 +605,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -631,7 +630,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -681,7 +680,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -730,7 +729,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -755,7 +754,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -780,7 +779,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(1)
       verifyTextOnHomeListItemAtPosition(
@@ -820,7 +819,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -842,7 +841,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyTextOnHomeListItemAtPosition(
@@ -861,7 +860,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyTextOnHomeListItemAtPosition(
@@ -884,7 +883,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = true
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(isRoot()).perform(orientationLandscape())
@@ -908,7 +907,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -940,7 +939,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -957,7 +956,7 @@ class HomeActivityTest {
         assertThat(
           it1.intent.extractCurrentUserProfileId()
             .internalId
-        ).isEqualTo(internalProfileId1)
+        ).isEqualTo(profileId1.internalId)
       }
     }
   }
@@ -1007,7 +1006,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = true
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyTextOnHomeListItemAtPosition(
@@ -1022,7 +1021,7 @@ class HomeActivityTest {
   fun testHomeActivity_firstTestTopic_topicSummary_opensTopicActivityThroughPlayIntent() {
     logIntoUserTwice()
     markSpotlightSeen(profileId1)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(5)
       onView(
@@ -1039,7 +1038,7 @@ class HomeActivityTest {
         assertThat(
           it1.intent.extractCurrentUserProfileId()
             .internalId
-        ).isEqualTo(internalProfileId1)
+        ).isEqualTo(profileId1)
       }
     }
   }
@@ -1047,7 +1046,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
@@ -1061,7 +1060,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
@@ -1080,7 +1079,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
@@ -1094,7 +1093,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
@@ -1110,7 +1109,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+port-mdpi")
   @Test
   fun testHomeActivity_longProfileName_welcomeMessageIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
       onView(
@@ -1182,7 +1181,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
     logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 4)
@@ -1198,7 +1197,7 @@ class HomeActivityTest {
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
     logIntoUserTwice()
     markSpotlightSeen(profileId1)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
@@ -1209,7 +1208,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_exitToProfileChooserDialogIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -1220,7 +1219,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_configChange_exitToProfileChooserDialogIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
 
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -1233,7 +1232,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_clickExit_opensProfileActivity() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit))
@@ -1245,7 +1244,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
@@ -1257,7 +1256,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
@@ -1265,7 +1264,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_configChange_checkSpanForItem4_spanSizeIsOne() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
@@ -1276,11 +1275,11 @@ class HomeActivityTest {
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
-      profileId = createProfileId(internalProfileId),
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -1309,7 +1308,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -1324,11 +1323,11 @@ class HomeActivityTest {
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
-      profileId = createProfileId(internalProfileId),
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       verifyExactTextOnHomeListItemAtPosition(
@@ -1347,7 +1346,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       if (context.resources.getBoolean(R.bool.isTablet)) {
@@ -1362,7 +1361,7 @@ class HomeActivityTest {
   fun testHomeActivity_noTopicsCompleted_displaysAllTopicsHeader() {
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       verifyExactTextOnHomeListItemAtPosition(
@@ -1378,7 +1377,7 @@ class HomeActivityTest {
   fun testHomeActivity_noTopicsStarted_mobilePortraitDisplaysTopicsIn2Columns() {
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
@@ -1397,7 +1396,7 @@ class HomeActivityTest {
   fun testHomeActivity_noTopicsStarted_mobileLandscapeDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       if (context.resources.getBoolean(R.bool.isTablet)) {
@@ -1418,7 +1417,7 @@ class HomeActivityTest {
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
     markSpotlightSeen(profileId)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
 
@@ -1434,7 +1433,7 @@ class HomeActivityTest {
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
     markSpotlightSeen(profileId)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
@@ -1468,7 +1467,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -1493,7 +1492,7 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    val profileId1 = createProfileId(internalProfileId)
+    val profileId1 = createProfileId(profileId.internalId)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId1, timestampOlderThanOneWeek = false
     )
@@ -1506,7 +1505,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -1543,7 +1542,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 1)
@@ -1574,7 +1573,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     logIntoAdminTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 6)
 
@@ -1589,7 +1588,7 @@ class HomeActivityTest {
   fun testHomeActivity_defaultState_displaysStringsInEnglish() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 0)
@@ -1605,7 +1604,7 @@ class HomeActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso.
   fun testHomeActivity_defaultState_hasEnglishAndroidLocale() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the locale is set up correctly (for string resource selection).
@@ -1618,7 +1617,7 @@ class HomeActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_defaultState_hasEnglishDisplayLocale() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the display locale is set up correctly (for string formatting).
@@ -1634,7 +1633,7 @@ class HomeActivityTest {
   fun testHomeActivity_changeSystemLocaleAndConfigChange_recreatesActivity() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use { scenario ->
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       // Sanity check to ensure that no recreations initially happen.
@@ -1679,7 +1678,7 @@ class HomeActivityTest {
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 0)
@@ -1704,7 +1703,7 @@ class HomeActivityTest {
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
@@ -1726,7 +1725,7 @@ class HomeActivityTest {
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the display locale is set up correctly (for string formatting).
@@ -1749,7 +1748,7 @@ class HomeActivityTest {
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 0)
@@ -1775,7 +1774,7 @@ class HomeActivityTest {
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
@@ -1798,7 +1797,7 @@ class HomeActivityTest {
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the display locale is set up correctly (for string formatting).
@@ -1813,7 +1812,7 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
+  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
@@ -1917,10 +1916,6 @@ class HomeActivityTest {
 
   private fun verifyHomeRecyclerViewHasGridColumnCount(columnCount: Int) {
     onView(withId(R.id.home_recycler_view)).check(hasGridColumnCount(columnCount))
-  }
-
-  private fun createProfileId(internalProfileId: Int): ProfileId {
-    return ProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 
   private fun logIntoAdminTwice() {

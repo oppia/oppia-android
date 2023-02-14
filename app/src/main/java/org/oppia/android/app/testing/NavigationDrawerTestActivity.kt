@@ -38,13 +38,9 @@ class NavigationDrawerTestActivity :
   private lateinit var profileId: ProfileId
 
   companion object {
-    fun createNavigationDrawerTestActivity(context: Context, profileId: Int?): Intent {
+    fun createNavigationDrawerTestActivity(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
-      intent.decorateWithUserProfileId(
-        ProfileId.newBuilder().apply {
-          internalId = profileId!!
-        }.build()
-      )
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }
@@ -62,15 +58,15 @@ class NavigationDrawerTestActivity :
     homeActivityPresenter.handleOnRestart()
   }
 
-  override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+  override fun routeToTopic(profileId: ProfileId, topicId: String) {
+    startActivity(TopicActivity.createTopicActivityIntent(this, profileId, topicId))
   }
 
-  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToTopicPlayStory(profileId: ProfileId, topicId: String, storyId: String) {
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         storyId
       )

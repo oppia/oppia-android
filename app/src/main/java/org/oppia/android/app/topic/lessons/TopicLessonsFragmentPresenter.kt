@@ -30,12 +30,13 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
 class TopicLessonsFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
@@ -53,10 +54,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private var currentExpandedChapterListIndex: Int? = null
 
   private lateinit var binding: TopicLessonsFragmentBinding
-  private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
   private var isDefaultStoryExpanded: Boolean = false
+  private lateinit var profileId: ProfileId
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
@@ -67,12 +68,11 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener,
-    internalProfileId: Int,
     topicId: String,
     storyId: String,
     isDefaultStoryExpanded: Boolean
   ): View? {
-    this.internalProfileId = internalProfileId
+    this.profileId = activity.intent.extractCurrentUserProfileId()
     this.topicId = topicId
     this.storyId = storyId
     this.isDefaultStoryExpanded = isDefaultStoryExpanded
@@ -89,7 +89,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       this.viewModel = topicLessonViewModel
     }
 
-    topicLessonViewModel.setInternalProfileId(internalProfileId)
+    topicLessonViewModel.setInternalProfileId(profileId.internalId)
     topicLessonViewModel.setTopicId(topicId)
     topicLessonViewModel.setStoryId(storyId)
 
@@ -274,7 +274,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
-    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
+    routeToStoryListener.routeToStory(profileId, topicId, storySummary.storyId)
   }
 
   fun selectChapterSummary(
@@ -282,9 +282,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     explorationId: String,
     chapterPlayState: ChapterPlayState
   ) {
-    val profileId = ProfileId.newBuilder().apply {
-      internalId = internalProfileId
-    }.build()
     val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
@@ -364,21 +361,21 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       !canHavePartialProgressSaved -> {
         // Only explorations that have been completed can't be saved, so replay the lesson.
         explorationDataController.replayExploration(
-          internalProfileId, topicId, storyId, explorationId
+          profileId.internalId, topicId, storyId, explorationId
         )
       }
       hadProgress -> {
         // If there was progress, either the checkpoint was never saved, failed to save, or failed
         // to be retrieved. In all cases, this is a restart.
         explorationDataController.restartExploration(
-          internalProfileId, topicId, storyId, explorationId
+          profileId.internalId, topicId, storyId, explorationId
         )
       }
       else -> {
         // If there's no progress and it was never completed, then it's a new play through (or the
         // user is very low on device memory).
         explorationDataController.startPlayingNewExploration(
-          internalProfileId, topicId, storyId, explorationId
+          profileId.internalId, topicId, storyId, explorationId
         )
       }
     }

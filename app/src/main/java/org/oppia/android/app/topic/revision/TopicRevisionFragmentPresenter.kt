@@ -8,35 +8,36 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.android.databinding.TopicRevisionFragmentBinding
 import org.oppia.android.databinding.TopicRevisionSummaryViewBinding
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [TopicRevisionFragment]. */
 @FragmentScope
 class TopicRevisionFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModel: TopicRevisionViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : RevisionSubtopicSelector {
   private lateinit var binding: TopicRevisionFragmentBinding
-  private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToRevisionCardListener
   private var subtopicListSize: Int? = null
+  private lateinit var profileId: ProfileId
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
     topicId: String
   ): View? {
-    this.internalProfileId = internalProfileId
+    this.profileId = activity.intent.extractCurrentUserProfileId()
     this.topicId = topicId
     binding = TopicRevisionFragmentBinding.inflate(
       inflater,
@@ -45,7 +46,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     )
 
     viewModel.setTopicId(this.topicId)
-    viewModel.setInternalProfileId(this.internalProfileId)
+    viewModel.setInternalProfileId(this.profileId.internalId)
 
     binding.revisionRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
@@ -66,7 +67,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
     routeToReviewListener.routeToRevisionCard(
-      internalProfileId,
+      profileId,
       topicId,
       subtopic.subtopicId,
       checkNotNull(subtopicListSize) { "Subtopic list size not found." }

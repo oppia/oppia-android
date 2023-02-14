@@ -48,6 +48,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -148,8 +149,8 @@ class PinPasswordActivityTest {
   lateinit var editTextInputAction: EditTextInputAction
 
   private val adminPin = "12345"
-  private val adminId = 0
-  private val userId = 1
+  private lateinit var adminProfileId: ProfileId
+  private lateinit var userProfileId: ProfileId
 
   @Before
   fun setUp() {
@@ -157,6 +158,8 @@ class PinPasswordActivityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
+    adminProfileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
+    userProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   }
 
   @After
@@ -174,7 +177,7 @@ class PinPasswordActivityTest {
     val currentScreenName = PinPasswordActivity.createPinPasswordActivityIntent(
       context = context,
       adminPin = adminPin,
-      profileId = adminId
+      profileId = adminProfileId
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PIN_PASSWORD_ACTIVITY)
@@ -185,10 +188,10 @@ class PinPasswordActivityTest {
     val profileId = PinPasswordActivity.createPinPasswordActivityIntent(
       context = context,
       adminPin = adminPin,
-      profileId = adminId
+      profileId = adminProfileId
     ).extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(adminId)
+    assertThat(profileId.internalId).isEqualTo(adminProfileId.internalId)
   }
 
   @Test
@@ -197,7 +200,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(hasFocus()))
@@ -210,7 +213,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -227,7 +230,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -244,7 +247,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -265,7 +268,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId,
+        profileId = adminProfileId,
       )
     )
     val title = activityTestRule.activity.title
@@ -281,7 +284,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -302,7 +305,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -324,7 +327,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -345,7 +348,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.forgot_pin)).perform(click())
@@ -389,7 +392,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -447,7 +450,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -495,7 +498,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -541,7 +544,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -571,7 +574,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -600,7 +603,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -642,7 +645,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -661,7 +664,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -704,7 +707,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -746,7 +749,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -779,7 +782,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -814,7 +817,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -844,7 +847,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -875,7 +878,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -918,7 +921,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -963,7 +966,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -987,7 +990,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -1002,7 +1005,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       onView(withId(R.id.show_hide_password_image_view))
@@ -1022,7 +1025,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       onView(withId(R.id.show_hide_password_image_view))
@@ -1042,7 +1045,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -1057,7 +1060,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -1080,7 +1083,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -1103,7 +1106,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -1128,7 +1131,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = adminId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -1152,7 +1155,7 @@ class PinPasswordActivityTest {
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
-        profileId = userId
+        profileId = userProfileId
       )
     ).use {
       onView(withId(R.id.forgot_pin)).perform(click())

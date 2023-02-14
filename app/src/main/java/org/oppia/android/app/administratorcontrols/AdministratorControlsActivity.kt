@@ -113,11 +113,11 @@ class AdministratorControlsActivity :
 
   companion object {
     /** Returns an [Intent] to start this activity. */
-    fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
+    fun createAdministratorControlsActivityIntent(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
       intent.decorateWithUserProfileId(
-        ProfileId.newBuilder().apply { internalId = profileId!! }
+        ProfileId.newBuilder().apply { profileId }
           .build()
       )
       return intent

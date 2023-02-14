@@ -25,7 +25,7 @@ class NavigationDrawerHeaderViewModel @Inject constructor(
   val profileProgressText: ObservableField<String> = ObservableField(computeProfileProgressText())
 
   fun onHeaderClicked() {
-    routeToProfileProgressListener.routeToProfileProgress(profile.get()!!.id.internalId)
+    routeToProfileProgressListener.routeToProfileProgress(profile.get()!!.id)
   }
 
   fun setOngoingTopicProgress(ongoingTopicCount: Int) {

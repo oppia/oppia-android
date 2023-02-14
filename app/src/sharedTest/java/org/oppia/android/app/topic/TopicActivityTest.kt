@@ -13,7 +13,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -133,12 +132,13 @@ class TopicActivityTest {
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
 
-  private val internalProfileId = 1
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     markAllSpotlightsSeen()
   }
 
@@ -154,11 +154,11 @@ class TopicActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenNameWithIntentOne = TopicActivity.createTopicActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID
+      context, profileId, FRACTIONS_TOPIC_ID
     ).extractCurrentAppScreenName()
 
     val currentScreenNameWithIntentTwo = TopicActivity.createTopicPlayStoryActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
+      context, profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenNameWithIntentOne).isEqualTo(ScreenName.TOPIC_ACTIVITY)
@@ -168,11 +168,11 @@ class TopicActivityTest {
   @Test
   fun testTopicActivity_createIntent_verifyProfileIdInIntent() {
     val profileIdOne = TopicActivity.createTopicActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID
+      context, profileId, FRACTIONS_TOPIC_ID
     ).extractCurrentUserProfileId()
 
     val profileIdTwo = TopicActivity.createTopicPlayStoryActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
+      context, profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ).extractCurrentUserProfileId()
 
     assertThat(profileIdOne.internalId).isEqualTo(1)
@@ -182,7 +182,7 @@ class TopicActivityTest {
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
+    launchTopicActivity(profileId, FRACTIONS_TOPIC_ID).use { scenario ->
       lateinit var title: CharSequence
       scenario.onActivity { activity -> title = activity.title }
 
@@ -196,7 +196,7 @@ class TopicActivityTest {
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
+    launchTopicActivity(profileId, FRACTIONS_TOPIC_ID).use { scenario ->
       // Open the practice tab and select a skill.
       onView(withText("Practice")).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -211,18 +211,19 @@ class TopicActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the question activity is started with the correct profile ID.
-      val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
-      intended(hasExtra("QuestionPlayerActivity.profile_id", profileId.toByteString()))
+      scenario.onActivity { it1 ->
+        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(1)
+      }
     }
   }
 
   private fun launchTopicActivity(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val scenario = ActivityScenario.launch<TopicActivity>(
-      TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId)
+      TopicActivity.createTopicActivityIntent(context, profileId, topicId)
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))
@@ -230,7 +231,6 @@ class TopicActivityTest {
   }
 
   private fun markAllSpotlightsSeen() {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
     testCoroutineDispatchers.runCurrent()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)

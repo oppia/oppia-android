@@ -60,14 +60,10 @@ class AdministratorControlsFragmentTestActivity :
     /** Returns an [Intent] to start this activity. */
     fun createAdministratorControlsFragmentTestActivityIntent(
       context: Context,
-      profileId: Int?
+      profileId: ProfileId
     ): Intent {
       val intent = Intent(context, AdministratorControlsFragmentTestActivity::class.java)
-      intent.decorateWithUserProfileId(
-        ProfileId.newBuilder().apply {
-          internalId = profileId!!
-        }.build()
-      )
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }

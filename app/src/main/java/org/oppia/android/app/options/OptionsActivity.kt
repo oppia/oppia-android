@@ -52,17 +52,13 @@ class OptionsActivity :
 
     fun createOptionsActivity(
       context: Context,
-      profileId: Int?,
+      profileId: ProfileId,
       isFromNavigationDrawer: Boolean
     ): Intent {
       return Intent(context, OptionsActivity::class.java).apply {
         putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
         decorateWithScreenName(OPTIONS_ACTIVITY)
-        decorateWithUserProfileId(
-          ProfileId.newBuilder().apply {
-            internalId = profileId!!
-          }.build()
-        )
+        decorateWithUserProfileId(profileId)
       }
     }
   }

@@ -198,7 +198,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
-          profileId.internalId,
+          profileId,
           /* isFromNavigationDrawer= */ false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -207,7 +207,7 @@ class ExplorationActivityPresenter @Inject constructor(
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, profileId.internalId,
+          activity, profileId,
           /* isFromNavigationDrawer= */false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -373,7 +373,7 @@ class ExplorationActivityPresenter @Inject constructor(
       ExplorationActivityParams.ParentScreen.UNRECOGNIZED -> {
         // Default to the topic activity.
         activity.startActivity(
-          TopicActivity.createTopicActivityIntent(context, profileId.internalId, topicId)
+          TopicActivity.createTopicActivityIntent(context, profileId, topicId)
         )
       }
     }

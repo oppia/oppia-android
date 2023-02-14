@@ -44,6 +44,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -132,7 +133,7 @@ class AdminAuthActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  private val internalProfileId: Int = 0
+  private lateinit var profileId: ProfileId
 
   @get:Rule
   val activityTestRule: ActivityTestRule<AdminAuthActivity> = ActivityTestRule(
@@ -144,6 +145,7 @@ class AdminAuthActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   @After
@@ -161,7 +163,7 @@ class AdminAuthActivityTest {
     val screenName = AdminAuthActivity.createAdminAuthActivityIntent(
       context = context,
       adminPin = "12345",
-      profileId = internalProfileId,
+      profileId = profileId,
       colorRgb = -10710042,
       adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
     ).extractCurrentAppScreenName()
@@ -174,12 +176,12 @@ class AdminAuthActivityTest {
     val profileId = AdminAuthActivity.createAdminAuthActivityIntent(
       context = context,
       adminPin = "12345",
-      profileId = internalProfileId,
+      profileId = this.profileId,
       colorRgb = -10710042,
       adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
     ).extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(internalProfileId)
+    assertThat(profileId.internalId).isEqualTo(this.profileId.internalId)
   }
 
   @Test
@@ -188,7 +190,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
@@ -203,7 +205,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
@@ -228,7 +230,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
@@ -252,7 +254,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -277,7 +279,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -301,7 +303,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -333,7 +335,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -364,7 +366,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -379,7 +381,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -403,7 +405,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -428,7 +430,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -479,7 +481,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
@@ -532,7 +534,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -566,7 +568,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -607,7 +609,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -647,7 +649,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
@@ -667,7 +669,7 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
-        profileId = internalProfileId,
+        profileId = profileId,
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )

@@ -12,6 +12,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminAuthActivityBinding
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [AdminAuthActivity]. */
@@ -80,7 +81,7 @@ class AdminAuthActivityPresenter @Inject constructor(
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
             activity.startActivity(
               AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                context, activity.intent.getIntExtra(ADMIN_AUTH_PROFILE_ID_EXTRA_KEY, -1)
+                context, activity.intent.extractCurrentUserProfileId()
               )
             )
             activity.finish()

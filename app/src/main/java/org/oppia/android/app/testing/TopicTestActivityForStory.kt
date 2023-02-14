@@ -52,11 +52,11 @@ class TopicTestActivityForStory :
     )
   }
 
-  override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToStory(profileId: ProfileId, topicId: String, storyId: String) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         storyId
       )
@@ -106,14 +106,14 @@ class TopicTestActivityForStory :
   }
 
   override fun routeToRevisionCard(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
   ) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
-        this, internalProfileId, topicId, subtopicId, subtopicListSize
+        this, profileId, topicId, subtopicId, subtopicListSize
       )
     )
   }

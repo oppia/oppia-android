@@ -52,6 +52,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -128,7 +129,7 @@ class DeveloperOptionsActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -151,6 +152,7 @@ class DeveloperOptionsActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.newBuilder().setInternalId(0).build()
   }
 
   @After
@@ -166,22 +168,22 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      createDeveloperOptionsActivityIntent(internalProfileId).extractCurrentAppScreenName()
+      createDeveloperOptionsActivityIntent(profileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.DEVELOPER_OPTIONS_ACTIVITY)
   }
 
   @Test
   fun testDeveloperOptionActivity_createIntent_verifyProfileIdInIntent() {
-    val profileId = createDeveloperOptionsActivityIntent(internalProfileId)
+    val profileId = createDeveloperOptionsActivityIntent(profileId = this.profileId)
       .extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(internalProfileId)
+    assertThat(profileId.internalId).isEqualTo(this.profileId.internalId)
   }
 
   @Test
   fun testDeveloperOptionsActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createDeveloperOptionsActivityIntent(internalProfileId))
+    activityTestRule.launchActivity(createDeveloperOptionsActivityIntent(profileId))
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -192,7 +194,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsListIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
+      createDeveloperOptionsActivityIntent(profileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
@@ -204,7 +206,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptions_configChange_selectDevOptionsNavItem_developerOptionsListIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
+      createDeveloperOptionsActivityIntent(profileId)
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       it.openNavigationDrawer()
@@ -217,7 +219,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptions_selectMathExpressionsEquations_routesToMathExpressionParserActivity() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
+      createDeveloperOptionsActivityIntent(profileId)
     ).use {
       onView(withId(R.id.developer_options_list))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(3))
@@ -236,8 +238,8 @@ class DeveloperOptionsActivityTest {
     }
   }
 
-  private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, internalProfileId)
+  private fun createDeveloperOptionsActivityIntent(profileId: ProfileId): Intent {
+    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, profileId)
   }
 
   private fun ActivityScenario<DeveloperOptionsActivity>.openNavigationDrawer() {

@@ -3,6 +3,7 @@ package org.oppia.android.app.completedstorylist
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.CompletedStory
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.translation.TranslationController
@@ -28,13 +29,14 @@ class CompletedStoryItemViewModel(
   }
 
   fun onCompletedStoryItemClicked() {
-    routeToTopicPlayStory(internalProfileId, completedStory.topicId, completedStory.storyId)
+    val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    routeToTopicPlayStory(profileId, completedStory.topicId, completedStory.storyId)
   }
 
-  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToTopicPlayStory(profileId: ProfileId, topicId: String, storyId: String) {
     val intent = intentFactoryShim.createTopicPlayStoryActivityIntent(
       activity.applicationContext,
-      internalProfileId,
+      profileId.internalId,
       topicId,
       storyId
     )

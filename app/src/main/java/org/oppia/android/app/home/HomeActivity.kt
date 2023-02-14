@@ -41,14 +41,10 @@ class HomeActivity :
   private lateinit var profileId: ProfileId
 
   companion object {
-    fun createHomeActivity(context: Context, profileId: Int?): Intent {
+    fun createHomeActivity(context: Context, profileId: ProfileId): Intent {
       return Intent(context, HomeActivity::class.java).apply {
         decorateWithScreenName(HOME_ACTIVITY)
-        decorateWithUserProfileId(
-          ProfileId.newBuilder().apply {
-            internalId = profileId!!
-          }.build()
-        )
+        decorateWithUserProfileId(profileId)
       }
     }
   }
@@ -66,8 +62,8 @@ class HomeActivity :
     homeActivityPresenter.handleOnRestart()
   }
 
-  override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+  override fun routeToTopic(profileId: ProfileId, topicId: String) {
+    startActivity(TopicActivity.createTopicActivityIntent(this, profileId, topicId))
   }
 
   override fun onBackPressed() {
@@ -86,11 +82,11 @@ class HomeActivity :
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 
-  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToTopicPlayStory(profileId: ProfileId, topicId: String, storyId: String) {
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         storyId
       )

@@ -117,7 +117,7 @@ class AdminPinActivityPresenter @Inject constructor(
               AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
                 activity.startActivity(
                   AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                    context, activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1)
+                    context, activity.intent.extractCurrentUserProfileId()
                   )
                 )
                 activity.finish()

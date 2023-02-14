@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.translation.TranslationController
@@ -56,8 +57,9 @@ class PromotedStoryViewModel(
   }
 
   fun clickOnStoryTile() {
+    val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      internalProfileId,
+      profileId,
       promotedStory.topicId,
       promotedStory.storyId
     )

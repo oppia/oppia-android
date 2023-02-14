@@ -87,14 +87,14 @@ class RevisionCardActivityPresenter @Inject constructor(
     return when (itemId) {
       R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
-          activity, profileId.internalId, isFromNavigationDrawer = false
+          activity, profileId, isFromNavigationDrawer = false
         )
         activity.startActivity(intent)
         true
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, profileId.internalId, isFromNavigationDrawer = false
+          activity, profileId, isFromNavigationDrawer = false
         )
         activity.startActivity(intent)
         true

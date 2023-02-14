@@ -82,14 +82,10 @@ class DeveloperOptionsActivity :
 
   companion object {
     /** Function to create intent for DeveloperOptionsActivity */
-    fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createDeveloperOptionsActivityIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
-        decorateWithUserProfileId(
-          ProfileId.newBuilder().apply {
-            internalId = internalProfileId
-          }.build()
-        )
+        decorateWithUserProfileId(profileId)
       }
     }
   }

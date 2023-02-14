@@ -27,20 +27,16 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    fun createMyDownloadsActivityIntent(context: Context, profileId: Int?): Intent {
+    fun createMyDownloadsActivityIntent(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, MyDownloadsActivity::class.java)
       intent.decorateWithScreenName(MY_DOWNLOADS_ACTIVITY)
-      intent.decorateWithUserProfileId(
-        ProfileId.newBuilder().apply {
-          internalId = profileId!!
-        }.build()
-      )
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }
 
   override fun onBackPressed() {
-    val intent = HomeActivity.createHomeActivity(this, profileId.internalId)
+    val intent = HomeActivity.createHomeActivity(this, profileId)
     startActivity(intent)
     finish()
   }

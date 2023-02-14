@@ -53,6 +53,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -151,12 +152,15 @@ class AdminPinActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
+  private lateinit var profileId: ProfileId
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   @After
@@ -169,7 +173,7 @@ class AdminPinActivityTest {
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = AdminPinActivity.createAdminPinActivityIntent(
       context = context,
-      profileId = 0,
+      profileId = profileId,
       colorRgb = -10710042,
       adminPinEnum = 0
     ).extractCurrentAppScreenName()
@@ -181,7 +185,7 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = AdminPinActivity.createAdminPinActivityIntent(
       context = context,
-      profileId = 0,
+      profileId = this.profileId,
       colorRgb = -10710042,
       adminPinEnum = 0
     ).extractCurrentUserProfileId()
@@ -194,7 +198,7 @@ class AdminPinActivityTest {
     activityTestRule.launchActivity(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -211,7 +215,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 1
       )
@@ -247,7 +251,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 1
       )
@@ -281,7 +285,7 @@ class AdminPinActivityTest {
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -320,7 +324,7 @@ class AdminPinActivityTest {
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -355,7 +359,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -379,7 +383,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -413,7 +417,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -458,7 +462,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -498,7 +502,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -541,7 +545,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -583,7 +587,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 1
       )
@@ -597,7 +601,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 1
       )
@@ -636,7 +640,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 1
       )
@@ -672,7 +676,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -711,7 +715,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -747,7 +751,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -772,7 +776,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -807,7 +811,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -850,7 +854,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -893,7 +897,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -940,7 +944,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -986,7 +990,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -1029,7 +1033,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )
@@ -1070,7 +1074,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
-        profileId = 0,
+        profileId = this.profileId,
         colorRgb = -10710042,
         adminPinEnum = 0
       )

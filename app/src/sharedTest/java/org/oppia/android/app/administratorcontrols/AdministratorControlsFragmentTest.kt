@@ -52,6 +52,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -131,7 +132,7 @@ class AdministratorControlsFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -148,6 +149,7 @@ class AdministratorControlsFragmentTest {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     Intents.init()
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -166,7 +168,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -195,7 +197,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -221,7 +223,7 @@ class AdministratorControlsFragmentTest {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -241,7 +243,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -271,7 +273,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_wifiSwitchIsUnchecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -283,7 +285,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_autoUpdateSwitchIsUnchecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -296,7 +298,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickWifiContainer_wifiSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -312,7 +314,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickWifiContainer_orientationLand_wifiSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -330,7 +332,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickWifiContainer_configChange_wifiSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -349,7 +351,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControls_clickWifiContainer_orientationLand_autoUpdateSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -366,7 +368,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControls_clickWifiContainer_configChange_autoUpdateSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -384,7 +386,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickAutoUpdateContainer_autoUpdateSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -399,7 +401,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_nonDownloadPermissionProfile_wifiSwitchIsNonClickable() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -412,7 +414,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_autoUpdateSwitchIsNonClickable() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -511,7 +513,7 @@ class AdministratorControlsFragmentTest {
     return atPositionOnView(recyclerViewId = R.id.administrator_controls_list, position, viewId)
   }
 
-  private fun createAdministratorControlsFragmentTestActivityIntent(profileId: Int): Intent {
+  private fun createAdministratorControlsFragmentTestActivityIntent(profileId: ProfileId): Intent {
     return AdministratorControlsFragmentTestActivity
       .createAdministratorControlsFragmentTestActivityIntent(
         context = context,

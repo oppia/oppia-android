@@ -11,7 +11,6 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
-const val PIN_PASSWORD_PROFILE_ID_EXTRA_KEY = "PinPasswordActivity.pin_password_profile_id"
 const val PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY = "PinPasswordActivity.pin_password_admin_pin"
 
 /** Activity that allows user to input his or her PIN. */
@@ -23,13 +22,12 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
     fun createPinPasswordActivityIntent(
       context: Context,
       adminPin: String,
-      profileId: Int
+      profileId: ProfileId
     ): Intent {
       return Intent(context, PinPasswordActivity::class.java).apply {
-        putExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, profileId)
         putExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY, adminPin)
         decorateWithScreenName(PIN_PASSWORD_ACTIVITY)
-        decorateWithUserProfileId(ProfileId.newBuilder().apply { internalId = profileId }.build())
+        decorateWithUserProfileId(profileId)
       }
     }
   }
