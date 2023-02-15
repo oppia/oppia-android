@@ -172,7 +172,7 @@ class TopicLessonsFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileId = ProfileId.getDefaultInstance()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     markAllSpotlightsSeen()
   }
@@ -509,6 +509,7 @@ class TopicLessonsFragmentTest {
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
     testCoroutineDispatchers.runCurrent()
+    println("profile id data" + profileId.internalId)
     launch<TopicActivity>(createTopicActivityIntent(profileId, FRACTIONS_TOPIC_ID)).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
@@ -527,7 +528,7 @@ class TopicLessonsFragmentTest {
         explorationId = FRACTIONS_EXPLORATION_ID_0
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
-        profileId
+        profileId = this.profileId
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
         checkpoint = ExplorationCheckpoint.newBuilder().apply {
           explorationTitle = "What is a Fraction?"
