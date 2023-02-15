@@ -31,6 +31,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AppLanguageFragment
 import org.oppia.android.app.options.AudioLanguageFragment
 import org.oppia.android.app.options.OptionsActivity
@@ -106,6 +107,8 @@ class OptionsFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var profileId: ProfileId
+
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
@@ -113,6 +116,7 @@ class OptionsFragmentTest {
       ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     )
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -123,7 +127,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_checkInitiallyLoadedFragmentIsReadingTextSizeFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(profileId, true)).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
         val loadedFragment =
@@ -135,7 +139,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_clickReadingTextSize_checkLoadingTheCorrectFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(profileId, true)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -156,7 +160,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureEnabled_appLanguageItemIsDisplayed() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(profileId, true)).use {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.app_language_item_layout)).check(matches(isDisplayed()))
@@ -166,7 +170,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageItemIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(profileId, true)).use {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.app_language_item_layout)).check(doesNotExist())
@@ -175,7 +179,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_clickAppLanguage_checkLoadingTheCorrectFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(profileId, true)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -196,7 +200,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_clickDefaultAudio_checkLoadingTheCorrectFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(profileId, true)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -216,12 +220,12 @@ class OptionsFragmentTest {
   }
 
   private fun createOptionActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     isFromNavigationDrawer: Boolean
   ): Intent {
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       isFromNavigationDrawer
     )
   }

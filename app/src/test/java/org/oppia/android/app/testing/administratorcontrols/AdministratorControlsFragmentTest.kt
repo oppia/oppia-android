@@ -34,6 +34,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -108,10 +109,13 @@ class AdministratorControlsFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var profileId: ProfileId
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -130,7 +134,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickEditProfile_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -150,7 +154,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickAppVersion_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -169,7 +173,7 @@ class AdministratorControlsFragmentTest {
     }
   }
 
-  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
+  private fun createAdministratorControlsActivityIntent(profileId: ProfileId): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context,
       profileId

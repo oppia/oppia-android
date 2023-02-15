@@ -280,8 +280,8 @@ class CompletedStoryListActivityTest {
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
-      it.onActivity { it1 ->
-        assertThat(it1.intent.extractCurrentUserProfileId()).isEqualTo(profileId)
+      it.onActivity { activity ->
+        assertThat(activity.intent.extractCurrentUserProfileId()).isEqualTo(profileId)
       }
     }
   }
@@ -310,9 +310,9 @@ class CompletedStoryListActivityTest {
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
-      it.onActivity { it1 ->
+      it.onActivity { activity ->
         assertThat(
-          it1.intent.extractCurrentUserProfileId()
+          activity.intent.extractCurrentUserProfileId()
             .internalId
         ).isEqualTo(this.profileId.internalId)
       }
