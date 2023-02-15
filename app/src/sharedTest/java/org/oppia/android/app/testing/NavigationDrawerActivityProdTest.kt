@@ -279,7 +279,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(profileId)
+      createNavigationDrawerActivityIntent(profileId1)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -763,7 +763,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withUserProfile_adminControlsAreNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(profileId)
+      createNavigationDrawerActivityIntent(profileId1)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout))
