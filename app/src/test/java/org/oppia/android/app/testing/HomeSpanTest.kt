@@ -27,6 +27,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -97,11 +98,12 @@ class HomeSpanTest {
   @Inject
   lateinit var context: Context
 
-  private val internalProfileId: Int = 1
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -111,7 +113,7 @@ class HomeSpanTest {
   @Config(qualifiers = "port")
   @Test
   fun testHomeSpanTest_checkSpanForItem0_port_hasCorrectSpanCount() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
           hasGridItemCount(
@@ -125,7 +127,7 @@ class HomeSpanTest {
   @Config(qualifiers = "land")
   @Test
   fun testHomeSpanTest_checkSpanForItem0_landscape_hasCorrectSpanCount() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
           hasGridItemCount(
@@ -139,7 +141,7 @@ class HomeSpanTest {
   @Config(qualifiers = "sw600dp-port")
   @Test
   fun testHomeSpanTest_checkSpanForItem0_port_tablet_hasCorrectSpanCount() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
           hasGridItemCount(
@@ -153,7 +155,7 @@ class HomeSpanTest {
   @Config(qualifiers = "sw600dp-land")
   @Test
   fun testHomeSpanTest_checkSpanForItem0_landscape_tablet_hasCorrectSpanCount() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
           hasGridItemCount(
@@ -164,7 +166,7 @@ class HomeSpanTest {
     }
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
+  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
     return HomeActivity.createHomeActivity(context, profileId)
   }
 

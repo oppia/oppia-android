@@ -248,7 +248,7 @@ class HomeActivityTest {
     val profileId = createHomeActivityIntent(profileId)
       .extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(profileId)
+    assertThat(profileId).isEqualTo(profileId)
   }
 
   @Test
@@ -1038,7 +1038,7 @@ class HomeActivityTest {
         assertThat(
           it1.intent.extractCurrentUserProfileId()
             .internalId
-        ).isEqualTo(profileId1)
+        ).isEqualTo(profileId1.internalId)
       }
     }
   }

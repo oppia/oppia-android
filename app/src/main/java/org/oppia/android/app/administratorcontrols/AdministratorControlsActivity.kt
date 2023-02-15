@@ -116,10 +116,7 @@ class AdministratorControlsActivity :
     fun createAdministratorControlsActivityIntent(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
-      intent.decorateWithUserProfileId(
-        ProfileId.newBuilder().apply { profileId }
-          .build()
-      )
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }

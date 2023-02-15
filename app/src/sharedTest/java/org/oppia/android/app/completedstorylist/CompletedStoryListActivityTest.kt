@@ -281,7 +281,7 @@ class CompletedStoryListActivityTest {
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
       it.onActivity { it1 ->
-        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(profileId)
+        assertThat(it1.intent.extractCurrentUserProfileId()).isEqualTo(profileId)
       }
     }
   }

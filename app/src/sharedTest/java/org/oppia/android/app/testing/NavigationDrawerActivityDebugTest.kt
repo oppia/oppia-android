@@ -321,7 +321,6 @@ class NavigationDrawerActivityDebugTest {
       it.onActivity { it1 ->
         Truth.assertThat(
           it1.intent.extractCurrentUserProfileId()
-            .internalId
         ).isEqualTo(profileId)
       }
     }
