@@ -41,6 +41,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -131,10 +132,13 @@ class AppVersionActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var profileId: ProfileId
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -236,7 +240,7 @@ class AppVersionActivityTest {
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       launchAdministratorControlsActivityIntent(
-        internalProfileId = 0
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -270,10 +274,10 @@ class AppVersionActivityTest {
     return ActivityScenario.launch(intent)
   }
 
-  private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
+  private fun launchAdministratorControlsActivityIntent(profileId: ProfileId): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId
+      profileId
     )
   }
 

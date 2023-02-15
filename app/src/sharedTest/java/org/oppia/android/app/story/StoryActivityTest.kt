@@ -128,7 +128,7 @@ class StoryActivityTest {
   @Inject
   lateinit var context: Context
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @get:Rule
   val activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
@@ -141,6 +141,7 @@ class StoryActivityTest {
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.getDefaultInstance()
     Intents.init()
   }
 
@@ -153,7 +154,7 @@ class StoryActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = createStoryActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = TEST_TOPIC_ID_0,
       storyId = TEST_STORY_ID_0
     ).extractCurrentAppScreenName()
@@ -165,7 +166,7 @@ class StoryActivityTest {
   fun testStoryActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createStoryActivityIntent(
-        internalProfileId = internalProfileId,
+        profileId,
         topicId = TEST_TOPIC_ID_0,
         storyId = TEST_STORY_ID_0
       )
@@ -182,7 +183,7 @@ class StoryActivityTest {
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(
       createStoryActivityIntent(
-        internalProfileId = internalProfileId,
+        profileId,
         topicId = TEST_TOPIC_ID_0,
         storyId = TEST_STORY_ID_0
       )
@@ -206,7 +207,7 @@ class StoryActivityTest {
         explorationId = TEST_EXPLORATION_ID_2
         storyId = TEST_STORY_ID_0
         topicId = TEST_TOPIC_ID_0
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = profileId
         parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN
         isCheckpointingEnabled = true
       }.build()
@@ -224,13 +225,13 @@ class StoryActivityTest {
   }
 
   private fun createStoryActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String
   ): Intent {
     return StoryActivity.createStoryActivityIntent(
       context = ApplicationProvider.getApplicationContext(),
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = topicId,
       storyId = storyId
     )

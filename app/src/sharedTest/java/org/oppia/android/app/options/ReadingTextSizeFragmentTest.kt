@@ -38,6 +38,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize.SMALL_TEXT_SIZE
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -137,6 +138,8 @@ class ReadingTextSizeFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var profileId: ProfileId
+
   private val defaultTextSizeInFloat by lazy {
     context.resources.getDimension(R.dimen.default_reading_text_size)
   }
@@ -145,6 +148,7 @@ class ReadingTextSizeFragmentTest {
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
+    profileId = ProfileId.getDefaultInstance()
     profileTestHelper.initializeProfiles()
   }
 
@@ -184,7 +188,7 @@ class ReadingTextSizeFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testTextSize_changeTextSizeToMedium_mediumItemIsSelected() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(profileId, true)).use {
       testCoroutineDispatchers.runCurrent()
       clickOnTextSizeRecyclerViewItem(MEDIUM_TEXT_SIZE_INDEX)
       checkTextSizeLabel("Medium")
@@ -195,12 +199,12 @@ class ReadingTextSizeFragmentTest {
     ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, SMALL_TEXT_SIZE)
 
   private fun createOptionActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     isFromNavigationDrawer: Boolean
   ): Intent {
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       isFromNavigationDrawer
     )
   }

@@ -33,6 +33,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -115,12 +116,13 @@ class ProfilePictureActivityTest {
   @Inject
   lateinit var context: Context
 
-  private val internalProfileId: Int = 1
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     profileTestHelper.initializeProfiles()
   }
 
@@ -133,7 +135,7 @@ class ProfilePictureActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createProfilePictureActivityIntent(profileId: Int): Intent {
+  private fun createProfilePictureActivityIntent(profileId: ProfileId): Intent {
     return ProfilePictureActivity.createProfilePictureActivityIntent(
       ApplicationProvider.getApplicationContext(),
       profileId
@@ -142,7 +144,7 @@ class ProfilePictureActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createProfilePictureActivityIntent(internalProfileId)
+    val currentScreenName = createProfilePictureActivityIntent(profileId)
       .extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_PICTURE_ACTIVITY)
