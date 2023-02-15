@@ -144,13 +144,14 @@ class TopicRevisionFragmentTest {
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
 
   private val subtopicThumbnail = R.drawable.topic_fractions_01
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     Intents.init()
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
     markAllSpotlightsSeen()
   }
@@ -168,7 +169,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_displayRevisionTopics_isSuccessful() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -181,7 +182,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -200,7 +201,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -224,7 +225,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_revisionSubtopicsAreDisplayed() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -238,7 +239,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -263,7 +264,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -279,7 +280,6 @@ class TopicRevisionFragmentTest {
   }
 
   private fun markAllSpotlightsSeen() {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
     testCoroutineDispatchers.runCurrent()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)
@@ -288,20 +288,20 @@ class TopicRevisionFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
+  private fun createTopicActivityIntent(profileId: ProfileId, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       context = ApplicationProvider.getApplicationContext(),
-      internalProfileId = internalProfileId,
+      profileId,
       topicId = topicId
     )
   }
 
   private fun launchTopicActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     return launch(
-      createTopicActivityIntent(internalProfileId = internalProfileId, topicId = topicId)
+      createTopicActivityIntent(profileId, topicId = topicId)
     )
   }
 

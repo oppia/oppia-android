@@ -27,6 +27,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -102,11 +103,12 @@ class StoryActivityLocalTest {
   @Inject
   lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     Intents.init()
+    profileId = ProfileId.getDefaultInstance()
     setUpTestApplicationComponent()
   }
 
@@ -118,7 +120,7 @@ class StoryActivityLocalTest {
   @Test
   fun testStoryActivity_onLaunch_logsEvent() {
     ActivityScenario.launch<StoryActivity>(
-      createStoryActivityIntent(internalProfileId, TEST_TOPIC_ID, TEST_STORY_ID)
+      createStoryActivityIntent(profileId, TEST_TOPIC_ID, TEST_STORY_ID)
     ).use {
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
@@ -130,13 +132,13 @@ class StoryActivityLocalTest {
   }
 
   private fun createStoryActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String
   ): Intent {
     return StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       topicId,
       storyId
     )

@@ -24,6 +24,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -95,15 +96,17 @@ class RevisionCardActivityLocalTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  private val internalProfileId = 1
   private val fractionsSubtopicListSize: Int = 4
 
   @Inject
   lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
+  private lateinit var profileId: ProfileId
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   }
 
   @Test
@@ -111,7 +114,7 @@ class RevisionCardActivityLocalTest {
     ActivityScenario.launch<RevisionCardActivity>(
       RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
         fractionsSubtopicListSize

@@ -23,6 +23,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
@@ -99,16 +100,17 @@ class TopicLessonsFragmentLocalTest {
   @Inject
   lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
   }
 
   @Test
   fun testTopicLessonsFragment_onLaunch_logsEvent() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID, TEST_STORY_ID).use {
+    launchTopicActivityIntent(profileId, TEST_TOPIC_ID, TEST_STORY_ID).use {
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase)
@@ -119,14 +121,14 @@ class TopicLessonsFragmentLocalTest {
   }
 
   private fun launchTopicActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String
   ): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicPlayStoryActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        profileId,
         topicId,
         storyId
       )

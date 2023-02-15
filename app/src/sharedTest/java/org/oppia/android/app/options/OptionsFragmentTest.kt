@@ -49,6 +49,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -138,11 +139,14 @@ class OptionsFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var profileId: ProfileId
+
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     Intents.init()
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
   }
@@ -165,12 +169,12 @@ class OptionsFragmentTest {
   )
 
   private fun createOptionActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     isFromNavigationDrawer: Boolean
   ): Intent {
     return OptionsActivity.createOptionsActivity(
       context = ApplicationProvider.getApplicationContext(),
-      profileId = internalProfileId,
+      profileId = profileId,
       isFromNavigationDrawer = isFromNavigationDrawer
     )
   }
@@ -179,7 +183,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_parentIsExploration_checkBackArrowNotVisible() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = false
       )
     ).use {
@@ -192,7 +196,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_parentIsNotExploration_checkBackArrowNotVisible() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -205,7 +209,7 @@ class OptionsFragmentTest {
   fun testOptionFragment_notFromNavigationDrawer_navigationDrawerIsNotPresent() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = false
       )
     ).use {
@@ -218,7 +222,7 @@ class OptionsFragmentTest {
   fun testOptionFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = false
       )
     ).use {
@@ -232,7 +236,7 @@ class OptionsFragmentTest {
   fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -247,7 +251,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_defaultReadingTextSizeIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -268,7 +272,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_configChange_defaultReadingTextSizeIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -290,7 +294,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_tabletConfig_defaultReadingTextSizeIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -311,7 +315,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_defaultAppLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -332,7 +336,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_configChange_defaultAppLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -353,7 +357,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_featureEnabled_appLanguageOptionIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -368,7 +372,7 @@ class OptionsFragmentTest {
 
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -381,7 +385,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_defaultAudioLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -402,7 +406,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_configChange_defaultAudioLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -423,7 +427,7 @@ class OptionsFragmentTest {
   fun openOptionsActivity_clickReadingTextSize_opensReadingTextSizeActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -452,7 +456,7 @@ class OptionsFragmentTest {
   fun openOptionsActivity_configChange_clickTextSize_opensReadingTextSizeActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -481,7 +485,7 @@ class OptionsFragmentTest {
   fun openOptionsActivity_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -513,7 +517,7 @@ class OptionsFragmentTest {
   fun openOptionsActivity_configChange_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -545,7 +549,7 @@ class OptionsFragmentTest {
   fun openOptionsActivity_clickAudioLanguage_opensAudioLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
@@ -574,7 +578,7 @@ class OptionsFragmentTest {
   fun openOptionsActivity_configChange_clickAudioLanguage_opensAudioLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
-        internalProfileId = 0,
+        profileId,
         isFromNavigationDrawer = true
       )
     ).use {
