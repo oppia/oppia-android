@@ -376,8 +376,8 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      it.onActivity { it1 ->
-        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
+      it.onActivity { activity ->
+        assertThat(activity.intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
       }
     }
   }

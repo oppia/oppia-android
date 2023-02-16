@@ -253,9 +253,9 @@ class OngoingTopicListActivityTest {
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
-      it.onActivity { it1 ->
+      it.onActivity { activity ->
         assertThat(
-          it1.intent.extractCurrentUserProfileId()
+          activity.intent.extractCurrentUserProfileId()
             .internalId
         ).isEqualTo(profileId.internalId)
       }
@@ -285,9 +285,9 @@ class OngoingTopicListActivityTest {
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
-      it.onActivity { it1 ->
+      it.onActivity { activity ->
         assertThat(
-          it1.intent.extractCurrentUserProfileId()
+          activity.intent.extractCurrentUserProfileId()
             .internalId
         ).isEqualTo(profileId.internalId)
       }

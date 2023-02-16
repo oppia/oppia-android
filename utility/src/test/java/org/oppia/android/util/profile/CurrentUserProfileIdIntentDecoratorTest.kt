@@ -33,6 +33,16 @@ class CurrentUserProfileIdIntentDecoratorTest {
   @Test
   fun testDecorator_withoutProfileId_returnsIntentWithDefaultProfileId() {
     val currentProfileId = Intent().extractCurrentUserProfileId()
-    assertThat(currentProfileId).isEqualTo(ProfileId.newBuilder().apply { internalId = 0 }.build())
+    assertThat(currentProfileId).isEqualTo(ProfileId.getDefaultInstance())
+  }
+
+  @Test
+  fun testDecorateWithUserProfileId_emptyProfileProto_returnsDefaultProfileIdInstance() {
+    val profileId = ProfileId.newBuilder().apply {}.build()
+
+    val extractedProfileId = Intent().apply {
+      decorateWithUserProfileId(profileId)
+    }.extractCurrentUserProfileId()
+    assertThat(extractedProfileId).isEqualTo(ProfileId.getDefaultInstance())
   }
 }

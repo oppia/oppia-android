@@ -655,8 +655,11 @@ class ProfileProgressFragmentTest {
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
-      it.onActivity { it1 ->
-        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(internalProfileId)
+      it.onActivity { activity ->
+        assertThat(
+          activity.intent.extractCurrentUserProfileId()
+            .internalId
+        ).isEqualTo(internalProfileId)
       }
     }
   }
@@ -789,8 +792,11 @@ class ProfileProgressFragmentTest {
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.ongoing_topics_container)
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
-      it.onActivity { it1 ->
-        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(internalProfileId)
+      it.onActivity { activity ->
+        assertThat(
+          activity.intent.extractCurrentUserProfileId()
+            .internalId
+        ).isEqualTo(internalProfileId)
       }
     }
   }
@@ -810,8 +816,11 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.completed_stories_container)
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
-      it.onActivity { it1 ->
-        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(internalProfileId)
+      it.onActivity { activity ->
+        assertThat(
+          activity.intent.extractCurrentUserProfileId()
+            .internalId
+        ).isEqualTo(internalProfileId)
       }
     }
   }

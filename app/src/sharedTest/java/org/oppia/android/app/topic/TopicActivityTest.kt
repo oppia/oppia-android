@@ -166,17 +166,21 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_createIntent_verifyProfileIdInIntent() {
-    val profileIdOne = TopicActivity.createTopicActivityIntent(
+  fun testTopicActivity_createTopicActivityIntent_verifyProfileIdInIntent() {
+    val profileId = TopicActivity.createTopicActivityIntent(
       context, profileId, FRACTIONS_TOPIC_ID
     ).extractCurrentUserProfileId()
 
-    val profileIdTwo = TopicActivity.createTopicPlayStoryActivityIntent(
+    assertThat(profileId.internalId).isEqualTo(1)
+  }
+
+  @Test
+  fun testTopicActivity_createTopicPlayStoryActivityIntent_verifyProfileIdInIntent() {
+    val profileId = TopicActivity.createTopicPlayStoryActivityIntent(
       context, profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ).extractCurrentUserProfileId()
 
-    assertThat(profileIdOne.internalId).isEqualTo(1)
-    assertThat(profileIdTwo.internalId).isEqualTo(1)
+    assertThat(profileId.internalId).isEqualTo(1)
   }
 
   @Test
@@ -212,8 +216,8 @@ class TopicActivityTest {
 
       // Verify that the question activity is started with the correct profile ID.
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
-      scenario.onActivity { it1 ->
-        assertThat(it1.intent.extractCurrentUserProfileId().internalId).isEqualTo(1)
+      scenario.onActivity { activity ->
+        assertThat(activity.intent.extractCurrentUserProfileId().internalId).isEqualTo(1)
       }
     }
   }

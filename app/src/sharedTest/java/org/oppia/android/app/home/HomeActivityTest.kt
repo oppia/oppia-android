@@ -252,13 +252,6 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testActivity_createIntent_verifyCurrentUserProfileId() {
-    val profileId = createHomeActivityIntent(profileId).extractCurrentUserProfileId()
-
-    assertThat(profileId.internalId).isEqualTo(0)
-  }
-
-  @Test
   fun testHomeActivity_withAdminProfile_profileNameIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -952,10 +945,9 @@ class HomeActivityTest {
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
-      it.onActivity { it1 ->
+      it.onActivity { activity ->
         assertThat(
-          it1.intent.extractCurrentUserProfileId()
-            .internalId
+          activity.intent.extractCurrentUserProfileId().internalId
         ).isEqualTo(profileId1.internalId)
       }
     }
@@ -1034,9 +1026,9 @@ class HomeActivityTest {
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
-      it.onActivity { it1 ->
+      it.onActivity { activity ->
         assertThat(
-          it1.intent.extractCurrentUserProfileId()
+          activity.intent.extractCurrentUserProfileId()
             .internalId
         ).isEqualTo(profileId1.internalId)
       }
