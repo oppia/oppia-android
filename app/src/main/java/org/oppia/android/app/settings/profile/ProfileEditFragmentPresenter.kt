@@ -68,7 +68,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       activity.startActivity(
         ProfileResetPinActivity.createProfileResetPinActivity(
           activity,
-          internalProfileId,
+          ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
           profileEditViewModel.isAdmin
         )
       )

@@ -101,6 +101,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
   }
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
+    val profileId = ProfileId.newBuilder().apply { internalId = profileId }.build()
     if (result is AsyncResult.Success) {
       val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

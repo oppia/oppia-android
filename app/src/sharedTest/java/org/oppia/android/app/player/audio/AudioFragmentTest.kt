@@ -157,8 +157,7 @@ class AudioFragmentTest {
     "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
       "2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
 
-  private var internalProfileId = 0
-  private var profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private var profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -171,7 +170,7 @@ class AudioFragmentTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-  private fun createAudioFragmentTestIntent(profileId: Int): Intent {
+  private fun createAudioFragmentTestIntent(profileId: ProfileId): Intent {
     return AudioFragmentTestActivity.createAudioFragmentTestActivity(
       context,
       profileId
@@ -183,7 +182,7 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -203,7 +202,7 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -223,7 +222,7 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -241,7 +240,7 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -259,7 +258,7 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -279,7 +278,7 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -299,7 +298,7 @@ class AudioFragmentTest {
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
+        profileId
       )
     ).use {
       invokePreparedListener(shadowMediaPlayer)
@@ -316,7 +315,7 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
+        profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

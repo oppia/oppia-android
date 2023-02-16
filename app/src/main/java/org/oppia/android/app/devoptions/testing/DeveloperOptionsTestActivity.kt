@@ -17,6 +17,9 @@ import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersComple
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Activity for testing [DeveloperOptionsFragment]. */
 class DeveloperOptionsTestActivity :
@@ -27,13 +30,13 @@ class DeveloperOptionsTestActivity :
   RouteToMarkTopicsCompletedListener,
   RouteToViewEventLogsListener {
 
-  private var internalProfileId = -1
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     setContentView(R.layout.developer_options_activity)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+    profileId = intent.extractCurrentUserProfileId()
     if (getDeveloperOptionsFragment() == null) {
       supportFragmentManager.beginTransaction().add(
         R.id.developer_options_fragment_placeholder,
@@ -51,21 +54,21 @@ class DeveloperOptionsTestActivity :
   override fun routeToMarkChaptersCompleted() {
     startActivity(
       MarkChaptersCompletedActivity
-        .createMarkChaptersCompletedIntent(this, internalProfileId)
+        .createMarkChaptersCompletedIntent(this, profileId)
     )
   }
 
   override fun routeToMarkStoriesCompleted() {
     startActivity(
       MarkStoriesCompletedActivity
-        .createMarkStoriesCompletedIntent(this, internalProfileId)
+        .createMarkStoriesCompletedIntent(this, profileId)
     )
   }
 
   override fun routeToMarkTopicsCompleted() {
     startActivity(
       MarkTopicsCompletedActivity
-        .createMarkTopicsCompletedIntent(this, internalProfileId)
+        .createMarkTopicsCompletedIntent(this, profileId)
     )
   }
 
@@ -81,9 +84,9 @@ class DeveloperOptionsTestActivity :
     const val PROFILE_ID_EXTRA_KEY = "DeveloperOptionsTestActivity.profile_id"
 
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
-    fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
+    fun createDeveloperOptionsTestIntent(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }

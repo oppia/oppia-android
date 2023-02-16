@@ -27,6 +27,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -121,20 +122,21 @@ class ProfileResetPinActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.getDefaultInstance()
     profileTestHelper.initializeProfiles()
   }
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName =
-      createProfileResetPinActivityIntent(internalProfileId, true).extractCurrentAppScreenName()
+      createProfileResetPinActivityIntent(profileId, true).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_RESET_PIN_ACTIVITY)
   }
@@ -143,7 +145,7 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createProfileResetPinActivityIntent(
-        internalProfileId,
+        profileId,
         isAdmin = true,
       )
     )
@@ -155,11 +157,11 @@ class ProfileResetPinActivityTest {
   }
 
   private fun createProfileResetPinActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     isAdmin: Boolean
   ): Intent {
     return ProfileResetPinActivity.createProfileResetPinActivity(
-      ApplicationProvider.getApplicationContext(), internalProfileId, isAdmin
+      ApplicationProvider.getApplicationContext(), profileId, isAdmin
     )
   }
 

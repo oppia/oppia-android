@@ -70,7 +70,7 @@ class ProfileListFragmentPresenter @Inject constructor(
 
       if (!isMultipane) {
         val routeToProfileEditListener = (activity as RouteToProfileEditListener)
-        routeToProfileEditListener.routeToProfileEditActivity(profile.id.internalId)
+        routeToProfileEditListener.routeToProfileEditActivity(profile.id)
       } else {
         val loadProfileEditListener = (activity as LoadProfileEditListener)
         loadProfileEditListener.loadProfileEdit(profile.id.internalId, profile.name)

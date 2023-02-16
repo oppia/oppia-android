@@ -39,6 +39,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
@@ -131,11 +132,20 @@ class ProfileEditFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var profileId: ProfileId
+
+  private lateinit var profileIdFour: ProfileId
+
+  private lateinit var profileIdZero: ProfileId
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    profileIdFour = ProfileId.newBuilder().apply { internalId = 4 }.build()
+    profileIdZero = ProfileId.getDefaultInstance()
     profileTestHelper.initializeProfiles()
   }
 
@@ -154,7 +164,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 1
+        profileId
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
@@ -168,7 +178,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 1
+        profileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -184,7 +194,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context,
-        profileId = 1
+        profileId
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
@@ -209,7 +219,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 4
+        profileId = profileIdFour
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -223,7 +233,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 0
+        profileId = profileIdZero
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -245,7 +255,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 4
+        profileId = profileIdFour
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -268,7 +278,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 4
+        profileId = profileIdFour
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -291,7 +301,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 4
+        profileId = profileIdFour
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -315,7 +325,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 4
+        profileId = profileIdFour
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -337,7 +347,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 4
+        profileId = profileIdFour
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -359,7 +369,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 4
+        profileId = profileIdFour
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -373,7 +383,7 @@ class ProfileEditFragmentTest {
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
-        profileId = 0
+        profileId = profileIdZero
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

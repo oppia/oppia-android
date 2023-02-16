@@ -30,6 +30,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -103,7 +104,7 @@ class MarkStoriesCompletedActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Inject
   lateinit var context: Context
@@ -121,6 +122,7 @@ class MarkStoriesCompletedActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -130,14 +132,14 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      createMarkStoriesCompletedActivityIntent(internalProfileId).extractCurrentAppScreenName()
+      createMarkStoriesCompletedActivityIntent(profileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.MARK_STORIES_COMPLETED_ACTIVITY)
   }
 
   @Test
   fun testMarkStoriesCompletedActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createMarkStoriesCompletedActivityIntent(internalProfileId))
+    activityTestRule.launchActivity(createMarkStoriesCompletedActivityIntent(profileId))
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -148,7 +150,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_markStoriesCompletedFragmentIsDisplayed() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
+      createMarkStoriesCompletedActivityIntent(profileId)
     ).use {
       onView(withId(R.id.mark_stories_completed_fragment_container)).check(
         matches(isDisplayed())
@@ -159,7 +161,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_configChange_markStoriesCompletedFragmentIsDisplayed() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
+      createMarkStoriesCompletedActivityIntent(profileId)
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_stories_completed_fragment_container)).check(
@@ -168,9 +170,9 @@ class MarkStoriesCompletedActivityTest {
     }
   }
 
-  private fun createMarkStoriesCompletedActivityIntent(internalProfileId: Int): Intent {
+  private fun createMarkStoriesCompletedActivityIntent(profileId: ProfileId): Intent {
     return MarkStoriesCompletedActivity.createMarkStoriesCompletedIntent(
-      context, internalProfileId
+      context, profileId
     )
   }
 

@@ -7,11 +7,14 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The activity for testing [MarkChaptersCompletedFragment]. */
 class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
 
-  private var internalProfileId = -1
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -19,10 +22,10 @@ class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_chapters_completed_activity)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+    profileId = intent.extractCurrentUserProfileId()
     if (getMarkChaptersCompletedFragment() == null) {
       val markChaptersCompletedFragment = MarkChaptersCompletedFragment
-        .newInstance(internalProfileId)
+        .newInstance(profileId.internalId)
       supportFragmentManager.beginTransaction().add(
         R.id.mark_chapters_completed_container,
         markChaptersCompletedFragment
@@ -36,12 +39,11 @@ class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedTestActivity.profile_id"
 
     /** Returns an [Intent] for [MarkChaptersCompletedTestActivity]. */
-    fun createMarkChaptersCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkChaptersCompletedTestIntent(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, MarkChaptersCompletedTestActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }

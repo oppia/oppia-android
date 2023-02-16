@@ -26,7 +26,6 @@ class ProfilePictureActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-
     fun createProfilePictureActivityIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, ProfilePictureActivity::class.java).apply {
         decorateWithScreenName(PROFILE_PICTURE_ACTIVITY)

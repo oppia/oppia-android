@@ -114,7 +114,6 @@ class MarkStoriesCompletedFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  private val internalProfileId = 0
   private lateinit var profileId: ProfileId
 
   @Inject
@@ -141,7 +140,7 @@ class MarkStoriesCompletedFragmentTest {
 
   @Before
   fun setUp() {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.getDefaultInstance()
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     testCoroutineDispatchers.registerIdlingResource()
@@ -159,7 +158,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_storiesAreShown() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       verifyStoryNameOnStorySummaryListItemAtPosition(
@@ -188,7 +187,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_configChange_storiesAreShown() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -218,7 +217,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectAll_isChecked() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
@@ -229,7 +228,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectAll_configChange_isChecked() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
@@ -241,7 +240,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectAll_selectsAllStories() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
@@ -256,7 +255,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_deselectAllStories_deselectsAllStories() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       // Click one to select all stories.
@@ -275,7 +274,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectAll_configChange_selectsAllStories() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
@@ -291,7 +290,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectStories_storiesAreChecked() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnStorySummaryListItem(itemPosition = 0)
@@ -310,7 +309,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectStories_configChange_storiesAreChecked() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnStorySummaryListItem(itemPosition = 0)
@@ -330,7 +329,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectAllStories_allCheckBoxIsChecked() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnStorySummaryListItem(itemPosition = 0)
@@ -345,7 +344,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectAllStories_configChange__allCheckBoxIsChecked() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnStorySummaryListItem(itemPosition = 0)
@@ -361,7 +360,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectAllStories_unselectOneStory_allCheckBoxIsNotChecked() {
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnStorySummaryListItem(itemPosition = 0)
@@ -377,7 +376,7 @@ class MarkStoriesCompletedFragmentTest {
   @Test
   fun testMarkStoriesCompletedFragment_selectAllStories_unselectOneStory_configChange_allCheckBoxIsNotChecked() { // ktlint-disable max-line-length
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnStorySummaryListItem(itemPosition = 0)
@@ -395,7 +394,7 @@ class MarkStoriesCompletedFragmentTest {
   fun testMarkStoriesCompletedFragment_ratiosFirstStoryIsCompleted_isCheckedAndDisabled() {
     markRatiosFirstStoryCompleted()
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -413,7 +412,7 @@ class MarkStoriesCompletedFragmentTest {
   fun testMarkStoriesCompletedFragment_ratiosFirstStoryIsCompleted_configChange_isCheckedAndDisabled() { // ktlint-disable max-line-length
     markRatiosFirstStoryCompleted()
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -430,7 +429,7 @@ class MarkStoriesCompletedFragmentTest {
 
   @Test
   fun testMarkStoriesCompletedFragment_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkStoriesCompletedTestActivityIntent(internalProfileId))
+    activityTestRule.launchActivity(createMarkStoriesCompletedTestActivityIntent(profileId))
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
@@ -438,7 +437,7 @@ class MarkStoriesCompletedFragmentTest {
 
   @Test
   fun testMarkStoriesCompletedFragment_land_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkStoriesCompletedTestActivityIntent(internalProfileId))
+    activityTestRule.launchActivity(createMarkStoriesCompletedTestActivityIntent(profileId))
     testCoroutineDispatchers.runCurrent()
     onView(isRoot()).perform(orientationLandscape())
     onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
@@ -449,7 +448,7 @@ class MarkStoriesCompletedFragmentTest {
   fun testMarkStoriesCompletedFragment_allLessonsAreCompleted_allCheckboxIsChecked() {
     markAllLessonsCompleted()
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
@@ -460,7 +459,7 @@ class MarkStoriesCompletedFragmentTest {
   fun testMarkStoriesCompletedFragment_allLessonsAreCompleted_configChange_allCheckboxIsChecked() {
     markAllLessonsCompleted()
     launch<MarkStoriesCompletedTestActivity>(
-      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+      createMarkStoriesCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -468,9 +467,9 @@ class MarkStoriesCompletedFragmentTest {
     }
   }
 
-  private fun createMarkStoriesCompletedTestActivityIntent(internalProfileId: Int): Intent {
+  private fun createMarkStoriesCompletedTestActivityIntent(profileId: ProfileId): Intent {
     return MarkStoriesCompletedTestActivity.createMarkStoriesCompletedTestIntent(
-      context, internalProfileId
+      context, profileId
     )
   }
 

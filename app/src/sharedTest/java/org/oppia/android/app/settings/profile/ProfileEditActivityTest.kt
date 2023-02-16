@@ -132,11 +132,17 @@ class ProfileEditActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var adminProfileId: ProfileId
+
+  private lateinit var userProfileId: ProfileId
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    adminProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    userProfileId = ProfileId.getDefaultInstance()
     profileTestHelper.initializeProfiles()
   }
 
@@ -153,7 +159,7 @@ class ProfileEditActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName =
-      ProfileEditActivity.createProfileEditActivity(context, 1)
+      ProfileEditActivity.createProfileEditActivity(context, adminProfileId)
         .extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_EDIT_ACTIVITY)
@@ -168,7 +174,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -181,7 +187,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = adminProfileId
       )
     ).use {
       onView(withId(R.id.profile_rename_button)).perform(click())
@@ -194,7 +200,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = adminProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -208,7 +214,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = adminProfileId
       )
     ).use {
       onView(withId(R.id.profile_reset_button)).perform(click())
@@ -221,7 +227,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = adminProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -235,7 +241,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = adminProfileId
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
@@ -256,7 +262,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = adminProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -278,7 +284,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -296,7 +302,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 0
+        profileId = userProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -315,7 +321,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -333,7 +339,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 0
+        profileId = userProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -349,13 +355,13 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_updateName_checkNewNameDisplayed() {
     profileManagementController.updateName(
-      ProfileId.newBuilder().setInternalId(1).build(),
+      adminProfileId,
       newName = "Akshay"
     )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
+        profileId = userProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

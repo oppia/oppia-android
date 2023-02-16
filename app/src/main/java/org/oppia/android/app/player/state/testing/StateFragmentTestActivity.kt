@@ -10,6 +10,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -18,10 +19,9 @@ import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
-internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_profile_id"
 internal const val TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_topic_id"
 internal const val TEST_ACTIVITY_STORY_ID_EXTRA_KEY =
@@ -64,14 +64,13 @@ class StateFragmentTestActivity :
   companion object {
     fun createTestActivityIntent(
       context: Context,
-      profileId: Int,
+      profileId: ProfileId,
       topicId: String,
       storyId: String,
       explorationId: String,
       shouldSavePartialProgress: Boolean
     ): Intent {
       val intent = Intent(context, StateFragmentTestActivity::class.java)
-      intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, profileId)
       intent.putExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
       intent.putExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY, storyId)
       intent.putExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY, explorationId)
@@ -79,6 +78,7 @@ class StateFragmentTestActivity :
         TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY,
         shouldSavePartialProgress
       )
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }

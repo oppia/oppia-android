@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [ProfileEditActivity]. */
@@ -21,7 +22,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     activity.setContentView(R.layout.profile_edit_activity)
     setUpToolbar()
 
-    val profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
+    val profileId = activity.intent.extractCurrentUserProfileId()
     val isMultipane = activity.intent.getBooleanExtra(IS_MULTIPANE_EXTRA_KEY, false)
 
     toolbar.setNavigationOnClickListener {
@@ -37,7 +38,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     if (getProfileEditFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_edit_fragment_placeholder,
-        ProfileEditFragment.newInstance(profileId, isMultipane)
+        ProfileEditFragment.newInstance(profileId.internalId, isMultipane)
       ).commitNow()
     }
   }

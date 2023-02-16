@@ -37,6 +37,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -120,10 +121,13 @@ class WalkthroughFinalFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var profileId: ProfileId
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -133,7 +137,7 @@ class WalkthroughFinalFragmentTest {
     Intents.release()
   }
 
-  private fun createWalkthroughActivityIntent(profileId: Int): Intent {
+  private fun createWalkthroughActivityIntent(profileId: ProfileId): Intent {
     return WalkthroughActivity.createWalkthroughActivityIntent(
       context,
       profileId
@@ -142,7 +146,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughFinalFragment_topicSelected_firstTestTopicIsDisplayed() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -167,7 +171,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughFinalFragment_topicSelected_secondTestTopicIsDisplayed() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -192,7 +196,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughFinalFragment_topicSelected_configChange_secondTestTopicIsDisplayed() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -224,7 +228,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughFinalFragment_topicSelected_yesNoBtnIsDisplayed() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -247,7 +251,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughFinalFragment_topicSelected_clickNoBtn_noBtnWorksCorrectly() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())

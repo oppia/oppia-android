@@ -38,6 +38,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -127,10 +128,13 @@ class WalkthroughTopicListFragmentTest {
   @Inject
   lateinit var testEnvironmentConfig: TestEnvironmentConfig
 
+  private lateinit var profileId: ProfileId
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -140,7 +144,7 @@ class WalkthroughTopicListFragmentTest {
     Intents.release()
   }
 
-  private fun createWalkthroughActivityIntent(profileId: Int): Intent {
+  private fun createWalkthroughActivityIntent(profileId: ProfileId): Intent {
     return WalkthroughActivity.createWalkthroughActivityIntent(
       context,
       profileId
@@ -149,7 +153,7 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughTopicListFragment_topicHeader_whatDoYouWantToLearnIsDisplayed() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
@@ -169,7 +173,7 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughTopicListFragment_topicCard_topicNameIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
@@ -195,7 +199,7 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughTopicListFragment_topicCard_configChange_topicNameIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
@@ -226,7 +230,7 @@ class WalkthroughTopicListFragmentTest {
     if (!testEnvironmentConfig.isUsingBazel()) {
       // TODO(#1523): Add support for orchestrating Glide so that this test can verify the correct
       //  thumbnail is being loaded through Glide.
-      launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
         testCoroutineDispatchers.runCurrent()
@@ -254,7 +258,7 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughTopicListFragment_topicCard_lessonBackgroundColorIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()

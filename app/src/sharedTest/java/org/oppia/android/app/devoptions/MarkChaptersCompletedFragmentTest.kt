@@ -114,7 +114,6 @@ class MarkChaptersCompletedFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  private val internalProfileId = 0
   private lateinit var profileId: ProfileId
 
   @Inject
@@ -141,7 +140,7 @@ class MarkChaptersCompletedFragmentTest {
 
   @Before
   fun setUp() {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.getDefaultInstance()
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     testCoroutineDispatchers.registerIdlingResource()
@@ -159,7 +158,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_storiesAreShown() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemTextOnRecyclerViewItemAtPosition(
@@ -193,7 +192,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_configChange_storiesAreShown() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -228,7 +227,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_chaptersAreShown() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemTextOnRecyclerViewItemAtPosition(
@@ -287,7 +286,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_configChange_chaptersAreShown() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -347,7 +346,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectAll_isChecked() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
@@ -358,7 +357,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectAll_configChange_isChecked() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
@@ -370,7 +369,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectAll_selectsAllChapters() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
@@ -390,7 +389,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_deselectAllChapters_deselectsAllChapters() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       // Click one to select all chapters.
@@ -415,7 +414,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectAll_configChange_selectsAllChapters() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
@@ -436,7 +435,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectChaptersOfFirstStoryInOrder_chaptersAreChecked() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -449,7 +448,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectChaptersOfFirstStoryInOrder_configChange_chaptersAreChecked() { // ktlint-disable max-line-length
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -463,7 +462,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_firstStory_firstChapterUnchecked_secondChapterIsDisabled() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -488,7 +487,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_land_firstStory_firstChapterUnchecked_secondChapterIsDisabled() { // ktlint-disable max-line-length
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -514,7 +513,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_firstStory_selectChaptersInOrder_unselectFirstChapter_secondChapterIsDisabled() { // ktlint-disable max-line-length
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -533,7 +532,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_firstStory_selectChaptersInOrder_unselectFirstChapter_configChange_secondChapterIsDisabled() { // ktlint-disable max-line-length
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -553,7 +552,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectAllChapters_allCheckBoxIsChecked() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -573,7 +572,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectAllChapters_configChange_allCheckBoxIsChecked() {
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -594,7 +593,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectAllChapters_unselectOneChapter_allCheckBoxIsNotChecked() { // ktlint-disable max-line-length
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -615,7 +614,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_selectAllChapters_unselectOneChapter_configChange_allCheckBoxIsNotChecked() { // ktlint-disable max-line-length
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -638,7 +637,7 @@ class MarkChaptersCompletedFragmentTest {
   fun testMarkChaptersCompletedFragment_fractionsFirstChapterIsCompleted_isCheckedAndDisabled() {
     markFractionsFirstChapterCompleted()
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 7)
@@ -656,7 +655,7 @@ class MarkChaptersCompletedFragmentTest {
   fun testMarkChaptersCompletedFragment_fractionsFirstChapterIsCompleted_configChange_isCheckedAndDisabled() { // ktlint-disable max-line-length
     markFractionsFirstChapterCompleted()
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -675,7 +674,7 @@ class MarkChaptersCompletedFragmentTest {
   fun testMarkChaptersCompletedFragment_fractionsFirstChapterIsCompleted_nextChapterIsEnabled() {
     markFractionsFirstChapterCompleted()
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 8)
@@ -693,7 +692,7 @@ class MarkChaptersCompletedFragmentTest {
   fun testMarkChaptersCompletedFragment_fractionsFirstChapterIsCompleted_configChange_nextChapterIsEnabled() { // ktlint-disable max-line-length
     markFractionsFirstChapterCompleted()
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -711,7 +710,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_clickMarkCompleted_activityFinishes() {
     activityTestRule.launchActivity(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
@@ -721,7 +720,7 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testMarkChaptersCompletedFragment_land_clickMarkCompleted_activityFinishes() {
     activityTestRule.launchActivity(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     )
     testCoroutineDispatchers.runCurrent()
     onView(isRoot()).perform(orientationLandscape())
@@ -733,7 +732,7 @@ class MarkChaptersCompletedFragmentTest {
   fun testMarkChaptersCompletedFragment_allLessonsAreCompleted_allCheckboxIsChecked() {
     markAllLessonsCompleted()
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
@@ -744,7 +743,7 @@ class MarkChaptersCompletedFragmentTest {
   fun testMarkChaptersCompletedFragment_allLessonsAreCompleted_configChange_allCheckboxIsChecked() {
     markAllLessonsCompleted()
     launch<MarkChaptersCompletedTestActivity>(
-      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+      createMarkChaptersCompletedTestActivityIntent(profileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -752,9 +751,9 @@ class MarkChaptersCompletedFragmentTest {
     }
   }
 
-  private fun createMarkChaptersCompletedTestActivityIntent(internalProfileId: Int): Intent {
+  private fun createMarkChaptersCompletedTestActivityIntent(profileId: ProfileId): Intent {
     return MarkChaptersCompletedTestActivity.createMarkChaptersCompletedTestIntent(
-      context, internalProfileId
+      context, profileId
     )
   }
 

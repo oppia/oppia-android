@@ -7,11 +7,14 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Activity for testing [MarkStoriesCompletedFragment]. */
 class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
 
-  private var internalProfileId = -1
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -19,9 +22,11 @@ class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_stories_completed_activity)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+    profileId = intent.extractCurrentUserProfileId()
     if (getMarkStoriesCompletedFragment() == null) {
-      val markStoriesCompletedFragment = MarkStoriesCompletedFragment.newInstance(internalProfileId)
+      val markStoriesCompletedFragment = MarkStoriesCompletedFragment.newInstance(
+        profileId.internalId
+      )
       supportFragmentManager.beginTransaction().add(
         R.id.mark_stories_completed_container,
         markStoriesCompletedFragment
@@ -35,12 +40,11 @@ class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedTestActivity.profile_id"
 
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
-    fun createMarkStoriesCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkStoriesCompletedTestIntent(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, MarkStoriesCompletedTestActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }

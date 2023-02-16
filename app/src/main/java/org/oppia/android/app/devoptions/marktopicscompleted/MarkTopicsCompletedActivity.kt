@@ -7,9 +7,12 @@ import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for Mark Topics Completed. */
@@ -21,13 +24,13 @@ class MarkTopicsCompletedActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
-  private var internalProfileId = -1
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
-    markTopicsCompletedActivityPresenter.handleOnCreate(internalProfileId)
+    profileId = intent.extractCurrentUserProfileId()
+    markTopicsCompletedActivityPresenter.handleOnCreate(profileId.internalId)
     title = resourceHandler.getStringInLocale(R.string.mark_topics_completed_activity_title)
   }
 
@@ -39,11 +42,9 @@ class MarkTopicsCompletedActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedActivity.profile_id"
-
-    fun createMarkTopicsCompletedIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkTopicsCompletedIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, MarkTopicsCompletedActivity::class.java).apply {
-        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(MARK_TOPICS_COMPLETED_ACTIVITY)
       }
     }

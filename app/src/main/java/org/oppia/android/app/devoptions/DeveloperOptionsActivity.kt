@@ -50,21 +50,21 @@ class DeveloperOptionsActivity :
   override fun routeToMarkChaptersCompleted() {
     startActivity(
       MarkChaptersCompletedActivity
-        .createMarkChaptersCompletedIntent(this, profileId.internalId)
+        .createMarkChaptersCompletedIntent(this, profileId)
     )
   }
 
   override fun routeToMarkStoriesCompleted() {
     startActivity(
       MarkStoriesCompletedActivity
-        .createMarkStoriesCompletedIntent(this, profileId.internalId)
+        .createMarkStoriesCompletedIntent(this, profileId)
     )
   }
 
   override fun routeToMarkTopicsCompleted() {
     startActivity(
       MarkTopicsCompletedActivity
-        .createMarkTopicsCompletedIntent(this, profileId.internalId)
+        .createMarkTopicsCompletedIntent(this, profileId)
     )
   }
 

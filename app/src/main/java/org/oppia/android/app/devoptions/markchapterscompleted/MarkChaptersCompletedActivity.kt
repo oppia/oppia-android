@@ -7,9 +7,12 @@ import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for Mark Chapters Completed. */
@@ -21,13 +24,13 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
-  private var internalProfileId = -1
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
-    markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId)
+    profileId = intent.extractCurrentUserProfileId()
+    markChaptersCompletedActivityPresenter.handleOnCreate(profileId.internalId)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
   }
 
@@ -39,12 +42,11 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedActivity.profile_id"
 
-    fun createMarkChaptersCompletedIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkChaptersCompletedIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, MarkChaptersCompletedActivity::class.java).apply {
-        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
         decorateWithScreenName(MARK_CHAPTERS_COMPLETED_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
     }
   }

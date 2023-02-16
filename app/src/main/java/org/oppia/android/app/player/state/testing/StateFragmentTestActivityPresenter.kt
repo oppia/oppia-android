@@ -19,6 +19,7 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
@@ -32,7 +33,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>
 ) {
 
-  private var profileId: Int = 1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -48,7 +49,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       viewModel = getStateFragmentTestViewModel()
     }
 
-    profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
+    profileId = activity.intent.extractCurrentUserProfileId()
     topicId =
       activity.intent.getStringExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY) ?: TEST_TOPIC_ID_0
     storyId =
@@ -59,7 +60,10 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     shouldSavePartialProgress =
       activity.intent.getBooleanExtra(TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY, false)
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
-      startPlayingExploration(profileId, topicId, storyId, explorationId, shouldSavePartialProgress)
+      startPlayingExploration(
+        profileId.internalId, topicId, storyId,
+        explorationId, shouldSavePartialProgress
+      )
     }
   }
 
@@ -73,7 +77,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
-      ProfileId.newBuilder().setInternalId(profileId).build(),
+      profileId,
       explorationId
     )
     stopExploration(isCompletion)

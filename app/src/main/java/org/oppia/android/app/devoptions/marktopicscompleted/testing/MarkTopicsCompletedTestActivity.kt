@@ -7,11 +7,14 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The activity for testing [MarkTopicsCompletedFragment]. */
 class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
 
-  private var internalProfileId = -1
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -19,9 +22,11 @@ class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_topics_completed_activity)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+    profileId = intent.extractCurrentUserProfileId()
     if (getMarkTopicsCompletedFragment() == null) {
-      val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(internalProfileId)
+      val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(
+        profileId.internalId
+      )
       supportFragmentManager.beginTransaction().add(
         R.id.mark_topics_completed_container,
         markTopicsCompletedFragment
@@ -35,12 +40,11 @@ class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedTestActivity.profile_id"
 
     /** Returns an [Intent] for [MarkTopicsCompletedTestActivity]. */
-    fun createMarkTopicsCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkTopicsCompletedTestIntent(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, MarkTopicsCompletedTestActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }

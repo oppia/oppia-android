@@ -42,6 +42,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -139,13 +140,17 @@ class ProfileResetPinFragmentTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
+
+  private lateinit var profileIdOne: ProfileId
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.getDefaultInstance()
+    profileIdOne = ProfileId.newBuilder().apply { internalId = 1 }.build()
     profileTestHelper.initializeProfiles()
   }
 
@@ -164,7 +169,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -198,7 +203,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -231,7 +236,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -270,7 +275,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -303,7 +308,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -343,7 +348,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -384,7 +389,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -417,7 +422,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -450,7 +455,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -490,7 +495,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -532,7 +537,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -581,7 +586,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 0,
+        profileId = profileId,
         isAdmin = true
       )
     ).use {
@@ -622,7 +627,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -662,7 +667,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -694,7 +699,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -734,7 +739,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -775,7 +780,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -788,7 +793,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -803,7 +808,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -825,7 +830,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -849,7 +854,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -881,7 +886,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -924,7 +929,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {
@@ -966,7 +971,7 @@ class ProfileResetPinFragmentTest {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
-        profileId = 1,
+        profileId = profileIdOne,
         isAdmin = false
       )
     ).use {

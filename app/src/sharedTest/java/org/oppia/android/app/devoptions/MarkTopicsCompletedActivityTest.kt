@@ -30,6 +30,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -103,7 +104,7 @@ class MarkTopicsCompletedActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  private val internalProfileId = 0
+  private lateinit var profileId: ProfileId
 
   @Inject
   lateinit var context: Context
@@ -121,6 +122,7 @@ class MarkTopicsCompletedActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -130,14 +132,14 @@ class MarkTopicsCompletedActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      createMarkTopicsCompletedActivityIntent(internalProfileId).extractCurrentAppScreenName()
+      createMarkTopicsCompletedActivityIntent(profileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY)
   }
 
   @Test
   fun testMarkTopicsCompletedActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createMarkTopicsCompletedActivityIntent(internalProfileId))
+    activityTestRule.launchActivity(createMarkTopicsCompletedActivityIntent(profileId))
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -148,7 +150,7 @@ class MarkTopicsCompletedActivityTest {
   @Test
   fun testMarkTopicsCompletedActivity_markTopicsCompletedFragmentIsDisplayed() {
     launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+      createMarkTopicsCompletedActivityIntent(profileId)
     ).use {
       onView(withId(R.id.mark_topics_completed_fragment_root_container)).check(
         matches(isDisplayed())
@@ -159,7 +161,7 @@ class MarkTopicsCompletedActivityTest {
   @Test
   fun testMarkTopicsCompletedActivity_configChange_markTopicsCompletedFragmentIsDisplayed() {
     launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+      createMarkTopicsCompletedActivityIntent(profileId)
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_topics_completed_fragment_root_container)).check(
@@ -168,9 +170,9 @@ class MarkTopicsCompletedActivityTest {
     }
   }
 
-  private fun createMarkTopicsCompletedActivityIntent(internalProfileId: Int): Intent {
+  private fun createMarkTopicsCompletedActivityIntent(profileId: ProfileId): Intent {
     return MarkTopicsCompletedActivity.createMarkTopicsCompletedIntent(
-      context, internalProfileId
+      context, profileId
     )
   }
 

@@ -6,6 +6,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.ProfileResetPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [ProfileResetPinActivity]. */
@@ -25,9 +26,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
         activity,
         R.layout.profile_reset_pin_activity
       )
-    val profileId = activity.intent.getIntExtra(
-      PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY, 0
-    )
+    val profileId = activity.intent.extractCurrentUserProfileId()
     val isAdmin = activity.intent.getBooleanExtra(
       PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY, false
     )
@@ -41,7 +40,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     }
     if (getProfileResetPinFragment() == null) {
       val profileResetPinFragment =
-        ProfileResetPinFragment.newInstance(profileId, isAdmin)
+        ProfileResetPinFragment.newInstance(profileId.internalId, isAdmin)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.profile_reset_pin_fragment_placeholder, profileResetPinFragment).commitNow()
     }

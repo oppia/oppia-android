@@ -2059,7 +2059,7 @@ class StateFragmentLocalTest {
     return ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
         context,
-        profileId.internalId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         explorationId,

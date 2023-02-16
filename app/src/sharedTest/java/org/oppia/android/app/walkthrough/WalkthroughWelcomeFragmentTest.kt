@@ -141,7 +141,7 @@ class WalkthroughWelcomeFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createWalkthroughActivityIntent(profileId: Int): Intent {
+  private fun createWalkthroughActivityIntent(profileId: ProfileId): Intent {
     return WalkthroughActivity.createWalkthroughActivityIntent(
       context,
       profileId
@@ -150,7 +150,7 @@ class WalkthroughWelcomeFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_descriptionIsCorrect() {
-    launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<OnboardingActivity>(createWalkthroughActivityIntent(profileId)).use {
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_description_text_view),
@@ -162,7 +162,7 @@ class WalkthroughWelcomeFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_profileNameIsCorrect() {
-    launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<OnboardingActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -175,7 +175,7 @@ class WalkthroughWelcomeFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_checkProfileName_configChange_profileNameIsCorrect() {
-    launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<OnboardingActivity>(createWalkthroughActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(

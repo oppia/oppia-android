@@ -129,8 +129,10 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
       if (failed) {
         return@setOnClickListener
       }
+
+      val profileId = ProfileId.newBuilder().setInternalId(profileId).build()
       profileManagementController
-        .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), pin).toLiveData()
+        .updatePin(profileId, pin).toLiveData()
         .observe(
           activity,
           Observer {
