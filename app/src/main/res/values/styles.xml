@@ -407,7 +407,7 @@
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textAllCaps">false</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
   <!-- Start Over Lesson Button -->
   <style name="StartOverLessonButton" parent="TextAppearance.AppCompat.Widget.Button">
