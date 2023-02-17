@@ -361,7 +361,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = userProfileId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
