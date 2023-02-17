@@ -34,8 +34,7 @@ genrule(
     cmd = """
     cat $(SRCS) |
     sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
-    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' |
-    sed 's/import org.oppia.android.app.databinding.AppCompatCheckBoxBindingAdapters./import org.oppia.android.app.databinding.AppCompatCheckBoxBindingAdapters_updated./g' > $(OUTS)
+    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' > $(OUTS)
     """,
 )
 
