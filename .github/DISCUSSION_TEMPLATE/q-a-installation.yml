@@ -2,7 +2,7 @@ body:
   - type: input
     attributes:
       label: Operating System
-      description: "What operating system (OS) are you using?"
+      description: "What operating system (OS) your development environment is using?"
     validations:
       required: true
   - type: input
@@ -17,6 +17,12 @@ body:
       description: "How much RAM does your computer have?"
     validations:
       required: true
+  - type: input
+    attributes:
+      label: Free disk space
+      description: "How much free on-disk storage does your computer have?"
+    validations:
+      required: true    
   - type: textarea
     id: steps
     attributes:
