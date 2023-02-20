@@ -8,8 +8,8 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.PROFILE_PICTURE_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity to display profile picture. */
@@ -22,7 +22,7 @@ class ProfilePictureActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val profileId = intent.extractCurrentUserProfileId()
-    profilePictureActivityPresenter.handleOnCreate(profileId.internalId)
+    profilePictureActivityPresenter.handleOnCreate(profileId)
   }
 
   companion object {

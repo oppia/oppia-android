@@ -41,6 +41,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -160,7 +161,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -181,7 +182,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -203,7 +204,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -224,7 +225,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -254,7 +255,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -282,7 +283,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -308,7 +309,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -336,7 +337,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -364,7 +365,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -397,7 +398,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(
@@ -430,7 +431,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        profileId = getUserProfileId()
       )
     ).use {
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
@@ -438,6 +439,10 @@ class ProfileRenameFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
     }
+  }
+
+  private fun getUserProfileId(): ProfileId {
+    return ProfileId.newBuilder().apply { internalId = 1 }.build()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

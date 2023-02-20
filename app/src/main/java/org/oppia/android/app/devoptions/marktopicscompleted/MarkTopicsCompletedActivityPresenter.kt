@@ -3,6 +3,7 @@ package org.oppia.android.app.devoptions.marktopicscompleted
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
 import javax.inject.Inject
 
 /** The presenter for [MarkTopicsCompletedActivity]. */
@@ -11,14 +12,14 @@ class MarkTopicsCompletedActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
-  fun handleOnCreate(internalProfileId: Int) {
+  fun handleOnCreate(profileId: ProfileId) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     activity.setContentView(R.layout.mark_topics_completed_activity)
 
     if (getMarkTopicsCompletedFragment() == null) {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment
-        .newInstance(internalProfileId)
+        .newInstance(profileId)
       activity.supportFragmentManager.beginTransaction().add(
         R.id.mark_topics_completed_container,
         markTopicsCompletedFragment

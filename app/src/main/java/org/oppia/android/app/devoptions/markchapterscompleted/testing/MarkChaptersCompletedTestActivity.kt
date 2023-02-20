@@ -8,8 +8,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 
 /** The activity for testing [MarkChaptersCompletedFragment]. */
 class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
@@ -25,7 +25,7 @@ class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
     profileId = intent.extractCurrentUserProfileId()
     if (getMarkChaptersCompletedFragment() == null) {
       val markChaptersCompletedFragment = MarkChaptersCompletedFragment
-        .newInstance(profileId.internalId)
+        .newInstance(profileId)
       supportFragmentManager.beginTransaction().add(
         R.id.mark_chapters_completed_container,
         markChaptersCompletedFragment

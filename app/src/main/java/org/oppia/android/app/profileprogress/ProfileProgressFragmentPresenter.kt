@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ProfileProgressFragmentBinding
 import org.oppia.android.databinding.ProfileProgressHeaderBinding
@@ -28,7 +29,7 @@ class ProfileProgressFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    profileId: ProfileId
   ): View? {
     val binding =
       ProfileProgressFragmentBinding.inflate(
@@ -57,7 +58,7 @@ class ProfileProgressFragmentPresenter @Inject constructor(
       adapter = createRecyclerViewAdapter()
     }
 
-    viewModel.setProfileId(internalProfileId)
+    viewModel.setProfileId(profileId.internalId)
     viewModel.handleOnConfigurationChange()
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.

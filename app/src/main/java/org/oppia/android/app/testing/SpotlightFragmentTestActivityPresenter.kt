@@ -4,10 +4,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.databinding.SpotlightFragmentTestActivityBinding
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [SpotlightFragmentTestActivity] */
@@ -19,14 +20,14 @@ class SpotlightFragmentTestActivityPresenter @Inject constructor(
   private lateinit var binding: SpotlightFragmentTestActivityBinding
 
   /** Handles onCreate() method of the [SpotlightFragmentTestActivity]. */
-  fun handleOnCreate(internalProfileId: Int) {
+  fun handleOnCreate(profileId: ProfileId) {
     binding = SpotlightFragmentTestActivityBinding.inflate(activity.layoutInflater)
     activity.setContentView(binding.root)
 
     if (getSpotlightFragment() == null) {
       val spotlightFragment = SpotlightFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       spotlightFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.test_spotlight_overlay_placeholder,

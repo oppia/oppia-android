@@ -34,7 +34,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
+    profileId: ProfileId,
     selectedExplorationIdList: ArrayList<String>
   ): View? {
     binding = MarkChaptersCompletedFragmentBinding.inflate(
@@ -54,7 +54,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
 
     this.selectedExplorationIdList = selectedExplorationIdList
 
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    this.profileId = profileId
     viewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)

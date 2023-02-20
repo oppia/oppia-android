@@ -19,7 +19,7 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
@@ -61,7 +61,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       activity.intent.getBooleanExtra(TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY, false)
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
       startPlayingExploration(
-        profileId.internalId, topicId, storyId,
+        profileId, topicId, storyId,
         explorationId, shouldSavePartialProgress
       )
     }
@@ -84,7 +84,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   }
 
   private fun startPlayingExploration(
-    profileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -95,10 +95,13 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion = false)
     val startPlayingProvider = if (shouldSavePartialProgress) {
       explorationDataController.startPlayingNewExploration(
-        profileId, topicId, storyId, explorationId
+        profileId.internalId, topicId, storyId, explorationId
       )
     } else {
-      explorationDataController.replayExploration(profileId, topicId, storyId, explorationId)
+      explorationDataController.replayExploration(
+        profileId.internalId,
+        topicId, storyId, explorationId
+      )
     }
     startPlayingProvider.toLiveData().observe(
       activity,
@@ -121,7 +124,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
    * session is fully started).
    */
   private fun initializeExploration(
-    profileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String

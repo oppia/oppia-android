@@ -26,7 +26,7 @@ class ProfileProgressActivityPresenter @Inject constructor(
     if (getProfileProgressFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_progress_fragment_placeholder,
-        ProfileProgressFragment.newInstance(profileId.internalId)
+        ProfileProgressFragment.newInstance(profileId)
       ).commitNow()
     }
     setUpNavigationDrawer()

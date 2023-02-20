@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that resets the profile pin of the user. */
@@ -15,19 +18,17 @@ class ProfileResetPinFragment : InjectableFragment() {
   lateinit var profileResetPinFragmentPresenter: ProfileResetPinFragmentPresenter
 
   companion object {
-    private const val PROFILE_RESET_PIN_PROFILE_ID_ARGUMENT_KEY =
-      "ProfileResetPinActivity.profile_id"
     private const val PROFILE_RESET_PIN_IS_ADMIN_ARGUMENT_KEY =
       "ProfileResetPinActivity.is_admin"
 
     /** Returns instance of [ProfileResetPinFragment]. */
     fun newInstance(
-      profileResetPinProfileId: Int,
+      profileResetPinProfileId: ProfileId,
       profileResetPinIsAdmin: Boolean,
     ): ProfileResetPinFragment {
       val fragment = ProfileResetPinFragment()
       val args = Bundle()
-      args.putInt(PROFILE_RESET_PIN_PROFILE_ID_ARGUMENT_KEY, profileResetPinProfileId)
+      args.decorateWithUserProfileId(profileResetPinProfileId)
       args.putBoolean(PROFILE_RESET_PIN_IS_ADMIN_ARGUMENT_KEY, profileResetPinIsAdmin)
       fragment.arguments = args
       return fragment
@@ -47,7 +48,7 @@ class ProfileResetPinFragment : InjectableFragment() {
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to ProfileResetPinFragment"
     }
-    val profileResetPinProfileId = args.getInt(PROFILE_RESET_PIN_PROFILE_ID_ARGUMENT_KEY)
+    val profileResetPinProfileId = args.extractCurrentUserProfileId()
     val profileResetPinIsAdmin = args.getBoolean(PROFILE_RESET_PIN_IS_ADMIN_ARGUMENT_KEY)
     return profileResetPinFragmentPresenter.handleCreateView(
       inflater,

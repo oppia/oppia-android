@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
@@ -29,13 +31,13 @@ class TopicLessonsFragment :
   companion object {
     /** Returns a new [TopicLessonsFragment]. */
     fun newInstance(
-      internalProfileId: Int,
+      profileId: ProfileId,
       topicId: String,
       storyId: String
     ): TopicLessonsFragment {
       val topicLessonsFragment = TopicLessonsFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
 
       if (storyId.isNotEmpty())
@@ -70,7 +72,8 @@ class TopicLessonsFragment :
       }
       isDefaultStoryExpanded = savedInstanceState.getBoolean(IS_DEFAULT_STORY_SHOWN)
     }
-    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
+    val profileId = arguments?.extractCurrentUserProfileId()
+      ?: ProfileId.newBuilder().apply { internalId = -1 }.build()
     val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicLessonsFragment."
     }

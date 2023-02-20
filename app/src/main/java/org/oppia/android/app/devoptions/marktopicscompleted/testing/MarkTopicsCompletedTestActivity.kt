@@ -8,8 +8,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 
 /** The activity for testing [MarkTopicsCompletedFragment]. */
 class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
@@ -25,7 +25,7 @@ class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
     profileId = intent.extractCurrentUserProfileId()
     if (getMarkTopicsCompletedFragment() == null) {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(
-        profileId.internalId
+        profileId
       )
       supportFragmentManager.beginTransaction().add(
         R.id.mark_topics_completed_container,

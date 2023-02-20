@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.PROFILE_RENAME_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-
-/** Argument key for the profile id for which the name is going to be changed in [ProfileRenameActivity]. */
-const val PROFILE_RENAME_PROFILE_ID_EXTRA_KEY = "ProfileRenameActivity.profile_rename_profile_id"
 
 /** Activity that allows user to rename a profile. */
 class ProfileRenameActivity : InjectableAppCompatActivity() {
@@ -20,9 +20,9 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
   companion object {
 
     /** Returns an [Intent] for opening [ProfileRenameActivity]. */
-    fun createProfileRenameActivity(context: Context, profileId: Int): Intent {
+    fun createProfileRenameActivity(context: Context, profileId: ProfileId): Intent {
       return Intent(context, ProfileRenameActivity::class.java).apply {
-        putExtra(PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, profileId)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(PROFILE_RENAME_ACTIVITY)
       }
     }
@@ -32,9 +32,7 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     profileRenameActivityPresenter.handleOnCreate(
-      intent.getIntExtra(
-        PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, 0
-      )
+      intent.extractCurrentUserProfileId()
     )
   }
 

@@ -8,11 +8,8 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.PROFILE_EDIT_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
 import javax.inject.Inject
-
-/** Argument key for the Profile Id in [ProfileEditActivity]. */
-const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY = "ProfileEditActivity.profile_edit_profile_id"
 
 /** Argument key for the Multipane in tablet mode for [ProfileEditActivity]. */
 const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.is_multipane"

@@ -3,6 +3,7 @@ package org.oppia.android.app.testing
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Voiceover
@@ -15,11 +16,11 @@ import javax.inject.Inject
 class AudioFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
-  fun handleOnCreate(internalProfileId: Int) {
+  fun handleOnCreate(profileId: ProfileId) {
     activity.setContentView(R.layout.audio_fragment_test_activity)
     if (getAudioFragment() == null) {
 
-      val audioFragment: AudioFragment = AudioFragment.newInstance(internalProfileId)
+      val audioFragment: AudioFragment = AudioFragment.newInstance(profileId)
 
       activity
         .supportFragmentManager

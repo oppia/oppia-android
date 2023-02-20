@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment to display all chapters and provide functionality to mark them completed. */
@@ -15,17 +18,14 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
   lateinit var markChaptersCompletedFragmentPresenter: MarkChaptersCompletedFragmentPresenter
 
   companion object {
-    internal const val PROFILE_ID_ARGUMENT_KEY =
-      "MarkChaptersCompletedFragment.profile_id"
-
     private const val EXPLORATION_ID_LIST_ARGUMENT_KEY =
       "MarkChaptersCompletedFragment.exploration_id_list"
 
     /** Returns a new [MarkChaptersCompletedFragment]. */
-    fun newInstance(internalProfileId: Int): MarkChaptersCompletedFragment {
+    fun newInstance(profileId: ProfileId): MarkChaptersCompletedFragment {
       val markChaptersCompletedFragment = MarkChaptersCompletedFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       markChaptersCompletedFragment.arguments = args
       return markChaptersCompletedFragment
     }
@@ -43,8 +43,7 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkChaptersCompletedFragment" }
-    val internalProfileId = args
-      .getInt(PROFILE_ID_ARGUMENT_KEY, -1)
+    val profileId = args.extractCurrentUserProfileId()
     var selectedExplorationIdList = ArrayList<String>()
     if (savedInstanceState != null) {
       selectedExplorationIdList =
@@ -53,7 +52,7 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
     return markChaptersCompletedFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId,
+      profileId,
       selectedExplorationIdList
     )
   }

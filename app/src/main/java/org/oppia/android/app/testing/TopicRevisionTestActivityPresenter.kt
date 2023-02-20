@@ -3,6 +3,7 @@ package org.oppia.android.app.testing
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.revision.TopicRevisionFragment
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ class TopicRevisionTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.setContentView(R.layout.topic_revision_test_activity)
     val topicRevisionFragment =
-      TopicRevisionFragment.newInstance(internalProfileId = 0, topicId = "")
+      TopicRevisionFragment.newInstance(ProfileId.getDefaultInstance(), topicId = "")
     activity.supportFragmentManager.beginTransaction()
       .add(
         R.id.topic_revision_container,

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OngoingTopicItemBinding
@@ -26,7 +27,7 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    profileId: ProfileId
   ): View? {
     val viewModel = getOngoingTopicListViewModel()
     binding =
@@ -35,7 +36,7 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
         container,
         /* attachToRoot= */ false
       )
-    viewModel.setProfileId(internalProfileId)
+    viewModel.setProfileId(profileId.internalId)
 
     binding.ongoingTopicListToolbar.setNavigationOnClickListener {
       (activity as OngoingTopicListActivity).finish()

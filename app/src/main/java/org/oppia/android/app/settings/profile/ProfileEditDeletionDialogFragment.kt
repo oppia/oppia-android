@@ -8,21 +8,20 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 
 /** [DialogFragment] that gives option to delete profile. */
 class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    /** Argument key for pop up of Profile Deletion Dialog in [ProfileEditActivity]. */
-    const val PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY =
-      "ProfileEditDeletionDialogFragment.profile_deletion_dialog_internal_profile_id"
 
     /** Creates new instance of the fragment [ProfileEditFragment]. */
-    fun newInstance(internalProfileId: Int): ProfileEditDeletionDialogFragment {
+    fun newInstance(profileId: ProfileId): ProfileEditDeletionDialogFragment {
       val profileEditDeletionDialog = ProfileEditDeletionDialogFragment()
       val args = Bundle()
-      args.putInt(PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       profileEditDeletionDialog.arguments = args
       return profileEditDeletionDialog
     }
@@ -42,7 +41,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
         "Expected arguments to be pass to ProfileEditDeletionDialogFragment"
       }
 
-    val internalProfileId = args.getInt(PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY)
+    val profileId = args.extractCurrentUserProfileId()
 
     profileEditDialogInterface =
       parentFragment as ProfileEditFragment
@@ -54,7 +53,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { dialog, _ ->
-        profileEditDialogInterface.deleteProfileByInternalProfileId(internalProfileId)
+        profileEditDialogInterface.deleteProfileByInternalProfileId(profileId)
       }
       .create()
     return alertDialog

@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment to display all topics and provide functionality to mark them completed. */
@@ -20,10 +23,10 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
     private const val TOPIC_ID_LIST_ARGUMENT_KEY = "MarkTopicsCompletedFragment.topic_id_list"
 
     /** Returns a new [MarkTopicsCompletedFragment]. */
-    fun newInstance(internalProfileId: Int): MarkTopicsCompletedFragment {
+    fun newInstance(profileId: ProfileId): MarkTopicsCompletedFragment {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       markTopicsCompletedFragment.arguments = args
       return markTopicsCompletedFragment
     }
@@ -41,8 +44,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkTopicsCompletedFragment" }
-    val internalProfileId = args
-      .getInt(PROFILE_ID_ARGUMENT_KEY, -1)
+    val profileId = args.extractCurrentUserProfileId()
     var selectedTopicIdList = ArrayList<String>()
     if (savedInstanceState != null) {
       selectedTopicIdList = savedInstanceState.getStringArrayList(TOPIC_ID_LIST_ARGUMENT_KEY)!!
@@ -50,7 +52,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
     return markTopicsCompletedFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId,
+      profileId,
       selectedTopicIdList
     )
   }

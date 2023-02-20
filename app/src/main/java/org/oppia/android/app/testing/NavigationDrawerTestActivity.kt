@@ -17,8 +17,8 @@ import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 class NavigationDrawerTestActivity :
@@ -49,7 +49,7 @@ class NavigationDrawerTestActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     profileId = intent.extractCurrentUserProfileId()
-    homeActivityPresenter.handleOnCreate(profileId.internalId)
+    homeActivityPresenter.handleOnCreate(profileId)
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 

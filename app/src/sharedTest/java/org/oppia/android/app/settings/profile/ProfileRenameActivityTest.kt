@@ -26,6 +26,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -143,7 +144,7 @@ class ProfileRenameActivityTest {
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = ProfileRenameActivity.createProfileRenameActivity(
       context = this.context.applicationContext,
-      profileId = 1
+      profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_RENAME_ACTIVITY)
@@ -154,7 +155,7 @@ class ProfileRenameActivityTest {
     activityTestRule.launchActivity(
       ProfileRenameActivity.createProfileRenameActivity(
         context = this.context.applicationContext,
-        profileId = 1
+        profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
       )
     )
     val title = activityTestRule.activity.title

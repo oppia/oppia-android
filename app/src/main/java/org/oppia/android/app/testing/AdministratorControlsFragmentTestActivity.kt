@@ -15,7 +15,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Test activity for [AdministratorControlsFragmentTest]. */
@@ -52,7 +52,7 @@ class AdministratorControlsFragmentTestActivity :
 
   override fun loadAppVersion() {}
 
-  override fun loadProfileEdit(profileId: Int, profileName: String) {}
+  override fun loadProfileEdit(profileId: ProfileId, profileName: String) {}
 
   override fun showLogoutDialog() {}
 

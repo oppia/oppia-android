@@ -22,7 +22,6 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.BottomLeftOverlayBinding
 import org.oppia.android.databinding.BottomRightOverlayBinding
@@ -34,6 +33,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /**
@@ -62,7 +63,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   private var screenHeight: Int = 0
   private var screenWidth: Int = 0
   private lateinit var overlayBinding: Any
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private var isSpotlightActive = false
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -72,7 +73,8 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-    internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
+    profileId = arguments?.extractCurrentUserProfileId()
+      ?: ProfileId.newBuilder().apply { internalId = -1 }.build()
     calculateScreenSize()
   }
 
@@ -98,9 +100,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     // When Talkback is turned on, do not show spotlights since they are visual tools and can
     // potentially make the app experience difficult for a non-sighted user.
     if (accessibilityService.isScreenReaderEnabled() || !enableSpotlightUi.value) return
-    val profileId = ProfileId.newBuilder()
-      .setInternalId(internalProfileId)
-      .build()
 
     val featureViewStateLiveData =
       spotlightStateController.retrieveSpotlightViewState(
@@ -138,9 +137,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
         override fun onEnded() {
           if (targetList.isNotEmpty()) targetList.removeFirst()
-          val profileId = ProfileId.newBuilder()
-            .setInternalId(internalProfileId)
-            .build()
           spotlightStateController.markSpotlightViewed(profileId, spotlightTarget.feature)
         }
       })
@@ -378,10 +374,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
   companion object {
     /** Returns a new [SpotlightFragment]. */
-    fun newInstance(internalProfileId: Int): SpotlightFragment {
+    fun newInstance(profileId: ProfileId): SpotlightFragment {
       val spotlightFragment = SpotlightFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       spotlightFragment.arguments = args
       return spotlightFragment
     }

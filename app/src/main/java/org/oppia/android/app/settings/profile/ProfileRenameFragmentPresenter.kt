@@ -39,7 +39,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: Int
+    profileId: ProfileId
   ): View? {
     binding = ProfileRenameFragmentBinding.inflate(
       inflater,
@@ -64,13 +64,13 @@ class ProfileRenameFragmentPresenter @Inject constructor(
       }
       profileManagementController
         .updateName(
-          ProfileId.newBuilder().setInternalId(profileId).build(),
+          profileId,
           binding.profileRenameInputEditText.text.toString()
         ).toLiveData()
         .observe(
           fragment,
           {
-            handleAddProfileResult(it, profileId)
+            handleAddProfileResult(it, profileId.internalId)
           }
         )
     }

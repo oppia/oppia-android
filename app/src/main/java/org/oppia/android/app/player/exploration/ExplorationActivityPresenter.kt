@@ -138,7 +138,7 @@ class ExplorationActivityPresenter @Inject constructor(
     if (getSpotlightManager() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_spotlight_fragment_placeholder,
-        SpotlightFragment.newInstance(profileId.internalId),
+        SpotlightFragment.newInstance(profileId),
         SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }

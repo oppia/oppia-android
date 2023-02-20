@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileRenameActivityBinding
 import javax.inject.Inject
@@ -16,7 +17,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
 ) {
 
   /** Handles onCreate() of [ProfileRenameActivity]. */
-  fun handleOnCreate(profileId: Int) {
+  fun handleOnCreate(profileId: ProfileId) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 

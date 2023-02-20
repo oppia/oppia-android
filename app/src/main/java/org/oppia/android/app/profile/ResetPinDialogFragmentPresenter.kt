@@ -35,7 +35,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
 
   fun handleOnCreateDialog(
     routeDialogInterface: ProfileRouteDialogInterface,
-    profileId: Int,
+    profileId: ProfileId,
     name: String
   ): Dialog {
     val binding: ResetPinDialogBinding = DataBindingUtil.inflate(
@@ -96,7 +96,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
         }
         if (input.length == 3) {
           profileManagementController
-            .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input).toLiveData()
+            .updatePin(profileId, input).toLiveData()
             .observe(
               fragment,
               Observer {

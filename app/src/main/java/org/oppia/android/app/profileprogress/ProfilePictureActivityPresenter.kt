@@ -17,7 +17,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -31,7 +30,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
   private lateinit var profilePictureActivityViewModel: ProfilePictureActivityViewModel
   private lateinit var profileId: ProfileId
 
-  fun handleOnCreate(internalProfileId: Int) {
+  fun handleOnCreate(profileId: ProfileId) {
     StatusBarColor.statusBarColorUpdate(R.color.profile_status_bar, activity, false)
     val binding = DataBindingUtil
       .setContentView<ProfilePictureActivityBinding>(
@@ -44,7 +43,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
       viewModel = profilePictureActivityViewModel
       lifecycleOwner = activity
     }
-    profileId = activity.intent.extractCurrentUserProfileId()
+    this.profileId = profileId
 
     subscribeToProfileLiveData()
     setUpToolbar()

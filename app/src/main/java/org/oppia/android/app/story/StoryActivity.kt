@@ -14,8 +14,8 @@ import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for stories. */
@@ -39,7 +39,7 @@ class StoryActivity :
     storyId = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID)) {
       "Expected extra story ID to be included for StoryActivity."
     }
-    storyActivityPresenter.handleOnCreate(profileId.internalId, topicId, storyId)
+    storyActivityPresenter.handleOnCreate(profileId, topicId, storyId)
   }
 
   override fun routeToExploration(

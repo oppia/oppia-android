@@ -40,7 +40,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
+    profileId: ProfileId,
     isMultipane: Boolean
   ): View? {
     val binding = ProfileEditFragmentBinding.inflate(
@@ -53,13 +53,13 @@ class ProfileEditFragmentPresenter @Inject constructor(
       lifecycleOwner = fragment
     }
     this.isMultipane = isMultipane
-    profileEditViewModel.setProfileId(internalProfileId)
+    profileEditViewModel.setProfileId(profileId)
 
     binding.profileRenameButton.setOnClickListener {
       activity.startActivity(
         ProfileRenameActivity.createProfileRenameActivity(
           fragment.requireContext(),
-          internalProfileId
+          profileId = profileId
         )
       )
     }
@@ -68,14 +68,14 @@ class ProfileEditFragmentPresenter @Inject constructor(
       activity.startActivity(
         ProfileResetPinActivity.createProfileResetPinActivity(
           activity,
-          ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+          profileId,
           profileEditViewModel.isAdmin
         )
       )
     }
 
     binding.profileDeleteButton.setOnClickListener {
-      showDeletionDialog(internalProfileId)
+      showDeletionDialog(profileId)
     }
 
     profileEditViewModel.profile.observe(
@@ -98,7 +98,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       binding.profileEditAllowDownloadSwitch.isChecked =
         !binding.profileEditAllowDownloadSwitch.isChecked
       profileManagementController.updateAllowDownloadAccess(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         binding.profileEditAllowDownloadSwitch.isChecked
       ).toLiveData().observe(
         activity,
@@ -114,12 +114,12 @@ class ProfileEditFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun showDeletionDialog(internalProfileId: Int) {
+  private fun showDeletionDialog(profileId: ProfileId) {
     if (isMultipane == true) {
       (activity as ProfileEditDeletionDialogListener).loadProfileDeletionDialog(true)
     }
     val dialogFragment = ProfileEditDeletionDialogFragment
-      .newInstance(internalProfileId)
+      .newInstance(profileId)
     dialogFragment.showNow(fragment.childFragmentManager, TAG_PROFILE_DELETION_DIALOG)
   }
 
@@ -128,9 +128,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
    * administrator controls activity or profile list activity depending on whether they are
    * currently using a tablet device.
    */
-  fun deleteProfile(internalProfileId: Int) {
+  fun deleteProfile(profileId: ProfileId) {
     profileManagementController
-      .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
+      .deleteProfile(profileId).toLiveData()
       .observe(
         fragment,
         Observer {
@@ -151,7 +151,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
   }
 
   /** This loads the dialog whenever requested by the listener in [AdministratorControlsActivity]. */
-  fun handleLoadProfileDeletionDialog(internalProfileId: Int) {
-    showDeletionDialog(internalProfileId)
+  fun handleLoadProfileDeletionDialog(profileId: ProfileId) {
+    showDeletionDialog(profileId)
   }
 }

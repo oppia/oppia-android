@@ -71,7 +71,7 @@ class StoryFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String
   ): View? {
@@ -80,7 +80,7 @@ class StoryFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    storyViewModel.setInternalProfileId(internalProfileId)
+    storyViewModel.setInternalProfileId(profileId.internalId)
     storyViewModel.setTopicId(topicId)
     storyViewModel.setStoryId(storyId)
     logStoryActivityEvent(topicId, storyId)

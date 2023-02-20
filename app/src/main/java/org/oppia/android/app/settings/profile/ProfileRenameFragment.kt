@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that provides functionality for renaming the profile name. */
@@ -15,13 +18,12 @@ class ProfileRenameFragment : InjectableFragment() {
   lateinit var profileRenameFragmentPresenter: ProfileRenameFragmentPresenter
 
   companion object {
-    private const val PROFILE_ID_ARGUMENT_KEY = "ProfileRenameFragment.profile_id"
 
     /** Returns the instance of [ProfileRenameFragment]. */
-    fun newInstance(profileId: Int): ProfileRenameFragment {
+    fun newInstance(profileId: ProfileId): ProfileRenameFragment {
       val profileRenameFragment = ProfileRenameFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, profileId)
+      args.decorateWithUserProfileId(profileId)
       profileRenameFragment.arguments = args
       return profileRenameFragment
     }
@@ -39,7 +41,7 @@ class ProfileRenameFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileRenameFragment" }
-    val profileId = args.getInt(PROFILE_ID_ARGUMENT_KEY)
+    val profileId = args.extractCurrentUserProfileId()
     return profileRenameFragmentPresenter.handleCreateView(
       inflater,
       container,

@@ -12,13 +12,13 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.databinding.WalkthroughFinalFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughFinalFragment]. */
@@ -45,11 +45,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
     this.topicId = topicId
-    val internalProfileId = activity.intent.getIntExtra(
-      WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
-      -1
-    )
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = activity.intent.extractCurrentUserProfileId()
 
     walkthroughFinalViewModel = WalkthroughFinalViewModel()
 

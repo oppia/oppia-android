@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that displays profile progress in the app. */
@@ -14,13 +17,12 @@ class ProfileProgressFragment :
   InjectableFragment(),
   ProfilePictureClickListener {
   companion object {
-    internal const val PROFILE_ID_ARGUMENT_KEY = "ProfileProgressFragment.profile_id"
 
     /** Returns a new [ProfileProgressFragment] to display the progress for a specified profile ID. */
-    fun newInstance(internalProfileId: Int): ProfileProgressFragment {
+    fun newInstance(profileId: ProfileId): ProfileProgressFragment {
       val profileProgressFragment = ProfileProgressFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       profileProgressFragment.arguments = args
       return profileProgressFragment
     }
@@ -41,8 +43,8 @@ class ProfileProgressFragment :
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileProgressFragment" }
-    val internalProfileId = args.getInt(PROFILE_ID_ARGUMENT_KEY, -1)
-    return profileProgressFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
+    val profileId = args.extractCurrentUserProfileId()
+    return profileProgressFragmentPresenter.handleCreateView(inflater, container, profileId)
   }
 
   override fun onProfilePictureClicked() {

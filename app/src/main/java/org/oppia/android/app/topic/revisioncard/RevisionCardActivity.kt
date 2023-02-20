@@ -11,8 +11,8 @@ import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickL
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for revision card. */

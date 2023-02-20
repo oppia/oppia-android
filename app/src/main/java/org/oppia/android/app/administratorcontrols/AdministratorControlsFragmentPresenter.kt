@@ -23,7 +23,7 @@ import org.oppia.android.databinding.AdministratorControlsFragmentBinding
 import org.oppia.android.databinding.AdministratorControlsGeneralViewBinding
 import org.oppia.android.databinding.AdministratorControlsLearnerAnalyticsViewBinding
 import org.oppia.android.databinding.AdministratorControlsProfileViewBinding
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -36,7 +36,6 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: AdministratorControlsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
-  private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
 
   @Inject

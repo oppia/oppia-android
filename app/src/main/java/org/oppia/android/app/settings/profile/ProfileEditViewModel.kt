@@ -48,8 +48,8 @@ class ProfileEditViewModel @Inject constructor(
   var isAdmin = false
 
   /** Sets the identifier of the profile. */
-  fun setProfileId(id: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(id).build()
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 
   /** Fetches the profile of a user asynchronously. */

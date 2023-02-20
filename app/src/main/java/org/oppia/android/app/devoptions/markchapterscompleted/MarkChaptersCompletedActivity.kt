@@ -11,8 +11,8 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for Mark Chapters Completed. */
@@ -30,7 +30,7 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     profileId = intent.extractCurrentUserProfileId()
-    markChaptersCompletedActivityPresenter.handleOnCreate(profileId.internalId)
+    markChaptersCompletedActivityPresenter.handleOnCreate(profileId)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
   }
 

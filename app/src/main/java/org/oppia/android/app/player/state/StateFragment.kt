@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -20,6 +21,8 @@ import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButton
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
@@ -45,14 +48,14 @@ class StateFragment :
      * @return a new instance of [StateFragment].
      */
     fun newInstance(
-      internalProfileId: Int,
+      profileId: ProfileId,
       topicId: String,
       storyId: String,
       explorationId: String
     ): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
-      args.putInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       args.putString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
       args.putString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY, storyId)
       args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
@@ -74,7 +77,7 @@ class StateFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+    val profileId = arguments!!.extractCurrentUserProfileId()
     val topicId = arguments!!.getStringFromBundle(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
     val storyId = arguments!!.getStringFromBundle(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     val explorationId =
@@ -82,7 +85,7 @@ class StateFragment :
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId,
+      profileId,
       topicId,
       storyId,
       explorationId

@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that contains tabs for Topic. */
@@ -26,14 +28,15 @@ class TopicFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
+    val profileId = arguments?.extractCurrentUserProfileId()
+      ?: ProfileId.newBuilder().apply { internalId = -1 }.build()
     val topicId = arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
     val storyId = arguments?.getStringFromBundle(STORY_ID_ARGUMENT_KEY) ?: ""
 
     return topicFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId,
+      profileId,
       topicId,
       storyId,
       isConfigChanged = savedInstanceState != null

@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment for displaying completed stories. */
@@ -14,14 +17,12 @@ class CompletedStoryListFragment : InjectableFragment() {
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val COMPLETED_STORY_LIST_FRAGMENT_TAG = "COMPLETED_STORY_LIST_FRAGMENT_TAG"
-    internal const val COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY =
-      "CompletedStoryListFragment.profile_id"
 
     /** Returns a new [CompletedStoryListFragment] to display corresponding to the specified profile ID. */
-    fun newInstance(internalProfileId: Int): CompletedStoryListFragment {
+    fun newInstance(profileId: ProfileId): CompletedStoryListFragment {
       val completedStoryListFragment = CompletedStoryListFragment()
       val args = Bundle()
-      args.putInt(COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       completedStoryListFragment.arguments = args
       return completedStoryListFragment
     }
@@ -43,13 +44,11 @@ class CompletedStoryListFragment : InjectableFragment() {
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to CompletedStoryListFragment"
     }
-    val internalProfileId = args.getInt(
-      COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY, -1
-    )
+    val profileId = args.extractCurrentUserProfileId()
     return completedStoryListFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId
+      profileId
     )
   }
 }

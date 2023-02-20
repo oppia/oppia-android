@@ -53,7 +53,7 @@ class ExplorationFragmentPresenter @Inject constructor(
     internalProfileId = args.profileId.internalId
     val stateFragment =
       StateFragment.newInstance(
-        args.profileId.internalId, args.topicId, args.storyId, args.explorationId
+        args.profileId, args.topicId, args.storyId, args.explorationId
       )
     logPracticeFragmentEvent(args.topicId, args.storyId, args.explorationId)
     if (getStateFragment() == null) {

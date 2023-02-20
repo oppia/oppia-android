@@ -52,8 +52,6 @@ import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
-const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
-  "StateFragmentPresenter.state_fragment_profile_id"
 const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_fragment_topic_id"
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_fragment_story_id"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY =
@@ -107,12 +105,12 @@ class StateFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
   ): View? {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    this.profileId = profileId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
@@ -276,7 +274,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun getAudioUiManager(): AudioUiManager? {
     if (getAudioFragment() == null) {
-      val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.internalId)
+      val audioFragment: AudioFragment = AudioFragment.newInstance(profileId)
       fragment.childFragmentManager.beginTransaction()
         .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
     }

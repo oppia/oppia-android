@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
@@ -33,7 +34,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var tabLayout: TabLayout
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var viewPager: ViewPager2
@@ -41,7 +42,7 @@ class TopicFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     isConfigChanged: Boolean
@@ -55,7 +56,7 @@ class TopicFragmentPresenter @Inject constructor(
     this.storyId = storyId
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager2
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
-    this.internalProfileId = internalProfileId
+    this.profileId = profileId
     this.topicId = topicId
 
     binding.topicToolbar.setNavigationOnClickListener {
@@ -66,7 +67,7 @@ class TopicFragmentPresenter @Inject constructor(
       binding.topicToolbarTitle.isSelected = true
     }
 
-    viewModel.setInternalProfileId(internalProfileId)
+    viewModel.setInternalProfileId(profileId.internalId)
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
@@ -120,7 +121,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
     val adapter =
-      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enableExtraTopicTabsUi.value)
+      ViewPagerAdapter(fragment, profileId, topicId, storyId, enableExtraTopicTabsUi.value)
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)

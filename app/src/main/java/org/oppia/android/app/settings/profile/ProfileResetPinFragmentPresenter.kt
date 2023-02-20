@@ -39,7 +39,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: Int,
+    profileId: ProfileId,
     isAdmin: Boolean
   ): View? {
     binding = ProfileResetPinFragmentBinding.inflate(inflater, container, false)
@@ -130,7 +130,6 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
         return@setOnClickListener
       }
 
-      val profileId = ProfileId.newBuilder().setInternalId(profileId).build()
       profileManagementController
         .updatePin(profileId, pin).toLiveData()
         .observe(

@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Subtopic
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Fragment that card for topic revision. */
@@ -19,10 +20,10 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
     /** Returns a new [TopicRevisionFragment]. */
-    fun newInstance(internalProfileId: Int, topicId: String): TopicRevisionFragment {
+    fun newInstance(profileId: ProfileId, topicId: String): TopicRevisionFragment {
       val topicRevisionFragment = TopicRevisionFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
       topicRevisionFragment.arguments = args
       return topicRevisionFragment
@@ -42,7 +43,6 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicRevisionFragment."
     }

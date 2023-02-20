@@ -8,7 +8,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.WALKTHROUGH_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
@@ -36,8 +36,6 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
   }
 
   companion object {
-    internal const val WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
-      "WalkthroughActivity.internal_profile_id"
 
     fun createWalkthroughActivityIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, WalkthroughActivity::class.java).apply {

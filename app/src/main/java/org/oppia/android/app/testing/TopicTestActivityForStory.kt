@@ -38,7 +38,7 @@ class TopicTestActivityForStory :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     topicActivityPresenter.handleOnCreate(
-      internalProfileId = 0,
+      ProfileId.getDefaultInstance(),
       topicId = TEST_TOPIC_ID_0,
       storyId = TEST_STORY_ID_0
     )
