@@ -6,16 +6,16 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.LooperMode
 
-/** Tests for [CurrentUserProfileIdDecorator]. */
+/** Tests for [CurrentUserProfileIdIntentDecorator]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class CurrentUserProfileIdDecoratorTest {
+class CurrentUserProfileIdIntentDecoratorTest {
 
   @Test
   fun testDecorator_decorateWithProfileId_returnsIntentWithCorrectProfileId() {

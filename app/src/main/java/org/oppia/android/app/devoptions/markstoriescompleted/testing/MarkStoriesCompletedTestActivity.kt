@@ -8,8 +8,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Activity for testing [MarkStoriesCompletedFragment]. */
 class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {

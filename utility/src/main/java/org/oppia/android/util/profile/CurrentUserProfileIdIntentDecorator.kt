@@ -9,10 +9,11 @@ import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.extensions.putProtoExtra
 
 private const val PROFILE_ID_INTENT_DECORATOR = "CurrentUserProfileIdIntentDecorator.profile_id_key"
-private const val PROFILE_ID_BUNDLE_DECORATOR = "CurrentUserProfileIdBundleDecorator.profile_id_key"
+private const val PROFILE_ID_BUNDLE_DECORATOR =
+  "CurrentUserProfileIdIntentDecorator.profile_id_bundle_key"
 
 /** Decorator that allows an activity to wrap a user's [ProfileId] within its intent. */
-object CurrentUserProfileIdDecorator {
+object CurrentUserProfileIdIntentDecorator {
   /**
    * Packs [this] intent with a [ProfileId] proto object.
    * [extractCurrentUserProfileId] should be used for retrieving the [ProfileId] later.

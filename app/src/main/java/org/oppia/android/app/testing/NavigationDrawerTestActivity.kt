@@ -17,8 +17,8 @@ import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 class NavigationDrawerTestActivity :

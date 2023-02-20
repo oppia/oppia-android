@@ -7,8 +7,8 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getStringFromBundle
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 const val RESET_PIN_NAME_ARGUMENT_KEY = "ResetPinDialogFragment.reset_pin_name"

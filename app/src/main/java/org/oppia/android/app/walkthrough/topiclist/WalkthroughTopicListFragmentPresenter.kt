@@ -18,7 +18,7 @@ import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.Walkthroug
 import org.oppia.android.databinding.WalkthroughTopicHeaderViewBinding
 import org.oppia.android.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.android.databinding.WalkthroughTopicSummaryViewBinding
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughTopicListFragment]. */

@@ -15,7 +15,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Test activity for [AdministratorControlsFragmentTest]. */

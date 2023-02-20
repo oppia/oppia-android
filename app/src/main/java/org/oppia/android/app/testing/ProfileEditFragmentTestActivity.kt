@@ -7,7 +7,7 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.testing.activity.TestActivity
-import org.oppia.android.util.profile.CurrentUserProfileIdDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Test Activity for testing [ProfileEditFragment] and its view models. */
