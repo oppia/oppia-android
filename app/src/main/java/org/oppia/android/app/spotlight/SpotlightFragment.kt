@@ -150,7 +150,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     if (targetList.isNullOrEmpty()) return
     spotlight = Spotlight.Builder(activity)
       .setTargets(targetList)
-      .setBackgroundColorRes(R.color.spotlight_overlay_background)
+      .setBackgroundColorRes(R.color.component_color_shared_close_spotlight_button_color)
       .setDuration(500L)
       .setAnimation(AccelerateInterpolator(0.5f))
       .setOnSpotlightListener(object : OnSpotlightListener {

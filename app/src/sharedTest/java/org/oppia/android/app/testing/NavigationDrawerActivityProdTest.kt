@@ -413,7 +413,7 @@ class NavigationDrawerActivityProdTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(hasTextColor(R.color.highlighted_nav_menu_item)))
+      ).check(matches(hasTextColor(R.color.component_color_drawer_fragment_selected_text_color)))
     }
   }
 
@@ -527,7 +527,7 @@ class NavigationDrawerActivityProdTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(hasTextColor(R.color.highlighted_nav_menu_item)))
+      ).check(matches(hasTextColor(R.color.component_color_drawer_fragment_selected_text_color)))
     }
   }
 
