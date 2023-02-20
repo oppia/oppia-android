@@ -1907,7 +1907,7 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_doesNotHaveHexColorValue_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_add_profile_activity_switch_text_color">@color/color_palette_dark_text_color</color>
+        <color name="component_color_shared_primary_dark_text_color">@color/color_palette_dark_text_color</color>
         <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
         <color name="component_color_add_profile_activity_layout_background_color">@color/color_palette_background_color</color>
       """.trimIndent()
