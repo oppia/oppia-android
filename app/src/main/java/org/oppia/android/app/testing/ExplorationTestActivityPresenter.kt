@@ -21,7 +21,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-private const val INTERNAL_PROFILE_ID = 0
 private const val TOPIC_ID = TEST_TOPIC_ID_0
 private const val STORY_ID = TEST_STORY_ID_0
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_2
@@ -37,8 +36,10 @@ class ExplorationTestActivityPresenter @Inject constructor(
 ) {
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
+  private lateinit var profileId: ProfileId
 
   fun handleOnCreate() {
+    profileId = ProfileId.getDefaultInstance()
     activity.setContentView(R.layout.exploration_test_activity)
     activity.supportFragmentManager.beginTransaction().apply {
       add(R.id.exploration_test_fragment_placeholder, TestFragment(), TEST_FRAGMENT_TAG)
@@ -51,7 +52,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
   private fun playExplorationButton() {
     explorationDataController.stopPlayingExploration(isCompletion = false)
     explorationDataController.replayExploration(
-      INTERNAL_PROFILE_ID,
+      profileId,
       TOPIC_ID,
       STORY_ID,
       EXPLORATION_ID
@@ -66,7 +67,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
           is AsyncResult.Success -> {
             oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
-              ProfileId.newBuilder().apply { internalId = INTERNAL_PROFILE_ID }.build(),
+              profileId,
               TOPIC_ID,
               STORY_ID,
               EXPLORATION_ID,

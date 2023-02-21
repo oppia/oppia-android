@@ -95,11 +95,11 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion = false)
     val startPlayingProvider = if (shouldSavePartialProgress) {
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         topicId, storyId, explorationId
       )
     }

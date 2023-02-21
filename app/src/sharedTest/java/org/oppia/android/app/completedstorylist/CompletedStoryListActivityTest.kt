@@ -39,6 +39,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.completedstorylist.CompletedStoryListFragment.Companion.COMPLETED_STORY_LIST_FRAGMENT_TAG
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
@@ -190,6 +191,25 @@ class CompletedStoryListActivityTest {
     ).extractCurrentUserProfileId()
 
     assertThat(profileId.internalId).isEqualTo(this.profileId.internalId)
+  }
+
+  @Test
+  fun testCompletedStoryListActivity_createIntentWithProfileId_verifyProfileIdInBundle() {
+    val profileIdOne = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        profileIdOne
+      )
+    ).use {
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager
+          .findFragmentByTag(COMPLETED_STORY_LIST_FRAGMENT_TAG)
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileIdOne).isEqualTo(profileId)
+      }
+    }
   }
 
   @Test

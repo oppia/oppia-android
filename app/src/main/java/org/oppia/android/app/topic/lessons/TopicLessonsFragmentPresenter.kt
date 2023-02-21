@@ -361,21 +361,21 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       !canHavePartialProgressSaved -> {
         // Only explorations that have been completed can't be saved, so replay the lesson.
         explorationDataController.replayExploration(
-          profileId.internalId, topicId, storyId, explorationId
+          profileId, topicId, storyId, explorationId
         )
       }
       hadProgress -> {
         // If there was progress, either the checkpoint was never saved, failed to save, or failed
         // to be retrieved. In all cases, this is a restart.
         explorationDataController.restartExploration(
-          profileId.internalId, topicId, storyId, explorationId
+          profileId, topicId, storyId, explorationId
         )
       }
       else -> {
         // If there's no progress and it was never completed, then it's a new play through (or the
         // user is very low on device memory).
         explorationDataController.startPlayingNewExploration(
-          profileId.internalId, topicId, storyId, explorationId
+          profileId, topicId, storyId, explorationId
         )
       }
     }

@@ -270,11 +270,11 @@ class StoryFragmentPresenter @Inject constructor(
     // one.
     val startPlayingProvider = if (canHavePartialProgressSaved) {
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.replayExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId, topicId, storyId, explorationId
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->

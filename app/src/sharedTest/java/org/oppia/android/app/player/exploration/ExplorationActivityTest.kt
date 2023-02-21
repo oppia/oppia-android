@@ -163,6 +163,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
@@ -220,11 +221,12 @@ class ExplorationActivityTest {
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
 
-  private val internalProfileId: Int = 0
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     Intents.init()
+    profileId = ProfileId.getDefaultInstance()
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -243,7 +245,7 @@ class ExplorationActivityTest {
   }
 
   private fun getApplicationDependencies(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
@@ -252,7 +254,7 @@ class ExplorationActivityTest {
       it.onActivity { activity ->
         explorationDataController = activity.explorationDataController
         explorationDataController.startPlayingNewExploration(
-          internalProfileId,
+          profileId,
           topicId,
           storyId,
           explorationId
@@ -270,7 +272,7 @@ class ExplorationActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createExplorationActivityIntent(
-      internalProfileId,
+      profileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -285,7 +287,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -303,7 +305,7 @@ class ExplorationActivityTest {
   fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -311,7 +313,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -328,7 +330,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -349,7 +351,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -369,7 +371,7 @@ class ExplorationActivityTest {
   fun testExploration_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -377,7 +379,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -395,7 +397,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -403,7 +405,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -423,7 +425,7 @@ class ExplorationActivityTest {
     markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -431,7 +433,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -452,7 +454,7 @@ class ExplorationActivityTest {
     markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -460,7 +462,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -474,7 +476,7 @@ class ExplorationActivityTest {
 
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -482,7 +484,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -500,7 +502,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -508,7 +510,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -526,7 +528,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -534,7 +536,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -545,7 +547,7 @@ class ExplorationActivityTest {
 
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -553,7 +555,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -572,7 +574,7 @@ class ExplorationActivityTest {
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -580,7 +582,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -599,7 +601,7 @@ class ExplorationActivityTest {
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -607,7 +609,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -618,7 +620,7 @@ class ExplorationActivityTest {
 
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -626,7 +628,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -644,7 +646,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -652,7 +654,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -670,7 +672,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -678,7 +680,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -697,7 +699,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -705,7 +707,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -724,7 +726,7 @@ class ExplorationActivityTest {
   fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -732,7 +734,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -746,7 +748,7 @@ class ExplorationActivityTest {
   fun testAudioWithNoVoiceover_prototypeExploration_configChange_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -754,7 +756,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -771,7 +773,7 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -779,7 +781,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -800,13 +802,13 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
+        profileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -827,13 +829,13 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
+        profileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -855,13 +857,13 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
+        profileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -892,7 +894,7 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -900,7 +902,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -938,13 +940,13 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
+        profileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -979,13 +981,13 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
+        profileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -1020,7 +1022,7 @@ class ExplorationActivityTest {
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
     getApplicationDependencies(
-      internalProfileId,
+      profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0
@@ -1028,7 +1030,7 @@ class ExplorationActivityTest {
     networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -1062,7 +1064,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1070,7 +1072,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1122,7 +1124,7 @@ class ExplorationActivityTest {
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
     getApplicationDependencies(
-      internalProfileId,
+      profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0
@@ -1130,7 +1132,7 @@ class ExplorationActivityTest {
     networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
+        profileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
@@ -1162,7 +1164,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1178,7 +1180,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1186,7 +1188,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1207,7 +1209,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1215,7 +1217,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1237,7 +1239,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1245,7 +1247,7 @@ class ExplorationActivityTest {
       )
     )
     explorationDataController.startPlayingNewExploration(
-      internalProfileId,
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1265,7 +1267,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1273,7 +1275,7 @@ class ExplorationActivityTest {
       )
     )
     explorationDataController.startPlayingNewExploration(
-      internalProfileId,
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1290,13 +1292,13 @@ class ExplorationActivityTest {
   fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1304,7 +1306,7 @@ class ExplorationActivityTest {
       )
     )
     explorationDataController.startPlayingNewExploration(
-      internalProfileId,
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1316,7 +1318,7 @@ class ExplorationActivityTest {
       .perform(click())
 
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       RATIOS_EXPLORATION_ID_0
     )
   }
@@ -1326,17 +1328,17 @@ class ExplorationActivityTest {
   fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1344,7 +1346,7 @@ class ExplorationActivityTest {
       )
     )
     explorationDataController.startPlayingNewExploration(
-      internalProfileId,
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1356,7 +1358,7 @@ class ExplorationActivityTest {
       .perform(click())
 
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       RATIOS_EXPLORATION_ID_0
     )
   }
@@ -1368,7 +1370,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1376,7 +1378,7 @@ class ExplorationActivityTest {
       )
     )
     explorationDataController.startPlayingNewExploration(
-      internalProfileId,
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1394,7 +1396,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1402,7 +1404,7 @@ class ExplorationActivityTest {
       )
     )
     explorationDataController.startPlayingNewExploration(
-      internalProfileId,
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1421,13 +1423,13 @@ class ExplorationActivityTest {
   fun testExpActivity_progressSaved_onBackPress_checkNoProgressDeleted() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1435,7 +1437,7 @@ class ExplorationActivityTest {
       )
     )
     explorationDataController.startPlayingNewExploration(
-      internalProfileId,
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1445,11 +1447,11 @@ class ExplorationActivityTest {
     pressBack()
 
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       RATIOS_EXPLORATION_ID_0
     )
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       FRACTIONS_EXPLORATION_ID_0
     )
   }
@@ -1457,17 +1459,17 @@ class ExplorationActivityTest {
   @Test
   fun testExplorationActivity_databaseFull_onBackPressed_showsProgressDatabaseFullDialog() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1475,7 +1477,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1493,17 +1495,17 @@ class ExplorationActivityTest {
   fun testExplorationActivity_databaseFull_onToolbarClosePressed_showsProgressDatabaseFullDialog() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1511,7 +1513,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1530,17 +1532,17 @@ class ExplorationActivityTest {
   fun testExplorationActivity_showProgressDatabaseFullDialog_backToLesson_checkDialogDismisses() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1548,7 +1550,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1569,17 +1571,17 @@ class ExplorationActivityTest {
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExplorationActivity_showProgressDatabaseFullDialog_continue_closesExpActivity() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1587,7 +1589,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1609,17 +1611,17 @@ class ExplorationActivityTest {
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_closesExpActivity() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1627,7 +1629,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1648,17 +1650,17 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_correctProgressIsDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1666,7 +1668,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1681,15 +1683,15 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         RATIOS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         FRACTIONS_EXPLORATION_ID_1
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         FRACTIONS_EXPLORATION_ID_0
       )
     }
@@ -1699,17 +1701,17 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_continue_correctProgressIsDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1717,7 +1719,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1732,16 +1734,16 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         FRACTIONS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         FRACTIONS_EXPLORATION_ID_1
       )
     }
     explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       RATIOS_EXPLORATION_ID_0
     )
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1750,17 +1752,17 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_backToLesson_noProgressIsDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1768,7 +1770,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1781,16 +1783,16 @@ class ExplorationActivityTest {
         .inRoot(isDialog()).perform(click())
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         FRACTIONS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         FRACTIONS_EXPLORATION_ID_1
       )
     }
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       RATIOS_EXPLORATION_ID_0
     )
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1800,12 +1802,12 @@ class ExplorationActivityTest {
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_contentIsInEnglish() {
     updateContentLanguage(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      profileId,
       OppiaLanguage.ENGLISH
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -1813,7 +1815,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -1830,12 +1832,12 @@ class ExplorationActivityTest {
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testExpActivity_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      profileId,
       OppiaLanguage.ARABIC
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -1843,7 +1845,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -1860,12 +1862,12 @@ class ExplorationActivityTest {
   fun testExpActivity_englishContentLang_showHint_explanationInEnglish() {
     markAllSpotlightsSeen()
     updateContentLanguage(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      profileId,
       OppiaLanguage.ENGLISH
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -1873,7 +1875,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -1901,7 +1903,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -1909,7 +1911,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -1944,7 +1946,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -1952,7 +1954,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -1980,7 +1982,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -1988,7 +1990,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2016,12 +2018,12 @@ class ExplorationActivityTest {
   fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
     markAllSpotlightsSeen()
     updateContentLanguage(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      profileId,
       OppiaLanguage.ARABIC
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2029,7 +2031,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2057,7 +2059,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2065,7 +2067,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2083,7 +2085,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2091,7 +2093,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2117,7 +2119,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2125,7 +2127,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2151,7 +2153,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2159,7 +2161,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2175,8 +2177,32 @@ class ExplorationActivityTest {
     }
   }
 
+  @Test
+  fun testExplorationActivity_createIntentWithProfileId_verifyProfileIdInBundle() {
+    markAllSpotlightsSeen()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        profileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager
+          .findFragmentByTag(TAG_EXPLORATION_MANAGER_FRAGMENT)
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(this.profileId)
+      }
+    }
+  }
+
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = profileId
     spotlightStateController.markSpotlightViewed(profileId, feature)
     testCoroutineDispatchers.runCurrent()
   }
@@ -2194,7 +2220,7 @@ class ExplorationActivityTest {
   }
 
   private fun createExplorationActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -2202,7 +2228,7 @@ class ExplorationActivityTest {
   ): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      profileId,
       topicId,
       storyId,
       explorationId,

@@ -42,6 +42,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity.Companion.createOngoingTopicListActivityIntent
+import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment.Companion.ONGOING_TOPIC_LIST_FRAGMENT_TAG
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -166,6 +168,24 @@ class OngoingTopicListActivityTest {
       .extractCurrentUserProfileId()
 
     assertThat(profileId.internalId).isEqualTo(this.profileId.internalId)
+  }
+
+  @Test
+  fun testOngoingTopicListActivity_createIntentWithProfileId_verifyProfileIdInBundle() {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        profileId
+      )
+    ).use {
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager
+          .findFragmentByTag(ONGOING_TOPIC_LIST_FRAGMENT_TAG)
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(this.profileId)
+      }
+    }
   }
 
   @Inject

@@ -111,6 +111,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -421,6 +422,24 @@ class TopicInfoFragmentTest {
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+    launchTopicActivityIntent(
+      profileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager.findFragmentById(
+          R.id.topic_fragment_placeholder
+        )
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(this.profileId)
+      }
     }
   }
 

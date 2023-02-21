@@ -152,6 +152,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -553,6 +554,21 @@ class QuestionPlayerActivityTest {
       clickContinueNavigationButton()
 
       onView(withId(R.id.content_text_view)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_createIntentWithProfileId_verifyProfileIdInBundle() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager.findFragmentById(
+          R.id.question_player_fragment_placeholder
+        )
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(this.profileId)
+      }
     }
   }
 

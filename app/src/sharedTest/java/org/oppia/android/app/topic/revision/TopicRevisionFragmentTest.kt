@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -112,6 +113,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -276,6 +278,24 @@ class TopicRevisionFragmentTest {
           targetViewId = R.id.subtopic_image_view
         )
       ).check(matches(hasScaleType(ImageView.ScaleType.FIT_CENTER)))
+    }
+  }
+
+  @Test
+  fun testTopicRevisionFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+    launchTopicActivityIntent(
+      profileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager.findFragmentById(
+          R.id.topic_fragment_placeholder
+        )
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(this.profileId)
+      }
     }
   }
 

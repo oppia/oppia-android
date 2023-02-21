@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -103,6 +104,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -1007,6 +1009,27 @@ class ProfileResetPinFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
         .check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testProfileResetPin_createIntentWithProfileId_verifyProfileIdInBundle() {
+    ActivityScenario.launch<ProfileResetPinActivity>(
+      ProfileResetPinActivity.createProfileResetPinActivity(
+        context = context,
+        profileId = profileIdOne,
+        isAdmin = false
+      )
+    ).use {
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager.findFragmentById(
+          R.id.profile_reset_pin_fragment_placeholder
+        )
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(this.profileIdOne)
+      }
     }
   }
 

@@ -75,6 +75,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridC
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.spotlight.SpotlightManager.Companion.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -249,6 +250,21 @@ class HomeActivityTest {
       .extractCurrentUserProfileId()
 
     assertThat(profileId).isEqualTo(profileId)
+  }
+
+  @Test
+  fun testHomeActivity_createIntentWithProfileId_verifyProfileIdInBundle() {
+    launch<HomeActivity>(
+      createHomeActivityIntent(profileId1)
+    ).use {
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager.findFragmentByTag(SPOTLIGHT_FRAGMENT_TAG)
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(profileId1)
+      }
+    }
   }
 
   @Test

@@ -1,6 +1,7 @@
 package org.oppia.android.util.profile
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -37,10 +38,37 @@ class CurrentUserProfileIdIntentDecoratorTest {
   }
 
   @Test
-  fun testDecorateWithUserProfileId_emptyProfileProto_returnsDefaultProfileIdInstance() {
+  fun testDecorateIntentWithUserProfileId_emptyProfileId_returnsDefaultProfileIdInstance() {
     val profileId = ProfileId.newBuilder().apply {}.build()
 
     val extractedProfileId = Intent().apply {
+      decorateWithUserProfileId(profileId)
+    }.extractCurrentUserProfileId()
+    assertThat(extractedProfileId).isEqualTo(ProfileId.getDefaultInstance())
+  }
+
+  @Test
+  fun testDecorator_decorateBundleWithProfileId_returnsBundleWithCorrectProfileId() {
+    val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val bundle = Bundle().apply {
+      decorateWithUserProfileId(profileId)
+    }
+
+    val currentUserProfileId = bundle.extractCurrentUserProfileId()
+    assertThat(currentUserProfileId).isEqualTo(profileId)
+  }
+
+  @Test
+  fun testDecorator_withoutProfileId_returnsBundleWithDefaultProfileId() {
+    val currentProfileId = Bundle().extractCurrentUserProfileId()
+    assertThat(currentProfileId).isEqualTo(ProfileId.getDefaultInstance())
+  }
+
+  @Test
+  fun testDecorateBundleWithUserProfileId_emptyProfileId_returnsDefaultProfileIdInstance() {
+    val profileId = ProfileId.newBuilder().apply {}.build()
+
+    val extractedProfileId = Bundle().apply {
       decorateWithUserProfileId(profileId)
     }.extractCurrentUserProfileId()
     assertThat(extractedProfileId).isEqualTo(ProfileId.getDefaultInstance())

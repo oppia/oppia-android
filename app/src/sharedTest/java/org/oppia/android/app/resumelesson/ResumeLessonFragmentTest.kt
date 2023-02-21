@@ -125,6 +125,8 @@ class ResumeLessonFragmentTest {
   @Inject
   lateinit var context: Context
 
+  private lateinit var profileId: ProfileId
+
   @get:Rule
   val resumeLessonActivityTestRule = ActivityTestRule(
     ResumeLessonActivity::class.java,
@@ -138,6 +140,7 @@ class ResumeLessonFragmentTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -270,7 +273,7 @@ class ResumeLessonFragmentTest {
   private fun createResumeLessonActivityIntent(): Intent {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
-      ProfileId.newBuilder().apply { internalId = 1 }.build(),
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
@@ -282,7 +285,7 @@ class ResumeLessonFragmentTest {
   private fun createResumeRatiosLessonActivityIntent(): Intent {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
-      ProfileId.newBuilder().apply { internalId = 1 }.build(),
+      profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,

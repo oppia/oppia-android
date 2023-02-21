@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
-import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /* Fragment that displays revision card */
@@ -19,7 +19,6 @@ class RevisionCardFragment : InjectableDialogFragment() {
     private const val TOPIC_ID_ARGUMENT_KEY = "RevisionCardFragment.topic_id"
     private const val SUBTOPIC_ID_ARGUMENT_KEY = "RevisionCardFragment.subtopic_id"
     private const val SUBTOPIC_LIST_SIZE_ARGUMENT_KEY = "RevisionCardFragment.subtopic_list_size"
-    private const val PROFILE_ID_ARGUMENT_KEY = "RevisionCardFragment.profile_id"
 
     /**
      * Returns a new [RevisionCardFragment] to display the specific subtopic for the given topic &
@@ -31,7 +30,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
           arguments = Bundle().apply {
             putString(TOPIC_ID_ARGUMENT_KEY, topicId)
             putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
-            putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+            decorateWithUserProfileId(profileId)
             putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
           }
         }
@@ -60,7 +59,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
         "Expected topicId to be passed to RevisionCardFragment"
       }
     val subtopicId = args.getInt(SUBTOPIC_ID_ARGUMENT_KEY, -1)
-    val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    val profileId = args.extractCurrentUserProfileId()
     val subtopicListSize = args.getInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, -1)
     return revisionCardFragmentPresenter.handleCreateView(
       inflater, container, topicId, subtopicId, profileId, subtopicListSize

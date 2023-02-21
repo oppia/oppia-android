@@ -117,6 +117,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -714,6 +715,26 @@ class TopicFragmentTest {
         targetViewId = R.id.master_skills_text_view,
         stringToMatch = "Master These Skills"
       )
+    }
+  }
+
+  @Test
+  fun testTopicFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+    initializeApplicationComponent(enableExtraTabsUi = true)
+    launchTopicPlayStoryActivityIntent(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ).use {
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager.findFragmentById(
+          R.id.topic_fragment_placeholder
+        )
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(this.profileId)
+      }
     }
   }
 

@@ -142,6 +142,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.ImageTransformation
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -835,6 +836,21 @@ class StoryFragmentTest {
           targetViewId = R.id.verticalDashedLineView
         )
       ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStoryFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      it.onActivity {
+        activity ->
+        val fragment = activity.supportFragmentManager.findFragmentById(
+          R.id.story_fragment_placeholder
+        )
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(profileId)
+      }
     }
   }
 

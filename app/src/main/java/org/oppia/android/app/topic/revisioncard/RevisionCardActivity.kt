@@ -37,7 +37,7 @@ class RevisionCardActivity :
       val subtopicId = intent.getIntExtra(SUBTOPIC_ID_EXTRA_KEY, -1)
       val subtopicListSize = intent.getIntExtra(SUBTOPIC_LIST_SIZE_EXTRA_KEY, -1)
       revisionCardActivityPresenter.handleOnCreate(
-        profileId.internalId,
+        profileId,
         topicId,
         subtopicId,
         subtopicListSize

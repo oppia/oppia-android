@@ -72,13 +72,13 @@ class ExplorationDataController @Inject constructor(
    * @return a [DataProvider] to observe whether initiating the play request succeeded
    */
   fun startPlayingNewExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
-      internalProfileId,
+      profileId,
       topicId,
       storyId,
       explorationId,
@@ -101,14 +101,14 @@ class ExplorationDataController @Inject constructor(
    * used).
    */
   fun resumeExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
     explorationCheckpoint: ExplorationCheckpoint
   ): DataProvider<Any?> {
     return startPlayingExploration(
-      internalProfileId,
+      profileId,
       topicId,
       storyId,
       explorationId,
@@ -130,13 +130,13 @@ class ExplorationDataController @Inject constructor(
    * lesson (otherwise [resumeExploration] should be used to resume the lesson).
    */
   fun restartExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
-      internalProfileId,
+      profileId,
       topicId,
       storyId,
       explorationId,
@@ -161,13 +161,13 @@ class ExplorationDataController @Inject constructor(
    * instead, depending on the specific situation.
    */
   fun replayExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
-      internalProfileId,
+      profileId,
       topicId,
       storyId,
       explorationId,
@@ -205,7 +205,7 @@ class ExplorationDataController @Inject constructor(
    *     requests, succeeded
    */
   private fun startPlayingExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -214,7 +214,7 @@ class ExplorationDataController @Inject constructor(
     isRestart: Boolean
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      profileId,
       topicId,
       storyId,
       explorationId,

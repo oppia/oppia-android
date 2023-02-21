@@ -292,13 +292,13 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       // cases, lessons played from this fragment are known to be in progress, and that progress
       // can't be resumed here (hence the restart).
       explorationDataController.restartExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId, topicId, storyId, explorationId
       )
     } else {
       // The only lessons that can't have their progress saved are those that were already
       // completed.
       explorationDataController.replayExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId, topicId, storyId, explorationId
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->

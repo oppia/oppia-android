@@ -825,6 +825,29 @@ class ProfileProgressFragmentTest {
     }
   }
 
+  @Test
+  fun testProfileProgressFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedFractionsStory0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+      it.onActivity { activity ->
+        val fragment = activity.supportFragmentManager.findFragmentById(
+          R.id.profile_progress_fragment_placeholder
+        )
+        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
+
+        assertThat(profileId).isEqualTo(this.profileId)
+      }
+    }
+  }
+
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
     val imageUri = Uri.parse(
