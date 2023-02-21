@@ -163,7 +163,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
@@ -2174,30 +2173,6 @@ class ExplorationActivityTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
-    }
-  }
-
-  @Test
-  fun testExplorationActivity_createIntentWithProfileId_verifyProfileIdInBundle() {
-    markAllSpotlightsSeen()
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        profileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      it.onActivity {
-        activity ->
-        val fragment = activity.supportFragmentManager
-          .findFragmentByTag(TAG_EXPLORATION_MANAGER_FRAGMENT)
-        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
-
-        assertThat(profileId).isEqualTo(this.profileId)
-      }
     }
   }
 

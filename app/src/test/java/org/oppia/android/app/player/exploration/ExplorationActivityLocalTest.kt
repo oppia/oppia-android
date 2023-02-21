@@ -113,11 +113,12 @@ class ExplorationActivityLocalTest {
 
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
-  private val internalProfileId: Int = 0
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -129,14 +130,14 @@ class ExplorationActivityLocalTest {
   @Test
   fun testExploration_onLaunch_logsEvent() {
     getApplicationDependencies(
-      internalProfileId,
+      profileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -154,7 +155,7 @@ class ExplorationActivityLocalTest {
   }
 
   private fun getApplicationDependencies(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
@@ -164,7 +165,7 @@ class ExplorationActivityLocalTest {
         networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
         explorationDataController.startPlayingNewExploration(
-          internalProfileId,
+          profileId,
           topicId,
           storyId,
           explorationId
@@ -174,14 +175,14 @@ class ExplorationActivityLocalTest {
   }
 
   private fun createExplorationActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
   ): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      profileId,
       topicId,
       storyId,
       explorationId,

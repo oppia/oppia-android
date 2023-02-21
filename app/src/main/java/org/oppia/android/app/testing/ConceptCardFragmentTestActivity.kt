@@ -36,7 +36,7 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
 
   companion object {
 
-    internal const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
+    const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
 
     fun createIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, ConceptCardFragmentTestActivity::class.java).also {

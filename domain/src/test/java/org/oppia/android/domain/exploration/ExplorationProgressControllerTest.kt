@@ -172,7 +172,7 @@ class ExplorationProgressControllerTest {
   fun testPlayExploration_invalid_returnsSuccess() {
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, INVALID_TOPIC_ID, INVALID_STORY_ID, INVALID_EXPLORATION_ID
+        profileId, INVALID_TOPIC_ID, INVALID_STORY_ID, INVALID_EXPLORATION_ID
       )
 
     // An invalid exploration is not known until it's fully loaded, and that's observed via
@@ -193,7 +193,7 @@ class ExplorationProgressControllerTest {
   fun testPlayExploration_valid_returnsSuccess() {
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+        profileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
       )
 
     monitorFactory.waitForNextSuccessfulResult(resultDataProvider)
@@ -304,7 +304,7 @@ class ExplorationProgressControllerTest {
     // Try playing another exploration without finishing the previous one.
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+        profileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
       )
 
     // The new session will overwrite the previous.
@@ -2487,7 +2487,7 @@ class ExplorationProgressControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -2501,7 +2501,7 @@ class ExplorationProgressControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.resumeExploration(
-        profileId.internalId, topicId, storyId, explorationId, explorationCheckpoint
+        profileId, topicId, storyId, explorationId, explorationCheckpoint
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -2514,7 +2514,7 @@ class ExplorationProgressControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.restartExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -2527,7 +2527,7 @@ class ExplorationProgressControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
