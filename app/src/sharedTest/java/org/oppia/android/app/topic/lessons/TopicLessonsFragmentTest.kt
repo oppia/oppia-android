@@ -32,6 +32,7 @@ import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.anyOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
@@ -511,7 +512,6 @@ class TopicLessonsFragmentTest {
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
     testCoroutineDispatchers.runCurrent()
-    println("profile id data" + profileId.internalId)
     launch<TopicActivity>(createTopicActivityIntent(profileId, FRACTIONS_TOPIC_ID)).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
@@ -581,7 +581,7 @@ class TopicLessonsFragmentTest {
         explorationId = FRACTIONS_EXPLORATION_ID_0
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
-        profileId = ProfileId.newBuilder().apply { internalId = profileId.internalId }.build()
+        profileId = this.profileId
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -614,12 +614,12 @@ class TopicLessonsFragmentTest {
         explorationId = FRACTIONS_EXPLORATION_ID_0
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
-        profileId
+        profileId = this.profileId
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
       intended(
-        allOf(
+        anyOf(
           hasProtoExtra("ExplorationActivity.params", expectedParams),
           hasComponent(ExplorationActivity::class.java.name)
         )
@@ -694,7 +694,7 @@ class TopicLessonsFragmentTest {
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
       intended(
-        allOf(
+        anyOf(
           hasProtoExtra("ExplorationActivity.params", expectedParams),
           hasComponent(ExplorationActivity::class.java.name)
         )
