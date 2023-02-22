@@ -631,7 +631,7 @@ class TopicLessonsFragmentTest {
   fun testLessPlayFrag_loadFractionsTopic_clickChap_chapterMarkedInProgressNotSaved_opensExpAct() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressNotSavedFractionsStory0Exp0(
-      profileId = profileId,
+      profileId = this.profileId,
       timestampOlderThanOneWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(profileId, FRACTIONS_TOPIC_ID)).use {
@@ -652,7 +652,7 @@ class TopicLessonsFragmentTest {
         explorationId = FRACTIONS_EXPLORATION_ID_0
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
-        profileId
+        profileId = this.profileId
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -669,7 +669,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFrag_loadFractionsTopic_clickChapter_chapterMarkedAsCompleted_opensExpAct() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId = profileId,
+      profileId = this.profileId,
       timestampOlderThanOneWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(profileId, FRACTIONS_TOPIC_ID)).use {
@@ -689,7 +689,7 @@ class TopicLessonsFragmentTest {
         explorationId = FRACTIONS_EXPLORATION_ID_0
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
-        profileId
+        profileId = this.profileId
         isCheckpointingEnabled = false
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
