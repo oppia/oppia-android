@@ -660,7 +660,7 @@ class AudioPlayerControllerTest {
   private fun beginExploration(topicId: String, storyId: String, explorationId: String) {
     val playingProvider =
       explorationDataController.startPlayingNewExploration(
-        internalProfileId = 0, topicId, storyId, explorationId
+        profileId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(playingProvider)
     monitorFactory.waitForNextSuccessfulResult(explorationProgressController.getCurrentState())
