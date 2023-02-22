@@ -71,7 +71,7 @@
         android:minHeight="48dp"
         android:onClick="@{(v) -> viewModel.clickOnGetStarted()}"
         android:text="@string/get_started"
-        android:textColor="@color/component_color_shared_primary_button_text_color"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/slide_title_text_view"
         app:layout_constraintStart_toStartOf="@+id/slide_title_text_view"
