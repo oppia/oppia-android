@@ -28,18 +28,7 @@ If you'd like to help out with the Android project, please follow the following 
 
 3. Say hi and introduce yourself on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions/4788)!
 
-4. Download/Install the latest version of [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads). 
-
-5. Download and Install **Java 8** using the links from [the Java website](https://www.java.com/en/download/).
-   - **Note for Windows users:** Make sure to also set up the PATH system variable correctly for `Java`, following [these instructions](https://www.java.com/en/download/help/path.html).
-   - [Instructions](https://www.java.com/en/download/help/linux_install.html) for Linux users.
-   - [Instructions](https://www.java.com/en/download/help/mac_install.html) for Mac users.
-
-6. In Android Studio, open Tools > SDK Manager.
-   - In the "SDK Platforms" tab (which is the default), select `API Level 28`.
-   - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 31" and select 29.0.2 (this is needed for Bazel support).
-
-   Then, click "Apply" to download and install these two SDKs/Tools.
+4. Prepare your [developer environment](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#prepare-developer-environment) and then [install Oppia Android](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android)
 
 7. Familiarize yourself with the resources linked to from the sidebar of this page, especially the [overview of the codebase](https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture), the [[coding style guide|Coding-style-guide]], and the [[Frequent Errors and Solutions|Frequent-Errors-and-Solutions]]. You don't have to read all the other stuff right now, but it's a good idea to be aware of what's available, so that you can refer to it later if needed.
 
@@ -55,6 +44,21 @@ If you'd like to help out with the Android project, please follow the following 
  
 
 **Note:** Make sure you have good Internet connectivity when developing on Oppia Android, since this project uses third party libraries which will be needed to build the app.
+
+## Prepare developer environment
+
+1. Download/Install the latest version of [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads). 
+
+2. Download and Install **Java 8** using the links from [the Java website](https://www.java.com/en/download/).
+   - **Note for Windows users:** Make sure to also set up the PATH system variable correctly for `Java`, following [these instructions](https://www.java.com/en/download/help/path.html).
+   - [Instructions](https://www.java.com/en/download/help/linux_install.html) for Linux users.
+   - [Instructions](https://www.java.com/en/download/help/mac_install.html) for Mac users.
+
+3. In Android Studio, open Tools > SDK Manager.
+   - In the "SDK Platforms" tab (which is the default), select `API Level 28` and also `API Level 31` (for Bazel support).
+   - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 29.0.2 (this is needed for Bazel support).
+
+   Then, click "Apply" to download and install these two SDKs/Tools.
 
 ## Install oppia-android
 
@@ -91,7 +95,7 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 ## Run the app from Android Studio
 
-1. Go to Tools > AVD Manager, click "Create Virtual Device...". Then:
+1. Go to Tools > Device manager, click "Create Virtual Device...". Then:
 
    - Select a preferred device definition. In general, any device is fine, but you can use Pixel 3a as a default (if you're developing for phones) or Nexus 7 (if you're developing for tablets). After selecting a device, click "Next" at the bottom right to continue.
    - Select a system image (in general, API Level 28, unless you're an M1 Mac user, in which case use API Level 29). Then click "Next".
