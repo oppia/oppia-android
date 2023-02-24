@@ -340,6 +340,11 @@ file_content_checks {
   failure_message: "All color declarations in component_color.xml and color_palette.xml should end with _color suffix following snake_case naming convention."
 }
 file_content_checks {
+  file_path_regex: "app/src/main/res/layout.*?/.+?\\.xml"
+  prohibited_content_regex: "@color/(?!component_color_).+"
+  failure_message: "Only colors from component_colors.xml may be used in layouts."
+}
+file_content_checks {
   file_path_regex: "app/src/main/res/values/color_defs.xml"
   prohibited_content_regex: "name=.+(?<=color).>#|name=.*[A-Z].*>#"
   failure_message: "All color declarations in color_defs.xml should be named using snake_case convention and not contain color keyword."
