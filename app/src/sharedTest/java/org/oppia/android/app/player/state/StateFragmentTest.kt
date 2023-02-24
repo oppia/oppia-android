@@ -3729,7 +3729,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_maxRadioItemSelected_deselecting_returnTo_youMaySelectMoreChoices() {
+  fun testStateFragment_interactions_maxItemSelected_deselectingReturnsYouMaySelectMoreChoices() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3749,7 +3749,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_someRadioItemSelected_deselecting_returnTo_pleaseSelectAllCorrectChoices() {
+  fun testStateFragment_interactions_someItemSelected_deselectingReturnsPleaseSelectAllCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3816,7 +3816,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_SelectingMaxRadioItem_andOneBelow_return_noOtherCheckBoxesEnabled() {
+  fun testStateFragment_interactions_SelectingMaxItemAndOneBelow_returnNoOtherCheckBoxesEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
