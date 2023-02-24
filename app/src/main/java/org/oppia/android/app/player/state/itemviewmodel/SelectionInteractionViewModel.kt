@@ -66,8 +66,10 @@ class SelectionInteractionViewModel private constructor(
 
   private val isAnswerAvailable = ObservableField(false)
   val selectedItemText =
-    ObservableField(resourceHandler
-        .getStringInLocale(R.string.state_fragment_item_selection_no_items_selected_hint_text))
+    ObservableField(
+      resourceHandler.getStringInLocale(
+        R.string.state_fragment_item_selection_no_items_selected_hint_text
+      ))
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
