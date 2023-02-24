@@ -1,9 +1,9 @@
 package org.oppia.android.app.translation
 
-import android.content.Context
 import androidx.annotation.ArrayRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
@@ -26,7 +26,7 @@ import javax.inject.Inject
  * instance).
  */
 class AppLanguageResourceHandler @Inject constructor(
-  private val activity: Context,
+  private val activity: AppCompatActivity,
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler
 ) {
   private val resources by lazy { activity.resources }

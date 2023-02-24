@@ -1,6 +1,6 @@
 package org.oppia.android.app.home.recentlyplayed
 
-import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 /** View model for [RecentlyPlayedFragment]. */
 class RecentlyPlayedViewModel constructor(
-  private val context: Context,
+  private val activity: AppCompatActivity,
   private val topicListController: TopicListController,
   @StoryHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -26,14 +26,9 @@ class RecentlyPlayedViewModel constructor(
   private val internalProfileId: ProfileId,
 ) {
 
-  /**
-   * Factory of RecentlyPlayedViewModel.
-   *
-   * Dagger's AssistedInject would do all the wiring automatically, unfortunately it is not imported
-   * in oppia-android.
-   */
+  /** Factory of RecentlyPlayedViewModel. */
   class Factory @Inject constructor(
-    private val context: Context,
+    private val activity: AppCompatActivity,
     private val topicListController: TopicListController,
     @StoryHtmlParserEntityType private val entityType: String,
     private val resourceHandler: AppLanguageResourceHandler,
@@ -46,7 +41,7 @@ class RecentlyPlayedViewModel constructor(
       internalProfileId: ProfileId
     ): RecentlyPlayedViewModel {
       return RecentlyPlayedViewModel(
-        context,
+        activity,
         topicListController,
         entityType,
         resourceHandler,
@@ -164,7 +159,7 @@ class RecentlyPlayedViewModel constructor(
     index: Int
   ): RecentlyPlayedItemViewModel {
     return PromotedStoryViewModel(
-      context,
+      activity,
       promotedStory,
       entityType,
       promotedStoryClickListener,

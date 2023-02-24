@@ -1,7 +1,7 @@
 package org.oppia.android.app.home.recentlyplayed
 
-import android.content.Context
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.model.PromotedStory
@@ -12,7 +12,7 @@ import org.oppia.android.domain.translation.TranslationController
 
 /** [ViewModel] for displaying a promoted story. */
 class PromotedStoryViewModel(
-  private val context: Context,
+  private val activity: AppCompatActivity,
   val promotedStory: PromotedStory,
   val entityType: String,
   private val promotedStoryClickListener: PromotedStoryClickListener,
@@ -47,13 +47,13 @@ class PromotedStoryViewModel(
   }
 
   private val outerMargin by lazy {
-    context.resources.getDimensionPixelSize(R.dimen.recently_played_margin_max)
+    activity.resources.getDimensionPixelSize(R.dimen.recently_played_margin_max)
   }
   private val innerMargin by lazy {
-    context.resources.getDimensionPixelSize(R.dimen.recently_played_margin_min)
+    activity.resources.getDimensionPixelSize(R.dimen.recently_played_margin_min)
   }
   private val spanCount by lazy {
-    context.resources.getInteger(R.integer.recently_played_span_count)
+    activity.resources.getInteger(R.integer.recently_played_span_count)
   }
 
   /**
