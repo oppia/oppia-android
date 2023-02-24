@@ -80,7 +80,7 @@ class UrlImageParserTest {
   }
 
   @Test
-  fun testGetDrawable_svg_loadsSvgzBlockImage() {
+  fun testGetDrawable_svgz_loadsSvgzBlockImage() {
     urlImageParser.getDrawable("test_image.svgz")
 
     val loadedBitmaps = testGlideImageLoader.getLoadedBlockSvgs()
@@ -119,7 +119,7 @@ class UrlImageParserTest {
   }
 
   @Test
-  fun testLoadDrawable_svg_blockType_loadsSvgzBlockImage() {
+  fun testLoadDrawable_svgz_blockType_loadsSvgzBlockImage() {
     urlImageParser.loadDrawable("test_image.svgz", BLOCK_IMAGE)
 
     val loadedBitmaps = testGlideImageLoader.getLoadedBlockSvgs()
@@ -138,7 +138,7 @@ class UrlImageParserTest {
   }
 
   @Test
-  fun testLoadDrawable_svg_inlineType_loadsSvgzTextImage() {
+  fun testLoadDrawable_svgz_inlineType_loadsSvgzTextImage() {
     urlImageParser.loadDrawable("test_image.svgz", INLINE_TEXT_IMAGE)
 
     // The request to load the bitmap inline is ignored since inline bitmaps aren't supported.
