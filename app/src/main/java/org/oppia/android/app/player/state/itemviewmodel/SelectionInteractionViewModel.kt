@@ -56,7 +56,7 @@ class SelectionInteractionViewModel private constructor(
       ?: minAllowableSelectionCount
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
-  val enabledItemsList by lazy {
+  private val enabledItemsList by lazy {
     List(choiceSubtitledHtmls.size) {
       ObservableBoolean(true)
     }
@@ -66,7 +66,7 @@ class SelectionInteractionViewModel private constructor(
 
   private val isAnswerAvailable = ObservableField(false)
   val selectedItemText =
-    ObservableField(resourceHandler.getStringInLocale(R.string.please_select_all_correct_choices))
+    ObservableField(resourceHandler.getStringInLocale(R.string.state_fragment_item_selection_no_items_selected_hint_text))
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -165,21 +165,21 @@ class SelectionInteractionViewModel private constructor(
     if (selectedItems.size < maxAllowableSelectionCount) {
       selectedItemText.set(
         resourceHandler.getStringInLocale(
-          R.string.you_may_select_more_choices
+          R.string.state_fragment_item_selection_some_items_selected_hint_text
         )
       )
     }
     if (selectedItems.size == 0) {
       selectedItemText.set(
         resourceHandler.getStringInLocale(
-          R.string.please_select_all_correct_choices
+          R.string.state_fragment_item_selection_no_items_selected_hint_text
         )
       )
     }
     if (selectedItems.size == maxAllowableSelectionCount) {
       selectedItemText.set(
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.no_more_than_choices_may_be_selected,
+          R.string.state_fragment_item_selection_max_items_selected_hint_text,
           maxAllowableSelectionCount.toString()
         )
       )
@@ -247,7 +247,7 @@ class SelectionInteractionViewModel private constructor(
           hasConversationView = hasConversationView,
           itemIndex = index,
           selectionInteractionViewModel = selectionInteractionViewModel,
-          enabledItem = enabledItemsList[index]
+          isEnabled = enabledItemsList[index]
         )
       }
       return observableList

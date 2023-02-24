@@ -87,14 +87,13 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
-/** Test for [AppCompatCheckBoxBindingAdapters] */
+/** Test for [AppCompatCheckBox] binding adapters. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = AppCompatCheckBoxBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
 class AppCompatCheckBoxBindingAdaptersTest {
 
   @get:Rule
@@ -109,6 +108,8 @@ class AppCompatCheckBoxBindingAdaptersTest {
       )
     )
 
+  private var colorRgb: Int = Color.valueOf(0x10000).toArgb()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -120,14 +121,12 @@ class AppCompatCheckBoxBindingAdaptersTest {
     Intents.release()
   }
 
-  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb()
-
   @Test
   fun testSetButtonTint_hasCorrectButtonColor() {
     activityRule.scenario.onActivity {
       val appCompatCheckBox: AppCompatCheckBox = getAppCompatCheckBox(it)
       setButtonTint(appCompatCheckBox, colorRgb)
-      assertThat((appCompatCheckBox.supportButtonTintList)?.defaultColor).isEqualTo((colorRgb))
+      assertThat(appCompatCheckBox.supportButtonTintList?.defaultColor).isEqualTo(colorRgb)
     }
   }
 
@@ -138,8 +137,7 @@ class AppCompatCheckBoxBindingAdaptersTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

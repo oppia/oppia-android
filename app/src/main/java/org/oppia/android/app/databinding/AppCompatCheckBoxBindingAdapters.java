@@ -6,9 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.databinding.BindingAdapter;
 
-/**
- * Custom data-binding adapters for {@link AppCompatCheckBox}s.
- */
+/** Custom data-binding adapters for {@link AppCompatCheckBox}s. */
 public final class AppCompatCheckBoxBindingAdapters {
   /** Sets the button tint for the specified checkbox, via data-binding. */
   @BindingAdapter("app:buttonTint")

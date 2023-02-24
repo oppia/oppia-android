@@ -48,6 +48,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.IOException
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -184,10 +188,6 @@ import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.IOException
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -238,7 +238,7 @@ class StateFragmentTest {
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
+//    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
 
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
@@ -3646,11 +3646,8 @@ class StateFragmentTest {
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
 
-      onView(
-        withId(
-          R.id.selection_interaction_textview
-        )
-      ).check(matches(withText("You may select more choices.")))
+      onView(withId(R.id.selection_interaction_textview))
+        .check(matches(withText("You may select more choices.")))
     }
   }
 
@@ -3709,6 +3706,134 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 1,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(not(isEnabled())))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 4,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(not(isEnabled())))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 5,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_maxRadioItemSelected_deselecting_returnTo_youMaySelectMoreChoices() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+
+      onView(withId(R.id.selection_interaction_textview))
+        .check(matches(withText("You may select more choices.")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_someRadioItemSelected_deselecting_returnTo_pleaseSelectAllCorrectChoices() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+
+      onView(withId(R.id.selection_interaction_textview))
+        .check(matches(withText("Please select all correct choices.")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_notSelectingMaxRadioItem_return_allOtherCheckBoxesEnabled() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isEnabled()))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 3,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isEnabled()))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 4,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isEnabled()))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 5,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_SelectingMaxRadioItem_andOneBelow_return_noOtherCheckBoxesEnabled() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 1, expectedOptionText = "Yellow")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 3,
           targetViewId = R.id.item_selection_checkbox
         )
       ).check(matches(not(isEnabled())))
