@@ -238,7 +238,7 @@ class StateFragmentTest {
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
-//    testCoroutineDispatchers.registerIdlingResource()
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
 
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
