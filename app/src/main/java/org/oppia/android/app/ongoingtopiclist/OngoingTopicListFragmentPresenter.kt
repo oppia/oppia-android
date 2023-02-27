@@ -36,7 +36,7 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
         container,
         /* attachToRoot= */ false
       )
-    viewModel.setProfileId(profileId.internalId)
+    viewModel.setProfileId(profileId)
 
     binding.ongoingTopicListToolbar.setNavigationOnClickListener {
       (activity as OngoingTopicListActivity).finish()

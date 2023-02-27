@@ -70,7 +70,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
         .observe(
           fragment,
           {
-            handleAddProfileResult(it, profileId.internalId)
+            handleAddProfileResult(it, profileId)
           }
         )
     }
@@ -100,8 +100,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
-    val profileId = ProfileId.newBuilder().apply { internalId = profileId }.build()
+  private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: ProfileId) {
     if (result is AsyncResult.Success) {
       val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

@@ -18,7 +18,7 @@ import java.util.Objects
 /** [ViewModel] for displaying a promoted story. */
 class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
-  private val internalProfileId: Int,
+  private val profileId: ProfileId,
   private val totalStoryCount: Int,
   val entityType: String,
   val promotedStory: PromotedStory,
@@ -57,7 +57,6 @@ class PromotedStoryViewModel(
   }
 
   fun clickOnStoryTile() {
-    val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
       profileId,
       promotedStory.topicId,
@@ -70,14 +69,14 @@ class PromotedStoryViewModel(
   // object changes.
   override fun equals(other: Any?): Boolean {
     return other is PromotedStoryViewModel &&
-      other.internalProfileId == this.internalProfileId &&
+      other.profileId == this.profileId &&
       other.totalStoryCount == this.totalStoryCount &&
       other.entityType == this.entityType &&
       other.promotedStory == this.promotedStory
   }
 
   override fun hashCode() = Objects.hash(
-    internalProfileId,
+    profileId,
     totalStoryCount,
     entityType,
     promotedStory

@@ -30,7 +30,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -70,9 +69,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     expandedChapterListIndexListener: ExpandedChapterListIndexListener,
     topicId: String,
     storyId: String,
-    isDefaultStoryExpanded: Boolean
+    isDefaultStoryExpanded: Boolean,
+    profileId: ProfileId
   ): View? {
-    this.profileId = activity.intent.extractCurrentUserProfileId()
+    this.profileId = profileId
     this.topicId = topicId
     this.storyId = storyId
     this.isDefaultStoryExpanded = isDefaultStoryExpanded
@@ -89,7 +89,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       this.viewModel = topicLessonViewModel
     }
 
-    topicLessonViewModel.setInternalProfileId(profileId.internalId)
+    topicLessonViewModel.setProfileId(profileId)
     topicLessonViewModel.setTopicId(topicId)
     topicLessonViewModel.setStoryId(storyId)
 

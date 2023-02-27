@@ -29,11 +29,11 @@ class OngoingTopicListViewModel @Inject constructor(
   private val translationController: TranslationController
 ) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   private val ongoingTopicListResultLiveData: LiveData<AsyncResult<OngoingTopicList>> by lazy {
     topicController.getOngoingTopicList(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      profileId
     ).toLiveData()
   }
 
@@ -45,8 +45,8 @@ class OngoingTopicListViewModel @Inject constructor(
     Transformations.map(ongoingTopicListLiveData, ::processOngoingTopicList)
   }
 
-  fun setProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 
   private fun processOngoingTopicResult(
@@ -74,7 +74,7 @@ class OngoingTopicListViewModel @Inject constructor(
       ongoingTopicList.topicList.map { ephemeralTopic ->
         OngoingTopicItemViewModel(
           activity,
-          internalProfileId,
+          profileId,
           ephemeralTopic,
           entityType,
           intentFactoryShim,

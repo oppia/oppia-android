@@ -43,7 +43,7 @@ class HomeViewModel(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val internalProfileId: Int,
+  private val profileId: ProfileId,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
@@ -53,7 +53,6 @@ class HomeViewModel(
   private val translationController: TranslationController
 ) : ObservableViewModel() {
 
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
   private val promotedStoryListLimit = activity.resources.getInteger(
     R.integer.promoted_story_list_limit
   )
@@ -197,7 +196,7 @@ class HomeViewModel(
         .mapIndexed { index, promotedStory ->
           PromotedStoryViewModel(
             activity,
-            internalProfileId,
+            profileId,
             sortedStoryList.size,
             storyEntityType,
             promotedStory,

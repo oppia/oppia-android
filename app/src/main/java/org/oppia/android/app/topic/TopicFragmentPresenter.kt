@@ -67,7 +67,7 @@ class TopicFragmentPresenter @Inject constructor(
       binding.topicToolbarTitle.isSelected = true
     }
 
-    viewModel.setInternalProfileId(profileId.internalId)
+    viewModel.setInternalProfileId(profileId)
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 

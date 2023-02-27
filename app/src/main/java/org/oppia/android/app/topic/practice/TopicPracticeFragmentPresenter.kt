@@ -48,7 +48,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   ): View? {
     this.topicId = topicId
     viewModel.setTopicId(this.topicId)
-    viewModel.setInternalProfileId(profileId.internalId)
+    viewModel.setInternalProfileId(profileId)
 
     selectedSubtopicIdList = subtopicList
     skillIdHashMap = selectedSkillId

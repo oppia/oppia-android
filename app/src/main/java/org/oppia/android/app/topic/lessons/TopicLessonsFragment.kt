@@ -86,7 +86,8 @@ class TopicLessonsFragment :
       this as ExpandedChapterListIndexListener,
       topicId,
       storyId,
-      isDefaultStoryExpanded
+      isDefaultStoryExpanded,
+      profileId
     )
   }
 

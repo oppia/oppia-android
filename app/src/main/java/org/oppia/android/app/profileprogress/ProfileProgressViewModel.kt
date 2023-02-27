@@ -40,8 +40,7 @@ class ProfileProgressViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) {
-  /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
-  private var internalProfileId: Int = -1
+  /** [profileId] needs to be set before any of the live data members can be accessed. */
   private lateinit var profileId: ProfileId
   private var limit: Int = 0
 
@@ -51,9 +50,8 @@ class ProfileProgressViewModel @Inject constructor(
     headerViewModel as ProfileProgressItemViewModel
   )
 
-  fun setProfileId(internalProfileId: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    this.internalProfileId = internalProfileId
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
 
     subscribeToProfileLiveData()
     subscribeToCompletedStoryListLiveData()
@@ -149,7 +147,7 @@ class ProfileProgressViewModel @Inject constructor(
         itemList.map { story ->
           RecentlyPlayedStorySummaryViewModel(
             activity,
-            internalProfileId,
+            profileId,
             story,
             entityType,
             intentFactoryShim,

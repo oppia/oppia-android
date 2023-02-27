@@ -48,8 +48,7 @@ class AudioFragment :
     savedInstanceState: Bundle?
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val profileId =
-      arguments!!.extractCurrentUserProfileId()
+    val profileId = arguments!!.extractCurrentUserProfileId()
     return audioFragmentPresenter.handleCreateView(inflater, container, profileId)
   }
 

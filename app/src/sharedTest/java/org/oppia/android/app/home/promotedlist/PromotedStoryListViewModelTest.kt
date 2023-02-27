@@ -23,6 +23,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedStoryList
@@ -102,6 +103,7 @@ class PromotedStoryListViewModelTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var translationController: TranslationController
+  private lateinit var profileId: ProfileId
 
   private val promotedStory1 = PromotedStory.newBuilder()
     .setStoryId("id_1")
@@ -132,6 +134,7 @@ class PromotedStoryListViewModelTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.getDefaultInstance()
   }
 
   @Test
@@ -325,7 +328,7 @@ class PromotedStoryListViewModelTest {
     return promotedStoryList.mapIndexed { index, promotedStory ->
       PromotedStoryViewModel(
         activity = activity,
-        internalProfileId = 1,
+        profileId = this.profileId,
         totalStoryCount = promotedStoryList.size,
         entityType = "entity",
         promotedStory = promotedStory,

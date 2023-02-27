@@ -12,7 +12,7 @@ import org.oppia.android.domain.translation.TranslationController
 /** Recently played item [ViewModel] for the recycler view in [ProfileProgressFragment]. */
 class RecentlyPlayedStorySummaryViewModel(
   private val activity: AppCompatActivity,
-  private val internalProfileId: Int,
+  private val profileId: ProfileId,
   val promotedStory: PromotedStory,
   val entityType: String,
   private val intentFactoryShim: IntentFactoryShim,
@@ -36,7 +36,6 @@ class RecentlyPlayedStorySummaryViewModel(
   }
 
   fun onStoryItemClicked() {
-    val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     routeToTopicPlayStory(profileId, promotedStory.topicId, promotedStory.storyId)
   }
 

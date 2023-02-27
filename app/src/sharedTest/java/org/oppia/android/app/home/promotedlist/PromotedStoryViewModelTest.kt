@@ -23,6 +23,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -100,6 +101,8 @@ class PromotedStoryViewModelTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var translationController: TranslationController
+  private lateinit var profileIdOne: ProfileId
+  private lateinit var profileIdTwo: ProfileId
 
   private val promotedStory1 = PromotedStory.newBuilder()
     .setStoryId("id_1")
@@ -117,6 +120,8 @@ class PromotedStoryViewModelTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileIdOne = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    profileIdTwo = ProfileId.newBuilder().apply { internalId = 1 }.build()
   }
 
   @Test
@@ -208,7 +213,7 @@ class PromotedStoryViewModelTest {
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModelProfile1 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
-          internalProfileId = 1,
+          profileId = profileIdOne,
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
@@ -217,7 +222,7 @@ class PromotedStoryViewModelTest {
         )
         val promotedStoryViewModelProfile2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
-          internalProfileId = 2,
+          profileId = profileIdTwo,
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
@@ -238,7 +243,7 @@ class PromotedStoryViewModelTest {
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModelStoryCount2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
-          internalProfileId = 1,
+          profileId = profileIdOne,
           totalStoryCount = 2,
           entityType = "entity",
           promotedStory = promotedStory1,
@@ -247,7 +252,7 @@ class PromotedStoryViewModelTest {
         )
         val promotedStoryViewModelStoryCount3 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
-          internalProfileId = 1,
+          profileId = profileIdOne,
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
@@ -269,7 +274,7 @@ class PromotedStoryViewModelTest {
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModelEntity1 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
-          internalProfileId = 1,
+          profileId = profileIdOne,
           totalStoryCount = 3,
           entityType = "entity_1",
           promotedStory = promotedStory1,
@@ -278,7 +283,7 @@ class PromotedStoryViewModelTest {
         )
         val promotedStoryViewModelEntity2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
-          internalProfileId = 1,
+          profileId = profileIdOne,
           totalStoryCount = 3,
           entityType = "entity_2",
           promotedStory = promotedStory1,
@@ -301,7 +306,7 @@ class PromotedStoryViewModelTest {
 
         val promotedStoryViewModelStory1 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
-          internalProfileId = 1,
+          profileId = profileIdOne,
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
@@ -310,7 +315,7 @@ class PromotedStoryViewModelTest {
         )
         val promotedStoryViewModelStory2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
-          internalProfileId = 1,
+          profileId = profileIdOne,
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory2,
@@ -365,7 +370,7 @@ class PromotedStoryViewModelTest {
   ): PromotedStoryViewModel {
     return PromotedStoryViewModel(
       activity = activity,
-      internalProfileId = 1,
+      profileId = profileIdOne,
       totalStoryCount = 3,
       entityType = "entity",
       promotedStory = promotedStory1,

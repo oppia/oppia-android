@@ -46,7 +46,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       activity,
       R.layout.pin_password_activity
     )
-    pinViewModel.setProfileId(profileId.internalId)
+    pinViewModel.setProfileId(profileId)
     binding.apply {
       lifecycleOwner = activity
       viewModel = pinViewModel

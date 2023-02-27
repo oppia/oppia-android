@@ -26,12 +26,12 @@ class TopicViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : ObservableViewModel() {
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       topicId
     ).toLiveData()
   }
@@ -39,7 +39,7 @@ class TopicViewModel @Inject constructor(
   private val topicListResultLiveData: LiveData<AsyncResult<PromotedActivityList>> by lazy {
     // TODO(#4754): Replace with a mechanism that properly accounts for fully completed stories.
     topicListController.getPromotedActivityList(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      profileId
     ).toLiveData()
   }
 
@@ -83,8 +83,8 @@ class TopicViewModel @Inject constructor(
     }
   }
 
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  fun setInternalProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 
   fun setTopicId(topicId: String) {

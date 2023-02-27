@@ -30,7 +30,7 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
     profileId: ProfileId
   ): View? {
     val viewModel = getCompletedStoryListViewModel()
-    viewModel.setProfileId(profileId.internalId)
+    viewModel.setProfileId(profileId)
 
     binding = CompletedStoryListFragmentBinding
       .inflate(

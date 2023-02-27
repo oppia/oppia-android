@@ -11,7 +11,7 @@ import org.oppia.android.domain.translation.TranslationController
 /** Completed story view model for the recycler view in [CompletedStoryListFragment]. */
 class CompletedStoryItemViewModel(
   private val activity: AppCompatActivity,
-  private val internalProfileId: Int,
+  private val profileId: ProfileId,
   val completedStory: CompletedStory,
   val entityType: String,
   private val intentFactoryShim: IntentFactoryShim,
@@ -29,7 +29,6 @@ class CompletedStoryItemViewModel(
   }
 
   fun onCompletedStoryItemClicked() {
-    val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     routeToTopicPlayStory(profileId, completedStory.topicId, completedStory.storyId)
   }
 

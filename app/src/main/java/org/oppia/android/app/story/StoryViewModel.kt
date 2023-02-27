@@ -31,7 +31,7 @@ class StoryViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) {
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
 
   /** [storyId] needs to be set before any of the live data members can be accessed. */
@@ -40,7 +40,7 @@ class StoryViewModel @Inject constructor(
 
   private val storyResultLiveData: LiveData<AsyncResult<EphemeralStorySummary>> by lazy {
     topicController.getStory(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       topicId,
       storyId
     ).toLiveData()
@@ -58,8 +58,8 @@ class StoryViewModel @Inject constructor(
     Transformations.map(storyLiveData, ::processStoryChapterList)
   }
 
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  fun setInternalProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 
   fun setTopicId(topicId: String) {
@@ -120,7 +120,7 @@ class StoryViewModel @Inject constructor(
           fragment,
           explorationSelectionListener,
           explorationCheckpointController,
-          internalProfileId,
+          profileId,
           topicId,
           storyId,
           ephemeralChapterSummary,

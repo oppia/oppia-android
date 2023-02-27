@@ -728,6 +728,7 @@ class AdministratorControlsActivityTest {
   private fun getProfileWithSecondId(): ProfileId {
     return ProfileId.newBuilder().apply { internalId = 1 }.build()
   }
+
   private fun checkIsAdminProfileVisible() {
     onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
       matches(withText("Admin"))

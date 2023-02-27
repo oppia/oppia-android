@@ -23,7 +23,7 @@ class StoryChapterSummaryViewModel(
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   val explorationCheckpointController: ExplorationCheckpointController,
-  val internalProfileId: Int,
+  val profileId: ProfileId,
   val topicId: String,
   val storyId: String,
   private val ephemeralChapterSummary: EphemeralChapterSummary,
@@ -46,9 +46,6 @@ class StoryChapterSummaryViewModel(
     )
   }
   val chapterPlayState: ChapterPlayState = chapterSummary.chapterPlayState
-  private val profileId by lazy {
-    ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
-  }
 
   fun onExplorationClicked() {
     val canHavePartialProgressSaved =
@@ -62,9 +59,7 @@ class StoryChapterSummaryViewModel(
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.newBuilder().apply {
-            internalId = internalProfileId
-          }.build(),
+          profileId,
           explorationId
         ).toLiveData()
 

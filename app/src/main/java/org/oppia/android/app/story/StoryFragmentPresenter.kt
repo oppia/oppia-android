@@ -80,7 +80,7 @@ class StoryFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    storyViewModel.setInternalProfileId(profileId.internalId)
+    storyViewModel.setInternalProfileId(profileId)
     storyViewModel.setTopicId(topicId)
     storyViewModel.setStoryId(storyId)
     logStoryActivityEvent(topicId, storyId)

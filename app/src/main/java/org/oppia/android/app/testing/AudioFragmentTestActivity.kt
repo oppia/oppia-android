@@ -19,8 +19,7 @@ class AudioFragmentTestActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val profileId =
-      intent.extractCurrentUserProfileId()
+    val profileId = intent.extractCurrentUserProfileId()
     audioFragmentTestActivityController.handleOnCreate(profileId)
   }
 

@@ -26,12 +26,12 @@ class CompletedStoryListViewModel @Inject constructor(
   private val translationController: TranslationController,
   @StoryHtmlParserEntityType private val entityType: String
 ) : ObservableViewModel() {
-  /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
-  private var internalProfileId: Int = -1
+  /** [profileId] needs to be set before any of the live data members can be accessed. */
+  private lateinit var profileId: ProfileId
 
   private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
     topicController.getCompletedStoryList(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      profileId
     ).toLiveData()
   }
 
@@ -43,8 +43,8 @@ class CompletedStoryListViewModel @Inject constructor(
     Transformations.map(completedStoryLiveData, ::processCompletedStoryList)
   }
 
-  fun setProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 
   private fun processCompletedStoryListResult(
@@ -72,7 +72,7 @@ class CompletedStoryListViewModel @Inject constructor(
       completedStoryList.completedStoryList.map { completedStory ->
         CompletedStoryItemViewModel(
           activity,
-          internalProfileId,
+          profileId,
           completedStory,
           entityType,
           intentFactoryShim,

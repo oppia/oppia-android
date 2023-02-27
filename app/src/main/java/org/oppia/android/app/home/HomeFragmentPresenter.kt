@@ -63,7 +63,7 @@ class HomeFragmentPresenter @Inject constructor(
       activity,
       fragment,
       oppiaLogger,
-      profileId.internalId,
+      profileId,
       profileManagementController,
       topicListController,
       topicEntityType,

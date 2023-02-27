@@ -58,7 +58,7 @@ class ProfileProgressFragmentPresenter @Inject constructor(
       adapter = createRecyclerViewAdapter()
     }
 
-    viewModel.setProfileId(profileId.internalId)
+    viewModel.setProfileId(profileId)
     viewModel.handleOnConfigurationChange()
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.

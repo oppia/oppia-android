@@ -14,7 +14,7 @@ import org.oppia.android.domain.translation.TranslationController
 /** [ViewModel] for displaying topic item in [OngoingTopicListActivity]. */
 class OngoingTopicItemViewModel(
   private val activity: AppCompatActivity,
-  private val internalProfileId: Int,
+  private val profileId: ProfileId,
   ephemeralTopic: EphemeralTopic,
   val entityType: String,
   private val intentFactoryShim: IntentFactoryShim,
@@ -28,7 +28,6 @@ class OngoingTopicItemViewModel(
   }
 
   fun onTopicItemClicked() {
-    val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     routeToTopic(profileId, topic.topicId)
   }
 
