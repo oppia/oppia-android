@@ -37,6 +37,7 @@ gradlew.bat @BenHenning
 .gitignore @BenHenning
 /.github/*.md @BenHenning
 /.github/ISSUE_TEMPLATE @BenHenning
+/.github/DISCUSSION_TEMPLATE/q-a-installation.yml @BenHenning
 
 # Git secret files & related configurations.
 /.gitsecret/ @BenHenning
