@@ -121,7 +121,7 @@ class PromotedStoryViewModelTest {
   fun setUp() {
     setUpTestApplicationComponent()
     profileIdOne = ProfileId.newBuilder().apply { internalId = 1 }.build()
-    profileIdTwo = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    profileIdTwo = ProfileId.newBuilder().apply { internalId = 2 }.build()
   }
 
   @Test
