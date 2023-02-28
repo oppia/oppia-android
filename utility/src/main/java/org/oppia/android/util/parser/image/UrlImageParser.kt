@@ -82,7 +82,9 @@ class UrlImageParser private constructor(
     val imageUrl = "$gcsPrefix/$gcsResourceName/$imagePath"
     val proxyDrawable = ProxyDrawable()
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
-    val isSvg = machineLocale.run { imageUrl.endsWithIgnoreCase("svg") }
+    val isSvg = machineLocale.run {
+      imageUrl.endsWithIgnoreCase("svg") || imageUrl.endsWithIgnoreCase("svgz")
+    }
     val adjustedType = if (type == INLINE_TEXT_IMAGE && !isSvg) {
       // Treat non-svg in-line images as block, instead, since only SVG is supported.
       consoleLogger.w("UrlImageParser", "Forcing image $filename to block image")

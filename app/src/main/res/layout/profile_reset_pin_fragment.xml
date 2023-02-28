@@ -106,7 +106,7 @@
           android:enabled="@{viewModel.isButtonActive()}"
           android:text="@string/profile_rename_save"
           android:textAllCaps="true"
-          android:textColor="@{viewModel.isButtonActive() ? @color/component_color_shared_button_active_text_color : @color/component_color_shared_button_inactive_text_color }"
+          android:textColor="@{viewModel.isButtonActive() ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_reset_input_confirm_pin" />
       </androidx.constraintlayout.widget.ConstraintLayout>
