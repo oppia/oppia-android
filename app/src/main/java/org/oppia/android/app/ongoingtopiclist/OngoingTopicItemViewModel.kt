@@ -40,7 +40,7 @@ class OngoingTopicItemViewModel(
   override fun routeToTopic(profileId: ProfileId, topicId: String) {
     val intent = intentFactoryShim.createTopicActivityIntent(
       activity.applicationContext,
-      profileId.internalId,
+      profileId,
       topicId
     )
     activity.startActivity(intent)

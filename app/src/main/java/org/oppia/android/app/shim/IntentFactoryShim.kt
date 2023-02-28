@@ -2,6 +2,7 @@ package org.oppia.android.app.shim
 
 import android.content.Context
 import android.content.Intent
+import org.oppia.android.app.model.ProfileId
 
 /**
  * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
@@ -19,7 +20,7 @@ interface IntentFactoryShim {
    * */
   fun createTopicPlayStoryActivityIntent(
     context: Context,
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String
   ): Intent
@@ -29,7 +30,7 @@ interface IntentFactoryShim {
    * */
   fun createTopicActivityIntent(
     context: Context,
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String
   ): Intent
 }

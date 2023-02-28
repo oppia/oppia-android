@@ -48,7 +48,7 @@ class RecentlyPlayedStorySummaryViewModel(
   override fun routeToTopicPlayStory(profileId: ProfileId, topicId: String, storyId: String) {
     val intent = intentFactoryShim.createTopicPlayStoryActivityIntent(
       activity.applicationContext,
-      profileId.internalId,
+      profileId,
       topicId,
       storyId
     )
