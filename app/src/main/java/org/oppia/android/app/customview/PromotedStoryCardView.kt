@@ -34,7 +34,6 @@ class PromotedStoryCardView @JvmOverloads constructor(
     // This view can get attached multiple times and we must make sure that the spotlight is
     // requested only once. Only spotlight the item at the first index of the recycler view.
     if (!isSpotlit && index == 0) {
-      fragment.activity!!.titleColor = R.color.color_def_accessible_grey
       isSpotlit = true
       val spotlightTarget = SpotlightTarget(
         this,

@@ -345,7 +345,7 @@ file_content_checks {
   failure_message: "Only colors from component_colors.xml may be used in layouts."
 }
 file_content_checks {
-  file_path_regex: "app/src/main/java/org/oppia/android/app.?/.+(ActivityPresenter|FragmentPresenter|Activity|Fragment|View)\\.kt"
+  file_path_regex: "app/src/main/java/org/oppia/android/app.?/.+(ActivityPresenter|FragmentPresenter|ViewPresenter|Activity|Fragment|View)\\.kt"
   prohibited_content_regex: "R.color.(?!component_color_).+"
   failure_message: "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments, Views and Presenters)."
 }
