@@ -44,6 +44,7 @@ kt_android_library(
         ":activity_recreator",
         ":app_language_locale_handler",
         ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
     ],
 )

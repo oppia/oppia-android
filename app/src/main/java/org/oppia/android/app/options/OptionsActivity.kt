@@ -111,7 +111,7 @@ class OptionsActivity :
         ).oppiaLanguage
         optionActivityPresenter.updateAppLanguage(oppiaLanguage)
         OptionControlsViewModel.isResuming = true
-        HomeActivity.shouldRecreateActivity = true
+        HomeActivity.shouldRecreateHomeActivity = true
         recreate()
       }
       REQUEST_CODE_AUDIO_LANGUAGE -> {

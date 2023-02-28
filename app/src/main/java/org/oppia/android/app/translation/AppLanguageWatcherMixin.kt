@@ -2,9 +2,9 @@ package org.oppia.android.app.translation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -23,8 +23,10 @@ class AppLanguageWatcherMixin @Inject constructor(
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
   private val localeController: LocaleController,
   private val oppiaLogger: OppiaLogger,
-  private val activityRecreator: ActivityRecreator
+  private val activityRecreator: ActivityRecreator,
+  private val profileManagementController: ProfileManagementController
 ) {
+
   /**
    * Initializes this mixin by starting language monitoring. This method should only ever be called
    * once for the lifetime of the current activity.
@@ -62,9 +64,10 @@ class AppLanguageWatcherMixin @Inject constructor(
     }
 
     // TODO(#52): Hook this up properly to profiles, and handle the non-profile activity cases.
-    val profileId = ProfileId.getDefaultInstance()
+    val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
-    val appLanguageLocaleDataProvider = translationController.getAppLanguageLocale(profileId)
+    val appLanguageLocaleDataProvider =
+      translationController.getAppLanguageLocale(currentUserProfileId)
 
     val liveData = appLanguageLocaleDataProvider.toLiveData()
     liveData.observe(
