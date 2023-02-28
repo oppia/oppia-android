@@ -2,7 +2,6 @@
 General purpose utilities for performance metrics logging.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -34,9 +33,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":performance_metrics_assessor_impl",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//:dagger",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -64,11 +63,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//:dagger",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )
-
-dagger_rules()

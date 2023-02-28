@@ -2,7 +2,6 @@
 Tests for UI databinding utilities and adapters.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 # Resource shim needed so that tests can build in both Gradle & Bazel.
@@ -69,7 +68,6 @@ oppia_android_test(
     test_class = "org.oppia.android.app.databinding.DrawableBindingAdaptersTest",
     test_manifest = "//app:test_manifest",
     deps = [
-        ":dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -107,7 +105,6 @@ oppia_android_test(
     test_class = "org.oppia.android.app.databinding.ImageViewBindingAdaptersTest",
     test_manifest = "//app:test_manifest",
     deps = [
-        ":dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -145,7 +142,6 @@ oppia_android_test(
     test_class = "org.oppia.android.app.databinding.MarginBindingAdaptersTest",
     test_manifest = "//app:test_manifest",
     deps = [
-        ":dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -183,7 +179,6 @@ oppia_android_test(
     test_class = "org.oppia.android.app.databinding.StateAssemblerMarginBindingAdaptersTest",
     test_manifest = "//app:test_manifest",
     deps = [
-        ":dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -221,7 +216,6 @@ oppia_android_test(
     test_class = "org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdaptersTest",
     test_manifest = "//app:test_manifest",
     deps = [
-        ":dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -259,7 +253,6 @@ oppia_android_test(
     test_class = "org.oppia.android.app.databinding.TextViewBindingAdaptersTest",
     test_manifest = "//app:test_manifest",
     deps = [
-        ":dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -297,7 +290,6 @@ oppia_android_test(
     test_class = "org.oppia.android.app.databinding.ViewBindingAdaptersTest",
     test_manifest = "//app:test_manifest",
     deps = [
-        ":dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -327,5 +319,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
-
-dagger_rules()

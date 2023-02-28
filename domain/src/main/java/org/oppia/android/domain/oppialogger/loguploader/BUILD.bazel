@@ -2,7 +2,6 @@
 Library for providing log uploading functionality to the Oppia android app.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -59,10 +58,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":initializer",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
 )
-
-dagger_rules()

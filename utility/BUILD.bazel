@@ -3,7 +3,6 @@
 This library contains utilities that all other modules, minus model, depend on.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//utility:utility_test.bzl", "utility_test")
 
@@ -64,7 +63,6 @@ kt_android_library(
     ),
     visibility = ["//visibility:public"],
     deps = [
-        ":dagger",
         ":resources",
         "//app:crashlytics",
         "//app:crashlytics_deps",
@@ -101,7 +99,6 @@ filegroup(
 
 # keep sorted
 TEST_DEPS = [
-    ":dagger",
     ":test_resources",
     ":utility",
     "//app:crashlytics",
@@ -159,5 +156,3 @@ MIGRATED_TESTS = [
     filtered_tests = MIGRATED_TESTS,
     deps = TEST_DEPS,
 ) for test_file_path in glob(["src/test/java/org/oppia/android/util/**/*Test.kt"])]
-
-dagger_rules()

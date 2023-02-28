@@ -1,0 +1,12 @@
+# This package defines codebase-wide third-party build configurations for Kotlin.
+
+load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain")
+
+# TODO: Move to tools/.
+# TODO: Enable pruning transitive deps once https://github.com/bazelbuild/rules_kotlin/pull/842 is merged. Also, maybe enable strict & unused deps.
+define_kt_toolchain(
+    name = "toolchain",
+    api_version = "1.6",
+    jvm_target = "9",
+    language_version = "1.6",
+)

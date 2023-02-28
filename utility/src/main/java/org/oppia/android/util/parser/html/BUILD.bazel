@@ -2,7 +2,6 @@
 General-purpose utilities for parsing & rendering HTML within the app.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -119,10 +118,8 @@ kt_android_library(
     ],
     deps = [
         ":custom_html_content_handler",
-        ":dagger",
         ":exploration_html_parser_entity_type",
         ":tag_handlers",
+        "//:dagger",
     ],
 )
-
-dagger_rules()

@@ -2,7 +2,6 @@
 Tests for app analytics logging support.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,6 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.analytics.AnalyticsControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
@@ -42,7 +40,6 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
@@ -70,7 +67,6 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleObserverTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
@@ -98,7 +94,6 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLoggerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
@@ -134,5 +129,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
-
-dagger_rules()

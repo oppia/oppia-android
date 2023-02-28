@@ -2,7 +2,6 @@
 Tests for language & locale utilities.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,6 @@ oppia_android_test(
     test_class = "org.oppia.android.util.locale.AndroidLocaleFactoryTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",
@@ -32,7 +30,6 @@ oppia_android_test(
     test_class = "org.oppia.android.util.locale.AndroidLocaleProfileTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -51,7 +48,6 @@ oppia_android_test(
     test_class = "org.oppia.android.util.locale.LocaleProdModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -69,7 +65,6 @@ oppia_android_test(
     test_class = "org.oppia.android.util.locale.DisplayLocaleImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
         "//model/src/main/proto:languages_java_proto_lite",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -93,7 +88,6 @@ oppia_android_test(
     test_class = "org.oppia.android.util.locale.MachineLocaleImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -111,7 +105,6 @@ oppia_android_test(
     test_class = "org.oppia.android.util.locale.OppiaBidiFormatterImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:shadow_bidi_formatter",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -130,7 +123,6 @@ oppia_android_test(
     test_class = "org.oppia.android.util.locale.OppiaLocaleContextExtensionsTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
         "//model/src/main/proto:languages_java_proto_lite",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_extensions_truth-liteproto-extension",
@@ -140,5 +132,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],
 )
-
-dagger_rules()

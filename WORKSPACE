@@ -12,7 +12,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 android_sdk_repository(
     name = "androidsdk",
     api_level = 31,
-    build_tools_version = "29.0.2",
+    build_tools_version = "32.0.0",
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -30,16 +30,17 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
-# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
-load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
 
-kt_download_local_dev_dependencies()
+# TODO: Verify if 1.7.20 is actually needed.
+kotlin_repositories(
+    compiler_release = kotlinc_version(
+        release = "1.7.20",
+        sha256 = "5e3c8d0f965410ff12e90d6f8dc5df2fc09fd595a684d514616851ce7e94ae7d",
+    ),
+)
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
-
-kotlin_repositories()
-
-kt_register_toolchains()
+register_toolchains("//third_party/kotlin:toolchain")
 
 # The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 # module while helping us avoid the unnecessary compilation of protoc. Referecences:
@@ -141,9 +142,9 @@ git_repository(
 # min target SDK version to be compatible with Oppia.
 git_repository(
     name = "kotlitex",
-    commit = "6b7db8ff9e0f4a70bdaa25f482143e038fd0c301",
+    commit = "e261bfe6025f802534e204d3aa2991b86c4c2107",
     remote = "https://github.com/oppia/kotlitex",
-    shallow_since = "1647554845 -0700",
+    shallow_since = "1673477742 -0800",
 )
 
 bind(
