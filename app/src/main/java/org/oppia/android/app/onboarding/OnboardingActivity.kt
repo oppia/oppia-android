@@ -12,6 +12,7 @@ import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.R
 
 /** Activity that contains the onboarding flow for learners. */
 class OnboardingActivity :
@@ -32,6 +33,7 @@ class OnboardingActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    titleColor = R.color.color_palette_section_title_divider_color
     onboardingActivityPresenter.handleOnCreate()
   }
 
