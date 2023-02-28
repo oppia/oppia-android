@@ -1,0 +1,17 @@
+"""
+Libraries corresponding to asset transformation & download scripts.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "download_lessons_lib",
+    testonly = True,
+    srcs = ["DownloadLessons.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/gae",
+        "//scripts/src/java/org/oppia/android/scripts/gae:gae_json_impl",
+        "//scripts/src/java/org/oppia/android/scripts/gae/proto:proto_version_provider",
+    ],
+)

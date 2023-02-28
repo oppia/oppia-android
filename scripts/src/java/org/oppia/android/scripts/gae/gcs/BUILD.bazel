@@ -1,0 +1,23 @@
+"""
+Library for providing the endpoint functionality to inspect and download assets from Google Cloud
+Storage.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "api",
+    testonly = True,
+    srcs = [
+        "GcsEndpointApi.kt",
+        "GcsService.kt",
+    ],
+    visibility = [
+        "//scripts/src/java/org/oppia/android/scripts/gae:__subpackages__",
+    ],
+    deps = [
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+        "//third_party:com_squareup_retrofit2_retrofit",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)

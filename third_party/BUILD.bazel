@@ -90,6 +90,21 @@ android_library(
     ],
 )
 
+alias(
+    name = "oppia_proto_api_protos",
+    actual = "@oppia_proto_api//:android_protos",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+java_library(
+    name = "oppia_proto_api_java_protos",
+    testonly = True,
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    exports = [
+        "@oppia_proto_api//:android_java_protos",
+    ],
+)
+
 # Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
 # can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
 # Android assets which java_library targets do not export.

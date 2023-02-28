@@ -1,0 +1,35 @@
+"""
+Library for providing access to Oppia's HTTP endpoints.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "gae",
+    testonly = True,
+    srcs = [
+        "GaeAndroidEndpoint.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//third_party:oppia_proto_api_java_protos",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_jvm_library(
+    name = "gae_json_impl",
+    testonly = True,
+    srcs = [
+        "GaeAndroidEndpointJsonImpl.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":gae",
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:api",
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:model",
+        "//scripts/src/java/org/oppia/android/scripts/gae/proto:json_to_proto_converter",
+        "//third_party:oppia_proto_api_java_protos",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)

@@ -227,9 +227,18 @@ kt_jvm_binary(
     ],
 )
 
-# Note that this is intentionally not test-only since it's used by the app build pipeline. Also,
-# this apparently needs to be a java_binary to set up runfiles correctly when executed within a
-# Starlark rule as a tool.
+kt_jvm_binary(
+    name = "download_lessons",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.assets.DownloadLessonsKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/assets:download_lessons_lib",
+    ],
+)
+
+# Note that this & the other binaries below are intentionally not test-only since they're used by
+# the app build pipeline. Also, this apparently needs to be a java_binary to set up runfiles
+# correctly when executed within a Starlark rule as a tool.
 java_binary(
     name = "transform_android_manifest",
     main_class = "org.oppia.android.scripts.build.TransformAndroidManifestKt",
