@@ -31,30 +31,30 @@ import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
-  R.color.avatar_background_1,
-  R.color.avatar_background_2,
-  R.color.avatar_background_3,
-  R.color.avatar_background_4,
-  R.color.avatar_background_5,
-  R.color.avatar_background_6,
-  R.color.avatar_background_7,
-  R.color.avatar_background_8,
-  R.color.avatar_background_9,
-  R.color.avatar_background_10,
-  R.color.avatar_background_11,
-  R.color.avatar_background_12,
-  R.color.avatar_background_13,
-  R.color.avatar_background_14,
-  R.color.avatar_background_15,
-  R.color.avatar_background_16,
-  R.color.avatar_background_17,
-  R.color.avatar_background_18,
-  R.color.avatar_background_19,
-  R.color.avatar_background_20,
-  R.color.avatar_background_21,
-  R.color.avatar_background_22,
-  R.color.avatar_background_23,
-  R.color.avatar_background_24
+  R.color.color_def_avatar_background_1,
+  R.color.color_def_avatar_background_2,
+  R.color.color_def_avatar_background_3,
+  R.color.color_def_avatar_background_4,
+  R.color.color_def_avatar_background_5,
+  R.color.color_def_avatar_background_6,
+  R.color.color_def_avatar_background_7,
+  R.color.color_def_avatar_background_8,
+  R.color.color_def_avatar_background_9,
+  R.color.color_def_avatar_background_10,
+  R.color.color_def_avatar_background_11,
+  R.color.color_def_avatar_background_12,
+  R.color.color_def_avatar_background_13,
+  R.color.color_def_avatar_background_14,
+  R.color.color_def_avatar_background_15,
+  R.color.color_def_avatar_background_16,
+  R.color.color_def_avatar_background_17,
+  R.color.color_def_avatar_background_18,
+  R.color.color_def_avatar_background_19,
+  R.color.color_def_avatar_background_20,
+  R.color.color_def_avatar_background_21,
+  R.color.color_def_avatar_background_22,
+  R.color.color_def_avatar_background_23,
+  R.color.color_def_avatar_background_24
 )
 
 /** The presenter for [ProfileChooserFragment]. */
@@ -77,7 +77,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    StatusBarColor.statusBarColorUpdate(R.color.profile_status_bar, activity, false)
+    StatusBarColor.statusBarColorUpdate(
+      R.color.component_color_shared_profile_status_bar_color, activity, false
+    )
     binding = ProfileChooserFragmentBinding.inflate(
       inflater,
       container,

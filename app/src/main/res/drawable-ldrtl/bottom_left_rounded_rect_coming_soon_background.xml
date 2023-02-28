@@ -7,7 +7,7 @@
     android:topRightRadius="0dp" />
   <gradient
     android:angle="360"
-    android:endColor="@color/coming_soon_end"
-    android:startColor="@color/coming_soon_start"
+    android:endColor="@color/component_color_coming_soon_rect_background_end_color"
+    android:startColor="@color/component_color_coming_soon_rect_background_start_color"
     android:type="linear" />
 </shape>
