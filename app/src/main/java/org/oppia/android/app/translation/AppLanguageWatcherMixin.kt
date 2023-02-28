@@ -2,6 +2,7 @@ package org.oppia.android.app.translation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -64,7 +65,11 @@ class AppLanguageWatcherMixin @Inject constructor(
     }
 
     // TODO(#52): Hook this up properly to profiles, and handle the non-profile activity cases.
-    val currentUserProfileId = profileManagementController.getCurrentProfileId()
+    var currentUserProfileId = profileManagementController.getCurrentProfileId()
+
+    if (currentUserProfileId.internalId == -1) {
+      currentUserProfileId = ProfileId.getDefaultInstance()
+    }
 
     val appLanguageLocaleDataProvider =
       translationController.getAppLanguageLocale(currentUserProfileId)
