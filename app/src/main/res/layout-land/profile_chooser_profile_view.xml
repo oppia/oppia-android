@@ -60,14 +60,14 @@
           android:maxLines="2"
           android:singleLine="false"
           android:text="@{viewModel.profile.name}"
-          android:textColor="@color/component_color_profile_chooser_activity_white_text_color" />
+          android:textColor="@color/component_color_shared_secondary_4_text_color" />
 
         <TextView
           android:id="@+id/profile_last_visited"
           style="@style/SubtitleLight1Center"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
           profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
@@ -77,7 +77,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/profile_chooser_admin"
-          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
       </LinearLayout>
     </LinearLayout>

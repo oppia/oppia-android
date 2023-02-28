@@ -51,7 +51,7 @@
           android:minHeight="@dimen/clickable_item_min_height"
           android:text="@{viewModel.subtopicTitle}"
           android:textAlignment="viewStart"
-          android:textColor="@color/component_color_shared_secondary_4_text_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="16sp"
           app:drawableStartCompat="@android:color/transparent"
           app:layout_constraintBottom_toBottomOf="parent"
