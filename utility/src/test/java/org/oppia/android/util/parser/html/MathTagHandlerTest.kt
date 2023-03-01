@@ -30,17 +30,17 @@ import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.R
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
-import org.oppia.android.util.R
-import org.robolectric.annotation.Config
 
 private const val MATH_MARKUP_1 =
   "<oppia-noninteractive-math math_content-with-value=\"{" +
@@ -83,13 +83,19 @@ class MathTagHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock lateinit var mockImageRetriever: FakeImageRetriever
-  @Captor lateinit var stringCaptor: ArgumentCaptor<String>
-  @Captor lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
-  @Captor lateinit var floatCaptor: ArgumentCaptor<Float>
+  @Mock
+  lateinit var mockImageRetriever: FakeImageRetriever
+  @Captor
+  lateinit var stringCaptor: ArgumentCaptor<String>
+  @Captor
+  lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
+  @Captor
+  lateinit var floatCaptor: ArgumentCaptor<Float>
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var consoleLogger: ConsoleLogger
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var consoleLogger: ConsoleLogger
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithCachedMathSupport: Map<String, CustomTagHandler>
@@ -259,16 +265,15 @@ class MathTagHandlerTest {
         customTagHandlers = tagHandlersWithUncachedMathSupport
       )
 
-    val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)[0].equationColor
+    val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
 
-    assertThat(/* Color from Equation Text */ equationColor).isEqualTo(
+    assertThat(/* Color from Equation Text */ equationColor[0].equationColor).isEqualTo(
       ResourcesCompat.getColor(
         context.resources,
         R.color.component_color_shared_equation_color,
         /* paramName= theme */ null
       )
     )
-
   }
 
   @Test
