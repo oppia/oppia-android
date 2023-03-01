@@ -5,6 +5,7 @@ import android.content.Context
 import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
+import androidx.core.content.res.ResourcesCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -38,6 +39,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+import org.oppia.android.util.R
+import org.robolectric.annotation.Config
 
 private const val MATH_MARKUP_1 =
   "<oppia-noninteractive-math math_content-with-value=\"{" +
@@ -244,6 +247,28 @@ class MathTagHandlerTest {
     val imageSpans = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
     assertThat(imageSpans).hasLength(1)
     verifyNoMoreInteractions(mockImageRetriever) // No cached image loading.
+  }
+
+  @Config(qualifiers = "night")
+  @Test
+  fun testParseHtmlColor_withMathMarkup_cachingOff_getEquationColor() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = MATH_WITHOUT_FILENAME_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithUncachedMathSupport
+      )
+
+    val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)[0].equationColor
+
+    assertThat(/* Color from Equation Text */ equationColor).isEqualTo(
+      ResourcesCompat.getColor(
+        context.resources,
+        R.color.component_color_shared_equation_color,
+        /* paramName= theme */ null
+      )
+    )
+
   }
 
   @Test
