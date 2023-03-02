@@ -10,6 +10,7 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
 Instructions for setting up Bazel on Unix-based machines:
 
 1. Install Bazel from [here](https://docs.bazel.build/versions/master/install.html). Make sure that you follow the instructions for installing a specific version (Oppia Android requires 4.0.0 and won't build on other versions).
+  - As of February 2023 we have verified that on Ubuntu (and similar systems) the [apt repository approach](https://bazel.build/install/ubuntu#install-on-ubuntu) works, you just need to make sure to do `sudo apt install bazeů-4.0.0` as the alst command to install the correct version.
 
 2. Oppia Android also requires OpenJDK 8. The Bazel installation instructions above include [sections on installing OpenJDK](https://docs.bazel.build/versions/main/tutorial/java.html#install-the-jdk) on different platforms. 
 
