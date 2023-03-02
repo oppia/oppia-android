@@ -584,5 +584,8 @@
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
+  <string name="state_fragment_item_selection_no_items_selected_hint_text">Please select all correct choices.</string>
+  <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
+  <string name="state_fragment_item_selection_max_items_selected_hint_text">No more than %s choices may be selected.</string>
   <string name="profile_edit_delete_success">Profile Has Been Successfully Deleted.</string>
 </resources>
