@@ -37,6 +37,7 @@ gradlew.bat @BenHenning
 .gitignore @BenHenning
 /.github/*.md @BenHenning
 /.github/ISSUE_TEMPLATE @BenHenning
+/.github/DISCUSSION_TEMPLATE/q-a-installation.yml @BenHenning
 
 # Git secret files & related configurations.
 /.gitsecret/ @BenHenning
@@ -53,7 +54,6 @@ gradlew.bat @BenHenning
 # All resource files.
 /app/src/main/res/**/*.xml @rt4914
 /utility/src/main/res/**/*.xml @rt4914
-/app/src/main/res/values/colors_migrating.xml @rt4914
 
 # App UI strings.
 /app/src/main/res/values*/strings.xml @BenHenning
