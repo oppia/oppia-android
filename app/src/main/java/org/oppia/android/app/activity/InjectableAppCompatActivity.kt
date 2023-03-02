@@ -25,6 +25,10 @@ abstract class InjectableAppCompatActivity :
    * during activity creation (which is recommended to be done in an override of [onCreate]).
    */
   lateinit var activityComponent: ActivityComponent
+  /**
+   * [Boolean] value that can be updated to provide SystemLanguage to a particular activity.
+   */
+  var shouldUseSystemLanguage: Boolean = true
 
   override fun attachBaseContext(newBase: Context?) {
     val applicationContext = checkNotNull(newBase?.applicationContext) {
@@ -72,7 +76,14 @@ abstract class InjectableAppCompatActivity :
     val appLanguageActivityInjector = activityComponent as AppLanguageActivityInjector
     val appLanguageLocaleHandler = appLanguageAppInjector.getAppLanguageHandler()
     val appLanguageWatcherMixin = appLanguageActivityInjector.getAppLanguageWatcherMixin()
-    appLanguageWatcherMixin.initialize()
+
+    // Check if a particular Activity should use SystemLanguage.
+    if (!shouldUseSystemLanguage) {
+      appLanguageWatcherMixin.initialize(false)
+    } else {
+      appLanguageWatcherMixin.initialize(true)
+    }
+
     return Configuration(newBase?.resources?.configuration).also { newConfiguration ->
       appLanguageLocaleHandler.initializeLocaleForActivity(newConfiguration)
     }

@@ -37,7 +37,7 @@ class AppLanguageWatcherMixin @Inject constructor(
    * called before interacting with the locale handler to avoid inadvertent crashes in such
    * situations.
    */
-  fun initialize() {
+  fun initialize(shouldUseSystemLanguage: Boolean) {
     if (!appLanguageLocaleHandler.isInitialized()) {
       /* The handler might have been de-initialized since bootstrapping. This can generally happen
        * in two cases:
@@ -69,6 +69,10 @@ class AppLanguageWatcherMixin @Inject constructor(
 
     if (currentUserProfileId.internalId == -1) {
       currentUserProfileId = ProfileId.getDefaultInstance()
+    }
+
+    if (!shouldUseSystemLanguage) {
+      currentUserProfileId = ProfileId.newBuilder().apply { internalId = -2 }.build()
     }
 
     val appLanguageLocaleDataProvider =

@@ -23,6 +23,11 @@ class ProfileChooserActivity : InjectableAppCompatActivity() {
     }
   }
 
+  override fun attachBaseContext(newBase: Context?) {
+    shouldUseSystemLanguage = false
+    super.attachBaseContext(newBase)
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)

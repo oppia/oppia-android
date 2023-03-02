@@ -130,7 +130,7 @@ class TranslationController @Inject constructor(
       retrieveLanguageContentCacheStore(profileId),
       providerId
     ) { systemLanguage, oppiaLanguageSelection ->
-      val language = computeAppLanguage(systemLanguage, oppiaLanguageSelection)
+      val language = computeAppLanguage(systemLanguage, oppiaLanguageSelection, profileId)
       return@combineWithAsync localeController.retrieveAppStringDisplayLocale(language)
         .retrieveData()
     }
@@ -330,14 +330,18 @@ class TranslationController @Inject constructor(
 
   private fun computeAppLanguage(
     systemLanguage: OppiaLanguage,
-    appLanguageSelection: AppLanguageSelection
+    appLanguageSelection: AppLanguageSelection,
+    profileId: ProfileId
   ): OppiaLanguage {
-
-    return when (appLanguageSelection.selectionTypeCase) {
-      AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
-        appLanguageSelection.selectedLanguage
-      AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT -> systemLanguage
-      AppLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null -> systemLanguage
+    return if (profileId.internalId != -2) {
+      when (appLanguageSelection.selectionTypeCase) {
+        AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
+          appLanguageSelection.selectedLanguage
+        AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT -> systemLanguage
+        AppLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null -> systemLanguage
+      }
+    } else {
+      systemLanguage
     }
   }
 
@@ -351,7 +355,7 @@ class TranslationController @Inject constructor(
         languageSelection.selectedLanguage
       WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
-        computeAppLanguage(systemLanguage, loadAppLanguageSelection(profileId))
+        computeAppLanguage(systemLanguage, loadAppLanguageSelection(profileId), profileId)
     }
   }
 
@@ -365,7 +369,7 @@ class TranslationController @Inject constructor(
         languageSelection.selectedLanguage
       AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       AudioTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
-        computeAppLanguage(systemLanguage, loadAppLanguageSelection(profileId))
+        computeAppLanguage(systemLanguage, loadAppLanguageSelection(profileId), profileId)
     }
   }
 
