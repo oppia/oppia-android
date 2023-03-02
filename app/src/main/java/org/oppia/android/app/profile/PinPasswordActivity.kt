@@ -37,6 +37,11 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
     pinPasswordActivityPresenter.handleOnCreate()
   }
 
+  override fun attachBaseContext(newBase: Context?) {
+    shouldUseSystemLanguage = false
+    super.attachBaseContext(newBase)
+  }
+
   override fun routeToResetPinDialog() {
     pinPasswordActivityPresenter.handleRouteToResetPinDialog()
   }
