@@ -49,6 +49,7 @@ private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
 private const val CACHE_NAME = "content_language_database"
 private const val RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID =
   "retrieved_content_language_data_provider_id"
+private const val USE_SYSTEM_LANGUAGE_INTERNAL_PROFILE_ID = -2
 
 /**
  * Domain controller for performing operations corresponding to translations.
@@ -333,7 +334,7 @@ class TranslationController @Inject constructor(
     appLanguageSelection: AppLanguageSelection,
     profileId: ProfileId
   ): OppiaLanguage {
-    return if (profileId.internalId != -2) {
+    return if (profileId.internalId != USE_SYSTEM_LANGUAGE_INTERNAL_PROFILE_ID) {
       when (appLanguageSelection.selectionTypeCase) {
         AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
           appLanguageSelection.selectedLanguage

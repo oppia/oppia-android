@@ -38,7 +38,7 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
   }
 
   override fun attachBaseContext(newBase: Context?) {
-    shouldUseSystemLanguage = false
+    shouldUseSystemLanguage = true
     super.attachBaseContext(newBase)
   }
 
