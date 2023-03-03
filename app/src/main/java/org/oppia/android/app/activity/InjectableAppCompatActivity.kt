@@ -28,7 +28,7 @@ abstract class InjectableAppCompatActivity :
   /**
    * [Boolean] value that can be updated to provide SystemLanguage to a particular activity.
    */
-  var shouldUseSystemLanguage: Boolean = true
+  var shouldUseSystemLanguage: Boolean = false
 
   override fun attachBaseContext(newBase: Context?) {
     val applicationContext = checkNotNull(newBase?.applicationContext) {

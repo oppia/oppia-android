@@ -149,7 +149,7 @@ class AppLanguageWatcherMixinTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private var shouldUseSystemLanguage: Boolean = true
+  private val shouldUseSystemLanguage: Boolean = false
 
   @Before
   fun setUp() {
