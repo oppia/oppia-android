@@ -2,6 +2,7 @@ package org.oppia.android.util.parser.html
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
 import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
@@ -85,15 +86,19 @@ class MathTagHandlerTest {
 
   @Mock
   lateinit var mockImageRetriever: FakeImageRetriever
+
   @Captor
   lateinit var stringCaptor: ArgumentCaptor<String>
+
   @Captor
   lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
+
   @Captor
   lateinit var floatCaptor: ArgumentCaptor<Float>
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var consoleLogger: ConsoleLogger
 
@@ -255,9 +260,8 @@ class MathTagHandlerTest {
     verifyNoMoreInteractions(mockImageRetriever) // No cached image loading.
   }
 
-  @Config(qualifiers = "night")
   @Test
-  fun testParseHtmlColor_withMathMarkup_cachingOff_getEquationColor() {
+  fun testParseHtmlDayColor_withMathMarkup_cachingOff_getEquationDayColor() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_MARKUP,
@@ -266,14 +270,21 @@ class MathTagHandlerTest {
       )
 
     val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
+    assertThat(/* Color from Equation Text */ equationColor[0].equationColor).isEqualTo(Color.BLACK)
+  }
 
-    assertThat(/* Color from Equation Text */ equationColor[0].equationColor).isEqualTo(
-      ResourcesCompat.getColor(
-        context.resources,
-        R.color.component_color_shared_equation_color,
-        /* paramName= theme */ null
+  @Config(qualifiers = "night")
+  @Test
+  fun testParseHtmlNightColor_withMathMarkup_cachingOff_getEquationNightColor() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = MATH_WITHOUT_FILENAME_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithUncachedMathSupport
       )
-    )
+
+    val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
+    assertThat(/* Color from Equation Text */ equationColor[0].equationColor).isEqualTo(Color.WHITE)
   }
 
   @Test
