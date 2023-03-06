@@ -10,10 +10,7 @@ If you run into any problems along the way, we're here to help! Check out our [[
 
 - [Onboarding instructions](#onboarding-instructions)
   - [Guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)
-- [Install oppia-android](#install-oppia-android)
-- [Run the app from Android Studio](#run-the-app-from-android-studio)
-- [Finding something to do](#finding-something-to-do)
-- [Developing your skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
+  - [Developing your skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
 - [Important: Ongoing Bazel migration](#important-ongoing-bazel-migration)
 - [Installing the Oppia web app](#installing-the-oppia-web-app)
 - [Communication channels](#communication-channels)
@@ -22,103 +19,35 @@ If you run into any problems along the way, we're here to help! Check out our [[
 
 If you'd like to help out with the Android project, please follow the following steps to get started:
 
-1. Sign the CLA, so that we can accept your contributions. If you're contributing as an individual, use the [individual CLA](https://goo.gl/forms/AttNH80OV0). If your company owns the copyright to your contributions, a company representative should sign the [corporate CLA](https://goo.gl/forms/xDq9gK3Zcv).
+### 1. Complete the preliminaries
 
-2. Fill in the [Oppia contributor survey](https://goo.gl/forms/otv30JV3Ihv0dT3C3) to let us know what your interests are. (You can always change your responses later.) **Make sure to indicate prominently that you are interested in helping out with Android.**
+- Sign the CLA, so that we can accept your contributions. If you're contributing as an individual, use the [individual CLA](https://goo.gl/forms/AttNH80OV0). If your company owns the copyright to your contributions, a company representative should sign the [corporate CLA](https://goo.gl/forms/xDq9gK3Zcv).
 
-3. Say hi and introduce yourself on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions/4788)!
+- Fill in the [Oppia contributor survey](https://goo.gl/forms/otv30JV3Ihv0dT3C3) to let us know your interests. (You can always change your responses later.) **Make sure to indicate prominently that you are interested in helping out with Android.**
 
-4. Prepare your [developer environment](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#prepare-developer-environment) and then [install Oppia Android](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android)
+- Say hi and introduce yourself on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions/4788)!
 
-7. Familiarize yourself with the resources linked to from the sidebar of this page, especially the [overview of the codebase](https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture), the [[coding style guide|Coding-style-guide]], and the [[Frequent Errors and Solutions|Frequent-Errors-and-Solutions]]. You don't have to read all the other stuff right now, but it's a good idea to be aware of what's available, so that you can refer to it later if needed.
+### 2. Set up your development environment
 
-8. Take up your first Oppia Android starter issue! (See [below](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#finding-something-to-do) on how to do this.) Make sure to read and follow the [[PR instructions|Guidance-on-submitting-a-PR]] closely so that your PR review proceeds smoothly.
+- Follow the instructions on [[Installing Oppia Android|Installing-Oppia-Android]] to prepare your developer environment and install Oppia Android. **Note:** Make sure you have good Internet connectivity when developing on Oppia Android, since this project uses third party libraries which are needed to build the app.
 
-   - In your browser, consider bookmarking the [[guide to making pull requests|Guidance-on-submitting-a-PR]] for easy reference later, as well as the ["my issues" page](https://github.com/issues/assigned) (so that you can keep track of the issues assigned to you).
+- Familiarize yourself with the resources linked to from the wiki sidebar, especially the [overview of the codebase](https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture), the [[coding style guide|Coding-style-guide]], and the [[Frequent Errors and Solutions|Frequent-Errors-and-Solutions]]. (You don't have to read everything else right now, but it's a good idea to be aware of what's available, so that you can refer to it later if needed.)
 
-   - Facing any problems (including non-coding ones)? Please feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community. You can use this avenue for asking anything -- questions about any issue, who to contact for specific things, etc.
 
-   - We also have onboarding mentors who would be more than happy to help you take your first steps in open source. If you'd like individual support, feel free to request a mentor [using this form](https://forms.gle/udsRP4WQgLcez9Zm8).
- 
-9. When you have merged PRs that correspond to two different pre-existing GitHub issues, please fill in [this form](https://forms.gle/NxPjimCMqsSTNUgu5) to become an Oppia collaborator! This will grant you access to the repository, and allow you to join a team. (But please don't create your own issues and then make PRs for them -- that won't count.)
- 
+### 3. Pick your first starter issue!
 
-**Note:** Make sure you have good Internet connectivity when developing on Oppia Android, since this project uses third party libraries which will be needed to build the app.
+We suggest choosing your first issue from the [list of good first issues](https://github.com/oppia/oppia-android/labels/good%20first%20issue). These issues are hand-picked to ensure that you don't run into unexpected roadblocks while working on them, and each of them should have clear instructions for new contributors. (If not, please let us know via [GitHub Discussions](https://github.com/oppia/oppia-android/discussions) and we'll try to fix it.)
 
-## Prepare developer environment
+When you've found an issue you'd like to tackle:
 
-1. Download/Install the latest version of [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads). 
+- Leave a comment that describes in detail how you'll tackle it (e.g. explain which file(s) you would modify and what changes you would make), and @-mention the team lead (typically **@BenHenning**). If your explanation makes sense, we'll assign the issue to you. 
+- Submit a PR, following the [[guidance on submitting a PR|Guidance-on-submitting-a-PR]]. (Consider bookmarking this guide in your browser for easy reference. We also suggest bookmarking the ["my issues" page](https://github.com/issues/assigned) so that you can keep track of the issues assigned to you.)
+- If you run into any problems, feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community, or [request a mentor](https://forms.gle/udsRP4WQgLcez9Zm8) if you'd like individual support.
 
-2. Download and Install **Java 8** using the links from [the Java website](https://www.java.com/en/download/).
-   - **Note for Windows users:** Make sure to also set up the PATH system variable correctly for `Java`, following [these instructions](https://www.java.com/en/download/help/path.html).
-   - [Instructions](https://www.java.com/en/download/help/linux_install.html) for Linux users.
-   - [Instructions](https://www.java.com/en/download/help/mac_install.html) for Mac users.
+You are also welcome to tackle non-starter issues, but for those, you might need to be more independent, because we might not know how to solve them either!
 
-3. In Android Studio, open Tools > SDK Manager.
-   - In the "SDK Platforms" tab (which is the default), select `API Level 28` and also `API Level 31` (for Bazel support).
-   - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 29.0.2 (this is needed for Bazel support).
+Once you've merged PRs that correspond to **two** different pre-existing GitHub issues, please fill in [this form](https://forms.gle/NxPjimCMqsSTNUgu5) to become an Oppia collaborator! This will grant you access to the repository, and allow you to join a team. (But please don't create your own issues and then make PRs for them -- that won't count.)
 
-   Then, click "Apply" to download and install these two SDKs/Tools.
-
-## Install oppia-android
-
-Please follow these steps to set up Oppia Android on your local machine.
-
-1. Create a new, empty folder called `opensource/` within your home folder. Navigate to it (`cd opensource`), then [fork and clone](https://github.com/oppia/oppia-android/wiki/Fork-and-Clone-Oppia-Android) the Oppia-Android repo. This will create a new folder named `opensource/oppia-android`. Note that contributors who have write access to the repository may either create branches directly on oppia/oppia-android or use a fork.
-
-   **Note**: Please keep the folder name as `oppia-android`. Changing the project folder name might lead to future issues with running the pre-push checks on your machine.
-
-2. Run the setup script, which adds some development tools for Oppia Android (ktlint, checkstyle, etc.):
-
-    - For Mac or Linux
-       1. Open a terminal and navigate to `opensource/oppia-android/`.
-       2. Run the script `bash scripts/setup.sh`.
-
-    - For Mac with Apple M1 chip
-       1. Locate Terminal in Finder.
-       2. Right-click and create a duplicate Terminal (and rename it accordingly, say Terminal x86, to avoid confusion).
-       3. In the Terminal x86, right-click and click "Get info", and check the option "Open using Rosetta".
-       4. Navigate to `opensource/oppia-android/` in Rosetta.
-       5. Finally, run `bash scripts/setup.sh` in Terminal x86 and all the required files should be generated. (You should see messages like `Ktlint file downloaded`, etc.)
-
-    - For Windows
-       1. Install [Git Bash Command Line](https://gitforwindows.org/)
-       2. Open Git Bash Command Line.
-       3. Navigate to `opensource/oppia-android/`.
-       4. Run the script `bash scripts/setup.sh`.
-       5. Download the [google_checks.xml](https://github.com/checkstyle/checkstyle/blob/14005e371803bd52dff429904b354dc3e72638c0/src/main/resources/google_checks.xml) file. To do this, you can simply right-click on the `Raw` button and click on `Save Link as`.
-       6. Copy this file to the directory where Git is installed (usually C:/Program Files/Git/).
-
-3. In Android Studio, select `File > Open`, navigate to `opensource/oppia-android/`, and click `OK` to load the project.
-
-4. Click the elephant icon in the toolbar ("Sync Gradle") to ensure that all the correct dependencies are downloaded. (In general, you'll want to do this step any time you update your dependencies.)
-
-## Run the app from Android Studio
-
-1. Go to Tools > Device manager, click "Create Virtual Device...". Then:
-
-   - Select a preferred device definition. In general, any device is fine, but you can use Pixel 3a as a default (if you're developing for phones) or Nexus 7 (if you're developing for tablets). After selecting a device, click "Next" at the bottom right to continue.
-   - Select a system image (in general, API Level 28, unless you're an M1 Mac user, in which case use API Level 29). Then click "Next".
-   - Click "Finish" to complete setup.
-
-2. To run the app, select the emulator device you want from the dropdown menu to the left of the "Run" button in the toolbar.
-
-3. Finally, click the "Run" button.
-
-## Finding something to do
-
-**Good first issues for new contributors**
-
-Welcome! Please make sure to follow the onboarding instructions above if you haven’t already. Also, read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). 
-
-After that, you can choose a good first issue from the [list of good first issues](https://github.com/oppia/oppia-android/labels/good%20first%20issue). These issues are hand-picked to ensure that you don't run into unexpected roadblocks while working on them, and each of them should have clear instructions for new contributors. If you see one that doesn't, please let us know via [GitHub Discussions](https://github.com/oppia/oppia-android/discussions) and we'll try to fix it. For other issues, you might need to be more independent because we might not know how to solve them either.
-
-When you've found an issue you'd like to tackle, please leave a comment on it that:
-
-- @-mentions the team lead (typically **@BenHenning**), letting them know you'd like to work on it.
-- describes in detail how you'd tackle the issue (e.g. explain which file(s) you would modify and what changes you would make). 
-
-If your explanation makes sense, we'll assign the issue to you. Feel free to go ahead and submit a PR for it by following the instructions for making a PR! If you run into any issues, feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community, or [request a mentor](https://forms.gle/udsRP4WQgLcez9Zm8) if you'd like individual support.
 
 
 ## Important: Ongoing Bazel migration
@@ -169,4 +98,6 @@ For now, you generally won't need to do this, until the Android app supports on-
 
 ## Communication channels
 
-If you run into any problems, you can ask questions on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions). You can also check out the [developer mailing list](https://groups.google.com/forum/?fromgroups#!forum/oppia-android-dev).
+If you run into any problems (including non-coding ones), you can ask questions on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions). You can use this avenue for asking anything -- questions about any issue, who to contact for specific things, etc.
+
+You can also check out the [developer mailing list](https://groups.google.com/forum/?fromgroups#!forum/oppia-android-dev).
