@@ -399,6 +399,9 @@
   <string name="state_fragment_activity_hint_bulb_no_state_activity_new_hint_available_text">No new hint available</string>
   <string name="state_activity_new_hint_available">New hint available</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
+  <string name="state_fragment_item_selection_no_items_selected_hint_text">Please select all correct choices.</string>
+  <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
+  <string name="state_fragment_item_selection_max_items_selected_hint_text">No more than %s choices may be selected.</string>
   <!-- StoryActivity -->
   <string name="story_activity_title">Chapter List</string>
   <string name="story_summary_activity_topic_story_progress_percentage">%s\%%</string>
