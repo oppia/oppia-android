@@ -7,10 +7,10 @@
 
 ---
 **Developing Oppia**
-  * [[Contributing to Oppia-Android|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#onboarding-instructions]]
+  * Contributing to Oppia Android
+    * [[Getting Started|Contributing-to-Oppia-android]]
     * [[Installing Oppia-Android|Installing-Oppia-Android]]
     * [[Troubleshooting Installation|https://github.com/oppia/oppia-android/wiki/Troubleshooting-Installation]]
-    * [[Finding Something to do|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#finding-something-to-do]]
     * [[How to Get Help | https://github.com/oppia/oppia-android/wiki/Get-Help]]
   * Bazel
     * [[Bazel setup instructions|https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions]]
