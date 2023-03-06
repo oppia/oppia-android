@@ -20,4 +20,4 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
 **Can’t find the particular issue?**
 
-If the error you get is not in the Troubleshooting section above, please create an issue providing all the necessary information and assign it to **@FareesHussain**.
+If the error you get is not in the Troubleshooting section above, please create an issue providing all the necessary information and assign it to **@MohitGupta121**.
