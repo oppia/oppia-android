@@ -6,7 +6,7 @@ This wiki page explains the different teams in Oppia and their composition.
 
 CLaM team is responsible for most of the UI based code (app-layer), which includes exploration player, question player, concept-card, subtopics, topics, etc. All these user-facing features must be RTL supportive, accessible by all and should work on all devices (mobile + tablet).
 
-**Team contact:** Rajat Talesra (@rt4914) (lead), Ayush Kumar (@ayush0402), Yash Verma (@yash10019coder)
+**Team contacts:** Ben Henning (@BenHenning) (lead), Adhiambo Peres (@adhiamboperes)
 
 ### Dev-workflow Team
 The dev-workflow team ensures that the Oppia development process is smooth, stable and enjoyable, by ensuring that the following always hold:
@@ -25,22 +25,9 @@ Long-term projects include:
     * enabling Oppiabot to automatically handle review/code-owner assignments 
     * speeding up the CI processes.
 
-**Team contact:** Vinita Murthi (@vinitamurthi) (lead), Arjun Gupta (@ARJUPTA)
+**Team contact:** Ben Henning (@BenHenning) (lead)
 
 ### Infrastructure Teams
-
-##### Core Maintainers Team
-The core maintainers team is accountable to the Oppia developer community with regards to preserving the stability of the entire Oppia codebase, by ensuring that the following things are true at all times for the "develop" branch on GitHub:
-1. It is free of serious bugs that adversely impact the end-user experience.
-2. It passes the CI checks.
-3. It has no security issues.
-
-Because this group understands the "big picture" of Oppia, other contributors are expected to take their advice seriously, especially when members of this group are acting in an incident-response capacity.
-
-Membership of this group is decided by appointment, by a committee made up of the currently-serving core maintainers.
-
-Contributors should notify the members of this team when they see major bugs or security vulnerabilities. The Core Maintainers group can be contacted via the @oppia/core-maintainers alias or at oppia-core-maintainers@googlegroups.com.
-
 
 ##### Release Process Team
 This team is responsible for ensuring that Oppia releases happen smoothly, correctly, and on time. Long-term projects include:
@@ -50,22 +37,8 @@ This team is responsible for ensuring that Oppia releases happen smoothly, corre
 
 **Team Contact:** Ben Henning (@BenHenning)
 
-##### Quality Assurance Team
-This team is responsible for ensuring that the Oppia codebase and releases are bug-free. Long-term projects include:
-1. Deciding on a strategy for maintaining test coverage.
-2. Improving test coverage to 100%.
-3. Reducing the StackDriver error count to 0.
-4. Organize the QA and bug fixing teams for each release.
-5. Fix any known bugs in Oppia (especially user-facing ones).
 
-**Team Contact:** Ben Henning (@BenHenning)
+### Onboarding/Welfare Team
+This team is a group of Oppia developers who are committed to helping developers to be able to unblock themselves when they face any problems. They also aim to welcome new contributors and answer their questions.
 
-### Onboarding Team
-The onboarding team aims to welcome new contributors and answer their questions.
-
-**Team contact:** Rajat Talesra (@rt4914) (lead), Sarthak Aggarwal (@Sarthak2601)
-
-### Welfare Team
-The welfare team is a group of Oppia developers who are committed to helping developers to be able to unblock themselves when they face any problems. 
-
-**Team contact:** Farees Hussain (@FareesHussain) (lead), Apoorv Srivastava (@MaskedCarrot)
+**Team contact:** Mohit Gupta (@MohitGupta121)
