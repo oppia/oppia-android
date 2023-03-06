@@ -2,10 +2,9 @@
 
 * [Communication channels](#communication-channels)
   * [Email](#email)
-  * [Gitter](#gitter)
+  * [GitHub Discussions](#github-discussions)
   * [Google Chat or Hangouts](#google-chat-or-hangouts)
   * [GitHub](#github)
-  * [GitHub Discussions](#github-discussions)
 * [How to Ask Good Questions](#how-to-ask-good-questions)
   * [Setup-related questions](#setup-related-questions)
     * [Before you ask a setup question](#before-you-ask-a-setup-question)
@@ -30,11 +29,15 @@ We have several mailing lists in the form of Google Groups that you can join:
 
 You can also email your mentor with any questions. If you don't have a mentor, complete the steps on the [wiki page for contributing code to Oppia](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android) and you'll be assigned one.
 
-### Gitter
+### GitHub Discussions
 
-We have a developer chat room [here](https://gitter.im/oppia/oppia-android). Feel free to drop in and say hi! Oppia's Welfare team monitors this chat to help out new contributors, so it's the best place to ask questions about Oppia or getting started. For questions about setting up Oppia or regarding the codebase or tests you can create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) where Oppia's Welfare team and other developers will assist you in resolving the issue.
+If you have questions regarding Oppia Android, you can create a discussion on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions/) where other developers will assist you in resolving the issue. Oppia's Welfare team monitors this chat to help out new contributors, so it's the best place to ask questions about Oppia or getting started. You can create a discussion in any of the following categories based on the question:
 
-You can also directly message developers over Gitter. However, some developers don't monitor their Gitter messages regularly, so you might not get a response very quickly (or at all).
+* Developer announcements: All announcements that affect developers for the Oppia repository will be announced here.
+* Q&A: Any questions that developers have (related to setup, navigating the codebase, or anything else).
+* General Discussion: General forum for any topics that aren't Q&A.
+
+Feel free to drop in and [say hi](https://github.com/oppia/oppia-android/discussions/4788)! You can also refer to [this guide](https://docs.github.com/en/discussions/quickstart#creating-a-new-discussion) on how to create a new discussion.
 
 ### Google Chat or Hangouts
 
@@ -45,17 +48,6 @@ Most Oppia developers and teams use Google Chat as their primary means of commun
 If you have a question about a pull request or issue, you can also reach out to developers by at-mentioning them (e.g. `@developer-username`) in a comment and assigning them to the issue. Be sure you both at-mention and assign them! Some developers only look at their GitHub notifications (which at-mentions trigger), while others only look at what they're assigned to.
 
 You can even mention whole teams of people! For example, if you find an issue that is destabilizing the project, you could notify all the core maintainers by including `@oppia/core-maintainers` in your issue. The teams are all listed [here](https://github.com/orgs/oppia/teams).
-
-### GitHub Discussions
-If you have questions regarding Oppia you can create a discussion here where Oppia's Welfare team and other developers will assist you in resolving the issue. You can create a discussion in any of the following categories based on the question:
-
-* Developer announcements: All announcements that affect developers for the Oppia repository will be announced here.
-* Setup Issues: Any issues that developers are facing with setting up or starting the server.
-* Q&A: Any questions that developers have.
-* Ideas: Any developer can place an idea here and it can be discussed here.
-* Release: Discussion for bugs & PRs targeting the release.
-
-You can refer to [this guide](https://docs.github.com/en/discussions/quickstart#creating-a-new-discussion) on how to create a new discussion.
 
 ## How to Ask Good Questions
 
@@ -152,15 +144,15 @@ Follow the template below for asking questions (fill in the values inside {{}} b
   * which files have to be modified, or
   * if your approach towards the solution is correct
 
-  Then ask for help by commenting with your doubt/suggested approach on the issue page itself.  If you don’t get any response within **24 hours**, you can drop a message on the [gitter](https://gitter.im/oppia/oppia-chat#) chat too.
+  Then ask for help by commenting with your doubt/suggested approach on the issue page itself.  If you don’t get any response within **24 hours**, please leave a note on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions/categories/q-a-contacting-folks) so that the developer workflow team is aware and can help you.
 
-* If you want to have a discussion on your approach, but aren’t ready to make a PR yet, you can create a [public gist](https://gitter.im/oppia/oppia-android) and include the link to it in your question. It’s always better to see the code you are talking about!
+* If you want to have a discussion on your approach, but aren’t ready to make a PR yet, you can create a [public gist](https://docs.github.com/en/get-started/writing-on-github/editing-and-sharing-content-with-gists/creating-gists) and include the link to it in your question. It’s always better to see the code you are talking about!
 
 * **Avoid asking for help from people via emails or direct messaging.** We encourage everyone to ask for help on a common channel so that whoever sees your query first can help you or guide you how to take your query forward. Note that directing questions to your mentor is fine.
 
   * Comment on the issue page or the PR if your question is very specific.
 
-  * Use the [gitter chat](https://gitter.im/oppia/oppia-android) if your question is not issue-specific.
+  * Use [GitHub Discussions](https://github.com/oppia/oppia-android/discussions) if your question is not issue-specific.
 
 ### Welfare Team
 If you still feel blocked even after following the above steps or are unsure who to contact, you can reach out to the welfare team. You can also ping the welfare team by at-mentioning the welfare team: @oppia/android-welfare-team
