@@ -33,18 +33,12 @@ Instructions for setting up Bazel on Unix-based machines:
 
 5. Follow the instructions in [oppia-bazel-tools](https://github.com/oppia/oppia-bazel-tools).
 
-#### Possible Error:
-```
-ERROR: While parsing option --override_repository=android_tools=~/oppia-bazel/android_tools: Repository 
-override directory must be an absolute path
-```
-Try to delete the `.bazelrc` file to solve the above. error. 
-
-After the installation completes you can build the app using Bazel. 
-
-**Move your command line head to the `~/opensource/oppia-android`**, then run the below bazel command:
 
 #### Building the app
+
+After the installation, completes you can build the app using Bazel. 
+
+**Move your command line head to the `~/opensource/oppia-android`**, then run the below bazel command:
 
 ```
 bazel build //:oppia
@@ -68,15 +62,14 @@ bazel test //app/...
 bazel test //...
 ```
 
-## Known issues
+## Known Issues and Troubleshooting
 
-#### java.lang.ClassNotFoundException: com.android.tools.r8.compatdx.CompatDx
+See our [troubleshooting wiki page](https://github.com/oppia/oppia-android/wiki/Troubleshooting-Installation#bazel-issues) for some known issues with Bazel, and the corresponding troubleshooting steps.
 
-If, when building the app binary, you encounter a failure that indicates that the CompatDx file cannot be found, this is likely due to you using a newer version of the Android build tools. You can manually downgrade to an older version of build-tools (particularly 29.0.2). Unfortunately, this can't be done through Android Studio but it can be done over a terminal. Follow the instructions listed [here](https://github.com/oppia/oppia-android/issues/3024#issuecomment-884513455) to downgrade your build tools & then try to build the app again.
 
 ## Concepts and Terminology
 **[Workspace](https://github.com/oppia/oppia-android/blob/develop/WORKSPACE)**<br>
-A workspace is a directory where we add targetted SDK version, all the required dependencies and there required Rules. The directory containing the WORKSPACE file is the root of the main repository, which in our case is the `oppia-android` root directory is the main directory. 
+A workspace is a directory where we add targeted SDK version, all the required dependencies and there required Rules. The directory containing the WORKSPACE file is the root of the main repository, which in our case is the `oppia-android` root directory is the main directory. 
 
 **[Packages](https://github.com/oppia/oppia-android/tree/develop/app)**<br>
 A package is defined as a directory containing a file named BUILD or BUILD.bazel.
