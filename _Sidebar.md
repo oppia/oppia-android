@@ -1,5 +1,5 @@
 **Core documentation**
-  * [Oppia's mission](https://github.com/oppia/oppia-android/wiki/Oppia's-Mission)
+  * [Oppia's mission](https://github.com/oppia/oppia-android/wiki/Oppias-Mission)
   * [Code of Conduct](https://github.com/oppia/oppia-android/blob/develop/.github/CODE_OF_CONDUCT.md)
   * **[[Get involved!|Home]]**
     * [Coders](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android)
