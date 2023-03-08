@@ -70,4 +70,4 @@ Accessibility Scanner scans your screen and provides suggestions to improve the 
 * Clickable items
 * Text and image contrast
 
-You can know more about Accessibility in Oppia-Android [here](https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide)
+You can know more about Accessibility in Oppia-Android [here](https://github.com/oppia/oppia-android/wiki/Accessibility-A11y-Guide)
