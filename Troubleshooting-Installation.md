@@ -61,6 +61,6 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
    If, when building the app binary, you encounter a failure that indicates that the CompatDx file cannot be found, this is likely due to you using a newer version of the Android build tools. You can manually downgrade to an older version of build-tools (particularly 29.0.2). Unfortunately, this can't be done through Android Studio but it can be done over a terminal. Follow the instructions listed [here](https://github.com/oppia/oppia-android/issues/3024#issuecomment-884513455) to downgrade your build tools & then try to build the app again.
 
 
-**Can’t find the particular issue?**
+### Can’t find a particular issue?
 
 If the error you get is not in the Troubleshooting section above, please create an issue providing all the necessary information and assign it to **@MohitGupta121**.
