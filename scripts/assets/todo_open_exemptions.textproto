@@ -290,3 +290,25 @@ todo_open_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/model/Todo.kt"
   line_number: 10
 }
+
+todo_open_exemptions {
+  exempted_file_path: "wiki/Coding-style-guide.md:"
+  line_number: 33
+}
+
+todo_open_exemptions {
+  exempted_file_path: "wiki/Static-Analysis-Checks.md"
+  line_number: 33
+  line_number: 155
+  line_number: 163
+  line_number: 168
+  line_number: 172
+  line_number: 176
+  line_number: 178
+  line_number: 193
+  line_number: 203
+  line_number: 206
+  line_number: 209
+  line_number: 212
+  line_number: 215
+}
