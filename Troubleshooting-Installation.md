@@ -40,7 +40,7 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
    Error `Class 'org.oppia.android.app.profile.PinPasswordActivityTest' not found in module 'oppia-android.app'`
    ```
 
-or `Module not specified` while running Unit Tests, try to downgrade Android Studio to [Bumblebee (Patch 3)](https://developer.android.com/studio/archive). That should resolve this issue.
+   or `Module not specified` while running Unit Tests, try to downgrade Android Studio to [Bumblebee (Patch 3)](https://developer.android.com/studio/archive). That should resolve this issue.
 
 
 **Can’t find the particular issue?**
