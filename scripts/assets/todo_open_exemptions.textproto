@@ -291,12 +291,12 @@ todo_open_exemption {
   line_number: 10
 }
 
-todo_open_exemptions {
+todo_open_exemption {
   exempted_file_path: "wiki/Coding-style-guide.md:"
   line_number: 33
 }
 
-todo_open_exemptions {
+todo_open_exemption {
   exempted_file_path: "wiki/Static-Analysis-Checks.md"
   line_number: 33
   line_number: 155
