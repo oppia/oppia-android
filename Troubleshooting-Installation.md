@@ -18,6 +18,31 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
 4. If you find any error related to Kotlin or Java/Checkstyle while pushing the code, please check [this link](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow#how-to-fix-push-failures).
 
+5. If you see the error
+
+   ```
+   Could not resolve protoc-3.8.0-osx-aarch_64.exe (`com.google.protobuf:protoc:3.8.0`)
+   ```
+
+   then please follow the 2nd step mentioned in [this wiki](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-oppia-android) for Mac with Apple silicon(M1/M2) chips.
+
+6. If you see the error
+
+   ```
+   Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+   ``` 
+
+   then it's fine to ignore it. The message just appears to be a warning. We don't use Gradle 7.0, so this warning is fine to ignore.
+
+7. If you see the error
+
+   ```
+   Error `Class 'org.oppia.android.app.profile.PinPasswordActivityTest' not found in module 'oppia-android.app'`
+   ```
+
+or `Module not specified` while running Unit Tests, try to downgrade Android Studio to [Bumblebee (Patch 3)](https://developer.android.com/studio/archive). That should resolve this issue.
+
+
 **Can’t find the particular issue?**
 
 If the error you get is not in the Troubleshooting section above, please create an issue providing all the necessary information and assign it to **@MohitGupta121**.
