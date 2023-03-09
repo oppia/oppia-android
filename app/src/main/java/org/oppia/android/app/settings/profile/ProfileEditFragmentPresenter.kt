@@ -78,15 +78,6 @@ class ProfileEditFragmentPresenter @Inject constructor(
       showDeletionDialog(internalProfileId)
     }
 
-    profileEditViewModel.profile.observe(
-      fragment,
-      Observer {
-        if (activity is ProfileEditActivity) {
-          activity.title = it.name
-        }
-      }
-    )
-
     profileEditViewModel.isAllowedDownloadAccess.observe(
       fragment,
       Observer {
