@@ -81,7 +81,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 10": {
         "content": {
@@ -407,10 +408,12 @@
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
-              "isNegative": false,
-              "wholeNumber": 0,
-              "numerator": 3,
-              "denominator": 10
+              "fraction": {
+                "isNegative": false,
+                "wholeNumber": 0,
+                "numerator": 3,
+                "denominator": 10
+              }
             },
             "explanation": {
               "content_id": "solution",
@@ -1004,7 +1007,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Final Test A second try": {
         "content": {
@@ -1158,10 +1162,12 @@
           "solution": {
             "answer_is_exclusive": false,
             "correct_answer": {
-              "isNegative": false,
-              "wholeNumber": 0,
-              "numerator": 4,
-              "denominator": 6
+              "fraction": {
+                "isNegative": false,
+                "wholeNumber": 0,
+                "numerator": 4,
+                "denominator": 6
+              }
             },
             "explanation": {
               "content_id": "solution",
@@ -1557,7 +1563,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Introduction": {
         "content": {
@@ -1631,7 +1638,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Ending": {
         "content": {
@@ -1705,7 +1713,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Parts of a whole": {
         "content": {
@@ -1912,7 +1921,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Writing out fractions confirmation": {
         "content": {
@@ -1986,7 +1996,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Mr. Baker": {
         "content": {
@@ -2060,7 +2071,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Writing out Fractions": {
         "content": {
@@ -2569,7 +2581,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Congratulations": {
         "content": {
@@ -2631,7 +2644,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Final Test A": {
         "content": {
@@ -2910,7 +2924,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Final Test B": {
         "content": {
@@ -3082,7 +3097,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Final Test C": {
         "content": {
@@ -3361,7 +3377,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 3": {
         "content": {
@@ -3576,7 +3593,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 1": {
         "content": {
@@ -3882,7 +3900,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Final Test B second try": {
         "content": {
@@ -4128,10 +4147,12 @@
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
-              "isNegative": false,
-              "wholeNumber": 0,
-              "numerator": 5,
-              "denominator": 12
+              "fraction": {
+                "isNegative": false,
+                "wholeNumber": 0,
+                "numerator": 5,
+                "denominator": 12
+              }
             },
             "explanation": {
               "content_id": "solution",
@@ -4629,7 +4650,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 2": {
         "content": {
@@ -4898,7 +4920,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 5": {
         "content": {
@@ -5318,7 +5341,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 4": {
         "content": {
@@ -5615,10 +5639,12 @@
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
-              "isNegative": false,
-              "wholeNumber": 0,
-              "numerator": 1,
-              "denominator": 6
+              "fraction": {
+                "isNegative": false,
+                "wholeNumber": 0,
+                "numerator": 1,
+                "denominator": 6
+              }
             },
             "explanation": {
               "content_id": "solution",
@@ -6134,7 +6160,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 7": {
         "content": {
@@ -6510,7 +6537,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 6": {
         "content": {
@@ -6867,7 +6895,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 9": {
         "content": {
@@ -7411,7 +7440,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 8": {
         "content": {
@@ -7562,7 +7592,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Recap Writing Fractions": {
         "content": {
@@ -7636,7 +7667,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Numerator and Denominator": {
         "content": {
@@ -8069,7 +8101,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       }
     },
     "objective": "Learn the fundamentals of fractions",

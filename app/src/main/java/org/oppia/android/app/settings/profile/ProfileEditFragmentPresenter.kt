@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditFragmentBinding
@@ -74,33 +75,57 @@ class ProfileEditFragmentPresenter @Inject constructor(
       )
     }
 
+    binding.profileMarkChaptersForCompletionButton?.setOnClickListener {
+      activity.startActivity(
+        MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
+          activity, internalProfileId, showConfirmationNotice = true
+        )
+      )
+    }
+
     binding.profileDeleteButton.setOnClickListener {
       showDeletionDialog(internalProfileId)
     }
 
-    profileEditViewModel.isAllowedDownloadAccess.observe(
-      fragment,
-      Observer {
-        binding.profileEditAllowDownloadSwitch.isChecked = it
+    profileEditViewModel.profile.observe(fragment) { profile ->
+      if (activity is ProfileEditActivity) {
+        activity.title = profile.name
       }
-    )
+
+      binding.profileEditAllowDownloadSwitch.isChecked = profile.allowDownloadAccess
+      binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked =
+        profile.allowInLessonQuickLanguageSwitching
+    }
 
     binding.profileEditAllowDownloadContainer.setOnClickListener {
-      binding.profileEditAllowDownloadSwitch.isChecked =
-        !binding.profileEditAllowDownloadSwitch.isChecked
+      val enableDownloads = !binding.profileEditAllowDownloadSwitch.isChecked
+      binding.profileEditAllowDownloadSwitch.isChecked = enableDownloads
       profileManagementController.updateAllowDownloadAccess(
         ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        binding.profileEditAllowDownloadSwitch.isChecked
-      ).toLiveData().observe(
-        activity,
-        Observer {
-          if (it is AsyncResult.Failure) {
-            oppiaLogger.e(
-              "ProfileEditActivityPresenter", "Failed to updated allow download access", it.error
-            )
-          }
+        enableDownloads
+      ).toLiveData().observe(activity) {
+        if (it is AsyncResult.Failure) {
+          oppiaLogger.e(
+            "ProfileEditActivityPresenter", "Failed to updated allow download access", it.error
+          )
         }
-      )
+      }
+    }
+    binding.profileEditEnableInLessonLanguageSwitchingContainer.setOnClickListener {
+      val enableLangSwitching = !binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked
+      binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked = enableLangSwitching
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        enableLangSwitching
+      ).toLiveData().observe(activity) {
+        if (it is AsyncResult.Failure) {
+          oppiaLogger.e(
+            "ProfileEditActivityPresenter",
+            "Failed to updated allow quick language switching",
+            it.error
+          )
+        }
+      }
     }
     return binding.root
   }

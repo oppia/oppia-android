@@ -141,9 +141,11 @@ class LogUploadWorkerTest {
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifySuccess() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
-      eventLogTopicContext.timestamp,
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
     )
+    testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -168,9 +170,11 @@ class LogUploadWorkerTest {
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_writeFails_verifyFailure() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
-      eventLogTopicContext.timestamp,
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
     )
+    testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -196,6 +200,7 @@ class LogUploadWorkerTest {
   fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
+    testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -231,6 +236,7 @@ class LogUploadWorkerTest {
       apkSizeTestLoggableMetric,
       OppiaMetricLog.Priority.LOW_PRIORITY
     )
+    testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -266,9 +272,11 @@ class LogUploadWorkerTest {
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyCorrectSyncStatusSequence() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
-      eventLogTopicContext.timestamp,
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
     )
+    testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -292,9 +300,11 @@ class LogUploadWorkerTest {
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_writeFails_verifySyncStatusIsFailed() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
-      eventLogTopicContext.timestamp,
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
     )
+    testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
