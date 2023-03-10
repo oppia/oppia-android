@@ -12,7 +12,6 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADIN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
 import org.oppia.android.util.logging.SyncStatusManagerImpl
-import org.oppia.android.util.threading.AtomicEnum
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
@@ -41,7 +40,7 @@ class TestSyncStatusManager @Inject constructor(
       }
     }.transform(STATUS_PROVIDER_ID, ::augmentSyncStatus)
   private val forcedSyncStatus = AtomicReference<SyncStatus?>(null)
-  private val latestSyncStatus = AtomicEnum.create(INITIAL_UNKNOWN)
+  private val latestSyncStatus = AtomicReference(INITIAL_UNKNOWN)
 
   override fun getSyncStatus() = syncStatusProvider
 

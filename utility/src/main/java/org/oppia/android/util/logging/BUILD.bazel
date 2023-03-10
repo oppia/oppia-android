@@ -210,7 +210,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
-        "//utility/src/main/java/org/oppia/android/util/threading:atomic_enum",
     ],
 )
 

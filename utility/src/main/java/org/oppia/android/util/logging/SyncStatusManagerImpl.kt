@@ -16,7 +16,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.WAITING_TO_START_UPLOADING
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
-import org.oppia.android.util.threading.AtomicEnum
+import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,7 +41,7 @@ class SyncStatusManagerImpl @Inject constructor(
       AsyncResult.Success(INITIAL_UNKNOWN)
     }
   }
-  private val transientState = AtomicEnum.create(TransientState.NOT_UPLOADING)
+  private val transientState = AtomicReference(TransientState.NOT_UPLOADING)
 
   override fun getSyncStatus() = configurableSyncStatus
 
@@ -66,7 +66,7 @@ class SyncStatusManagerImpl @Inject constructor(
   }
 
   private fun reportStatusChange(newStatus: TransientState) {
-    transientState.value = newStatus
+    transientState.set(newStatus)
     asyncDataSubscriptionManager.notifyChangeAsync(SYNC_STATUS_PROVIDER_ID)
   }
 
@@ -76,14 +76,14 @@ class SyncStatusManagerImpl @Inject constructor(
     val hasConnectivity = networkConnectionUtil.getCurrentConnectionStatus() != NONE
     val hasEventsToUpload = oppiaEventLogs.eventLogsToUploadList.isNotEmpty()
     val hasUploadedEvents = oppiaEventLogs.uploadedEventLogsList.isNotEmpty()
-    return when (transientState.value) {
+    return when (transientState.get()) {
       TransientState.NOT_UPLOADING -> when {
         hasEventsToUpload -> if (hasConnectivity) WAITING_TO_START_UPLOADING else NO_CONNECTIVITY
         hasUploadedEvents -> DATA_UPLOADED
         else -> INITIAL_UNKNOWN // Nothing has been uploaded yet.
       }
       TransientState.UPLOADING -> if (hasConnectivity) DATA_UPLOADING else NO_CONNECTIVITY
-      TransientState.UPLOAD_FAILED -> if (hasConnectivity) UPLOAD_ERROR else NO_CONNECTIVITY
+      TransientState.UPLOAD_FAILED, null -> if (hasConnectivity) UPLOAD_ERROR else NO_CONNECTIVITY
     }.let { AsyncResult.Success(it) }
   }
 

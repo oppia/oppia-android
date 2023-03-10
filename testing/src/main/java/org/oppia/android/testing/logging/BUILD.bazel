@@ -30,7 +30,6 @@ kt_android_library(
         ":dagger",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager_impl",
-        "//utility/src/main/java/org/oppia/android/util/threading:atomic_enum",
     ],
 )
 
