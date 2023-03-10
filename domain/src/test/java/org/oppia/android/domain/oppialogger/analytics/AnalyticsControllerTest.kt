@@ -657,7 +657,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logImportantEvent_withNoNetwork_exceedLimit_studyOn_checkEventLogStoreSize() {
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logFourEvents()
 
@@ -777,7 +777,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logEvent_withoutNetwork_studyOn_verifySyncStatusIsUnchanged() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenQuestionPlayerContext(
@@ -798,7 +798,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logEvent_studyOn_verifySyncStatusChangesToRepresentLoggedEvent() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -818,7 +818,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logImportantEvent_studyOff_doesNotRecordEventsAsUploaded() {
-    setUpTestApplicationComponent()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = false)
     // The important event should be marked as uploaded.
     analyticsController.logImportantEvent(oppiaLogger.createOpenHomeContext(), profileId = null)
     testCoroutineDispatchers.runCurrent()
@@ -833,7 +833,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_studyOn_recordsEventAsUploaded() {
     // Events are only tracked as uploaded when the learner study feature being enabled.
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     // The important event should be marked as uploaded.
     analyticsController.logImportantEvent(oppiaLogger.createOpenHomeContext(), profileId = null)
     testCoroutineDispatchers.runCurrent()
@@ -859,7 +859,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_uploadEventLogs_noLogs_studyOn_cacheUnchanged() {
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     val monitor = monitorFactory.createMonitor(analyticsController.getEventLogStore())
 
     monitorFactory.ensureDataProviderExecutes(analyticsController.uploadEventLogs())
@@ -884,7 +884,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_uploadEventLogs_withPreviousLogs_studyOn_setsSyncStatusToUploadingUploaded() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     logTwoEvents()
 
     monitorFactory.waitForAllNextResults { analyticsController.uploadEventLogs() }
@@ -903,7 +903,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_uploadEventLogs_withLogs_studyOn_setsSyncStatusToUploadingThenUploaded() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     logTwoEventsOffline()
 
     monitorFactory.waitForAllNextResults { analyticsController.uploadEventLogs() }
@@ -916,7 +916,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_uploadEventLogs_withLogs_studyOff_removesEventsButDoesNotTrackThem() {
-    setUpTestApplicationComponent()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = false)
     logTwoEventsOffline()
 
     monitorFactory.waitForAllNextResults { analyticsController.uploadEventLogs() }
@@ -930,7 +930,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_uploadEventLogs_withLogs_studyOn_removesEventsForUploading() {
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     logTwoEventsOffline()
 
     monitorFactory.waitForAllNextResults { analyticsController.uploadEventLogs() }
@@ -1024,7 +1024,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_uploadEventLogsAndWait_noLogs_studyOn_cacheUnchanged() {
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     val monitor = monitorFactory.createMonitor(analyticsController.getEventLogStore())
 
     runSynchronously { analyticsController.uploadEventLogsAndWait() }
@@ -1037,7 +1037,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_uploadEventLogsAndWait_prevLogs_studyOn_setsSyncStatusToUploadingUploaded() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     logTwoEvents()
 
     runSynchronously { analyticsController.uploadEventLogsAndWait() }
@@ -1058,7 +1058,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_uploadEventLogsAndWait_withLogs_studyOn_setsSyncStatusToUploadingUploaded() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     logTwoEventsOffline()
 
     runSynchronously { analyticsController.uploadEventLogsAndWait() }
@@ -1071,7 +1071,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_uploadEventLogsAndWait_withLogs_studyOff_removesEventsButDoesNotTrackThem() {
-    setUpTestApplicationComponent()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = false)
     logTwoEventsOffline()
 
     runSynchronously { analyticsController.uploadEventLogsAndWait() }
@@ -1085,7 +1085,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_uploadEventLogsAndWait_withLogs_studyOn_removesEventsForUploading() {
-    setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled()
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     logTwoEventsOffline()
 
     runSynchronously { analyticsController.uploadEventLogsAndWait() }
@@ -1148,13 +1148,8 @@ class AnalyticsControllerTest {
     assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(3)
   }
 
-  private fun setUpTestApplicationComponent() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun setUpTestApplicationComponentWithLearnerStudyAnalyticsEnabled() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+  private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
