@@ -65,6 +65,7 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -96,11 +97,10 @@ private const val TEST_STORY_ID = "GJ2rLXRKD5hw"
   qualifiers = "port-xxhdpi"
 )
 class StoryActivityLocalTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val internalProfileId = 0
 
@@ -120,6 +120,7 @@ class StoryActivityLocalTest {
     ActivityScenario.launch<StoryActivity>(
       createStoryActivityIntent(internalProfileId, TEST_TOPIC_ID, TEST_STORY_ID)
     ).use {
+      testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)

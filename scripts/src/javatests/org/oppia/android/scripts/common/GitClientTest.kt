@@ -41,6 +41,42 @@ class GitClientTest {
   }
 
   @Test
+  fun testCurrentCommit_forNonRepository_throwsException() {
+    val gitClient = GitClient(tempFolder.root, "develop")
+
+    val exception = assertThrows(IllegalStateException::class) { gitClient.currentCommit }
+
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+    assertThat(exception).hasMessageThat().ignoringCase().contains("not a git repository")
+  }
+
+  @Test
+  fun testCurrentCommit_forValidRepository_returnsCorrectBranch() {
+    initializeRepoWithDevelopBranch()
+    val developHash = getMostRecentCommitOnCurrentBranch()
+
+    val gitClient = GitClient(tempFolder.root, "develop")
+    val currentCommit = gitClient.currentCommit
+
+    assertThat(currentCommit).isEqualTo(developHash)
+  }
+
+  @Test
+  fun testCurrentCommit_switchBranch_returnsCorrectBranch() {
+    initializeRepoWithDevelopBranch()
+    val developHash = getMostRecentCommitOnCurrentBranch()
+    testGitRepository.checkoutNewBranch("introduce-feature")
+    testGitRepository.commit(message = "Test empty commit", allowEmpty = true)
+    val featureBranchHash = getMostRecentCommitOnCurrentBranch()
+
+    val gitClient = GitClient(tempFolder.root, "develop")
+    val currentCommit = gitClient.currentCommit
+
+    assertThat(currentCommit).isNotEqualTo(developHash)
+    assertThat(currentCommit).isEqualTo(featureBranchHash)
+  }
+
+  @Test
   fun testCurrentBranch_forNonRepository_throwsException() {
     val gitClient = GitClient(tempFolder.root, "develop")
 

@@ -43,7 +43,10 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "event_logger_proto",
     srcs = ["oppia_logger.proto"],
-    deps = [":exploration_proto"],
+    deps = [
+        ":exploration_proto",
+        ":languages_proto",
+    ],
 )
 
 java_lite_proto_library(
