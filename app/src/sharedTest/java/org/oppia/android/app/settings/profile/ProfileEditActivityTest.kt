@@ -338,24 +338,6 @@ class ProfileEditActivityTest {
     }
   }
 
-//  @Test
-//  fun testProfileEdit_updateName_checkNewNameDisplayed() {
-//    profileManagementController.updateName(
-//      ProfileId.newBuilder().setInternalId(1).build(),
-//      newName = "Akshay"
-//    )
-//    launch<ProfileEditActivity>(
-//      ProfileEditActivity.createProfileEditActivity(
-//        context = context,
-//        profileId = 1
-//      )
-//    ).use {
-//      testCoroutineDispatchers.runCurrent()
-//      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Akshay"))))
-//      onView(withId(R.id.profile_edit_name)).check(matches(withText("Akshay")))
-//    }
-//  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
