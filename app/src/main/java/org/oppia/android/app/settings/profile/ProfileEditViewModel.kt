@@ -1,7 +1,6 @@
 package org.oppia.android.app.settings.profile
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
@@ -12,6 +11,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
@@ -20,14 +20,16 @@ import javax.inject.Inject
 class ProfileEditViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
+  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
+  @EnableLearnerStudyAnalytics private val enableLearnerStudy: PlatformParameterValue<Boolean>
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
-  private val isAllowedDownloadAccessMutableLiveData = MutableLiveData<Boolean>()
+  /** Whether the admin is allowed to mark chapters as finished. */
+  val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudy.value
 
-  /** Download access enabled for the profile by the administrator. */
-  val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
+  /** Whether the admin can allow learners to quickly switch content languages within a lesson. */
+  val isAllowedToEnableQuickLessonLanguageSwitching: Boolean = enableLearnerStudy.value
 
   /** List of all the current profiles registered in the app [ProfileListFragment]. */
   val profile: LiveData<Profile> by lazy {
@@ -66,7 +68,6 @@ class ProfileEditViewModel @Inject constructor(
       is AsyncResult.Pending -> Profile.getDefaultInstance()
       is AsyncResult.Success -> profileResult.value
     }
-    isAllowedDownloadAccessMutableLiveData.value = profile.allowDownloadAccess
     isAdmin = profile.isAdmin
     return profile
   }
