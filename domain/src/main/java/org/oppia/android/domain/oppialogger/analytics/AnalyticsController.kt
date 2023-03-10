@@ -65,9 +65,9 @@ class AnalyticsController @Inject constructor(
   @EnableLearnerStudyAnalytics private val enableLearnerStudyParam: PlatformParameterValue<Boolean>
 ) {
   // NOTE TO DEVELOPER: This log store should not be lazy since it needs to be primed as early as
-  // possible. When this is created shouldn't affect event record integrity, but it can affect how
-  // the sync status manager reports progress since it won't have a data source to properly monitor
-  // for changes.
+  // possible. Creating the log store with a delay (such as would happen if it were lazy delegated)
+  // shouldn't affect event record integrity, but it can affect how the sync status manager reports
+  // progress since it won't have a data source to properly monitor for changes.
   private val eventLogStore =
     cacheStoreFactory.create("event_logs", OppiaEventLogs.getDefaultInstance()).also { store ->
       store.primeInMemoryAndDiskCacheAsync(

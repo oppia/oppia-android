@@ -42,8 +42,11 @@ class ProfileLearnerIdItemViewModel private constructor(
     analyticsController.getEventLogStore().toLiveData()
   }
 
-  /** The current [UploadEventsStats] that represent the current profile's event upload stats. */
-  val uploadEventsStats: LiveData<UploadEventsStats> by lazy {
+  /**
+   * The current [ProfileSpecificEventsUploadStats] that represent the current profile's event
+   * upload stats.
+   */
+  val profileSpecificEventsUploadStats: LiveData<ProfileSpecificEventsUploadStats> by lazy {
     Transformations.map(oppiaEventLogs, this::processEventLogs)
   }
 
@@ -94,7 +97,7 @@ class ProfileLearnerIdItemViewModel private constructor(
    * @property uncategorizedStats the stats corresponding to events not tied to an individual
    *     profile, nor ``null`` if these aren't computed for this user
    */
-  data class UploadEventsStats(
+  data class ProfileSpecificEventsUploadStats(
     val learnerStats: CategorizedEventStats,
     val uncategorizedStats: CategorizedEventStats?
   ) {
@@ -103,8 +106,8 @@ class ProfileLearnerIdItemViewModel private constructor(
 
     companion object {
       /**
-       * Returns a new [UploadEventsStats] with event stats retrieved from [oppiaEventLogs] for the
-       * specified [profile] (and localized per [resourceHandler]).
+       * Returns a new [ProfileSpecificEventsUploadStats] with event stats retrieved from
+       * [oppiaEventLogs] for the specified [profile] (and localized per [resourceHandler]).
        *
        * Note that only admin profiles will include [uncategorizedStats] in the returned stats
        * object.
@@ -113,10 +116,10 @@ class ProfileLearnerIdItemViewModel private constructor(
         resourceHandler: AppLanguageResourceHandler,
         profile: Profile,
         oppiaEventLogs: OppiaEventLogs
-      ): UploadEventsStats {
+      ): ProfileSpecificEventsUploadStats {
         val logsToUploadMap = oppiaEventLogs.eventLogsToUploadList.associateByProfileId()
         val uploadedLogsMap = oppiaEventLogs.uploadedEventLogsList.associateByProfileId()
-        return UploadEventsStats(
+        return ProfileSpecificEventsUploadStats(
           learnerStats = CategorizedEventStats.createFrom(
             resourceHandler, profile.id, logsToUploadMap, uploadedLogsMap
           ),
@@ -130,13 +133,15 @@ class ProfileLearnerIdItemViewModel private constructor(
       }
 
       /**
-       * Returns a new [UploadEventsStats] with unknown event counts filled in (localized per
-       * [resourceHandler]).
+       * Returns a new [ProfileSpecificEventsUploadStats] with unknown event counts filled in
+       * (localized per [resourceHandler]).
        */
-      fun createFromUnknown(resourceHandler: AppLanguageResourceHandler): UploadEventsStats {
+      fun createFromUnknown(
+        resourceHandler: AppLanguageResourceHandler
+      ): ProfileSpecificEventsUploadStats {
         val unknownCountText =
           resourceHandler.getStringInLocale(R.string.learner_analytics_unknown_event_count)
-        return UploadEventsStats(
+        return ProfileSpecificEventsUploadStats(
           learnerStats = CategorizedEventStats(
             awaitingUploadEventCountText = unknownCountText,
             uploadedEventCountText = unknownCountText
@@ -198,16 +203,21 @@ class ProfileLearnerIdItemViewModel private constructor(
     } else null
   }
 
-  private fun processEventLogs(result: AsyncResult<OppiaEventLogs>): UploadEventsStats {
+  private fun processEventLogs(
+    result: AsyncResult<OppiaEventLogs>
+  ): ProfileSpecificEventsUploadStats {
     return when (result) {
-      is AsyncResult.Pending -> UploadEventsStats.createFromUnknown(resourceHandler)
-      is AsyncResult.Success -> UploadEventsStats.createFrom(resourceHandler, profile, result.value)
-      is AsyncResult.Failure -> UploadEventsStats.createFromUnknown(resourceHandler).also {
-        oppiaLogger.e(
-          "ProfileLearnerIdItemViewModel",
-          "Encountered unexpected failure when processing event logs",
-          result.error
-        )
+      is AsyncResult.Pending -> ProfileSpecificEventsUploadStats.createFromUnknown(resourceHandler)
+      is AsyncResult.Success ->
+        ProfileSpecificEventsUploadStats.createFrom(resourceHandler, profile, result.value)
+      is AsyncResult.Failure -> {
+        ProfileSpecificEventsUploadStats.createFromUnknown(resourceHandler).also {
+          oppiaLogger.e(
+            "ProfileLearnerIdItemViewModel",
+            "Encountered unexpected failure when processing event logs",
+            result.error
+          )
+        }
       }
     }
   }

@@ -57,7 +57,7 @@ class ControlButtonsViewModel private constructor(
         is DeviceIdItemViewModel -> listOf("Oppia app installation ID: ${viewModel.deviceId.value}")
         is ProfileLearnerIdItemViewModel -> {
           val profile = viewModel.profile
-          val stats = viewModel.uploadEventsStats.value
+          val stats = viewModel.profileSpecificEventsUploadStats.value
           val learnerStats = stats?.learnerStats
           val uncategorizedStats = stats?.uncategorizedStats
           listOfNotNull(
@@ -178,11 +178,16 @@ class ControlButtonsViewModel private constructor(
    * operation, but there may have been events to upload in the past.
    *
    * @property eventsUploaded the number of events that have uploaded so far
-   * @property totalEventsToUpload the total number of events to upload, or none
+   * @property totalEventsToUpload the total number of events to upload, or none, or
+   *     [DEFAULT_UNKNOWN_EVENTS_TO_UPLOAD_COUNT] if it's not yet known how many events can be
+   *     uploaded
    */
-  data class ForceSyncProgress(val eventsUploaded: Int = 0, val totalEventsToUpload: Int = -1) {
+  data class ForceSyncProgress(
+    val eventsUploaded: Int = 0,
+    val totalEventsToUpload: Int = DEFAULT_UNKNOWN_EVENTS_TO_UPLOAD_COUNT
+  ) {
     /** Returns whether there are events that can be uploaded. */
-    fun hasEventsToUpload(): Boolean = totalEventsToUpload != -1
+    fun hasEventsToUpload(): Boolean = totalEventsToUpload != DEFAULT_UNKNOWN_EVENTS_TO_UPLOAD_COUNT
 
     /** Returns whether there are events currently being uploaded. */
     fun isCurrentlyUploading(): Boolean = eventsUploaded < totalEventsToUpload
@@ -205,6 +210,7 @@ class ControlButtonsViewModel private constructor(
 
   private companion object {
     private const val BASE64_LINE_WRAP_LIMIT = 80
+    private const val DEFAULT_UNKNOWN_EVENTS_TO_UPLOAD_COUNT = Integer.MIN_VALUE
 
     // Copied from ProtoStringEncoder (which isn't available in production code).
     private fun <M : MessageLite> M.toCompressedBase64(): String {
