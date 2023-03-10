@@ -3941,6 +3941,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_noRadioItemSelected_defaultSelectionTextIsDisplayed() {
+    setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3956,6 +3957,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_oneRadioItemSelected_selectionTextIsDisplayed() {
+    setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3973,6 +3975,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_twoRadioItemSelected_selectionTextIsDisplayed() {
+    setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3991,6 +3994,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_maxRadioItemSelected_selectionTextIsDisplayed() {
+    setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4010,6 +4014,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_maxRadioItemSelected_nonSelectedCheckboxesAreDisabled() {
+    setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4050,6 +4055,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_maxItemSelected_deselectingReturnsYouMaySelectMoreChoices() {
+    setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4070,6 +4076,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_someItemSelected_deselectingReturnsPleaseSelectAllCorrect() {
+    setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4090,6 +4097,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_notSelectingMaxRadioItem_return_allOtherCheckBoxesEnabled() {
+    setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4137,6 +4145,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_SelectingMaxItemAndOneBelow_returnNoOtherCheckBoxesEnabled() {
+    setUpTestWithStudyOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
