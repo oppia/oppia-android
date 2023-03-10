@@ -25,13 +25,15 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 
 /** Tests for [SyncStatusTestModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = SyncStatusTestModuleTest.TestApplication::class)
 class SyncStatusTestModuleTest {
   @Inject lateinit var syncStatusManager: SyncStatusManager
 
@@ -46,10 +48,7 @@ class SyncStatusTestModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerSyncStatusTestModuleTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -72,7 +71,7 @@ class SyncStatusTestModuleTest {
       RobolectricModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -81,5 +80,19 @@ class SyncStatusTestModuleTest {
     }
 
     fun inject(test: SyncStatusTestModuleTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerSyncStatusTestModuleTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: SyncStatusTestModuleTest) {
+      component.inject(test)
+    }
+
+    override fun getDataProvidersInjector() = component
   }
 }
