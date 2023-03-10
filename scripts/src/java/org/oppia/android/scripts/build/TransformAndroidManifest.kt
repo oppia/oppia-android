@@ -108,7 +108,7 @@ private class TransformAndroidManifest(
     }
     val versionNameAttribute = manifestDocument.createAttribute("android:versionName").apply {
       value = computeVersionName(
-        buildFlavor, majorVersion, minorVersion, commitHash = gitClient.branchMergeBase
+        buildFlavor, majorVersion, minorVersion, commitHash = gitClient.currentCommit
       )
     }
     val applicationNameAttribute = manifestDocument.createAttribute("android:name").apply {
