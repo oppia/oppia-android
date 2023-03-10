@@ -4,6 +4,7 @@ package model;
 
 import "exploration.proto";
 import "languages.proto";
+import "profile.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -21,6 +22,11 @@ message EventLog {
 
   // The activity context of the event.
   Context context = 4;
+
+  // The profile to which this event corresponds, or empty if this event is not tied to a particular
+  // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
+  // at source.
+  ProfileId profile_id = 8;
 
   // The app language selection context at the time of this event's creation.
   AppLanguageSelection app_language_selection = 5;
@@ -344,7 +350,12 @@ message ExceptionLog {
 
 // Structure for a container that contains event log reports.
 message OppiaEventLogs {
-  repeated EventLog event_log = 1;
+  // Contains all event logs pending to be uploaded for analytics that are likely cached due to the
+  // app not have internet connectivity at the time of wanting to originally log the event.
+  repeated EventLog event_logs_to_upload = 1;
+
+  // Contains all events that have been uploaded remotely to the analytics service.
+  repeated EventLog uploaded_event_logs = 2;
 }
 
 // Structure for a container that contains exception log reports.

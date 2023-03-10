@@ -8,9 +8,9 @@ import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListV
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewType
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ProfileAndDeviceIdFragmentBinding
+import org.oppia.android.databinding.ProfileListControlButtonsBinding
 import org.oppia.android.databinding.ProfileListDeviceIdItemBinding
 import org.oppia.android.databinding.ProfileListLearnerIdItemBinding
-import org.oppia.android.databinding.ProfileListShareIdsItemBinding
 import org.oppia.android.databinding.ProfileListSyncStatusItemBinding
 import javax.inject.Inject
 
@@ -47,7 +47,7 @@ class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
         is DeviceIdItemViewModel -> ProfileListItemViewType.DEVICE_ID
         is ProfileLearnerIdItemViewModel -> ProfileListItemViewType.LEARNER_ID
         is SyncStatusItemViewModel -> ProfileListItemViewType.SYNC_STATUS
-        is ShareIdsViewModel -> ProfileListItemViewType.SHARE_IDS
+        is ControlButtonsViewModel -> ProfileListItemViewType.SHARE_IDS
         else -> error("Encountered unexpected view model: $viewModel")
       }
     }.registerViewDataBinder(
@@ -67,9 +67,9 @@ class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
       transformViewModel = { it as SyncStatusItemViewModel }
     ).registerViewDataBinder(
       viewType = ProfileListItemViewType.SHARE_IDS,
-      inflateDataBinding = ProfileListShareIdsItemBinding::inflate,
-      setViewModel = ProfileListShareIdsItemBinding::setViewModel,
-      transformViewModel = { it as ShareIdsViewModel }
+      inflateDataBinding = ProfileListControlButtonsBinding::inflate,
+      setViewModel = ProfileListControlButtonsBinding::setViewModel,
+      transformViewModel = { it as ControlButtonsViewModel }
     ).build()
   }
 }

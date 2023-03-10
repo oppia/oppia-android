@@ -41,8 +41,8 @@ class SyncStatusTestModuleTest {
   }
 
   @Test
-  fun testInjectSyncStatusManager_isInstanceOfFakeSyncStatusManager() {
-    assertThat(syncStatusManager).isInstanceOf(FakeSyncStatusManager::class.java)
+  fun testInjectSyncStatusManager_isInstanceOfTestSyncStatusManager() {
+    assertThat(syncStatusManager).isInstanceOf(TestSyncStatusManager::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
