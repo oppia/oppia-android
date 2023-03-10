@@ -12,11 +12,23 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.AudioTranslationLanguageSelection
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.ENGLISH
+import org.oppia.android.app.model.OppiaLanguage.HINGLISH
+import org.oppia.android.app.model.OppiaLanguage.SWAHILI
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -24,8 +36,10 @@ import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.FakeSyncStatusManager
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -56,7 +70,8 @@ private const val TEST_SUB_TOPIC_ID = 1
 
 /** Tests for [AnalyticsController]. */
 // FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AnalyticsControllerTest.TestApplication::class)
@@ -68,6 +83,9 @@ class AnalyticsControllerTest {
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -77,14 +95,16 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_withQuestionContext_checkLogsEvent() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -95,13 +115,15 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_withExplorationContext_checkLogsEvent() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -112,8 +134,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_withOpenInfoTabContext_checkLogsEvent() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -124,8 +147,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_withOpenPracticeTabContext_checkLogsEvent() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -136,8 +160,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_withOpenLessonsTabContext_checkLogsEvent() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -148,8 +173,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_withOpenRevisionTabContext_checkLogsEvent() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -160,8 +186,11 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_withStoryContext_checkLogsEvent() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
+      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -172,8 +201,11 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_withRevisionContext_checkLogsEvent() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -184,8 +216,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_withConceptCardContext_checkLogsEvent() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -194,16 +227,90 @@ class AnalyticsControllerTest {
   }
 
   @Test
+  fun testLogImportantEvent_forOpenHomeEvent_logsEssentialEventWithCurrentTime() {
+    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
+
+    analyticsController.logImportantEvent(openHomeEventContext, profileId = null, TEST_TIMESTAMP)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+  }
+
+  @Test
+  fun testController_logImportantEvent_nullProfileId_hasDefaultLanguageSettings() {
+    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
+    // Create a new profile & set its language settings, but don't use it when logging an event.
+    val profileId = addNewProfileAndLogIn()
+    ensureAppLanguageIsUpdatedTo(profileId, ENGLISH)
+    ensureWrittenTranslationsLanguageIsUpdatedTo(profileId, SWAHILI)
+    ensureAudioTranslationsLanguageIsUpdatedTo(profileId, HINGLISH)
+
+    analyticsController.logImportantEvent(openHomeEventContext, profileId = null, TEST_TIMESTAMP)
+    testCoroutineDispatchers.runCurrent()
+
+    // There are no language settings for an event logged that doesn't correspond to a profile.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasAppLanguageSelectionThat().isEqualToDefaultInstance()
+    assertThat(eventLog).hasWrittenTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+    assertThat(eventLog).hasAudioTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testController_logImportantEvent_profileWithNoLangSettings_hasDefaultLanguageSettings() {
+    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
+    // Create a profile without any language settings.
+    val profileId = addNewProfileAndLogIn()
+
+    analyticsController.logImportantEvent(openHomeEventContext, profileId, TEST_TIMESTAMP)
+    testCoroutineDispatchers.runCurrent()
+
+    // If a profile corresponding to an event has no language settings, then the event shouldn't,
+    // either.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasAppLanguageSelectionThat().isEqualToDefaultInstance()
+    assertThat(eventLog).hasWrittenTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+    assertThat(eventLog).hasAudioTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testController_logImportantEvent_profileWithLangSettings_hasCorrectLanguageSettings() {
+    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
+    val profileId = addNewProfileAndLogIn()
+    ensureAppLanguageIsUpdatedTo(profileId, ENGLISH)
+    ensureWrittenTranslationsLanguageIsUpdatedTo(profileId, SWAHILI)
+    ensureAudioTranslationsLanguageIsUpdatedTo(profileId, HINGLISH)
+
+    analyticsController.logImportantEvent(openHomeEventContext, profileId, TEST_TIMESTAMP)
+    testCoroutineDispatchers.runCurrent()
+
+    // A profile's language settings should reflect in corresponding logged events.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasAppLanguageSelectionThat().isSelectedLanguageThat().isEqualTo(ENGLISH)
+    assertThat(eventLog)
+      .hasWrittenTranslationLanguageSelectionThat()
+      .isSelectedLanguageThat()
+      .isEqualTo(SWAHILI)
+    assertThat(eventLog)
+      .hasAudioTranslationLanguageSelectionThat()
+      .isSelectedLanguageThat()
+      .isEqualTo(HINGLISH)
+  }
+
+  @Test
   fun testController_logLowPriorityEvent_withQuestionContext_checkLogsEvent() {
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -214,13 +321,15 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logLowPriorityEvent_withExplorationContext_checkLogsEvent() {
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -231,8 +340,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logLowPriorityEvent_withOpenInfoTabContext_checkLogsEvent() {
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -243,8 +353,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logLowPriorityEvent_withOpenPracticeTabContext_checkLogsEvent() {
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -255,8 +366,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logLowPriorityEvent_withOpenLessonsTabContext_checkLogsEvent() {
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -267,8 +379,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logLowPriorityEvent_withOpenRevisionTabContext_checkLogsEvent() {
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -279,8 +392,11 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logLowPriorityEvent_withStoryContext_checkLogsEvent() {
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
+      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -291,8 +407,11 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logLowPriorityEvent_withRevisionContext_checkLogsEvent() {
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -303,8 +422,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logLowPriorityEvent_withConceptCardContext_checkLogsEvent() {
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId = null, TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
@@ -319,14 +439,16 @@ class AnalyticsControllerTest {
   fun testController_logImportantEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLogsProvider = analyticsController.getEventLogStore()
 
@@ -340,14 +462,16 @@ class AnalyticsControllerTest {
   fun testController_logLowPriorityEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLogsProvider = analyticsController.getEventLogStore()
 
@@ -355,6 +479,66 @@ class AnalyticsControllerTest {
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenQuestionPlayerContext()
+  }
+
+  @Test
+  fun testController_logLowPriorityEvent_nullProfileId_hasDefaultLanguageSettings() {
+    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
+    // Create a new profile & set its language settings, but don't use it when logging an event.
+    val profileId = addNewProfileAndLogIn()
+    ensureAppLanguageIsUpdatedTo(profileId, ENGLISH)
+    ensureWrittenTranslationsLanguageIsUpdatedTo(profileId, SWAHILI)
+    ensureAudioTranslationsLanguageIsUpdatedTo(profileId, HINGLISH)
+
+    analyticsController.logLowPriorityEvent(openHomeEventContext, profileId = null, TEST_TIMESTAMP)
+    testCoroutineDispatchers.runCurrent()
+
+    // There are no language settings for an event logged that doesn't correspond to a profile.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasAppLanguageSelectionThat().isEqualToDefaultInstance()
+    assertThat(eventLog).hasWrittenTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+    assertThat(eventLog).hasAudioTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testController_logLowPriorityEvent_profileWithNoLangSettings_hasDefaultLanguageSettings() {
+    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
+    // Create a profile without any language settings.
+    val profileId = addNewProfileAndLogIn()
+
+    analyticsController.logLowPriorityEvent(openHomeEventContext, profileId, TEST_TIMESTAMP)
+    testCoroutineDispatchers.runCurrent()
+
+    // If a profile corresponding to an event has no language settings, then the event shouldn't,
+    // either.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasAppLanguageSelectionThat().isEqualToDefaultInstance()
+    assertThat(eventLog).hasWrittenTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+    assertThat(eventLog).hasAudioTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testController_logLowPriorityEvent_profileWithLangSettings_hasCorrectLanguageSettings() {
+    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
+    val profileId = addNewProfileAndLogIn()
+    ensureAppLanguageIsUpdatedTo(profileId, ENGLISH)
+    ensureWrittenTranslationsLanguageIsUpdatedTo(profileId, SWAHILI)
+    ensureAudioTranslationsLanguageIsUpdatedTo(profileId, HINGLISH)
+
+    analyticsController.logLowPriorityEvent(openHomeEventContext, profileId, TEST_TIMESTAMP)
+    testCoroutineDispatchers.runCurrent()
+
+    // A profile's language settings should reflect in corresponding logged events.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasAppLanguageSelectionThat().isSelectedLanguageThat().isEqualTo(ENGLISH)
+    assertThat(eventLog)
+      .hasWrittenTranslationLanguageSelectionThat()
+      .isSelectedLanguageThat()
+      .isEqualTo(SWAHILI)
+    assertThat(eventLog)
+      .hasAudioTranslationLanguageSelectionThat()
+      .isSelectedLanguageThat()
+      .isEqualTo(HINGLISH)
   }
 
   @Test
@@ -372,23 +556,27 @@ class AnalyticsControllerTest {
   fun testController_logImportantEvent_logLowPriorityEvent_withNoNetwork_checkOrderinCache() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val eventLogsProvider = analyticsController.getEventLogStore()
 
@@ -403,24 +591,28 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logImportantEvent_switchToNoNetwork_logLowPriorityEvent_checkManagement() {
     analyticsController.logImportantEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logLowPriorityEvent(
-      TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      TEST_TIMESTAMP
     )
+    testCoroutineDispatchers.runCurrent()
 
     val logsProvider = analyticsController.getEventLogStore()
 
@@ -466,28 +658,32 @@ class AnalyticsControllerTest {
   fun testController_logEvent_withoutNetwork_verifySyncStatusIsUnchanged() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
-      1556094120000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      1556094120000
     )
+    testCoroutineDispatchers.runCurrent()
     assertThat(fakeSyncStatusManager.getSyncStatuses()).containsExactly(NO_CONNECTIVITY)
   }
 
   @Test
   fun testController_logEvent_verifySyncStatusChangesToRepresentLoggedEvent() {
     analyticsController.logImportantEvent(
-      1556094120000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      1556094120000
     )
+    testCoroutineDispatchers.runCurrent()
 
     val syncStatuses = fakeSyncStatusManager.getSyncStatuses()
     assertThat(syncStatuses).containsExactly(DATA_UPLOADING, DATA_UPLOADED)
@@ -499,44 +695,105 @@ class AnalyticsControllerTest {
 
   private fun logMultipleEvents() {
     analyticsController.logImportantEvent(
-      1556094120000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      1556094120000
     )
+    testCoroutineDispatchers.runCurrent()
 
     analyticsController.logLowPriorityEvent(
-      1556094110000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      1556094110000
     )
+    testCoroutineDispatchers.runCurrent()
 
     analyticsController.logImportantEvent(
-      1556093100000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      1556093100000
     )
+    testCoroutineDispatchers.runCurrent()
 
     analyticsController.logImportantEvent(
-      1556094100000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
-      )
+      ),
+      profileId = null,
+      1556094100000
     )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun addNewProfileAndLogIn(): ProfileId {
+    val addProfileProvider = profileManagementController.addProfile(
+      name = "Test Profile",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = 0,
+      isAdmin = false
+    )
+    monitorFactory.ensureDataProviderExecutes(addProfileProvider)
+
+    return ProfileId.newBuilder().apply { internalId = 0 }.build().also { expectedProfileId ->
+      val logInProvider = profileManagementController.loginToProfile(expectedProfileId)
+      monitorFactory.waitForNextSuccessfulResult(logInProvider) // Ensure that the login succeeds.
+    }
+  }
+
+  private fun ensureAppLanguageIsUpdatedTo(profileId: ProfileId, language: OppiaLanguage) {
+    val resultProvider =
+      translationController.updateAppLanguage(
+        profileId, AppLanguageSelection.newBuilder().apply { selectedLanguage = language }.build()
+      )
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
+  }
+
+  private fun ensureWrittenTranslationsLanguageIsUpdatedTo(
+    profileId: ProfileId,
+    language: OppiaLanguage
+  ) {
+    val resultProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        profileId,
+        WrittenTranslationLanguageSelection.newBuilder().apply {
+          selectedLanguage = language
+        }.build()
+      )
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
+  }
+
+  private fun ensureAudioTranslationsLanguageIsUpdatedTo(
+    profileId: ProfileId,
+    language: OppiaLanguage
+  ) {
+    val resultProvider =
+      translationController.updateAudioTranslationContentLanguage(
+        profileId,
+        AudioTranslationLanguageSelection.newBuilder().apply {
+          selectedLanguage = language
+        }.build()
+      )
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -565,10 +822,17 @@ class AnalyticsControllerTest {
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @PerformanceMetricsLogStorageCacheSize
+    fun provideMetricLogStorageCacheSize(): Int = 10
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -579,7 +843,7 @@ class AnalyticsControllerTest {
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
