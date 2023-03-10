@@ -31,6 +31,8 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.BlockingDispatcher
@@ -59,7 +61,8 @@ class AnalyticsController @Inject constructor(
   private val dataProviders: DataProviders,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+  @EnableLearnerStudyAnalytics private val enableLearnerStudyParam: PlatformParameterValue<Boolean>
 ) {
   // NOTE TO DEVELOPER: This log store should not be lazy since it needs to be primed as early as
   // possible. When this is created shouldn't affect event record integrity, but it can affect how
@@ -76,6 +79,8 @@ class AnalyticsController @Inject constructor(
       }
       syncStatusManager.initializeEventLogStore(store)
     }
+
+  private val enableLearnerStudyAnalytics get() = enableLearnerStudyParam.value
 
   /**
    * Logs a high priority event defined by [eventContext] corresponding to time [timestamp].
@@ -164,7 +169,9 @@ class AnalyticsController @Inject constructor(
       NONE -> cacheEventLog(eventLog)
       else -> {
         analyticsEventLogger.logEvent(eventLog)
-        recordUploadedEvent(eventLog)
+        if (enableLearnerStudyAnalytics) {
+          recordUploadedEvent(eventLog)
+        }
       }
     }
   }
@@ -300,7 +307,9 @@ class AnalyticsController @Inject constructor(
   private fun removeFirstEventLogFromStoreAsync(): Deferred<EventLog> {
     return eventLogStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) { eventLogs ->
       eventLogs.toBuilder().apply {
-        addUploadedEventLogs(eventLogs.eventLogsToUploadList.first())
+        if (enableLearnerStudyAnalytics) {
+          addUploadedEventLogs(eventLogs.eventLogsToUploadList.first())
+        }
         removeEventLogsToUpload(0)
       }.build() to eventLogs.eventLogsToUploadList.first()
     }.also {

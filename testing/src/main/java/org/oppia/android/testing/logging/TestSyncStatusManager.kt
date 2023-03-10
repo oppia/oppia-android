@@ -19,6 +19,8 @@ import javax.inject.Singleton
 
 private const val STATUS_PROVIDER_ID = "TestSyncStatusManager.sync_status_provider"
 
+// TODO(#59): Move this & its test to be a testing package near SyncStatusManagerImpl to avoid
+//  cross-codebase test dependency sharing.
 /**
  * A test-only implementation of [SyncStatusManager] that uses a real implementation internally, but
  * tracks all sync statuses that are either produced by the real [SyncStatusManagerImpl] or are

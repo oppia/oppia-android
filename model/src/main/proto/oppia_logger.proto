@@ -354,7 +354,8 @@ message OppiaEventLogs {
   // app not have internet connectivity at the time of wanting to originally log the event.
   repeated EventLog event_logs_to_upload = 1;
 
-  // Contains all events that have been uploaded remotely to the analytics service.
+  // Contains all events that have been uploaded remotely to the analytics service. This is only
+  // used for special builds of the app that have additional telemetry diagnostics enabled.
   repeated EventLog uploaded_event_logs = 2;
 }
 

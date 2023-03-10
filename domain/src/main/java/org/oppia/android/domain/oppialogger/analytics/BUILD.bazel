@@ -28,6 +28,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:event_logger_java_proto_lite",
+        "//utility",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
