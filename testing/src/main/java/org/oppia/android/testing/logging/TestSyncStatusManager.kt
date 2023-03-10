@@ -1,9 +1,9 @@
 package org.oppia.android.testing.logging
 
 import org.oppia.android.app.model.OppiaEventLogs
-import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
@@ -44,7 +44,7 @@ class TestSyncStatusManager @Inject constructor(
 
   override fun getSyncStatus() = syncStatusProvider
 
-  override fun initializeEventLogStore(eventLogStore: PersistentCacheStore<OppiaEventLogs>) {
+  override fun initializeEventLogStore(eventLogStore: DataProvider<OppiaEventLogs>) {
     syncStatusManagerImpl.initializeEventLogStore(eventLogStore)
   }
 

@@ -1,7 +1,6 @@
 package org.oppia.android.util.logging
 
 import org.oppia.android.app.model.OppiaEventLogs
-import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -30,7 +29,7 @@ class SyncStatusManagerImpl @Inject constructor(
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
 ) : SyncStatusManager {
-  private var eventLogStore: PersistentCacheStore<OppiaEventLogs>? = null
+  private var eventLogStore: DataProvider<OppiaEventLogs>? = null
   private val eventLogsDataProvider: DataProvider<OppiaEventLogs> get() {
     return eventLogStore ?: dataProviders.createInMemoryDataProvider(
       DEFAULT_EVENT_LOG_PROVIDER_ID, OppiaEventLogs::getDefaultInstance
@@ -45,7 +44,7 @@ class SyncStatusManagerImpl @Inject constructor(
 
   override fun getSyncStatus() = configurableSyncStatus
 
-  override fun initializeEventLogStore(eventLogStore: PersistentCacheStore<OppiaEventLogs>) {
+  override fun initializeEventLogStore(eventLogStore: DataProvider<OppiaEventLogs>) {
     check(this.eventLogStore == null) { "Attempting to initialize the log store a second time." }
     this.eventLogStore = eventLogStore
     // Note that changing the base provider automatically notifies subscribers, so no need to do

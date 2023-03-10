@@ -192,7 +192,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
     ],

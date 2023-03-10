@@ -1,7 +1,6 @@
 package org.oppia.android.util.logging
 
 import org.oppia.android.app.model.OppiaEventLogs
-import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.DataProvider
 
 /**
@@ -28,7 +27,7 @@ interface SyncStatusManager {
    * This function must be called in order for [getSyncStatus] to behave correctly, and it must not
    * be called more than once. It can be called before or after [getSyncStatus].
    */
-  fun initializeEventLogStore(eventLogStore: PersistentCacheStore<OppiaEventLogs>)
+  fun initializeEventLogStore(eventLogStore: DataProvider<OppiaEventLogs>)
 
   /** Indicates that upstream code is beginning an event upload operation. */
   fun reportUploadingStarted()
