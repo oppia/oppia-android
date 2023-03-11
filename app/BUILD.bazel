@@ -186,10 +186,10 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/appversion/AppVersionViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ControlButtonsViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/DeviceIdItemViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileLearnerIdItemViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileListViewModel.kt",
-    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ShareIdsViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/SyncStatusItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/mathexpressionparser/MathExpressionParserViewModel.kt",
@@ -344,6 +344,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/story/StoryViewModel.kt",
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestDataModel.kt",
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestViewModel.kt",
+    "src/main/java/org/oppia/android/app/testing/CircularProgressIndicatorAdaptersTestViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/conceptcard/ConceptCardViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/TopicLessonViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsItemViewModel.kt",
@@ -472,6 +473,7 @@ BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
 # keep sorted
 BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/AppCompatCheckBoxBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/CircularProgressIndicatorAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ConstraintLayoutAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/GuidelineBindingAdapters.java",

@@ -10,6 +10,7 @@ import com.google.common.truth.StringSubject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoSubject
+import com.google.common.truth.extensions.proto.LiteProtoTruth
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
@@ -86,6 +87,12 @@ class EventLogSubject private constructor(
   fun isOptionalPriority() {
     assertThat(actual.priority).isEqualTo(EventLog.Priority.OPTIONAL)
   }
+
+  /**
+   * Returns an [LiteProtoSubject] to verify the under-test [EventLog]'s [EventLog.getProfileId]
+   * field.
+   */
+  fun hasProfileIdThat(): LiteProtoSubject = LiteProtoTruth.assertThat(actual.profileId)
 
   /**
    * Returns an [AppLanguageSelectionSubject] to verify the under-test [EventLog]'s
