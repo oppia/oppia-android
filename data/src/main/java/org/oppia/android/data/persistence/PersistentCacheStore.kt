@@ -272,6 +272,12 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       return currentPayload.copy(state = CacheState.IN_MEMORY_ONLY)
     }
 
+    // It's possible for multiple load requests to happen simultaneously, but finish out of order.
+    // Attempting to load the cache a second time can result in a number of problems:
+    // - Losing in-memory cache state.
+    // - Duplicating loaded on-disk state (since "mergeFrom()" is used for loading).
+    if (currentPayload.state != CacheState.UNLOADED) return currentPayload
+
     val cacheBuilder = currentPayload.value.toBuilder()
     return try {
       currentPayload.copy(
