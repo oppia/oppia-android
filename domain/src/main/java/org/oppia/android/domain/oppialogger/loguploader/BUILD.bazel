@@ -10,6 +10,9 @@ kt_android_library(
     srcs = [
         "LogReportWorkManagerInitializer.kt",
     ],
+    visibility = [
+        "//domain:domain_testing_visibility",
+    ],
     deps = [
         ":worker",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
@@ -26,12 +29,16 @@ kt_android_library(
     srcs = [
         "LogUploadWorker.kt",
     ],
+    visibility = [
+        "//domain:domain_testing_visibility",
+    ],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_google_guava_guava",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",

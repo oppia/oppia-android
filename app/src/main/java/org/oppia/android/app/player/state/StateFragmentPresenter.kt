@@ -38,7 +38,6 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CON
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -68,7 +67,6 @@ class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val context: Context,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
   private val oppiaLogger: OppiaLogger,
@@ -76,6 +74,7 @@ class StateFragmentPresenter @Inject constructor(
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
   private val oppiaClock: OppiaClock,
+  private val viewModel: StateViewModel,
   private val accessibilityService: AccessibilityService,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
@@ -94,9 +93,6 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var helpIndex: HelpIndex
   private var forceAnnouncedForHintsBar = false
 
-  private val viewModel: StateViewModel by lazy {
-    getStateViewModel()
-  }
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState().toLiveData()
@@ -116,6 +112,7 @@ class StateFragmentPresenter @Inject constructor(
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
+    viewModel.initializeProfile(profileId)
 
     binding = StateFragmentBinding.inflate(
       inflater,
@@ -264,10 +261,6 @@ class StateFragmentPresenter @Inject constructor(
 
   fun revealSolution() {
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
-  }
-
-  private fun getStateViewModel(): StateViewModel {
-    return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
 
   private fun getAudioFragment(): Fragment? {
@@ -437,8 +430,7 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  fun setAudioBarVisibility(visibility: Boolean) =
-    getStateViewModel().setAudioBarVisibility(visibility)
+  fun setAudioBarVisibility(visibility: Boolean) = viewModel.setAudioBarVisibility(visibility)
 
   fun scrollToTop() {
     binding.stateRecyclerView.smoothScrollToPosition(0)

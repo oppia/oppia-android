@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
@@ -14,7 +13,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.QUESTION_PLAYER_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
@@ -47,9 +45,6 @@ class QuestionPlayerActivity :
 
   @Inject
   lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
-
-  private lateinit var state: State
-  private lateinit var writtenTranslationContext: WrittenTranslationContext
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -108,39 +103,19 @@ class QuestionPlayerActivity :
     questionPlayerActivityPresenter.revealSolution()
   }
 
-  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
-    return supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_DIALOG
-    ) as HintsAndSolutionDialogFragment?
-  }
-
   override fun routeToHintsAndSolution(
-    questionId: String,
+    id: String,
     helpIndex: HelpIndex
   ) {
-    if (getHintsAndSolution() == null) {
-      val hintsAndSolutionDialogFragment =
-        HintsAndSolutionDialogFragment.newInstance(
-          questionId,
-          state,
-          helpIndex,
-          writtenTranslationContext
-        )
-      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
-    }
+    questionPlayerActivityPresenter.routeToHintsAndSolution(id, helpIndex)
   }
 
-  override fun dismiss() {
-    getHintsAndSolution()?.dismiss()
-  }
+  override fun dismiss() = questionPlayerActivityPresenter.dismissHintsAndSolutionDialog()
 
   override fun onQuestionStateLoaded(
     state: State,
     writtenTranslationContext: WrittenTranslationContext
-  ) {
-    this.state = state
-    this.writtenTranslationContext = writtenTranslationContext
-  }
+  ) = questionPlayerActivityPresenter.loadQuestionState(state, writtenTranslationContext)
 
   override fun dismissConceptCard() {
     questionPlayerActivityPresenter.dismissConceptCard()

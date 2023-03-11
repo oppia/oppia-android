@@ -1,6 +1,7 @@
 package org.oppia.android.app.topic.revisioncard
 
-/** Listener to route to [TopicActivity] when clicked on Return to Topic button. */
+/** Listener for when user wishes to navigate back from a revision card to the topic screen. */
 interface ReturnToTopicClickListener {
-  fun onReturnToTopicClicked()
+  /** Indicates that the user wishes to return to the topic screen from a revision card. */
+  fun onReturnToTopicRequested()
 }
