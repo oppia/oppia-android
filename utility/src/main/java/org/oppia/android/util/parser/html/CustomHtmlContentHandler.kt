@@ -124,27 +124,6 @@ class CustomHtmlContentHandler private constructor(
     val openTagIndex: Int
   )
 
-  /**
-   * Handler interface for <li> tags. Subclasses set the bullet/numbered list appearance.
-   */
-  interface ListTag {
-    /**
-     * Called when an opening <li> tag is encountered.
-     *
-     * Inserts an invisible [ListItemMark] span that doesn't do any styling.
-     * Instead, [closeItem] will later find the location of this span so it knows where the opening tag was.
-     */
-    fun openItem(text: Editable)
-
-    /**
-     * Called when a closing </li> tag is encountered.
-     *
-     * Pops out the invisible [ListItemMark] span and uses it to get the opening tag location.
-     * Then, sets a [ListItemLeadingMarginSpan] from the opening tag position to closing tag position.
-     */
-    fun closeItem(text: Editable, indentation: Int)
-  }
-
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {
     /**
@@ -154,7 +133,7 @@ class CustomHtmlContentHandler private constructor(
      * @param openIndex the index in the output [Editable] at which this tag begins
      * @param closeIndex the index in the output [Editable] at which this tag ends
      * @param output the destination [Editable] to which spans can be added
-     * @param imageGetter a utility to load image drawables if needed by the handler
+     * @param imageRetriever a utility to load image drawables if needed by the handler
      */
     fun handleTag(
       attributes: Attributes,

@@ -10,9 +10,8 @@ states {
     interaction {
       id: "TextInput"
       solution {
-        interaction_id: "TextInput"
         correct_answer {
-          correct_answer: "3.14"
+          normalized_string: "3.14"
         }
         explanation {
         }

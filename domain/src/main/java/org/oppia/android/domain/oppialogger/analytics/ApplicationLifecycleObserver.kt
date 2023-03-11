@@ -10,6 +10,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
 import org.oppia.android.app.model.ScreenName.FOREGROUND_SCREEN
@@ -129,11 +130,12 @@ class ApplicationLifecycleObserver @Inject constructor(
     currentScreen = BACKGROUND_SCREEN
   }
 
-  private fun logAppLifecycleEventInBackground(logMethod: (String?, String?) -> Unit) {
+  private fun logAppLifecycleEventInBackground(logMethod: (String?, ProfileId?, String?) -> Unit) {
     CoroutineScope(backgroundDispatcher).launch {
       val installationId = loggingIdentifierController.fetchInstallationId()
+      val profileId = profileManagementController.getCurrentProfileId()
       val learnerId = profileManagementController.fetchCurrentLearnerId()
-      logMethod(installationId, learnerId)
+      logMethod(installationId, profileId, learnerId)
     }.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e(
