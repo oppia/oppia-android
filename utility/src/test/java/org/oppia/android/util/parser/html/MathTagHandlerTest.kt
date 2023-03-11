@@ -82,23 +82,13 @@ class MathTagHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock
-  lateinit var mockImageRetriever: FakeImageRetriever
+  @Mock lateinit var mockImageRetriever: FakeImageRetriever
+  @Captor lateinit var stringCaptor: ArgumentCaptor<String>
+  @Captor lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
+  @Captor lateinit var floatCaptor: ArgumentCaptor<Float>
 
-  @Captor
-  lateinit var stringCaptor: ArgumentCaptor<String>
-
-  @Captor
-  lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
-
-  @Captor
-  lateinit var floatCaptor: ArgumentCaptor<Float>
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var consoleLogger: ConsoleLogger
+  @Inject lateinit var context: Context
+  @Inject lateinit var consoleLogger: ConsoleLogger
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithCachedMathSupport: Map<String, CustomTagHandler>
@@ -268,7 +258,7 @@ class MathTagHandlerTest {
       )
 
     val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
-    assertThat(/* Color from Equation Text */ equationColor[0].equationColor).isEqualTo(Color.BLACK)
+    assertThat(equationColor[0].equationColor).isEqualTo(Color.BLACK)
   }
 
   @Config(qualifiers = "night")
@@ -282,7 +272,7 @@ class MathTagHandlerTest {
       )
 
     val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
-    assertThat(/* Color from Equation Text */ equationColor[0].equationColor).isEqualTo(Color.WHITE)
+    assertThat(equationColor[0].equationColor).isEqualTo(Color.WHITE)
   }
 
   @Test
