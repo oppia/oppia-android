@@ -24,7 +24,7 @@ class ProfileListViewModel private constructor(
   private val deviceIdItemViewModelFactory: DeviceIdItemViewModel.Factory,
   private val syncStatusItemViewModelFactory: SyncStatusItemViewModel.Factory,
   private val profileLearnerIdItemViewModelFactory: ProfileLearnerIdItemViewModel.Factory,
-  private val shareIdsViewModelFactory: ShareIdsViewModel.Factory
+  private val shareIdsViewModelFactory: ControlButtonsViewModel.Factory
 ) : ObservableViewModel() {
   /** The list of [ProfileListItemViewModel] to display. */
   val profileModels: LiveData<List<ProfileListItemViewModel>> by lazy {
@@ -40,9 +40,7 @@ class ProfileListViewModel private constructor(
       is AsyncResult.Pending -> listOf()
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ProfileAndDeviceIdViewModel",
-          "Failed to retrieve the list of profiles",
-          profilesResult.error
+          "ProfileListViewModel", "Failed to retrieve the list of profiles", profilesResult.error
         )
         listOf()
       }
@@ -54,10 +52,10 @@ class ProfileListViewModel private constructor(
       }
     }
 
-    val idModels = listOf(deviceIdViewModel) + learnerIdModels
-    val shareIdsViewModel = shareIdsViewModelFactory.create(idModels)
     val syncStatusViewModel = syncStatusItemViewModelFactory.create()
-    return idModels + listOf(syncStatusViewModel, shareIdsViewModel)
+    val displayViewModels = listOf(deviceIdViewModel) + learnerIdModels + syncStatusViewModel
+    val controlButtonsViewModel = shareIdsViewModelFactory.create(displayViewModels)
+    return displayViewModels + controlButtonsViewModel
   }
 
   /**
@@ -83,7 +81,7 @@ class ProfileListViewModel private constructor(
     /** Corresponds to [SyncStatusItemViewModel]. */
     SYNC_STATUS,
 
-    /** Corresponds to [ShareIdsViewModel]. */
+    /** Corresponds to [ControlButtonsViewModel]. */
     SHARE_IDS
   }
 
@@ -94,7 +92,7 @@ class ProfileListViewModel private constructor(
     private val deviceIdItemViewModelFactory: DeviceIdItemViewModel.Factory,
     private val syncStatusItemViewModelFactory: SyncStatusItemViewModel.Factory,
     private val profileLearnerIdItemViewModelFactory: ProfileLearnerIdItemViewModel.Factory,
-    private val shareIdsViewModelFactory: ShareIdsViewModel.Factory
+    private val controlButtonsViewModelFactory: ControlButtonsViewModel.Factory
   ) {
     /** Returns a new [ProfileListViewModel]. */
     fun create(): ProfileListViewModel {
@@ -104,7 +102,7 @@ class ProfileListViewModel private constructor(
         deviceIdItemViewModelFactory,
         syncStatusItemViewModelFactory,
         profileLearnerIdItemViewModelFactory,
-        shareIdsViewModelFactory
+        controlButtonsViewModelFactory
       )
     }
   }

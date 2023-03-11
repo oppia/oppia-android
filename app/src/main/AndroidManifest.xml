@@ -198,6 +198,7 @@
     <activity android:name=".app.testing.AppCompatCheckBoxBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.AudioFragmentTestActivity" />
     <activity android:name=".app.testing.BindableAdapterTestActivity" />
+    <activity android:name=".app.testing.CircularProgressIndicatorAdaptersTestActivity" />
     <activity android:name=".app.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".app.testing.DragDropTestActivity" />
     <activity android:name=".app.testing.DrawableBindingAdaptersTestActivity" />
