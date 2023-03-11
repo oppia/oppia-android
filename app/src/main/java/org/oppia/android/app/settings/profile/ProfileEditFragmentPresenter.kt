@@ -149,34 +149,35 @@ class ProfileEditFragmentPresenter @Inject constructor(
     profileManagementController
       .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
       .observe(
-        fragment
-      ) {
-        if (it is AsyncResult.Success) {
-          val snack = Snackbar
-            .make(
-              fragment.requireView(),
-              R.string.profile_edit_delete_success,
-              Snackbar.LENGTH_LONG
-            )
-            .setAction(R.string.log_out_dialog_okay_button) { }
-            .addCallback(object : Snackbar.Callback() {
-              override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
-                  val intent =
-                    Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
-                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                  fragment.startActivity(intent)
-                } else {
-                  val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
-                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                  fragment.startActivity(intent)
+        fragment,
+        Observer {
+          if (it is AsyncResult.Success) {
+            val profileDeletionSnackbar = Snackbar
+              .make(
+                fragment.requireView(),
+                R.string.profile_edit_delete_success,
+                Snackbar.LENGTH_SHORT
+              )
+              .setAction(R.string.log_out_dialog_okay_button) { }
+              .addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                  if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
+                    val intent =
+                      Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    fragment.startActivity(intent)
+                  } else {
+                    val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    fragment.startActivity(intent)
+                  }
                 }
-              }
-            })
-            .setActionTextColor(fragment.resources.getColor(R.color.color_def_bright_turquoise))
-          snack.show()
+              })
+              .setActionTextColor(fragment.resources.getColor(R.color.color_def_bright_turquoise))
+            profileDeletionSnackbar.show()
+          }
         }
-      }
+      )
   }
 
   /** This loads the dialog whenever requested by the listener in [AdministratorControlsActivity]. */
