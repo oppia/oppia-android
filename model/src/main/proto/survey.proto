@@ -34,35 +34,39 @@ message SurveyQuestion{
 
 // The list of types a question can have that is used to determine how it is presented by the UI.
 enum QuestionType{
+  // The type of question is unknown.
+  QUESTION_TYPE_UNSPECIFIED=0;
   // Corresponds to a question with multiple choices.
-  MULTIPLE_CHOICE = 0;
+  MULTIPLE_CHOICE = 1;
 
   // Corresponds to a question with multiple choices and a free-text 'other' option.
-  MULTIPLE_CHOICE_WITH_OTHER = 1;
+  MULTIPLE_CHOICE_WITH_OTHER = 2;
 
   // Corresponds to a question which takes a free-text response.
-  FREE_FORM = 2;
+  FREE_FORM = 3;
 }
 
 // Corresponds to the semantic name given to each question.
 enum QuestionName{
+  // The question name is unknown.
+   QUESTION_NAME_UNSPECIFIED = 0;
   // Corresponds to the name of the user type question.
-  QUESTION_USER_TYPE = 0;
+  QUESTION_USER_TYPE = 1;
 
   //  Corresponds to the market fit question.
-  QUESTION_MARKET_FIT = 1;
+  QUESTION_MARKET_FIT = 2;
 
   // Corresponds to  the NPS question.
-  QUESTION_NPS = 2;
+  QUESTION_NPS = 3;
 
   // Corresponds to  the open-ended question for a NPS promoter.
-  QUESTION_PROMOTER_FEEDBACK = 3;
+  QUESTION_PROMOTER_FEEDBACK = 4;
 
   // Corresponds to  the open-ended question for a NPS passive.
-  QUESTION_PASSIVE_FEEDBACK = 4;
+  QUESTION_PASSIVE_FEEDBACK = 5;
 
   // Corresponds to  the open-ended question for a NPS detractor.
-  QUESTION_DETRACTOR_FEEDBACK = 5;
+  QUESTION_DETRACTOR_FEEDBACK = 6;
 }
 
 // Represents the multiple choice answer available for a question.
@@ -92,33 +96,38 @@ message SurveyUserAnswer{
 // Represents the different types of users who could be taking the survey.
 // Consists of answer options for the user type question.
 enum  UserTypeAnswer{
+  // User type unknown.
+  USER_TYPE_UNSPECIFIED =0;
   // Corresponds to an unspecified or unknown type of user.
-  OTHER = 0;
+  OTHER = 1;
 
   // Corresponds to a user who is a teacher.
-  TEACHER = 1;
+  TEACHER = 2;
 
   // Corresponds to a user who is a parent.
-  PARENT = 2;
+  PARENT = 3;
 
   // Corresponds to a user who is a learner.
-  LEARNER = 3;
+  LEARNER = 4;
 }
 
 // Represents general opinion of the user about the Oppia android app.
 // Consists of answer options for the market fit question.
 enum  MarketFitAnswer{
+  // Answer unknown.
+  MARKET_FIT_ANSWER_UNSPECIFIED =0;
+
   // Corresponds to the answer for Very Disappointed.
-  VERY_DISAPPOINTED = 0;
+  VERY_DISAPPOINTED = 1;
 
   // Corresponds to the answer for Disappointed.
-  DISAPPOINTED = 1;
+  DISAPPOINTED = 2;
 
   // Corresponds to the answer for  Not Disappointed.
-  NOT_DISAPPONTED = 2;
+  NOT_DISAPPONTED = 3;
 
   // Corresponds to the answer for  N/A - Don't use Oppia Anymore.
-  NA_DONT_USE_OPPIA_ANYMORE = 3;
+  NA_DONT_USE_OPPIA_ANYMORE = 4;
 }
 
 // Represents the status of the survey at the time it is exited.
@@ -147,10 +156,10 @@ message EphemeralSurveyQuestion{
 
   //Indicates whether this question has a previous question that has been answered,
   // or if this is the initial question.
-  bool hasPreviousQuestion = 2;
+  bool has_previous_question = 2;
 
   // Indicates whether this question has an upcoming question that can be navigated to.
-  bool hasNextQuestion = 3;
+  bool has_next_question = 3;
 
   //  Indicates possible states a question can take depending on whether a user needs to provide an
   //  answer or has navigated to a previous question, or has reached the last question.
