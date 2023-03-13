@@ -24,10 +24,15 @@ http_archive(
 )
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
+#http_archive(
+#    name = "io_bazel_rules_kotlin",
+#    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
+#    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
+#)
 http_archive(
     name = "io_bazel_rules_kotlin",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
-    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin_prerelease"]["sha"],
+    urls = ["https://github.com/oppia/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin_prerelease"]["version"]],
 )
 
 load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")

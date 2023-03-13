@@ -137,6 +137,10 @@ HTTP_DEPENDENCY_VERSIONS = {
         #        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
         #        "version": "v1.7.1",
     },
+    "rules_kotlin_prerelease": {
+        "sha": "1d872b9c6546f0f737a356d873b164d70282760fe4c880349770abc9e494c9ce",
+        "version": "v1.7.2",  # TODO: See if the 1.8 RC3 works, instead.
+    },
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
         "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
