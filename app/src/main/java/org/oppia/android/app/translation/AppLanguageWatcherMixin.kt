@@ -45,7 +45,7 @@ class AppLanguageWatcherMixin @Inject constructor(
        * 1. Upon crash (later versions of Android will reopen the previous activity rather than
        *   starting from the launcher activity if the crash occurred with the app in the foreground)
        * 2. Upon low-memory process death (the system will restore from a saved instance Bundle of
-       *   the application's activity stack)gl
+       *   the application's activity stack)
        *
        * In both cases, the locale will be lost & can't be determined until the controller provides
        * the state. Since initialization happens during activity initialization, there's no way to
@@ -65,7 +65,6 @@ class AppLanguageWatcherMixin @Inject constructor(
       appLanguageLocaleHandler.initializeLocale(defaultDisplayLocale)
     }
 
-    // TODO(#52): Hook this up properly to profiles, and handle the non-profile activity cases.
     var currentUserProfileId = profileManagementController.getCurrentProfileId()
 
     if (currentUserProfileId.internalId == -1) {

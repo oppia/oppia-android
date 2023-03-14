@@ -24,11 +24,11 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
     private const val FRAGMENT_ARGUMENTS_KEY = "AppLanguageFragment.arguments"
     private const val FRAGMENT_SAVED_STATE_KEY = "AppLanguageFragment.saved_state"
 
-    fun newInstance(prefsSummaryValue: OppiaLanguage): AppLanguageFragment {
+    fun newInstance(oppiaLanguage: OppiaLanguage): AppLanguageFragment {
       return AppLanguageFragment().apply {
         arguments = Bundle().apply {
           val args = AppLanguageFragmentArguments.newBuilder().apply {
-            this.oppiaLanguage = prefsSummaryValue
+            this.oppiaLanguage = oppiaLanguage
           }.build()
           putProto(FRAGMENT_ARGUMENTS_KEY, args)
         }

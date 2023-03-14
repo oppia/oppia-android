@@ -40,7 +40,7 @@ class HomeActivity :
   private var internalProfileId: Int = -1
 
   companion object {
-    var shouldRecreateHomeActivity: Boolean = false
+    var shouldRecreateActivity: Boolean = false
 
     fun createHomeActivity(context: Context, profileId: Int?): Intent {
       return Intent(context, HomeActivity::class.java).apply {
@@ -111,9 +111,9 @@ class HomeActivity :
 
   override fun onResume() {
     super.onResume()
-    if (shouldRecreateHomeActivity) {
+    if (shouldRecreateActivity) {
       recreate()
-      shouldRecreateHomeActivity = false
+      shouldRecreateActivity = false
     }
   }
 }

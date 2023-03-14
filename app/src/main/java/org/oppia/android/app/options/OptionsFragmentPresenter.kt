@@ -1,6 +1,5 @@
 package org.oppia.android.app.options
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,7 +74,6 @@ class OptionsFragmentPresenter @Inject constructor(
     )
 
     internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
-    Log.e("profile id OFP", internalProfileId.toString())
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     viewModel.setProfileId(profileId)
 

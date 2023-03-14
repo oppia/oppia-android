@@ -14,21 +14,21 @@ import javax.inject.Inject
 class AppLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var oppiaLangauge: OppiaLanguage
 
-  fun handleOnCreate(prefValue: OppiaLanguage) {
+  fun handleOnCreate(oppiaLanguage: OppiaLanguage) {
     val binding: AppLanguageActivityBinding = DataBindingUtil.setContentView(
       activity,
       R.layout.app_language_activity,
     )
     binding.appLanguageToolbar.setNavigationOnClickListener {
       val intent = Intent().apply {
-        putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, prefValue)
+        putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, oppiaLanguage)
       }
       (activity as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)
       activity.finish()
     }
-    setLanguageSelected(prefValue)
+    setLanguageSelected(oppiaLanguage)
     if (getAppLanguageFragment() == null) {
-      val appLanguageFragment = AppLanguageFragment.newInstance(prefValue)
+      val appLanguageFragment = AppLanguageFragment.newInstance(oppiaLanguage)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.app_language_fragment_container, appLanguageFragment).commitNow()
     }

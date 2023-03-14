@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.options.AppLanguageSelectionViewModel.Companion.IGNORED_APP_LANGUAGES
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -19,7 +19,8 @@ import javax.inject.Inject
 class AppLanguageSelectionViewModel @Inject constructor(
   val fragment: Fragment,
   private val translationController: TranslationController,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  private val oppiaLogger: OppiaLogger
 ) : ObservableViewModel() {
   /** The name of the app language currently selected in the radio button list. */
   val selectedLanguage = MutableLiveData<OppiaLanguage>()
@@ -44,7 +45,14 @@ class AppLanguageSelectionViewModel @Inject constructor(
       is AsyncResult.Success -> {
         asyncResultAppLanguageListData.value
       }
-      else -> {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "PROCESS_APP_LANGUAGE_FAILURE",
+          asyncResultAppLanguageListData.error.toString()
+        )
+        emptyList()
+      }
+      is AsyncResult.Pending -> {
         emptyList()
       }
     }
@@ -57,7 +65,7 @@ class AppLanguageSelectionViewModel @Inject constructor(
 
   private fun processAppLanguageList(appLanguageList: List<OppiaLanguage>):
     List<AppLanguageItemViewModel> {
-      return appLanguageList.filter { it !in IGNORED_APP_LANGUAGES }.map {
+      return appLanguageList.map {
         AppLanguageItemViewModel(
           it,
           appLanguageResourceHandler.computeLocalizedDisplayName(it),
@@ -66,11 +74,4 @@ class AppLanguageSelectionViewModel @Inject constructor(
         )
       }
     }
-
-  private companion object {
-    private val IGNORED_APP_LANGUAGES =
-      listOf(
-        OppiaLanguage.LANGUAGE_UNSPECIFIED, OppiaLanguage.UNRECOGNIZED
-      )
-  }
 }

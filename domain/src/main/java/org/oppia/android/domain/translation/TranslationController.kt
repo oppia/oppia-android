@@ -66,9 +66,9 @@ class TranslationController @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val languageConfigRetriever: LanguageConfigRetriever,
   private val cacheStoreFactory: PersistentCacheStore.Factory,
-  private val oppiaLogger: OppiaLogger,
+  private val oppiaLogger: OppiaLogger
 ) {
-  // TODO(#52): Finish this implementation. The implementation below doesn't actually save/restore
+  // TODO(#4627): Finish this implementation. The implementation below doesn't actually save/restore
   //  settings from the local filesystem since the UI has been currently disabled as part of #20.
   //  Also, there should be a proper default locale for pre-profile selection (either a default
   //  app-wide setting determined by the administrator, or the last locale used by a profile)--more
@@ -83,7 +83,7 @@ class TranslationController @Inject constructor(
   private val audioVoiceoverLanguageSettings =
     mutableMapOf<ProfileId, AudioTranslationLanguageSelection>()
 
-  private val cacheStoreMap =
+  private val appLanguageSelectionCacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<AppLanguageSelection>>()
   private val appLanguageSettings = mutableMapOf<ProfileId, AppLanguageSelection>()
 
@@ -110,7 +110,7 @@ class TranslationController @Inject constructor(
   }
 
   /**
-   * Returns List data for [OppiaLanguage] which is filtered to exclude languages without appStringId tag.
+   * Returns a data provider for a list of [OppiaLanguage] which can be passed to [updateAppLanguage].
    */
   fun getSupportedAppLanguages(): DataProvider<List<OppiaLanguage>> {
     return dataProviders.createInMemoryDataProvider(RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID) {
@@ -155,7 +155,6 @@ class TranslationController @Inject constructor(
     ) {
       AppLanguageSelection.newBuilder().apply {
         selectedLanguage = selection.selectedLanguage
-        selectedLanguageValue = selection.selectedLanguage.number
       }.build()
     }
 
@@ -393,12 +392,12 @@ class TranslationController @Inject constructor(
   private fun retrieveLanguageContentCacheStore(
     profileId: ProfileId
   ): PersistentCacheStore<AppLanguageSelection> {
-    return cacheStoreMap.getOrPut(profileId) {
+    return appLanguageSelectionCacheStoreMap.getOrPut(profileId) {
       cacheStoreFactory.createPerProfile(
         CACHE_NAME,
         AppLanguageSelection.getDefaultInstance(),
         profileId
-      ).also<PersistentCacheStore<AppLanguageSelection>> {
+      ).also {
         it.primeInMemoryAndDiskCacheAsync(
           updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
           publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE

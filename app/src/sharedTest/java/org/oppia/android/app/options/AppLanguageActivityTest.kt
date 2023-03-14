@@ -128,9 +128,7 @@ class AppLanguageActivityTest {
   @Test
   fun testAppLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
-      createAppLanguageActivityIntent(
-        OppiaLanguage.ENGLISH
-      )
+      createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)
     )
     val title = activityTestRule.activity.title
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the

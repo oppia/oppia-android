@@ -78,11 +78,7 @@ abstract class InjectableAppCompatActivity :
     val appLanguageWatcherMixin = appLanguageActivityInjector.getAppLanguageWatcherMixin()
 
     // Check if a particular Activity should use SystemLanguage.
-    if (shouldUseSystemLanguage) {
-      appLanguageWatcherMixin.initialize(true)
-    } else {
-      appLanguageWatcherMixin.initialize(false)
-    }
+    appLanguageWatcherMixin.initialize(shouldUseSystemLanguage)
 
     return Configuration(newBase?.resources?.configuration).also { newConfiguration ->
       appLanguageLocaleHandler.initializeLocaleForActivity(newConfiguration)
