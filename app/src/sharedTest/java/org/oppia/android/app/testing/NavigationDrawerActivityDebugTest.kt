@@ -218,7 +218,13 @@ class NavigationDrawerActivityDebugTest {
           withText(R.string.developer_options),
           isDescendantOfA(withId(R.id.developer_options_linear_layout))
         )
-      ).check(matches(hasTextColor(R.color.highlighted_developer_options_nav_menu_item)))
+      ).check(
+        matches(
+          hasTextColor(
+            R.color.component_color_drawer_fragment_developer_options_selected_text_color
+          )
+        )
+      )
     }
   }
 
@@ -245,7 +251,13 @@ class NavigationDrawerActivityDebugTest {
           withText(R.string.developer_options),
           isDescendantOfA(withId(R.id.developer_options_linear_layout))
         )
-      ).check(matches(hasTextColor(R.color.highlighted_developer_options_nav_menu_item)))
+      ).check(
+        matches(
+          hasTextColor(
+            R.color.component_color_drawer_fragment_developer_options_selected_text_color
+          )
+        )
+      )
     }
   }
 
@@ -317,7 +329,7 @@ class NavigationDrawerActivityDebugTest {
       intended(hasComponent(DeveloperOptionsActivity::class.java.name))
       intended(
         hasExtra(
-          DeveloperOptionsActivity.getIntentKey(),
+          "NavigationDrawerFragmentPresenter.navigation_profile_id",
           internalProfileId
         )
       )

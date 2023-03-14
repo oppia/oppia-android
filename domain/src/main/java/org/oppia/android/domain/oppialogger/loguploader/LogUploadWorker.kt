@@ -14,7 +14,6 @@ import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsControll
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.exceptions.toException
 import org.oppia.android.domain.util.getStringFromData
-import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
@@ -30,7 +29,6 @@ class LogUploadWorker private constructor(
   private val exceptionsController: ExceptionsController,
   private val performanceMetricsController: PerformanceMetricsController,
   private val exceptionLogger: ExceptionLogger,
-  private val analyticsEventLogger: AnalyticsEventLogger,
   private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
   private val consoleLogger: ConsoleLogger,
   private val syncStatusManager: SyncStatusManager,
@@ -89,15 +87,10 @@ class LogUploadWorker private constructor(
   /** Extracts event logs from the cache store and logs them to the remote service. */
   private suspend fun uploadEvents(): Result {
     return try {
-      syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
-      analyticsController.getEventLogStoreList().forEach { eventLog ->
-        analyticsEventLogger.logEvent(eventLog)
-        analyticsController.removeFirstEventLogFromStore()
-      }
-      syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
+      analyticsController.uploadEventLogsAndWait()
       Result.success()
     } catch (e: Exception) {
-      syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.NETWORK_ERROR)
+      syncStatusManager.reportUploadError()
       consoleLogger.e(TAG, "Failed to upload events", e)
       Result.failure()
     }
@@ -124,13 +117,11 @@ class LogUploadWorker private constructor(
     private val exceptionsController: ExceptionsController,
     private val performanceMetricsController: PerformanceMetricsController,
     private val exceptionLogger: ExceptionLogger,
-    private val analyticsEventLogger: AnalyticsEventLogger,
     private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
     private val consoleLogger: ConsoleLogger,
     private val syncStatusManager: SyncStatusManager,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
-
     fun create(context: Context, params: WorkerParameters): ListenableWorker {
       return LogUploadWorker(
         context,
@@ -139,7 +130,6 @@ class LogUploadWorker private constructor(
         exceptionsController,
         performanceMetricsController,
         exceptionLogger,
-        analyticsEventLogger,
         performanceMetricsEventLogger,
         consoleLogger,
         syncStatusManager,

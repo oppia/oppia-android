@@ -120,6 +120,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "يعتبر <p> الأصفر لونا أساسيا في طيف لون RYB، ولكن هذا لا يتوافق مع الضوء. حاول مرة أخرى! </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 'Njano' inachukuliwa kuwa rangi ya msingi katika wigo wa rangi ya RYB, lakini hiyo haihusiani na mwanga. Jaribu tena! </p>"},
+                "needs_update": false
               }
             },
             "feedback_1": {
@@ -131,6 +136,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<b> صحيح! </b>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<b> Sahihi! </b>"},
                 "needs_update": false
               }
             },
@@ -144,6 +154,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هي الألوان الأساسية للضوء؟ </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Je! Ni rangi gani za msingi za mwanga? </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -155,6 +170,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> هذا ليس صحيحا تماما. حاول مرة أخرى. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Hiyo sio sawa kabisa. Jaribu tena. </p>"},
                 "needs_update": false
               }
             },
@@ -168,6 +188,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> أحمر </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> nyekundu </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_1": {
@@ -179,6 +204,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> الأصفر </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Njano </p>"},
                 "needs_update": false
               }
             },
@@ -192,6 +222,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> أخضر </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> kijani </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_3": {
@@ -203,6 +238,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> الأزرق </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>Bluu</p>"},
                 "needs_update": false
               }
             },
@@ -216,6 +256,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> البرتقال </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> machungwa </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_5": {
@@ -227,6 +272,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> الأرجواني </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> zambarau </p>"},
                 "needs_update": false
               }
             }
@@ -312,6 +362,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! يمكن أن يدعم النسور الرحلة. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! Tai zinaweza kuendeleza ndege. </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -323,6 +378,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> أي طائر يمكن أن يدعم الرحلة لفترات طويلة من الزمن؟ </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Ni ndege gani anayeweza kuendeleza ndege kwa muda mrefu? </p>"},
                 "needs_update": false
               }
             },
@@ -336,6 +396,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> حاول مرة أخرى. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jaribu tena. </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_0": {
@@ -347,6 +412,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> penguin </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Penguin </p>"},
                 "needs_update": false
               }
             },
@@ -360,6 +430,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> الدجاج </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Kuku </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_2": {
@@ -371,6 +446,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> النسر </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>Tai</p>"},
                 "needs_update": false
               }
             }
@@ -444,20 +524,22 @@
           "hints": [{
             "hint_content": {
               "content_id": "hint_6",
-              "html": "<p>Remember that two halves, when added together, make one whole.</p>"
+              "html": "<p>Remember that two halves, when added together, make one whole.</p><p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
             }
           }],
           "solution": {
-            "answer_is_exclusive": false,
+            "answer_is_exclusive": true,
             "correct_answer": {
-              "isNegative": false,
-              "wholeNumber": 0,
-              "numerator": 1,
-              "denominator": 2
+              "fraction": {
+                "isNegative": false,
+                "wholeNumber": 0,
+                "numerator": 1,
+                "denominator": 2
+              }
             },
             "explanation": {
               "content_id": "solution",
-              "html": "<p>Half of something has one part in the numerator for every two parts in the denominator.</p>"
+              "html": "<p>Half of something has one part in the numerator for every two parts in the denominator.</p><p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
             }
           }
         },
@@ -483,6 +565,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "hint_6": {
@@ -494,6 +581,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> تذكر أن نصفيين، عند إضافته معا، قم بإجراء واحدة كاملة. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Kumbuka kuwa nusu mbili, zinapoongezwa pamoja, fanya moja. maandishi-na-thamani = \"& amp; quot; test_skill_id_1 kadi ya dhana & amp; quot;\">"},
                 "needs_update": false
               }
             },
@@ -507,6 +599,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> نصف شيء يحتوي على جزء واحد في البسط لكل قسمين في المقام. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Nusu ya kitu kina sehemu moja katika nambari kwa kila sehemu mbili kwenye dhehebu. ; \" maandishi-na-thamani = \"& amp; quot; test_skill_id_1 kadi ya dhana & amp; quot;\">"},
+                "needs_update": false
               }
             },
             "content": {
@@ -518,6 +615,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما الكسر يمثل نصف شيء ما؟ </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Ni sehemu gani inayowakilisha nusu ya kitu? </p>"},
                 "needs_update": false
               }
             },
@@ -531,6 +633,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"},
+                "needs_update": false
               }
             },
             "ca_placeholder_0": {
@@ -542,6 +649,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "إدخال الكسر."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Ingiza sehemu."},
                 "needs_update": false
               }
             }
@@ -598,6 +710,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> اختبار الاستكشاف مع التفاعلات. <oppia-nonirtive-link النص مع القيمة = \"& quot؛ oppia & quot؛\" عنوان URL مع القيمة = \"& quot؛ https: //oppia.github.io&quot؛\"> </oppia-noninteractive-link> </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> uchunguzi wa uchunguzi na mwingiliano. <Opdia-noninteractive-link maandishi-na-thamani = \"& quot; Oppia & quot;\" url-na-thamani = \"& quot; https: //oppia.github.io&quot;\">"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -609,6 +726,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "استمرار فصاعدا."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Kuendelea mbele."},
                 "needs_update": false
               }
             }
@@ -703,8 +825,10 @@
             }
           }],
           "solution": {
-            "answer_is_exclusive": false,
-            "correct_answer": "",
+            "answer_is_exclusive": true,
+            "correct_answer": {
+              "real": 121.0
+            },
             "explanation": {
               "content_id": "solution",
               "html": "<p>11 times 11 is 121.</p>"
@@ -735,6 +859,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "يمكن إعادة صياغة <p> 11 * 11 على أنها 11 * 10، ثم أضف 11 في النهاية. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 11 * 11 inaweza kutolewa tena kama 11 * 10, kisha ongeza 11 mwishoni. </p>"},
+                "needs_update": false
               }
             },
             "solution": {
@@ -746,6 +875,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> 11 مرات 11 هو 121. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> mara 11 11 ni 121. </p>"},
                 "needs_update": false
               }
             },
@@ -759,6 +893,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ليس تماما. انها في الواقع أكبر من ذلك. حاول مرة أخرى. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sio kabisa. Kwa kweli ni kubwa kuliko hiyo. Jaribu tena. </p>"},
+                "needs_update": false
               }
             },
             "feedback_3": {
@@ -770,6 +909,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> ليس تماما. انها أقل من ذلك. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sio kabisa. Ni chini ya hiyo. </p>"},
                 "needs_update": false
               }
             },
@@ -783,6 +927,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -795,6 +944,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هو 11 مرة 11؟ </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Ni nini mara 11? </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -806,6 +960,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> حدث خطأ ما. الجواب هو 121 - حاول مرة أخرى. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Kuna kitu kilienda vibaya. Jibu ni 121-Jaribu tena. </p>"},
                 "needs_update": false
               }
             }
@@ -903,8 +1062,22 @@
             "refresher_exploration_id": "",
             "missing_prerequisite_skill_id": ""
           },
-          "hints": [],
-          "solution": null
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>If you first set it up as a series of equations, it may be easier to solve: A = 1.2x, B = 1.5x, ratio = A/B = ?</p>"
+            }
+          }],
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "ratio_expression": [4, 5]
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "<p>A = 1.2x, B = 1.5x, ratio = A/B = (1.2x)/(1.5x) = 1.2/1.5 = 12/15 = 4/5 -> 4:5.</p>"
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -928,6 +1101,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi </p>"},
+                "needs_update": false
               }
             },
             "feedback_3": {
@@ -939,6 +1117,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi </p>"},
                 "needs_update": false
               }
             },
@@ -952,6 +1135,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> لا يبدو هذا غير صحيح </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Hapana hii haionekani kuwa sawa </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -963,6 +1151,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> رقمين على التوالي 20٪ و 50٪ أكثر من رقم ثالث. نسبة الأرقامين هي: </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Nambari mbili ni 20% na 50% zaidi ya idadi ya tatu. Uwiano wa nambari mbili ni: </p>"},
                 "needs_update": false
               }
             },
@@ -976,6 +1169,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> غير صحيح </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> sio sahihi </p>"},
+                "needs_update": false
               }
             },
             "ca_placeholder_0": {
@@ -987,6 +1185,45 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "أدخل بتنسيق X: Y"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Ingiza katika umbizo la x:y"},
+                "needs_update": false
+              }
+            },
+            "hint_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Se você o configurou pela primeira vez como uma série de equações, pode ser mais fácil resolver: a = 1,2x, b = 1,5x, razão = a/b =? </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> إذا قمت بإعدادها لأول مرة كسلسلة من المعادلات ، فقد يكون من الأسهل حل: a = 1.2x ، b = 1.5x ، ratio = a/b =؟ </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Ikiwa utaiweka kwanza kama safu ya hesabu, inaweza kuwa rahisi kusuluhisha: a = 1.2x, b = 1.5x, uwiano = a/b =? </p>"},
+                "needs_update": false
+              }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> a = 1,2x, b = 1,5x, razão = a/b = (1,2x)/(1,5x) = 1.2/1.5 = 12/15 = 4/5 -> 4: 5. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> a = 1.2x ، b = 1.5x ، نسبة = a/b = (1.2x)/(1.5x) = 1.2/1.5 = 12/15 = 4/5 -> 4: 5. </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> a = 1.2x, b = 1.5x, uwiano = a/b = (1.2x)/(1.5x) = 1.2/1.5 = 12/15 = 4/5 -> 4: 5. </p>"},
                 "needs_update": false
               }
             }
@@ -1049,8 +1286,22 @@
             "refresher_exploration_id": "",
             "missing_prerequisite_skill_id": ""
           },
-          "hints": [],
-          "solution": null
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "The country is near Norway."
+            }
+          }],
+          "solution": {
+            "answer_is_exclusive": true,
+            "correct_answer": {
+              "normalized_string": "finnish"
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "The answer is 'finnish'."
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -1072,6 +1323,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -1083,6 +1339,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> في أي لغة تعني Oppia \"التعلم\"؟ </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Je! Onpia inamaanisha 'kujifunza'? </p>"},
                 "needs_update": false
               }
             },
@@ -1096,6 +1357,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ليس تماما. حاول مرة أخرى (أو ربما استخدم محرك بحث). </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sio kabisa. Jaribu tena (au labda utumie injini ya utaftaji). </p>"},
+                "needs_update": false
               }
             },
             "ca_placeholder_0": {
@@ -1108,6 +1374,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "أدخل لغة"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Ingiza lugha"},
+                "needs_update": false
               }
             },
             "43df2897-0a03-4d1f-b892-9e1d251af5c9": {
@@ -1119,6 +1390,45 @@
               "ar": {
                 "data_format": "set_of_normalized_string",
                 "translation": {"translations" : ["الفنلندية"]},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "set_of_normalized_string",
+                "translation": {"translations" : ["Kifini"]},
+                "needs_update": false
+              }
+            },
+            "hint_1": {
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "البلد بالقرب من النرويج."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Nchi iko karibu na Norway."},
+                "needs_update": false
+              },
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "O país está perto da Noruega."},
+                "needs_update": false
+              }
+            },
+            "solution": {
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "الجواب هو \"الفنلندي\"."},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Jibu ni 'Kifini'."},
+                "needs_update": false
+              },
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "A resposta é 'finlandesa'."},
                 "needs_update": false
               }
             }
@@ -1210,6 +1520,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> صحيح! </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sahihi! </p>"},
+                "needs_update": false
               }
             },
             "content": {
@@ -1221,6 +1536,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> ما هو اللون \"G\" في \"RGB\" تتوافق مع </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Je! 'G' katika 'RGB' inahusiana na rangi gani? </p>"},
                 "needs_update": false
               }
             },
@@ -1234,6 +1554,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ليس تماما. حاول مرة أخرى. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Sio kabisa. Jaribu tena. </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_0": {
@@ -1245,6 +1570,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> <strong> أخضر </strong> </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> <strong> kijani </strong> </p>"},
                 "needs_update": false
               }
             },
@@ -1258,6 +1588,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> <strong> أحمر </strong> </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> <strong> nyekundu </strong> </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_2": {
@@ -1269,6 +1604,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> <strong> الأزرق </strong> </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> <strong> bluu </strong> </p>"},
                 "needs_update": false
               }
             }
@@ -1402,6 +1742,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> فرز ما يلي في ترتيب تنازلي. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Panga yafuatayo kwa mpangilio wa kushuka. </p>"},
+                "needs_update": false
               }
             },
             "feedback_2": {
@@ -1413,6 +1758,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> يبدو أنك فعلت النظام الصعودي </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Inaonekana kama ulifanya agizo la kupaa </p>"},
                 "needs_update": false
               }
             },
@@ -1426,6 +1776,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> هذا لا يبدو صحيحا </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Hii haionekani kuwa sawa kwangu </p>"},
+                "needs_update": false
               }
             },
             "feedback_1": {
@@ -1437,6 +1792,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> هذا صحيح </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Hiyo ni sahihi </p>"},
                 "needs_update": false
               }
             },
@@ -1450,6 +1810,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ليس تماما. حاول مرة أخرى. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sio kabisa. Jaribu tena.</p>"},
+                "needs_update": false
               }
             },
             "ca_choices_0": {
@@ -1459,6 +1824,11 @@
                 "needs_update": false
               },
               "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.35 </p>"},
+                "needs_update": false
+              },
+              "sw": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> 0.35 </p>"},
                 "needs_update": false
@@ -1474,6 +1844,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> 3/5 </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>3/5</p>"},
+                "needs_update": false
               }
             },
             "ca_choices_2": {
@@ -1486,6 +1861,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> 0.5 </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.5 </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_3": {
@@ -1495,6 +1875,11 @@
                 "needs_update": false
               },
               "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.46 </p>"},
+                "needs_update": false
+              },
+              "sw": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> 0.46 </p>"},
                 "needs_update": false
@@ -1610,6 +1995,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> فرز ما يلي في ترتيب تنازلي، وضع العناصر المتساوية في نفس الموضع. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>Panga zifuatazo kwa mpangilio wa kushuka, ukiweka vitu sawa katika nafasi sawa.</p>"},
+                "needs_update": false
               }
             },
             "feedback_2": {
@@ -1621,6 +2011,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> يبدو أنك فعلت ترتيبًا تصاعديًا </p>"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>Inaonekana kama ulifanya agizo la kupanda</p>"},
                 "needs_update": false
               }
             },
@@ -1635,6 +2030,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> هذا صحيح </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Hiyo ni sahihi </p>"},
+                "needs_update": false
               }
             },
             "default_outcome": {
@@ -1647,6 +2047,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> ليس تماما. حاول مرة أخرى. </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sio kabisa. Jaribu tena.</p>"},
+                "needs_update": false
               }
             },
             "ca_choices_0": {
@@ -1656,6 +2061,11 @@
                 "needs_update": false
               },
               "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 3/5 </p>"},
+                "needs_update": false
+              },
+              "sw": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> 3/5 </p>"},
                 "needs_update": false
@@ -1671,6 +2081,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> 0.6 </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.6 </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_2": {
@@ -1683,6 +2098,11 @@
                 "data_format": "html",
                 "translation": {"translation" : "<p> 0.35 </p>"},
                 "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.35 </p>"},
+                "needs_update": false
               }
             },
             "ca_choices_3": {
@@ -1692,6 +2112,11 @@
                 "needs_update": false
               },
               "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.46 </p>"},
+                "needs_update": false
+              },
+              "sw": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> 0.46 </p>"},
                 "needs_update": false
@@ -1738,6 +2163,11 @@
               "ar": {
                 "data_format": "html",
                 "translation": {"translation" : "تهانينا، لقد انتهيت!"},
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {"translation" : "Hongera, umemaliza!"},
                 "needs_update": false
               }
             }

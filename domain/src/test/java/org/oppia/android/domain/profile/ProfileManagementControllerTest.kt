@@ -29,6 +29,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -39,6 +40,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProvidersInjector
@@ -64,7 +66,8 @@ import javax.inject.Singleton
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileManagementControllerTest.TestApplication::class)
@@ -77,6 +80,7 @@ class ProfileManagementControllerTest {
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -88,6 +92,7 @@ class ProfileManagementControllerTest {
     )
 
     private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
     private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
     private val PROFILE_ID_2 = ProfileId.newBuilder().setInternalId(2).build()
     private val PROFILE_ID_3 = ProfileId.newBuilder().setInternalId(3).build()
@@ -96,6 +101,7 @@ class ProfileManagementControllerTest {
 
     private const val DEFAULT_PIN = "12345"
     private const val DEFAULT_ALLOW_DOWNLOAD_ACCESS = true
+    private const val DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING = false
     private const val DEFAULT_AVATAR_COLOR_RGB = -10710042
   }
 
@@ -248,6 +254,48 @@ class ProfileManagementControllerTest {
 
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.learnerId).isEqualTo("68fb0e6f")
+  }
+
+  @Test
+  fun testGetCurrentProfileId_noProfileLoggedIn_returnsNull() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    addTestProfiles()
+
+    val currentProfileId = profileManagementController.getCurrentProfileId()
+
+    // If no profile is logged in, then no current ID can be reported.
+    assertThat(currentProfileId).isNull()
+  }
+
+  @Test
+  fun testGetCurrentProfileId_withProfileLoggedIn_returnsLoggedInProfileId() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    val currentProfileId = profileManagementController.getCurrentProfileId()
+
+    // The reported current profile ID should be the one that was logged into most recently.
+    assertThat(currentProfileId).isEqualTo(PROFILE_ID_1)
+  }
+
+  @Test
+  fun testGetCurrentProfileId_withProfileLoggedIn_thenAnother_returnsLatestLoggedInProfileId() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_2)
+    )
+
+    val currentProfileId = profileManagementController.getCurrentProfileId()
+
+    // The reported current profile ID should be the one that was logged into most recently.
+    assertThat(currentProfileId).isEqualTo(PROFILE_ID_2)
   }
 
   @Test
@@ -522,6 +570,133 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testUpdateEnableInLessonLangSwitching_badProfileId_updateFails() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId = PROFILE_ID_6, allowInLessonQuickLanguageSwitching = true
+    )
+
+    val error = monitorFactory.waitForNextFailureResult(updateProvider)
+    assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
+  }
+
+  @Test
+  fun testUpdateEnableInLessonLangSwitching_noPerm_enablePermission_updateSucceeds() {
+    setUpTestApplicationComponent()
+    addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
+
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = true
+    )
+    val monitor = monitorFactory.createMonitor(updateProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  @Test
+  fun testUpdateEnableInLessonLangSwitching_noPerm_enablePermission_profileCanNowSwitchLangs() {
+    setUpTestApplicationComponent()
+    addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
+
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = true
+    )
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    // The permission has been enabled.
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()
+  }
+
+  @Test
+  fun testUpdateEnableInLessonLangSwitching_noPerm_disablePermission_updateSucceeds() {
+    setUpTestApplicationComponent()
+    addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
+
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = false
+    )
+    val monitor = monitorFactory.createMonitor(updateProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  @Test
+  fun testUpdateEnableInLessonLangSwitching_noPerm_disablePermission_profileCannotSwitchLangs() {
+    setUpTestApplicationComponent()
+    addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
+
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = false
+    )
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isFalse()
+  }
+
+  @Test
+  fun testUpdateEnableInLessonLangSwitching_withPerm_enablePermission_updateSucceeds() {
+    setUpTestApplicationComponent()
+    addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
+
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = true
+    )
+    val monitor = monitorFactory.createMonitor(updateProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  @Test
+  fun testUpdateEnableInLessonLangSwitching_withPerm_enablePermission_profileCanSwitchLangs() {
+    setUpTestApplicationComponent()
+    addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
+
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = true
+    )
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()
+  }
+
+  @Test
+  fun testUpdateEnableInLessonLangSwitching_withPerm_disablePermission_updateSucceeds() {
+    setUpTestApplicationComponent()
+    addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
+
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = false
+    )
+    val monitor = monitorFactory.createMonitor(updateProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  @Test
+  fun testUpdateEnableInLessonLangSwitching_withPerm_disablePerm_profileCannotNowSwitchLangs() {
+    setUpTestApplicationComponent()
+    addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
+
+    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = false
+    )
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    // The permission has been disabled.
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isFalse()
+  }
+
+  @Test
   fun testUpdateReadingTextSize_addProfiles_updateWithFontSize18_checkUpdateIsSuccessful() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -628,7 +803,7 @@ class ProfileManagementControllerTest {
     val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
+    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(2)
     assertThat(profile.lastLoggedInTimestampMs).isNotEqualTo(0)
     assertThat(profile.numberOfLogins).isEqualTo(1)
   }
@@ -665,6 +840,73 @@ class ProfileManagementControllerTest {
         "org.oppia.android.domain.profile.ProfileManagementController\$ProfileNotFoundException: " +
           "ProfileId 6 is not associated with an existing profile"
       )
+  }
+
+  @Test
+  fun testLogInToProfile_sessionIdHasChanged() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    val previousSessionId = retrieveCurrentSessionId()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    // Logging into a new profile should regenerate the session ID.
+    val latestSessionId = retrieveCurrentSessionId()
+    assertThat(latestSessionId).isNotEqualTo(previousSessionId)
+  }
+
+  @Test
+  fun testLogInToProfile_thenToSameProfileAgain_sessionIdHasChangedAgain() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+    val previousSessionId = retrieveCurrentSessionId()
+
+    // Log into the same profile twice (e.g. the case where the user logs out, then back in).
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    // Logging into the same profile a second time should also regenerate the session ID.
+    val latestSessionId = retrieveCurrentSessionId()
+    assertThat(latestSessionId).isNotEqualTo(previousSessionId)
+  }
+
+  @Test
+  fun testLogInToProfile_thenToAnotherProfile_sessionIdHasChangedAgain() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+    val sessionIdForProfile1 = retrieveCurrentSessionId()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_2)
+    )
+
+    // Logging into a different profile a should regenerate the session ID.
+    val sessionIdForProfile2 = retrieveCurrentSessionId()
+    assertThat(sessionIdForProfile2).isNotEqualTo(sessionIdForProfile1)
+  }
+
+  @Test
+  fun testLogInToProfile_invalidProfile_sessionIdDoesNotChange() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    val previousSessionId = retrieveCurrentSessionId()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_6)
+    )
+
+    // The session ID shouldn't change if the attempt to log in failed.
+    val latestSessionId = retrieveCurrentSessionId()
+    assertThat(latestSessionId).isEqualTo(previousSessionId)
   }
 
   @Test
@@ -883,6 +1125,19 @@ class ProfileManagementControllerTest {
     }
   }
 
+  private fun addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching: Boolean) {
+    addNonAdminProfileAndWait(
+      name = "Test Profile",
+      allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
+    )
+  }
+
+  private fun retrieveProfile(profileId: ProfileId) =
+    monitorFactory.waitForNextSuccessfulResult(profileManagementController.getProfile(profileId))
+
+  private fun retrieveCurrentSessionId() =
+    monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getSessionId())
+
   private fun getAbsoluteDirPath(path: String): String {
     /**
      * context.filesDir.toString() looks like /tmp/robolectric-Method_test_name/org.oppia.android.util.test-dataDir/files
@@ -908,10 +1163,17 @@ class ProfileManagementControllerTest {
     name: String,
     pin: String = DEFAULT_PIN,
     allowDownloadAccess: Boolean = DEFAULT_ALLOW_DOWNLOAD_ACCESS,
+    allowInLessonQuickLanguageSwitching: Boolean = DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING,
     colorRgb: Int = DEFAULT_AVATAR_COLOR_RGB
   ): DataProvider<Any?> {
     return addProfile(
-      name, pin, avatarImagePath = null, allowDownloadAccess, colorRgb, isAdmin = false
+      name,
+      pin,
+      avatarImagePath = null,
+      allowDownloadAccess,
+      allowInLessonQuickLanguageSwitching,
+      colorRgb,
+      isAdmin = false
     )
   }
 
@@ -919,10 +1181,13 @@ class ProfileManagementControllerTest {
     name: String,
     pin: String = DEFAULT_PIN,
     allowDownloadAccess: Boolean = DEFAULT_ALLOW_DOWNLOAD_ACCESS,
+    allowInLessonQuickLanguageSwitching: Boolean = DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING,
     colorRgb: Int = DEFAULT_AVATAR_COLOR_RGB
   ) {
     monitorFactory.ensureDataProviderExecutes(
-      addNonAdminProfile(name, pin, allowDownloadAccess, colorRgb)
+      addNonAdminProfile(
+        name, pin, allowDownloadAccess, allowInLessonQuickLanguageSwitching, colorRgb
+      )
     )
   }
 
@@ -931,11 +1196,18 @@ class ProfileManagementControllerTest {
     pin: String = DEFAULT_PIN,
     avatarImagePath: Uri? = null,
     allowDownloadAccess: Boolean = DEFAULT_ALLOW_DOWNLOAD_ACCESS,
+    allowInLessonQuickLanguageSwitching: Boolean = DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING,
     colorRgb: Int = DEFAULT_AVATAR_COLOR_RGB,
     isAdmin: Boolean
   ): DataProvider<Any?> {
     return profileManagementController.addProfile(
-      name, pin, avatarImagePath, allowDownloadAccess, colorRgb, isAdmin
+      name,
+      pin,
+      avatarImagePath,
+      allowDownloadAccess,
+      colorRgb,
+      isAdmin,
+      allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
     )
   }
 
@@ -1048,7 +1320,8 @@ class ProfileManagementControllerTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestLoggingIdentifierModule::class, SyncStatusModule::class, ApplicationLifecycleModule::class
+      TestLoggingIdentifierModule::class, SyncStatusModule::class, AssetModule::class,
+      ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
