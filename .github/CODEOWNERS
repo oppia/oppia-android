@@ -52,8 +52,8 @@ gradlew.bat @BenHenning
 /.devbots/ @BenHenning
 
 # All resource files.
-/app/src/main/res/**/*.xml @rt4914
-/utility/src/main/res/**/*.xml @rt4914
+/app/src/main/res/**/*.xml @BenHenning
+/utility/src/main/res/**/*.xml @BenHenning
 
 # App UI strings.
 /app/src/main/res/values*/strings.xml @BenHenning
