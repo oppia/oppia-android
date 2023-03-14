@@ -1,87 +1,68 @@
 package org.oppia.android.scripts.gae.json
 
+import org.oppia.android.scripts.gae.json.AndroidActivityRequests.ActivityRequest
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 internal interface AndroidActivityEndpointApi {
-  @GET("android_data/{api_secret}?activity_type=classroom")
+  @GET("android_data?activity_type=classroom")
   fun fetchLatestClassroom(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") name: String
-  ): Call<GaeClassroom>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.LatestVersion>
+  ): Call<Map<String, GaeClassroom>>
 
-  @GET("android_data/{api_secret}?activity_type=exploration")
+  @GET("android_data?activity_type=exploration")
   fun fetchLatestExploration(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") id: String
-  ): Call<GaeExploration>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.LatestVersion>
+  ): Call<Map<String, GaeExploration>>
 
-  @GET("android_data/{api_secret}?activity_type=exploration")
+  @GET("android_data?activity_type=exploration")
   fun fetchExplorationByVersion(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") id: String,
-    @Query("activity_version") version: Int
-  ): Call<GaeExploration>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.NonLocalized>
+  ): Call<Map<String, GaeExploration>>
 
-  @GET("android_data/{api_secret}?activity_type=story")
+  @GET("android_data?activity_type=story")
   fun fetchLatestStory(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") id: String
-  ): Call<GaeStory>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.LatestVersion>
+  ): Call<Map<String, GaeStory>>
 
-  @GET("android_data/{api_secret}?activity_type=story")
+  @GET("android_data?activity_type=story")
   fun fetchStoryByVersion(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") id: String,
-    @Query("activity_version") version: Int
-  ): Call<GaeStory>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.NonLocalized>
+  ): Call<Map<String, GaeStory>>
 
-  @GET("android_data/{api_secret}?activity_type=skill")
+  @GET("android_data?activity_type=skill")
   fun fetchLatestConceptCard(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") skillId: String
-  ): Call<GaeSkill>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.LatestVersion>
+  ): Call<Map<String, GaeSkill>>
 
-  @GET("android_data/{api_secret}?activity_type=skill")
+  @GET("android_data?activity_type=skill")
   fun fetchConceptCardByVersion(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") skillId: String,
-    @Query("activity_version") version: Int
-  ): Call<GaeSkill>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.NonLocalized>
+  ): Call<Map<String, GaeSkill>>
 
-  @GET("android_data/{api_secret}?activity_type=subtopic")
+  @GET("android_data?activity_type=subtopic")
   fun fetchLatestRevisionCard(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") qualifiedSubtopicId: String
-  ): Call<GaeSubtopicPage>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.LatestVersion>
+  ): Call<Map<String, GaeSubtopicPage>>
 
-  @GET("android_data/{api_secret}?activity_type=subtopic")
+  @GET("android_data?activity_type=subtopic")
   fun fetchRevisionCardByVersion(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") qualifiedSubtopicId: String,
-    @Query("activity_version") version: Int
-  ): Call<GaeSubtopicPage>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.NonLocalized>
+  ): Call<Map<String, GaeSubtopicPage>>
 
-  @GET("android_data/{api_secret}?activity_type=learntopic")
+  @GET("android_data?activity_type=learntopic")
   fun fetchLatestTopic(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") id: String
-  ): Call<GaeTopic>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.LatestVersion>
+  ): Call<Map<String, GaeTopic>>
 
-  @GET("android_data/{api_secret}?activity_type=learntopic")
+  @GET("android_data?activity_type=learntopic")
   fun fetchTopicByVersion(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") id: String,
-    @Query("activity_version") version: Int
-  ): Call<GaeTopic>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.NonLocalized>
+  ): Call<Map<String, GaeTopic>>
 
-  @GET("android_data/{api_secret}?activity_type=exp_translations")
+  @GET("android_data?activity_type=exp_translations")
   fun fetchExplorationTranslations(
-    @Path("api_secret") apiSecret: String,
-    @Query("activity_id") explorationId: String,
-    @Query("activity_version") explorationVersion: Int,
-    @Query("language_code") languageCode: String
-  ): Call<GaeEntityTranslation>
+    @Query("activities_data") request: AndroidActivityRequests<ActivityRequest.Localized>
+  ): Call<Map<String, GaeEntityTranslation>>
 }

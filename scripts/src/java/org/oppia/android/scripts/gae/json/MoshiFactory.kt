@@ -1,12 +1,16 @@
 package org.oppia.android.scripts.gae.json
 
 import com.squareup.moshi.Moshi
+import org.oppia.android.scripts.gae.json.AndroidActivityRequests.ActivityRequest
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions.GaeLabeledRegion.GaeNormalizedRectangle2d
 
 object MoshiFactory {
   fun createMoshi(): Moshi {
     return Moshi.Builder().apply {
       val typeResolutionContext = TypeResolutionContext()
+      add(AndroidActivityRequests.Adapter.Factory.create<ActivityRequest.LatestVersion>())
+      add(AndroidActivityRequests.Adapter.Factory.create<ActivityRequest.NonLocalized>())
+      add(AndroidActivityRequests.Adapter.Factory.create<ActivityRequest.Localized>())
       add(GaeCustomizationArgValue.Adapter(typeResolutionContext))
       add(GaeNormalizedRectangle2d.Adapter())
       add(GaeInteractionInstance.Adapter(typeResolutionContext))

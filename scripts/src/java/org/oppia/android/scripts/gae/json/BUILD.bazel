@@ -10,6 +10,7 @@ kt_jvm_library(
     name = "model",
     testonly = True,
     srcs = [
+        "AndroidActivityRequests.kt",
         "GaeAnswerGroup.kt",
         "GaeClassroom.kt",
         "GaeCustomizationArgValue.kt",
