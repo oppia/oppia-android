@@ -43,7 +43,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
-  private lateinit var internalProfileId: ProfileId
+  private var internalProfileId: ProfileId = ProfileId.newBuilder().setInternalId(-1).build()
   private lateinit var binding: RecentlyPlayedFragmentBinding
 
   fun handleCreateView(
