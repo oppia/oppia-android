@@ -408,3 +408,10 @@ file_content_checks {
   exempted_file_name: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
   exempted_file_patterns: ".+?Test\\.kt"
 }
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: ".+?\\.(post|postDelayed)\\(.+?"
+  failure_message: "Using post() and postDelayed() method is prohibited as it can lead to NullPointerException errors. Use doOnPreDraw or doOnLayout instead. Checkout this resource for a better understanding of the issue: https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/spotlight/SpotlightFragment.kt"
+  exempted_file_patterns: ".+?Test\\.kt"
+}

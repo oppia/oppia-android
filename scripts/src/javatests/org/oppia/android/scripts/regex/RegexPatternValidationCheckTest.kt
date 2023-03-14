@@ -2289,6 +2289,40 @@ class RegexPatternValidationCheckTest {
       )
   }
 
+  @Test
+  fun testFileContent_postDelayedUsed_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        binding.view.postDelayed({ binding.view.visibility = View.GONE }, 1000)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_postUsed_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        binding.view.post({ binding.view.visibility = View.GONE })
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+  }
+
   /** Runs the regex_pattern_validation_check. */
   private fun runScript() {
     main(File(tempFolder.root, "testfiles").absolutePath)
