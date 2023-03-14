@@ -355,6 +355,9 @@
   <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>
   <string name="profile_edit_reset">Reset PIN</string>
+  <string name="profile_edit_mark_chapter_completion">Mark Chapters Completed</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_label">Enable Quick Language Switching</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_explanation">Allow this user to quickly switch between English and Swahili within a lesson.</string>
   <string name="profile_edit_delete">Profile Deletion</string>
   <string name="profile_edit_delete_dialog_title">Permanently delete this profile?</string>
   <string name="profile_edit_delete_dialog_message">All progress will be deleted and cannot be recovered.</string>
@@ -452,13 +455,15 @@
   <string name="hints_andSolution_close_icon_description">Navigate up</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="show_solution">Show solution</string>
-  <string name="reveal_solution">Reveal Solution</string>
+  <string name="reveal_solution">Show Solution</string>
+  <string name="hint_list_solution_title">Solution</string>
   <string name="reveal_hint">Show Hint</string>
   <string name="hide_hint">Hide Hint</string>
   <string name="hide_solution">Hide solution</string>
-  <string name="the_only_solution_is">The only solution is :  </string>
-  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
-  <string name="reveal">Reveal</string>
+  <string name="hints_list_exclusive_solution_text">The only solution is: %s</string>
+  <string name="hints_list_possible_solution_text">One solution is: %s</string>
+  <string name="this_will_reveal_the_solution">This will show the solution. Are you sure?</string>
+  <string name="reveal">Show</string>
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
   <string name="last_logged_in_recently">recently</string>
@@ -531,7 +536,6 @@
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
-  <string name="hints_android_solution_correct_answer">%s/%s</string>
   <string name="correct_submitted_answer">Correct submitted answer</string>
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
@@ -584,4 +588,7 @@
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
+  <string name="state_fragment_item_selection_no_items_selected_hint_text">Please select all correct choices.</string>
+  <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
+  <string name="state_fragment_item_selection_max_items_selected_hint_text">No more than %s choices may be selected.</string>
 </resources>

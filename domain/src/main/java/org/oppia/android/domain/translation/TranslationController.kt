@@ -35,15 +35,24 @@ import kotlin.concurrent.withLock
 private const val SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "system_language_locale"
 private const val APP_LANGUAGE_DATA_PROVIDER_ID = "app_language"
 private const val APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "app_language_locale"
+private const val APP_LANGUAGE_SELECTION_DATA_PROVIDER_ID = "app_language_selection"
 private const val UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID = "update_app_language"
 private const val WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID = "written_translation_content"
 private const val WRITTEN_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID =
   "written_translation_content_locale"
+private const val WRITTEN_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID =
+  "written_translation_content_language_resolution"
+private const val WRITTEN_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
+  "written_translation_content_selection"
 private const val UPDATE_WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_written_translation_content"
 private const val AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID = "audio_translation_content"
 private const val AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID =
   "audio_translation_content_locale"
+private const val AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID =
+  "audio_translation_content_language_resolution"
+private const val AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
+  "audio_translation_content_selection"
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
 private const val CACHE_NAME = "content_language_database"
@@ -126,7 +135,6 @@ class TranslationController @Inject constructor(
    */
   fun getAppLanguageLocale(profileId: ProfileId): DataProvider<OppiaLocale.DisplayLocale> {
     val providerId = APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID
-
     return getSystemLanguage().combineWithAsync(
       retrieveLanguageContentCacheStore(profileId),
       providerId
@@ -134,6 +142,20 @@ class TranslationController @Inject constructor(
       val language = computeAppLanguage(systemLanguage, oppiaLanguageSelection, profileId)
       return@combineWithAsync localeController.retrieveAppStringDisplayLocale(language)
         .retrieveData()
+    }
+  }
+
+  /**
+   * Returns a data provider for the [AppLanguageSelection] corresponding to the user's selected
+   * language for app strings (see [getAppLanguage]).
+   *
+   * Note that providing the returned selection to [updateAppLanguage] should result in no change to
+   * the underlying configured selection.
+   */
+  fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> {
+    val providerId = APP_LANGUAGE_SELECTION_DATA_PROVIDER_ID
+    return dataProviders.createInMemoryDataProvider(providerId) {
+      retrieveAppLanguageSelection(profileId)
     }
   }
 
@@ -147,7 +169,8 @@ class TranslationController @Inject constructor(
    * language matches a supported language, otherwise the app defaults to English).
    *
    * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
-   *     result is ever provided)
+   *     result is ever provided). The payload of the data provider is the *previous* selection
+   *     state.
    */
   fun updateAppLanguage(profileId: ProfileId, selection: AppLanguageSelection): DataProvider<Any> {
     val deferred = retrieveLanguageContentCacheStore(profileId).storeDataAsync(
@@ -167,8 +190,6 @@ class TranslationController @Inject constructor(
       } catch (e: Exception) {
         return@createInMemoryDataProviderAsync AsyncResult.Failure(e)
       }
-    }
-  }
 
   /**
    * Returns a data provider for the current [OppiaLanguage] selected for written content strings
@@ -190,11 +211,35 @@ class TranslationController @Inject constructor(
   fun getWrittenTranslationContentLocale(
     profileId: ProfileId
   ): DataProvider<OppiaLocale.ContentLocale> {
-    val providerId = WRITTEN_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID
-    return getSystemLanguage().transformAsync(providerId) { systemLanguage ->
-      val language = computeWrittenTranslationContentLanguage(profileId, systemLanguage)
+    val resolvedLanguageProvider =
+      getWrittenTranslationContentLanguageSelection(profileId).combineWith(
+        getAppLanguageSelection(profileId), WRITTEN_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID
+      ) { contentLanguageSelection, appLanguageSelection ->
+        computeWrittenTranslationContentLanguage(appLanguageSelection, contentLanguageSelection)
+      }
+    return getSystemLanguage().combineWithAsync(
+      resolvedLanguageProvider, WRITTEN_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID
+    ) { systemLanguage, resolutionStatus ->
+      val language = resolutionStatus.resolveToLanguage(systemLanguage)
       val writtenTranslationLocale = localeController.retrieveWrittenTranslationsLocale(language)
-      return@transformAsync writtenTranslationLocale.retrieveData()
+      return@combineWithAsync writtenTranslationLocale.retrieveData()
+    }
+  }
+
+  /**
+   * Returns a data provider for the [WrittenTranslationLanguageSelection] corresponding to the
+   * user's selected language for written content strings (see
+   * [getWrittenTranslationContentLanguage]).
+   *
+   * Note that providing the returned selection to [updateWrittenTranslationContentLanguage] should
+   * result in no change to the underlying configured selection.
+   */
+  fun getWrittenTranslationContentLanguageSelection(
+    profileId: ProfileId
+  ): DataProvider<WrittenTranslationLanguageSelection> {
+    val providerId = WRITTEN_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID
+    return dataProviders.createInMemoryDataProvider(providerId) {
+      retrieveWrittenTranslationContentLanguageSelection(profileId)
     }
   }
 
@@ -208,16 +253,16 @@ class TranslationController @Inject constructor(
    * superset. The actual availability for a particular language is topic-dependent.
    *
    * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
-   *     result is ever provided)
+   *     result is ever provided). The payload of the data provider is the *previous* selection
+   *     state.
    */
   fun updateWrittenTranslationContentLanguage(
     profileId: ProfileId,
     selection: WrittenTranslationLanguageSelection
-  ): DataProvider<Any> {
+  ): DataProvider<WrittenTranslationLanguageSelection> {
     val providerId = UPDATE_WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
-      updateWrittenTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
+      AsyncResult.Success(updateWrittenTranslationContentLanguageSelection(profileId, selection))
     }
   }
 
@@ -241,11 +286,34 @@ class TranslationController @Inject constructor(
   fun getAudioTranslationContentLocale(
     profileId: ProfileId
   ): DataProvider<OppiaLocale.ContentLocale> {
-    val providerId = AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID
-    return getSystemLanguage().transformAsync(providerId) { systemLanguage ->
-      val language = computeAudioTranslationContentLanguage(profileId, systemLanguage)
+    val resolvedLanguageProvider =
+      getAudioTranslationContentLanguageSelection(profileId).combineWith(
+        getAppLanguageSelection(profileId), AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID
+      ) { audioLanguageSelection, appLanguageSelection ->
+        computeAudioTranslationContentLanguage(appLanguageSelection, audioLanguageSelection)
+      }
+    return getSystemLanguage().combineWithAsync(
+      resolvedLanguageProvider, AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID
+    ) { systemLanguage, resolutionStatus ->
+      val language = resolutionStatus.resolveToLanguage(systemLanguage)
       val audioTranslationLocale = localeController.retrieveAudioTranslationsLocale(language)
-      return@transformAsync audioTranslationLocale.retrieveData()
+      return@combineWithAsync audioTranslationLocale.retrieveData()
+    }
+  }
+
+  /**
+   * Returns a data provider for the [AudioTranslationLanguageSelection] corresponding to the user's
+   * selected language for audio voiceovers (see [getAudioTranslationContentLanguage]).
+   *
+   * Note that providing the returned selection to [updateAudioTranslationContentLanguage] should
+   * result in no change to the underlying configured selection.
+   */
+  fun getAudioTranslationContentLanguageSelection(
+    profileId: ProfileId
+  ): DataProvider<AudioTranslationLanguageSelection> {
+    val providerId = AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID
+    return dataProviders.createInMemoryDataProvider(providerId) {
+      retrieveAudioTranslationContentLanguageSelection(profileId)
     }
   }
 
@@ -259,16 +327,16 @@ class TranslationController @Inject constructor(
    * The actual availability for a particular language is topic-dependent.
    *
    * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
-   *     result is ever provided)
+   *     result is ever provided). The payload of the data provider is the *previous* selection
+   *     state.
    */
   fun updateAudioTranslationContentLanguage(
     profileId: ProfileId,
     selection: AudioTranslationLanguageSelection
-  ): DataProvider<Any> {
+  ): DataProvider<AudioTranslationLanguageSelection> {
     val providerId = UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
-      updateAudioTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
+      AsyncResult.Success(updateAudioTranslationContentLanguageSelection(profileId, selection))
     }
   }
 
@@ -346,13 +414,12 @@ class TranslationController @Inject constructor(
   }
 
   private fun computeWrittenTranslationContentLanguage(
-    profileId: ProfileId,
-    systemLanguage: OppiaLanguage
-  ): OppiaLanguage {
-    val languageSelection = retrieveWrittenTranslationContentLanguageSelection(profileId)
-    return when (languageSelection.selectionTypeCase) {
+    appLanguageSelection: AppLanguageSelection,
+    contentLanguageSelection: WrittenTranslationLanguageSelection
+  ): LanguageResolutionStatus {
+    return when (contentLanguageSelection.selectionTypeCase) {
       WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
-        languageSelection.selectedLanguage
+        LanguageResolutionStatus.Resolved(contentLanguageSelection.selectedLanguage)
       WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         computeAppLanguage(systemLanguage, loadAppLanguageSelection(profileId), profileId)
@@ -360,13 +427,12 @@ class TranslationController @Inject constructor(
   }
 
   private fun computeAudioTranslationContentLanguage(
-    profileId: ProfileId,
-    systemLanguage: OppiaLanguage
-  ): OppiaLanguage {
-    val languageSelection = retrieveAudioTranslationContentLanguageSelection(profileId)
-    return when (languageSelection.selectionTypeCase) {
+    appLanguageSelection: AppLanguageSelection,
+    audioLanguageSelection: AudioTranslationLanguageSelection
+  ): LanguageResolutionStatus {
+    return when (audioLanguageSelection.selectionTypeCase) {
       AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
-        languageSelection.selectedLanguage
+        LanguageResolutionStatus.Resolved(audioLanguageSelection.selectedLanguage)
       AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       AudioTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         computeAppLanguage(systemLanguage, loadAppLanguageSelection(profileId), profileId)
@@ -375,18 +441,24 @@ class TranslationController @Inject constructor(
 
   private fun loadAppLanguageSelection(profileId: ProfileId): AppLanguageSelection {
     return dataLock.withLock {
-      appLanguageSettings[profileId] ?: AppLanguageSelection.getDefaultInstance()
+        computeAppLanguage(appLanguageSelection)
     }
   }
+
+  private fun retrieveAppLanguageSelection(profileId: ProfileId) =
+    dataLock.withLock {
+      appLanguageSettings[profileId] ?: AppLanguageSelection.getDefaultInstance()
+    }
 
   private suspend fun updateAppLanguageSelection(
     profileId: ProfileId,
     selection: AppLanguageSelection
-  ) {
-    dataLock.withLock {
-      appLanguageSettings[profileId] = selection
-    }
-    asyncDataSubscriptionManager.notifyChange(APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID)
+  ): AppLanguageSelection {
+    return dataLock.withLock {
+      appLanguageSettings.put(profileId, selection)
+    }.also {
+      asyncDataSubscriptionManager.notifyChange(APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID)
+    } ?: AppLanguageSelection.getDefaultInstance()
   }
 
   private fun retrieveLanguageContentCacheStore(
@@ -426,11 +498,12 @@ class TranslationController @Inject constructor(
   private suspend fun updateWrittenTranslationContentLanguageSelection(
     profileId: ProfileId,
     selection: WrittenTranslationLanguageSelection
-  ) {
-    dataLock.withLock {
-      writtenTranslationLanguageSettings[profileId] = selection
-    }
-    asyncDataSubscriptionManager.notifyChange(WRITTEN_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID)
+  ): WrittenTranslationLanguageSelection {
+    return dataLock.withLock {
+      writtenTranslationLanguageSettings.put(profileId, selection)
+    }.also {
+      asyncDataSubscriptionManager.notifyChange(WRITTEN_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID)
+    } ?: WrittenTranslationLanguageSelection.getDefaultInstance()
   }
 
   private fun retrieveAudioTranslationContentLanguageSelection(
@@ -445,11 +518,12 @@ class TranslationController @Inject constructor(
   private suspend fun updateAudioTranslationContentLanguageSelection(
     profileId: ProfileId,
     selection: AudioTranslationLanguageSelection
-  ) {
-    dataLock.withLock {
-      audioVoiceoverLanguageSettings[profileId] = selection
-    }
-    asyncDataSubscriptionManager.notifyChange(AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID)
+  ): AudioTranslationLanguageSelection {
+    return dataLock.withLock {
+      audioVoiceoverLanguageSettings.put(profileId, selection)
+    }.also {
+      asyncDataSubscriptionManager.notifyChange(AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID)
+    } ?: AudioTranslationLanguageSelection.getDefaultInstance()
   }
 
   private fun getSystemLanguage(): DataProvider<OppiaLanguage> =
@@ -475,6 +549,22 @@ class TranslationController @Inject constructor(
     }
   }
 
+  /**
+   * A helper class to provide complete language resolution for cases where there may be multiple
+   * levels of indirection (such as written language translations falling back to the app language
+   * and the app language falling back to the system language).
+   */
+  private sealed class LanguageResolutionStatus {
+    /** Indicates a fully resolved [OppiaLanguage] that may be used for localization. */
+    data class Resolved(val language: OppiaLanguage) : LanguageResolutionStatus()
+
+    /**
+     * Indicates that no explicit [OppiaLanguage] can be resolved and that, instead, the system
+     * language must be used.
+     */
+    object UseSystemLanguage : LanguageResolutionStatus()
+  }
+
   private companion object {
     private fun Translation.extractHtml(): String? = takeIf {
       it.dataFormatCase == Translation.DataFormatCase.HTML
@@ -487,6 +577,15 @@ class TranslationController @Inject constructor(
     private fun <K, I, O> Map<K, I>.mapValuesNotNull(map: (Map.Entry<K, I>) -> O?): Map<K, O> {
       // The force-non-null operator is safe here since nulls are filtered out.
       return mapValues(map).filterValues { it != null }.mapValues { (_, value) -> value!! }
+    }
+
+    private fun LanguageResolutionStatus.resolveToLanguage(
+      systemLanguage: OppiaLanguage
+    ): OppiaLanguage {
+      return when (this) {
+        is LanguageResolutionStatus.Resolved -> language
+        LanguageResolutionStatus.UseSystemLanguage -> systemLanguage
+      }
     }
   }
 }
