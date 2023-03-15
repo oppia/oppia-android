@@ -5,6 +5,8 @@ on:
       - develop
     paths:
       - 'wiki/**'
+  # Triggers this workflow when the wiki is changed
+  # (see https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#gollum).
   gollum:
 
 jobs:
@@ -19,7 +21,7 @@ jobs:
           fetch-depth: 0
       - name: Add remote
         run: |
-          git filter-branch --subdirectory-filter wiki/ -- -- all
+          git filter-branch --subdirectory-filter wiki/ -- --all
           git remote set-url origin https://github.com/oppia/oppia-android.wiki.git
           git checkout -b master
           git push origin master --force
