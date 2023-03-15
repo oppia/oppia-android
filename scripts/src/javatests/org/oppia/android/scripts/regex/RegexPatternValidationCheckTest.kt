@@ -168,7 +168,7 @@ class RegexPatternValidationCheckTest {
     "Only colors from component_colors.xml may be used in layouts."
   private val doesNotReferenceColorFromComponentColorInKotlinFiles =
     "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments," +
-      " Views and Presenters)."
+      "Views and Presenters)."
   private val doesNotUseWorkManagerGetInstance =
     "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one" +
       " using getInstance (as the latter may create a WorkManager if one isn't already present, " +
@@ -2217,6 +2217,34 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:22: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:23: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:24: $doesNotReferenceColorFromComponentColorInLayouts
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  fun testFileContent_kotlinFiles_includesNonColorComponentReferences_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        R.color.component_color_shared_activity_status_bar_color
+        R.color.color_def_avatar_background_1
+        R.color.color_palette_primary_color
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/app.?/." +
+      "+(ActivityPresenter|FragmentPresenter|ViewPresenter|Activity|Fragment|View)\\\\.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:2: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $wikiReferenceNote
         """.trimIndent()
       )
