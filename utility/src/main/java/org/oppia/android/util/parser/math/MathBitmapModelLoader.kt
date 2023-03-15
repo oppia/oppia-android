@@ -115,10 +115,11 @@ class MathBitmapModelLoader private constructor(
             model.lineHeight,
             application.assets,
             !model.useInlineRendering,
+            // TODO(#1523): Test color parameter in MathBitmapModelLoader
             ResourcesCompat.getColor(
               application.resources,
               R.color.component_color_shared_equation_color,
-              /* paramName= theme */null
+              /* theme = */null
             )
           ).also { it.ensureDrawable() }
         }
