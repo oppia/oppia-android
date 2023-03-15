@@ -55,6 +55,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -482,7 +483,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
       AppLanguageSelection.newBuilder().apply { useSystemLanguageOrAppDefault = true }.build()
-    )
+    ) as DataProvider<AppLanguageSelection>
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -496,7 +497,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
       AppLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
+    ) as DataProvider<AppLanguageSelection>
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -511,7 +512,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
       AppLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
+    ) as DataProvider<AppLanguageSelection>
 
     // The previous selection was system language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -526,7 +527,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
       AppLanguageSelection.newBuilder().apply { selectedLanguage = BRAZILIAN_PORTUGUESE }.build()
-    )
+    ) as DataProvider<AppLanguageSelection>
 
     // The previous selection was English.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -1298,7 +1299,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAudioTranslationContentLanguage(
       PROFILE_ID_0,
       AudioTranslationLanguageSelection.newBuilder().apply { useAppLanguage = true }.build()
-    )
+    ) as DataProvider<AudioTranslationLanguageSelection>
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -1312,7 +1313,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAudioTranslationContentLanguage(
       PROFILE_ID_0,
       AudioTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
+    )as DataProvider<AudioTranslationLanguageSelection>
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -1327,7 +1328,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAudioTranslationContentLanguage(
       PROFILE_ID_0,
       AudioTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
+    ) as DataProvider<AudioTranslationLanguageSelection>
 
     // The previous selection was to use the app language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -1342,7 +1343,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAudioTranslationContentLanguage(
       PROFILE_ID_0,
       AudioTranslationLanguageSelection.newBuilder().apply { selectedLanguage = HINDI }.build()
-    )
+    ) as DataProvider<AudioTranslationLanguageSelection>
 
     // The previous selection was English.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)

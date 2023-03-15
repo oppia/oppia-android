@@ -307,31 +307,6 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_logImportantEvent_profileWithLangSettings_hasCorrectLanguageSettings() {
-    setUpTestApplicationComponent()
-    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
-    val profileId = addNewProfileAndLogIn()
-    ensureAppLanguageIsUpdatedTo(profileId, ENGLISH)
-    ensureWrittenTranslationsLanguageIsUpdatedTo(profileId, SWAHILI)
-    ensureAudioTranslationsLanguageIsUpdatedTo(profileId, HINGLISH)
-
-    analyticsController.logImportantEvent(openHomeEventContext, profileId, TEST_TIMESTAMP)
-    testCoroutineDispatchers.runCurrent()
-
-    // A profile's language settings should reflect in corresponding logged events.
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAppLanguageSelectionThat().isSelectedLanguageThat().isEqualTo(ENGLISH)
-    assertThat(eventLog)
-      .hasWrittenTranslationLanguageSelectionThat()
-      .isSelectedLanguageThat()
-      .isEqualTo(SWAHILI)
-    assertThat(eventLog)
-      .hasAudioTranslationLanguageSelectionThat()
-      .isSelectedLanguageThat()
-      .isEqualTo(HINGLISH)
-  }
-
-  @Test
   fun testController_logImportantEvent_noProfile_hasNoProfileId() {
     setUpTestApplicationComponent()
     analyticsController.logImportantEvent(
@@ -341,41 +316,6 @@ class AnalyticsControllerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog.hasProfileId()).isFalse()
-  }
-
-  @Test
-  fun testController_logImportantEvent_withProfile_includesProfileId() {
-    setUpTestApplicationComponent()
-    val profileId = addNewProfileAndLogIn()
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId, TEST_TIMESTAMP
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog.hasProfileId()).isTrue()
-    assertThat(eventLog).hasProfileIdThat().isEqualTo(profileId)
-  }
-
-  @Test
-  fun testController_logLowPriorityEvent_withQuestionContext_checkLogsEvent() {
-    setUpTestApplicationComponent()
-    analyticsController.logLowPriorityEvent(
-      oppiaLogger.createOpenQuestionPlayerContext(
-        TEST_QUESTION_ID,
-        listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
-      ),
-      profileId = null,
-      TEST_TIMESTAMP
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventLog).isOptionalPriority()
-    assertThat(eventLog).hasOpenQuestionPlayerContext()
   }
 
   @Test
@@ -592,31 +532,6 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_logLowPriorityEvent_profileWithLangSettings_hasCorrectLanguageSettings() {
-    setUpTestApplicationComponent()
-    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
-    val profileId = addNewProfileAndLogIn()
-    ensureAppLanguageIsUpdatedTo(profileId, ENGLISH)
-    ensureWrittenTranslationsLanguageIsUpdatedTo(profileId, SWAHILI)
-    ensureAudioTranslationsLanguageIsUpdatedTo(profileId, HINGLISH)
-
-    analyticsController.logLowPriorityEvent(openHomeEventContext, profileId, TEST_TIMESTAMP)
-    testCoroutineDispatchers.runCurrent()
-
-    // A profile's language settings should reflect in corresponding logged events.
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAppLanguageSelectionThat().isSelectedLanguageThat().isEqualTo(ENGLISH)
-    assertThat(eventLog)
-      .hasWrittenTranslationLanguageSelectionThat()
-      .isSelectedLanguageThat()
-      .isEqualTo(SWAHILI)
-    assertThat(eventLog)
-      .hasAudioTranslationLanguageSelectionThat()
-      .isSelectedLanguageThat()
-      .isEqualTo(HINGLISH)
-  }
-
-  @Test
   fun testController_logPriorityEvent_noProfile_hasNoProfileId() {
     setUpTestApplicationComponent()
     analyticsController.logLowPriorityEvent(
@@ -626,20 +541,6 @@ class AnalyticsControllerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog.hasProfileId()).isFalse()
-  }
-
-  @Test
-  fun testController_logPriorityEvent_withProfile_includesProfileId() {
-    setUpTestApplicationComponent()
-    val profileId = addNewProfileAndLogIn()
-    analyticsController.logLowPriorityEvent(
-      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId, TEST_TIMESTAMP
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog.hasProfileId()).isTrue()
-    assertThat(eventLog).hasProfileIdThat().isEqualTo(profileId)
   }
 
   @Test

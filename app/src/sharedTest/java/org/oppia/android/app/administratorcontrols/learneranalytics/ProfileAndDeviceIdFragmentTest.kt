@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +16,6 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.getIntents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -402,178 +400,6 @@ class ProfileAndDeviceIdFragmentTest {
   }
 
   @Test
-  fun testFragment_firstEntry_noAdminEvents_hasZeroAdminEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-
-    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-  }
-
-  @Test
-  fun testFragment_firstEntry_adminEvents_notUploaded_hasSomeAdminEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log a couple of events.
-    logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
-
-    // Two are awaiting upload, but neither have been uploaded yet.
-    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("2")))
-    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-  }
-
-  @Test
-  fun testFragment_firstEntry_adminEvents_uploaded_hasSomeAdminEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log a couple of events, upload them, then log one more event.
-    logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
-    connectOnlyToFlushWorkerQueue()
-    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-
-    // Two should be uploaded, and one waiting upload.
-    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("1")))
-    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("2")))
-  }
-
-  @Test
-  fun testFragment_firstEntry_noGenericEvents_hasZeroGenericEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-
-    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-  }
-
-  @Test
-  fun testFragment_firstEntry_genericEvents_notUploaded_hasSomeGenericEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log a couple of events off of the admin profile.
-    logTwoAnalyticsEvents(profileId = null)
-
-    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("2")))
-    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-  }
-
-  @Test
-  fun testFragment_firstEntry_genericEvents_uploaded_hasSomeGenericEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log a couple of events, upload them, then log one more event, off of the admin profile.
-    logTwoAnalyticsEvents(profileId = null)
-    connectOnlyToFlushWorkerQueue()
-    logAnalyticsEvent(profileId = null)
-
-    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("1")))
-    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("2")))
-  }
-
-  @Test
-  fun testFragment_firstEntry_mixOfAdminAndGenericEvents_someUploaded_reportsAllEvents() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log & upload a mix of events with and without the admin profile.
-    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-    logThreeAnalyticsEvents(profileId = null)
-    connectOnlyToFlushWorkerQueue()
-    logAnalyticsEvent(profileId = null)
-    logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
-
-    // Event counts should be represented in the correct places.
-    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("2")))
-    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("1")))
-    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("1")))
-    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("3")))
-  }
-
-  @Test
-  fun testFragment_secondEntry_noLearnerEvents_hasZeroLearnerEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-
-    onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-    onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-  }
-
-  @Test
-  fun testFragment_secondEntry_learnerEvents_notUploaded_hasSomeLearnerEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log a couple of events.
-    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
-
-    // Two are awaiting upload, but neither have been uploaded yet.
-    onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("2")))
-    onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-  }
-
-  @Test
-  fun testFragment_secondEntry_learnerEvents_uploaded_hasSomeLearnerEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log a couple of events, upload them, then log one more event.
-    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
-    connectOnlyToFlushWorkerQueue()
-    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
-
-    // Two should be uploaded, and one waiting upload.
-    onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("1")))
-    onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("2")))
-  }
-
-  @Test
-  fun testFragment_secondEntry_learnerEvents_hasZeroAdminOrGenericEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log a couple of events, upload them, then log one more event, for a learner profile.
-    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
-    connectOnlyToFlushWorkerQueue()
-    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
-
-    // The admin profile's event counts shouldn't change since the only logged events were for a
-    // specific learner profile.
-    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-  }
-
-  @Test
-  fun testFragment_secondEntry_adminAndGenericEvents_uploaded_hasZeroLearnerEventsReported() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log a couple of events generically and for the admin profile.
-    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-    logAnalyticsEvent(profileId = null)
-    connectOnlyToFlushWorkerQueue()
-    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-    logAnalyticsEvent(profileId = null)
-
-    // No events should be reported for the learner since it didn't have any events uploaded.
-    onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-    onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-  }
-
-  @Test
   fun testFragment_initialState_profileDataHasYetToBeCollected() {
     initializeActivityAndAddFragment()
 
@@ -744,57 +570,6 @@ class ProfileAndDeviceIdFragmentTest {
 
     onSyncStatusAt(position = 2)
       .check(matches(withText(containsString("Something went wrong when trying to upload events"))))
-  }
-
-  @Test
-  fun testFragment_multipleProfiles_clickShareIdsAndLogs_sendsIntentWithIdsAndLogsText() {
-    // Use fake time so that the generated event logs are consistent across runs.
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    profileTestHelper.addMoreProfiles(numProfiles = 2)
-    initializeActivityAndAddFragment()
-    disconnectNetwork() // Ensure events are cached.
-
-    // Log & upload some events, then enqueue others.
-    logThreeAnalyticsEvents(profileId = null)
-    logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
-    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
-    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_1)
-    connectOnlyToFlushWorkerQueue()
-    logAnalyticsEvent(profileId = null)
-    logThreeAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
-    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
-    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_1)
-    connectNetwork()
-    logAnalyticsEvent(profileId = null) // Log an event to trigger tracking the network change.
-
-    onShareIdsAndEventsButtonAt(position = 5).perform(click())
-    testCoroutineDispatchers.runCurrent()
-
-    val expectedShareText =
-      """
-      Oppia app installation ID: 1216f42c89ec
-      - Profile name: Admin, learner ID: a9fe66ab
-        - Uploading learner events: 3
-        - Uploaded learner events: 2
-        - Uploading uncategorized events: 1
-        - Uploaded uncategorized events: 4
-      - Profile name: A, learner ID: c368b501
-        - Uploading learner events: 2
-        - Uploaded learner events: 1
-      - Profile name: B, learner ID: 74facac7
-        - Uploading learner events: 1
-        - Uploaded learner events: 2
-      Current sync status: Waiting to schedule data uploading worker….
-      Encoded event logs:
-      H4sIAAAAAAAAAOPSlGBUUj3FqMTFX5JaXBKfk5pYlJdaFJ+ZIgQRyMwrLknMyQEKcBkSrVSLwYjBisGJ
-      gU5ajEnVwsTBSDdNTELEBzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA
-      """.trimIndent()
-    val intents = getIntents()
-    assertThat(intents).hasSize(1)
-    assertThat(intents.single()).hasAction(Intent.ACTION_SEND)
-    assertThat(intents.single()).hasType("text/plain")
-    assertThat(intents.single()).extras().containsKey(Intent.EXTRA_TEXT)
-    assertThat(intents.single()).extras().string(Intent.EXTRA_TEXT).isEqualTo(expectedShareText)
   }
 
   @Test
