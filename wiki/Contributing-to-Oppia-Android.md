@@ -1,8 +1,8 @@
-_These instructions are for developers who'd like to contribute code to improve the Oppia platform. If you'd prefer to help out with other things, please see our [[general contribution guidelines|Home]]._
+_These instructions are for developers who'd like to contribute code to improve the Oppia platform. If you'd prefer to help out with other things, please see our [general contribution guidelines](https://github.com/oppia/oppia-android/wiki)._
 
 Thanks for your interest in contributing to the Oppia Android project, and making it easier for students to learn online in an effective and enjoyable way!
 
-If you run into any problems along the way, we're here to help! Check out our [[wiki page on getting help|Get-Help]] for the communication channels you can use. If you find any bugs, you can also file an issue on our [issue tracker](https://github.com/oppia/oppia-android/issues). There are also lots of helpful resources in the sidebar, check that out too!
+If you run into any problems along the way, we're here to help! Check out our [wiki page on getting help](https://github.com/oppia/oppia-android/wiki/Get-Help) for the communication channels you can use. If you find any bugs, you can also file an issue on our [issue tracker](https://github.com/oppia/oppia-android/issues). There are also lots of helpful resources in the sidebar, check that out too!
 
 **Important! Please read this page in its entirety before making any code changes.** It contains lots of really important information. You should also read through our [guide to making pull requests](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR).
 
@@ -29,9 +29,9 @@ If you'd like to help out with the Android project, please follow the following 
 
 ### 2. Set up your development environment
 
-- Follow the instructions on [[Installing Oppia Android|Installing-Oppia-Android]] to prepare your developer environment and install Oppia Android. **Note:** Make sure you have good Internet connectivity when developing on Oppia Android, since this project uses third party libraries which are needed to build the app.
+- Follow the instructions on [Installing Oppia Android](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android) to prepare your developer environment and install Oppia Android. **Note:** Make sure you have good Internet connectivity when developing on Oppia Android, since this project uses third party libraries which are needed to build the app.
 
-- Familiarize yourself with the resources linked to from the wiki sidebar, especially the [overview of the codebase](https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture), the [[coding style guide|Coding-style-guide]], and the [[Frequent Errors and Solutions|Frequent-Errors-and-Solutions]]. (You don't have to read everything else right now, but it's a good idea to be aware of what's available, so that you can refer to it later if needed.)
+- Familiarize yourself with the resources linked to from the wiki sidebar, especially the [overview of the codebase](https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture), the [coding style guide](https://github.com/oppia/oppia-android/wiki/Coding-style-guide), and the [Frequent Errors and Solutions](https://github.com/oppia/oppia-android/wiki/Frequent-Errors-and-Solutions). (You don't have to read everything else right now, but it's a good idea to be aware of what's available, so that you can refer to it later if needed.)
 
 
 ### 3. Pick your first starter issue!
@@ -41,7 +41,7 @@ We suggest choosing your first issue from the [list of good first issues](https:
 When you've found an issue you'd like to tackle:
 
 - Leave a comment that describes in detail how you'll tackle it (e.g. explain which file(s) you would modify and what changes you would make), and @-mention the team lead (typically **@BenHenning**). If your explanation makes sense, we'll assign the issue to you. 
-- Submit a PR, following the [[guidance on submitting a PR|Guidance-on-submitting-a-PR]]. (Consider bookmarking this guide in your browser for easy reference. We also suggest bookmarking the ["my issues" page](https://github.com/issues/assigned) so that you can keep track of the issues assigned to you.)
+- Submit a PR, following the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). (Consider bookmarking this guide in your browser for easy reference. We also suggest bookmarking the ["my issues" page](https://github.com/issues/assigned) so that you can keep track of the issues assigned to you.)
 - If you run into any problems, feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community, or [request a mentor](https://forms.gle/udsRP4WQgLcez9Zm8) if you'd like individual support.
 
 You are also welcome to tackle non-starter issues, but for those, you might need to be more independent, because we might not know how to solve them either!
