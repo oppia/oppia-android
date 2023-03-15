@@ -23,6 +23,10 @@
   <string name="force_network_type_cellular_network" translatable="false">Cellular</string>
   <string name="force_network_type_no_network" translatable="false">No network</string>
   <string name="mark_chapters_completed_activity_title" translatable="false">Mark Chapters Completed</string>
+  <string name="mark_chapters_completed_confirm_setting_dialog_title" translatable="false">Confirm Chapter Completions</string>
+  <string name="mark_chapters_completed_confirm_setting_dialog_message" translatable="false">The following chapters will be marked as finished: %s. Note that this is irreversible and will erase any partial lesson progress.</string>
+  <string name="mark_chapters_completed_confirm_setting_dialog_cancel_button_text" translatable="false">Cancel</string>
+  <string name="mark_chapters_completed_confirm_setting_dialog_confirm_button_text" translatable="false">Confirm completions</string>
   <string name="mark_stories_completed_activity_title" translatable="false">Mark Stories Completed</string>
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
@@ -74,11 +78,23 @@
   <string name="learner_analytics_copied_to_clipboard_label" translatable="false">Copied</string>
   <!-- Learner Analytics Sync Statuses -->
   <string name="learner_analytics_sync_status_default" translatable="false">No data has been collected yet to upload.</string>
+  <string name="learner_analytics_sync_status_waiting_to_upload" translatable="false">Waiting to schedule data uploading worker…</string>
   <string name="learner_analytics_sync_status_data_uploading" translatable="false">Profile data is currently uploading…</string>
   <string name="learner_analytics_sync_status_data_uploaded" translatable="false">All profile data has been uploaded.</string>
-  <string name="learner_analytics_sync_status_network_error" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
+  <string name="learner_analytics_sync_status_upload_error" translatable="false">Something went wrong when trying to upload events.</string>
+  <string name="learner_analytics_sync_status_no_internet_connectivity" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
   <string name="learner_analytics_device_id_clipboard_label_description" translatable="false">%s installation ID</string>
   <string name="learner_analytics_learner_id_clipboard_label_description" translatable="false">%s\'s learner ID</string>
+  <string name="learner_analytics_share_ids_and_events_button_text" translatable="false">Share IDs &amp; Logs</string>
+  <string name="learner_analytics_upload_logs_now_button_text" translatable="false">Upload Logs</string>
+  <string name="learner_analytics_learner_events_waiting_upload" translatable="false">Number of \'%s\' events awaiting upload:</string>
+  <string name="learner_analytics_learner_events_uploaded" translatable="false">Number of \'%s\' events uploaded:</string>
+  <string name="learner_analytics_uncategorized_events_waiting_upload" translatable="false">Number of uncategorized events awaiting upload:</string>
+  <string name="learner_analytics_uncategorized_events_uploaded" translatable="false">Number of uncategorized events uploaded:</string>
+  <string name="learner_analytics_unknown_event_count" translatable="false">Unknown</string>
+  <!-- Temporary learner strings. -->
+  <string name="temporary_translate_to_swahili" translatable="false">Badilisha lugha hadi Kiswahili</string>
+  <string name="temporary_translate_to_english" translatable="false">Switch lesson to English</string>
   <!-- General test activity strings. -->
   <string name="test_activity_label" translatable="false">Test-only activity</string>
 </resources>

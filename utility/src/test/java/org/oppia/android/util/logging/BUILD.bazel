@@ -3,7 +3,25 @@ Tests for logging utilities.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//:oppia_android_test.bzl", "oppia_android_test")
+
+kt_android_library(
+    name = "sync_status_manager_test_base",
+    testonly = True,
+    srcs = ["SyncStatusManagerTestBase.kt"],
+    visibility = [
+        "//testing/src/test/java/org/oppia/android/testing/logging:__pkg__",
+    ],
+    deps = [
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+        "//testing/src/main/java/org/oppia/android/testing/networking:network_connection_test_util",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
+    ],
+)
 
 oppia_android_test(
     name = "EventBundleCreatorTest",
@@ -106,6 +124,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         ":dagger",
+        ":sync_status_manager_test_base",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

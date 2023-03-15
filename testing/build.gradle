@@ -54,6 +54,7 @@ def filesToExclude = [
     '**/*InitializeDefaultLocaleRuleCustomContextTest*.kt',
     '**/*InitializeDefaultLocaleRuleOmissionTest*.kt',
     '**/*InitializeDefaultLocaleRuleTest*.kt',
+    '**/*TestSyncStatusManagerTest*.kt', // This depends on another module's test base.
 ]
 tasks.withType(SourceTask.class).configureEach {
   it.exclude(filesToExclude)
