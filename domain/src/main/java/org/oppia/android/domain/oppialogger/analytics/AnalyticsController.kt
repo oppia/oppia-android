@@ -127,7 +127,7 @@ class AnalyticsController @Inject constructor(
     timestamp: Long
   ) {
     CoroutineScope(blockingDispatcher).async {
-      uploadOrCacheEventLog(createEventLog(profileId, timestamp, eventContext, priority))
+      uploadOrCacheEventLog(createEventLog(timestamp, eventContext, priority))
     }.invokeOnCompletion { failure ->
       failure?.let {
         consoleLogger.w(
@@ -140,8 +140,7 @@ class AnalyticsController @Inject constructor(
   }
 
   /** Returns an event log containing relevant data for event reporting. */
-  private suspend fun createEventLog(
-    profileId: ProfileId?,
+  private fun createEventLog(
     timestamp: Long,
     context: EventLog.Context,
     priority: Priority
@@ -150,16 +149,6 @@ class AnalyticsController @Inject constructor(
       this.timestamp = timestamp
       this.priority = priority
       this.context = context
-      profileId?.let { this.profileId = it }
-      resolveProfileOperation(
-        profileId, translationController::getAppLanguageSelection
-      )?.let { this.appLanguageSelection = it }
-      resolveProfileOperation(
-        profileId, translationController::getWrittenTranslationContentLanguageSelection
-      )?.let { this.writtenTranslationLanguageSelection = it }
-      resolveProfileOperation(
-        profileId, translationController::getAudioTranslationContentLanguageSelection
-      )?.let { this.audioTranslationLanguageSelection = it }
     }.build()
   }
 
