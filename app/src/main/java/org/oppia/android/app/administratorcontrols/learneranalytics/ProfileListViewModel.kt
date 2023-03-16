@@ -23,24 +23,28 @@ class ProfileListViewModel private constructor(
   private val oppiaLogger: OppiaLogger,
   private val deviceIdItemViewModelFactory: DeviceIdItemViewModel.Factory,
   private val syncStatusItemViewModelFactory: SyncStatusItemViewModel.Factory,
-  private val profileLearnerIdItemViewModelFactory: ProfileLearnerIdItemViewModel.Factory,
-  private val shareIdsViewModelFactory: ControlButtonsViewModel.Factory
+  private val profileLearnerIdItemViewModelFactory: ProfileLearnerIdItemViewModel.Factory
 ) : ObservableViewModel() {
   /** The list of [ProfileListItemViewModel] to display. */
   val profileModels: LiveData<List<ProfileListItemViewModel>> by lazy {
-    Transformations.map(profileManagementController.getProfiles().toLiveData(), ::processProfiles)
+    Transformations.map(
+      profileManagementController.getProfiles().toLiveData(), ::processProfiles
+    )
   }
 
   private fun processProfiles(
     profilesResult: AsyncResult<List<Profile>>
   ): List<ProfileListItemViewModel> {
     val deviceIdViewModel = deviceIdItemViewModelFactory.create()
+    val syncStatusViewModel = syncStatusItemViewModelFactory.create()
 
     val learnerIdModels = when (profilesResult) {
       is AsyncResult.Pending -> listOf()
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ProfileListViewModel", "Failed to retrieve the list of profiles", profilesResult.error
+          "ProfileAndDeviceIdViewModel",
+          "Failed to retrieve the list of profiles",
+          profilesResult.error
         )
         listOf()
       }
@@ -52,10 +56,7 @@ class ProfileListViewModel private constructor(
       }
     }
 
-    val syncStatusViewModel = syncStatusItemViewModelFactory.create()
-    val displayViewModels = listOf(deviceIdViewModel) + learnerIdModels + syncStatusViewModel
-    val controlButtonsViewModel = shareIdsViewModelFactory.create(displayViewModels)
-    return displayViewModels + controlButtonsViewModel
+    return listOf(deviceIdViewModel) + learnerIdModels + listOf(syncStatusViewModel)
   }
 
   /**
@@ -79,10 +80,7 @@ class ProfileListViewModel private constructor(
     LEARNER_ID,
 
     /** Corresponds to [SyncStatusItemViewModel]. */
-    SYNC_STATUS,
-
-    /** Corresponds to [ControlButtonsViewModel]. */
-    SHARE_IDS
+    SYNC_STATUS
   }
 
   /** Factory to create new [ProfileListViewModel]s. */
@@ -91,8 +89,7 @@ class ProfileListViewModel private constructor(
     private val oppiaLogger: OppiaLogger,
     private val deviceIdItemViewModelFactory: DeviceIdItemViewModel.Factory,
     private val syncStatusItemViewModelFactory: SyncStatusItemViewModel.Factory,
-    private val profileLearnerIdItemViewModelFactory: ProfileLearnerIdItemViewModel.Factory,
-    private val controlButtonsViewModelFactory: ControlButtonsViewModel.Factory
+    private val profileLearnerIdItemViewModelFactory: ProfileLearnerIdItemViewModel.Factory
   ) {
     /** Returns a new [ProfileListViewModel]. */
     fun create(): ProfileListViewModel {
@@ -101,8 +98,7 @@ class ProfileListViewModel private constructor(
         oppiaLogger,
         deviceIdItemViewModelFactory,
         syncStatusItemViewModelFactory,
-        profileLearnerIdItemViewModelFactory,
-        controlButtonsViewModelFactory
+        profileLearnerIdItemViewModelFactory
       )
     }
   }

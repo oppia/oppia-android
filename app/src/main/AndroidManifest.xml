@@ -194,10 +194,8 @@
       android:name=".app.story.StoryActivity"
       android:label="@string/story_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.testing.AppCompatCheckBoxBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.AudioFragmentTestActivity" />
     <activity android:name=".app.testing.BindableAdapterTestActivity" />
-    <activity android:name=".app.testing.CircularProgressIndicatorAdaptersTestActivity" />
     <activity android:name=".app.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".app.testing.DragDropTestActivity" />
     <activity android:name=".app.testing.DrawableBindingAdaptersTestActivity" />

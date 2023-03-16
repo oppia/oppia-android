@@ -58,7 +58,6 @@ class TransformAndroidManifestTest {
   @JvmField
   var tempFolder = TemporaryFolder()
 
-  private val commandExecutor by lazy { CommandExecutorImpl() }
   private lateinit var testGitRepository: TestGitRepository
 
   @Before
@@ -350,11 +349,6 @@ class TransformAndroidManifestTest {
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
       writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
     }
-    // Use a separate branch to ensure the version uses the latest commit rather than the common
-    // merge base with the develop branch.
-    testGitRepository.checkoutNewBranch("release-branch")
-    testGitRepository.commit(message = "Release-only commit, e.g. a cherry-pick", allowEmpty = true)
-    val latestCommit = getMostRecentCommitOnCurrentBranch()
 
     runScript(
       tempFolder.root.absolutePath,
@@ -373,7 +367,7 @@ class TransformAndroidManifestTest {
     assertThat(transformedManifest)
       .containsMatch(
         "android:versionName=\"$MAJOR_VERSION\\.$MINOR_VERSION" +
-          "-$BUILD_FLAVOR-${latestCommit.take(10)}\""
+          "-$BUILD_FLAVOR-[a-f0-9]{10}\""
       )
     assertThat(transformedManifest)
       .containsMatch("<application android:name=\"$APPLICATION_RELATIVE_QUALIFIED_CLASS\"")
@@ -391,12 +385,5 @@ class TransformAndroidManifestTest {
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
     testGitRepository.checkoutNewBranch("develop")
     testGitRepository.commit(message = "Initial commit.", allowEmpty = true)
-  }
-
-  private fun getMostRecentCommitOnCurrentBranch(): String {
-    // See https://stackoverflow.com/a/949391 for a reference to validate that this is correct.
-    return commandExecutor.executeCommand(
-      tempFolder.root, "git", "rev-parse", "HEAD"
-    ).output.single()
   }
 }

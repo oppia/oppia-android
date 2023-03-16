@@ -309,8 +309,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Thinking in fractions Q3": {
         "content": {
@@ -454,12 +453,10 @@
           "solution": {
             "answer_is_exclusive": false,
             "correct_answer": {
-              "fraction": {
-                "isNegative": false,
-                "wholeNumber": 0,
-                "numerator": 5,
-                "denominator": 8
-              }
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 5,
+              "denominator": 8
             },
             "explanation": {
               "content_id": "solution",
@@ -669,8 +666,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Thinking in fractions Q2": {
         "content": {
@@ -859,12 +855,10 @@
           "solution": {
             "answer_is_exclusive": false,
             "correct_answer": {
-              "fraction": {
-                "isNegative": false,
-                "wholeNumber": 0,
-                "numerator": 4,
-                "denominator": 9
-              }
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 4,
+              "denominator": 9
             },
             "explanation": {
               "content_id": "solution",
@@ -1086,8 +1080,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Thinking in fractions Q1": {
         "content": {
@@ -1275,12 +1268,10 @@
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
-              "fraction": {
-                "isNegative": false,
-                "wholeNumber": 0,
-                "numerator": 7,
-                "denominator": 9
-              }
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 7,
+              "denominator": 9
             },
             "explanation": {
               "content_id": "solution",
@@ -1511,8 +1502,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Thinking in fractions Q4": {
         "content": {
@@ -1673,12 +1663,10 @@
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
-              "fraction": {
-                "isNegative": false,
-                "wholeNumber": 0,
-                "numerator": 3,
-                "denominator": 4
-              }
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 3,
+              "denominator": 4
             },
             "explanation": {
               "content_id": "solution",
@@ -1906,8 +1894,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Matthew gets conned": {
         "content": {
@@ -2195,12 +2182,10 @@
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
-              "fraction": {
-                "isNegative": false,
-                "wholeNumber": 0,
-                "numerator": 3,
-                "denominator": 4
-              }
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 3,
+              "denominator": 4
             },
             "explanation": {
               "content_id": "solution",
@@ -2671,8 +2656,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Into the Bakery": {
         "content": {
@@ -2875,8 +2859,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Question 4": {
         "content": {
@@ -3148,12 +3131,10 @@
           "solution": {
             "answer_is_exclusive": false,
             "correct_answer": {
-              "fraction": {
-                "isNegative": false,
-                "wholeNumber": 0,
-                "numerator": 8,
-                "denominator": 16
-              }
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 8,
+              "denominator": 16
             },
             "explanation": {
               "content_id": "solution",
@@ -3465,8 +3446,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Question 5": {
         "content": {
@@ -3901,8 +3881,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Question 2": {
         "content": {
@@ -4156,12 +4135,10 @@
           "solution": {
             "answer_is_exclusive": false,
             "correct_answer": {
-              "fraction": {
-                "isNegative": false,
-                "wholeNumber": 0,
-                "numerator": 2,
-                "denominator": 8
-              }
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 2,
+              "denominator": 8
             },
             "explanation": {
               "content_id": "solution",
@@ -4545,8 +4522,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Question 3": {
         "content": {
@@ -4824,12 +4800,10 @@
           "solution": {
             "answer_is_exclusive": false,
             "correct_answer": {
-              "fraction": {
-                "isNegative": false,
-                "wholeNumber": 0,
-                "numerator": 1,
-                "denominator": 8
-              }
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 1,
+              "denominator": 8
             },
             "explanation": {
               "content_id": "solution",
@@ -5267,8 +5241,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Question 1": {
         "content": {
@@ -5544,12 +5517,10 @@
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
-              "fraction": {
-                "isNegative": false,
-                "wholeNumber": 0,
-                "numerator": 4,
-                "denominator": 9
-              }
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 4,
+              "denominator": 9
             },
             "explanation": {
               "content_id": "solution",
@@ -5972,8 +5943,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Congratulations": {
         "content": {
@@ -6024,8 +5994,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Final Test A": {
         "content": {
@@ -6204,8 +6173,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Final Test B": {
         "content": {
@@ -6384,8 +6352,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Final Test C": {
         "content": {
@@ -6564,8 +6531,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Final Test B second try": {
         "content": {
@@ -6796,8 +6762,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "Happy ending": {
         "content": {
@@ -6860,8 +6825,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       }
     },
     "objective": "Learn how to write fractions when the parts of a picture are not equal",

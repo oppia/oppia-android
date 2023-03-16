@@ -64,7 +64,6 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -93,13 +92,14 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class RevisionCardActivityLocalTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   private val internalProfileId = 1
   private val fractionsSubtopicListSize: Int = 4
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Before
   fun setUp() {
@@ -117,7 +117,6 @@ class RevisionCardActivityLocalTest {
         fractionsSubtopicListSize
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_REVISION_CARD)

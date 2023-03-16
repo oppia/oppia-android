@@ -50,9 +50,8 @@ class DeveloperOptionsTestActivity :
 
   override fun routeToMarkChaptersCompleted() {
     startActivity(
-      MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-        context = this, internalProfileId, showConfirmationNotice = false
-      )
+      MarkChaptersCompletedActivity
+        .createMarkChaptersCompletedIntent(this, internalProfileId)
     )
   }
 

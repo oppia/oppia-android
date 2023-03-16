@@ -62,7 +62,6 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
@@ -114,14 +113,23 @@ private const val TEST_SUB_TOPIC_ID = 1
   qualifiers = "port-xxhdpi"
 )
 class ViewEventLogsFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var analyticsController: AnalyticsController
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
@@ -129,7 +137,6 @@ class ViewEventLogsFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     logMultipleEvents()
-    testCoroutineDispatchers.runCurrent()
   }
 
   @After
@@ -482,28 +489,22 @@ class ViewEventLogsFragmentTest {
   /** Logs multiple event logs so that the recyclerview in [ViewEventLogsFragment] gets populated */
   private fun logMultipleEvents() {
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenProfileChooserContext(), profileId = null
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenProfileChooserContext())
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 10000)
-    analyticsController.logImportantEvent(
-      eventContext = oppiaLogger.createOpenHomeContext(), profileId = null
-    )
+    oppiaLogger.logImportantEvent(eventContext = oppiaLogger.createOpenHomeContext())
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 20000)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID), profileId = null
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID))
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 30000)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID), profileId = null
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 40000)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID), profileId = null
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
   }
 

@@ -45,6 +45,7 @@ class ExplorationActivity :
   RequestVoiceOverIconSpotlightListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
 
@@ -52,7 +53,7 @@ class ExplorationActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val params = intent.extractParams()
+    val params = intent.getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
     explorationActivityPresenter.handleOnCreate(
       this,
       params.profileId,
@@ -102,9 +103,6 @@ class ExplorationActivity :
         decorateWithScreenName(EXPLORATION_ACTIVITY)
       }
     }
-
-    private fun Intent.extractParams() =
-      getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
   }
 
   override fun onBackPressed() {
@@ -164,8 +162,7 @@ class ExplorationActivity :
         explorationId,
         state,
         helpIndex,
-        writtenTranslationContext,
-        intent.extractParams().profileId
+        writtenTranslationContext
       )
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }

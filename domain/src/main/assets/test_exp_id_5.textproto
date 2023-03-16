@@ -37,12 +37,6 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Sahihi! </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -58,12 +52,6 @@ states {
           key: "ar"
           value {
             html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\261\331\202\331\205\331\212 \331\212\331\205\330\253\331\204 \331\210\330\247\330\255\330\257 \330\262\330\247\330\246\330\257 \330\247\330\253\331\206\331\212\331\206 \330\257\331\210\331\206 \330\245\330\271\330\247\330\257\330\251 \330\252\330\261\330\252\331\212\330\250 \330\247\331\204\331\205\330\263\331\205\331\210\330\255 \330\250\331\207\330\237 \331\205\331\204\330\247\330\255\330\270\330\251: \331\212\330\252\331\205 \330\247\331\204\330\252\330\271\330\247\331\205\331\204 \331\205\330\271 \330\247\331\204\330\247\331\206\331\202\330\263\330\247\331\205\330\247\330\252 \331\203\331\203\330\263\331\210\330\261 \331\204\331\207\330\260\331\207 \330\247\331\204\331\210\331\204\330\247\331\212\330\251. </ p>"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Je! Ni usemi gani wa nambari unawakilisha moja pamoja na mbili bila kupanga upya kuruhusiwa? Kumbuka: Mgawanyiko unachukuliwa kama sehemu za hali hii. </p>"
           }
         }
       }
@@ -83,12 +71,6 @@ states {
             html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -104,35 +86,6 @@ states {
           key: "ar"
           value {
             html: "\330\245\330\257\330\256\330\247\331\204 \330\252\330\271\330\250\331\212\330\261 \330\261\331\202\331\205\331\212."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Ingiza usemi wa nambari."
-          }
-        }
-      }
-    }
-    written_translations {
-      key: "solution"
-      value {
-        translation_mapping {
-          key: "pt"
-          value {
-            html: "A resposta \303\251 1 + 2."
-          }
-        }
-        translation_mapping {
-          key: "ar"
-          value {
-            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 1 + 2."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Jibu ni 1 + 2."
           }
         }
       }
@@ -156,15 +109,6 @@ states {
             }
           }
           rule_type: "MatchesExactlyWith"
-        }
-      }
-      solution {
-        explanation {
-          html: "The answer is 1 + 2."
-          content_id: "solution"
-        }
-        correct_answer {
-          math_expression: "1 + 2"
         }
       }
       default_outcome {
@@ -233,12 +177,6 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Sahihi! </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -256,12 +194,6 @@ states {
             html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\261\331\202\331\205\331\212 \331\212\331\205\330\253\331\204 \331\210\330\247\330\255\330\257 \330\262\330\247\330\246\330\257 \330\247\330\253\331\206\331\212\331\206\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\245\330\271\330\247\330\257\330\251 \330\252\330\261\330\252\331\212\330\250 \330\247\331\204\330\252\331\210\330\262\331\212\330\271 \331\210\330\247\331\204\330\262\331\205\331\204\331\212\330\251 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207\330\247. </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Je! Ni usemi gani wa nambari unawakilisha moja pamoja na mbili? Kumbuka kuwa kupanga upya na kuhusika kunaruhusiwa. </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -277,35 +209,6 @@ states {
           key: "ar"
           value {
             html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"
-          }
-        }
-      }
-    }
-    written_translations {
-      key: "solution"
-      value {
-        translation_mapping {
-          key: "pt"
-          value {
-            html: "A resposta \303\251 1 + 2."
-          }
-        }
-        translation_mapping {
-          key: "ar"
-          value {
-            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 1 + 2."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Jibu ni 1 + 2."
           }
         }
       }
@@ -329,15 +232,6 @@ states {
             }
           }
           rule_type: "MatchesUpToTrivialManipulations"
-        }
-      }
-      solution {
-        explanation {
-          html: "The answer is 1 + 2."
-          content_id: "solution"
-        }
-        correct_answer {
-          math_expression: "1 + 2"
         }
       }
       default_outcome {
@@ -389,12 +283,6 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p>Sawa!</p>"
-          }
-        }
       }
     }
     written_translations {
@@ -412,12 +300,6 @@ states {
             html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\261\331\202\331\205\331\212 \331\212\331\205\330\253\331\204 \331\210\330\247\330\255\330\257 \330\262\330\247\330\246\330\257 \330\247\330\253\331\206\331\212\331\206\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\243\331\212 \330\252\330\271\330\250\331\212\330\261 \331\205\330\271\330\247\330\257\331\204 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207. </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Je! Ni usemi gani wa nambari unawakilisha moja pamoja na mbili? Kumbuka kuwa usemi wowote sawa unaruhusiwa. </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -433,35 +315,6 @@ states {
           key: "ar"
           value {
             html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"
-          }
-        }
-      }
-    }
-    written_translations {
-      key: "solution"
-      value {
-        translation_mapping {
-          key: "pt"
-          value {
-            html: "A resposta \303\251 1 + 2."
-          }
-        }
-        translation_mapping {
-          key: "ar"
-          value {
-            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 1 + 2."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Jibu ni 1 + 2."
           }
         }
       }
@@ -485,15 +338,6 @@ states {
             }
           }
           rule_type: "IsEquivalentTo"
-        }
-      }
-      solution {
-        explanation {
-          html: "The answer is 1 + 2."
-          content_id: "solution"
-        }
-        correct_answer {
-          math_expression: "1 + 2"
         }
       }
       default_outcome {
@@ -545,12 +389,6 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Sahihi! </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -568,12 +406,6 @@ states {
             html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\254\330\250\330\261\331\212 \331\212\331\205\330\253\331\204 \331\206\330\252\330\247\330\254 (x + 1) (x-2)\330\237 \331\205\331\204\330\247\330\255\330\270\330\251: \331\212\330\252\331\205 \330\247\331\204\330\252\330\271\330\247\331\205\331\204 \331\205\330\271 \330\247\331\204\330\247\331\206\331\202\330\263\330\247\331\205\330\247\330\252 \331\203\331\203\330\263\331\210\330\261 \331\204\331\207\330\260\331\207 \330\247\331\204\331\210\331\204\330\247\331\212\330\251. </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p>Je, usemi gani wa aljebra unawakilisha bidhaa ya (x+1)(x-2)? Kumbuka: mgawanyiko unachukuliwa kama sehemu za jimbo hili.</p>"
-          }
-        }
       }
     }
     written_translations {
@@ -589,35 +421,6 @@ states {
           key: "ar"
           value {
             html: "<p> \331\207\330\260\331\207 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"
-          }
-        }
-      }
-    }
-    written_translations {
-      key: "solution"
-      value {
-        translation_mapping {
-          key: "pt"
-          value {
-            html: "A resposta \303\251 x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "ar"
-          value {
-            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Jibu ni x^2 - x - 2."
           }
         }
       }
@@ -641,15 +444,6 @@ states {
             }
           }
           rule_type: "MatchesExactlyWith"
-        }
-      }
-      solution {
-        explanation {
-          html: "The answer is x^2 - x - 2."
-          content_id: "solution"
-        }
-        correct_answer {
-          math_expression: "x^2 - x - 2"
         }
       }
       default_outcome {
@@ -717,12 +511,6 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Sahihi! </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -740,12 +528,6 @@ states {
             html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\254\330\250\330\261\331\212 \331\212\331\205\330\253\331\204 \331\206\330\252\330\247\330\254 (x + 1) (x-2)\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\245\330\271\330\247\330\257\330\251 \330\252\330\261\330\252\331\212\330\250 \330\247\331\204\330\252\331\210\330\262\331\212\330\271 \331\210\330\247\331\204\330\262\331\205\331\204\331\212\330\251 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207\330\247. </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Nini usemi wa algebraic unawakilisha bidhaa ya (x+1) (x-2)? Kumbuka kuwa kupanga upya na kuhusika kunaruhusiwa. </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -761,35 +543,6 @@ states {
           key: "ar"
           value {
             html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p>Jibu hilo si sahihi. Jaribu tena.</p>"
-          }
-        }
-      }
-    }
-    written_translations {
-      key: "solution"
-      value {
-        translation_mapping {
-          key: "pt"
-          value {
-            html: "A resposta \303\251 x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "ar"
-          value {
-            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Jibu ni x^2 - x - 2."
           }
         }
       }
@@ -813,15 +566,6 @@ states {
             }
           }
           rule_type: "MatchesUpToTrivialManipulations"
-        }
-      }
-      solution {
-        explanation {
-          html: "The answer is x^2 - x - 2."
-          content_id: "solution"
-        }
-        correct_answer {
-          math_expression: "x^2 - x - 2"
         }
       }
       default_outcome {
@@ -883,12 +627,6 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Sahihi! </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -906,12 +644,6 @@ states {
             html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\254\330\250\330\261\331\212 \331\212\331\205\330\253\331\204 \331\206\330\252\330\247\330\254 (x + 1) (x-2)\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\243\331\212 \330\252\330\271\330\250\331\212\330\261 \331\205\330\271\330\247\330\257\331\204 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207. </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Nini usemi wa algebraic unawakilisha bidhaa ya (x+1) (x-2)? Kumbuka kuwa usemi wowote sawa unaruhusiwa. </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -927,35 +659,6 @@ states {
           key: "ar"
           value {
             html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"
-          }
-        }
-      }
-    }
-    written_translations {
-      key: "solution"
-      value {
-        translation_mapping {
-          key: "pt"
-          value {
-            html: "A resposta \303\251 x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "ar"
-          value {
-            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Jibu ni x^2 - x - 2."
           }
         }
       }
@@ -979,15 +682,6 @@ states {
             }
           }
           rule_type: "IsEquivalentTo"
-        }
-      }
-      solution {
-        explanation {
-          html: "The answer is x^2 - x - 2."
-          content_id: "solution"
-        }
-        correct_answer {
-          math_expression: "x^2 - x - 2"
         }
       }
       default_outcome {
@@ -1049,12 +743,6 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Sahihi! </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -1072,12 +760,6 @@ states {
             html: "<p> \331\205\330\247 \331\207\331\212 \330\247\331\204\331\205\330\271\330\247\330\257\331\204\330\251 \330\247\331\204\330\254\330\250\330\261\331\212\330\251 \330\252\331\205\330\253\331\204 \331\203\331\205\331\212\330\251 \330\247\330\253\331\206\331\212\331\206 \331\205\331\206 y \331\210 (x + 1) (x-2)\330\237 \331\205\331\204\330\247\330\255\330\270\330\251: \331\212\330\252\331\205 \330\247\331\204\330\252\330\271\330\247\331\205\331\204 \331\205\330\271 \330\247\331\204\330\247\331\206\331\202\330\263\330\247\331\205\330\247\330\252 \331\203\331\203\330\263\331\210\330\261 \331\204\331\207\330\260\331\207 \330\247\331\204\331\210\331\204\330\247\331\212\330\251. </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Je! Equation ya algebraic inawakilisha idadi ya y mbili na (x+1) (x-2)? Kumbuka: Mgawanyiko unachukuliwa kama sehemu za hali hii. </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -1093,35 +775,6 @@ states {
           key: "ar"
           value {
             html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"
-          }
-        }
-      }
-    }
-    written_translations {
-      key: "solution"
-      value {
-        translation_mapping {
-          key: "pt"
-          value {
-            html: "A resposta \303\251 2y = x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "ar"
-          value {
-            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 2y = x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Jibu ni 2y = x^2 - x - 2."
           }
         }
       }
@@ -1145,15 +798,6 @@ states {
             }
           }
           rule_type: "MatchesExactlyWith"
-        }
-      }
-      solution {
-        explanation {
-          html: "The answer is 2y = x^2 - x - 2."
-          content_id: "solution"
-        }
-        correct_answer {
-          math_expression: "2y = x^2 - x - 2"
         }
       }
       default_outcome {
@@ -1224,12 +868,6 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Sahihi! </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -1247,12 +885,6 @@ states {
             html: "<p> \331\205\330\247 \330\247\331\204\331\205\330\271\330\247\330\257\331\204\330\251 \330\247\331\204\330\254\330\250\330\261\331\212\330\251 \330\247\331\204\330\252\331\212 \330\252\331\205\330\253\331\204 \331\203\331\205\331\212\330\251 \330\247\330\253\331\206\331\212\331\206 y \331\210 (x + 1) (x-2)\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206\331\207 \331\212\331\217\330\263\331\205\330\255 \330\250\330\245\330\271\330\247\330\257\330\251 \330\247\331\204\330\252\330\261\330\252\331\212\330\250 \330\247\331\204\330\252\330\250\330\247\330\257\331\204\331\212 \331\210\330\247\331\204\330\261\330\247\330\250\330\267\331\212. </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Je! Equation ya algebraic inawakilisha idadi ya y mbili na (x+1) (x-2)? Kumbuka kuwa kupanga upya na kuhusika kunaruhusiwa. </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -1268,35 +900,6 @@ states {
           key: "ar"
           value {
             html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"
-          }
-        }
-      }
-    }
-    written_translations {
-      key: "solution"
-      value {
-        translation_mapping {
-          key: "pt"
-          value {
-            html: "A resposta \303\251 2y = x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "ar"
-          value {
-            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 2y = x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Jibu ni 2y = x^2 - x - 2."
           }
         }
       }
@@ -1320,15 +923,6 @@ states {
             }
           }
           rule_type: "MatchesUpToTrivialManipulations"
-        }
-      }
-      solution {
-        explanation {
-          html: "The answer is 2y = x^2 - x - 2."
-          content_id: "solution"
-        }
-        correct_answer {
-          math_expression: "2y = x^2 - x - 2"
         }
       }
       default_outcome {
@@ -1393,12 +987,6 @@ states {
             html: "<p> \330\265\330\255\331\212\330\255! </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Sahihi! </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -1416,12 +1004,6 @@ states {
             html: "<p> \331\205\330\247 \331\207\331\212 \330\247\331\204\331\205\330\271\330\247\330\257\331\204\330\251 \330\247\331\204\330\254\330\250\330\261\331\212\330\251 \330\252\331\205\330\253\331\204 \331\203\331\205\331\212\330\251 \330\247\330\253\331\206\331\212\331\206 \331\205\331\206 y \331\210 (x + 1) (x-2)\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\243\331\212 \330\252\330\271\330\250\331\212\330\261 \331\205\330\271\330\247\330\257\331\204 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207\330\214 \330\250\331\205\330\247 \331\201\331\212 \330\260\331\204\331\203 \330\245\330\271\330\247\330\257\330\251 \330\252\330\261\330\252\331\212\330\250 \330\255\331\210\331\204 \330\271\331\204\330\247\331\205\330\251 \330\247\331\204\330\252\330\263\330\247\331\210\331\212. </ p>"
           }
         }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Je! Equation ya algebraic inawakilisha idadi ya y mbili na (x+1) (x-2)? Kumbuka kuwa usemi wowote unaofanana unaruhusiwa, pamoja na kupanga upya karibu na ishara sawa. </p>"
-          }
-        }
       }
     }
     written_translations {
@@ -1437,35 +1019,6 @@ states {
           key: "ar"
           value {
             html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "<p> Jibu hilo sio sahihi. Jaribu tena. </p>"
-          }
-        }
-      }
-    }
-    written_translations {
-      key: "solution"
-      value {
-        translation_mapping {
-          key: "pt"
-          value {
-            html: "A resposta \303\251 2y = x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "ar"
-          value {
-            html: "\330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 2y = x^2 - x - 2."
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Jibu ni 2y = x^2 - x - 2."
           }
         }
       }
@@ -1489,15 +1042,6 @@ states {
             }
           }
           rule_type: "IsEquivalentTo"
-        }
-      }
-      solution {
-        explanation {
-          html: "The answer is 2y = x^2 - x - 2."
-          content_id: "solution"
-        }
-        correct_answer {
-          math_expression: "2y = x^2 - x - 2"
         }
       }
       default_outcome {
@@ -1550,12 +1094,6 @@ states {
           key: "ar"
           value {
             html: "\330\252\331\207\330\247\331\206\331\212\331\206\330\247\330\214 \331\204\331\202\330\257 \330\247\331\206\330\252\331\207\331\212\330\252!"
-          }
-        }
-        translation_mapping {
-          key: "sw"
-          value {
-            html: "Hongera, umemaliza!"
           }
         }
       }

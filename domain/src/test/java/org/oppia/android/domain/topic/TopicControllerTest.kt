@@ -439,7 +439,7 @@ class TopicControllerTest {
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
     assertThat(ephemeralConceptCard.conceptCard.explanation.html)
-      .contains("Explanation with <b>rich text</b>.")
+      .isEqualTo("Explanation with <b>rich text</b>.")
   }
 
   @Test

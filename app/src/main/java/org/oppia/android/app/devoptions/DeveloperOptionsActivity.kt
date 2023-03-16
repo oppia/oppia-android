@@ -47,9 +47,8 @@ class DeveloperOptionsActivity :
 
   override fun routeToMarkChaptersCompleted() {
     startActivity(
-      MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-        context = this, internalProfileId, showConfirmationNotice = false
-      )
+      MarkChaptersCompletedActivity
+        .createMarkChaptersCompletedIntent(this, internalProfileId)
     )
   }
 
@@ -86,6 +85,10 @@ class DeveloperOptionsActivity :
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
       }
+    }
+
+    fun getIntentKey(): String {
+      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
   }
 

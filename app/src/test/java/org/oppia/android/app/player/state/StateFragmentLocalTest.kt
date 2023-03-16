@@ -2,13 +2,8 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
-import android.text.Spannable
-import android.text.Spanned
-import android.text.style.ClickableSpan
-import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
@@ -19,7 +14,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
-import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
@@ -79,7 +73,6 @@ import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.ALGEBRAIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
@@ -87,10 +80,8 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -137,7 +128,6 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -169,8 +159,8 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -190,23 +180,43 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StateFragmentLocalTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StateFragmentLocalTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   private val AUDIO_URL_1 =
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var editTextInputAction: EditTextInputAction
-  @Inject lateinit var accessibilityManager: FakeAccessibilityService
-  @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
-  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  @field:BackgroundDispatcher
+  lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+
+  @Inject
+  lateinit var accessibilityManager: FakeAccessibilityService
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
@@ -219,7 +229,7 @@ class StateFragmentLocalTest {
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
     val executorService = MockGlideExecutor.newTestExecutor(
-      CoroutineExecutorService(backgroundDispatcher)
+      CoroutineExecutorService(backgroundCoroutineDispatcher)
     )
     Glide.init(
       context,
@@ -427,7 +437,7 @@ class StateFragmentLocalTest {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughTestState1()
-      submitFractionAnswer(text = "1/2")
+      submitFractionAnswer(answerText = "1/2")
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
@@ -1263,7 +1273,7 @@ class StateFragmentLocalTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText("This will show the solution. Are you sure?"))
+      onView(withText("This will reveal the solution. Are you sure?"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1491,6 +1501,9 @@ class StateFragmentLocalTest {
     }
   }
 
+  // TODO(#1050): Add a test for verifying that the solution is correct for non-text & non-fraction
+  //  interactions.
+
   @Test
   fun testStateFragment_stateWithNumericSolution_revealHint_reopenDialog_onlyOneHintShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
@@ -1541,151 +1554,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_stateWithFractionInp_showSolution_exclusive_solutionHasCorrectAnswerText() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
-      startPlayingExploration()
-      playThroughTestState1()
-      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState2() }
-
-      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState2() }
-
-      // Verify that the solution answer text is correctly generated.
-      onView(withId(R.id.solution_correct_answer))
-        .check(matches(withText("The only solution is: 1/2")))
-    }
-  }
-
-  @Test
-  fun testStateFragment_stateWithNumericInp_showSolution_exclusive_solutionHasCorrectAnswerText() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
-      startPlayingExploration()
-      playThroughTestState1()
-      playThroughTestState2()
-      playThroughTestState3()
-      playThroughTestState4()
-      playThroughTestState5()
-      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState6() }
-
-      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState6() }
-
-      // Verify that the solution answer text is correctly generated.
-      onView(withId(R.id.solution_correct_answer))
-        .check(matches(withText("The only solution is: 121")))
-    }
-  }
-
-  @Test
-  fun testStateFragment_stateWithNumericExpr_showSolution_solutionHasCorrectAnswerContentDesc() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
-      startPlayingExploration()
-      playThroughTestState1()
-      playThroughTestState2()
-      playThroughTestState3()
-      playThroughTestState4()
-      playThroughTestState5()
-      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState6() }
-
-      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState6() }
-
-      // Verify that the solution answer text is correctly generated.
-      onView(withId(R.id.solution_correct_answer))
-        .check(matches(withContentDescription("The only solution is: 121")))
-    }
-  }
-
-  @Test
-  fun testStateFragment_stateWithRatioInp_showSolution_notExclusive_solutionHasCorrectAnswerText() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
-      startPlayingExploration()
-      playThroughTestState1()
-      playThroughTestState2()
-      playThroughTestState3()
-      playThroughTestState4()
-      playThroughTestState5()
-      playThroughTestState6()
-      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState7() }
-
-      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState7() }
-
-      // Verify that the solution answer text is correctly generated.
-      onView(withId(R.id.solution_correct_answer)).check(matches(withText("One solution is: 4:5")))
-    }
-  }
-
-  @Test
-  fun testStateFragment_stateWithTextInput_showSolution_exclusive_solutionHasCorrectAnswerText() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
-      startPlayingExploration()
-      playThroughTestState1()
-      playThroughTestState2()
-      playThroughTestState3()
-      playThroughTestState4()
-      playThroughTestState5()
-      playThroughTestState6()
-      playThroughTestState7()
-      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState8() }
-
-      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState8() }
-
-      // Verify that the solution answer text is correctly generated.
-      onView(withId(R.id.solution_correct_answer))
-        .check(matches(withText("The only solution is: finnish")))
-    }
-  }
-
-  @Test
-  fun testStateFragment_stateWithAlgebraicExpr_showSolution_solutionHasCorrectHtmlAnswerText() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use { scenario ->
-      // Play through the first three states.
-      startPlayingExploration()
-      playThroughExp5NumericExpressionState()
-      playThroughExp5NumericExpressionState()
-      playThroughExp5NumericExpressionState()
-
-      produceAndViewSolutionAsFirstHint(scenario) { submitWrongAnswerToTestExp5State4() }
-
-      // Verify that the solution answer text is correctly generated.
-      onView(withId(R.id.solution_correct_answer))
-        .check(matches(withText(containsString("One solution is:"))))
-      scenario.onActivity { activity ->
-        val dialogFragment =
-          activity.supportFragmentManager.findFragmentByTag("HINTS_AND_SOLUTION_DIALOG")
-        val htmlTextView =
-          dialogFragment?.view?.findViewById<TextView>(R.id.solution_correct_answer)
-        assertThat(htmlTextView?.getSpans<ImageSpan>()).hasSize(1)
-
-        // Verify that an image drawable was loaded and with the correct LaTeX.
-        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
-        assertThat(loadedModels.count()).isAtLeast(1)
-        assertThat(loadedModels.last().rawLatex).isEqualTo("x ^ {2} - x - 2")
-        assertThat(loadedModels.last().useInlineRendering).isTrue()
-      }
-    }
-  }
-
-  @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
-  fun testStateFragment_stateWithAlgebraicExpr_showSolution_solutionHasCorrectHtmlContentDesc() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use { scenario ->
-      // Play through the first three states.
-      startPlayingExploration()
-      playThroughExp5NumericExpressionState()
-      playThroughExp5NumericExpressionState()
-      playThroughExp5NumericExpressionState()
-
-      produceAndViewSolutionAsFirstHint(scenario) { submitWrongAnswerToTestExp5State4() }
-
-      // Verify that the solution answer text is correctly generated.
-      onView(withId(R.id.solution_correct_answer))
-        .check(
-          matches(
-            withContentDescription("One solution is: x raised to the power of 2 minus x minus 2")
-          )
-        )
-    }
-  }
-
-  @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ENGLISH_VALUE,
     appStringIetfTag = "en",
@@ -1698,8 +1566,8 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(text = "1/3")
-      submitFractionAnswer(text = "1/4")
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
 
       // Reveal the hint.
       openHintsAndSolutionsDialog()
@@ -1724,8 +1592,8 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(text = "1/3")
-      submitFractionAnswer(text = "1/4")
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
 
       // Reveal the hint.
       openHintsAndSolutionsDialog()
@@ -1749,8 +1617,8 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(text = "1/3")
-      submitFractionAnswer(text = "1/4")
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
 
       // Show the hint.
       openHintsAndSolutionsDialog()
@@ -1778,8 +1646,8 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(text = "1/3")
-      submitFractionAnswer(text = "1/4")
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
 
       // Show the hint.
       openHintsAndSolutionsDialog()
@@ -1804,8 +1672,8 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(text = "1/3")
-      submitFractionAnswer(text = "1/4")
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
 
       // Reveal the hint.
       openHintsAndSolutionsDialog()
@@ -1832,8 +1700,8 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(text = "1/3")
-      submitFractionAnswer(text = "1/4")
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
 
       // Show the hint.
       openHintsAndSolutionsDialog()
@@ -1860,8 +1728,8 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(text = "1/3")
-      submitFractionAnswer(text = "1/4")
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
 
       // Show the hint.
       openHintsAndSolutionsDialog()
@@ -2176,49 +2044,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  @Test
-  fun testStateFragment_openHint_clickConceptCardLink_opensConceptCard() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
-      startPlayingExploration()
-      clickContinueButton()
-      submitTwoWrongAnswersToTestExpState2()
-      openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
-
-      // Click on the link for opening the concept card.
-      onView(withId(R.id.hints_and_solution_summary))
-        .inRoot(isDialog())
-        .perform(openClickableSpan("test_skill_id_1 concept card"))
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withId(R.id.concept_card_heading_text))
-        .inRoot(isDialog())
-        .check(matches(withText("Another important skill")))
-    }
-  }
-
-  @Test
-  fun testStateFragment_openSolution_clickConceptCardLink_opensConceptCard() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
-      startPlayingExploration()
-      clickContinueButton()
-      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState2() }
-      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState2() }
-
-      // Click on the link for opening the concept card.
-      onView(withId(R.id.solution_summary))
-        .inRoot(isDialog())
-        .perform(openClickableSpan("test_skill_id_1 concept card"))
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withId(R.id.concept_card_heading_text))
-        .inRoot(isDialog())
-        .check(matches(withText("Another important skill")))
-    }
-  }
-
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -2258,73 +2083,73 @@ class StateFragmentLocalTest {
 
   private fun playThroughFractionsState2() {
     // Correct answer to 'Matthew gets conned'
-    submitFractionAnswer(text = "3/4")
+    submitFractionAnswer(answerText = "3/4")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState3() {
     // Correct answer to 'Question 1'
-    submitFractionAnswer(text = "4/9")
+    submitFractionAnswer(answerText = "4/9")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState4() {
     // Correct answer to 'Question 2'
-    submitFractionAnswer(text = "1/4")
+    submitFractionAnswer(answerText = "1/4")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState5() {
     // Correct answer to 'Question 3'
-    submitFractionAnswer(text = "1/8")
+    submitFractionAnswer(answerText = "1/8")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState6() {
     // Correct answer to 'Question 4'
-    submitFractionAnswer(text = "1/2")
+    submitFractionAnswer(answerText = "1/2")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState7() {
     // Correct answer to 'Question 5' which redirects the learner to 'Thinking in fractions Q1'
-    submitFractionAnswer(text = "2/9")
+    submitFractionAnswer(answerText = "2/9")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState8() {
     // Correct answer to 'Thinking in fractions Q1'
-    submitFractionAnswer(text = "7/9")
+    submitFractionAnswer(answerText = "7/9")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState9() {
     // Correct answer to 'Thinking in fractions Q2'
-    submitFractionAnswer(text = "4/9")
+    submitFractionAnswer(answerText = "4/9")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState10() {
     // Correct answer to 'Thinking in fractions Q3'
-    submitFractionAnswer(text = "5/8")
+    submitFractionAnswer(answerText = "5/8")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState11() {
     // Correct answer to 'Thinking in fractions Q4' which redirects the learner to 'Final Test A'
-    submitFractionAnswer(text = "3/4")
+    submitFractionAnswer(answerText = "3/4")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState12() {
     // Correct answer to 'Final Test A' redirects learner to 'Happy ending'
-    submitFractionAnswer(text = "2/4")
+    submitFractionAnswer(answerText = "2/4")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState12WithWrongAnswer() {
     // Incorrect answer to 'Final Test A' redirects the learner to 'Final Test A second try'
-    submitFractionAnswer(text = "1/9")
+    submitFractionAnswer(answerText = "1/9")
     clickContinueNavigationButton()
   }
 
@@ -2363,7 +2188,7 @@ class StateFragmentLocalTest {
   }
 
   private fun playThroughTestState2() {
-    submitFractionAnswer(text = "1/2")
+    submitFractionAnswer(answerText = "1/2")
     clickContinueNavigationButton()
   }
 
@@ -2382,21 +2207,6 @@ class StateFragmentLocalTest {
     selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
     selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
     clickSubmitAnswerButton()
-    clickContinueNavigationButton()
-  }
-
-  private fun playThroughTestState6() {
-    submitNumericInput(text = "121")
-    clickContinueNavigationButton()
-  }
-
-  private fun playThroughTestState7() {
-    submitRatioInput(text = "4:5")
-    clickContinueNavigationButton()
-  }
-
-  private fun playThroughExp5NumericExpressionState() {
-    submitNumericExpressionAnswer(text = "1 + 2")
     clickContinueNavigationButton()
   }
 
@@ -2471,35 +2281,13 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun typeFractionAnswer(text: String) {
+  private fun typeFractionAnswer(answerText: String) {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(FRACTION_INPUT_INTERACTION))
-    typeTextIntoInteraction(text, interactionViewId = R.id.fraction_input_interaction_view)
+    typeTextIntoInteraction(answerText, interactionViewId = R.id.fraction_input_interaction_view)
   }
 
-  private fun submitFractionAnswer(text: String) {
-    typeFractionAnswer(text)
-    clickSubmitAnswerButton()
-  }
-
-  private fun typeNumericExpressionAnswer(text: String) {
-    onView(withId(R.id.state_recycler_view))
-      .perform(scrollToViewType(NUMERIC_EXPRESSION_INPUT_INTERACTION))
-    typeTextIntoInteraction(text, interactionViewId = R.id.math_expression_input_interaction_view)
-  }
-
-  private fun submitNumericExpressionAnswer(text: String) {
-    typeNumericExpressionAnswer(text)
-    clickSubmitAnswerButton()
-  }
-
-  private fun typeAlgebraicExpressionAnswer(text: String) {
-    onView(withId(R.id.state_recycler_view))
-      .perform(scrollToViewType(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION))
-    typeTextIntoInteraction(text, interactionViewId = R.id.math_expression_input_interaction_view)
-  }
-
-  private fun submitAlgebraicExpressionAnswer(text: String) {
-    typeAlgebraicExpressionAnswer(text)
+  private fun submitFractionAnswer(answerText: String) {
+    typeFractionAnswer(answerText)
     clickSubmitAnswerButton()
   }
 
@@ -2529,27 +2317,6 @@ class StateFragmentLocalTest {
 
   private fun submitNumericInput(text: String) {
     typeNumericInput(text)
-    clickSubmitAnswerButton()
-  }
-
-  private fun typeRatioInput(text: String) {
-    onView(withId(R.id.state_recycler_view))
-      .perform(scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION))
-    typeTextIntoInteraction(text, interactionViewId = R.id.ratio_input_interaction_view)
-  }
-
-  private fun submitRatioInput(text: String) {
-    typeRatioInput(text)
-    clickSubmitAnswerButton()
-  }
-
-  private fun typeTextInput(text: String) {
-    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(TEXT_INPUT_INTERACTION))
-    typeTextIntoInteraction(text, interactionViewId = R.id.text_input_interaction_view)
-  }
-
-  private fun submitTextInput(text: String) {
-    typeTextInput(text)
     clickSubmitAnswerButton()
   }
 
@@ -2585,7 +2352,7 @@ class StateFragmentLocalTest {
   }
 
   private fun submitWrongAnswerToFractionsState2() {
-    submitFractionAnswer(text = "1/2")
+    submitFractionAnswer(answerText = "1/2")
   }
 
   private fun submitWrongAnswerToFractionsState2AndWait() {
@@ -2594,7 +2361,7 @@ class StateFragmentLocalTest {
   }
 
   private fun submitWrongAnswerToFractionsState13() {
-    submitFractionAnswer(text = "1/9")
+    submitFractionAnswer(answerText = "1/9")
   }
 
   private fun submitWrongAnswerToFractionsState13AndWait() {
@@ -2628,39 +2395,6 @@ class StateFragmentLocalTest {
     )
   }
 
-  private fun submitWrongAnswerToTestExpState2() {
-    submitFractionAnswer(text = "1/4")
-  }
-
-  private fun submitWrongAnswerToTestExpState6() {
-    submitNumericInput(text = "101")
-  }
-
-  private fun submitWrongAnswerToTestExpState7() {
-    submitRatioInput(text = "5:4")
-  }
-
-  private fun submitWrongAnswerToTestExpState8() {
-    submitTextInput(text = "finish")
-  }
-
-  private fun submitTwoWrongAnswersToTestExpState2() {
-    submitWrongAnswerToTestExpState2()
-    submitWrongAnswerToTestExpState2()
-  }
-
-  private fun submitWrongAnswerToTestExp5State4() {
-    submitAlgebraicExpressionAnswer(text = "1 + 2")
-  }
-
-  private fun produceAndViewFirstHint(hintPosition: Int, submitAnswer: () -> Unit) {
-    produceAndViewNextHint(hintPosition) {
-      // Submit the wrong answer twice.
-      submitAnswer()
-      submitAnswer()
-    }
-  }
-
   /**
    * Causes a hint after the first one to be shown (at approximately the specified recycler view
    * index for scrolling purposes), and then reveals it and closes the hints & solutions dialog.
@@ -2670,28 +2404,6 @@ class StateFragmentLocalTest {
     openHintsAndSolutionsDialog()
     pressRevealHintButton(hintPosition)
     closeHintsAndSolutionsDialog()
-  }
-
-  private fun produceAndViewSolutionAsFirstHint(
-    activityScenario: ActivityScenario<StateFragmentTestActivity>,
-    submitAnswer: () -> Unit
-  ) {
-    produceAndViewSolution(activityScenario) {
-      // Submit the wrong answer twice.
-      submitAnswer()
-      submitAnswer()
-    }
-  }
-
-  private fun produceAndViewSolution(
-    activityScenario: ActivityScenario<StateFragmentTestActivity>,
-    submitAnswer: () -> Unit
-  ) {
-    submitAnswer()
-    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
-    openHintsAndSolutionsDialog()
-    showRevealSolutionDialog()
-    clickConfirmRevealSolutionButton(activityScenario)
   }
 
   private fun produceAndViewThreeHintsInFractionsState13() {
@@ -2856,48 +2568,6 @@ class StateFragmentLocalTest {
       })
   }
 
-  private fun openClickableSpan(text: String): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String = "openClickableSpan"
-
-      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
-
-      override fun perform(uiController: UiController?, view: View?) {
-        // The view shouldn't be null if the constraints are being met.
-        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
-      }
-    }
-  }
-
-  private fun hasClickableSpanWithText(text: String): Matcher<View> {
-    return object : TypeSafeMatcher<View>(TextView::class.java) {
-      override fun describeTo(description: Description?) {
-        description?.appendText("has ClickableSpan with text")?.appendValue(text)
-      }
-
-      override fun matchesSafely(item: View?): Boolean {
-        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
-      }
-    }
-  }
-
-  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
-    val viewText = text
-    return (viewText as Spannable).getSpans(
-      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
-    ).map {
-      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
-    }
-  }
-
-  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) =
-    find { text in it.first }?.second
-
-  private inline fun <reified T : Any> TextView.getSpans(): List<T> = (text as Spanned).getSpans()
-
-  private inline fun <reified T : Any> Spanned.getSpans(): List<T> =
-    getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -2929,7 +2599,7 @@ class StateFragmentLocalTest {
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,

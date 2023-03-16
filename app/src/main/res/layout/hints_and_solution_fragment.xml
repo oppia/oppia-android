@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.hintsandsolution.HintsAndSolutionViewModel" />
+      type="org.oppia.android.app.hintsandsolution.HintsViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
