@@ -80,7 +80,7 @@ message Profile {
   bool is_continue_button_animation_seen = 15;
 
   // Represents user selected content-language.
-  OppiaLanguage oppia_language = 16;
+  OppiaLanguage oppia_language = 17;
 }
 
 // Represents a profile avatar image.

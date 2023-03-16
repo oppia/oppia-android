@@ -7,16 +7,23 @@ import android.content.Context
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.ext.truth.content.IntentSubject.assertThat
 import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
@@ -28,6 +35,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
@@ -46,6 +54,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
@@ -87,14 +96,18 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.logging.TestSyncStatusManager
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -103,16 +116,15 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusManager
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
@@ -130,10 +142,6 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileAndDeviceIdFragmentTest {
-  private companion object {
-    private const val DEFAULT_APPLICATION_ID = 123456789L
-  }
-
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @get:Rule
@@ -146,11 +154,12 @@ class ProfileAndDeviceIdFragmentTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
   @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject lateinit var syncStatusManager: SyncStatusManager
+  @Inject lateinit var syncStatusManager: TestSyncStatusManager
   @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val clipboardManager by lazy {
     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -161,6 +170,7 @@ class ProfileAndDeviceIdFragmentTest {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
+    Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
 
@@ -174,6 +184,7 @@ class ProfileAndDeviceIdFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   @Test
@@ -181,35 +192,35 @@ class ProfileAndDeviceIdFragmentTest {
     initializeActivityAndAddFragment()
 
     // There should be three items: a header, a profile, and the sync status.
-    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 3))
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 4))
   }
 
   @Test
   fun testFragment_withOnlyAdminProfile_hasDeviceIdHeader() {
     initializeActivityAndAddFragment()
 
-    onView(deviceIdLabelAt(position = 0)).check(matches(isDisplayed()))
+    onDeviceIdLabelAt(position = 0).check(matches(isDisplayed()))
   }
 
   @Test
   fun testFragment_hasDeviceId() {
     initializeActivityAndAddFragment()
 
-    onView(deviceIdLabelAt(position = 0)).check(matches(withText(containsString("c85606ca6390"))))
+    onDeviceIdLabelAt(position = 0).check(matches(withText(containsString("c85606ca6390"))))
   }
 
   @Test
   fun testFragment_deviceId_hasCopyButton() {
     initializeActivityAndAddFragment()
 
-    onView(deviceIdCopyButtonAt(position = 0)).check(matches(isDisplayed()))
+    onDeviceIdCopyButtonAt(position = 0).check(matches(isDisplayed()))
   }
 
   @Test
   fun testFragment_deviceId_clickCopyButton_copiesDeviceIdToClipboard() {
     initializeActivityAndAddFragment()
 
-    onView(deviceIdCopyButtonAt(position = 0)).perform(click())
+    onDeviceIdCopyButtonAt(position = 0).perform(click())
     testCoroutineDispatchers.runCurrent()
 
     val clipData = getCurrentClipData()
@@ -222,35 +233,35 @@ class ProfileAndDeviceIdFragmentTest {
   fun testFragment_withOnlyAdminProfile_hasOneProfileListed() {
     initializeActivityAndAddFragment()
 
-    onView(profileNameAt(position = 1)).check(matches(isDisplayed()))
+    onProfileNameAt(position = 1).check(matches(isDisplayed()))
   }
 
   @Test
   fun testFragment_profileEntry_hasProfileName() {
     initializeActivityAndAddFragment()
 
-    onView(profileNameAt(position = 1)).check(matches(withText("Admin")))
+    onProfileNameAt(position = 1).check(matches(withText("Admin")))
   }
 
   @Test
   fun testFragment_profileEntry_hasLearnerId() {
     initializeActivityAndAddFragment()
 
-    onView(learnerIdAt(position = 1)).check(matches(withText("a9fe66ab")))
+    onLearnerIdAt(position = 1).check(matches(withText("a9fe66ab")))
   }
 
   @Test
   fun testFragment_profileEntry_hasCopyButton() {
     initializeActivityAndAddFragment()
 
-    onView(learnerIdCopyButtonAt(position = 1)).check(matches(isDisplayed()))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(isDisplayed()))
   }
 
   @Test
   fun testFragment_profileEntry_clickFirstCopyButton_copiesAdminLearnerIdToClipboard() {
     initializeActivityAndAddFragment()
 
-    onView(learnerIdCopyButtonAt(position = 1)).perform(click())
+    onLearnerIdCopyButtonAt(position = 1).perform(click())
     testCoroutineDispatchers.runCurrent()
 
     val clipData = getCurrentClipData()
@@ -266,7 +277,7 @@ class ProfileAndDeviceIdFragmentTest {
     initializeActivityAndAddFragment()
 
     // Header + admin + 5 new profiles + sync status = 8 items.
-    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 8))
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 9))
   }
 
   @Test
@@ -275,7 +286,7 @@ class ProfileAndDeviceIdFragmentTest {
 
     initializeActivityAndAddFragment()
 
-    onView(profileNameAt(position = 1)).check(matches(withText("Admin")))
+    onProfileNameAt(position = 1).check(matches(withText("Admin")))
   }
 
   @Test
@@ -285,7 +296,7 @@ class ProfileAndDeviceIdFragmentTest {
     initializeActivityAndAddFragment()
 
     // The second entry is not the admin.
-    onView(profileNameAt(position = 2)).check(matches(withText("A")))
+    onProfileNameAt(position = 2).check(matches(withText("A")))
   }
 
   @Test
@@ -295,8 +306,8 @@ class ProfileAndDeviceIdFragmentTest {
     initializeActivityAndAddFragment()
 
     // The second profile has a different learner ID.
-    onView(learnerIdAt(position = 1)).check(matches(withText("a9fe66ab")))
-    onView(learnerIdAt(position = 2)).check(matches(withText("c368b501")))
+    onLearnerIdAt(position = 1).check(matches(withText("a9fe66ab")))
+    onLearnerIdAt(position = 2).check(matches(withText("c368b501")))
   }
 
   @Test
@@ -305,7 +316,7 @@ class ProfileAndDeviceIdFragmentTest {
 
     initializeActivityAndAddFragment()
 
-    onView(learnerIdCopyButtonAt(position = 2)).perform(click())
+    onLearnerIdCopyButtonAt(position = 2).perform(click())
     testCoroutineDispatchers.runCurrent()
 
     val clipData = getCurrentClipData()
@@ -318,63 +329,63 @@ class ProfileAndDeviceIdFragmentTest {
   fun testFragment_initialState_deviceIdCopyButtonHasCopyLabel() {
     initializeActivityAndAddFragment()
 
-    onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copy")))
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
   }
 
   @Test
   fun testFragment_adminProfile_initialState_learnerIdCopyButtonHasCopyLabel() {
     initializeActivityAndAddFragment()
 
-    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copy")))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copy")))
   }
 
   @Test
   fun testFragment_adminProfile_clickDeviceIdCopyButton_deviceIdIsCopiedButNotLearnerId() {
     initializeActivityAndAddFragment()
 
-    onView(deviceIdCopyButtonAt(position = 0)).perform(click())
+    onDeviceIdCopyButtonAt(position = 0).perform(click())
     testCoroutineDispatchers.runCurrent()
 
-    onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copied")))
-    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copy")))
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copied")))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copy")))
   }
 
   @Test
   fun testFragment_adminProfile_clickLearnerIdCopyButton_learnerIdIsCopiedButNotDeviceId() {
     initializeActivityAndAddFragment()
 
-    onView(learnerIdCopyButtonAt(position = 1)).perform(click())
+    onLearnerIdCopyButtonAt(position = 1).perform(click())
     testCoroutineDispatchers.runCurrent()
 
-    onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copy")))
-    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copied")))
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copied")))
   }
 
   @Test
   fun testFragment_adminProfile_clickLearnerIdCopyButton_copyInOtherApp_nothingIsCopied() {
     initializeActivityAndAddFragment()
-    onView(learnerIdCopyButtonAt(position = 1)).perform(click())
+    onLearnerIdCopyButtonAt(position = 1).perform(click())
     testCoroutineDispatchers.runCurrent()
 
     updateClipDataAsThoughFromAnotherApp()
 
     // Changing the clipboard in a different app should reset the labels.
-    onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copy")))
-    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copy")))
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copy")))
   }
 
   @Test
   fun testFragment_adminProfile_clickLearnerIdCopyButton_rotate_learnerIdStillCopied() {
     initializeActivityAndAddFragment()
-    onView(learnerIdCopyButtonAt(position = 1)).perform(click())
+    onLearnerIdCopyButtonAt(position = 1).perform(click())
     testCoroutineDispatchers.runCurrent()
 
     onView(isRoot()).perform(orientationLandscape())
     testCoroutineDispatchers.runCurrent()
 
     // The button label should be restored after a rotation.
-    onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copy")))
-    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copied")))
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copied")))
   }
 
   @Test
@@ -385,14 +396,14 @@ class ProfileAndDeviceIdFragmentTest {
     onView(isRoot()).perform(orientationLandscape())
     testCoroutineDispatchers.runCurrent()
 
-    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 8))
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 9))
   }
 
   @Test
   fun testFragment_initialState_profileDataHasYetToBeCollected() {
     initializeActivityAndAddFragment()
 
-    onView(syncStatusAt(position = 2))
+    onSyncStatusAt(position = 2)
       .check(matches(withText(containsString("No data has been collected yet to upload"))))
   }
 
@@ -402,45 +413,55 @@ class ProfileAndDeviceIdFragmentTest {
 
     testCoroutineDispatchers.advanceTimeBy(delayTimeMillis = TimeUnit.SECONDS.toMillis(1))
 
-    onView(syncStatusAt(position = 2))
+    onSyncStatusAt(position = 2)
       .check(matches(withText(containsString("No data has been collected yet to upload"))))
   }
 
   @Test
-  fun testFragment_eventLogged_waitingForUpload_profileDataIsCurrentlyUploading() {
+  fun testFragment_eventLogged_waitingForUpload_indicatorTextMentionsWaiting() {
     initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+
+    // Enqueue the event, but don't actually begin uploading it, then reconnect to the network. Note
+    // that the extra event log is a slight hack to force a refresh of the status indicator (since
+    // network changes are polled when there are other changes to represent rather than being
+    // actively "pushed" by the system).
+    logAnalyticsEvent()
+    connectNetwork()
+    logAnalyticsEvent()
+
+    // The status indicator is suggesting that events can be uploaded (and there are some available
+    // to upload), they just haven't been scheduled yet.
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("Waiting to schedule data uploading worker…"))))
+  }
+
+  @Test
+  fun testFragment_eventLogged_waitingForUpload_uploadStarted_profileDataIsCurrentlyUploading() {
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
     // Unfortunately, it's tricky to pause the actual upload worker so this is a hacky way to
     // produce the same situation to ensure the label is correct.
-    queueAnalyticsEvent()
-    syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
+    logAnalyticsEvent()
+    syncStatusManager.forceSyncStatus(SyncStatus.DATA_UPLOADING)
     testCoroutineDispatchers.runCurrent()
 
-    onView(syncStatusAt(position = 2))
+    onSyncStatusAt(position = 2)
       .check(matches(withText(containsString("Profile data is currently uploading"))))
   }
 
   @Test
-  fun testFragment_eventLogged_waitForUpload_profileDataIsUploaded() {
+  fun testFragment_noConnectivity_indicatorTextMentionsDataCannotBeUploaded() {
     initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-    queueAnalyticsEvent()
-    flushEventWorkerQueue()
+    // Enqueue an event but don't reconnect to the network.
+    logAnalyticsEvent()
 
-    onView(syncStatusAt(position = 2))
-      .check(matches(withText(containsString("All profile data has been uploaded"))))
-  }
-
-  @Test
-  fun testFragment_eventLogged_networkError_profileDataHasError() {
-    initializeActivityAndAddFragment()
-    queueAnalyticsEvent()
-
-    // A network error can currently only be simulated by directly influencing the sync manager.
-    syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.NETWORK_ERROR)
-    testCoroutineDispatchers.runCurrent()
-
-    onView(syncStatusAt(position = 2))
+    // The status indicator is suggesting that internet connectivity needs to resume in order to
+    // upload events.
+    onSyncStatusAt(position = 2)
       .check(
         matches(
           withText(
@@ -453,15 +474,45 @@ class ProfileAndDeviceIdFragmentTest {
   }
 
   @Test
-  fun testFragment_eventLogged_networkError_anotherLogged_wait_profileDataIsUploading() {
+  fun testFragment_eventLogged_waitForUpload_profileDataIsUploaded() {
     initializeActivityAndAddFragment()
-    queueAnalyticsEvent()
-    syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.NETWORK_ERROR)
+    disconnectNetwork() // Ensure events are cached.
 
-    queueAnalyticsEvent()
+    logAnalyticsEvent()
+    connectNetwork()
     flushEventWorkerQueue()
 
-    onView(syncStatusAt(position = 2))
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("All profile data has been uploaded"))))
+  }
+
+  @Test
+  fun testFragment_eventLogged_uploadError_profileDataHasError() {
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
+
+    // An upload error can currently only be simulated by directly influencing the sync manager.
+    syncStatusManager.forceSyncStatus(SyncStatus.UPLOAD_ERROR)
+    testCoroutineDispatchers.runCurrent()
+
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("Something went wrong when trying to upload events"))))
+  }
+
+  @Test
+  fun testFragment_eventLogged_uploadError_anotherLogged_wait_profileDataIsUploading() {
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
+    syncStatusManager.reportUploadError()
+    testCoroutineDispatchers.runCurrent()
+
+    logAnalyticsEvent()
+    connectNetwork()
+    flushEventWorkerQueue()
+
+    onSyncStatusAt(position = 2)
       .check(matches(withText(containsString("All profile data has been uploaded"))))
   }
 
@@ -472,55 +523,113 @@ class ProfileAndDeviceIdFragmentTest {
     onView(isRoot()).perform(orientationLandscape())
     testCoroutineDispatchers.runCurrent()
 
-    onView(syncStatusAt(position = 2))
+    onSyncStatusAt(position = 2)
       .check(matches(withText(containsString("No data has been collected yet to upload"))))
   }
 
   @Test
   fun testFragment_eventLogged_waitingForUpload_rotate_profileDataIsCurrentlyUploading() {
     initializeActivityAndAddFragment()
-    queueAnalyticsEvent()
-    syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
+    syncStatusManager.forceSyncStatus(SyncStatus.DATA_UPLOADING)
+    testCoroutineDispatchers.runCurrent()
 
     onView(isRoot()).perform(orientationLandscape())
     testCoroutineDispatchers.runCurrent()
 
-    onView(syncStatusAt(position = 2))
+    onSyncStatusAt(position = 2)
       .check(matches(withText(containsString("Profile data is currently uploading"))))
   }
 
   @Test
   fun testFragment_eventLogged_waitForUpload_rotate_profileDataIsUploaded() {
     initializeActivityAndAddFragment()
-    queueAnalyticsEvent()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
+    connectNetwork()
     flushEventWorkerQueue()
 
     onView(isRoot()).perform(orientationLandscape())
     testCoroutineDispatchers.runCurrent()
 
-    onView(syncStatusAt(position = 2))
+    onSyncStatusAt(position = 2)
       .check(matches(withText(containsString("All profile data has been uploaded"))))
   }
 
   @Test
-  fun testFragment_eventsLogged_networkError_rotate_profileDataHasError() {
+  fun testFragment_eventsLogged_uploadError_rotate_profileDataHasError() {
     initializeActivityAndAddFragment()
-    queueAnalyticsEvent()
-    syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.NETWORK_ERROR)
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
+    syncStatusManager.forceSyncStatus(SyncStatus.UPLOAD_ERROR)
+    testCoroutineDispatchers.runCurrent()
 
     onView(isRoot()).perform(orientationLandscape())
     testCoroutineDispatchers.runCurrent()
 
-    onView(syncStatusAt(position = 2))
-      .check(
-        matches(
-          withText(
-            containsString(
-              "Please connect to a WiFi or Cellular network in order to upload profile data"
-            )
-          )
-        )
-      )
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("Something went wrong when trying to upload events"))))
+  }
+
+  @Test
+  fun testFragment_noEventsPending_uploadLogsButtonDisabled() {
+    profileTestHelper.addMoreProfiles(numProfiles = 1)
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+
+    // The upload button should be disabled when there are no events to upload.
+    onUploadLogsButtonAt(position = 4).check(matches(not(isEnabled())))
+  }
+
+  @Test
+  fun testFragment_multipleEventsPending_noConnection_uploadLogsButtonDisabled() {
+    profileTestHelper.addMoreProfiles(numProfiles = 1)
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+
+    logAnalyticsEvent(profileId = null)
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+
+    // The button is still disabled since there's no internet connection.
+    onUploadLogsButtonAt(position = 4).check(matches(not(isEnabled())))
+  }
+
+  @Test
+  fun testFragment_multipleEventsPending_uploadLogsButtonEnabled() {
+    profileTestHelper.addMoreProfiles(numProfiles = 1)
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+
+    logAnalyticsEvent(profileId = null)
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+    connectNetwork()
+    logAnalyticsEvent(profileId = null) // Log an event to trigger tracking the network change.
+
+    // With events pending & connectivity, the upload button should now be available to press.
+    onUploadLogsButtonAt(position = 4).check(matches(isEnabled()))
+  }
+
+  @Test
+  fun testFragment_multipleEventsPending_clickUploadLogs_wait_uploadsEventLogs() {
+    profileTestHelper.addMoreProfiles(numProfiles = 1)
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent(profileId = null)
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+    connectNetwork()
+    logAnalyticsEvent(profileId = null) // Log an event to trigger tracking the network change.
+    fakeAnalyticsEventLogger.clearAllEvents()
+
+    // Click the 'upload logs' button and wait.
+    onUploadLogsButtonAt(position = 4).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    // The events should be uploaded.
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(3)
   }
 
   private fun initializeActivityAndAddFragment() {
@@ -531,25 +640,55 @@ class ProfileAndDeviceIdFragmentTest {
         .add(R.id.test_fragment_placeholder, ProfileAndDeviceIdFragment())
         .commitNow()
     }
+    connectNetwork() // Start with internet connectivity.
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun deviceIdLabelAt(position: Int) = profileListItemAt(position, R.id.device_id_label)
+  private fun scrollTo(position: Int) {
+    onView(withId(R.id.profile_and_device_id_recycler_view))
+      .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, scrollTo()))
+    testCoroutineDispatchers.runCurrent()
+  }
 
-  private fun deviceIdCopyButtonAt(position: Int) =
-    profileListItemAt(position, R.id.device_id_copy_button)
+  private fun onDeviceIdLabelAt(position: Int) = onProfileListItemAt(position, R.id.device_id_label)
 
-  private fun profileNameAt(position: Int) =
-    profileListItemAt(position, R.id.profile_id_view_profile_name)
+  private fun onDeviceIdCopyButtonAt(position: Int) =
+    onProfileListItemAt(position, R.id.device_id_copy_button)
 
-  private fun learnerIdAt(position: Int) =
-    profileListItemAt(position, R.id.profile_id_view_learner_id)
+  private fun onProfileNameAt(position: Int) =
+    onProfileListItemAt(position, R.id.profile_id_view_profile_name)
 
-  private fun learnerIdCopyButtonAt(position: Int) =
-    profileListItemAt(position, R.id.learner_id_copy_button)
+  private fun onLearnerIdAt(position: Int) =
+    onProfileListItemAt(position, R.id.profile_id_view_learner_id)
 
-  private fun syncStatusAt(position: Int) =
-    profileListItemAt(position, R.id.learner_analytics_sync_status_text_view)
+  private fun onLearnerIdCopyButtonAt(position: Int) =
+    onProfileListItemAt(position, R.id.learner_id_copy_button)
+
+  private fun onAwaitingUploadLearnerEventsCountAt(position: Int) =
+    onProfileListItemAt(position, R.id.learner_events_waiting_upload_count)
+
+  private fun onUploadedLearnerEventsCountAt(position: Int) =
+    onProfileListItemAt(position, R.id.learner_events_uploaded_count)
+
+  private fun onAwaitingUploadUncategorizedEventsCountAt(position: Int) =
+    onProfileListItemAt(position, R.id.uncategorized_events_waiting_upload_count)
+
+  private fun onUploadedUncategorizedEventsCountAt(position: Int) =
+    onProfileListItemAt(position, R.id.uncategorized_events_uploaded_count)
+
+  private fun onSyncStatusAt(position: Int) =
+    onProfileListItemAt(position, R.id.learner_analytics_sync_status_text_view)
+
+  private fun onShareIdsAndEventsButtonAt(position: Int) =
+    onProfileListItemAt(position, R.id.learner_analytics_share_ids_and_events_button)
+
+  private fun onUploadLogsButtonAt(position: Int) =
+    onProfileListItemAt(position, R.id.learner_analytics_upload_logs_now_button)
+
+  private fun onProfileListItemAt(position: Int, @IdRes viewId: Int): ViewInteraction {
+    scrollTo(position)
+    return onView(profileListItemAt(position, viewId))
+  }
 
   private fun profileListItemAt(position: Int, @IdRes viewId: Int): Matcher<View> {
     return atPositionOnView(
@@ -564,16 +703,27 @@ class ProfileAndDeviceIdFragmentTest {
     @Suppress("UsePropertyAccessSyntax")
     clipboardManager.setPrimaryClip(
       ClipData.newPlainText(
-        /* label= */ "Label of text from another app", /* text= */ "Text copied from another app"
+        /* label = */ "Label of text from another app", /* text = */ "Text copied from another app"
       )
     )
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun queueAnalyticsEvent() {
+  private fun logAnalyticsEvent(profileId: ProfileId? = null) {
     learnerAnalyticsLogger.logAppInForeground(
-      installationId = "test_install_id", learnerId = "test_learner_id"
+      installationId = "test_install_id", profileId, learnerId = "test_learner_id"
     )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun logTwoAnalyticsEvents(profileId: ProfileId? = null) {
+    logAnalyticsEvent(profileId)
+    logAnalyticsEvent(profileId)
+  }
+
+  private fun logThreeAnalyticsEvents(profileId: ProfileId? = null) {
+    logTwoAnalyticsEvents(profileId)
+    logAnalyticsEvent(profileId)
   }
 
   private fun flushEventWorkerQueue() {
@@ -586,6 +736,20 @@ class ProfileAndDeviceIdFragmentTest {
     val request = OneTimeWorkRequestBuilder<LogUploadWorker>().setInputData(inputData).build()
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun disconnectNetwork() {
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
+  }
+
+  private fun connectNetwork() {
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+  }
+
+  private fun connectOnlyToFlushWorkerQueue() {
+    connectNetwork()
+    flushEventWorkerQueue()
+    disconnectNetwork()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -627,7 +791,7 @@ class ProfileAndDeviceIdFragmentTest {
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      SyncStatusModule::class, SplitScreenInteractionModule::class,
+      SyncStatusTestModule::class, SplitScreenInteractionModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, MetricLogSchedulerModule::class,
       TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
@@ -658,5 +822,17 @@ class ProfileAndDeviceIdFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    private const val DEFAULT_APPLICATION_ID = 123456789L
+
+    private val ADMIN_PROFILE_ID = createProfileId(internalProfileId = 0)
+    private val LEARNER_PROFILE_ID_0 = createProfileId(internalProfileId = 1)
+    private val LEARNER_PROFILE_ID_1 = createProfileId(internalProfileId = 2)
+
+    private fun createProfileId(internalProfileId: Int) = ProfileId.newBuilder().apply {
+      internalId = internalProfileId
+    }.build()
   }
 }
