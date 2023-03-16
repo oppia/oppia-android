@@ -12,26 +12,12 @@
 
 If you notice something about the wiki that could be improved, please let us know! There are a couple of ways you can do so:
 
-* If the improvement you have in mind is big, you want feedback before you start working on it, or you don't have time to make the change yourself, [open an issue](https://github.com/oppia/oppia-android/issues/new) in the source repository.
+* If the improvement you have in mind is big, you want feedback before you start working on it, or you don't have time to make the change yourself, [open an issue](https://github.com/oppia/oppia-android/issues/new) in the oppia-android repository.
 * If you can make the change yourself, see the instructions below for opening a pull request (PR).
 
 ### Opening a pull request
 
-For your first contribution to oppia-android wiki, you'll need to set up your repository (you only have to do this once):
-
-> **Note**  
-> If you've already set up your repository by following the instructions in the [Installing Oppia Android](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android) you can skip this step.
-
-1. [Create a fork](https://github.com/oppia/oppia-android/fork) of the source repository into your user account (which we'll refer to as user from now on).
-
-2. Clone the fork to your computer (you can also use SSH if you prefer):
-   ```console
-   git clone https://github.com/user/oppia-android.git
-   ```
-3. Add the upstream repository as a remote:
-   ``` console
-   git remote add upstream https://github.com/oppia/oppia-android.git
-   ```
+For your *first contribution* to oppia-android wiki, you'll need to set up your repository (you only have to do this once). Please follow the instructions in the [Installing Oppia Android](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android) to set up your repository.
 
 Then for every new contribution (including your first), you should follow these steps:
 
@@ -63,13 +49,13 @@ Then for every new contribution (including your first), you should follow these 
    git push -u origin {{branch name}}
    ```
 
-6. [Open a pull request.](https://github.com/oppia/oppia-android/compare) Remember to click the "compare across forks" link since your changes are on a different fork than the source repository. The base for your PR should be the `develop` branch on the `oppia/oppia-android` repository.
+6. [Open a pull request.](https://github.com/oppia/oppia-android/compare) Remember to click the "compare across forks" link since your changes are on a different fork than oppia-android. The base for your PR should be the `develop` branch on the `oppia/oppia-android` repository.
 
-7. Wait for the welfare team to review your PR.
+7. Wait for the reviewers to review your PR.
 
-8. Once the welfare team leaves comments, respond to them and make changes as needed. Like on oppia/oppia-android, please do not resolve review threads--let the reviewer do that. Repeat as needed until reviewers approve. Note that we don't have code owners in the source repository. Instead, the welfare team will ask other developers to review PRs as needed. For example, we'll usually ask team leads to review substantive changes to wiki pages on their team's work.
+8. Once the reviewers leaves comments, respond to them and make changes as needed. Please do not resolve review threads--let the reviewer do that. Repeat as needed until reviewers approve.
 
-9. Once reviewers have approved, the welfare team will merge your PR, and your changes will be automatically deployed to the Oppia wiki. Congratulations!
+9. Once reviewers have approved, they will merge your PR, and your changes will be automatically deployed to the Oppia wiki. Congratulations! :tada:
 
 ### Failed to push changes to wiki upon PR merge.
 
@@ -86,11 +72,11 @@ If the deployment of changes to the wiki following the merging of a pull request
 Our wiki consists of the following components:
 
 * The `oppia/oppia-android.wiki` git repository automatically created by GitHub to hold the wiki viewable at https://github.com/oppia/oppia-android/wiki. This is our deployment repository where we put wiki source files to be viewed by the community.
-* The `\wiki` folder in the `oppia/oppia-android` repository is our source repository where we store and edit the wiki source files. We consider this to be the single source of truth for our wiki.
-* A [`wiki.yml`](https://github.com/oppia/oppia-android/blob/develop/.github/workflows/wiki.yml) workflow in the source repository deploys any new commits in the source repository to the deployment repository. The workflow is activated whenever a pull request that modifies any file in the `\wiki` directory is pushed to the `develop` branch.
+* The `/wiki` folder in the `oppia/oppia-android` repository is our source repository where we store and edit the wiki source files. We consider this to be the single source of truth for our wiki.
+* A [`wiki.yml`](https://github.com/oppia/oppia-android/blob/develop/.github/workflows/wiki.yml) workflow in oppia-android deploys any new commits in oppia-android to the deployment repository. The workflow is activated whenever a pull request that modifies any file in the `/wiki` directory is pushed to the `develop` branch.
 
 ### When you make changes through the web interface
 
-If you change the wiki through the web interface at https://github.com/oppia/oppia-android/wiki, the [`wiki.yml`](https://github.com/oppia/oppia-android/blob/develop/.github/workflows/wiki.yml) workflow will be triggered and the wiki will be reset to by pushing the files from the `\wiki` folder to the `oppia/oppia-android.wiki` git repository.
+If you change the wiki through the web interface at https://github.com/oppia/oppia-android/wiki, the [`wiki.yml`](https://github.com/oppia/oppia-android/blob/develop/.github/workflows/wiki.yml) workflow will be triggered and the wiki will be reset to by pushing the files from the `/wiki` folder to the `oppia/oppia-android.wiki` git repository.
 > **Note**  
-> The `\wiki` folder in the `oppia/oppia-android` repository is the single source of truth for our wiki.
+> The `/wiki` folder in the `oppia/oppia-android` repository is the single source of truth for our wiki.
