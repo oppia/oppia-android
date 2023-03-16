@@ -12,12 +12,28 @@
 
 If you notice something about the wiki that could be improved, please let us know! There are a couple of ways you can do so:
 
-* If the improvement you have in mind is big, you want feedback before you start working on it, or you don't have time to make the change yourself, [open an issue](https://github.com/oppia/oppia-web-developer-docs/issues/new/choose) in the source repository.
+* If the improvement you have in mind is big, you want feedback before you start working on it, or you don't have time to make the change yourself, [open an issue](https://github.com/oppia/oppia-android/issues/new) in the source repository.
 * If you can make the change yourself, see the instructions below for opening a pull request (PR).
 
 ### Opening a pull request
 
-To contribute to the wiki, you should follow these steps:
+For your first contribution to oppia-android wiki, you'll need to set up your repository (you only have to do this once):
+
+> **Note**  
+> If you've already set up your repository by following the instructions in the [Installing Oppia Android](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android) you can skip this step.
+
+1. [Create a fork](https://github.com/oppia/oppia-android/fork) of the source repository into your user account (which we'll refer to as user from now on).
+
+2. Clone the fork to your computer (you can also use SSH if you prefer):
+   ```console
+   git clone https://github.com/user/oppia-android.git
+   ```
+3. Add the upstream repository as a remote:
+   ``` console
+   git remote add upstream https://github.com/oppia/oppia-android.git
+   ```
+
+Then for every new contribution (including your first), you should follow these steps:
 
 1. Checkout the `develop` branch and pull in the latest changes from upstream:
 
