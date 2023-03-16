@@ -10,6 +10,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -46,10 +47,14 @@ class StateFragmentTestActivity :
   lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    profileId = ProfileId.newBuilder().apply {
+      internalId = intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1)
+    }.build()
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
 
@@ -113,7 +118,8 @@ class StateFragmentTestActivity :
           explorationId,
           state,
           helpIndex,
-          writtenTranslationContext
+          writtenTranslationContext,
+          profileId
         )
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }

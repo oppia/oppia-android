@@ -58,7 +58,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Introduction": {
         "content": {
@@ -109,7 +110,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Ratio when the order is changed": {
         "content": {
@@ -232,7 +234,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Final Test": {
         "content": {
@@ -358,7 +361,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 4": {
         "content": {
@@ -498,7 +502,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 5": {
         "content": {
@@ -596,7 +601,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Writing ratio using words": {
         "content": {
@@ -779,7 +785,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 1": {
         "content": {
@@ -944,7 +951,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 2": {
         "content": {
@@ -1149,7 +1157,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 3": {
         "content": {
@@ -1275,7 +1284,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Order of number in the ratio is important": {
         "content": {
@@ -1326,7 +1336,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Congratulations": {
         "content": {
@@ -1365,7 +1376,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 1b": {
         "content": {
@@ -1477,7 +1489,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 1": {
         "content": {
@@ -1639,7 +1652,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 3": {
         "content": {
@@ -1801,7 +1815,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 2": {
         "content": {
@@ -1941,7 +1956,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 5": {
         "content": {
@@ -2098,7 +2114,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 4": {
         "content": {
@@ -2405,7 +2422,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 7": {
         "content": {
@@ -2658,7 +2676,9 @@
           }],
           "solution": {
             "answer_is_exclusive": false,
-            "correct_answer": "2:1:5:6",
+            "correct_answer": {
+              "normalized_string": "2:1:5:6"
+            },
             "explanation": {
               "content_id": "solution",
               "html": "<p>Let's write the ratio like this</p>\n\n<blockquote>\n<p>blueberry puree :           milk           : banana puree : dark chocolate</p>\n\n<p>            2              :              5             :              6           :            1</p>\n</blockquote>\n\n<p>Keeping the item together with its corresponding number, we can change the order to what the question asks for. The result looks like this:</p>\n\n<blockquote>\n<p> blueberry puree : dark chocolate :          milk          : banana puree</p>\n\n<p>            2               :              1             :             5             :             6</p>\n</blockquote>\n\n<p>So, the answer is <strong>2:1:5:6</strong>.</p>"
@@ -2729,7 +2749,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Happy ending": {
         "content": {
@@ -2780,7 +2801,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 6": {
         "content": {
@@ -2938,7 +2960,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "James making smoothie alone": {
         "content": {
@@ -3081,7 +3104,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       }
     },
     "objective": "Learn why the order of the numbers in a ratio is important.",
