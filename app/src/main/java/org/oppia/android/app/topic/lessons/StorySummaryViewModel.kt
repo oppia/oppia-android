@@ -42,16 +42,11 @@ class StorySummaryViewModel(
   }
 
   fun computeStoryNameChapterCountContainerContentDescription(): String {
-    // TODO(#3844): Combine these strings together.
-//    val chapterCountText =
-//      resourceHandler.getQuantityStringInLocaleWithWrapping(
-//        R.plurals.chapter_count, storySummary.chapterCount, storySummary.chapterCount.toString()
-//      )
-//    return resourceHandler.getStringInLocaleWithWrapping(
-//      R.string.chapter_count_with_story_name, chapterCountText, storyTitle
-//    )
     return resourceHandler.getQuantityStringInLocaleWithWrapping(
-      R.plurals.chapter_count_with_story_name_as_one_string, storySummary.chapterCount, storySummary.chapterCount.toString(), storyTitle
+      R.plurals.chapter_count_with_story_name_as_one_string,
+      storySummary.chapterCount,
+      storySummary.chapterCount.toString(), 
+      storyTitle
     )
   }
 
