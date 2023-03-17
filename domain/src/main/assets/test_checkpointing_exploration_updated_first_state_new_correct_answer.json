@@ -79,14 +79,7 @@
               "html": "PI can be approximated to 3 correct digits by computing 22/7."
             }
           }],
-          "solution": {
-            "answer_is_exclusive": false,
-            "correct_answer": "",
-            "explanation": {
-              "content_id": "",
-              "html": ""
-            }
-          }
+          "solution": null
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {

@@ -8,5 +8,5 @@ import org.oppia.android.util.logging.SyncStatusManager
 @Module
 interface SyncStatusTestModule {
   @Binds
-  fun bindSyncStatusManager(impl: FakeSyncStatusManager): SyncStatusManager
+  fun bindSyncStatusManager(impl: TestSyncStatusManager): SyncStatusManager
 }
