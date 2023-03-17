@@ -483,7 +483,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
       AppLanguageSelection.newBuilder().apply { useSystemLanguageOrAppDefault = true }.build()
-    ) as DataProvider<AppLanguageSelection>
+    )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -497,7 +497,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
       AppLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    ) as DataProvider<AppLanguageSelection>
+    )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -512,7 +512,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
       AppLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    ) as DataProvider<AppLanguageSelection>
+    )
 
     // The previous selection was system language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -527,7 +527,7 @@ class TranslationControllerTest {
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
       AppLanguageSelection.newBuilder().apply { selectedLanguage = BRAZILIAN_PORTUGUESE }.build()
-    ) as DataProvider<AppLanguageSelection>
+    )
 
     // The previous selection was English.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -1296,12 +1296,13 @@ class TranslationControllerTest {
   fun testGetAudioContentSelection_uninitializedToUseApp_returnsUninitializedSelection() {
     forceDefaultLocale(Locale.ROOT)
 
+    val audioTranslationLanguageSelection =
+      AudioTranslationLanguageSelection.newBuilder().apply { useAppLanguage = true }.build()
     val updateProvider = translationController.updateAudioTranslationContentLanguage(
       PROFILE_ID_0,
-      AudioTranslationLanguageSelection.newBuilder().apply { useAppLanguage = true }.build()
-    ) as DataProvider<AudioTranslationLanguageSelection>
+      audioTranslationLanguageSelection
+    )
 
-    // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
     assertThat(selection).isEqualToDefaultInstance()
   }

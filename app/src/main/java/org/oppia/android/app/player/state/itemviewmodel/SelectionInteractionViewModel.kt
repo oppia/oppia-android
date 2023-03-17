@@ -135,8 +135,6 @@ class SelectionInteractionViewModel private constructor(
         true
       }
       selectedItems.size < maxAllowableSelectionCount -> {
-        // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
-        //  number required.
         selectedItems += itemIndex
         updateIsAnswerAvailable()
         true

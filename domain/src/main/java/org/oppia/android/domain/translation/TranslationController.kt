@@ -134,6 +134,20 @@ class TranslationController @Inject constructor(
   }
 
   /**
+   * Returns a data provider for the [AppLanguageSelection] corresponding to the user's selected
+   * language for app strings (see [getAppLanguage]).
+   *
+   * Note that providing the returned selection to [updateAppLanguage] should result in no change to
+   * the underlying configured selection.
+   */
+  fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> {
+    val providerId = APP_LANGUAGE_SELECTION_DATA_PROVIDER_ID
+    return dataProviders.createInMemoryDataProvider(providerId) {
+      retrieveAppLanguageSelection(profileId)
+    }
+  }
+
+  /**
    * Updates the language to be used by the specified user for app string translations. Note that
    * the provided [AppLanguageSelection] provides the user with the option of either selecting a
    * specific supported language for app strings, or to fall back to the system default.
@@ -143,12 +157,15 @@ class TranslationController @Inject constructor(
    * language matches a supported language, otherwise the app defaults to English).
    *
    * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
-   *     result is ever provided)
+   *     result is ever provided). The payload of the data provider is the *previous* selection
+   *     state.
    */
-  fun updateAppLanguage(profileId: ProfileId, selection: AppLanguageSelection): DataProvider<Any> {
+  fun updateAppLanguage(
+    profileId: ProfileId,
+    selection: AppLanguageSelection
+  ): DataProvider<AppLanguageSelection> {
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID) {
-      updateAppLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
+      AsyncResult.Success(updateAppLanguageSelection(profileId, selection))
     }
   }
 
@@ -248,29 +265,6 @@ class TranslationController @Inject constructor(
   }
 
   /**
-   * Updates the language to be used by the specified user for audio voiceover selection. Note that
-   * the provided [AudioTranslationLanguageSelection] provides the user with the option of either
-   * selecting a specific supported language for audio voiceovers, or to fall back to whatever the
-   * app language selection is (which may be the system default).
-   *
-   * Note that the app guarantees a list of languages to support for audio voiceovers as a superset.
-   * The actual availability for a particular language is topic-dependent.
-   *
-   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
-   *     result is ever provided)
-   */
-  fun updateAudioTranslationContentLanguage(
-    profileId: ProfileId,
-    selection: AudioTranslationLanguageSelection
-  ): DataProvider<Any> {
-    val providerId = UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
-    return dataProviders.createInMemoryDataProviderAsync(providerId) {
-      updateAudioTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
-    }
-  }
-
-  /**
    * Returns a data provider for the [AudioTranslationLanguageSelection] corresponding to the user's
    * selected language for audio voiceovers (see [getAudioTranslationContentLanguage]).
    *
@@ -283,6 +277,29 @@ class TranslationController @Inject constructor(
     val providerId = AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProvider(providerId) {
       retrieveAudioTranslationContentLanguageSelection(profileId)
+    }
+  }
+
+  /**
+   * Updates the language to be used by the specified user for audio voiceover selection. Note that
+   * the provided [AudioTranslationLanguageSelection] provides the user with the option of either
+   * selecting a specific supported language for audio voiceovers, or to fall back to whatever the
+   * app language selection is (which may be the system default).
+   *
+   * Note that the app guarantees a list of languages to support for audio voiceovers as a superset.
+   * The actual availability for a particular language is topic-dependent.
+   *
+   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
+   *     result is ever provided). The payload of the data provider is the *previous* selection
+   *     state.
+   */
+  fun updateAudioTranslationContentLanguage(
+    profileId: ProfileId,
+    selection: AudioTranslationLanguageSelection
+  ): DataProvider<AudioTranslationLanguageSelection> {
+    val providerId = UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
+    return dataProviders.createInMemoryDataProviderAsync(providerId) {
+      AsyncResult.Success(updateAudioTranslationContentLanguageSelection(profileId, selection))
     }
   }
 
@@ -346,7 +363,7 @@ class TranslationController @Inject constructor(
     profileId: ProfileId,
     systemLanguage: OppiaLanguage
   ): OppiaLanguage {
-    val languageSelection = loadAppLanguageSelection(profileId)
+    val languageSelection = retrieveAppLanguageSelection(profileId)
     return when (languageSelection.selectionTypeCase) {
       AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE -> languageSelection.selectedLanguage
       AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT,
@@ -385,34 +402,20 @@ class TranslationController @Inject constructor(
     }
   }
 
-  /**
-   * Returns a data provider for the [AppLanguageSelection] corresponding to the user's selected
-   * language for app strings (see [getAppLanguage]).
-   *
-   * Note that providing the returned selection to [updateAppLanguage] should result in no change to
-   * the underlying configured selection.
-   */
-  fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> {
-    val providerId = APP_LANGUAGE_SELECTION_DATA_PROVIDER_ID
-    return dataProviders.createInMemoryDataProvider(providerId) {
-      loadAppLanguageSelection(profileId)
-    }
-  }
-
-  private fun loadAppLanguageSelection(profileId: ProfileId): AppLanguageSelection {
-    return dataLock.withLock {
+  private fun retrieveAppLanguageSelection(profileId: ProfileId) =
+    dataLock.withLock {
       appLanguageSettings[profileId] ?: AppLanguageSelection.getDefaultInstance()
     }
-  }
 
   private suspend fun updateAppLanguageSelection(
     profileId: ProfileId,
     selection: AppLanguageSelection
-  ) {
-    dataLock.withLock {
-      appLanguageSettings[profileId] = selection
-    }
-    asyncDataSubscriptionManager.notifyChange(APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID)
+  ): AppLanguageSelection {
+    return dataLock.withLock {
+      appLanguageSettings.put(profileId, selection)
+    }.also {
+      asyncDataSubscriptionManager.notifyChange(APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID)
+    } ?: AppLanguageSelection.getDefaultInstance()
   }
 
   private fun retrieveWrittenTranslationContentLanguageSelection(
@@ -447,11 +450,12 @@ class TranslationController @Inject constructor(
   private suspend fun updateAudioTranslationContentLanguageSelection(
     profileId: ProfileId,
     selection: AudioTranslationLanguageSelection
-  ) {
-    dataLock.withLock {
-      audioVoiceoverLanguageSettings[profileId] = selection
-    }
-    asyncDataSubscriptionManager.notifyChange(AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID)
+  ): AudioTranslationLanguageSelection {
+    return dataLock.withLock {
+      audioVoiceoverLanguageSettings.put(profileId, selection)
+    }.also {
+      asyncDataSubscriptionManager.notifyChange(AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID)
+    } ?: AudioTranslationLanguageSelection.getDefaultInstance()
   }
 
   private fun getSystemLanguage(): DataProvider<OppiaLanguage> =
