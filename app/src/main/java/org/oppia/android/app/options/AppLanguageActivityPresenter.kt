@@ -14,7 +14,7 @@ import javax.inject.Inject
 class AppLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var oppiaLangauge: OppiaLanguage
 
-  fun handleOnCreate(oppiaLanguage: OppiaLanguage) {
+  fun handleOnCreate(oppiaLanguage: OppiaLanguage, profileId: Int) {
     val binding: AppLanguageActivityBinding = DataBindingUtil.setContentView(
       activity,
       R.layout.app_language_activity,
@@ -28,7 +28,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     }
     setLanguageSelected(oppiaLanguage)
     if (getAppLanguageFragment() == null) {
-      val appLanguageFragment = AppLanguageFragment.newInstance(oppiaLanguage)
+      val appLanguageFragment = AppLanguageFragment.newInstance(oppiaLanguage, profileId)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.app_language_fragment_container, appLanguageFragment).commitNow()
     }

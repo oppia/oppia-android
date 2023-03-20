@@ -1,16 +1,17 @@
 package org.oppia.android.app.options
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.AppLanguageFragmentBinding
 import org.oppia.android.databinding.AppLanguageItemBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -22,14 +23,16 @@ class AppLanguageFragmentPresenter @Inject constructor(
   private val appLanguageSelectionViewModel: AppLanguageSelectionViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   private val translationController: TranslationController,
-  private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController
+  private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var appLanguage: OppiaLanguage
+  private var profileId: Int? = -1
+
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    prefSummaryValue: OppiaLanguage
+    prefSummaryValue: OppiaLanguage,
+    profileId: Int
   ): View? {
     val binding = AppLanguageFragmentBinding.inflate(
       inflater,
@@ -37,6 +40,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     this.appLanguage = prefSummaryValue
+    this.profileId = profileId
     appLanguageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.viewModel = appLanguageSelectionViewModel
     binding.lifecycleOwner = fragment
@@ -83,11 +87,12 @@ class AppLanguageFragmentPresenter @Inject constructor(
       selectedLanguageValue = oppiaLanguage.number
     }.build()
 
-    val profileId = profileManagementController.getCurrentProfileId()
+    val userProfileId = ProfileId.newBuilder().apply { internalId = profileId!! }.build()
+    Log.e("user profile id", userProfileId.internalId.toString())
 
-    if (profileId != null) {
+    if (userProfileId != null) {
       translationController.updateAppLanguage(
-        profileId,
+        userProfileId,
         appLanguageSelection
       ).toLiveData().observe(
         fragment,

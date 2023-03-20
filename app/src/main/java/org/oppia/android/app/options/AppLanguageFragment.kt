@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AppLanguageFragmentArguments
@@ -19,18 +20,20 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
 
   @Inject
   lateinit var appLanguageFragmentPresenter: AppLanguageFragmentPresenter
+  private var profileId: Int? = -1
 
   companion object {
     private const val FRAGMENT_ARGUMENTS_KEY = "AppLanguageFragment.arguments"
     private const val FRAGMENT_SAVED_STATE_KEY = "AppLanguageFragment.saved_state"
 
-    fun newInstance(oppiaLanguage: OppiaLanguage): AppLanguageFragment {
+    fun newInstance(oppiaLanguage: OppiaLanguage, profileId: Int): AppLanguageFragment {
       return AppLanguageFragment().apply {
         arguments = Bundle().apply {
           val args = AppLanguageFragmentArguments.newBuilder().apply {
             this.oppiaLanguage = oppiaLanguage
           }.build()
           putProto(FRAGMENT_ARGUMENTS_KEY, args)
+          putInt(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
         }
       }
     }
@@ -64,11 +67,13 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
         savedInstanceState?.retrieveLanguageFromSavedState()
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AudioLanguageFragment" }
+    profileId = arguments?.getInt(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
 
     return appLanguageFragmentPresenter.handleOnCreateView(
       inflater,
       container,
-      oppiaLanguage!!
+      oppiaLanguage!!,
+      profileId!!
     )
   }
 

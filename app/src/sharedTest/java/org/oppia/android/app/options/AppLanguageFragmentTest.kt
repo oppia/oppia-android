@@ -130,6 +130,8 @@ class AppLanguageFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private val internalProfileId: Int = -1
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -275,7 +277,8 @@ class AppLanguageFragmentTest {
   private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
     return AppLanguageActivity.createAppLanguageActivityIntent(
       context,
-      oppiaLanguage
+      oppiaLanguage,
+      internalProfileId
     )
   }
 

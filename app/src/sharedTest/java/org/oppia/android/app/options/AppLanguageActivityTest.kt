@@ -108,6 +108,7 @@ class AppLanguageActivityTest {
 
   @Inject
   lateinit var context: Context
+  private val internalProfileId: Int = -1
 
   @Before
   fun setUp() {
@@ -139,7 +140,8 @@ class AppLanguageActivityTest {
   private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
     return AppLanguageActivity.createAppLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      oppiaLanguage
+      oppiaLanguage,
+      internalProfileId
     )
   }
 
