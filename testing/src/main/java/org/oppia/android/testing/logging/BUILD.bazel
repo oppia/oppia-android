@@ -19,10 +19,10 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "fake_sync_status_manager",
+    name = "test_sync_status_manager",
     testonly = True,
     srcs = [
-        "FakeSyncStatusManager.kt",
+        "TestSyncStatusManager.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
@@ -39,7 +39,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":fake_sync_status_manager",
+        ":test_sync_status_manager",
         "//:dagger",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
     ],

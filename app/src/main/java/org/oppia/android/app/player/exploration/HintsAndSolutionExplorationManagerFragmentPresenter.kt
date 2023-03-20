@@ -53,9 +53,10 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
       is AsyncResult.Success -> {
         // Check if hints are available for this state.
         val ephemeralState = result.value
-        if (ephemeralState.state.interaction.hintList.size != 0) {
+        val state = ephemeralState.state
+        if (state.interaction.hintList.isNotEmpty() || state.interaction.hasSolution()) {
           (activity as HintsAndSolutionExplorationManagerListener).onExplorationStateLoaded(
-            ephemeralState.state, ephemeralState.writtenTranslationContext
+            state, ephemeralState.writtenTranslationContext
           )
         }
       }

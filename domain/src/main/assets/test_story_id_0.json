@@ -1,6 +1,6 @@
 {
   "story_nodes": [{
-    "description": "Learning about oppia app in First Story. It is very long but it has to be fully visible. You wil be learning about Oppia interactions. There is no second story to follow-up, but there is a second chapter.",
+    "description": "<unknown>",
     "exploration_id": "test_exp_id_2",
     "destination_node_ids": [],
     "thumbnail_filename": "",
@@ -24,7 +24,7 @@
     "title": "Image Region Selection Exploration",
     "acquired_skill_ids": []
   }, {
-    "description": "Test the different math expression/equation interactions.",
+    "description": "<unknown>",
     "exploration_id": "test_exp_id_5",
     "destination_node_ids": [],
     "thumbnail_filename": "",

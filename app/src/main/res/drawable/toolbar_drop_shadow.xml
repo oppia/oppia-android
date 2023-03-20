@@ -3,6 +3,6 @@
   android:shape="rectangle">
   <gradient
     android:angle="90"
-    android:endColor="@color/toolbar_drop_shadow"
+    android:endColor="@color/component_color_shared_activity_toolbar_shadow_color"
     android:startColor="@android:color/transparent" />
 </shape>

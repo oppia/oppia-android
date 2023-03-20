@@ -45,7 +45,7 @@
         android:id="@+id/bottom_topic_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/topic_title_background"
+        android:background="@color/component_color_shared_secondary_container_background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

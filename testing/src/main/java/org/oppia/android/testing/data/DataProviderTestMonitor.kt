@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.test.platform.app.InstrumentationRegistry
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.atMost
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
@@ -41,7 +42,6 @@ class DataProviderTestMonitor<T> private constructor(
   private val dataProvider: DataProvider<T>
 ) {
   private val mockObserver by lazy { createMock<Observer<AsyncResult<T>>>() }
-  private val resultCaptor by lazy { createCaptor<AsyncResult<T>>() }
   private val liveData: LiveData<AsyncResult<T>> by lazy { dataProvider.toLiveData() }
 
   /**
@@ -113,9 +113,10 @@ class DataProviderTestMonitor<T> private constructor(
     // and an explicit monitor, it either means the provider hasn't updated or it requires advancing
     // the clock (in which case you should use TestCoroutineDispatchers.advanceUntilIdle() and an
     // ensure* method from this class).
-    verify(mockObserver, atLeastOnce()).onChanged(resultCaptor.capture())
-    reset(mockObserver)
-    return resultCaptor.value
+    return createCaptor<AsyncResult<T>>().also { resultCaptor ->
+      verify(mockObserver, atLeastOnce()).onChanged(resultCaptor.capture())
+      reset(mockObserver)
+    }.value
   }
 
   private fun retrieveSuccess(operation: () -> AsyncResult<T>): T {
@@ -137,6 +138,13 @@ class DataProviderTestMonitor<T> private constructor(
       is AsyncResult.Pending, is AsyncResult.Success ->
         error("Expected next result to be a failure, not: $result")
     }
+  }
+
+  private fun collectAllResults(): List<AsyncResult<T>> {
+    return createCaptor<AsyncResult<T>>().also { resultCaptor ->
+      testCoroutineDispatchers.advanceUntilIdle()
+      verify(mockObserver, AnyNumber).onChanged(resultCaptor.capture())
+    }.allValues
   }
 
   /**
@@ -190,9 +198,7 @@ class DataProviderTestMonitor<T> private constructor(
      */
     fun <T> waitForNextSuccessfulResult(dataProvider: DataProvider<T>): T {
       val monitor = createMonitor(dataProvider)
-      return monitor.waitForNextSuccessResult().also {
-        monitor.stopObservingDataProvider()
-      }
+      return monitor.waitForNextSuccessResult().also { monitor.stopObservingDataProvider() }
     }
 
     /**
@@ -203,9 +209,35 @@ class DataProviderTestMonitor<T> private constructor(
      */
     fun <T> waitForNextFailureResult(dataProvider: DataProvider<T>): Throwable {
       val monitor = createMonitor(dataProvider)
-      return monitor.waitForNextFailingResult().also {
-        monitor.stopObservingDataProvider()
-      }
+      return monitor.waitForNextFailingResult().also { monitor.stopObservingDataProvider() }
+    }
+
+    /**
+     * Monitors for all possible results that are received starting exactly from the moment a new
+     * [DataProvider] is created by [createProvider].
+     *
+     * Note a few things:
+     * 1. This method tries to keep provider creation as close as possible to observation, but the
+     *    asynchronous nature of [DataProvider]s means that early results can still be missed.
+     * 2. [DataProvider]s are not an event system. Their "eventual consistency" property means that
+     *    the last result is most important to guarantee, so "in-between" states are possible to
+     *    miss (even in carefully time-coordinated test environments like Oppia's). It's
+     *    **highly suggested** to verify tests across ~100 runs that depend on this method to ensure
+     *    that they cannot flake out. Callers may need to verify specific values are present in the
+     *    list rather than verifying the whole list (since it could potentially change across test
+     *    runs with only the ending being reliable).
+     * 3. This method makes use of [TestCoroutineDispatchers.advanceUntilIdle] to minimize the
+     *    possibility of missing events, so callers should be aware that this will cause all pending
+     *    operations (even those in the future) to be run.
+     * 4. Care needs to be taken when [createProvider] returns, rather than creates, a
+     *    [DataProvider] as other methods in this class may cause the provider's results to be fully
+     *    observed before this method runs (which will cause it to return an empty list since it
+     *    only observes values *starting* at the time [createProvider] is called; any prior provided
+     *    values will be lost except the provider's latest value).
+     */
+    fun <T> waitForAllNextResults(createProvider: () -> DataProvider<T>): List<AsyncResult<T>> {
+      val monitor = createMonitor(createProvider())
+      return monitor.collectAllResults().also { monitor.stopObservingDataProvider() }
     }
   }
 
@@ -214,5 +246,8 @@ class DataProviderTestMonitor<T> private constructor(
 
     private inline fun <reified T> createCaptor(): ArgumentCaptor<T> =
       ArgumentCaptor.forClass(T::class.java)
+
+    // Approximate "any number" by limiting to a max number of calls.
+    private val AnyNumber by lazy { atMost(Integer.MAX_VALUE) }
   }
 }

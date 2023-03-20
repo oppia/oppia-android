@@ -45,7 +45,8 @@
       android:visibility="@{viewModel.hasPreviousButton ? View.VISIBLE: View.GONE, default=gone}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:tint="@color/component_color_shared_back_forward_arrow_button_color" />
 
     <org.oppia.android.app.customview.ContinueButtonView
       android:id="@+id/continue_interaction_button"
@@ -54,10 +55,10 @@
       android:gravity="center_vertical"
       android:onClick="@{(v) -> viewModel.handleButtonClicked()}"
       android:text="@string/state_continue_button"
-      app:shouldAnimateContinueButton="@{viewModel.shouldAnimateContinueButton}"
       app:continueButtonAnimationTimestampMs="@{viewModel.continueButtonAnimationTimestampMs}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:shouldAnimateContinueButton="@{viewModel.shouldAnimateContinueButton}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

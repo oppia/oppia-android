@@ -14,8 +14,8 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingEnd="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_padding_end : @dimen/general_button_item_question_view_padding_end}"
     android:paddingStart="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_padding_start : @dimen/general_button_item_question_view_padding_start}"
+    android:paddingEnd="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_padding_end : @dimen/general_button_item_question_view_padding_end}"
     app:layoutMarginTop="@{buttonViewModel.hasConversationView ? @dimen/return_to_topic_button_item_exploration_view_margin_top : @dimen/return_to_topic_button_item_question_view_margin_top}">
 
     <ImageButton
@@ -26,7 +26,8 @@
       android:visibility="@{buttonViewModel.hasPreviousButton ? View.VISIBLE: View.GONE, default=gone}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:tint="@color/component_color_shared_back_forward_arrow_button_color" />
 
     <Button
       android:id="@+id/return_to_topic_button"

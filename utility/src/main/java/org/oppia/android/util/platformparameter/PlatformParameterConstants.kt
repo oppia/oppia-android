@@ -97,7 +97,7 @@ const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
  * and working of learner study related analytics logging.
  */
 @Qualifier
-annotation class LearnerStudyAnalytics
+annotation class EnableLearnerStudyAnalytics
 
 /**
  * Name of the platform parameter that controls the visibility of [ProfileAndDeviceIdActivity]

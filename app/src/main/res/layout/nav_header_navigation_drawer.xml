@@ -14,7 +14,7 @@
     android:id="@+id/header_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/navbar_header_background"
+    android:background="@color/component_color_shared_navbar_header_background_color"
     android:gravity="bottom"
     android:onClick="@{(v) -> viewModel.onHeaderClicked()}"
     android:orientation="vertical"
@@ -41,7 +41,7 @@
       android:layout_marginTop="8dp"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
-      android:textColor="@color/color_def_white"
+      android:textColor="@color/component_color_shared_secondary_4_text_color"
       android:textSize="14sp" />
 
     <TextView
@@ -53,7 +53,7 @@
       android:layout_marginBottom="8dp"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.profileProgressText}"
-      android:textColor="@color/color_def_white"
+      android:textColor="@color/component_color_shared_secondary_4_text_color"
       android:textSize="14sp" />
   </LinearLayout>
 </layout>

@@ -17,6 +17,8 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusManager
@@ -31,7 +33,7 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = SyncStatusTestModuleTest.TestApplication::class)
 class SyncStatusTestModuleTest {
   @Inject lateinit var syncStatusManager: SyncStatusManager
 
@@ -41,15 +43,12 @@ class SyncStatusTestModuleTest {
   }
 
   @Test
-  fun testInjectSyncStatusManager_isInstanceOfFakeSyncStatusManager() {
-    assertThat(syncStatusManager).isInstanceOf(FakeSyncStatusManager::class.java)
+  fun testInjectSyncStatusManager_isInstanceOfTestSyncStatusManager() {
+    assertThat(syncStatusManager).isInstanceOf(TestSyncStatusManager::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerSyncStatusTestModuleTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -72,7 +71,7 @@ class SyncStatusTestModuleTest {
       RobolectricModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -81,5 +80,19 @@ class SyncStatusTestModuleTest {
     }
 
     fun inject(test: SyncStatusTestModuleTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerSyncStatusTestModuleTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: SyncStatusTestModuleTest) {
+      component.inject(test)
+    }
+
+    override fun getDataProvidersInjector() = component
   }
 }

@@ -13,7 +13,7 @@
     android:id="@+id/force_network_type_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_shared_screen_primary_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/force_network_type_app_bar_layout"
@@ -28,15 +28,14 @@
         android:id="@+id/force_network_type_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/oppia_primary"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/developer_options_force_network_type"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/color_def_white" />
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -52,7 +51,7 @@
         list="@{viewModel.networkTypeList}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/component_color_force_network_type_activity_background_color"
+        android:background="@color/component_color_shared_screen_tertiary_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="40dp"

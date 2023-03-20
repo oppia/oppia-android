@@ -51,6 +51,10 @@ message Profile {
   // Determines whether profile can download content.
   bool allow_download_access = 7;
 
+  // Determines whether the profile's user is allowed to quickly switching between content languages
+  // inside of a lesson.
+  bool allow_in_lesson_quick_language_switching = 16;
+
   // Represents the time the user was last logged in.
   int64 last_logged_in_timestamp_ms = 8;
 

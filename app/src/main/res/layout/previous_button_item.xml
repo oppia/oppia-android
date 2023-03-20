@@ -36,13 +36,14 @@
     app:questionViewMarginStart="@{@dimen/general_button_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/general_button_item_margin_top}">
 
-  <ImageButton
+    <ImageButton
       android:id="@+id/previous_state_navigation_button"
       style="@style/PreviousButton"
       android:elevation="2dp"
       android:onClick="@{(v) -> buttonViewModel.previousNavigationButtonListener.onPreviousButtonClicked()}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:tint="@color/component_color_shared_back_forward_arrow_button_color" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
