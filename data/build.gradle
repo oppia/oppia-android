@@ -5,7 +5,7 @@ apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion 31
-  buildToolsVersion "32.0.0"
+  buildToolsVersion "29.0.2"
 
   defaultConfig {
     minSdkVersion 19
@@ -68,7 +68,7 @@ dependencies {
       'com.google.dagger:dagger:2.24',
       'com.google.guava:guava:28.1-android',
       'com.google.protobuf:protobuf-javalite:3.17.3',
-      'com.squareup.moshi:moshi-kotlin:1.11.0',
+      'com.squareup.moshi:moshi-kotlin:1.14.0',
       'com.squareup.okhttp3:okhttp:4.7.2',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1',
   )
@@ -102,7 +102,7 @@ dependencies {
       'androidx.test.espresso:espresso-core:3.2.0')
   kapt(
       'com.google.dagger:dagger-compiler:2.24',
-      'com.squareup.moshi:moshi-kotlin-codegen:1.11.0'
+      'com.squareup.moshi:moshi-kotlin-codegen:1.14.0'
   )
   kaptTest(
       'com.google.dagger:dagger-compiler:2.24'
