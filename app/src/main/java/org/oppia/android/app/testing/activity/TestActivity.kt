@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityIntentFactories
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
@@ -23,7 +23,7 @@ import javax.inject.Inject
  * 2. As a superclass for other test activities where specific activity-level components are needed
  *   in tests
  */
-open class TestActivity : InjectableAppCompatActivity() {
+open class TestActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var appLanguageResourceHandler: AppLanguageResourceHandler
 

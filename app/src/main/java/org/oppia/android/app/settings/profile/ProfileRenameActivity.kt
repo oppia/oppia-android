@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_RENAME_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
@@ -13,7 +13,7 @@ import javax.inject.Inject
 const val PROFILE_RENAME_PROFILE_ID_EXTRA_KEY = "ProfileRenameActivity.profile_rename_profile_id"
 
 /** Activity that allows user to rename a profile. */
-class ProfileRenameActivity : InjectableAppCompatActivity() {
+class ProfileRenameActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var profileRenameActivityPresenter: ProfileRenameActivityPresenter
 

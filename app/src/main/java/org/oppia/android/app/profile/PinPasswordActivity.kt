@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PIN_PASSWORD_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
@@ -13,7 +13,8 @@ const val PIN_PASSWORD_PROFILE_ID_EXTRA_KEY = "PinPasswordActivity.pin_password_
 const val PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY = "PinPasswordActivity.pin_password_admin_pin"
 
 /** Activity that allows user to input his or her PIN. */
-class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInterface {
+class PinPasswordActivity : InjectableAutoLocalizedAppCompatActivity(),
+  ProfileRouteDialogInterface {
   @Inject
   lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
 
@@ -35,11 +36,6 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     pinPasswordActivityPresenter.handleOnCreate()
-  }
-
-  override fun attachBaseContext(newBase: Context?) {
-    shouldUseSystemLanguage = true
-    super.attachBaseContext(newBase)
   }
 
   override fun routeToResetPinDialog() {

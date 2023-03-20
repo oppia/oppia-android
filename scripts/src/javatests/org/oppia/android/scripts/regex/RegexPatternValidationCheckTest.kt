@@ -99,7 +99,8 @@ class RegexPatternValidationCheckTest {
   private val subclassedActivityErrorMessage =
     "Activity should never be subclassed. Use AppCompatActivity, instead."
   private val subclassedAppCompatActivityErrorMessage =
-    "Never subclass AppCompatActivity directly. Instead, use InjectableAppCompatActivity."
+    "Never subclass AppCompatActivity directly. " +
+      "Instead, use InjectableAutoLocalizedAppCompatActivity."
   private val subclassedDialogFragmentErrorMessage =
     "DialogFragment should never be subclassed. Use InjectableDialogFragment, instead."
   private val androidActivityConfigChangesErrorMessage =

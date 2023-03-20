@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AppLanguageActivityResultBundle
@@ -30,7 +30,7 @@ const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
 
 /** The activity for setting user preferences. */
 class OptionsActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToAppLanguageListListener,
   RouteToAudioLanguageListListener,
   RouteToReadingTextSizeListener,

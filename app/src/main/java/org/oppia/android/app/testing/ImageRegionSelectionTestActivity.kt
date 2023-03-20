@@ -3,12 +3,12 @@ package org.oppia.android.app.testing
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 
 /** Test Activity used for testing [ClickableAreasImage] functionality */
-class ImageRegionSelectionTestActivity : InjectableAppCompatActivity() {
+class ImageRegionSelectionTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

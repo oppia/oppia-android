@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_EDIT_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
@@ -20,7 +20,7 @@ const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
   "ProfileEditActivity.is_profile_deletion_dialog_visible"
 
 /** Activity [ProfileEditActivity] that allows user to edit a profile. */
-class ProfileEditActivity : InjectableAppCompatActivity() {
+class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
 

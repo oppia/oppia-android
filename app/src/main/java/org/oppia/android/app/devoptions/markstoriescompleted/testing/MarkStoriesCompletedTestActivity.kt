@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 
 /** Activity for testing [MarkStoriesCompletedFragment]. */
-class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
+class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   private var internalProfileId = -1
 

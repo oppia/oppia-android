@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
@@ -20,7 +20,7 @@ import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 
 /** Activity for testing [DeveloperOptionsFragment]. */
 class DeveloperOptionsTestActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   ForceCrashButtonClickListener,
   RouteToMarkChaptersCompletedListener,
   RouteToMarkStoriesCompletedListener,

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.AppLanguageActivityParams
 import org.oppia.android.app.model.AppLanguageActivityResultBundle
 import org.oppia.android.app.model.AppLanguageActivityStateBundle
@@ -18,7 +18,7 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** The activity to change the language of the app. */
-class AppLanguageActivity : InjectableAppCompatActivity() {
+class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var appLanguageActivityPresenter: AppLanguageActivityPresenter
 

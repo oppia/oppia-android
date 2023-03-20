@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
@@ -18,8 +18,10 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** Activity that allows the user to resume a saved exploration. */
-class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
-  @Inject lateinit var resumeLessonActivityPresenter: ResumeLessonActivityPresenter
+class ResumeLessonActivity : InjectableAutoLocalizedAppCompatActivity(),
+  RouteToExplorationListener {
+  @Inject
+  lateinit var resumeLessonActivityPresenter: ResumeLessonActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

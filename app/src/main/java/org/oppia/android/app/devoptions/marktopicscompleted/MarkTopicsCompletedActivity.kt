@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Activity for Mark Topics Completed. */
-class MarkTopicsCompletedActivity : InjectableAppCompatActivity() {
+class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   @Inject
   lateinit var markTopicsCompletedActivityPresenter: MarkTopicsCompletedActivityPresenter

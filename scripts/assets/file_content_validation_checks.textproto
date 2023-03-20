@@ -195,8 +195,8 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "\\sAppCompatActivity\\("
-  failure_message: "Never subclass AppCompatActivity directly. Instead, use InjectableAppCompatActivity."
-  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
+  failure_message: "Never subclass AppCompatActivity directly. Instead, use InjectableAutoLocalizedAppCompatActivity."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing/.*?TestActivity.kt$"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
@@ -389,7 +389,7 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?Activity.kt"
   failure_message: "Please add a Screen Name for this activity. To do this, add a value in the ScreenName enum of screens.proto and add that name to your activity using Intent.decorateWithScreenName(value) on the activity creation intent."
-  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing.+?\\.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/devoptions/testing.+?\\.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/testing.+?\\.kt"
