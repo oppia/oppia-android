@@ -104,7 +104,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 4.0.0
+          version: 6.1.1
 
       - uses: actions/cache@v2
         id: scripts_cache
@@ -197,7 +197,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 4.0.0
+          version: 6.1.1
 
       - name: Maven Repin Check
         if: always()
