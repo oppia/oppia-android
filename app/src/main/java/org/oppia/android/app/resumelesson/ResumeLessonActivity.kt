@@ -18,7 +18,8 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** Activity that allows the user to resume a saved exploration. */
-class ResumeLessonActivity : InjectableAutoLocalizedAppCompatActivity(),
+class ResumeLessonActivity :
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToExplorationListener {
   @Inject
   lateinit var resumeLessonActivityPresenter: ResumeLessonActivityPresenter

@@ -10,7 +10,8 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
-class WalkthroughActivity : InjectableAutoLocalizedAppCompatActivity(),
+class WalkthroughActivity :
+  InjectableAutoLocalizedAppCompatActivity(),
   WalkthroughFragmentChangeListener {
   @Inject
   lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter

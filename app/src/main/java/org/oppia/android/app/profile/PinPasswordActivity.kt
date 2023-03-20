@@ -13,7 +13,8 @@ const val PIN_PASSWORD_PROFILE_ID_EXTRA_KEY = "PinPasswordActivity.pin_password_
 const val PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY = "PinPasswordActivity.pin_password_admin_pin"
 
 /** Activity that allows user to input his or her PIN. */
-class PinPasswordActivity : InjectableAutoLocalizedAppCompatActivity(),
+class PinPasswordActivity :
+  InjectableAutoLocalizedAppCompatActivity(),
   ProfileRouteDialogInterface {
   @Inject
   lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
