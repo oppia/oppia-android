@@ -149,8 +149,6 @@ class AppLanguageWatcherMixinTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val shouldUseSystemLanguage: Boolean = false
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -160,7 +158,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_noAppLanguageChange_doesNothing() {
     val mixin = retrieveAppLanguageWatcherMixin()
 
-    mixin.initialize(shouldUseSystemLanguage)
+    mixin.initialize(false)
     testCoroutineDispatchers.runCurrent()
 
     // Initializing without anything changing should result in no changes to the locale or activity.
@@ -172,7 +170,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_localeIsUnchanged() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage)
+    mixin.initialize(false)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(ENGLISH)
@@ -185,7 +183,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withAppLanguageChange_newLanguage_updatesLocale() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage)
+    mixin.initialize(false)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -198,7 +196,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_doesNotRecreateActivity() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage)
+    mixin.initialize(false)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(ENGLISH)
@@ -210,7 +208,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withAppLanguageChange_newLanguage_recreatesActivity() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage)
+    mixin.initialize(false)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
