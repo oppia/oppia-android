@@ -197,6 +197,7 @@ file_content_checks {
   prohibited_content_regex: "\\sAppCompatActivity\\("
   failure_message: "Never subclass AppCompatActivity directly. Instead, use InjectableAutoLocalizedAppCompatActivity."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableSystemLocalizedAppCompatActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing/.*?TestActivity.kt$"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
