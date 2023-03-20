@@ -98,7 +98,6 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
@@ -127,7 +126,6 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
@@ -200,7 +198,6 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
@@ -231,7 +228,6 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLoggerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
@@ -253,5 +249,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
-
-dagger_rules()

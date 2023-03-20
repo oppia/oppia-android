@@ -34,8 +34,8 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":performance_metrics_assessor_impl",
-        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//:dagger",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -63,8 +63,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//:dagger",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],

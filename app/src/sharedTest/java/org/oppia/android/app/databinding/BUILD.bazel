@@ -45,7 +45,6 @@ app_test(
     processed_src = test_with_resources("AppCompatCheckBoxBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.AppCompatCheckBoxBindingAdaptersTest",
     deps = [
-        ":dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -81,7 +80,6 @@ app_test(
     processed_src = test_with_resources("CircularProgressIndicatorAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.CircularProgressIndicatorAdaptersTest",
     deps = [
-        ":dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",

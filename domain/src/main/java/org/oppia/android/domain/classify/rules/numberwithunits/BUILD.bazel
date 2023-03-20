@@ -30,8 +30,8 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":number_with_units_providers",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
-        "//:dagger",
     ],
 )

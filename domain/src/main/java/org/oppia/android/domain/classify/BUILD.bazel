@@ -76,9 +76,9 @@ kt_android_library(
     deps = [
         ":generic_interaction_classifier",
         ":interaction_classifier",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:exploration_meta_data_retriever",
-        "//:dagger",
         "//third_party:javax_inject_javax_inject",
     ],
 )
