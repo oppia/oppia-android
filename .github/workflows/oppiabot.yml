@@ -3,6 +3,8 @@
 name: Oppiabot
 
 on:
+  merge_group:
+    types: [checks_requested]
   pull_request_target:
     branches:
       - develop

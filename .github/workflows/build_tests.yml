@@ -5,6 +5,8 @@ name: Build Tests
 on:
   workflow_dispatch:
   pull_request:
+  merge_group:
+    types: [checks_requested]
   push:
     branches:
       # Push events on develop branch
