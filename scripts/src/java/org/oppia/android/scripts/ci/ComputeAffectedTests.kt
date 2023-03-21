@@ -80,7 +80,7 @@ class ComputeAffectedTests(
   val maxTestCountPerMediumShard: Int = MAX_TEST_COUNT_PER_MEDIUM_SHARD,
   val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD,
   val commandExecutor: CommandExecutor =
-    CommandExecutorImpl(processTimeout = 30, processTimeoutUnit = TimeUnit.MINUTES)
+    CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
 ) {
   private companion object {
     private const val GENERIC_TEST_BUCKET_NAME = "generic"
@@ -108,12 +108,12 @@ class ComputeAffectedTests(
       "Expected script to be run from the workspace's root directory"
     }
 
-    println("Running from directory root: $rootDirectory")
+    println("Running from directory root: $rootDirectory.")
 
     val gitClient = GitClient(rootDirectory, baseDevelopBranchReference, commandExecutor)
     val bazelClient = BazelClient(rootDirectory, commandExecutor)
-    println("Current branch: ${gitClient.currentBranch}")
-    println("Most recent common commit: ${gitClient.branchMergeBase}")
+    println("Current branch: ${gitClient.currentBranch}.")
+    println("Most recent common commit: ${gitClient.branchMergeBase}.")
 
     val currentBranch = gitClient.currentBranch.toLowerCase(Locale.US)
     val affectedTestTargets = if (computeAllTestsSetting || currentBranch == "develop") {
@@ -138,7 +138,7 @@ class ComputeAffectedTests(
   }
 
   private fun computeAllTestTargets(bazelClient: BazelClient): List<String> {
-    println("Computing all test targets")
+    println("Computing all test targets...")
     return bazelClient.retrieveAllTestTargets()
   }
 
@@ -152,7 +152,7 @@ class ComputeAffectedTests(
     val changedFiles = gitClient.changedFiles.filter { filepath ->
       File(rootDirectory, filepath).exists()
     }.toSet()
-    println("Changed files (per Git): $changedFiles")
+    println("Changed files (per Git, ${changedFiles.size} total): $changedFiles.")
 
     // Compute the changed targets 100 files at a time to avoid unnecessarily long-running Bazel
     // commands.
@@ -160,7 +160,7 @@ class ComputeAffectedTests(
       changedFiles.chunked(size = 100).fold(initial = setOf<String>()) { allTargets, filesChunk ->
         allTargets + bazelClient.retrieveBazelTargets(filesChunk).toSet()
       }
-    println("Changed Bazel file targets: $changedFileTargets")
+    println("Changed Bazel file targets (${changedFileTargets.size} total): $changedFileTargets.")
 
     // Similarly, compute the affect test targets list 100 file targets at a time.
     val affectedTestTargets =
@@ -168,7 +168,9 @@ class ComputeAffectedTests(
         .fold(initial = setOf<String>()) { allTargets, targetChunk ->
           allTargets + bazelClient.retrieveRelatedTestTargets(targetChunk).toSet()
         }
-    println("Affected Bazel test targets: $affectedTestTargets")
+    println(
+      "Affected Bazel test targets (${affectedTestTargets.size} total): $affectedTestTargets."
+    )
 
     // Compute the list of Bazel files that were changed.
     val changedBazelFiles = changedFiles.filter { file ->
@@ -176,14 +178,19 @@ class ComputeAffectedTests(
         file.endsWith(".bazel", ignoreCase = true) ||
         file == "WORKSPACE"
     }
-    println("Changed Bazel-specific support files: $changedBazelFiles")
+    println(
+      "Changed Bazel-specific support files (${changedBazelFiles.size} total): $changedBazelFiles."
+    )
 
     // Compute the list of affected tests based on BUILD/Bazel/WORKSPACE files. These are generally
     // framed as: if a BUILD file changes, run all tests transitively connected to it.
     val transitiveTestTargets = bazelClient.retrieveTransitiveTestTargets(changedBazelFiles)
-    println("Affected test targets due to transitive build deps: $transitiveTestTargets")
+    println(
+      "Affected test targets due to transitive build deps (${transitiveTestTargets.size} total):" +
+        " $transitiveTestTargets."
+    )
 
-    return (affectedTestTargets + transitiveTestTargets).toSet().toList()
+    return (affectedTestTargets + transitiveTestTargets).distinct()
   }
 
   private fun filterTargets(testTargets: List<String>): List<String> {

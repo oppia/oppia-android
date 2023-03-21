@@ -57,16 +57,19 @@ class BazelClient(
     // Note that this check is needed since rbuildfiles() doesn't like taking an empty list.
     return if (buildFileList.isNotEmpty()) {
       val referencingBuildFiles =
-        executeBazelCommand(
-          "query",
+        runPotentiallyShardedQueryCommand(
+          "filter('^[^@]', rbuildfiles(%s))", // Use a filter to limit the search space.
+          buildFiles,
           "--noshow_progress",
           "--universe_scope=//...",
           "--order_output=no",
-          "rbuildfiles($buildFileList)"
+          delimiter = ","
         )
       // Compute only test & library siblings for each individual build file. While this is both
       // much slower than a fully combined query & can potentially miss targets, it runs
-      // substantially faster per query and helps to avoid potential hanging in CI.
+      // substantially faster per query and helps to avoid potential hanging in CI. Note also that
+      // this is more correct than a combined query since it ensures that siblings checks are
+      // properly unique for each file being considered (vs. searching for common siblings).
       val relevantSiblings = referencingBuildFiles.flatMap { buildFileTarget ->
         retrieveFilteredSiblings(filterRuleType = "test", buildFileTarget) +
           retrieveFilteredSiblings(filterRuleType = "android_library", buildFileTarget)
@@ -77,7 +80,7 @@ class BazelClient(
           relevantSiblings,
           "--noshow_progress",
           "--universe_scope=//...",
-          "--order_output=no",
+          "--order_output=no"
         )
       )
     } else listOf()
@@ -142,6 +145,7 @@ class BazelClient(
     queryFormatStr: String,
     values: Iterable<String>,
     vararg prefixArgs: String,
+    delimiter: String = " ",
     allowPartialFailures: Boolean = false
   ): List<String> {
     // Split up values into partitions to ensure that the argument calls don't over-run the limit.
@@ -154,7 +158,7 @@ class BazelClient(
 
     // Fragment the query across the partitions to ensure all values can be considered.
     return partitions.flatMap { partition ->
-      val lastArgument = queryFormatStr.format(Locale.US, partition.joinToString(" "))
+      val lastArgument = queryFormatStr.format(Locale.US, partition.joinToString(delimiter))
       val allArguments = prefixArgs.toList() + lastArgument
       executeBazelCommand(
         "query", *allArguments.toTypedArray(), allowPartialFailures = allowPartialFailures

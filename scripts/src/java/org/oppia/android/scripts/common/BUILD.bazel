@@ -36,6 +36,9 @@ kt_jvm_library(
         "CommandResult.kt",
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
 )
 
 kt_jvm_library(
