@@ -33,6 +33,7 @@ android_library(
     custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
     resource_files = glob(["src/main/res/**/*.xml"]),
+    visibility = ["//visibility:public"],
 )
 
 # Visibility for migrated utility tests.
