@@ -3,6 +3,7 @@ package org.oppia.android.app.settings.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -165,10 +166,12 @@ class ProfileEditActivityTest {
         context = context,
         profileId = 1
       )
-    ).use {
-      onView(withId(R.id.profile_edit_toolbar)).check(
-        matches(hasDescendant(withText(context.getString(R.string.profile_edit_activity_label))))
-      )
+    ).use { activityScenario ->
+      activityScenario.onActivity {
+        val titleToolbar = it.findViewById<Toolbar>(R.id.profile_edit_toolbar)
+
+        assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.profile_edit_activity_title))
+      }
     }
   }
 
