@@ -14,7 +14,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -169,7 +168,6 @@ class ProfileEditActivityTest {
     ).use { activityScenario ->
       activityScenario.onActivity {
         val titleToolbar = it.findViewById<Toolbar>(R.id.profile_edit_toolbar)
-
         assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.profile_edit_activity_title))
       }
     }
