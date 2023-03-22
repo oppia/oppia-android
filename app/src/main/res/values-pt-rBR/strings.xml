@@ -387,7 +387,8 @@
   <string name="show_solution" fuzzy="true">Exibir</string>
   <string name="reveal_solution" fuzzy="true">Revelar Solução</string>
   <string name="reveal_hint">Revelar Dica</string>
-  <string name="this_will_reveal_the_solution" fuzzy="true">Isso revelará a solução. Tem certeza?</string>
+  <string name="hints_list_exclusive_solution_text">A única solução é: %s</string>
+  <string name="this_will_reveal_the_solution">Isso revelará a solução. Tem certeza?</string>
   <string name="reveal" fuzzy="true">Revelar</string>
   <string name="just_now">Agora</string>
   <string name="last_logged_in_recently">recentemente</string>
