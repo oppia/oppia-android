@@ -80,6 +80,9 @@ message Profile {
 
   // Determines if the in-exploration continue button animation has been seen by the user or not.
   bool is_continue_button_animation_seen = 15;
+
+  // Represents the last time the nps survey was shown on this profile.
+  int64 survey_last_shown_timestamp = 17;
 }
 
 // Represents a profile avatar image.
