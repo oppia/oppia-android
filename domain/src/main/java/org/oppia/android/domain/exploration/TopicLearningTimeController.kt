@@ -1,7 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicLearningTime
@@ -13,6 +11,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.system.OppiaClock
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 private const val CACHE_NAME = "topic_learning_time_database"
 private const val RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
@@ -112,15 +112,17 @@ class TopicLearningTimeController @Inject constructor(
       val topicLearningTimeDatabaseBuilder = topicLearningTimeDatabase.toBuilder()
         .putAggregateTopicLearningTime(topicId, topicLearningTime)
       Pair(topicLearningTimeDatabaseBuilder.build(), TopicLearningTimeActionStatus.SUCCESS)
-
     }
-    return dataProviders.createInMemoryDataProviderAsync(RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(
+      RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID
+    ) {
       return@createInMemoryDataProviderAsync getDeferredResult(deferred)
     }
   }
 
   private fun isLastUpdatedTimestampStale(lastUpdatedTimestamp: Long) =
-    (oppiaClock.getCurrentTimeMs() - lastUpdatedTimestamp) > LEARNING_TIME_STALENESS_THRESHOLD_MILLIS
+    (oppiaClock.getCurrentTimeMs() - lastUpdatedTimestamp) >
+      LEARNING_TIME_STALENESS_THRESHOLD_MILLIS
 
   /** Returns the [TopicLearningTime] [DataProvider] for a specific topicId, per-profile basis. */
   internal fun retrieveAggregateTopicLearningTimeDataProvider(

@@ -1,7 +1,5 @@
 package org.oppia.android.domain.survey
 
-import java.util.*
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProvider
@@ -9,6 +7,8 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.system.OppiaClock
+import java.util.Calendar
+import javax.inject.Inject
 
 private const val SURVEY_LAST_SHOWN_DATE_LIMIT_DAYS = 30
 private const val SURVEY_LAST_SHOWN_DATE_GATING_PROVIDER_ID =
