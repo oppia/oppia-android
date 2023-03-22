@@ -2158,6 +2158,7 @@ class RegexPatternValidationCheckTest {
       )
   }
 
+  @Test
   fun testFileContent_xmlLayouts_includesNonColorComponentReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
@@ -2222,6 +2223,7 @@ class RegexPatternValidationCheckTest {
       )
   }
 
+  @Test
   fun testFileContent_kotlinFiles_includesNonColorComponentReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
