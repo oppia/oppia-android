@@ -67,6 +67,10 @@ private const val UPDATE_APP_LANGUAGE_PROVIDER_ID = "update_app_language_provide
 private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID =
   "update_audio_language_provider_id"
 private const val UPDATE_LEARNER_ID_PROVIDER_ID = "update_learner_id_provider_id"
+private const val SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
+  "set_survey_last_shown_timestamp_provider_id"
+private const val GET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
+  "get_survey_last_shown_timestamp_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -838,6 +842,42 @@ class ProfileManagementController @Inject constructor(
       } else it
     }
     updateDatabaseDeferred.await()
+  }
+
+  /**
+   * Sets the timestamp when an nps survey was last shown for the specified profile.
+   *  Returns a [DataProvider] indicating whether the save was a success
+   */
+  fun setSurveyLastShownTimestamp(profileId: ProfileId): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) { profileDatabase ->
+      val profile = profileDatabase.profilesMap[profileId.internalId]
+      val updatedProfile = profile?.toBuilder()?.setSurveyLastShownTimestamp(
+        oppiaClock.getCurrentTimeMs()
+      )?.build()
+      val profileDatabaseBuilder = profileDatabase.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(
+      SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /** Returns the timestamp at which the nps survey was last shown. */
+  fun fetchSurveyLastShownTimestamp(
+    profileId: ProfileId
+  ): DataProvider<Long?> {
+    return profileDataStore.transform(
+      GET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID
+    ) { profileDatabase ->
+      profileDatabase.profilesMap[profileId.internalId]?.surveyLastShownTimestamp
+    }
   }
 
   private suspend fun getDeferredResult(
