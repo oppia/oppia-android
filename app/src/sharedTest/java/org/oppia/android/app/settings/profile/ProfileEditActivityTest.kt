@@ -168,6 +168,7 @@ class ProfileEditActivityTest {
     ).use { activityScenario ->
       activityScenario.onActivity {
         val titleToolbar = it.findViewById<Toolbar>(R.id.profile_edit_toolbar)
+
         assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.profile_edit_activity_title))
       }
     }
