@@ -65,11 +65,18 @@ class ScalableVectorGraphic {
     // size the image should be rendered at one web rather than its actual size), but it's a
     // reasonable fallback if the other two are unavailable. If no dimension is available, default
     // to a value that can hopefully be scaled (though it's likely at that point the image will not
-    // render well).
-    val width = documentWidth ?: viewBoxWidth ?: imageFileNameWidth ?: DEFAULT_SIZE_PX
-    val height = documentHeight ?: viewBoxHeight ?: imageFileNameHeight ?: DEFAULT_SIZE_PX
+    // render well). However, the filename is the best indicator of what size to which the image
+    // *should* be rendered.
+    val intrinsicWidth = documentWidth ?: viewBoxWidth ?: imageFileNameWidth ?: DEFAULT_SIZE_PX
+    val intrinsicHeight = documentHeight ?: viewBoxHeight ?: imageFileNameHeight ?: DEFAULT_SIZE_PX
 
-    return SvgSizeSpecs(width, height, verticalAlignment)
+    return SvgSizeSpecs(
+      intrinsicWidth,
+      intrinsicHeight,
+      renderedWidth = imageFileNameWidth ?: intrinsicWidth,
+      renderedHeight = imageFileNameHeight ?: intrinsicHeight,
+      verticalAlignment
+    )
   }
 
   /**
@@ -115,13 +122,21 @@ class ScalableVectorGraphic {
   // in the future.
   private fun adjustAlignmentForAndroid(value: Float) = value * -0.5f
 
-  /** Corresponds to the intrinsic size of the drawable. */
+  /**
+   * Corresponds to the intrinsic size of the drawable.
+   *
+   * @property intrinsicWidth the width in pixels needed to contain the entire SVG picture
+   * @property intrinsicHeight the height in pixels needed to contain the entire SVG picture
+   * @property renderedWidth the desired width to render the SVG, in Oppia web pixels
+   * @property renderedHeight the desired height to render the SVG, in Oppia web pixels
+   * @property verticalAlignment he amount of vertical pixels that should be translated when drawing
+   *     the picture
+   */
   data class SvgSizeSpecs(
-    /** The width in pixels needed to contain the entire SVG picture. */
-    val width: Float,
-    /** The height in pixels needed to contain the entire SVG picture. */
-    val height: Float,
-    /** The amount of vertical pixels that should be translated when drawing the picture. */
+    val intrinsicWidth: Float,
+    val intrinsicHeight: Float,
+    val renderedWidth: Float = intrinsicWidth,
+    val renderedHeight: Float = intrinsicHeight,
     val verticalAlignment: Float = 0f
   )
 
