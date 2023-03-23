@@ -872,11 +872,11 @@ class ProfileManagementController @Inject constructor(
   /** Returns the timestamp at which the nps survey was last shown. */
   fun fetchSurveyLastShownTimestamp(
     profileId: ProfileId
-  ): DataProvider<Long?> {
+  ): DataProvider<Long> {
     return profileDataStore.transform(
       GET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID
     ) { profileDatabase ->
-      profileDatabase.profilesMap[profileId.internalId]?.surveyLastShownTimestamp
+      profileDatabase.profilesMap[profileId.internalId]?.surveyLastShownTimestamp ?: 0L
     }
   }
 

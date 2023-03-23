@@ -62,7 +62,7 @@ class SurveyGatingController @Inject constructor(
   private fun isSurveyLastShownDateLimitPassed(profileId: ProfileId): DataProvider<Boolean> {
     return profileManagementController.fetchSurveyLastShownTimestamp(profileId)
       .transform(SURVEY_LAST_SHOWN_DATE_GATING_PROVIDER_ID) { lastShownTimestampMs ->
-        isMoreThanRequiredDaysAgo(lastShownTimestampMs ?: 0L)
+        isMoreThanRequiredDaysAgo(lastShownTimestampMs)
       }
   }
 
