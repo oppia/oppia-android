@@ -53,8 +53,12 @@ abstract class AbstractOppiaApplication(
       component.getAnalyticsStartupListenerStartupListeners().forEach { it.onCreate(workManager) }
     }
     component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
-    component.getExplorationProgressListeners().forEach (ExplorationProgressListener::onExplorationSessionStarted)
-    component.getExplorationProgressListeners().forEach (ExplorationProgressListener::onExplorationSessionPaused)
+    component.getExplorationProgressListeners().forEach(
+      ExplorationProgressListener::onExplorationSessionStarted
+    )
+    component.getExplorationProgressListeners().forEach(
+      ExplorationProgressListener::onExplorationSessionPaused
+    )
   }
 
   override fun getWorkManagerConfiguration(): Configuration {

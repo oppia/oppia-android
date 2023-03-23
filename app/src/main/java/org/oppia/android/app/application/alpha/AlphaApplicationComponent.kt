@@ -98,7 +98,7 @@ import javax.inject.Singleton
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
     EventLoggingConfigurationModule::class, CpuPerformanceSnapshotterModule::class,
-    PerformanceMetricsAssessorModule::class,ExplorationProgressListenerModule::class
+    PerformanceMetricsAssessorModule::class, ExplorationProgressListenerModule::class
   ]
 )
 interface AlphaApplicationComponent : ApplicationComponent {
