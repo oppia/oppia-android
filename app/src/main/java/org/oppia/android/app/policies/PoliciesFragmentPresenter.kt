@@ -13,6 +13,8 @@ import org.oppia.android.databinding.PoliciesFragmentBinding
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.PolicyType
 import javax.inject.Inject
+import org.oppia.android.util.parser.extention.getUrls
+import org.oppia.android.util.parser.extention.makeAutoLinks
 
 /** The presenter for [PoliciesFragment]. */
 @FragmentScope
@@ -64,6 +66,8 @@ class PoliciesFragmentPresenter @Inject constructor(
       supportsLinks = true,
       supportsConceptCards = false
     )
+    binding.policyDescriptionTextView.makeAutoLinks(policyDescription.getUrls())
+
 
     binding.policyWebLinkTextView.text = htmlParserFactory.create(
       gcsResourceName = "",
