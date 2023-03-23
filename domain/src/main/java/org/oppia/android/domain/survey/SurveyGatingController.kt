@@ -67,12 +67,14 @@ class SurveyGatingController @Inject constructor(
   }
 
   private fun isMoreThanRequiredDaysAgo(timestamp: Long): Boolean {
-    val lastShownCalendar = oppiaClock.getCurrentCalendar()
-    lastShownCalendar.timeInMillis = timestamp
+    val surveyLastShownDateCalendar = oppiaClock.getCurrentCalendar()
+    surveyLastShownDateCalendar.timeInMillis = timestamp
 
-    lastShownCalendar.add(Calendar.DAY_OF_YEAR, SURVEY_LAST_SHOWN_DATE_LIMIT_DAYS)
+    // Add the grace period allowed before a survey can be shown again.
+    surveyLastShownDateCalendar.add(Calendar.DAY_OF_YEAR, SURVEY_LAST_SHOWN_DATE_LIMIT_DAYS)
 
-    return oppiaClock.getCurrentCalendar().after(lastShownCalendar) ||
-      oppiaClock.getCurrentCalendar() == lastShownCalendar
+    val currentDateCalendar = oppiaClock.getCurrentCalendar()
+    return currentDateCalendar.after(surveyLastShownDateCalendar) ||
+      currentDateCalendar == surveyLastShownDateCalendar
   }
 }
