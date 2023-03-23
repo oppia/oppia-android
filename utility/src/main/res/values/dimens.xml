@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="bullet_radius">4dp</dimen>
-  <dimen name="bullet_gap_width">16dp</dimen>
+  <!-- While 3dp isn't a standard material size, it seems to be the best size to use for bullets (so that they're not too small/large). -->
+  <dimen name="bullet_radius">3sp</dimen>
   <dimen name="bullet_y_offset">2dp</dimen>
   <!-- Space between the start of the line and the bullet in a bullet span. -->
   <dimen name="spacing_before_bullet">8dp</dimen>
-  <!-- Space between bullet and the text in a bullet span. -->
-  <dimen name="spacing_before_text">24dp</dimen>
-  <dimen name="spacing_before_numbered_text">28dp</dimen>
+  <!-- Space between the start of the line and the number in a numbered span. -->
+  <dimen name="spacing_before_number_prefix">8dp</dimen>
+  <!-- Space between the end of a bullet/number prefix and the text that follows it. -->
+  <dimen name="spacing_before_text">8dp</dimen>
   <dimen name="maximum_content_item_padding">24dp</dimen>
   <dimen name="minimum_image_size">48dp</dimen>
   <dimen name="maximum_image_size">200dp</dimen>

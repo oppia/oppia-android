@@ -416,13 +416,12 @@
   <string name="hints_andSolution_close_icon_description">العودة للسابق</string>
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="show_solution">عرض الحل</string>
-  <string name="reveal_solution">عرض الحل</string>
+  <string name="reveal_solution" fuzzy="true">عرض الحل</string>
   <string name="reveal_hint">عرض الملاحظة</string>
   <string name="hide_hint">إخفاء تلميح</string>
   <string name="hide_solution">إخفاء الحل</string>
-  <string name="the_only_solution_is">الحل الوحيد هو :</string>
-  <string name="this_will_reveal_the_solution">سوف يتم إظهار الحل. هل أنت متأكد؟</string>
-  <string name="reveal">إظهار</string>
+  <string name="this_will_reveal_the_solution" fuzzy="true">سوف يتم إظهار الحل. هل أنت متأكد؟</string>
+  <string name="reveal" fuzzy="true">إظهار</string>
   <string name="just_now">الآن</string>
   <string name="last_logged_in_recently">حديثاً</string>
   <string name="time_ago">منذ %s</string>

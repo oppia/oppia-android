@@ -28,6 +28,7 @@ app_test(
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/logging:event_log_subject",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
