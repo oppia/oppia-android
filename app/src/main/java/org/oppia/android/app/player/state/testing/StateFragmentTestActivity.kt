@@ -118,8 +118,7 @@ class StateFragmentTestActivity :
           explorationId,
           state,
           helpIndex,
-          writtenTranslationContext,
-          profileId
+          writtenTranslationContext
         )
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }

@@ -164,8 +164,7 @@ class ExplorationActivity :
         explorationId,
         state,
         helpIndex,
-        writtenTranslationContext,
-        intent.extractParams().profileId
+        writtenTranslationContext
       )
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
