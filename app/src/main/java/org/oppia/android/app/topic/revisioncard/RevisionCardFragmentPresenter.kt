@@ -11,6 +11,7 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CON
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.RevisionCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class RevisionCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
@@ -92,7 +94,10 @@ class RevisionCardFragmentPresenter @Inject constructor(
   }
 
   private fun logRevisionCardEvent(topicId: String, subTopicId: Int) {
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenRevisionCardContext(topicId, subTopicId))
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenRevisionCardContext(topicId, subTopicId),
+      profileId
+    )
   }
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {

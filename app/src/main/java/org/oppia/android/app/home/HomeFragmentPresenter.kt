@@ -24,6 +24,7 @@ import org.oppia.android.databinding.PromotedStoryListBinding
 import org.oppia.android.databinding.TopicSummaryViewBinding
 import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
@@ -40,6 +41,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -158,6 +160,9 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun logHomeActivityEvent() {
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenHomeContext())
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenHomeContext(),
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    )
   }
 }

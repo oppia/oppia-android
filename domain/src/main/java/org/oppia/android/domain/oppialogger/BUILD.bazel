@@ -23,7 +23,6 @@ kt_android_library(
     ],
     visibility = ["//domain:__subpackages__"],
     deps = [
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
