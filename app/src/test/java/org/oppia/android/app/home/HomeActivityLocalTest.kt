@@ -118,6 +118,7 @@ class HomeActivityLocalTest {
   @Test
   fun testHomeActivity_onLaunch_logsEvent() {
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
