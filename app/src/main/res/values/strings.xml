@@ -359,6 +359,7 @@
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->
+  <string name="profile_edit_activity_title">Edit Profile</string>
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>
