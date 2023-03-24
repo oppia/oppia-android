@@ -11,6 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.robolectric.ShadowBidiFormatterTest",
     test_manifest = "//testing:test_manifest",
     deps = [
+        "//:dagger",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:shadow_bidi_formatter",
         "//third_party:androidx_core_core",
         "//third_party:androidx_test_ext_junit",

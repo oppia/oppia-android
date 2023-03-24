@@ -54,11 +54,13 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.github.bumptech.glide:glide": "4.11.0",
     "com.google.android.flexbox:flexbox": "3.0.0",
     "com.google.android.material:material": "1.3.0",
+    "com.google.errorprone:error_prone_annotations": "2.11.0",
     "com.google.firebase:firebase-analytics": "17.5.0",
     "com.google.firebase:firebase-common": "19.3.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
-    "com.google.guava:guava": "28.1-android",
+    "com.google.guava:failureaccess": "1.0.1",
+    "com.google.j2objc:j2objc-annotations": "1.3",
     "com.google.protobuf:protobuf-javalite": "3.17.3",
     "com.squareup.moshi:moshi-kotlin": "1.14.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.14.0",
@@ -70,6 +72,8 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
+    "org.checkerframework:checker-compat-qual": "2.5.5",
+    "org.checkerframework:checker-qual": "3.21.3",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
@@ -117,8 +121,10 @@ HTTP_DEPENDENCY_VERSIONS = {
     "dagger": {
         "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
         "version": "2.41",
-        #        "sha": "cbff42063bfce78a08871d5a329476eb38c96af9cf20d21f8b412fee76296181",
-        #        "version": "2.44.2",
+    },
+    "guava_android": {
+        "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
+        "version": "31.0.1",
     },
     "protobuf_tools": {
         "version": "3.11.0",
@@ -134,6 +140,7 @@ HTTP_DEPENDENCY_VERSIONS = {
     "rules_kotlin": {
         "sha": "12d22a3d9cbcf00f2e2d8f0683ba87d3823cb8c7f6837568dd7e48846e023307",
         "version": "v1.5.0",
+        # TODO: Finalize.
         #        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
         #        "version": "v1.7.1",
     },
@@ -146,6 +153,12 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
     },
 }
+
+MAVEN_REPOSITORIES = [
+    "https://maven.fabric.io/public",
+    "https://maven.google.com",
+    "https://repo1.maven.org/maven2",
+]
 
 def get_maven_dependencies():
     """

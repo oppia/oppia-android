@@ -4,7 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
+load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
@@ -193,13 +193,24 @@ maven_install(
     fail_if_repin_required = True,
     fetch_sources = True,
     maven_install_json = "//third_party:maven_install.json",
-    repositories = DAGGER_REPOSITORIES + [
-        "https://maven.fabric.io/public",
-        "https://maven.google.com",
-        "https://repo1.maven.org/maven2",
-    ],
+    override_targets = {
+        "com.google.guava:guava": "@//third_party:com_google_guava_guava",
+    },
+    repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
 )
 
 load("@maven//:defs.bzl", "pinned_maven_install")
 
 pinned_maven_install()
+
+http_jar(
+    name = "guava_android",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["guava_android"]["sha"],
+    urls = [
+        "{0}/com/google/guava/guava/{1}-android/guava-{1}-android.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["guava_android"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+    ],
+)

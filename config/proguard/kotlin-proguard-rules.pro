@@ -23,3 +23,8 @@
 -dontwarn sun.misc.SignalHandler
 -dontwarn sun.misc.Signal
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+
+# TODO: Figure out why these are needed now (is it specific to Bazel 6.x or Kotlin 1.x?).
+-dontwarn kotlinx.coroutines.DelayKt
+-dontwarn kotlinx.coroutines.flow.FlowKt*
+-dontwarn kotlinx.coroutines.flow.SharingStartedKt
