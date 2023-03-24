@@ -162,7 +162,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun logHomeActivityEvent() {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      profileId
     )
   }
 }

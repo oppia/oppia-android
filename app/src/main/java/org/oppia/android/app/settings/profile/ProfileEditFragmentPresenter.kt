@@ -78,21 +78,15 @@ class ProfileEditFragmentPresenter @Inject constructor(
       showDeletionDialog(profileId)
     }
 
-    profileEditViewModel.profile.observe(
-      fragment,
-      Observer {
-        if (activity is ProfileEditActivity) {
-          activity.title = it.name
-        }
+    profileEditViewModel.profile.observe(fragment) { profile ->
+      if (activity is ProfileEditActivity) {
+        activity.title = profile.name
       }
-    )
 
-    profileEditViewModel.isAllowedDownloadAccess.observe(
-      fragment,
-      Observer {
-        binding.profileEditAllowDownloadSwitch.isChecked = it
-      }
-    )
+      binding.profileEditAllowDownloadSwitch.isChecked = profile.allowDownloadAccess
+      binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked =
+        profile.allowInLessonQuickLanguageSwitching
+    }
 
     binding.profileEditAllowDownloadContainer.setOnClickListener {
       binding.profileEditAllowDownloadSwitch.isChecked =

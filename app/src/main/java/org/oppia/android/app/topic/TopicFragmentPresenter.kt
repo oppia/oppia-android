@@ -152,7 +152,7 @@ class TopicFragmentPresenter @Inject constructor(
       TopicTab.REVISION -> oppiaLogger.createOpenRevisionTabContext(topicId)
     }
     analyticsController.logImportantEvent(
-      eventContext, ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      eventContext, profileId
     )
   }
 }
