@@ -34,7 +34,6 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -91,7 +90,7 @@ class ProfileTestHelperTest {
     assertThat(profiles[0].isAdmin).isTrue()
     assertThat(profiles[1].name).isEqualTo("Ben")
     assertThat(profiles[1].isAdmin).isFalse()
-    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(0)
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
   }
 
   @Test
@@ -106,7 +105,7 @@ class ProfileTestHelperTest {
     assertThat(profiles.size).isEqualTo(1)
     assertThat(profiles[0].name).isEqualTo("Admin")
     assertThat(profiles[0].isAdmin).isTrue()
-    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(0)
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
   }
 
   @Test
@@ -125,7 +124,7 @@ class ProfileTestHelperTest {
     profileTestHelper.initializeProfiles()
     val loginProvider = profileTestHelper.logIntoAdmin()
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(0)
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
   }
 
   @Test
@@ -133,7 +132,7 @@ class ProfileTestHelperTest {
     profileTestHelper.initializeProfiles()
     val loginProvider = profileTestHelper.logIntoUser()
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(1)
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
   }
 
   @Test
@@ -141,7 +140,7 @@ class ProfileTestHelperTest {
     profileTestHelper.initializeProfiles()
     val loginProvider = profileTestHelper.logIntoNewUser()
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(2)
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -176,7 +175,7 @@ class ProfileTestHelperTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class, AssetModule::class
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -2,22 +2,16 @@ package org.oppia.android.app.topic.conceptcard
 
 import android.app.Application
 import android.content.Context
-import android.text.Spannable
-import android.text.style.ClickableSpan
-import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -29,12 +23,9 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -232,22 +223,13 @@ class ConceptCardFragmentTest {
 
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
-        .check(matches(withText(containsString("Hello. Welcome to Oppia."))))
-    }
-  }
-
-  @Test
-  fun testConceptCardFragment_openDialogFragment0_checkExplanationDisplayedWithoutRichText() {
-    launchTestActivity().use {
-      onView(withId(R.id.open_dialog_0)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.concept_card_heading_text))
-        .inRoot(isDialog())
-        .check(matches(withText("An important skill")))
-      onView(withId(R.id.concept_card_explanation_text))
-        .inRoot(isDialog())
-        .check(matches(withText(containsString("Hello. Welcome to Oppia."))))
+        .check(
+          matches(
+            withText(
+              "Hello. Welcome to Oppia."
+            )
+          )
+        )
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
         .check(matches(not(containsRichText())))
@@ -255,20 +237,59 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragment1_checkExplanationDisplayedWithRichText() {
+  fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() { // ktlint-disable max-line-length
+    launchTestActivity().use {
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            withText(
+              "An important skill"
+            )
+          )
+        )
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            withText(
+              "Hello. Welcome to Oppia."
+            )
+          )
+        )
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(not(containsRichText())))
+    }
+  }
+
+  @Test
+  fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() { // ktlint-disable max-line-length
     launchTestActivity().use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
-        .check(matches(withText("Another important skill")))
-      onView(withId(R.id.concept_card_heading_text))
-        .inRoot(isDialog())
-        .check(matches(not(withText("An important skill"))))
+        .check(
+          matches(
+            withText(
+              "Another important skill"
+            )
+          )
+        )
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
-        .check(matches(withText(containsString("Explanation with rich text."))))
+        .check(
+          matches(
+            withText(
+              "Explanation with rich text."
+            )
+          )
+        )
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
         .check(matches(containsRichText()))
@@ -276,29 +297,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragment1_clickOnConceptCardLink_opensConceptCard() {
-    launchTestActivity().use {
-      onView(withId(R.id.open_dialog_1)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      // Click the concept card link to open it.
-      onView(withId(R.id.concept_card_explanation_text))
-        .inRoot(isDialog())
-        .perform(openClickableSpan("test_skill_id_0 concept card"))
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withId(R.id.concept_card_heading_text))
-        .inRoot(isDialog())
-        .check(matches(withText("An important skill")))
-      onView(withId(R.id.concept_card_explanation_text))
-        .inRoot(isDialog())
-        .check(matches(withText(containsString("Hello. Welcome to Oppia."))))
-    }
-  }
-
-  @Test
-  fun testConceptCardFragment_openDialogFragmentWithSkill2_configChange_workedExamplesDisplayed() {
+  fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() { // ktlint-disable max-line-length
     launchTestActivity().use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -308,10 +307,22 @@ class ConceptCardFragmentTest {
 
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
-        .check(matches(withText("Another important skill")))
+        .check(
+          matches(
+            withText(
+              "Another important skill"
+            )
+          )
+        )
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
-        .check(matches(withText(containsString("Explanation with rich text."))))
+        .check(
+          matches(
+            withText(
+              "Explanation with rich text."
+            )
+          )
+        )
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
         .check(matches(containsRichText()))
@@ -400,43 +411,6 @@ class ConceptCardFragmentTest {
     )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
-
-  private fun openClickableSpan(text: String): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String = "openClickableSpan"
-
-      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
-
-      override fun perform(uiController: UiController?, view: View?) {
-        // The view shouldn't be null if the constraints are being met.
-        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
-      }
-    }
-  }
-
-  private fun hasClickableSpanWithText(text: String): Matcher<View> {
-    return object : TypeSafeMatcher<View>(TextView::class.java) {
-      override fun describeTo(description: Description?) {
-        description?.appendText("has ClickableSpan with text")?.appendValue(text)
-      }
-
-      override fun matchesSafely(item: View?): Boolean {
-        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
-      }
-    }
-  }
-
-  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
-    val viewText = text
-    return (viewText as Spannable).getSpans(
-      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
-    ).map {
-      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
-    }
-  }
-
-  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) =
-    find { text in it.first }?.second
 
   @Module
   class TestModule {

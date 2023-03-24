@@ -18,7 +18,7 @@ const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.is_multipane"
 const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
   "ProfileEditActivity.is_profile_deletion_dialog_visible"
 
-/** Activity that allows admins to edit a profile. */
+/** Activity [ProfileEditActivity] that allows user to edit a profile. */
 class ProfileEditActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter

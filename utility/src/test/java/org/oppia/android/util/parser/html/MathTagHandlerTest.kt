@@ -2,7 +2,6 @@ package org.oppia.android.util.parser.html
 
 import android.app.Application
 import android.content.Context
-import android.graphics.Color
 import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
@@ -35,7 +34,6 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
-import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -249,33 +247,6 @@ class MathTagHandlerTest {
   }
 
   @Test
-  fun testParseHtmlDayColor_withMathMarkup_cachingOff_getEquationDayColor() {
-    val parsedHtml =
-      CustomHtmlContentHandler.fromHtml(
-        html = MATH_WITHOUT_FILENAME_MARKUP,
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithUncachedMathSupport
-      )
-
-    val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
-    assertThat(equationColor[0].equationColor).isEqualTo(Color.BLACK)
-  }
-
-  @Config(qualifiers = "night")
-  @Test
-  fun testParseHtmlNightColor_withMathMarkup_cachingOff_getEquationNightColor() {
-    val parsedHtml =
-      CustomHtmlContentHandler.fromHtml(
-        html = MATH_WITHOUT_FILENAME_MARKUP,
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithUncachedMathSupport
-      )
-
-    val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
-    assertThat(equationColor[0].equationColor).isEqualTo(Color.WHITE)
-  }
-
-  @Test
   fun testParseHtml_noTagHandler_withMathMarkup_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
@@ -335,13 +306,7 @@ class MathTagHandlerTest {
 
   private fun createMathTagHandler(cacheLatexRendering: Boolean): MathTagHandler {
     // Pick an arbitrary line height since rendering doesn't actually happen in tests.
-    return MathTagHandler(
-      consoleLogger,
-      context.assets,
-      lineHeight = 10.0f,
-      cacheLatexRendering,
-      application = context.applicationContext as Application
-    )
+    return MathTagHandler(consoleLogger, context.assets, lineHeight = 10.0f, cacheLatexRendering)
   }
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =

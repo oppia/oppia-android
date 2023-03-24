@@ -24,7 +24,6 @@ import org.oppia.android.databinding.ProfileChooserAddViewBinding
 import org.oppia.android.databinding.ProfileChooserFragmentBinding
 import org.oppia.android.databinding.ProfileChooserProfileViewBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -68,7 +67,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
-  private val analyticsController: AnalyticsController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
@@ -257,10 +255,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun logProfileChooserEvent() {
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenProfileChooserContext(),
-      profileId = null // There's no profile currently logged in.
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenProfileChooserContext())
   }
 
   private fun updateLearnerIdIfAbsent(profile: Profile) {

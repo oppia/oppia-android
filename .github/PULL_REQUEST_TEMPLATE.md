@@ -20,5 +20,5 @@
 If your PR includes UI-related changes, then:
 - Add screenshots for portrait/landscape for both a tablet & phone of the before & after UI changes
 - For the screenshots above, include both English and pseudo-localized (RTL) screenshots (see [RTL guide](https://github.com/oppia/oppia-android/wiki/RTL-Guidelines))
-- Add a video showing the full UX flow with a screen reader enabled (see [accessibility guide](https://github.com/oppia/oppia-android/wiki/Accessibility-A11y-Guide))
+- Add a video showing the full UX flow with a screen reader enabled (see [accessibility guide](https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide))
 - Add a screenshot demonstrating that you ran affected Espresso tests locally & that they're passing

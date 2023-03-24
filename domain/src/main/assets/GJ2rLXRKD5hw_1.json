@@ -1,9 +1,6 @@
 {
   "topic_id": "GJ2rLXRKD5hw",
-  "topic_title": {
-    "content_id": "topic_title",
-    "html": "Fractions"
-  },
+  "topic_name": "Fractions",
   "page_contents": {
     "subtitled_html": {
       "content_id": "content",
@@ -16,7 +13,6 @@
     },
     "written_translations": {
       "translations_mapping": {
-        "title": {},
         "content": {}
       }
     }

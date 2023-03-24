@@ -91,8 +91,9 @@ states {
         }
       }
       solution {
+        interaction_id: "TextInput"
         correct_answer {
-          normalized_string: "Finnish"
+          correct_answer: "Finnish"
         }
         explanation {
           html: "<p>'Oppia' is translated from Finnish.</p>"

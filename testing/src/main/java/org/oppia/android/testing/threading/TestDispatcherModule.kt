@@ -1,6 +1,5 @@
 package org.oppia.android.testing.threading
 
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,8 +24,7 @@ class TestDispatcherModule {
   @ExperimentalCoroutinesApi
   @BackgroundDispatcher
   fun provideBackgroundDispatcher(
-    @BackgroundTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher,
-    context: Context
+    @BackgroundTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher
   ): CoroutineDispatcher {
     return testCoroutineDispatcher
   }

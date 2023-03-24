@@ -71,6 +71,7 @@ states {
         }
       }
       solution {
+        interaction_id: "TextInput"
         explanation {
           html: "<p>'Oppia' is translated from Finnish.</p>"
           content_id: "solution"

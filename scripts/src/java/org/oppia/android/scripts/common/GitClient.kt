@@ -13,9 +13,6 @@ class GitClient(
 ) {
   private val commandExecutor by lazy { CommandExecutorImpl() }
 
-  /** The commit hash of the HEAD of the local Git repository. */
-  val currentCommit: String by lazy { retrieveCurrentCommit() }
-
   /** The name of the current branch of the local Git repository. */
   val currentBranch: String by lazy { retrieveCurrentBranch() }
 
@@ -27,10 +24,6 @@ class GitClient(
    * unstaged, and untracked files.
    */
   val changedFiles: Set<String> by lazy { retrieveChangedFilesWithPotentialDuplicates().toSet() }
-
-  private fun retrieveCurrentCommit(): String {
-    return executeGitCommandWithOneLineOutput("rev-parse HEAD")
-  }
 
   private fun retrieveCurrentBranch(): String {
     return executeGitCommandWithOneLineOutput("rev-parse --abbrev-ref HEAD")

@@ -33,7 +33,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -182,7 +181,7 @@ class FakeLogSchedulerTest {
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
-      CpuPerformanceSnapshotterModule::class, AssetModule::class
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
