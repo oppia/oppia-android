@@ -48,8 +48,9 @@ class TopicLearningTimeController @Inject constructor(
    * We define the active time loosely as the time spent in an exploration when the app is in the
    * foreground.
    *
-   * This method is called when the [ExplorationProgressController.beginExplorationAsync] returns a
-   * success.
+   * This method is called when the [ExplorationProgressController.beginExplorationImpl] finishes
+   * executing successfully, or when the app comes back to the foreground after being previously
+   * backgrounded.
    */
   fun setExplorationSessionStarted() {
     this.startExplorationTimestamp = oppiaClock.getCurrentTimeMs()
@@ -58,8 +59,8 @@ class TopicLearningTimeController @Inject constructor(
   /**
    * Stops tracking the active learning time in an exploration.
    *
-   * This method is called when the [ExplorationProgressController.finishExplorationAsync] returns a
-   * success, or the app is in the background.
+   * This method is called when the [ExplorationProgressController.finishExplorationImpl] finishes
+   * executing, or the app goes to the background.
    */
   fun setExplorationSessionPaused(profileId: ProfileId, topicId: String) {
     recordAggregateTopicLearningTime(
