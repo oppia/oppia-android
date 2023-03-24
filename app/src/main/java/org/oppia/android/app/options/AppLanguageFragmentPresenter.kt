@@ -88,7 +88,6 @@ class AppLanguageFragmentPresenter @Inject constructor(
     }.build()
 
     val userProfileId = ProfileId.newBuilder().apply { internalId = profileId!! }.build()
-    Log.e("user profile id", userProfileId.internalId.toString())
 
     if (userProfileId != null) {
       translationController.updateAppLanguage(
