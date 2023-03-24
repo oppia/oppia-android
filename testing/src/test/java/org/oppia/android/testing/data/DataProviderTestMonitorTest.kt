@@ -9,9 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Test
@@ -34,7 +31,6 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -53,7 +49,6 @@ class DataProviderTestMonitorTest {
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
   @Before
   fun setUp() {
@@ -950,187 +945,19 @@ class DataProviderTestMonitorTest {
     assertThat(secondResult).hasMessageThat().contains("Second")
   }
 
-  /* Tests for waitForAllNextResults */
-
-  @Test
-  fun testWaitForAllNextResults_pendingProvider_returnsSingletonWithPending() {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.Pending()
-    }
-
-    val results = monitorFactory.waitForAllNextResults { dataProvider }
-
-    assertThat(results).hasSize(1)
-    assertThat(results.first()).isPending()
-  }
-
-  @Test
-  fun testWaitForAllNextResults_failingProvider_returnsSingletonWithFailure() {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.Failure(Exception("Failure"))
-    }
-
-    val results = monitorFactory.waitForAllNextResults { dataProvider }
-
-    assertThat(results).hasSize(1)
-    assertThat(results.first()).isFailureThat().hasMessageThat().contains("Failure")
-  }
-
-  @Test
-  fun testWaitForAllNextResults_successfulProvider_returnsSingletonWithSuccess() {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.Success("str value")
-    }
-
-    val results = monitorFactory.waitForAllNextResults { dataProvider }
-
-    assertThat(results).hasSize(1)
-    assertThat(results.first()).isSuccessThat().isEqualTo("str value")
-  }
-
-  @Test
-  fun testWaitForAllNextResults_pendingThenFailureProvider_returnsBoth() {
-    val dataProvider =
-      createDataProviderWithAutomaticResultsQueue(
-        "test", AsyncResult.Pending<String>(), AsyncResult.Failure(Exception("Failure"))
-      )
-
-    val results = monitorFactory.waitForAllNextResults { dataProvider }
-
-    assertThat(results).hasSize(2)
-    assertThat(results[0]).isPending()
-    assertThat(results[1]).isFailureThat().hasMessageThat().contains("Failure")
-  }
-
-  @Test
-  fun testWaitForAllNextResults_pendingThenSuccessProvider_returnsBoth() {
-    val dataProvider =
-      createDataProviderWithAutomaticResultsQueue(
-        "test", AsyncResult.Pending(), AsyncResult.Success("str value")
-      )
-
-    val results = monitorFactory.waitForAllNextResults { dataProvider }
-
-    assertThat(results).hasSize(2)
-    assertThat(results[0]).isPending()
-    assertThat(results[1]).isSuccessThat().isEqualTo("str value")
-  }
-
-  @Test
-  fun testWaitForAllNextResults_failureThenSuccessProvider_returnsBoth() {
-    val dataProvider =
-      createDataProviderWithAutomaticResultsQueue(
-        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
-      )
-
-    val results = monitorFactory.waitForAllNextResults { dataProvider }
-
-    assertThat(results).hasSize(2)
-    assertThat(results[0]).isFailureThat().hasMessageThat().contains("Failure")
-    assertThat(results[1]).isSuccessThat().isEqualTo("str value")
-  }
-
-  @Test
-  fun testWaitForAllNextResults_multipleSuccessValuesProvider_returnsAll() {
-    val dataProvider =
-      createDataProviderWithAutomaticResultsQueue(
-        "test", AsyncResult.Success("1"), AsyncResult.Success("2"), AsyncResult.Success("3")
-      )
-
-    val results = monitorFactory.waitForAllNextResults { dataProvider }
-
-    assertThat(results).hasSize(3)
-    assertThat(results[0]).isSuccessThat().isEqualTo("1")
-    assertThat(results[1]).isSuccessThat().isEqualTo("2")
-    assertThat(results[2]).isSuccessThat().isEqualTo("3")
-  }
-
-  @Test
-  fun testWaitForAllNextResults_multipleSuccessValuesProvider_consumed_returnsNothing() {
-    val dataProvider =
-      createDataProviderWithAutomaticResultsQueue(
-        "test", AsyncResult.Success("1"), AsyncResult.Success("2"), AsyncResult.Success("3")
-      )
-    monitorFactory.waitForAllNextResults { dataProvider }
-
-    val results = monitorFactory.waitForAllNextResults { dataProvider }
-
-    assertThat(results).isEmpty()
-  }
-
-  @Test
-  fun testWaitForAllNextResults_multipleSuccessValuesProvider_consumed_changed_returnsLatest() {
-    val dataProvider =
-      createDataProviderWithResultsQueue(
-        "test", AsyncResult.Success("1"), AsyncResult.Success("2"), AsyncResult.Success("3")
-      )
-    autoNotifyDataProvider(dataProvider.getId(), count = 1) // Only notify for item 2.
-    monitorFactory.waitForAllNextResults { dataProvider }
-
-    autoNotifyDataProvider(dataProvider.getId(), count = 1) // Notify for item 3.
-    val results = monitorFactory.waitForAllNextResults { dataProvider }
-
-    // The latest value should be captured since the provider was "changed" after the first capture.
-    assertThat(results).hasSize(1)
-    assertThat(results.first()).isSuccessThat().isEqualTo("3")
-  }
-
-  @Test
-  fun testWaitForAllNextResults_createMultiResultProviderAgain_returnsLatest() {
-    monitorFactory.waitForAllNextResults {
-      createDataProviderWithAutomaticResultsQueue(
-        "test", AsyncResult.Success("1"), AsyncResult.Success("2"), AsyncResult.Success("3")
-      )
-    }
-
-    val results = monitorFactory.waitForAllNextResults {
-      createDataProviderWithAutomaticResultsQueue(
-        "test", AsyncResult.Success("1"), AsyncResult.Success("2"), AsyncResult.Success("3")
-      )
-    }
-
-    // The values should be observed from scratch since it's a completely new data provider.
-    assertThat(results).hasSize(3)
-    assertThat(results[0]).isSuccessThat().isEqualTo("1")
-    assertThat(results[1]).isSuccessThat().isEqualTo("2")
-    assertThat(results[2]).isSuccessThat().isEqualTo("3")
-  }
-
   private fun <T> createDataProviderWithResultsQueue(
     id: Any,
     vararg results: AsyncResult<T>
   ): DataProvider<T> {
     val resultsQueue = createResultQueue(*results)
-    return dataProviders.createInMemoryDataProviderAsync(id) { resultsQueue.removeFirst() }
-  }
-
-  private fun autoNotifyDataProvider(id: Any, count: Int) {
-    repeat(count) { index ->
-      // A subsequently increasing delay is introduced because: (1) it allows for the converted
-      // LiveData to post its result before the next value comes in (otherwise DataProviders'
-      // "eventual consistency" property results in lost observed values), and (2) because
-      // waitForAllNextResults runs all pending coroutine operations, including scheduled future
-      // tasks.
-      CoroutineScope(backgroundDispatcher).async {
-        delay(timeMillis = (index + 1).toLong())
-        asyncDataSubscriptionManager.notifyChange(id)
-      }.invokeOnCompletion { error -> error?.let { throw error } }
+    return dataProviders.createInMemoryDataProviderAsync(id) {
+      resultsQueue.removeFirst()
     }
   }
 
-  private fun <T> createDataProviderWithAutomaticResultsQueue(
-    id: Any,
-    vararg results: AsyncResult<T>
-  ): DataProvider<T> {
-    return createDataProviderWithResultsQueue(id, *results).also {
-      // Notify that the provider has changed the number of elements in the queue (so that all are
-      // automatically consumed). This uses one minus the maximum since the first value of the queue
-      // is always implicitly retrieved upon the first retrieveData() call.
-      autoNotifyDataProvider(id, results.size - 1)
-    }
+  private fun <T> createResultQueue(vararg results: AsyncResult<T>): ArrayDeque<AsyncResult<T>> {
+    return ArrayDeque(results.toList())
   }
-
-  private fun <T> createResultQueue(vararg results: AsyncResult<T>) = ArrayDeque(results.toList())
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

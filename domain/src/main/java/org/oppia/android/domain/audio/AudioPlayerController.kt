@@ -91,7 +91,6 @@ class AudioPlayerController @Inject constructor(
   private var duration = 0
   private var completed = false
   private var currentContentId: String? = null
-  private var currentLanguageCode: String? = null
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
@@ -118,11 +117,10 @@ class AudioPlayerController @Inject constructor(
    * Changes audio source to specified.
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
-  fun changeDataSource(url: String, contentId: String?, languageCode: String) {
+  fun changeDataSource(url: String, contentId: String?) {
     audioLock.withLock {
       prepared = false
       currentContentId = contentId
-      currentLanguageCode = languageCode
       stopUpdatingSeekBar()
       mediaPlayer.reset()
       prepareDataSource(url)
@@ -212,7 +210,7 @@ class AudioPlayerController @Inject constructor(
         if (!isPlayingFromAutoPlay || !reloadingMainContent) {
           val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
           val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
-          stateLogger?.logPlayVoiceOver(currentContentId, currentLanguageCode)
+          stateLogger?.logPlayVoiceOver(currentContentId)
         }
       }
     }
@@ -220,14 +218,9 @@ class AudioPlayerController @Inject constructor(
 
   /**
    * Puts MediaPlayer in paused state and stops sending seek bar updates.
-   *
-   * The controller must already have audio prepared.
-   *
-   * @param isFromExplicitUserAction indicates whether this pause is from an explicit user action
-   *     (like clicking a pause button) vs. an incidental one (like an autoplay transition or
-   *     closing the audio bar)
+   * Controller must already have audio prepared.
    */
-  fun pause(isFromExplicitUserAction: Boolean) {
+  fun pause() {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (mediaPlayer.isPlaying) {
@@ -237,12 +230,6 @@ class AudioPlayerController @Inject constructor(
           )
         mediaPlayer.pause()
         stopUpdatingSeekBar()
-
-        if (isFromExplicitUserAction) {
-          val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
-          val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
-          stateLogger?.logPauseVoiceOver(currentContentId, currentLanguageCode)
-        }
       }
     }
   }

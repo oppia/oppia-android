@@ -99,90 +99,57 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom|start"
-      android:layout_marginTop="24dp"
       android:clipChildren="false"
       android:clipToPadding="false"
       android:paddingTop="24dp">
 
-      <FrameLayout
-        android:id="@+id/quick_switch_exploration_language_button_container"
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/hints_and_solution_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_shared_transparent_background_color"
-        android:visibility="@{viewModel.canQuicklyToggleBetweenSwahiliAndEnglish(viewModel.hasSwahiliTranslations, viewModel.allowInLessonQuickLanguageSwitching) ? View.VISIBLE : View.GONE}"
-        app:layout_constraintBottom_toTopOf="@+id/animable_hints_and_solution_fragment_container"
-        app:layout_constraintStart_toStartOf="parent">
+        android:background="@color/component_color_shared_hints_background_color"
+        android:clipChildren="false"
+        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
 
-        <androidx.appcompat.widget.AppCompatButton
-          android:id="@+id/quick_switch_exploration_language_button"
-          style="@style/SecondaryButton"
+        <ImageView
+          android:id="@+id/hint_bulb"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_margin="16dp"
-          android:minWidth="@dimen/clickable_item_min_height"
-          android:minHeight="@dimen/clickable_item_min_height"
-          android:onClick="@{(v) -> viewModel.toggleContentLanguage(viewModel.hasEnabledSwahiliTranslations)}"
-          android:text="@{viewModel.hasEnabledSwahiliTranslations ? @string/temporary_translate_to_english : @string/temporary_translate_to_swahili}" />
-      </FrameLayout>
+          android:layout_margin="8dp"
+          android:contentDescription="@{viewModel.isHintOpenedAndUnRevealed() ? @string/new_hint_available : @string/no_new_hint_available}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@{viewModel.isHintOpenedAndUnRevealed() ? @drawable/ic_hint_bulb_filled_yellow_48dp : @drawable/ic_hint_bulb_white_48dp}" />
 
-      <FrameLayout
-        android:id="@+id/animable_hints_and_solution_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-          android:id="@+id/hints_and_solution_fragment_container"
-          android:layout_width="match_parent"
+        <TextView
+          android:id="@+id/hint_bar_title"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="@color/component_color_shared_hints_background_color"
-          android:clipChildren="false"
-          android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
+          android:layout_marginStart="16dp"
+          android:text="@string/hints_toolbar_title"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
+          android:textSize="24sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toEndOf="@+id/hint_bulb"
+          app:layout_constraintTop_toTopOf="parent" />
 
-          <ImageView
-            android:id="@+id/hint_bulb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:contentDescription="@{viewModel.isHintOpenedAndUnRevealed() ? @string/new_hint_available : @string/no_new_hint_available}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@{viewModel.isHintOpenedAndUnRevealed() ? @drawable/ic_hint_bulb_filled_yellow_48dp : @drawable/ic_hint_bulb_white_48dp}" />
-
-          <TextView
-            android:id="@+id/hint_bar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@string/hints_toolbar_title"
-            android:textColor="@color/component_color_shared_secondary_4_text_color"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/hint_bulb"
-            app:layout_constraintTop_toTopOf="parent" />
-
-          <ImageView
-            android:id="@+id/open_hint_dialog_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:contentDescription="@string/show_hints_and_solution"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@{viewModel.isHintOpenedAndUnRevealed() ? @drawable/ic_keyboard_arrow_down_white_48dp : @drawable/ic_keyboard_arrow_right_white_48}" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-      </FrameLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+          android:id="@+id/open_hint_dialog_arrow"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="8dp"
+          android:contentDescription="@string/show_hints_and_solution"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@{viewModel.isHintOpenedAndUnRevealed() ? @drawable/ic_keyboard_arrow_down_white_48dp : @drawable/ic_keyboard_arrow_right_white_48}" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
     <FrameLayout
       android:layout_width="match_parent"

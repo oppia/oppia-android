@@ -1,9 +1,6 @@
 {
   "topic_id": "omzF4oqgeTXd",
-  "topic_title": {
-    "content_id": "topic_title",
-    "html": "Ratios and Proportional Reasoning"
-  },
+  "topic_name": "Ratios and Proportional Reasoning",
   "page_contents": {
     "subtitled_html": {
       "content_id": "content",
@@ -16,7 +13,6 @@
     },
     "written_translations": {
       "translations_mapping": {
-        "title": {},
         "content": {}
       }
     }

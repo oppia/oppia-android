@@ -117,7 +117,7 @@ class AudioViewModel @Inject constructor(
         val ensuredLanguageCode = if (languages.contains("en")) "en" else languages.first()
         fallbackLanguageCode = ensuredLanguageCode
         audioPlayerController.changeDataSource(
-          voiceOverToUri(voiceoverMap[ensuredLanguageCode]), currentContentId, ensuredLanguageCode
+          voiceOverToUri(voiceoverMap[ensuredLanguageCode]), currentContentId
         )
       }
     }
@@ -128,20 +128,20 @@ class AudioViewModel @Inject constructor(
     selectedLanguageCode = languageCode
     currentLanguageCode.set(languageCode)
     audioPlayerController.changeDataSource(
-      voiceOverToUri(voiceoverMap[languageCode]), currentContentId, languageCode
+      voiceOverToUri(voiceoverMap[languageCode]), currentContentId
     )
   }
 
   /** Plays or pauses AudioController depending on passed in state */
   fun togglePlayPause(type: UiAudioPlayStatus?) {
     if (type == UiAudioPlayStatus.PLAYING) {
-      audioPlayerController.pause(isFromExplicitUserAction = true)
+      audioPlayerController.pause()
     } else {
       audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     }
   }
 
-  fun pauseAudio() = audioPlayerController.pause(isFromExplicitUserAction = false)
+  fun pauseAudio() = audioPlayerController.pause()
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()
 

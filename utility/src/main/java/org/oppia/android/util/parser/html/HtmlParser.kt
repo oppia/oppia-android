@@ -1,6 +1,5 @@
 package org.oppia.android.util.parser.html
 
-import android.app.Application
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -135,8 +134,7 @@ class HtmlParser private constructor(
         consoleLogger,
         context.assets,
         htmlContentTextView.lineHeight.toFloat(),
-        cacheLatexRendering,
-        context as? Application ?: context.applicationContext as Application
+        cacheLatexRendering
       )
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler

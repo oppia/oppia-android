@@ -34,23 +34,19 @@ class SyncStatusItemViewModel private constructor(
       is AsyncResult.Pending -> R.string.learner_analytics_sync_status_default
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "SyncStatusItemViewModel", "Failed to retrieve sync status", syncStatusResult.error
+          "ProfileAndDeviceIdViewModel", "Failed to retrieve sync status", syncStatusResult.error
         )
         R.string.learner_analytics_sync_status_default
       }
       is AsyncResult.Success -> when (syncStatusResult.value) {
         SyncStatusManager.SyncStatus.INITIAL_UNKNOWN ->
           R.string.learner_analytics_sync_status_default
-        SyncStatusManager.SyncStatus.WAITING_TO_START_UPLOADING ->
-          R.string.learner_analytics_sync_status_waiting_to_upload
         SyncStatusManager.SyncStatus.DATA_UPLOADING ->
           R.string.learner_analytics_sync_status_data_uploading
         SyncStatusManager.SyncStatus.DATA_UPLOADED ->
           R.string.learner_analytics_sync_status_data_uploaded
-        SyncStatusManager.SyncStatus.UPLOAD_ERROR ->
-          R.string.learner_analytics_sync_status_upload_error
-        SyncStatusManager.SyncStatus.NO_CONNECTIVITY ->
-          R.string.learner_analytics_sync_status_no_internet_connectivity
+        SyncStatusManager.SyncStatus.NETWORK_ERROR, SyncStatusManager.SyncStatus.NO_CONNECTIVITY ->
+          R.string.learner_analytics_sync_status_network_error
       }
     }
     return resourceHandler.getStringInLocale(resId)

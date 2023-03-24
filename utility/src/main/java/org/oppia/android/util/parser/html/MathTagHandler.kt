@@ -1,14 +1,11 @@
 package org.oppia.android.util.parser.html
 
-import android.app.Application
 import android.content.res.AssetManager
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
-import androidx.core.content.res.ResourcesCompat
 import io.github.karino2.kotlitex.view.MathExpressionSpan
 import org.json.JSONObject
-import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
@@ -27,8 +24,7 @@ class MathTagHandler(
   private val consoleLogger: ConsoleLogger,
   private val assetManager: AssetManager,
   private val lineHeight: Float,
-  private val cacheLatexRendering: Boolean,
-  private val application: Application
+  private val cacheLatexRendering: Boolean
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
@@ -69,15 +65,7 @@ class MathTagHandler(
           )
         } else {
           MathExpressionSpan(
-            content.rawLatex,
-            lineHeight,
-            assetManager,
-            isMathMode = !useInlineRendering,
-            ResourcesCompat.getColor(
-              application.resources,
-              R.color.component_color_shared_equation_color,
-              /* theme = */ null
-            )
+            content.rawLatex, lineHeight, assetManager, isMathMode = !useInlineRendering
           )
         }
       }

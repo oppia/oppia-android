@@ -39,8 +39,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       },
       "DragDropSortInput": {
         "content": {
@@ -185,8 +184,7 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1,
-        "linked_skill_id": null
+        "next_content_id_index": -1
       }
     },
     "objective": "learn how to arrange the sentence",

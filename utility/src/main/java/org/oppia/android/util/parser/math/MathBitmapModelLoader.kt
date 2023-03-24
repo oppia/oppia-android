@@ -12,7 +12,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.StaticLayout
 import android.text.TextPaint
-import androidx.core.content.res.ResourcesCompat
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Options
@@ -27,7 +26,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ConsoleLoggerInjectorProvider
 import org.oppia.android.util.threading.DispatcherInjectorProvider
@@ -111,16 +109,7 @@ class MathBitmapModelLoader private constructor(
         // creation can still happen in parallel, and those are the more expensive steps.
         val span = withContext(CoroutineScope(blockingDispatcher).coroutineContext) {
           MathExpressionSpan(
-            model.rawLatex,
-            model.lineHeight,
-            application.assets,
-            !model.useInlineRendering,
-            // TODO(#1523): Test color parameter in MathBitmapModelLoader
-            ResourcesCompat.getColor(
-              application.resources,
-              R.color.component_color_shared_equation_color,
-              /* theme = */null
-            )
+            model.rawLatex, model.lineHeight, application.assets, !model.useInlineRendering
           ).also { it.ensureDrawable() }
         }
         val renderableText = SpannableStringBuilder("\uFFFC").apply {
@@ -132,7 +121,6 @@ class MathBitmapModelLoader private constructor(
         // since the width isn't necessarily known ahead of time).
         // Any TextPaint can be used since the span will use its own.
         val textPaint = TextPaint()
-
         @Suppress("DEPRECATION") // This call is necessary for the supported min API version.
         val staticTextLayout =
           StaticLayout(

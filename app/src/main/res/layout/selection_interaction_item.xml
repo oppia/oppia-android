@@ -43,7 +43,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:fontFamily="sans-serif-light"
-        android:text="@{viewModel.selectedItemText}"
+        android:text="@string/item_selection_text"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="14sp"
         android:textStyle="italic"

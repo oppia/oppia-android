@@ -14,7 +14,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +37,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
@@ -54,7 +53,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.IllegalStateException
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.full.staticFunctions
@@ -103,18 +101,8 @@ class PersistentCacheStoreTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
   @Mock lateinit var mockSubscriptionCallback: SubscriptionCallback
-  @Inject lateinit var testCoroutineDispatcherFactory: TestCoroutineDispatcher.Factory
 
   private val backgroundDispatcherScope by lazy { CoroutineScope(backgroundDispatcher) }
-  private val testOnlyBlockingDispatcher by lazy {
-    Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-  }
-  private val testOnlyBlockingTestDispatcher by lazy {
-    testCoroutineDispatcherFactory.createDispatcher(testOnlyBlockingDispatcher)
-  }
-  private val testOnlyBlockingDispatcherScope by lazy {
-    CoroutineScope(testOnlyBlockingTestDispatcher)
-  }
 
   @Before
   fun setUp() {
@@ -124,6 +112,7 @@ class PersistentCacheStoreTest {
   // TODO(#59): Create a test-only proto for this test rather than needing to reuse a
   //  production-facing proto.
   @Test
+  @ExperimentalCoroutinesApi
   fun testCache_initialState_isPending() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -134,11 +123,12 @@ class PersistentCacheStoreTest {
     // state, yet the pending state is really likely to be observed in production situations. The
     // timing model in tests is a bit too different from production to properly simulate this case.
     // This seems like a reasonable workaround to verify the same effective behavior.
-    val deferredResult = backgroundDispatcherScope.async { cacheStore.retrieveData() }
-    val deferredStateFlow = deferredResult.toStateFlow()
-    testCoroutineDispatchers.runCurrent()
+    val deferredResult = backgroundDispatcherScope.async {
+      cacheStore.retrieveData()
+    }
+    testCoroutineDispatchers.advanceUntilIdle()
 
-    assertThat(deferredStateFlow.flattenDeferredResult()).isPending()
+    assertThat(deferredResult.getCompleted()).isPending()
   }
 
   @Test
@@ -1488,7 +1478,7 @@ class PersistentCacheStoreTest {
     )
     cacheStore.storeDataAsync {
       it.toBuilder().apply { strValue = "different update" }.build()
-    }.waitForSuccessfulResult()
+    }.waitForResult()
 
     val deferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
@@ -1512,7 +1502,7 @@ class PersistentCacheStoreTest {
     )
     cacheStore.storeDataAsync {
       it.toBuilder().apply { strValue = "different update" }.build()
-    }.waitForSuccessfulResult()
+    }.waitForResult()
 
     val deferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
@@ -1552,34 +1542,6 @@ class PersistentCacheStoreTest {
     val cacheValue = monitorFactory.waitForNextSuccessfulResult(cacheStore2)
     assertThat(cacheValue).isEqualTo(onDiskValue)
     assertThat(onDiskValue.strValue).isEqualTo("different initial first transform")
-  }
-
-  @Test
-  @Suppress("DeferredResultUnused") // The result of the test implies the deferred ops' results.
-  fun testLoadFileCacheFromDisk_multipleTimesInTandem_onlyLoadsOnce() {
-    writeFileCache(
-      CACHE_NAME_1,
-      TestMessage.newBuilder().apply {
-        addStrValues("one")
-        addStrValues("two")
-      }.build()
-    )
-    val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
-
-    // Perform two operations on an initial factory that can trigger deferred loading. Note that the
-    // order matters here due to implementation details: certain initial read sequences can result
-    // in multiple attempts to load the on-disk file without additional filtering being implemented
-    // (which is what this test is verifying is present in the implementation). Note also that these
-    // operations are occurring on a separate blocking thread to ensure they occur in order and do
-    // not contend with the blocking dispatcher that's used by the cache's implementation.
-    testOnlyBlockingDispatcherScope.async { cacheStore.retrieveData() }
-    testOnlyBlockingDispatcherScope.async { cacheStore.readDataAsync().await() }
-    testOnlyBlockingDispatcherScope.async { cacheStore.retrieveData() }
-    testOnlyBlockingTestDispatcher.runCurrentCoordinated()
-
-    // Only 2 values should be in the list if it wasn't duplicated during reading setup.
-    val currentCacheState = monitorFactory.waitForNextSuccessfulResult(cacheStore)
-    assertThat(currentCacheState.strValuesList).hasSize(2)
   }
 
   private fun <T : MessageLite> subscribeToCacheStoreChanges(cacheStore: PersistentCacheStore<T>) {
@@ -1647,7 +1609,15 @@ class PersistentCacheStoreTest {
     } as T
   }
 
-  private fun <T> Deferred<T>.waitForSuccessfulResult() = toStateFlow().waitForLatestValue()
+  private fun <T> Deferred<T>.waitForSuccessfulResult() {
+    return when (val result = waitForResult()) {
+      is AsyncResult.Pending -> error("Deferred never finished.")
+      is AsyncResult.Success -> {} // Nothing to do; the result succeeded.
+      is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
+    }
+  }
+
+  private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
 
   private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
     val deferred = this
@@ -1660,26 +1630,8 @@ class PersistentCacheStoreTest {
     }
   }
 
-  private fun <T> StateFlow<AsyncResult<T>>.flattenDeferredResult(): T {
-    return when (val asyncResult = value) {
-      is AsyncResult.Pending -> error("Deferred never finished.")
-      is AsyncResult.Success -> asyncResult.value
-      is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", asyncResult.error)
-    }
-  }
-
-  private fun <T> StateFlow<AsyncResult<T>>.waitForLatestValue(): T =
-    also { testCoroutineDispatchers.runCurrent() }.flattenDeferredResult()
-
-  private fun TestCoroutineDispatcher.runCurrentCoordinated() {
-    // This logic is based on TestCoroutineDispatchersRobolectricImpl.runCurrent. It's necessary
-    // logic in this suite since some tests require syncing a test coroutine dispatcher that may
-    // depend on the broader shared dispatchers.
-    do {
-      runCurrent()
-      testCoroutineDispatchers.runCurrent()
-    } while (hasPendingCompletableTasks())
-  }
+  private fun <T> StateFlow<T>.waitForLatestValue(): T =
+    also { testCoroutineDispatchers.runCurrent() }.value
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
