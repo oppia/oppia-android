@@ -7,10 +7,10 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
+import org.oppia.android.scripts.testing.proto.TestMessage
 import org.oppia.android.testing.assertThrows
 import java.io.EOFException
 import java.util.zip.ZipException
-import org.oppia.android.scripts.testing.proto.TestMessage
 
 /** Tests for [ProtoStringEncoder]. */
 // Function name: test names are conventionally named with underscores.

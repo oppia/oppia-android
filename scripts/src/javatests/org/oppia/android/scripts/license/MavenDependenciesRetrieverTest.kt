@@ -42,7 +42,8 @@ class MavenDependenciesRetrieverTest {
     "//third_party/app_test:com_github_bumptech_glide_annotations"
   private val FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX =
     "//third_party/app_test:com_google_firebase_firebase-analytics"
-  private val IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX = "//third_party/app_test:io_fabric_sdk_android_fabric"
+  private val IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX =
+    "//third_party/app_test:io_fabric_sdk_android_fabric"
 
   private val DATA_BINDING_DEP = "androidx_databinding_databinding_adapters"
   private val PROTO_DEP = "com_google_protobuf_protobuf_lite"
