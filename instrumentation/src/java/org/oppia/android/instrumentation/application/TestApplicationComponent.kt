@@ -102,6 +102,7 @@ import javax.inject.Singleton
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
     CpuPerformanceSnapshotterModule::class, ExplorationProgressListenerModule::class,
+    ExplorationProgressModule::class,
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {
