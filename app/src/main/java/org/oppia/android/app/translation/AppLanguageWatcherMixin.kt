@@ -8,11 +8,11 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 
-private const val USE_SYSTEM_LANGUAGE_INTERNAL_PROFILE_ID = -2
 /**
  * Activity mixin for automatically monitoring & recreating the activity whenever the current app
  * language changes (such as if it's set to system language & the system language changes).
@@ -67,18 +67,17 @@ class AppLanguageWatcherMixin @Inject constructor(
 
     var currentUserProfileId = profileManagementController.getCurrentProfileId()
 
-    if (currentUserProfileId?.internalId == -1) {
+    // In test scenario ProfileManagementController returns null value.
+    if (currentUserProfileId == null) {
       currentUserProfileId = ProfileId.getDefaultInstance()
     }
 
-    if (shouldUseSystemLanguage) {
-      currentUserProfileId = ProfileId.newBuilder().apply {
-        internalId = USE_SYSTEM_LANGUAGE_INTERNAL_PROFILE_ID
-      }.build()
-    }
-
-    val appLanguageLocaleDataProvider =
-      currentUserProfileId?.let { translationController.getAppLanguageLocale(it) }
+    val appLanguageLocaleDataProvider: DataProvider<OppiaLocale.DisplayLocale>? =
+      if (shouldUseSystemLanguage) {
+        translationController.getSystemLanguageLocale()
+      } else {
+        currentUserProfileId?.let { translationController.getAppLanguageLocale(it) }
+      }
 
     val liveData = appLanguageLocaleDataProvider?.toLiveData()
     liveData?.observe(
