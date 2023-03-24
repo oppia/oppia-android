@@ -4,7 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
+load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_ARTIFACT_TREES", "MAVEN_REPOSITORIES", "extract_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
@@ -24,28 +24,18 @@ http_archive(
 )
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
-#http_archive(
-#    name = "io_bazel_rules_kotlin",
-#    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
-#    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
-#)
+# TODO: Move this back to rules_kotlin once it has a 1.7.x release with the needed fix.
 http_archive(
     name = "io_bazel_rules_kotlin",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin_prerelease"]["sha"],
-    urls = ["https://github.com/oppia/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin_prerelease"]["version"]],
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
+    urls = ["https://github.com/oppia/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
 load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
 
-# TODO: Verify if 1.7.20 is actually needed.
-kotlin_repositories(
-    compiler_release = kotlinc_version(
-        release = "1.7.20",
-        sha256 = "5e3c8d0f965410ff12e90d6f8dc5df2fc09fd595a684d514616851ce7e94ae7d",
-    ),
-)
+kotlin_repositories()
 
-register_toolchains("//third_party/kotlin:toolchain")
+register_toolchains("//third_party/kotlin:kotlin_16_jdk9_toolchain")
 
 # The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 # module while helping us avoid the unnecessary compilation of protoc. Referecences:
@@ -140,6 +130,7 @@ git_repository(
     name = "android-spotlight",
     commit = "ebde38335bfb56349eae57e705b611ead9addb15",
     remote = "https://github.com/oppia/android-spotlight",
+    repo_mapping = {"@maven": "@maven_app_prod"},
     shallow_since = "1668824029 -0800",
 )
 
@@ -149,6 +140,7 @@ git_repository(
     name = "kotlitex",
     commit = "ccdf4170817fa3b48b8e1e452772dd58ecb71cf2",
     remote = "https://github.com/oppia/kotlitex",
+    repo_mapping = {"@maven": "@maven_app_prod"},
     shallow_since = "1679426649 -0700",
 )
 
@@ -162,8 +154,6 @@ http_archive(
     strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
 )
-
-load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 ATS_TAG = "1edfdab3134a7f01b37afabd3eebfd2c5bb05151"
 
@@ -187,19 +177,46 @@ http_jar(
     url = "https://github.com/google/bundletool/releases/download/{0}/bundletool-all-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["version"]),
 )
 
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("@rules_jvm_external//:specs.bzl", "maven", "parse")
+
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
-maven_install(
-    artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
-    fail_if_repin_required = True,
-    fetch_sources = True,
-    maven_install_json = "//third_party:maven_install.json",
-    repositories = DAGGER_REPOSITORIES + [
-        "https://maven.fabric.io/public",
-        "https://maven.google.com",
-        "https://repo1.maven.org/maven2",
+[
+    maven_install(
+        name = "maven_%s" % build_context,
+        artifacts = extract_maven_dependencies(maven, parse, artifact_tree, DAGGER_ARTIFACTS),
+        duplicate_version_warning = "error",
+        fail_if_repin_required = True,
+        fetch_javadoc = True,
+        fetch_sources = True,
+        maven_install_json = "//third_party:maven_install_%s.json" % build_context,
+        override_targets = artifact_tree["target_overrides"],
+        repositories = DAGGER_REPOSITORIES + artifact_tree["repositories"],
+        strict_visibility = True,
+    )
+    for build_context, artifact_tree in MAVEN_ARTIFACT_TREES.items()
+]
+
+load("@maven_app_prod//:defs.bzl", pinned_maven_install_app_prod = "pinned_maven_install")
+load("@maven_app_test//:defs.bzl", pinned_maven_install_app_test = "pinned_maven_install")
+load("@maven_scripts//:defs.bzl", pinned_maven_install_scripts = "pinned_maven_install")
+
+# TODO: Verify removing this fails build correctly.
+# TODO: Update third-party deps collection to include scripts.
+pinned_maven_install_app_prod()
+
+pinned_maven_install_app_test()
+
+pinned_maven_install_scripts()
+
+http_jar(
+    name = "guava_android",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["guava_android"]["sha"],
+    urls = [
+        "{0}/com/google/guava/guava/{1}-android/guava-{1}-android.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["guava_android"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
     ],
 )
-
-load("@maven//:defs.bzl", "pinned_maven_install")
-
-pinned_maven_install()

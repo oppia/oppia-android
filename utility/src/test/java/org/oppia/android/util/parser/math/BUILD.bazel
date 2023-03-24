@@ -11,9 +11,9 @@ oppia_android_test(
     test_class = "org.oppia.android.util.parser.math.MathModelTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        "//third_party:com_google_truth_truth",
-        "//third_party:junit_junit",
-        "//third_party:robolectric_android-all",
+        "//third_party/app_test:com_google_truth_truth",
+        "//third_party/app_test:junit_junit",
+        "//third_party/app_test:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
     ],
 )

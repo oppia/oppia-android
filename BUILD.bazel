@@ -12,6 +12,7 @@ exports_files(["config/kitkat_main_dex_class_list.txt"])
 package_group(
     name = "oppia_api_visibility",
     packages = [
+        "-//scripts/...",
         "//...",
     ],
 )
@@ -33,13 +34,16 @@ package_group(
 # test targets.
 package_group(
     name = "oppia_testing_visibility",
+    includes = [
+        "//app:app_testing_visibility",
+        "//domain:domain_testing_visibility",
+        "//scripts:oppia_script_test_visibility",
+        "//utility:utility_testing_visibility",
+    ],
     packages = [
-        "//app/...",
         "//data/...",
-        "//domain/...",
         "//instrumentation/...",
         "//testing/...",
-        "//utility/...",
     ],
 )
 
@@ -69,6 +73,9 @@ package_group(
     includes = [
         ":oppia_binary_visibility",
         ":oppia_testing_visibility",
+    ],
+    packages = [
+        "//app/src/main/java/org/oppia/android/app/application/...",
     ],
 )
 
@@ -138,4 +145,4 @@ package_group(
     for flavor in AVAILABLE_FLAVORS
 ]
 
-dagger_rules()
+dagger_rules(repo_name = "@maven_app_prod")

@@ -7,14 +7,19 @@ java_plugin.
 
 load("@rules_java//java:defs.bzl", "java_plugin")
 
+package_group(
+    name = "tool_visibility",
+    packages = ["//tools"],
+)
+
 java_plugin(
     name = "moshi_annotation_processor_plugin",
     generates_api = True,
     processor_class = "com.squareup.moshi.kotlin.codegen.apt.JsonClassCodegenProcessor",
-    visibility = ["//third_party:__pkg__"],
+    visibility = ["//third_party:artifact_visibility"],
     deps = [
-        "//third_party:com_squareup_moshi_moshi-kotlin",
-        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
+        "//third_party/app_prod:com_squareup_moshi_moshi-kotlin",
+        "//third_party/app_prod:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )
 
@@ -22,6 +27,6 @@ java_plugin(
     name = "glide_compiler_plugin",
     generates_api = True,
     processor_class = "com.bumptech.glide.annotation.compiler.GlideAnnotationProcessor",
-    visibility = ["//third_party:__pkg__"],
-    deps = ["//third_party:com_github_bumptech_glide_compiler"],
+    visibility = ["//third_party:artifact_visibility"],
+    deps = ["//third_party/app_prod:com_github_bumptech_glide_compiler"],
 )

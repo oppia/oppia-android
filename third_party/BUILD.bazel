@@ -1,4 +1,5 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
+# TODO: Update docs.
 """
 This package contains all third-party dependencies that the project depends on. Each maven artifact
 should correspond to a single wrapper android_library, and versions should go in versions.bzl.
@@ -12,98 +13,12 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
-load("@rules_java//java:defs.bzl", "java_binary", "java_library")
-load("@rules_jvm_external//:defs.bzl", "artifact")
-load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
+load(":versions.bzl", "MAVEN_ARTIFACT_TREES")
 
-# Create an android library wrapper for all production dependencies. Note that artifact is used so
-# that the correct Maven repository (default) is selected. This allows future customization
-# potential in managing multiple Maven repositories.
-[android_library(
-    name = name.replace(":", "_").replace(".", "_"),
-    visibility = ["//visibility:public"],
-    exports = [
-        artifact("%s:%s" % (name, version)),
-    ],
-) for name, version in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()]
-
-# Create an android library wrapper for all test dependencies.
-[android_library(
-    name = name.replace(":", "_").replace(".", "_"),
-    testonly = True,
-    visibility = ["//visibility:public"],
-    exports = [
-        artifact("%s:%s" % (name, version)),
-    ],
-) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
-
-android_library(
-    name = "circularimageview_circular_image_view",
-    visibility = ["//visibility:public"],
-    exports = [
-        "@circularimageview//circularimageview:circular_image_view",
-    ],
-)
-
-# A wrapper dependency for the custom Git import of Android SVG (so that dependencies on this
-# library still routes through //third_party).
-android_library(
-    name = "com_caverock_androidsvg",
-    visibility = ["//visibility:public"],
-    exports = [
-        "@androidsvg//androidsvg",
-    ],
-)
-
-android_library(
-    name = "com_github_takusemba_spotlight",
-    visibility = ["//visibility:public"],
-    exports = [
-        "@android-spotlight//spotlight",
-    ],
-)
-
-android_library(
-    name = "robolectric_android-all",
-    testonly = True,
-    visibility = ["//visibility:public"],
-    exports = [
-        "@robolectric//bazel:android-all",
-    ],
-)
-
-java_library(
-    name = "moshi",
-    exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
-    visibility = ["//visibility:public"],
-    exports = [
-        "//third_party:com_squareup_moshi_moshi-kotlin",
-    ],
-)
-
-android_library(
-    name = "io_github_karino2_kotlitex",
-    visibility = ["//visibility:public"],
-    exports = [
-        "@kotlitex//kotlitex",
-    ],
-)
-
-# Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
-# can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
-# Android assets which java_library targets do not export.
-java_library(
-    name = "glide_compiler",
-    exported_plugins = ["//tools:glide_compiler_plugin"],
-    visibility = ["//visibility:public"],
-    exports = [
-        "//third_party:com_github_bumptech_glide_compiler",
-    ],
-)
-
-java_binary(
-    name = "android_bundletool",
-    main_class = "com.android.tools.build.bundletool.BundleToolMain",
-    visibility = ["//visibility:public"],
-    runtime_deps = ["@android_bundletool//jar"],
+package_group(
+    name = "artifact_visibility",
+    packages = [
+        "//third_party/%s" % build_context
+        for build_context in MAVEN_ARTIFACT_TREES.keys()
+    ] + ["//"],
 )

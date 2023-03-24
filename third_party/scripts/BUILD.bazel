@@ -1,0 +1,32 @@
+load("//third_party:load_utilities.bzl", "create_dependency_wrappers")
+load("@rules_java//java:defs.bzl", "java_binary", "java_library")
+
+package_group(
+    name = "script_artifact_visibility",
+    includes = [
+        "//:oppia_binary_visibility",
+        "//scripts:oppia_script_library_visibility",
+        "//tools:tool_visibility",
+    ],
+)
+
+create_dependency_wrappers(
+    artifact_visibility = ["//third_party/scripts:script_artifact_visibility"],
+    build_context = "scripts",
+)
+
+java_library(
+    name = "moshi",
+    exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
+    visibility = [":script_artifact_visibility"],
+    exports = [
+        "//third_party/scripts:com_squareup_moshi_moshi-kotlin",
+    ],
+)
+
+java_binary(
+    name = "android_bundletool",
+    main_class = "com.android.tools.build.bundletool.BundleToolMain",
+    visibility = [":script_artifact_visibility"],
+    runtime_deps = ["@android_bundletool//jar"],
+)

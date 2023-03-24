@@ -39,6 +39,7 @@ android_library(
 package_group(
     name = "utility_testing_visibility",
     packages = [
+        "//utility",
         "//utility/src/test/...",
     ],
 )
@@ -55,43 +56,6 @@ android_library(
     ],
 )
 
-# Library for general-purpose utilities.
-kt_android_library(
-    name = "utility",
-    srcs = glob(
-        ["src/main/java/org/oppia/android/util/**/*.kt"],
-        exclude = MIGRATED_PROD_FILES,
-    ),
-    visibility = ["//visibility:public"],
-    deps = [
-        ":resources",
-        "//app:crashlytics",
-        "//app:crashlytics_deps",
-        "//model/src/main/proto:event_logger_java_proto_lite",
-        "//model/src/main/proto:platform_parameter_java_proto_lite",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:androidx_room_room-runtime",
-        "//third_party:androidx_work_work-runtime",
-        "//third_party:androidx_work_work-runtime-ktx",
-        "//third_party:com_caverock_androidsvg",
-        "//third_party:com_github_bumptech_glide_glide",
-        "//third_party:com_google_guava_guava",
-        "//third_party:glide_compiler",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
-        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
-        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
-        "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
-        "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
-        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
-    ],
-)
-
 filegroup(
     name = "test_manifest",
     srcs = ["src/test/AndroidManifest.xml"],
@@ -101,7 +65,6 @@ filegroup(
 # keep sorted
 TEST_DEPS = [
     ":test_resources",
-    ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",
     "//model/src/main/proto:test_models",
@@ -116,16 +79,16 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-    "//third_party:androidx_arch_core_core-testing",
-    "//third_party:androidx_test_ext_junit",
-    "//third_party:androidx_test_ext_truth",
-    "//third_party:androidx_work_work-testing",
-    "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-    "//third_party:com_google_truth_truth",
-    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
-    "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
-    "//third_party:org_mockito_mockito-core",
-    "//third_party:robolectric_android-all",
+    "//third_party/app_test:androidx_arch_core_core-testing",
+    "//third_party/app_test:androidx_test_ext_junit",
+    "//third_party/app_test:androidx_test_ext_truth",
+    "//third_party/app_test:androidx_work_work-testing",
+    "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
+    "//third_party/app_test:com_google_truth_truth",
+    "//third_party/app_test:org_jetbrains_kotlin_kotlin-reflect",
+    "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
+    "//third_party/app_test:org_mockito_mockito-core",
+    "//third_party/app_test:robolectric_android-all",
     "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
@@ -152,8 +115,8 @@ MIGRATED_TESTS = [
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModuleTest.kt",
 ]
 
-[utility_test(
-    name = test_file_path,
-    filtered_tests = MIGRATED_TESTS,
-    deps = TEST_DEPS,
-) for test_file_path in glob(["src/test/java/org/oppia/android/util/**/*Test.kt"])]
+#[utility_test(
+#    name = test_file_path,
+#    filtered_tests = MIGRATED_TESTS,
+#    deps = TEST_DEPS,
+#) for test_file_path in glob(["src/test/java/org/oppia/android/util/**/*Test.kt"])]

@@ -35,14 +35,14 @@ class MavenDependenciesRetrieverTest {
   private val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
 
   private val DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:androidx_databinding_databinding-adapters"
+    "//third_party/app_test:androidx_databinding_databinding-adapters"
   private val PROTO_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_google_protobuf_protobuf-javalite"
+    "//third_party/app_test:com_google_protobuf_protobuf-javalite"
   private val GLIDE_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_github_bumptech_glide_annotations"
+    "//third_party/app_test:com_github_bumptech_glide_annotations"
   private val FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_google_firebase_firebase-analytics"
-  private val IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX = "//third_party:io_fabric_sdk_android_fabric"
+    "//third_party/app_test:com_google_firebase_firebase-analytics"
+  private val IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX = "//third_party/app_test:io_fabric_sdk_android_fabric"
 
   private val DATA_BINDING_DEP = "androidx_databinding_databinding_adapters"
   private val PROTO_DEP = "com_google_protobuf_protobuf_lite"

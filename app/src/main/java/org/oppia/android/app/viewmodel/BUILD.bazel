@@ -11,7 +11,7 @@ kt_android_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//third_party:androidx_databinding_databinding-adapters",
+        "//third_party/app_prod:androidx_databinding_databinding-adapters",
     ],
 )
 
@@ -22,8 +22,8 @@ kt_android_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//third_party:androidx_databinding_databinding-adapters",
-        "//third_party:androidx_lifecycle_lifecycle-extensions",
+        "//third_party/app_prod:androidx_databinding_databinding-adapters",
+        "//third_party/app_prod:androidx_lifecycle_lifecycle-extensions",
     ],
 )
 
@@ -35,8 +35,8 @@ kt_android_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:androidx_lifecycle_lifecycle-extensions",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:androidx_appcompat_appcompat",
+        "//third_party/app_prod:androidx_lifecycle_lifecycle-extensions",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )

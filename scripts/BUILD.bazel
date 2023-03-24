@@ -42,6 +42,15 @@ package_group(
     packages = ["//scripts/src/java/..."],
 )
 
+# Visibility for libraries that should be accessible to script testing packages.
+package_group(
+    name = "oppia_script_testing_library_visibility",
+    includes = [
+        ":oppia_script_test_visibility",
+    ],
+    packages = ["//scripts/src/java/org/oppia/android/scripts/testing"],
+)
+
 kt_jvm_binary(
     name = "compute_affected_tests",
     testonly = True,

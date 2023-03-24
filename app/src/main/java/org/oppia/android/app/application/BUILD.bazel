@@ -21,8 +21,8 @@ kt_android_library(
         ":application_injector",
         ":application_injector_provider",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//third_party:androidx_work_work-runtime-ktx",
-        "//third_party:com_google_firebase_firebase-common",
+        "//third_party/app_prod:androidx_work_work-runtime-ktx",
+        "//third_party/app_prod:com_google_firebase_firebase-common",
     ],
 )
 
@@ -39,7 +39,7 @@ kt_android_library(
         ":application_injector",
         "//app",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party/app_prod:androidx_work_work-runtime-ktx",
     ],
 )
 
@@ -121,8 +121,10 @@ android_library(
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching:caching_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
@@ -130,5 +132,7 @@ android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:repository_glide_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
     ],
 )

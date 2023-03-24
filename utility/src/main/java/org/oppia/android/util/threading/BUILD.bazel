@@ -12,7 +12,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 
@@ -26,7 +26,7 @@ kt_android_library(
     ],
     deps = [
         ":annotations",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party/app_prod:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 
@@ -52,7 +52,7 @@ kt_android_library(
     deps = [
         ":annotations",
         "//:dagger",
-        "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-android",
+        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party/app_prod:org_jetbrains_kotlinx_kotlinx-coroutines-android",
     ],
 )

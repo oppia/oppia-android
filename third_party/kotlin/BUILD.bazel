@@ -4,8 +4,9 @@ load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain")
 
 # TODO: Move to tools/.
 # TODO: Enable pruning transitive deps once https://github.com/bazelbuild/rules_kotlin/pull/842 is merged. Also, maybe enable strict & unused deps.
+# TODO: File an issue to move to Kotlin 1.7 (requires upgrading Dagger which requires upgrading JDK & AGP--due to AGP incompatibilities, this means we have to drop Gradle support).
 define_kt_toolchain(
-    name = "toolchain",
+    name = "kotlin_16_jdk9_toolchain",
     api_version = "1.6",
     jvm_target = "9",
     language_version = "1.6",

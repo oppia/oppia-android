@@ -14,9 +14,9 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
-        "//third_party:org_mockito_kotlin_mockito-kotlin",
+        "//third_party/app_test:com_google_truth_truth",
+        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party/app_test:org_mockito_kotlin_mockito-kotlin",
     ],
 )
 
@@ -26,8 +26,8 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/maven:retrieve_license_texts_lib",
         "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
-        "//third_party:org_mockito_kotlin_mockito-kotlin",
+        "//third_party/app_test:com_google_truth_truth",
+        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party/app_test:org_mockito_kotlin_mockito-kotlin",
     ],
 )

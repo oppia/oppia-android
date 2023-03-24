@@ -18,8 +18,8 @@ kt_android_library(
     deps = [
         ":real_subject",
         "//model/src/main/proto:math_java_proto_lite",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -34,8 +34,8 @@ kt_android_library(
     ],
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party/app_test:com_google_truth_truth",
         "//utility/src/main/java/org/oppia/android/util/math:extensions",
     ],
 )
@@ -52,8 +52,8 @@ kt_android_library(
     deps = [
         ":math_expression_subject",
         "//model/src/main/proto:math_java_proto_lite",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -69,8 +69,8 @@ kt_android_library(
     deps = [
         ":real_subject",
         "//model/src/main/proto:math_java_proto_lite",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -86,7 +86,7 @@ kt_android_library(
     deps = [
         ":math_expression_subject",
         ":real_subject",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_truth",
         "//utility/src/main/java/org/oppia/android/util/math:math_parsing_error",
     ],
 )
@@ -103,8 +103,8 @@ kt_android_library(
     deps = [
         ":real_subject",
         "//model/src/main/proto:math_java_proto_lite",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party/app_test:com_google_truth_truth",
         "//utility/src/main/java/org/oppia/android/util/math:extensions",
     ],
 )
@@ -121,8 +121,8 @@ kt_android_library(
     deps = [
         ":fraction_subject",
         "//model/src/main/proto:math_java_proto_lite",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -136,7 +136,7 @@ kt_android_library(
         "//:oppia_testing_visibility",
     ],
     deps = [
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_truth",
         "//utility/src/main/java/org/oppia/android/util/math:tokenizer",
     ],
 )

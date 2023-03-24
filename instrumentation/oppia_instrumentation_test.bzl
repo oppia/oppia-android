@@ -23,6 +23,7 @@ def oppia_instrumentation_test(
         deps = deps,
     )
 
+    # TODO: Add TODO on new issue pointing to https://github.com/bazelbuild/bazel/issues/16368 to remove manual tag & fix this (or replace it with something that actually builds correctly--maybe the new stuff?)
     native.android_binary(
         name = "%sBinary" % name,
         testonly = True,
@@ -30,6 +31,7 @@ def oppia_instrumentation_test(
         instruments = "//instrumentation:oppia_test",
         manifest = "//instrumentation:src/javatests/AndroidManifest.xml",
         deps = [":%s_lib" % name],
+        tags = ["manual"],
     )
 
     # TODO(#3617): Target isn't supported yet. Remove the manual tag once fixed.

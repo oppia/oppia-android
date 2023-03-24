@@ -10,8 +10,8 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/build:filter_per_language_resources_lib",
         "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
-        "//third_party:junit_junit",
+        "//third_party/app_test:com_google_truth_truth",
+        "//third_party/app_test:junit_junit",
     ],
 )
 
@@ -22,7 +22,7 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/build:transform_android_manifest_lib",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
         "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party/app_test:com_google_truth_truth",
+        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )

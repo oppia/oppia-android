@@ -17,7 +17,7 @@ kt_android_library(
         "//:oppia_testing_visibility",
     ],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 
@@ -33,6 +33,7 @@ kt_android_library(
     deps = [
         ":test_constants",
         "//:dagger",
-        "//utility",
+        "//third_party/app_prod:androidx_annotation_annotation",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
     ],
 )

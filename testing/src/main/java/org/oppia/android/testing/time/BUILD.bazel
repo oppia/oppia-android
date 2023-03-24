@@ -14,7 +14,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )
@@ -28,7 +28,7 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 

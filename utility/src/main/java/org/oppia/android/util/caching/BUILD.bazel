@@ -11,7 +11,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party/app_prod:com_google_protobuf_protobuf-javalite",
     ],
 )
 
@@ -24,7 +24,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 
@@ -38,7 +38,7 @@ kt_android_library(
     ],
     deps = [
         ":asset_repository",
-        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party/app_prod:com_google_protobuf_protobuf-javalite",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )
@@ -76,6 +76,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )

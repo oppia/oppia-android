@@ -16,7 +16,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//model/src/main/proto:interaction_object_java_proto_lite",
         "//model/src/main/proto:translation_java_proto_lite",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 
@@ -30,6 +30,6 @@ kt_android_library(
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//model/src/main/proto:translation_java_proto_lite",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.scripts.testing.proto";
+option java_multiple_files = true;
+
+// A test message that is meant only to be used in tests.
+message TestMessage {
+  string str_value = 1;
+
+  int32 int_value = 2;
+
+  repeated string str_values = 3;
+}

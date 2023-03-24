@@ -39,7 +39,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party/app_prod:com_google_protobuf_protobuf-javalite",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
         "//utility/src/main/java/org/oppia/android/util/caching:impl",
     ],
@@ -53,7 +53,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
     ],
 )

@@ -13,8 +13,8 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/mockito",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_mockito_mockito-core",
+        "//third_party/app_test:com_google_truth_truth",
+        "//third_party/app_test:org_mockito_mockito-core",
     ],
 )
 
@@ -24,7 +24,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -35,7 +35,7 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/common:git_client",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
         "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -43,11 +43,11 @@ kt_jvm_test(
     name = "ProtoStringEncoderTest",
     srcs = ["ProtoStringEncoderTest.kt"],
     deps = [
-        "//model/src/main/proto:test_models",
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
+        "//scripts/src/java/org/oppia/android/scripts/testing/proto:test_java_proto",
         "//testing:assertion_helpers",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -56,7 +56,7 @@ kt_jvm_test(
     srcs = ["RepositoryFileTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party/app_test:com_google_truth_truth",
+        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )

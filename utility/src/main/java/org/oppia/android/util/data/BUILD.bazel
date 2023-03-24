@@ -11,8 +11,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party/app_prod:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
@@ -49,9 +49,9 @@ kt_android_library(
         ":async_result",
         ":data_provider",
         "//:dagger",
-        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
-        "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party/app_prod:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party/app_prod:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
@@ -64,8 +64,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party/app_prod:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )

@@ -13,8 +13,8 @@ kt_android_library(
     deps = [
         "//testing/src/main/java/org/oppia/android/testing/threading:annotations",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_mockito_mockito-core",
+        "//third_party/app_test:com_google_truth_truth",
+        "//third_party/app_test:org_mockito_mockito-core",
     ],
 )
 
@@ -30,7 +30,7 @@ oppia_android_test(
         "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-        "//third_party:robolectric_android-all",
+        "//third_party/app_test:robolectric_android-all",
     ],
 )
 
@@ -44,8 +44,7 @@ oppia_android_test(
         ":test_coroutine_dispatcher_test_base",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
-        "//third_party:robolectric_android-all",
-        "//utility",
+        "//third_party/app_test:robolectric_android-all",
     ],
 )
 
@@ -59,8 +58,7 @@ oppia_android_test(
         ":test_coroutine_dispatcher_test_base",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
-        "//third_party:robolectric_android-all",
-        "//utility",
+        "//third_party/app_test:robolectric_android-all",
     ],
 )
 
@@ -73,7 +71,6 @@ oppia_android_test(
     deps = [
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
-        "//third_party:robolectric_android-all",
-        "//utility",
+        "//third_party/app_test:robolectric_android-all",
     ],
 )

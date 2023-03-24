@@ -19,7 +19,7 @@ kt_android_library(
     ],
     deps = [
         ":oppia_clock",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 

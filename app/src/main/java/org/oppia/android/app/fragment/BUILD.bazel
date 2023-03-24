@@ -18,7 +18,7 @@ kt_android_library(
     ],
     visibility = ["//app:app_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 
@@ -31,7 +31,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
     ],
     deps = [
-        "//third_party:androidx_appcompat_appcompat",
+        "//third_party/app_prod:androidx_appcompat_appcompat",
     ],
 )
 
@@ -43,8 +43,8 @@ kt_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         ":fragment_component",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:androidx_appcompat_appcompat",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 
@@ -58,7 +58,7 @@ kt_android_library(
     ],
     deps = [
         ":fragment_component",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 
@@ -73,7 +73,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/view:view_component",
         "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
-        "//third_party:androidx_appcompat_appcompat",
+        "//third_party/app_prod:androidx_appcompat_appcompat",
     ],
 )
 
@@ -88,7 +88,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/view:view_component",
         "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
-        "//third_party:androidx_appcompat_appcompat",
+        "//third_party/app_prod:androidx_appcompat_appcompat",
     ],
 )
 
@@ -103,7 +103,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/view:view_component",
         "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:com_google_android_material_material",
+        "//third_party/app_prod:androidx_appcompat_appcompat",
+        "//third_party/app_prod:com_google_android_material_material",
     ],
 )

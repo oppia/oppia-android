@@ -1,0 +1,13 @@
+load("@rules_java//java:defs.bzl", "java_proto_library")
+load("//model:oppia_proto_library.bzl", "oppia_proto_library")
+
+oppia_proto_library(
+    name = "test_proto",
+    srcs = ["test.proto"],
+)
+
+java_proto_library(
+    name = "test_java_proto",
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":test_proto"],
+)

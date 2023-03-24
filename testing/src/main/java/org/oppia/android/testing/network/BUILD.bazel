@@ -26,8 +26,8 @@ kt_android_library(
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/backends/gae/model",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
-        "//third_party:com_squareup_retrofit2_retrofit-mock",
-        "//utility",
+        "//third_party/app_test:com_squareup_retrofit2_retrofit-mock",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
     ],
 )
 
@@ -38,7 +38,7 @@ kt_android_library(
         "ApiMockLoader.kt",
     ],
     deps = [
-        "//third_party:androidx_test_core",
+        "//third_party/app_test:androidx_test_core",
     ],
 )
 
@@ -53,6 +53,6 @@ kt_android_library(
         "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae:oppia_retrofit",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
-        "//third_party:com_squareup_retrofit2_retrofit-mock",
+        "//third_party/app_test:com_squareup_retrofit2_retrofit-mock",
     ],
 )

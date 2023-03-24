@@ -15,7 +15,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 
@@ -32,7 +32,7 @@ kt_android_library(
         "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
     ],
     deps = [
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party/app_prod:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 
@@ -58,7 +58,7 @@ kt_android_library(
         ":test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_system_clock",
-        "//third_party:androidx_annotation_annotation",
+        "//third_party/app_prod:androidx_annotation_annotation",
     ],
 )
 
@@ -73,7 +73,7 @@ kt_android_library(
         ":annotations",
         ":test_coroutine_dispatcher",
         ":test_coroutine_dispatchers",
-        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party/app_test:androidx_test_espresso_espresso-core",
     ],
 )
 
@@ -90,8 +90,8 @@ kt_android_library(
         "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
     ],
     deps = [
-        "//third_party:androidx_annotation_annotation",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party/app_prod:androidx_annotation_annotation",
+        "//third_party/app_prod:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 

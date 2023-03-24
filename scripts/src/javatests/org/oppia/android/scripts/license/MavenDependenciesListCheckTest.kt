@@ -36,15 +36,15 @@ class MavenDependenciesListCheckTest {
     "com.google.firebase:firebase-analytics:19.0.0"
 
   private val DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:androidx_databinding_databinding-adapters"
+    "//third_party/app_test:androidx_databinding_databinding-adapters"
   private val PROTO_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_google_protobuf_protobuf-javalite"
+    "//third_party/app_test:com_google_protobuf_protobuf-javalite"
   private val GLIDE_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_github_bumptech_glide_annotations"
+    "//third_party/app_test:com_github_bumptech_glide_annotations"
   private val FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_google_firebase_firebase-analytics"
+    "//third_party/app_test:com_google_firebase_firebase-analytics"
   private val IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:io_fabric_sdk_android_fabric"
+    "//third_party/app_test:io_fabric_sdk_android_fabric"
 
   private val DATA_BINDING_VERSION = "3.4.2"
   private val PROTO_LITE_VERSION = "3.0.0"

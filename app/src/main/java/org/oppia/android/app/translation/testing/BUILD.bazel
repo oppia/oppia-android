@@ -15,7 +15,7 @@ kt_android_library(
     ],
     deps = [
         "//app/src/main/java/org/oppia/android/app/translation:activity_recreator",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 

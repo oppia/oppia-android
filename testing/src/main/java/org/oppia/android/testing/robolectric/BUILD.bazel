@@ -13,7 +13,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 
@@ -44,8 +44,8 @@ kt_android_library(
         "//utility/src/test/java/org/oppia/android/util/locale/testing:__pkg__",
     ],
     deps = [
-        "//third_party:androidx_core_core",
-        "//third_party:org_robolectric_robolectric",
+        "//third_party/app_prod:androidx_core_core",
+        "//third_party/app_test:org_robolectric_robolectric",
     ],
 )
 
@@ -57,7 +57,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:org_robolectric_robolectric",
+        "//third_party/app_test:org_robolectric_robolectric",
     ],
 )
 
@@ -69,6 +69,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:org_robolectric_robolectric",
+        "//third_party/app_test:org_robolectric_robolectric",
     ],
 )

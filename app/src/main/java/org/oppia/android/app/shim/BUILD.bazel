@@ -38,7 +38,7 @@ kt_android_library(
     ],
     visibility = ["//app:app_visibility"],
     deps = [
-        "//third_party:androidx_appcompat_appcompat",
+        "//third_party/app_prod:androidx_appcompat_appcompat",
     ],
 )
 
@@ -62,7 +62,6 @@ kt_android_library(
         ":view_binding_shim",
         "//app:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
-        "//utility",
     ],
 )
 

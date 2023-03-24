@@ -333,7 +333,7 @@ class BazelClientTest {
     createAndroidBinary(
       binaryName = "test_oppia",
       manifestName = "AndroidManifest.xml",
-      dependencyName = "//third_party:com_android_support_support-annotations"
+      dependencyName = "//third_party/app_test:com_android_support_support-annotations"
     )
     tempFolder.newFolder("third_party")
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")

@@ -41,7 +41,7 @@ kt_android_library(
     ],
     deps = [
         ":network_connection_util",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party/app_prod:javax_inject_javax_inject",
     ],
 )
 

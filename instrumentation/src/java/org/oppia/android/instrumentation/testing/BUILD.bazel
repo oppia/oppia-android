@@ -12,8 +12,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_e2e_testing_visibility"],
     deps = [
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:androidx_test_uiautomator_uiautomator",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:androidx_test_ext_junit",
+        "//third_party/app_test:androidx_test_uiautomator_uiautomator",
+        "//third_party/app_test:com_google_truth_truth",
     ],
 )
