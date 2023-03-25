@@ -81,7 +81,7 @@ If you change the wiki through the web interface at https://github.com/oppia/opp
 > **Note**  
 > The `/wiki` folder in the `oppia/oppia-android` repository is the single source of truth for our wiki.
 
-## Tips and Try
+## Tips and Tricks
 
 * ### How can I see markdown (wiki) preview in Android Studio?
 
@@ -91,4 +91,4 @@ If you change the wiki through the web interface at https://github.com/oppia/opp
 4. Restart the IDE and Enjoy.
 
 #### Demo Screenshot
-<img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/227732879-0150a773-4f72-4d90-8075-4b616c250e39.png">
+<img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/227737306-0bf3d5ef-ddcb-4886-b65b-a9c1ce1b4069.gif">
