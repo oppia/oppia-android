@@ -83,7 +83,7 @@ If you change the wiki through the web interface at https://github.com/oppia/opp
 
 ## Tips and Try
 
-* ### How can I see markdown (wiki) preview?
+* ### How can I see markdown (wiki) preview in Android Studio?
 
 1. Start the IDE, use Help -> Find Action, type `Choose Boot Java Runtime for the IDE`, press Enter.
 2. Select the newest version with JCEF to install.
