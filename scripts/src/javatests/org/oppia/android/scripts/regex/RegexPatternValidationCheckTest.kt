@@ -2187,9 +2187,8 @@ class RegexPatternValidationCheckTest {
         android:background="@color/color_palette_primary_text_color"
         android:background="#000000"
       """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "layout")
-    val stringFilePath = "app/src/main/res/layout.*?/.+?\\.xml"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -2200,24 +2199,24 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:2: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:3: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:4: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:6: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:7: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:8: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:10: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:11: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:12: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:14: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:15: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:16: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:18: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:19: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:20: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:22: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:23: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:24: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:2: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:3: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:4: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:6: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:7: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:8: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:10: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:11: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:12: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:14: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:15: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:16: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:18: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:19: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:20: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:22: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:23: $doesNotReferenceColorFromComponentColorInLayouts
+        test_layout.xml:24: $doesNotReferenceColorFromComponentColorInLayouts
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -2231,10 +2230,8 @@ class RegexPatternValidationCheckTest {
         R.color.color_def_avatar_background_1
         R.color.color_palette_primary_color
       """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
-    val stringFilePath = "app/src/main/java/org/oppia/android/app.?/." +
-      "+(ActivityPresenter|FragmentPresenter|ViewPresenter|Activity|Fragment|View)\\\\.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -2245,8 +2242,8 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:2: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        TestFile.kt:2: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        TestFile.kt:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $wikiReferenceNote
         """.trimIndent()
       )
