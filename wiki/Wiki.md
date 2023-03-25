@@ -80,3 +80,15 @@ Our wiki consists of the following components:
 If you change the wiki through the web interface at https://github.com/oppia/oppia-android/wiki, the [`wiki.yml`](https://github.com/oppia/oppia-android/blob/develop/.github/workflows/wiki.yml) workflow will be triggered and the wiki will be reset to by pushing the files from the `/wiki` folder to the `oppia/oppia-android.wiki` git repository.
 > **Note**  
 > The `/wiki` folder in the `oppia/oppia-android` repository is the single source of truth for our wiki.
+
+## Tips and Try
+
+* ### How can I see markdown (wiki) preview?
+
+1. Start the IDE, use Help -> Find Action, type `Choose Boot Java Runtime for the IDE`, press Enter.
+2. Select the newest version with JCEF to install.
+3. Click the OK button and wait until the file with JetBrains Runtime is downloaded and configured.
+4. Restart the IDE and Enjoy.
+
+#### Demo Screenshot
+<img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/227732879-0150a773-4f72-4d90-8075-4b616c250e39.png">
