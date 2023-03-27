@@ -174,7 +174,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = adminProfileId
+        profileId = userProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -284,7 +284,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = adminProfileId
+        profileId = userProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -302,7 +302,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = userProfileId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -321,7 +321,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = adminProfileId
+        profileId = userProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -339,7 +339,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = userProfileId
+        profileId = adminProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
