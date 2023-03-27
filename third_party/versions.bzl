@@ -126,8 +126,8 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "4.0.0",
     },
     "rules_jvm": {
-        "sha": "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",
-        "version": "4.1",
+        "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
+        "version": "5.1",
     },
     "rules_kotlin": {
         "sha": "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07",

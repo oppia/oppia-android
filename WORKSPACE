@@ -184,7 +184,9 @@ http_jar(
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    duplicate_version_warning = "error",
     fail_if_repin_required = True,
+    fetch_javadoc = True,
     fetch_sources = True,
     maven_install_json = "//third_party:maven_install.json",
     repositories = DAGGER_REPOSITORIES + [
@@ -192,6 +194,7 @@ maven_install(
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
     ],
+    strict_visibility = True,
 )
 
 load("@maven//:defs.bzl", "pinned_maven_install")
