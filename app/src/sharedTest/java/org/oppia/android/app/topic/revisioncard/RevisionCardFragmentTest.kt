@@ -658,7 +658,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCard_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testRevisionCard_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,

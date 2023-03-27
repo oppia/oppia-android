@@ -840,7 +840,7 @@ class StoryFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testStoryFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       it.onActivity {
         activity ->

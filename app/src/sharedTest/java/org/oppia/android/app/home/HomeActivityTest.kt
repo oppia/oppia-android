@@ -31,6 +31,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
@@ -212,7 +213,7 @@ class HomeActivityTest {
   @Inject
   lateinit var fontScaleConfigurationUtil: FontScaleConfigurationUtil
 
-  private lateinit var longNameInternalProfileId: ProfileId
+  private lateinit var longNameProfileId: ProfileId
   private lateinit var profileId: ProfileId
   private lateinit var profileId1: ProfileId
 
@@ -222,7 +223,7 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     profileId = ProfileId.newBuilder().setInternalId(0).build()
     profileId1 = ProfileId.newBuilder().setInternalId(1).build()
-    longNameInternalProfileId = ProfileId.newBuilder().setInternalId(3).build()
+    longNameProfileId = ProfileId.newBuilder().setInternalId(3).build()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
   }
@@ -246,14 +247,13 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_createIntent_verifyProfileIdInIntent() {
-    val profileId = createHomeActivityIntent(profileId)
-      .extractCurrentUserProfileId()
+    val profileId = createHomeActivityIntent(profileId).extractCurrentUserProfileId()
 
-    assertThat(profileId).isEqualTo(profileId)
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
-  fun testHomeActivity_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testHomeActivity_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launch<HomeActivity>(
       createHomeActivityIntent(profileId1)
     ).use {
@@ -1135,7 +1135,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+land-mdpi")
   @Test
   fun testHomeActivity_configChange_longProfileName_welcomeMessageIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(longNameProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
@@ -1154,7 +1154,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_longProfileName_tabletPortraitWelcomeMessageIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(longNameProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
       onView(
@@ -1172,7 +1172,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_longProfileName_tabletLandscapeWelcomeMessageIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(longNameProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)

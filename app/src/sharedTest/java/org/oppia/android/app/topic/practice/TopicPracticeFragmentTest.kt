@@ -384,7 +384,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testTopicPracticeFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launchTopicActivityIntent(profileId, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)

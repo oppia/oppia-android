@@ -188,7 +188,7 @@ class TopicTestActivityForStoryTest {
   }
 
   @Test
-  fun testTopicTestActivityForStory_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testTopicTestActivityForStory_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launch(TopicTestActivityForStory::class.java).use {
       it.onActivity {
         activity ->

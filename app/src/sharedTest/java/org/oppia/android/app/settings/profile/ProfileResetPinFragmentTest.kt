@@ -1013,7 +1013,7 @@ class ProfileResetPinFragmentTest {
   }
 
   @Test
-  fun testProfileResetPin_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testProfileResetPin_createFragmentWithProfileId_verifyProfileIdInBundle() {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,

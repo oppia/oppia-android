@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
@@ -167,11 +168,11 @@ class OngoingTopicListActivityTest {
     val profileId = createOngoingTopicListActivityIntent(profileId = this.profileId)
       .extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(this.profileId.internalId)
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
-  fun testOngoingTopicListActivity_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testOngoingTopicListActivity_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
         profileId
@@ -275,8 +276,7 @@ class OngoingTopicListActivityTest {
       intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
       it.onActivity { activity ->
         assertThat(
-          activity.intent.extractCurrentUserProfileId()
-            .internalId
+          activity.intent.extractCurrentUserProfileId().internalId
         ).isEqualTo(profileId.internalId)
       }
     }

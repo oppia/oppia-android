@@ -14,7 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -35,7 +35,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -342,7 +341,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
-  fun testSpotlightFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testSpotlightFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     TestPlatformParameterModule.forceEnableSpotlightUi(false)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
@@ -354,7 +353,7 @@ class SpotlightFragmentTest {
         )
         val profileId = fragment?.arguments?.extractCurrentUserProfileId()
 
-        assertThat(profileId).isEqualTo(ProfileId.getDefaultInstance())
+        assertThat(profileId).isEqualToDefaultInstance()
       }
     }
   }

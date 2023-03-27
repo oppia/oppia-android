@@ -26,6 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputEditText
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
@@ -191,7 +192,7 @@ class PinPasswordActivityTest {
       profileId = adminProfileId
     ).extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(adminProfileId.internalId)
+    assertThat(profileId).isEqualTo(adminProfileId)
   }
 
   @Test

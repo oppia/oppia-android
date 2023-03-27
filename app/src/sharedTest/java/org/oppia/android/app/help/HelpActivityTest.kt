@@ -8,6 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
@@ -124,7 +125,7 @@ class HelpActivityTest {
     val profileId = createHelpActivityIntent()
       .extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(0)
+    assertThat(profileId).isEqualTo(ProfileId.getDefaultInstance())
   }
 
   @Test

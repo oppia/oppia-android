@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -171,7 +172,7 @@ class TopicActivityTest {
       context, profileId, FRACTIONS_TOPIC_ID
     ).extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(1)
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
@@ -180,7 +181,7 @@ class TopicActivityTest {
       context, profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ).extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(1)
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test

@@ -426,7 +426,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  fun testTopicInfoFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testTopicInfoFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launchTopicActivityIntent(
       profileId,
       topicId = TEST_TOPIC_ID

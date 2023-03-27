@@ -282,7 +282,7 @@ class TopicRevisionFragmentTest {
   }
 
   @Test
-  fun testTopicRevisionFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testTopicRevisionFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launchTopicActivityIntent(
       profileId,
       topicId = FRACTIONS_TOPIC_ID

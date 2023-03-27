@@ -941,7 +941,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonPlayFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testLessonPlayFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launch<TopicActivity>(createTopicActivityIntent(profileId, FRACTIONS_TOPIC_ID)).use {
       it.onActivity {
         activity ->

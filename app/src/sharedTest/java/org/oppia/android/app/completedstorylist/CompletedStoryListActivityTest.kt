@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
@@ -190,11 +191,11 @@ class CompletedStoryListActivityTest {
       profileId
     ).extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(this.profileId.internalId)
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
-  fun testCompletedStoryListActivity_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testCompletedStoryListActivity_createFragmentWithProfileId_verifyProfileIdInBundle() {
     val profileIdOne = ProfileId.newBuilder().apply { internalId = 1 }.build()
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(

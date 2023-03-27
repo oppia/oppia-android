@@ -31,6 +31,7 @@ import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
@@ -190,7 +191,7 @@ class AdminPinActivityTest {
       adminPinEnum = 0
     ).extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(0)
+    assertThat(profileId).isEqualTo(ProfileId.getDefaultInstance())
   }
 
   @Test

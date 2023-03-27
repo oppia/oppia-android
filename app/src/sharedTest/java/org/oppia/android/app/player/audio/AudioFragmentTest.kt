@@ -346,7 +346,7 @@ class AudioFragmentTest {
   }
 
   @Test
-  fun testAudioFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testAudioFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(

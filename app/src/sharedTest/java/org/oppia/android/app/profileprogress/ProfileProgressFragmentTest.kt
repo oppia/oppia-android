@@ -826,7 +826,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testProfileProgressFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false

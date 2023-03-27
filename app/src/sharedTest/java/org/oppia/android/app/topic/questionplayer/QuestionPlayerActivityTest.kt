@@ -558,7 +558,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testQuestionPlayer_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launchForSkillList(SKILL_ID_LIST).use {
       it.onActivity {
         activity ->

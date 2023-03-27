@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
@@ -34,7 +35,7 @@ class CurrentUserProfileIdIntentDecoratorTest {
   @Test
   fun testDecorator_withoutProfileId_returnsIntentWithDefaultProfileId() {
     val currentProfileId = Intent().extractCurrentUserProfileId()
-    assertThat(currentProfileId).isEqualTo(ProfileId.getDefaultInstance())
+    assertThat(currentProfileId).isEqualToDefaultInstance()
   }
 
   @Test
@@ -44,7 +45,7 @@ class CurrentUserProfileIdIntentDecoratorTest {
     val extractedProfileId = Intent().apply {
       decorateWithUserProfileId(profileId)
     }.extractCurrentUserProfileId()
-    assertThat(extractedProfileId).isEqualTo(ProfileId.getDefaultInstance())
+    assertThat(extractedProfileId).isEqualToDefaultInstance()
   }
 
   @Test
@@ -61,7 +62,7 @@ class CurrentUserProfileIdIntentDecoratorTest {
   @Test
   fun testDecorator_withoutProfileId_returnsBundleWithDefaultProfileId() {
     val currentProfileId = Bundle().extractCurrentUserProfileId()
-    assertThat(currentProfileId).isEqualTo(ProfileId.getDefaultInstance())
+    assertThat(currentProfileId).isEqualToDefaultInstance()
   }
 
   @Test
@@ -71,6 +72,6 @@ class CurrentUserProfileIdIntentDecoratorTest {
     val extractedProfileId = Bundle().apply {
       decorateWithUserProfileId(profileId)
     }.extractCurrentUserProfileId()
-    assertThat(extractedProfileId).isEqualTo(ProfileId.getDefaultInstance())
+    assertThat(extractedProfileId).isEqualToDefaultInstance()
   }
 }

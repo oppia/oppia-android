@@ -444,7 +444,7 @@ class ProfileRenameFragmentTest {
   }
 
   @Test
-  fun testProfileRenameFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testProfileRenameFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,

@@ -367,7 +367,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_createIntentWithProfileId_verifyProfileIdInBundle() {
+  fun testConceptCardFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
     launchTestActivity().use {
       onView(withId(R.id.open_dialog_0)).perform(click())
       testCoroutineDispatchers.runCurrent()

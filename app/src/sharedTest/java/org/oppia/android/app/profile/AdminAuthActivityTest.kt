@@ -23,6 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -181,7 +182,7 @@ class AdminAuthActivityTest {
       adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
     ).extractCurrentUserProfileId()
 
-    assertThat(profileId.internalId).isEqualTo(this.profileId.internalId)
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
