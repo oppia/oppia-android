@@ -45,6 +45,13 @@ JDK 8 is required for the Android build tools, and we suggest installing OpenJDK
 sudo apt install openjdk-8-jdk-headless
 ```
 
+#### For Fedora 25+ 
+- Install JDK 8 by this command on the terminal:
+```
+sudo dnf install java-1.8.0-openjdk
+```
+- Set default Java version to jdk-8 by running the following command `sudo update-alternatives --config java` and selecting the number with jdk-8.
+
 **Python 2**
 
 Unfortunately, some of the Bazel build actions in the Android pipeline require Python 2 to be installed:
@@ -115,6 +122,15 @@ Follow [these instructions](https://docs.bazel.build/versions/main/install-ubunt
 
 ```sh
 sudo apt install bazel-4.0.0
+```
+
+#### For Fedora 25+
+
+- Install Bazelisk instead of Bazel using the command below in Fedora:
+```
+wget https://github.com/bazelbuild/bazelisk/releases/download/v1.8.1/bazelisk-linux-amd64
+chmod +x bazelisk-linux-amd64
+sudo mv bazelisk-linux-amd64 /usr/local/bin/bazel
 ```
 
 ### 5. Preparing build environment for Oppia Android
