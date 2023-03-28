@@ -23,7 +23,7 @@ class RecentlyPlayedViewModel private constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
   private val promotedStoryClickListener: PromotedStoryClickListener,
-  private val internalProfileId: ProfileId,
+  private val profileId: ProfileId,
 ) {
 
   /** Factory of RecentlyPlayedViewModel. */
@@ -38,7 +38,7 @@ class RecentlyPlayedViewModel private constructor(
     /** Creates an instance of [RecentlyPlayedViewModel] */
     fun create(
       promotedStoryClickListener: PromotedStoryClickListener,
-      internalProfileId: ProfileId
+      profileId: ProfileId
     ): RecentlyPlayedViewModel {
       return RecentlyPlayedViewModel(
         activity,
@@ -47,7 +47,7 @@ class RecentlyPlayedViewModel private constructor(
         resourceHandler,
         translationController,
         promotedStoryClickListener,
-        internalProfileId,
+        profileId,
       )
     }
   }
@@ -66,7 +66,7 @@ class RecentlyPlayedViewModel private constructor(
   private val promotedStoryListSummaryResultLiveData:
     LiveData<AsyncResult<PromotedActivityList>>
     by lazy {
-      topicListController.getPromotedActivityList(internalProfileId).toLiveData()
+      topicListController.getPromotedActivityList(profileId).toLiveData()
     }
 
   private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {
