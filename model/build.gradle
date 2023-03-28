@@ -4,7 +4,6 @@ apply plugin: 'com.google.protobuf'
 protobuf {
   protoc {
     // To build protoc in M1 mac. For context, see: #3912.
-    artifact = 'com.google.protobuf:protoc:3.14.0:osx-x86_64'
 
     if (osdetector.os == "osx") {
       Properties properties = new Properties()
