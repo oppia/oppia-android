@@ -57,3 +57,13 @@ kt_jvm_library(
         "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
     ],
 )
+
+kt_jvm_library(
+    name = "script_background_coroutine_dispatcher",
+    testonly = True,
+    srcs = ["ScriptBackgroundCoroutineDispatcher.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)

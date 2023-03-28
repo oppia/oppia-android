@@ -10,6 +10,7 @@ kt_jvm_library(
     srcs = ["GenerateMavenDependenciesList.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
     ],
 )
@@ -20,7 +21,7 @@ kt_jvm_library(
     srcs = ["RetrieveLicenseTexts.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/license:license_fetcher",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_artifact_property_fetcher",
         "//scripts/src/java/org/oppia/android/scripts/license/model",
         "//scripts/src/java/org/oppia/android/scripts/maven/model",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
