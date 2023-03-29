@@ -4,13 +4,14 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -34,10 +35,10 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -55,7 +56,8 @@ class ExplorationActivityPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val surveyGatingController: SurveyGatingController
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -273,19 +275,56 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
         activity,
-        Observer<AsyncResult<Any?>> {
+        {
           when (it) {
             is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
             is AsyncResult.Failure ->
               oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
             is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              backPressActivitySelector()
-              (activity as ExplorationActivity).finish()
+              if (isCompletion) {
+                shouldShowSurveyDialog(profileId, topicId)
+              }
+              //backPressActivitySelector()
+              //(activity as ExplorationActivity).finish()
             }
           }
         }
       )
+  }
+
+  private fun shouldShowSurveyDialog(profileId: ProfileId, topicId: String) {
+    surveyGatingController.shouldShowSurvey(profileId, topicId).toLiveData()
+      .observe(activity, {
+        when (it) {
+          is AsyncResult.Pending -> {
+            oppiaLogger.d("ExplorationActivity", "Checking survey gating")
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ExplorationActivity",
+              "Failed to retrieve gating decision",
+              it.error
+            )
+          }
+          is AsyncResult.Success -> {
+            if (it.value) {
+              oppiaLogger.d("ExplorationActivity", "Survey gating returned true")
+              createSurveyDialog().show()
+              // when dialog is dismissed, return to topic. Otherwise exiting results into  IllegalStateException: Session isn't initialized yet.
+            } else {
+              oppiaLogger.d("ExplorationActivity", "Survey gating returned false")
+            }
+          }
+        }
+      })
+  }
+
+  private fun createSurveyDialog(): AlertDialog {
+    val builder = AlertDialog.Builder(activity)
+    return builder.setTitle("NPS Survey")
+      .setMessage("Survey Intro message")
+      .create()
   }
 
   fun onKeyboardAction(actionCode: Int) {
