@@ -7,7 +7,9 @@ option java_multiple_files = true;
 
 // Corresponds to a single survey.
 message Survey {
-  // The ID of the survey.
+  // The ID of the survey. This is a string value that uniquely identifies the survey.
+  // The ID is guaranteed to be unique across all surveys.
+  // This field is used to retrieve information about a survey, and should be treated as read-only.
   string survey_id = 1;
 
   // A list of questions that make up the survey.
@@ -16,7 +18,8 @@ message Survey {
 
 // Represents a question that is part of the Survey.
 message SurveyQuestion {
-  // The ID of the survey question.
+  // The ID of the survey question. This is a string value that uniquely identifies the question
+  // within the context of the survey, and is guaranteed to be unique within the survey scope only.
   string question_id = 1;
 
   // The type of question.
@@ -73,7 +76,8 @@ enum QuestionName {
 
 // Represents the multiple choice answer available for a question.
 message SurveyQuestionAnswer {
-  // The ID of this answer option.
+  // The ID of this answer option. It is a string value that uniquely identifies the answer option
+  // within the context of the question it belongs to.
   string question_answer_id = 1;
 
   // The semantic name of the question this answer option is tied to.
@@ -85,7 +89,8 @@ message SurveyQuestionAnswer {
 
 // Represents an answer that was selected by a user for a survey question.
 message SurveyUserAnswer {
-  //  The ID of the survey to which this answer is tied.
+  // The ID of the survey to which this answer is tied. This is a string value that uniquely
+  // identifies the survey.
   string survey_id = 1;
 
   // Semantic name of the question the response is tied to.
@@ -170,16 +175,11 @@ message EphemeralSurveyQuestion {
     // A pending question that requires an answer to continue.
     bool pending_question = 4;
 
-    // A previous question completed by the user.
-    CompletedQuestion completed_question = 5;
+    // The SurveyUserAnswer given to complete the previous question.
+    SurveyUserAnswer user_answer = 5;
 
-    // True if this is the last question in the survey.
+    // Present if this is the last question in the survey.
     bool terminal_question = 6;
   }
 }
 
-// Corresponds to a question that the user has previously completed.
-message CompletedQuestion {
-  // The SurveyUserAnswer given to complete the question.
-  SurveyUserAnswer user_answer = 1;
-}
