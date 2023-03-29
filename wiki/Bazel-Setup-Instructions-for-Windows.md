@@ -46,11 +46,11 @@ sudo apt install openjdk-8-jdk-headless
 ```
 
 #### For Fedora 25+ 
-- Install JDK 8 by this command on the terminal:
+- Install JDK 8 by running this command on the terminal:
 ```
 sudo dnf install java-1.8.0-openjdk
 ```
-- Set default Java version to jdk-8 by running the following command `sudo update-alternatives --config java` and selecting the number with jdk-8.
+- Set the default Java version to jdk-8 by running the following command `sudo update-alternatives --config java` and selecting the number with jdk-8.
 
 **Python 2**
 

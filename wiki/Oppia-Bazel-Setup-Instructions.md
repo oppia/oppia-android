@@ -13,7 +13,7 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
 
 ### Building the app
 
-After the installation, completes you can build the app using Bazel. 
+After the installation completes you can build the app using Bazel. 
 
 **Move your command line head to the `~/opensource/oppia-android`**, then run the below bazel command:
 
