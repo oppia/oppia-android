@@ -4,15 +4,14 @@ import java.io.File
 
 /**
  * General utility for interfacing with a Git repository located at the specified working directory
- * and using the specified relative branch reference that should be used when computing changes from
- * the develop branch.
+ * and using the specified base commit hash reference that should be used when computing changes
+ * from the local branch.
  */
 class GitClient(
   private val workingDirectory: File,
-  private val baseDevelopBranchReference: String
+  private val baseCommit: String,
+  private val commandExecutor: CommandExecutor
 ) {
-  private val commandExecutor by lazy { CommandExecutorImpl() }
-
   /** The commit hash of the HEAD of the local Git repository. */
   val currentCommit: String by lazy { retrieveCurrentCommit() }
 
@@ -37,7 +36,11 @@ class GitClient(
   }
 
   private fun retrieveBranchMergeBase(): String {
-    return executeGitCommandWithOneLineOutput("merge-base $baseDevelopBranchReference HEAD")
+    return executeGitCommandWithOneLineOutput("merge-base $baseCommit HEAD").also {
+      if (baseCommit != it) {
+        println("WARNING: Provided base commit $baseCommit doesn't match merge-base: $it.")
+      }
+    }
   }
 
   private fun retrieveChangedFilesWithPotentialDuplicates(): List<String> =

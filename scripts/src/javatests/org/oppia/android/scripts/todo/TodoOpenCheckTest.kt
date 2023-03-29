@@ -24,9 +24,7 @@ class TodoOpenCheckTest {
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#todo-open-checks for more details on how to fix this."
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {

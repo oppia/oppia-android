@@ -9,9 +9,7 @@ import org.oppia.android.scripts.todo.model.Todo
 
 /** Tests for [TodoCollector]. */
 class TodoCollectorTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {

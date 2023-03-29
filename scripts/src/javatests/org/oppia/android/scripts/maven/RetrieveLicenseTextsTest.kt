@@ -45,9 +45,7 @@ class RetrieveLicenseTextsTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {

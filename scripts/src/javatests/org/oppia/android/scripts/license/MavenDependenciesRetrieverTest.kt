@@ -11,6 +11,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.maven.model.MavenListDependency
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
@@ -81,12 +82,11 @@ class MavenDependenciesRetrieverTest {
   private val mavenDependenciesRetriever by lazy {
     initializeMavenDependenciesRetriever()
   }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
@@ -99,6 +99,7 @@ class MavenDependenciesRetrieverTest {
   @After
   fun restoreStreams() {
     System.setOut(originalOut)
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -1226,7 +1227,9 @@ class MavenDependenciesRetrieverTest {
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 
   /** Returns a mock for the [LicenseFetcher]. */
