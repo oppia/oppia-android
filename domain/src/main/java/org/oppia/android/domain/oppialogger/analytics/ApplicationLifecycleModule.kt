@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.multibindings.IntoSet
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import java.util.concurrent.TimeUnit
+import org.oppia.android.domain.exploration.ExplorationProgressListenerImpl
 
 /** Application-level module that provides application-bound domain utilities. */
 @Module
@@ -18,4 +19,9 @@ class ApplicationLifecycleModule {
   @Provides
   @LearnerAnalyticsInactivityLimitMillis
   fun provideLearnerAnalyticsInactivityLimitMillis(): Long = TimeUnit.MINUTES.toMillis(30)
+
+  @Provides
+  fun provideApplicationLifecycleListener(
+    explorationProgressListenerImpl: ExplorationProgressListenerImpl
+  ): ApplicationLifecycleListener = explorationProgressListenerImpl
 }

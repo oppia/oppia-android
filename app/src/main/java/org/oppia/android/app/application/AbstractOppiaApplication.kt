@@ -57,9 +57,9 @@ abstract class AbstractOppiaApplication(
     component.getExplorationProgressListeners().forEach(
       ExplorationProgressListener::onExplorationSessionStarted
     )
-    component.getExplorationProgressListeners().forEach {
-      it.onExplorationSessionPaused(ProfileId.getDefaultInstance(), "")
-    }
+    component.getExplorationProgressListeners().forEach(
+      ExplorationProgressListener::onExplorationSessionPaused
+    )
   }
 
   override fun getWorkManagerConfiguration(): Configuration {
