@@ -53,22 +53,22 @@ enum QuestionName {
   QUESTION_NAME_UNSPECIFIED = 0;
 
   // Corresponds to the name of the user type question.
-  QUESTION_USER_TYPE = 1;
+  USER_TYPE = 1;
 
   //  Corresponds to the market fit question.
-  QUESTION_MARKET_FIT = 2;
+  MARKET_FIT = 2;
 
   // Corresponds to  the NPS question.
-  QUESTION_NPS = 3;
+  NPS = 3;
 
   // Corresponds to  the open-ended question for a NPS promoter.
-  QUESTION_PROMOTER_FEEDBACK = 4;
+  PROMOTER_FEEDBACK = 4;
 
   // Corresponds to  the open-ended question for a NPS passive.
-  QUESTION_PASSIVE_FEEDBACK = 5;
+  PASSIVE_FEEDBACK = 5;
 
   // Corresponds to  the open-ended question for a NPS detractor.
-  QUESTION_DETRACTOR_FEEDBACK = 6;
+  DETRACTOR_FEEDBACK = 6;
 }
 
 // Represents the multiple choice answer available for a question.
@@ -139,16 +139,16 @@ enum SurveyCompletionStatus {
   SURVEY_COMPLETION_STATUS_UNSPECIFIED = 0;
 
   // Corresponds to the survey being declined, not started.
-  SURVEY_DECLINED = 1;
+  DECLINED = 1;
 
   // Corresponds to the survey being exited before the mandatory questions are completed.
-  SURVEY_STARTED_NOT_COMPLETED = 2;
+  STARTED_NOT_COMPLETED = 2;
 
   // Corresponds to the mandatory part of the survey being completed.
-  SURVEY_MANDATORY_PART_COMPLETED = 3;
+  MANDATORY_PART_COMPLETED = 3;
 
   // Corresponds to the optional part of the survey being completed.
-  SURVEY_COMPLETED = 4;
+  FULLY_COMPLETED = 4;
 }
 
 // Corresponds to a survey question that exists ephemerally in the UI and will disappear
