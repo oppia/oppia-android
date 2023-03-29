@@ -29,13 +29,16 @@ import org.oppia.android.scripts.proto.MavenDependencyList
  *   scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
-  GenerateMavenDependenciesList(MavenArtifactPropertyFetcherImpl()).main(args)
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    GenerateMavenDependenciesList(MavenArtifactPropertyFetcherImpl(), scriptBgDispatcher).main(args)
+  }
 }
 
 /** Wrapper class to pass dependencies to be utilized by the the main method. */
 class GenerateMavenDependenciesList(
   private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
   /**
    * Compiles a list of third-party maven dependencies along with their license links on
@@ -76,45 +79,33 @@ class GenerateMavenDependenciesList(
 
     val bazelQueryDepsList =
       retriever.retrieveThirdPartyMavenDependenciesList()
-    val mavenInstallDepsList = retriever.generateDependenciesListFromMavenInstall(
-      pathToMavenInstallJson,
-      bazelQueryDepsList
-    )
+    val mavenInstallDepsList =
+      retriever.generateDependenciesListFromMavenInstall(pathToMavenInstallJson, bazelQueryDepsList)
 
     val dependenciesListFromPom =
-      retriever
-        .retrieveDependencyListFromPom(mavenInstallDepsList)
-        .mavenDependencyList
+      retriever.retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
     val dependenciesListFromTextProto =
       retriever.retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
     val updatedDependenciesList = retriever.addChangesFromTextProto(
-      dependenciesListFromPom,
-      dependenciesListFromTextProto
+      dependenciesListFromPom, dependenciesListFromTextProto
     )
 
     val manuallyUpdatedLicenses =
       retriever.retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
 
-    val finalDependenciesList = retriever.updateMavenDependenciesList(
-      updatedDependenciesList,
-      manuallyUpdatedLicenses
-    )
+    val finalDependenciesList =
+      retriever.updateMavenDependenciesList(updatedDependenciesList, manuallyUpdatedLicenses)
     retriever.writeTextProto(
       pathToMavenDependenciesTextProto,
       MavenDependencyList.newBuilder().addAllMavenDependency(finalDependenciesList).build()
     )
 
-    val licensesToBeFixed =
-      retriever.getAllBrokenLicenses(finalDependenciesList)
-
+    val licensesToBeFixed = retriever.getAllBrokenLicenses(finalDependenciesList)
     if (licensesToBeFixed.isNotEmpty()) {
-      val licenseToDependencyMap = retriever
-        .findFirstDependenciesWithBrokenLicenses(
-          finalDependenciesList,
-          licensesToBeFixed
-        )
+      val licenseToDependencyMap =
+        retriever.findFirstDependenciesWithBrokenLicenses(finalDependenciesList, licensesToBeFixed)
       println(
         """
         Some licenses do not have their 'original_link' verified. To verify a license link, click

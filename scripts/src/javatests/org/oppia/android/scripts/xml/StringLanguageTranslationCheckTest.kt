@@ -38,7 +38,7 @@ class StringLanguageTranslationCheckTest {
     private val SWAHILI_STRINGS_EXTRAS = mapOf("swahili_only_string" to "Badili Wasifu")
   }
 
-  @field:[Rule JvmField] var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val originalOut: PrintStream = System.out
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }

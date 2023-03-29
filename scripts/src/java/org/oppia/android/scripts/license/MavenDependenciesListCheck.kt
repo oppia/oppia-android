@@ -26,7 +26,9 @@ import org.oppia.android.scripts.proto.MavenDependency
  *   third_party/maven_install.json scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
-  MavenDependenciesListCheck(MavenArtifactPropertyFetcherImpl()).main(args)
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    MavenDependenciesListCheck(MavenArtifactPropertyFetcherImpl(), scriptBgDispatcher).main(args)
+  }
 }
 
 /**
@@ -35,7 +37,8 @@ fun main(args: Array<String>) {
  */
 class MavenDependenciesListCheck(
   private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
   /**
    * Verifies that the list of third-party maven dependencies in maven_dependnecies.textproto is

@@ -12,6 +12,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.license.MavenArtifactPropertyFetcher
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
 import org.oppia.android.scripts.proto.License
@@ -30,16 +31,15 @@ import java.util.concurrent.TimeUnit
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
 class GenerateMavenDependenciesListTest {
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val mockArtifactPropertyFetcher by lazy { initializeArtifactPropertyFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
-
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
@@ -52,6 +52,7 @@ class GenerateMavenDependenciesListTest {
   @After
   fun restoreStreams() {
     System.setOut(originalOut)
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -65,6 +66,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -149,6 +151,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -173,6 +176,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -215,6 +219,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -282,6 +287,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -324,6 +330,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -392,6 +399,7 @@ class GenerateMavenDependenciesListTest {
 
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -485,6 +493,7 @@ class GenerateMavenDependenciesListTest {
 
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -583,6 +592,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -646,6 +656,7 @@ class GenerateMavenDependenciesListTest {
 
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -759,6 +770,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -884,6 +896,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -997,6 +1010,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -1116,6 +1130,7 @@ class GenerateMavenDependenciesListTest {
 
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -1370,7 +1385,9 @@ class GenerateMavenDependenciesListTest {
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 
   /** Returns a mock for the [MavenArtifactPropertyFetcher]. */
