@@ -32,7 +32,7 @@ message SurveyQuestion {
   QuestionName question_name = 4;
 
   // A list of multi-choice answer options for a given question.
-  repeated SurveyQuestionAnswer answer_list = 5;
+  repeated SurveyAnswerOption answer_list = 5;
 }
 
 // The list of types a question can have that is used to determine how it is presented by the UI.
@@ -75,7 +75,7 @@ enum QuestionName {
 }
 
 // Represents the multiple choice answer available for a question.
-message SurveyQuestionAnswer {
+message SurveyAnswerOption {
   // The ID of this answer option. It is a string value that uniquely identifies the answer option
   // within the context of the question it belongs to.
   string question_answer_id = 1;
