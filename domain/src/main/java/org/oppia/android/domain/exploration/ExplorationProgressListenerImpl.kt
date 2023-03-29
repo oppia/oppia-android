@@ -1,9 +1,9 @@
 package org.oppia.android.domain.exploration
 
 import org.oppia.android.app.model.ProfileId
-import javax.inject.Inject
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleListener
 import org.oppia.android.util.logging.ConsoleLogger
+import javax.inject.Inject
 
 /** Implementation of [ExplorationProgressListener] */
 class ExplorationProgressListenerImpl @Inject constructor(
