@@ -23,6 +23,9 @@ class TodoOpenCheckTest {
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#todo-open-checks for more details on how to fix this."
+  private val reRunNote =
+    "There were failures. Re-run the command with \"true\" at the end to regenerate the exemption" +
+      " file with all failures as exempted."
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
@@ -46,7 +49,7 @@ class TodoOpenCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(
-      "${retrieveTestFilesDirectoryPath()}/open_issues.json: No such file exists"
+      "open_issues.json: No such file exists"
     )
   }
 
@@ -109,13 +112,15 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       TODOs not in correct format:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:2
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:3
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:4
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:5
+      - TempFile.txt:1
+      - TempFile.txt:2
+      - TempFile.txt:3
+      - TempFile.txt:4
+      - TempFile.txt:5
       
       $wikiReferenceNote
+      
+      $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -147,11 +152,13 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       TODOs not corresponding to open issues on GitHub:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:2
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:5
+      - TempFile.txt:1
+      - TempFile.txt:2
+      - TempFile.txt:5
       
       $wikiReferenceNote
+      
+      $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -191,14 +198,16 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       TODOs not in correct format:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:2
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
+      - TempFile1.kt:2
+      - TempFile2.kt:1
       
       TODOs not corresponding to open issues on GitHub:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:3
+      - TempFile1.kt:1
+      - TempFile2.kt:3
       
       $wikiReferenceNote
+      
+      $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -245,15 +254,17 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       TODOs not in correct format:
-      - ${retrieveTestFilesDirectoryPath()}/Activity.kt:2
-      - ${retrieveTestFilesDirectoryPath()}/Fragment.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/Presenter.kt:2
+      - Activity.kt:2
+      - Fragment.kt:1
+      - Presenter.kt:2
       
       TODOs not corresponding to open issues on GitHub:
-      - ${retrieveTestFilesDirectoryPath()}/Fragment.kt:3
-      - ${retrieveTestFilesDirectoryPath()}/Presenter.kt:1
+      - Fragment.kt:3
+      - Presenter.kt:1
       
       $wikiReferenceNote
+      
+      $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -350,6 +361,8 @@ class TodoOpenCheckTest {
       - TempFile1.kt:2
       - TempFile2.kt:1
       Please remove them from scripts/assets/todo_exemptions.textproto
+      
+      $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -362,7 +375,8 @@ class TodoOpenCheckTest {
       """.trimIndent()
     val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
     testJSONFile.writeText(testJSONContent)
-    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    tempFolder.newFolder("testfiles/extra_dir")
+    val tempFile1 = tempFolder.newFile("testfiles/extra_dir/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
     val testContent1 =
       """
@@ -381,7 +395,7 @@ class TodoOpenCheckTest {
       this.addAllTodoOpenExemption(
         listOf(
           TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile1.kt"
+            this.exemptedFilePath = "extra_dir/TempFile1.kt"
             this.addAllLineNumber(listOf(1, 2)).build()
           }.build()
         )
@@ -397,31 +411,99 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       Redundant exemptions (there are no TODOs corresponding to these lines):
-      - TempFile1.kt:2
+      - extra_dir/TempFile1.kt:2
       Please remove them from scripts/assets/todo_exemptions.textproto
       
       TODOs not in correct format:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
+      - TempFile2.kt:1
       
       TODOs not corresponding to open issues on GitHub:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:3
+      - extra_dir/TempFile1.kt:3
       
       $wikiReferenceNote
+      
+      $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
-  /** Retrieves the absolute path of testfiles directory. */
-  private fun retrieveTestFilesDirectoryPath(): String {
-    return "${tempFolder.root}/testfiles"
+  @Test
+  fun testTodoCheck_multipleFailureTypes_withRegenerationEnabled_outputsUpdatedTextProto() {
+    val testJSONContent =
+      """
+      [{"number":1000000},{"number":152440222},{"number":152440223},{"number":11001}]
+      """.trimIndent()
+    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
+    testJSONFile.writeText(testJSONContent)
+    tempFolder.newFolder("testfiles/extra_dir")
+    val tempFile1 = tempFolder.newFile("testfiles/extra_dir/TempFile1.kt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val testContent1 =
+      """
+      // TODO(#15244): test content 1
+      // TODO(#152440223): test description 1
+      // TODO(#10000000000000): test description 2
+      """.trimIndent()
+    val testContent2 =
+      """
+      # test content TODO(#11001): test description 2
+      """.trimIndent()
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+    val exemptions = TodoOpenExemptions.newBuilder().apply {
+      this.addAllTodoOpenExemption(
+        listOf(
+          TodoOpenExemption.newBuilder().apply {
+            this.exemptedFilePath = "extra_dir/TempFile1.kt"
+            this.addAllLineNumber(listOf(1, 2)).build()
+          }.build()
+        )
+      )
+    }.build()
+    exemptions.writeTo(exemptionFile.outputStream())
+
+    val exception = assertThrows(Exception::class) {
+      runScript(regenerateFile = true)
+    }
+
+    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
+    val failureMessage =
+      """
+      Redundant exemptions (there are no TODOs corresponding to these lines):
+      - extra_dir/TempFile1.kt:2
+      Please remove them from scripts/assets/todo_exemptions.textproto
+      
+      TODOs not in correct format:
+      - TempFile2.kt:1
+      
+      TODOs not corresponding to open issues on GitHub:
+      - extra_dir/TempFile1.kt:3
+      
+      $wikiReferenceNote
+      
+      Regenerated exemptions:
+      
+      todo_open_exemption {
+        exempted_file_path: "TempFile2.kt"
+        line_number: 1
+      }
+      todo_open_exemption {
+        exempted_file_path: "extra_dir/TempFile1.kt"
+        line_number: 1
+        line_number: 3
+      }
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   /** Runs the todo_open_check. */
-  private fun runScript() {
+  private fun runScript(regenerateFile: Boolean = false) {
     main(
-      retrieveTestFilesDirectoryPath(),
+      "${tempFolder.root}/testfiles",
       "${tempFolder.root}/$pathToProtoBinary",
-      "open_issues.json"
+      "open_issues.json",
+      regenerateFile.toString()
     )
   }
 }
