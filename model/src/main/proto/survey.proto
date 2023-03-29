@@ -6,7 +6,7 @@ option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
 // Corresponds to a single survey.
-message Survey{
+message Survey {
   // The ID of the survey.
   string survey_id = 1;
 
@@ -15,7 +15,7 @@ message Survey{
 }
 
 // Represents a question that is part of the Survey.
-message SurveyQuestion{
+message SurveyQuestion {
   // The ID of the survey question.
   string question_id = 1;
 
@@ -23,19 +23,20 @@ message SurveyQuestion{
   QuestionType question_type = 2;
 
   // The actual text value of the question.
-  string  question = 3;
+  string question = 3;
 
   // The semantic name of the question used to identify it in the analytics dashboard.
   QuestionName question_name = 4;
 
   // A list of multi-choice answer options for a given question.
-  repeated  SurveyQuestionAnswer answer_list = 5;
+  repeated SurveyQuestionAnswer answer_list = 5;
 }
 
 // The list of types a question can have that is used to determine how it is presented by the UI.
-enum QuestionType{
+enum QuestionType {
   // The type of question is unknown.
-  QUESTION_TYPE_UNSPECIFIED=0;
+  QUESTION_TYPE_UNSPECIFIED = 0;
+
   // Corresponds to a question with multiple choices.
   MULTIPLE_CHOICE = 1;
 
@@ -47,9 +48,10 @@ enum QuestionType{
 }
 
 // Corresponds to the semantic name given to each question.
-enum QuestionName{
+enum QuestionName {
   // The question name is unknown.
-   QUESTION_NAME_UNSPECIFIED = 0;
+  QUESTION_NAME_UNSPECIFIED = 0;
+
   // Corresponds to the name of the user type question.
   QUESTION_USER_TYPE = 1;
 
@@ -70,7 +72,7 @@ enum QuestionName{
 }
 
 // Represents the multiple choice answer available for a question.
-message SurveyQuestionAnswer{
+message SurveyQuestionAnswer {
   // The ID of this answer option.
   string question_answer_id = 1;
 
@@ -82,9 +84,9 @@ message SurveyQuestionAnswer{
 }
 
 // Represents an answer that was selected by a user for a survey question.
-message SurveyUserAnswer{
+message SurveyUserAnswer {
   //  The ID of the survey to which this answer is tied.
-  string  survey_id = 1;
+  string survey_id = 1;
 
   // Semantic name of the question the response is tied to.
   QuestionName question_name = 2;
@@ -95,9 +97,10 @@ message SurveyUserAnswer{
 
 // Represents the different types of users who could be taking the survey.
 // Consists of answer options for the user type question.
-enum  UserTypeAnswer{
+enum  UserTypeAnswer {
   // User type unknown.
-  USER_TYPE_UNSPECIFIED =0;
+  USER_TYPE_UNSPECIFIED = 0;
+
   // Corresponds to an unspecified or unknown type of user.
   OTHER = 1;
 
@@ -113,9 +116,9 @@ enum  UserTypeAnswer{
 
 // Represents general opinion of the user about the Oppia android app.
 // Consists of answer options for the market fit question.
-enum  MarketFitAnswer{
+enum  MarketFitAnswer {
   // Answer unknown.
-  MARKET_FIT_ANSWER_UNSPECIFIED =0;
+  MARKET_FIT_ANSWER_UNSPECIFIED = 0;
 
   // Corresponds to the answer for Very Disappointed.
   VERY_DISAPPOINTED = 1;
@@ -131,7 +134,7 @@ enum  MarketFitAnswer{
 }
 
 // Represents the status of the survey at the time it is exited.
-enum SurveyCompletionStatus{
+enum SurveyCompletionStatus {
   // The completion status is unknown.
   SURVEY_COMPLETION_STATUS_UNSPECIFIED = 0;
 
@@ -150,11 +153,11 @@ enum SurveyCompletionStatus{
 
 // Corresponds to a survey question that exists ephemerally in the UI and will disappear
 // once the user finishes or exits the survey session.
-message EphemeralSurveyQuestion{
+message EphemeralSurveyQuestion {
   // The actual question the user is currently viewing.
-  SurveyQuestion  question = 1;
+  SurveyQuestion question = 1;
 
-  //Indicates whether this question has a previous question that has been answered,
+  // Indicates whether this question has a previous question that has been answered,
   // or if this is the initial question.
   bool has_previous_question = 2;
 
@@ -163,7 +166,7 @@ message EphemeralSurveyQuestion{
 
   //  Indicates possible states a question can take depending on whether a user needs to provide an
   //  answer or has navigated to a previous question, or has reached the last question.
-  oneof question_type{
+  oneof question_type {
     // A pending question that requires an answer to continue.
     bool pending_question = 4;
 
