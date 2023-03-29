@@ -130,7 +130,7 @@ enum  MarketFitAnswer {
   NOT_DISAPPONTED = 3;
 
   // Corresponds to the answer for  N/A - Don't use Oppia Anymore.
-  NA_DONT_USE_OPPIA_ANYMORE = 4;
+  NOT_APPLICABLE_WONT_USE_OPPIA_ANYMORE = 4;
 }
 
 // Represents the status of the survey at the time it is exited.
