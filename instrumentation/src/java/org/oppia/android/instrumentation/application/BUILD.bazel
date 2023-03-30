@@ -16,6 +16,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_e2e_testing_visibility"],
     deps = [
+        "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/application:abstract_application",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
