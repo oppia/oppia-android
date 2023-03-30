@@ -74,6 +74,7 @@ kt_android_library(
 TEST_DEPS = [
     ":assertion_helpers",
     ":testing",
+    "//:dagger",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
     "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",

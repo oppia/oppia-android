@@ -29,6 +29,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.EventBundleCreatorTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
@@ -49,6 +50,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.EventLoggingConfigurationModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_ext_truth",
@@ -66,6 +68,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.KenyaAlphaEventBundleCreatorTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_ext_truth",
@@ -84,6 +87,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.KenyaAlphaEventLoggingConfigurationModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_ext_truth",
@@ -101,6 +105,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.StandardEventTypeToHumanReadableNameConverterImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -118,6 +123,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         ":sync_status_manager_test_base",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

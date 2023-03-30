@@ -171,6 +171,7 @@ kt_android_library(
 TEST_DEPS = [
     ":domain",
     ":interaction_object_test_builder",
+    "//:dagger",
     "//app:crashlytics",
     "//app:crashlytics_deps",
     "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",

@@ -837,6 +837,7 @@ TEST_DEPS = [
     ":app",
     ":resources",
     ":test_deps",
+    "//:dagger",
     "//app/src/main/java/org/oppia/android/app/application:application_component",
     "//app/src/main/java/org/oppia/android/app/application:application_injector",
     "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",

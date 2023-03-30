@@ -6,6 +6,7 @@ app_test(
     processed_src = test_with_resources("ProfileAndDeviceIdActivityTest.kt"),
     test_class = "org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivityTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
@@ -38,6 +39,7 @@ app_test(
     processed_src = test_with_resources("ProfileAndDeviceIdFragmentTest.kt"),
     test_class = "org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragmentTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/application:application_component",

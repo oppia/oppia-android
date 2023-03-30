@@ -45,6 +45,7 @@ app_test(
     processed_src = test_with_resources("AppCompatCheckBoxBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.AppCompatCheckBoxBindingAdaptersTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -80,6 +81,7 @@ app_test(
     processed_src = test_with_resources("CircularProgressIndicatorAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.CircularProgressIndicatorAdaptersTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -115,6 +117,7 @@ app_test(
     processed_src = "DrawableBindingAdaptersTest_updated.kt",
     test_class = "org.oppia.android.app.databinding.DrawableBindingAdaptersTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -150,6 +153,7 @@ app_test(
     processed_src = "ImageViewBindingAdaptersTest_updated.kt",
     test_class = "org.oppia.android.app.databinding.ImageViewBindingAdaptersTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -185,6 +189,7 @@ app_test(
     processed_src = test_with_resources("MarginBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.MarginBindingAdaptersTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -220,6 +225,7 @@ app_test(
     processed_src = test_with_resources("StateAssemblerMarginBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.StateAssemblerMarginBindingAdaptersTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -255,6 +261,7 @@ app_test(
     processed_src = test_with_resources("StateAssemblerPaddingBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdaptersTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -290,6 +297,7 @@ app_test(
     processed_src = "TextViewBindingAdaptersTest_updated.kt",
     test_class = "org.oppia.android.app.databinding.TextViewBindingAdaptersTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -325,6 +333,7 @@ app_test(
     processed_src = test_with_resources("ViewBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.ViewBindingAdaptersTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
