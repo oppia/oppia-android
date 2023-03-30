@@ -2,7 +2,6 @@
 Generic utilities for managing languages & locales.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -55,10 +54,10 @@ kt_android_library(
     ],
     deps = [
         ":android_locale_factory",
-        ":dagger",
         ":oppia_bidi_formatter",
         ":oppia_locale",
         "//third_party:androidx_core_core",
+        "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
@@ -74,7 +73,7 @@ kt_android_library(
     ],
     deps = [
         ":android_locale_profile",
-        ":dagger",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
@@ -95,10 +94,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":impl",
         ":oppia_locale",
+        "//:dagger",
     ],
 )
-
-dagger_rules()

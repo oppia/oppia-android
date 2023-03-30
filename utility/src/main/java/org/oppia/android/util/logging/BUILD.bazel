@@ -2,7 +2,6 @@
 General purpose utilities for logging.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -128,9 +127,9 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":annotations",
-        ":dagger",
         ":log_level",
         ":sync_status_manager_impl",
+        "//:dagger",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -143,8 +142,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":event_type_to_human_readable_name_converter",
+        "//:dagger",
     ],
 )
 
@@ -156,8 +155,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":event_type_to_human_readable_name_converter",
+        "//:dagger",
     ],
 )
 
@@ -211,5 +210,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
     ],
 )
-
-dagger_rules()
