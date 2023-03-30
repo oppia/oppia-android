@@ -19,6 +19,10 @@ import javax.inject.Inject
 class AnswerClassificationController @Inject constructor(
   private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>
 ) {
+  // Add a new classifier to the interactionClassifiers map
+  init {
+    interactionClassifiers["AlgebraicExpressionInput"] = AlgebraicExpressionInputClassifier()
+  }
   /**
    * Classifies the specified answer in the context of the specified [Interaction] and returns the
    * [ClassificationResult] that best matches the learner's answer.
