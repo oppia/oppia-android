@@ -189,7 +189,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 11": {
         "content": {
@@ -346,7 +347,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 10": {
         "content": {
@@ -531,7 +533,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Introduction": {
         "content": {
@@ -582,7 +585,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Final Test": {
         "content": {
@@ -722,7 +726,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Multiplying and dividing a number to ratio": {
         "content": {
@@ -879,7 +884,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 5.5": {
         "content": {
@@ -1036,7 +1042,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Smoothie for stand": {
         "content": {
@@ -1232,7 +1239,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Definition of a ratio": {
         "content": {
@@ -1283,7 +1291,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 1": {
         "content": {
@@ -1417,7 +1426,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 2": {
         "content": {
@@ -1512,7 +1522,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Review 3": {
         "content": {
@@ -1649,7 +1660,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Congratulations": {
         "content": {
@@ -1688,7 +1700,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 1": {
         "content": {
@@ -1890,7 +1903,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 3": {
         "content": {
@@ -2083,7 +2097,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 2": {
         "content": {
@@ -2251,7 +2266,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 5": {
         "content": {
@@ -2377,7 +2393,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 4": {
         "content": {
@@ -2503,7 +2520,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 7": {
         "content": {
@@ -2657,7 +2675,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 6": {
         "content": {
@@ -2803,7 +2822,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 9": {
         "content": {
@@ -2929,7 +2949,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Practice 8": {
         "content": {
@@ -3102,7 +3123,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Happy ending": {
         "content": {
@@ -3153,7 +3175,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "Equivalent ratio": {
         "content": {
@@ -3204,7 +3227,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       }
     },
     "objective": "Learn how to find equivalent ratios, and how to simplify ratios.",

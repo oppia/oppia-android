@@ -29,7 +29,11 @@ class WalkthroughActivityPresenter @Inject constructor(
       presenter = this@WalkthroughActivityPresenter
       lifecycleOwner = activity
     }
-    StatusBarColor.statusBarColorUpdate(R.color.walkthrough_status_bar, activity, true)
+    StatusBarColor.statusBarColorUpdate(
+      R.color.component_color_walkthrough_activity_status_bar_color,
+      activity,
+      true
+    )
     val currentFragmentIndex = getWalkthroughViewModel().currentProgress.get()?.minus(1)
 
     if (currentFragmentIndex == -1 && getWalkthroughWelcomeFragment() == null) {

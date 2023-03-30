@@ -9,7 +9,8 @@ class SelectionInteractionContentViewModel(
   val htmlContent: SubtitledHtml,
   val hasConversationView: Boolean,
   private val itemIndex: Int,
-  private val selectionInteractionViewModel: SelectionInteractionViewModel
+  private val selectionInteractionViewModel: SelectionInteractionViewModel,
+  val isEnabled: ObservableBoolean
 ) : ObservableViewModel() {
   var isAnswerSelected = ObservableBoolean()
 

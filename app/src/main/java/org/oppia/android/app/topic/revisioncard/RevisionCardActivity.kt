@@ -88,11 +88,16 @@ class RevisionCardActivity :
     this.finish()
   }
 
-  override fun onReturnToTopicClicked() {
-    onBackPressed()
+  override fun onReturnToTopicRequested() {
+    revisionCardActivityPresenter.logExitRevisionCard()
+    finish()
   }
 
   override fun dismissConceptCard() {
     revisionCardActivityPresenter.dismissConceptCard()
+  }
+
+  override fun onBackPressed() {
+    onReturnToTopicRequested()
   }
 }
