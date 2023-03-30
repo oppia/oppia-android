@@ -61,8 +61,8 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.guava:failureaccess": "1.0.1",
     "com.google.j2objc:j2objc-annotations": "1.3",
     "com.google.protobuf:protobuf-javalite": "3.17.3",
-    "com.squareup.moshi:moshi-kotlin": "1.14.0",
-    "com.squareup.moshi:moshi-kotlin-codegen": "1.14.0",
+    "com.squareup.moshi:moshi-kotlin": "1.13.0",
+    "com.squareup.moshi:moshi-kotlin-codegen": "1.13.0",
     "com.squareup.okhttp3:okhttp": "4.7.2",
     "com.squareup.retrofit2:converter-moshi": "2.5.0",
     "com.squareup.retrofit2:retrofit": "2.9.0",
@@ -142,8 +142,8 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "5.1",
     },
     "rules_kotlin": {
-        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
-        "version": "v1.7.1",
+        "sha": "12d22a3d9cbcf00f2e2d8f0683ba87d3823cb8c7f6837568dd7e48846e023307",
+        "version": "v1.5.0",
     },
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",

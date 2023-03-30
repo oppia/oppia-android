@@ -4,7 +4,6 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.async
 import java.util.concurrent.ConcurrentHashMap
@@ -24,7 +23,6 @@ import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with
  * resource for this purpose).
  */
 @InternalCoroutinesApi
-@ExperimentalCoroutinesApi
 class TestCoroutineDispatcherEspressoImpl private constructor(
   private val realCoroutineDispatcher: CoroutineDispatcher
 ) : TestCoroutineDispatcher(), Delay {

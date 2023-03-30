@@ -3,7 +3,6 @@ package org.oppia.android.testing.threading
 import com.google.common.truth.LongSubject
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -67,6 +66,7 @@ abstract class TestCoroutineDispatcherTestBase(
    * Implementations should use this to set up the test application & verify that the dispatcher is
    * correct. The latter can be done with a call to [verifyDispatcherImplementation].
    */
+  @InternalCoroutinesApi
   abstract fun setUp()
 
   /** Returns the current wall clock time, in milliseconds since the Unix epoch. */
@@ -607,7 +607,6 @@ abstract class TestCoroutineDispatcherTestBase(
   }
 
   @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   protected inline fun <reified T : TestCoroutineDispatcher> verifyDispatcherImplementation() {
     // Sanity check to ensure the correct implementation is being tested.
     assertThat(backgroundTestDispatcher).isInstanceOf(T::class.java)

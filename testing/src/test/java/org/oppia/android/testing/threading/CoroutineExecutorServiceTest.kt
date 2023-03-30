@@ -12,7 +12,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -313,7 +312,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional for testing purposes.
-  @ExperimentalCoroutinesApi
   fun testSubmitCallable_returnedFuture_pendingTask_runTasks_getFunctionReturnsComputedValue() {
     val executorService = createExecutorService()
     val callable = Callable { "Task" }
@@ -332,7 +330,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional for testing purposes.
-  @ExperimentalCoroutinesApi
   fun testSubmitCallable_returnedFuture_pendingTask_tasksNotRun_timedGetFuncTimesOut() {
     val executorService = createExecutorService()
     val callable = Callable { "Task" }
@@ -357,7 +354,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional for testing purposes.
-  @ExperimentalCoroutinesApi
   fun testSubmitCallable_returnedFuture_pendingTask_runTasks_timedGetFuncDoesNotTimeOut() {
     val executorService = createExecutorService()
     val callable = Callable { "Task" }
@@ -662,7 +658,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   fun testAwaitTermination_afterShutdown_withLongTask_exceedTimeout_returnsFalse() {
     val executorService = createExecutorService()
     // Note that a longer delay is used here since testing for timeouts is inherently flaky: slower
@@ -687,7 +682,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   @Ignore("Flaky test") // TODO(#1763): Remove & stabilize test.
   fun testAwaitTermination_afterShutdown_withTasks_finishWithinTimeout_returnsTrue() {
     val executorService = createExecutorService()
@@ -726,7 +720,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking interruption.
-  @ExperimentalCoroutinesApi
   fun testInvokeAll_oneTask_afterShutdown_throwsException() {
     val executorService = createExecutorService()
     val callable1 = Callable { "Task 1" }
@@ -751,7 +744,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking interruption.
-  @ExperimentalCoroutinesApi
   fun testInvokeAll_oneTask_afterShutdownNow_throwsException() {
     val executorService = createExecutorService()
     val callable1 = Callable { "Task 1" }
@@ -769,7 +761,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   fun testInvokeAll_runTasks_returnsListOfCompletedFuturesWithCorrectValuesInOrder() {
     val executorService = createExecutorService()
     val callable1 = Callable { "Task 1" }
@@ -791,7 +782,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   fun testInvokeAll_oneTaskFails_runTasks_returnsListOfCompletedFuturesWithCorrectValuesInOrder() {
     val executorService = createExecutorService()
     val callable1 = Callable<String> { throw Exception("Task 1 failed") }
@@ -813,7 +803,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   fun testInvokeAll_withTimeout_doNotFinishFirstTaskOnTime_timesOut() {
     val executorService = createExecutorService()
     // Note that a longer delay is used here since testing for timeouts is inherently flaky: slower
@@ -844,7 +833,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   fun testInvokeAll_withTimeout_doNotFinishSecondTaskOnTime_timesOut() {
     val executorService = createExecutorService()
     // Note that a longer delay is used here since testing for timeouts is inherently flaky: slower
@@ -888,7 +876,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   fun testInvokeAny_oneTask_runTasks_returnsValueOfFirstTask() {
     val executorService = createExecutorService()
     val callable = Callable { "Task 1" }
@@ -911,7 +898,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking interruption.
-  @ExperimentalCoroutinesApi
   fun testInvokeAny_oneTask_afterShutdown_throwsException() {
     val executorService = createExecutorService()
     val callable = Callable { "Task 1" }
@@ -929,7 +915,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking interruption.
-  @ExperimentalCoroutinesApi
   fun testInvokeAny_oneTask_afterShutdownNow_throwsException() {
     val executorService = createExecutorService()
     val callable = Callable { "Task 1" }
@@ -947,7 +932,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   fun testInvokeAny_oneShortTask_oneLongTask_runTasks_returnsValueOfShortTask() {
     val executorService = createExecutorService()
     val delayMs = 10L
@@ -973,7 +957,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   fun testInvokeAny_oneShortTask_oneLongTask_shortTaskFails_runTasks_returnsValueOfLongTask() {
     val executorService = createExecutorService()
     val delayMs = 10L
@@ -996,7 +979,6 @@ class CoroutineExecutorServiceTest {
 
   @Test
   @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-  @ExperimentalCoroutinesApi
   @Ignore("Flaky test") // TODO(#1763): Remove & stabilize test.
   fun testInvokeAny_noTaskCompletesOnTime_throwsTimeoutException() {
     val executorService = createExecutorService()

@@ -9,7 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Test
@@ -55,7 +54,6 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
 
   @Before
   @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   override fun setUp() {
     setUpTestApplicationComponent()
     verifyDispatcherImplementation<TestCoroutineDispatcherRobolectricImpl>()
