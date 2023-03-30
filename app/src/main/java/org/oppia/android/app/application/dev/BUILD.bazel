@@ -6,7 +6,7 @@ there are specially defined top-level build flavors which will select their corr
 application configuration.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "developer_application",

@@ -10,7 +10,7 @@ order to build with Bazel.
 - All binding adapters must be written in Java.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")

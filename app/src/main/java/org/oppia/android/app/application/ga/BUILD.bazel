@@ -2,7 +2,7 @@
 This package contains the root application definitions for general availability builds of the app.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "general_availability_application",

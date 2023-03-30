@@ -130,9 +130,9 @@ git_repository(
 
 git_repository(
     name = "android-spotlight",
-    commit = "ebde38335bfb56349eae57e705b611ead9addb15",
+    commit = "cc23499d37dc8533a2876e45b5063e981a4583f4",
     remote = "https://github.com/oppia/android-spotlight",
-    shallow_since = "1668824029 -0800",
+    shallow_since = "1680147372 -0700",
 )
 
 # A custom fork of KotliTeX that removes resources artifacts that break the build, and updates the
