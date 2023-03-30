@@ -16,10 +16,9 @@ import javax.inject.Singleton
  */
 @Singleton
 class TestGlideImageLoader @Inject constructor(
-  private val glideImageLoader: GlideImageLoader,
-  private val context: Context
+  private val glideImageLoader: GlideImageLoader
 ) : ImageLoader {
-  private val availableBitmaps = mutableMapOf<String, @DrawableRes Int>()
+  private val availableBitmaps = mutableMapOf<String, Int>()
   private val loadedBitmaps = mutableListOf<String>()
   private val loadedBlockSvgs = mutableListOf<String>()
   private val loadedTextSvgs = mutableListOf<String>()
@@ -85,7 +84,7 @@ class TestGlideImageLoader @Inject constructor(
   }
 
   /**
-   * Sets a test bitmap to load when [loadbitmap] is called, based on a specified filename.
+   * Sets a test bitmap to load when [loadBitmap] is called, based on a specified filename.
    *
    * The image loaded will correspond to [imageDrawableResId] instead of being loaded from the
    * requested image URL.

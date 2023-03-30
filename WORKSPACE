@@ -30,16 +30,11 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
-# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
-load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
-
-kt_download_local_dev_dependencies()
-
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
 
 kotlin_repositories()
 
-kt_register_toolchains()
+register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
 
 # The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 # module while helping us avoid the unnecessary compilation of protoc. Referecences:
@@ -144,9 +139,9 @@ git_repository(
 # min target SDK version to be compatible with Oppia.
 git_repository(
     name = "kotlitex",
-    commit = "43139c140833c7120f351d63d74b42c253d2b213",
+    commit = "ccdf4170817fa3b48b8e1e452772dd58ecb71cf2",
     remote = "https://github.com/oppia/kotlitex",
-    shallow_since = "1675741075 -0800",
+    shallow_since = "1679426649 -0700",
 )
 
 bind(
