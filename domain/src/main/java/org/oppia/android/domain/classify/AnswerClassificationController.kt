@@ -35,7 +35,6 @@ class AnswerClassificationController @Inject constructor(
       "Encountered unknown interaction type: ${interaction.id}, " +
         "expected one of: ${interactionClassifiers.keys}"
     }
-    // TODO(#207): Add support for additional classification types.
     return classifyAnswer(
       answer,
       interaction.answerGroupsList,
