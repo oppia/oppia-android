@@ -177,6 +177,14 @@
     <item quantity="one">1 Capítulo\n    </item>
     <item quantity="other">\n      %s Capítulos\n    </item>
   </plurals>
+  <plurals name="chapter_count_with_story_name_as_one_string">
+    <item quantity="one" fuzzy="true">
+      1 Capítulo em %2$s
+    </item>
+    <item quantity="other">
+      %1$s Capítulos em %2$s
+    </item>
+  </plurals>
   <plurals name="story_count">
     <item quantity="one">1 História\n    </item>
     <item quantity="other">\n      %s Histórias\n    </item>

@@ -169,6 +169,14 @@
     <item quantity="one">Sura 1</item>
     <item quantity="other">Sura %s</item>
   </plurals>
+  <plurals name="chapter_count_with_story_name_as_one_string">
+    <item quantity="one" fuzzy="true">
+      Sura 1 katika %2$s
+    </item>
+    <item quantity="other">
+      Sura %1$s katika %2$s
+    </item>
+  </plurals>
   <plurals name="story_count">
     <item quantity="one">Hadithi 1</item>
     <item quantity="other">Hadithi %s</item>
