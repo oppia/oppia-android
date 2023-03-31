@@ -6,7 +6,7 @@
 * [Implementation details](#implementation-details)
    * [Wiki architecture](#wiki-architecture)
    * [When you make changes through the web interface](#when-you-make-changes-through-the-web-interface)
-   
+* [Tips and Tricks](#tips-and-tricks)
 
 ## Contributing to the wiki
 
