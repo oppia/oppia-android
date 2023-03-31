@@ -69,8 +69,6 @@ export ANDROID_HOME=$HOME/Library/Android/sdk
 echo $ANDROID_HOME
 ```
 
-**Note: You must set the path for `ANDROID_HOME` before running bazel build for oppia-android, otherwise you will get an error.**
-
 ### 6. Set Bazel, Python 2, ANDROID_HOME paths permanently in your terminal
 
 - To set the `Bazel`, `Python 2`, `ANDROID_HOME` path permanently in your terminal run these commands:
