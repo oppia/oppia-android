@@ -119,4 +119,4 @@ INFO: Build completed successfully, ...
 
 If you see the above, you can proceed to use your subsystem for Bazel commands while developing Oppia. If you instead see an error, please [file an issue](https://github.com/oppia/oppia-android/issues/new/choose).
 
-Note also that the ``oppia.apk`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using ``adb`` (though we recommend using ADB from within a Windows command prompt or shell since the Ubuntu subsystem may not have correct support to access devices or emulators connected to the native Windows machine).
+Note also that the ``oppia.apk`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using ``adb`` 
