@@ -93,5 +93,4 @@ If you change the wiki through the web interface at https://github.com/oppia/opp
 #### Demo Screenshot
 <img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/227737306-0bf3d5ef-ddcb-4886-b65b-a9c1ce1b4069.gif">
 
-// TODO([#4933](https://github.com/oppia/oppia-android/issues/4933)): Revise markdown instructions 
-once a Java runtime override isn't needed anymore to render Markdown in Android Studio.
+// TODO([#4933](https://github.com/oppia/oppia-android/issues/4933)): Revise markdown instructions once a Java runtime override isn't needed anymore to render Markdown in Android Studio
