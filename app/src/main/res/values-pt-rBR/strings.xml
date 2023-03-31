@@ -172,18 +172,9 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Correto!</string>
   <string name="topic_prefix">Tópico: %s</string>
-  <string name="chapter_count_with_story_name">%1$s em %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Capítulo\n    </item>
     <item quantity="other">\n      %s Capítulos\n    </item>
-  </plurals>
-  <plurals name="chapter_count_with_story_name_as_one_string">
-    <item quantity="one" fuzzy="true">
-      1 Capítulo em %2$s
-    </item>
-    <item quantity="other">
-      %1$s Capítulos em %2$s
-    </item>
   </plurals>
   <plurals name="story_count">
     <item quantity="one">1 História\n    </item>

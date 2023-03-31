@@ -186,21 +186,12 @@
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%s!</string>
-  <string name="chapter_count_with_story_name">%1$s in %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
     </item>
     <item quantity="other">
       %s Chapters
-    </item>
-  </plurals>
-  <plurals name="chapter_count_with_story_name_as_one_string">
-    <item quantity="one">
-      1 Chapter in %2$s
-    </item>
-    <item quantity="other">
-      %1$s Chapters in %2$s
     </item>
   </plurals>
   <plurals name="story_count">

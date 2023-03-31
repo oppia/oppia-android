@@ -41,15 +41,6 @@ class StorySummaryViewModel(
     storyProgressPercentageText.set(computeStoryProgressPercentageText(storyPercentage))
   }
 
-  fun computeStoryNameChapterCountContainerContentDescription(): String {
-    return resourceHandler.getQuantityStringInLocaleWithWrapping(
-      R.plurals.chapter_count_with_story_name_as_one_string,
-      storySummary.chapterCount,
-      storySummary.chapterCount.toString(),
-      storyTitle
-    )
-  }
-
   fun computeChapterCountText(): String {
     return resourceHandler.getQuantityStringInLocaleWithWrapping(
       R.plurals.chapter_count, storySummary.chapterCount, storySummary.chapterCount.toString()
