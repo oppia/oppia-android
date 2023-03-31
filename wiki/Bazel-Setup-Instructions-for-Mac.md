@@ -48,7 +48,7 @@ pyenv install 2.7.18
 pyenv global 2.7.18
 ```
 
-- To make sure Python 2 is install successfully and active in your environment, navigate to the **oppia-android** directory and run following commands:
+- To make sure Python 2 is successfully installed and active in your environment, navigate to the **oppia-android** directory and run the following commands:
 
 ```
 export PATH="$(pyenv root)/shims:${PATH}"
