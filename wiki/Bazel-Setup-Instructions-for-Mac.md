@@ -7,10 +7,9 @@
 2. Install Bazel 
 3. Install OpenJDK 8
 4. Install Python 2 and make sure it is active in your environment
-5. Set up the ANDROID_HOME environment variable
-6. Set Bazel, Python 2, ANDROID_HOME paths permanently in your terminal
-7. Prepare the build environment
-8. Verify that the build is working
+5. Set Bazel, Python 2, ANDROID_HOME paths permanently in your terminal
+6. Prepare the build environment
+7. Verify that the build is working
 
 ### 1. Set up Rosetta Terminal
 
@@ -56,20 +55,7 @@ export PATH="$(pyenv root)/shims:${PATH}"
 python --version
 ```
 
-### 5. Set up the ANDROID_HOME environment variable
-
-- Ensure that your `ANDROID_HOME` environment variable is set to the location of your Android SDK before running Bazel build.
-
-- To do this, find the path to the installed SDK using Android Studio’s SDK Manager (install SDK 28). Assuming the SDK is installed to default locations, you can use the following command to set the `ANDROID_HOME` variable:
-```
-export ANDROID_HOME=$HOME/Library/Android/sdk
-```
-- To confirm that it is set, run the following command:
-```
-echo $ANDROID_HOME
-```
-
-### 6. Set Bazel, Python 2, ANDROID_HOME paths permanently in your terminal
+### 5. Set Bazel, Python 2, ANDROID_HOME paths permanently in your terminal
 
 - To set the `Bazel`, `Python 2`, `ANDROID_HOME` path permanently in your terminal run these commands:
     ```
@@ -88,11 +74,11 @@ echo $ANDROID_HOME
 
 **Note: You must set the path for `Bazel`, `Python 2`, `ANDROID_HOME` before running bazel build for oppia-android, otherwise you will get an error.**
 
-### 7. Prepare the build environment
+### 6. Prepare the build environment
 
 Follow the instructions in [oppia-bazel-tools](https://github.com/oppia/oppia-bazel-tools#readme), in order to prepare your environment to support Oppia Android builds.
 
-### 8. Verify that the build is working
+### 7. Verify that the build is working
 
 At this point, your system should be able to build Oppia Android. To verify, try building the APK (from your subsystem terminal -- note that this and all other Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail):
 
