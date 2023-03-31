@@ -7,6 +7,7 @@
    * [Wiki architecture](#wiki-architecture)
    * [When you make changes through the web interface](#when-you-make-changes-through-the-web-interface)
 * [Tips and Tricks](#tips-and-tricks)
+   * [Markdown(wiki) preview in Android Studio](#how-can-i-see-markdown-wiki-preview-in-android-studio) 
 
 ## Contributing to the wiki
 
