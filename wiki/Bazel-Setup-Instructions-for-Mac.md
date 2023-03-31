@@ -41,14 +41,14 @@ Note that this requires the installation of brew as a pre-requisite, which can b
 
 ### 4. Install Python 2 and make sure it is active in your environment
 
-To install Python 2 in MacOS follow the follows the commands given below. Note that, this requires installation of brew as a pre-requisite, which can be done by following the instructions [here](https://mac.install.guide/homebrew/index.html). 
+To install Python 2 in MacOS follow the follows the commands given below. Note that this requires installation of brew as a pre-requisite, which can be done by following the instructions [here](https://mac.install.guide/homebrew/index.html). 
 ```
 brew install pyenv
 pyenv install 2.7.18
 pyenv global 2.7.18
 ```
 
-- To make sure Python 2 is active in your environment, navigate to the **oppia-android** directory and run the following commands before running the Bazel build.
+- To make sure Python 2 is install successfully and active in your environment, navigate to the **oppia-android** directory and run following commands:
 
 ```
 export PATH="$(pyenv root)/shims:${PATH}"
