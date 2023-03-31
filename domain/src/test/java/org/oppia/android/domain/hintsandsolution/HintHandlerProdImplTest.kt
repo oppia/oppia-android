@@ -50,6 +50,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /** Tests for [HintHandlerProdImpl]. */
 @Suppress("FunctionName")
@@ -2051,6 +2052,7 @@ class HintHandlerProdImplTest {
     reset(mockHelpIndexFlowMonitor)
   }
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun runSynchronouslyInBackground(operation: suspend () -> Unit) {
     val result = blockingCoroutineScope.async { operation() }
     testCoroutineDispatchers.runCurrent()

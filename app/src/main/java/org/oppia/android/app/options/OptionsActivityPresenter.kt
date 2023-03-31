@@ -103,8 +103,7 @@ class OptionsActivityPresenter @Inject constructor(
   }
 
   fun loadAppLanguageFragment(appLanguage: String) {
-    val appLanguageFragment =
-      AppLanguageFragment.newInstance(APP_LANGUAGE, appLanguage)
+    val appLanguageFragment = AppLanguageFragment.newInstance(appLanguage)
     activity.supportFragmentManager
       .beginTransaction()
       .replace(R.id.multipane_options_container, appLanguageFragment)

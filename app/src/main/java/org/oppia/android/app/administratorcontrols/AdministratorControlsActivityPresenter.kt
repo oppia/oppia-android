@@ -62,14 +62,11 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     if (isMultipane) {
       val adminControlsActivity = activity as AdministratorControlsActivity
       when (lastLoadedFragment) {
-        PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
-        APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
+        PROFILE_LIST_FRAGMENT -> activity.loadProfileList()
+        APP_VERSION_FRAGMENT -> activity.loadAppVersion()
         PROFILE_EDIT_FRAGMENT -> selectedProfileId.let { profileId ->
           if (extraControlsTitle != null) {
-            (activity as AdministratorControlsActivity).loadProfileEdit(
-              profileId = profileId,
-              profileName = extraControlsTitle
-            )
+            activity.loadProfileEdit(profileId = profileId, profileName = extraControlsTitle)
             if (isProfileDeletionDialogVisible && profileId != 0) {
               val fragment = activity.supportFragmentManager.findFragmentById(
                 R.id.administrator_controls_fragment_multipane_placeholder
@@ -88,7 +85,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 
   /** Sets up the navigation drawer. */
   private fun setUpNavigationDrawer() {
-    val toolbar = binding.administratorControlsActivityToolbar as Toolbar
+    val toolbar = binding.administratorControlsActivityToolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment = activity
@@ -206,9 +203,9 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       outState.putString(SELECTED_CONTROLS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
     outState.putString(LAST_LOADED_FRAGMENT_EXTRA_KEY, lastLoadedFragment)
-    isProfileDeletionDialogVisible?.let {
+    isProfileDeletionDialogVisible.let {
       outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, it)
     }
-    selectedProfileId?.let { outState.putInt(SELECTED_PROFILE_ID_SAVED_KEY, it) }
+    selectedProfileId.let { outState.putInt(SELECTED_PROFILE_ID_SAVED_KEY, it) }
   }
 }

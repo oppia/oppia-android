@@ -19,7 +19,6 @@ class AppLanguageFragmentPresenter @Inject constructor(
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    prefKey: String,
     prefSummaryValue: String
   ): View? {
     val binding = AppLanguageFragmentBinding.inflate(

@@ -48,6 +48,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"
@@ -3247,6 +3248,7 @@ class DataProvidersTest {
    * Transforms the specified string into an integer in the same way as [transformString], except in
    * a blocking context using [backgroundCoroutineDispatcher].
    */
+  @OptIn(ExperimentalCoroutinesApi::class)
   private suspend fun transformStringAsync(str: String): AsyncResult<Int> {
     val deferred = backgroundCoroutineScope.async { transformString(str) }
     deferred.await()
@@ -3257,6 +3259,7 @@ class DataProvidersTest {
    * Transforms the specified string in a similar way as [transformStringAsync], but with a
    * different transformation method.
    */
+  @OptIn(ExperimentalCoroutinesApi::class)
   private suspend fun transformStringDoubledAsync(str: String): AsyncResult<Int> {
     val deferred = backgroundCoroutineScope.async { transformString(str) * 2 }
     deferred.await()
@@ -3269,6 +3272,7 @@ class DataProvidersTest {
    * Combines the specified strings into a new string in the same way as [combineStrings], except in
    * a blocking context using [backgroundCoroutineDispatcher].
    */
+  @OptIn(ExperimentalCoroutinesApi::class)
   private suspend fun combineStringsAsync(str1: String, str2: String): AsyncResult<String> {
     val deferred = backgroundCoroutineScope.async { combineStrings(str1, str2) }
     deferred.await()
@@ -3300,6 +3304,7 @@ class DataProvidersTest {
   }
 
   /** Returns a successful [DataProvider] that uses a background thread to return the value. */
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun <T> createBlockingDataProvider(id: Any, value: T): DataProvider<T> {
     return dataProviders.createInMemoryDataProviderAsync(id) {
       val deferred = backgroundCoroutineScope.async { value }

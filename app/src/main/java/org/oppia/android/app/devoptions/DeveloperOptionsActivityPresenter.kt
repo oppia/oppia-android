@@ -33,7 +33,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   }
 
   private fun setUpNavigationDrawer() {
-    val toolbar = binding.developerOptionsActivityToolbar as Toolbar
+    val toolbar = binding.developerOptionsActivityToolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment = activity

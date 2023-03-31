@@ -13,15 +13,11 @@ import javax.inject.Inject
 class AppLanguageActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var appLanguageActivityPresenter: AppLanguageActivityPresenter
-  private lateinit var prefKey: String
   private lateinit var prefSummaryValue: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    prefKey = checkNotNull(intent.getStringExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY)) {
-      "Expected $APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY to be in intent extras."
-    }
     prefSummaryValue = if (savedInstanceState == null) {
       checkNotNull(intent.getStringExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY)) {
         "Expected $APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY to be in intent extras."
@@ -29,31 +25,20 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     } else {
       savedInstanceState.get(SELECTED_LANGUAGE_EXTRA_KEY) as String
     }
-    appLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
+    appLanguageActivityPresenter.handleOnCreate(prefSummaryValue)
   }
 
   companion object {
-    internal const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
-      "AppLanguageActivity.app_language_preference_title"
     const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
       "AppLanguageActivity.app_language_preference_summary_value"
     internal const val SELECTED_LANGUAGE_EXTRA_KEY = "AppLanguageActivity.selected_language"
 
     /** Returns a new [Intent] to route to [AppLanguageActivity]. */
-    fun createAppLanguageActivityIntent(
-      context: Context,
-      prefKey: String,
-      summaryValue: String?
-    ): Intent {
+    fun createAppLanguageActivityIntent(context: Context, summaryValue: String?): Intent {
       return Intent(context, AppLanguageActivity::class.java).apply {
-        putExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, prefKey)
         putExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY, summaryValue)
         decorateWithScreenName(APP_LANGUAGE_ACTIVITY)
       }
-    }
-
-    fun getAppLanguagePreferenceTitleExtraKey(): String {
-      return APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY
     }
 
     fun getAppLanguagePreferenceSummaryValueExtraKey(): String {

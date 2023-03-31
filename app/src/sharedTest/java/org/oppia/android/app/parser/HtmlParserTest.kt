@@ -43,7 +43,6 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.R
@@ -136,6 +135,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+import org.mockito.Mockito.verifyNoMoreInteractions
 
 // TODO(#277): Add tests for UrlImageParser.
 /** Tests for [HtmlParser]. */
@@ -384,7 +384,7 @@ class HtmlParserTest {
       imageCenterAlign = true,
       displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
+    val (_, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(
         "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li><li>How to tell whether one" +
@@ -675,7 +675,7 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).perform(click())
 
     // Verify the tag listener is not called since link support is disabled.
-    verifyZeroInteractions(mockCustomOppiaTagActionListener)
+    verifyNoMoreInteractions(mockCustomOppiaTagActionListener)
   }
 
   @Test

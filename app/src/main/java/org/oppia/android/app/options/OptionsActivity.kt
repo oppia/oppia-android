@@ -116,11 +116,7 @@ class OptionsActivity :
 
   override fun routeAppLanguageList(appLanguage: String?) {
     startActivityForResult(
-      AppLanguageActivity.createAppLanguageActivityIntent(
-        this,
-        APP_LANGUAGE,
-        appLanguage
-      ),
+      AppLanguageActivity.createAppLanguageActivityIntent(this, appLanguage),
       REQUEST_CODE_APP_LANGUAGE
     )
   }

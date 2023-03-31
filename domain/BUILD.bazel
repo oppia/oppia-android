@@ -139,6 +139,7 @@ kt_android_library(
         "//model/src/main/proto:question_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",
         "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
         "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",

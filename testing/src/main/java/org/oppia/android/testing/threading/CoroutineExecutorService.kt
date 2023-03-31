@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Listener for being notified when [CoroutineExecutorService] has arranged state and is immediately
@@ -53,6 +54,7 @@ private typealias TimeoutBlock<T> = suspend CoroutineScope.() -> T
  * allow cooperation with Oppia's test coroutine dispatchers utility (which is the purpose of this
  * class).
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineExecutorService(
   private val backgroundDispatcher: CoroutineDispatcher
 ) : ExecutorService {
@@ -167,7 +169,6 @@ class CoroutineExecutorService(
         // timeout due to cooperation.
         val timeoutMillis = unit?.toMillis(timeout) ?: 0
         if (timeoutMillis > 0) {
-          @Suppress("EXPERIMENTAL_API_USAGE")
           onTimeout(timeoutMillis) { throw TimeoutException("Timed out after $timeoutMillis") }
         }
         resultChannel.onReceive { it }

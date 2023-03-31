@@ -496,10 +496,6 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
-            APP_LANGUAGE
-          ),
-          hasExtra(
             AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
             "English"
           ),
@@ -527,10 +523,6 @@ class OptionsFragmentTest {
       ).perform(click())
       intended(
         allOf(
-          hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
-            APP_LANGUAGE
-          ),
           hasExtra(
             AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
             "English"

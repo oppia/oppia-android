@@ -8,7 +8,6 @@ import com.android.aapt.Resources.Type
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.SupportedLanguages
 import java.io.File
-import java.util.Locale
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
@@ -138,8 +137,8 @@ private class FilterPerLanguageResources {
 
   private fun LanguageSupportDefinition.toAndroidBcp47Locale(): String? {
     val androidLanguageId = appStringId.androidResourcesLanguageId
-    val language = androidLanguageId.languageCode.toLowerCase(Locale.US)
-    val region = androidLanguageId.regionCode.toUpperCase(Locale.US)
+    val language = androidLanguageId.languageCode.lowercase()
+    val region = androidLanguageId.regionCode.lowercase()
     return when {
       language.isEmpty() -> null // Unsupported.
       language == "en" -> "" // English is the default language code on Android.

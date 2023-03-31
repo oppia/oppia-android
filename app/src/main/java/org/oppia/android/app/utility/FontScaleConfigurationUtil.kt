@@ -18,6 +18,8 @@ class FontScaleConfigurationUtil @Inject constructor() {
     configuration.fontScale = getReadingTextSizeConfigurationUtil(readingTextSize)
     val metrics: DisplayMetrics = context.resources.displayMetrics
     val windowManager = context.getSystemService(WINDOW_SERVICE) as? WindowManager
+    // TODO: Add tracking issue to migrate to proper SDK 30+ APIs.
+    @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     windowManager!!.defaultDisplay.getMetrics(metrics)
     metrics.scaledDensity = configuration.fontScale * metrics.density
     context.createConfigurationContext(configuration)

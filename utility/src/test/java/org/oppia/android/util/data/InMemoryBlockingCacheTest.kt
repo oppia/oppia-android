@@ -27,6 +27,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 private const val INITIALIZED_CACHE_VALUE = "inited cache value"
 private const val CREATED_CACHE_VALUE = "created cache value"
@@ -667,7 +668,7 @@ class InMemoryBlockingCacheTest {
    * Waits for the specified deferred to execute after advancing test dispatcher. Without this
    * function, results cannot be observed from cache operations.
    */
-  @Suppress("EXPERIMENTAL_API_USAGE")
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun <T> awaitCompletion(deferred: Deferred<T>): T {
     testCoroutineDispatchers.runCurrent()
     return deferred.getCompleted()

@@ -359,6 +359,8 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
   private fun calculateScreenSize() {
     val displayMetrics = DisplayMetrics()
+    // TODO: Add tracking issue to migrate to proper SDK 30+ APIs. Same as FontScaleConfigurationUtil.
+    @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
 
     screenHeight = displayMetrics.heightPixels

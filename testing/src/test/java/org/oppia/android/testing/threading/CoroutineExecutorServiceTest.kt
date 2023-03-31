@@ -46,6 +46,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Tests for [CoroutineExecutorService]. NOTE: significant care should be taken when modifying these
@@ -65,6 +66,7 @@ import javax.inject.Singleton
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineExecutorServiceTest {
   @Rule
   @JvmField

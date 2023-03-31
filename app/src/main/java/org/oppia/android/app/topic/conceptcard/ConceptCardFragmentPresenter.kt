@@ -8,7 +8,6 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ConceptCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -27,7 +26,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   @ConceptCardHtmlParserEntityType private val entityType: String,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
+  private val conceptCardViewModel: ConceptCardViewModel,
   private val translationController: TranslationController,
   private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) : HtmlParser.CustomOppiaTagActionListener {
@@ -50,9 +49,8 @@ class ConceptCardFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     val view = binding.conceptCardExplanationText
-    val viewModel = getConceptCardViewModel()
 
-    viewModel.initialize(skillId, profileId)
+    conceptCardViewModel.initialize(skillId, profileId)
     logConceptCardEvent(skillId)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -64,11 +62,11 @@ class ConceptCardFragmentPresenter @Inject constructor(
     }
 
     binding.let {
-      it.viewModel = viewModel
+      it.viewModel = conceptCardViewModel
       it.lifecycleOwner = fragment
     }
 
-    viewModel.conceptCardLiveData.observe(
+    conceptCardViewModel.conceptCardLiveData.observe(
       fragment
     ) { ephemeralConceptCard ->
       val explanationHtml =
@@ -93,10 +91,6 @@ class ConceptCardFragmentPresenter @Inject constructor(
     }
 
     return binding.root
-  }
-
-  private fun getConceptCardViewModel(): ConceptCardViewModel {
-    return viewModelProvider.getForFragment(fragment, ConceptCardViewModel::class.java)
   }
 
   private fun logConceptCardEvent(skillId: String) {

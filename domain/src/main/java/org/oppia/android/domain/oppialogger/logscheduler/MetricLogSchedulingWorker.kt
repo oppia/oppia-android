@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -15,6 +14,7 @@ import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.guava.asListenableFuture
 
 /**
  * Worker class that generates metric log reports regarding the performance of the application
@@ -56,25 +56,15 @@ class MetricLogSchedulingWorker private constructor(
 
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
-    val result = backgroundScope.async {
+    // TODO(#3715): Add withTimeout() to avoid potential hanging.
+    return backgroundScope.async {
       when (inputData.getStringFromData(WORKER_CASE_KEY)) {
         PERIODIC_BACKGROUND_METRIC_WORKER -> schedulePeriodicBackgroundMetricLogging()
         STORAGE_USAGE_WORKER -> scheduleStorageUsageMetricLogging()
         PERIODIC_UI_METRIC_WORKER -> schedulePeriodicUiMetricLogging()
         else -> Result.failure()
       }
-    }
-
-    val future = SettableFuture.create<Result>()
-    result.invokeOnCompletion { failure ->
-      if (failure != null) {
-        future.setException(failure)
-      } else {
-        future.set(result.getCompleted())
-      }
-    }
-    // TODO(#3715): Add withTimeout() to avoid potential hanging.
-    return future
+    }.asListenableFuture()
   }
 
   private fun schedulePeriodicBackgroundMetricLogging(): Result {

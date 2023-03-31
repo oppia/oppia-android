@@ -600,10 +600,10 @@ class BindableAdapterTest {
       }
       return object : BindableAdapterTestFragmentPresenter.BindableAdapterFactory {
         override fun create(
-          singleTypeBuilder: SingleTypeBuilder.Factory,
+          singleTypeBuilderFactory: SingleTypeBuilder.Factory,
           multiTypeBuilderFactory: MultiTypeBuilder.Factory
         ): BindableAdapter<BindableAdapterTestDataModel> {
-          return createFunction(singleTypeBuilder, multiTypeBuilderFactory)
+          return createFunction(singleTypeBuilderFactory, multiTypeBuilderFactory)
         }
       }
     }

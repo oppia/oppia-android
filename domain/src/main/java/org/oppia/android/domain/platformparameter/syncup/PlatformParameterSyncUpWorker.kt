@@ -5,7 +5,6 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.base.Optional
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -22,6 +21,7 @@ import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
+import kotlinx.coroutines.guava.asListenableFuture
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
@@ -54,23 +54,13 @@ class PlatformParameterSyncUpWorker private constructor(
 
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
-    val result = backgroundScope.async {
+    // TODO(#3715): Add withTimeout() to avoid potential hanging.
+    return backgroundScope.async {
       when (inputData.getStringFromData(WORKER_TYPE_KEY)) {
         PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
         else -> Result.failure()
       }
-    }
-
-    val future = SettableFuture.create<Result>()
-    result.invokeOnCompletion { failure ->
-      if (failure != null) {
-        future.setException(failure)
-      } else {
-        future.set(result.getCompleted())
-      }
-    }
-    // TODO(#3715): Add withTimeout() to avoid potential hanging.
-    return future
+    }.asListenableFuture()
   }
 
   /**

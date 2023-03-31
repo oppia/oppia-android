@@ -23,6 +23,7 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 // TODO(#89): Audit & adjust the thread safety of this class, and determine if there's a way to move
 //  off of the internal coroutine API.
@@ -38,7 +39,7 @@ import kotlin.coroutines.CoroutineContext
  * and other functionality is delegated to [TestCoroutineDispatchers] to ensure proper thread
  * safety.
  */
-@InternalCoroutinesApi
+@OptIn(InternalCoroutinesApi::class)
 class TestCoroutineDispatcherRobolectricImpl private constructor(
   private val fakeSystemClock: FakeSystemClock,
   private val realCoroutineDispatcher: CoroutineDispatcher
@@ -169,7 +170,7 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
         }
         return@filter false
       }
-      return taskQueue.removeAll(tasksToRemove)
+      return taskQueue.removeAll(tasksToRemove.toSet())
     }
     return false
   }
@@ -309,6 +310,7 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
      * the start/ending of the continuation using the provided [incrementExecutingTaskCount] and
      * [decrementExecutingTaskCount] callbacks.
      */
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun resumeContinuation(cancellableContinuation: CancellableContinuation<Unit>) {
       incrementExecutingTaskCount()
       try {

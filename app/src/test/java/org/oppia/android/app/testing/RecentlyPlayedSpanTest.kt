@@ -284,7 +284,7 @@ class RecentlyPlayedSpanTest {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(ProfileId.newBuilder().setInternalId(profileId).build())
         .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context,
