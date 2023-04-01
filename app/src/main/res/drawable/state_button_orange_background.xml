@@ -5,5 +5,5 @@
   <corners
     android:radius="@dimen/state_previous_next_button_radius"/>
   <solid
-    android:color="@color/concept_toolbar_background"/>
+    android:color="@color/component_color_shared_replay_button_color"/>
 </shape>

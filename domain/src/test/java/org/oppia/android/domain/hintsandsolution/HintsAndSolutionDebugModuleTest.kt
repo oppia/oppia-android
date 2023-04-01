@@ -9,6 +9,7 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,6 +39,7 @@ class HintsAndSolutionDebugModuleTest {
   }
 
   @Test
+  @ObsoleteCoroutinesApi
   fun testHintHandlerFactoryInjection_providesFactoryDebugImpl() {
     assertThat(hintHandlerFactory).isInstanceOf(FactoryDebugImpl::class.java)
   }

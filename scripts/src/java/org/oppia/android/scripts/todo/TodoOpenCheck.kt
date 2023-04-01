@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.todo
 
+import com.google.protobuf.TextFormat
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -40,15 +41,18 @@ import java.io.FileInputStream
  * --json number > $(pwd)/open_issues.json
  */
 fun main(vararg args: String) {
-  // Path of the repo to be analyzed.
-  val repoPath = "${args[0]}/"
+  // The first argument is the path of the repo to be analyzed.
+  val repoRoot = File("${args[0]}/").absoluteFile.normalize()
+  val repoPath = repoRoot.path
 
   val pathToProtoBinary = args[1]
 
   // Path to the JSON file containing the list of open issues.
-  val openIssuesJsonFile = File(repoPath, args[2])
+  val openIssuesJsonFile = File(repoRoot, args[2])
 
-  check(openIssuesJsonFile.exists()) { "$repoPath${args[2]}: No such file exists" }
+  check(openIssuesJsonFile.exists()) { "${openIssuesJsonFile.path}: No such file exists" }
+
+  val regenerateFile = args.getOrNull(3).toBoolean()
 
   val todoExemptionTextProtoFilePath = "scripts/assets/todo_exemptions"
 
@@ -71,32 +75,26 @@ fun main(vararg args: String) {
   }
 
   val redundantExemptions = retrieveRedundantExemptions(
-    todos = poorlyFormattedTodos + openIssueFailureTodos,
-    todoExemptionList = todoExemptionList,
-    repoPath = repoPath
+    todos = poorlyFormattedTodos + openIssueFailureTodos, todoExemptionList, repoRoot
   )
 
-  val poorlyFormattedTodosAfterExemption = retrieveTodosAfterExemption(
-    todos = poorlyFormattedTodos,
-    todoExemptionList = todoExemptionList,
-    repoPath = repoPath
-  )
+  val poorlyFormattedTodosAfterExemption =
+    retrieveTodosAfterExemption(todos = poorlyFormattedTodos, todoExemptionList, repoRoot)
 
-  val openIssueFailureTodosAfterExemption = retrieveTodosAfterExemption(
-    todos = openIssueFailureTodos,
-    todoExemptionList = todoExemptionList,
-    repoPath = repoPath
-  )
+  val openIssueFailureTodosAfterExemption =
+    retrieveTodosAfterExemption(todos = openIssueFailureTodos, todoExemptionList, repoRoot)
 
   logRedundantExemptions(redundantExemptions, todoExemptionTextProtoFilePath)
 
   logFailures(
     invalidTodos = poorlyFormattedTodosAfterExemption,
+    repoRoot,
     failureMessage = "TODOs not in correct format:",
   )
 
   logFailures(
     invalidTodos = openIssueFailureTodosAfterExemption,
+    repoRoot,
     failureMessage = "TODOs not corresponding to open issues on GitHub:",
   )
 
@@ -114,6 +112,19 @@ fun main(vararg args: String) {
     poorlyFormattedTodosAfterExemption.isNotEmpty() ||
     openIssueFailureTodosAfterExemption.isNotEmpty()
   ) {
+    if (regenerateFile) {
+      println("Regenerated exemptions:")
+      println()
+      val allProblematicTodos = poorlyFormattedTodos + openIssueFailureTodos
+      val newExemptions = allProblematicTodos.convertToExemptions(repoRoot)
+      println(newExemptions.convertToExemptionTextProto())
+    } else {
+      println(
+        "There were failures. Re-run the command with \"true\" at the end to regenerate the" +
+          " exemption file with all failures as exempted."
+      )
+    }
+    println()
     throw Exception("TODO CHECK FAILED")
   } else {
     println("TODO CHECK PASSED")
@@ -125,18 +136,18 @@ fun main(vararg args: String) {
  *
  * @param todos the list of all the failure causing TODOs
  * @param todoExemptionList the list contating the TODO exemptions
- * @param repoPath path of the repo to be analyzed
+ * @param repoRoot the root directory of the repository
  * @return list obtained after filtering the exemptions
  */
 private fun retrieveTodosAfterExemption(
   todos: List<Todo>,
   todoExemptionList: List<TodoOpenExemption>,
-  repoPath: String
+  repoRoot: File
 ): List<Todo> {
   return todos.filter { todo ->
-    todoExemptionList.none { it ->
-      it.exemptedFilePath == todo.filePath.removePrefix(repoPath) &&
-        todo.lineNumber in it.getLineNumberList()
+    todoExemptionList.none {
+      it.exemptedFilePath == todo.file.toRelativeString(repoRoot) &&
+        todo.lineNumber in it.lineNumberList
     }
   }
 }
@@ -146,18 +157,18 @@ private fun retrieveTodosAfterExemption(
  *
  * @param todos the list of all the failure causing TODOs
  * @param todoExemptionList the list contating the TODO exemptions
- * @param repoPath path of the repo to be analyzed
+ * @param repoRoot the root directory of the repository
  * @return a list of all the redundant exemptions
  */
 private fun retrieveRedundantExemptions(
   todos: List<Todo>,
   todoExemptionList: List<TodoOpenExemption>,
-  repoPath: String
+  repoRoot: File
 ): List<Pair<String, Int>> {
   return todoExemptionList.flatMap { exemption ->
-    exemption.getLineNumberList().mapNotNull { exemptedLineNumber ->
+    exemption.lineNumberList.mapNotNull { exemptedLineNumber ->
       val isRedundantExemption = todos.none {
-        it.filePath.removePrefix(repoPath) == exemption.exemptedFilePath &&
+        it.file.toRelativeString(repoRoot) == exemption.exemptedFilePath &&
           it.lineNumber == exemptedLineNumber
       }
       if (isRedundantExemption) {
@@ -212,16 +223,33 @@ private fun logRedundantExemptions(
  * @param invalidTodos a list of all the invalid TODOs present in the repository. A TODO is
  *     considered to be invalid if it is poorly formatted or if it does not corresponds to open
  *     issues on GitHub.
+ * @param repoRoot the root directory of the repository
  * @param failureMessage the failure message to be logged
  */
-private fun logFailures(invalidTodos: List<Todo>, failureMessage: String) {
+private fun logFailures(invalidTodos: List<Todo>, repoRoot: File, failureMessage: String) {
   if (invalidTodos.isNotEmpty()) {
     println(failureMessage)
-    invalidTodos.sortedWith(compareBy({ it.filePath }, { it.lineNumber })).forEach {
-      println("- ${it.filePath}:${it.lineNumber}")
+    invalidTodos.sortedWith(compareBy({ it.file.path }, { it.lineNumber })).forEach {
+      println("- ${it.file.toRelativeString(repoRoot)}:${it.lineNumber}")
     }
     println()
   }
+}
+
+private fun List<Todo>.convertToExemptions(repoRoot: File): List<TodoOpenExemption> {
+  return groupBy { it.file.path }.map { (_, todos) ->
+    TodoOpenExemption.newBuilder().apply {
+      exemptedFilePath = todos.first().file.toRelativeString(repoRoot)
+      addAllLineNumber(todos.map { it.lineNumber }.sorted())
+    }.build()
+  }.sortedBy { it.exemptedFilePath }
+}
+
+private fun List<TodoOpenExemption>.convertToExemptionTextProto(): String {
+  val baseProto = TodoOpenExemptions.newBuilder().apply {
+    addAllTodoOpenExemption(this@convertToExemptionTextProto)
+  }.build()
+  return TextFormat.printer().printToString(baseProto)
 }
 
 /**

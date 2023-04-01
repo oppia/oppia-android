@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -58,7 +58,7 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -72,7 +72,7 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -86,7 +86,7 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -105,7 +105,7 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

@@ -1,0 +1,41 @@
+id: "test_checkpointing_exploration_missing_first_state"
+states {
+  key: "second_state"
+  value {
+    name: "second_state"
+    content {
+      html: "Click on the continue button"
+      content_id: "content"
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "end"
+        feedback {
+          html: "Feedback for continue button"
+          content_id: "feedback_0"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "end"
+  value {
+    name: "end"
+    content {
+    }
+    interaction {
+      id: "EndExploration"
+    }
+  }
+}
+init_state_name: "second_state"
+version: 2
+translatable_title {
+  html: "Exploration for checkpointing tests"
+  content_id: "title"
+}
+description {
+  content_id: "description"
+}

@@ -14,7 +14,8 @@
     android:layout_width="144dp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="4dp"
-    app:layoutMarginEnd="@{viewModel.endMargin}">
+    app:layoutMarginEnd="@{viewModel.endMargin}"
+    app:cardBackgroundColor="@android:color/transparent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -57,7 +58,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/topic_title_background"
+        android:background="@color/component_color_shared_secondary_container_background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +76,7 @@
           android:gravity="top"
           android:maxLines="2"
           android:minLines="2"
-          android:text="@{viewModel.name}"
+          android:text="@{viewModel.topicTitle}"
           android:textColor="@color/color_def_white"
           android:textSize="14sp"
           android:textStyle="bold"

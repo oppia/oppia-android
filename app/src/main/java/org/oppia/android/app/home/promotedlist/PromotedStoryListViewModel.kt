@@ -9,6 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.PromotedActivityList
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import java.util.Objects
 
@@ -49,6 +50,26 @@ class PromotedStoryListViewModel(
     }
   }
 
+  private fun getRecentlyPlayedActivityTitle(): RecentlyPlayedActivityTitle {
+    with(promotedActivityList.promotedStoryList) {
+      return when {
+        suggestedStoryList.isNotEmpty() -> {
+          if (recentlyPlayedStoryList.isEmpty() && olderPlayedStoryList.isEmpty()) {
+            RecentlyPlayedActivityTitle.RECOMMENDED_STORIES
+          } else {
+            RecentlyPlayedActivityTitle.STORIES_FOR_YOU
+          }
+        }
+        recentlyPlayedStoryList.isNotEmpty() -> {
+          RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+        }
+        else -> {
+          RecentlyPlayedActivityTitle.LAST_PLAYED_STORIES
+        }
+      }
+    }
+  }
+
   /** Returns the visibility for the "View All" button. */
   fun getViewAllButtonVisibility(): Int {
     if (activity.resources.getBoolean(R.bool.isTablet)) {
@@ -72,7 +93,7 @@ class PromotedStoryListViewModel(
   }
 
   fun clickOnViewAll() {
-    routeToRecentlyPlayedListener.routeToRecentlyPlayed()
+    routeToRecentlyPlayedListener.routeToRecentlyPlayed(getRecentlyPlayedActivityTitle())
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel

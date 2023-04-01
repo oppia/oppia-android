@@ -12,7 +12,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/color_palette_tertiary_background_color">
 
     <FrameLayout
       android:layout_width="0dp"
@@ -26,7 +26,6 @@
         android:id="@+id/profile_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/profile_edit_background"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="40dp"

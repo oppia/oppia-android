@@ -84,7 +84,7 @@ class PlatformParameterController @Inject constructor(
     deferred: Deferred<PlatformParameterCachingStatus>
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
-      PlatformParameterCachingStatus.SUCCESS -> AsyncResult.success(null)
+      PlatformParameterCachingStatus.SUCCESS -> AsyncResult.Success(null)
     }
   }
 

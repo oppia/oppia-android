@@ -32,10 +32,4 @@ interface IntentFactoryShim {
     internalProfileId: Int,
     topicId: String
   ): Intent
-
-  /**
-   * Creates a [RecentlyPlayedActivity] intent for [PromotedStoryListViewModel] and passes
-   * necessary string data.
-   * */
-  fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent
 }

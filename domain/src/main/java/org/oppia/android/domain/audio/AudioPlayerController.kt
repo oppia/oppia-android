@@ -12,6 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
@@ -35,12 +36,13 @@ class AudioPlayerController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
   private val exceptionsController: ExceptionsController,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
 
   inner class AudioMutableLiveData :
-    MutableLiveData<AsyncResult<PlayProgress>>(AsyncResult.pending()) {
+    MutableLiveData<AsyncResult<PlayProgress>>(AsyncResult.Pending()) {
     override fun onActive() {
       super.onActive()
       audioLock.withLock {
@@ -88,6 +90,8 @@ class AudioPlayerController @Inject constructor(
   private var isReleased = false
   private var duration = 0
   private var completed = false
+  private var currentContentId: String? = null
+  private var currentLanguageCode: String? = null
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
@@ -114,9 +118,11 @@ class AudioPlayerController @Inject constructor(
    * Changes audio source to specified.
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
-  fun changeDataSource(url: String) {
+  fun changeDataSource(url: String, contentId: String?, languageCode: String) {
     audioLock.withLock {
       prepared = false
+      currentContentId = contentId
+      currentLanguageCode = languageCode
       stopUpdatingSeekBar()
       mediaPlayer.reset()
       prepareDataSource(url)
@@ -128,17 +134,17 @@ class AudioPlayerController @Inject constructor(
       completed = true
       stopUpdatingSeekBar()
       playProgress?.value =
-        AsyncResult.success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
+        AsyncResult.Success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
     }
     mediaPlayer.setOnPreparedListener {
       prepared = true
       duration = it.duration
       playProgress?.value =
-        AsyncResult.success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+        AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
     }
     mediaPlayer.setOnErrorListener { _, what, extra ->
       playProgress?.value =
-        AsyncResult.failed(
+        AsyncResult.Failure(
           AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
         )
       releaseMediaPlayer()
@@ -186,37 +192,57 @@ class AudioPlayerController @Inject constructor(
       exceptionsController.logNonFatalException(e)
       oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
-    playProgress?.value = AsyncResult.pending()
+    playProgress?.value = AsyncResult.Pending()
   }
 
   /**
    * Puts MediaPlayer in started state and begins sending seek bar updates.
    * Controller must already have audio prepared.
    */
-  fun play() {
+  fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (!mediaPlayer.isPlaying) {
         mediaPlayer.start()
         scheduleNextSeekBarUpdate()
+
+        // Log an auto play only if it's the one that initiates playing audio (since it more or less
+        // corresponds to manually clicking the 'play' button). Note this will not log any play
+        // events after the state completes (since there'll no longer be a state logger).
+        if (!isPlayingFromAutoPlay || !reloadingMainContent) {
+          val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
+          val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
+          stateLogger?.logPlayVoiceOver(currentContentId, currentLanguageCode)
+        }
       }
     }
   }
 
   /**
    * Puts MediaPlayer in paused state and stops sending seek bar updates.
-   * Controller must already have audio prepared.
+   *
+   * The controller must already have audio prepared.
+   *
+   * @param isFromExplicitUserAction indicates whether this pause is from an explicit user action
+   *     (like clicking a pause button) vs. an incidental one (like an autoplay transition or
+   *     closing the audio bar)
    */
-  fun pause() {
+  fun pause(isFromExplicitUserAction: Boolean) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (mediaPlayer.isPlaying) {
         playProgress?.value =
-          AsyncResult.success(
+          AsyncResult.Success(
             PlayProgress(PlayStatus.PAUSED, mediaPlayer.currentPosition, duration)
           )
         mediaPlayer.pause()
         stopUpdatingSeekBar()
+
+        if (isFromExplicitUserAction) {
+          val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
+          val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
+          stateLogger?.logPauseVoiceOver(currentContentId, currentLanguageCode)
+        }
       }
     }
   }
@@ -239,7 +265,7 @@ class AudioPlayerController @Inject constructor(
         val position = if (completed) 0 else mediaPlayer.currentPosition
         completed = false
         playProgress?.postValue(
-          AsyncResult.success(
+          AsyncResult.Success(
             PlayProgress(PlayStatus.PLAYING, position, mediaPlayer.duration)
           )
         )

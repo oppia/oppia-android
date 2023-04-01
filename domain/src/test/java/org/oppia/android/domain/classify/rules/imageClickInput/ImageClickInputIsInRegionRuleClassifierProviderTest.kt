@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.Point2d
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -51,7 +51,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -65,7 +65,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -79,7 +79,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -93,7 +93,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -112,7 +112,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

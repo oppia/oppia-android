@@ -58,7 +58,6 @@
   <dimen name="drag_drop_item_exploration_view_margin_start">144dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_start">144dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_start">144dp</dimen>
-  <dimen name="profile_chooser_fragment_margin_top_profile_not_added">124dp</dimen>
 
   <dimen name="continue_interaction_item_exploration_view_margin_end">112dp</dimen>
   <dimen name="continue_interaction_item_exploration_view_margin_start">112dp</dimen>
@@ -67,7 +66,6 @@
   <dimen name="drag_drop_item_exploration_view_margin_end">112dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_end">112dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_end">112dp</dimen>
-  <dimen name="profile_chooser_margin_top_profile_not_added">84dp</dimen>
 
   <dimen name="drag_drop_item_exploration_split_view_margin_top">40dp</dimen>
   <dimen name="drag_drop_item_question_split_view_margin_top">40dp</dimen>
@@ -301,7 +299,7 @@
   <!-- Topic Practice Footer View -->
   <dimen name="topic_practice_footer_view_margin_top">24dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">0dp</dimen>
-  
+
   <!-- App Version -->
   <dimen name="app_version_text_view_padding_start">16dp</dimen>
   <dimen name="app_version_text_view_padding_end">16dp</dimen>
@@ -320,13 +318,35 @@
   <dimen name="completed_story_list_fragment_recyclerview_padding_end">96dp</dimen>
   <dimen name="completed_story_list_fragment_recyclerview_padding_bottom">112dp</dimen>
 
-  <!-- Pin Password -->
-  <dimen name="pin_password_text_input_layout_width">304dp</dimen>
-  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
-  <dimen name="pin_password_margin_start">204dp</dimen>
-  <dimen name="pin_password_margin_end">204dp</dimen>
-  <dimen name="pin_password_padding_top">48dp</dimen>
-  <dimen name="pin_password_min_width">360dp</dimen>
+  <!-- AdminAuthActivity -->
+  <dimen name="admin_auth_activity_layout_width">360dp</dimen>
+  <dimen name="admin_auth_activity_margin_start">0dp</dimen>
+  <dimen name="admin_auth_activity_margin_end">0dp</dimen>
+  <dimen name="admin_auth_activity_admin_pin_main_text_view_margin_start">0dp</dimen>
+  <dimen name="admin_auth_activity_admin_pin_main_text_view_margin_end">0dp</dimen>
+  <dimen name="admin_auth_activity_padding_top">48dp</dimen>
+  <dimen name="admin_auth_activity_padding_bottom">96dp</dimen>
+  <dimen name="admin_auth_activity_input_width">0dp</dimen>
+
+  <!-- AdminPinActivity -->
+  <dimen name="admin_pin_activity_layout_width">360dp</dimen>
+  <dimen name="admin_pin_activity_margin_start">0dp</dimen>
+  <dimen name="admin_pin_activity_margin_end">0dp</dimen>
+  <dimen name="admin_pin_activity_admin_pin_main_text_view_margin_start">0dp</dimen>
+  <dimen name="admin_pin_activity_admin_pin_main_text_view_margin_end">0dp</dimen>
+  <dimen name="admin_pin_activity_padding_top">48dp</dimen>
+  <dimen name="admin_pin_activity_padding_bottom">96dp</dimen>
+  <dimen name="admin_pin_activity_input_width">0dp</dimen>
+
+  <!-- PinPasswordActivity -->
+  <dimen name="pin_password_activity_layout_width">360dp</dimen>
+  <dimen name="pin_password_activity_margin_start">0dp</dimen>
+  <dimen name="pin_password_activity_margin_end">0dp</dimen>
+  <dimen name="pin_password_activity_padding_top">48dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_start">0dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_end">0dp</dimen>
+  <!-- -1px is equivalent to match_parent (https://stackoverflow.com/a/37971851/12314934) -->
+  <dimen name="pin_password_activity_input_with_icon_width">-1px</dimen>
 
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">360dp</dimen>
@@ -370,11 +390,25 @@
   <dimen name="ongoing_topic_list_fragment_padding_end">96dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_bottom">112dp</dimen>
 
+  <!-- Ongoing Topic Item -->
+  <dimen name="ongoing_topic_item_container_margin_start">24dp</dimen>
+  <dimen name="ongoing_topic_item_container_margin_top">36dp</dimen>
+  <dimen name="ongoing_topic_item_container_margin_end">24dp</dimen>
+  <dimen name="ongoing_topic_item_container_margin_bottom">0dp</dimen>
+  <dimen name="ongoing_topic_item_topic_name_text_view_margin_start">8dp</dimen>
+  <dimen name="ongoing_topic_item_topic_name_text_view_margin_end">8dp</dimen>
+
   <!-- TopicRevisionFragment -->
   <dimen name="topic_revision_fragment_padding_start">96dp</dimen>
   <dimen name="topic_revision_fragment_padding_top">8dp</dimen>
   <dimen name="topic_revision_fragment_padding_end">96dp</dimen>
   <dimen name="topic_revision_fragment_padding_bottom">112dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_start">24dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_top">24dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_end">24dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_bottom">0dp</dimen>
+  <dimen name="topic_revision_summary_view_subtopic_title_text_view_padding_start">8dp</dimen>
+  <dimen name="topic_revision_summary_view_subtopic_title_text_view_padding_end">8dp</dimen>
 
   <!-- Solution Summary -->
   <dimen name="solution_summary_margin_top_linear_layout_first">0dp</dimen>
@@ -431,7 +465,10 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">0dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>
-  
+  <dimen name="hints_and_solution_summary_card_width">0dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_start">128dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_end">128dp</dimen>
+
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
@@ -441,4 +478,37 @@
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">4dp</dimen>
+
+  <!-- TopicLessonsSummary -->
+  <dimen name="topic_lessons_summary_linear_layout_margin_start">12dp</dimen>
+  <dimen name="topic_lessons_summary_linear_layout_margin_end">12dp</dimen>
+  <dimen name="topic_lessons_summary_story_name_chapter_count_container_margin_start">12dp</dimen>
+
+  <!-- TopicPracticeHeader -->
+  <dimen name="topic_practice_header_parent_constraint_layout_margin_top">32dp</dimen>
+  <dimen name="topic_practice_header_parent_constraint_layout_padding_bottom">20dp</dimen>
+  <dimen name="topic_practice_header_child_constraint_layout_margin_start">0dp</dimen>
+  <dimen name="topic_practice_header_child_constraint_layout_margin_end">0dp</dimen>
+  <dimen name="master_skills_text_view_margin_end">0dp</dimen>
+  <dimen name="topic_practice_header_child_constraint_layout_width">360dp</dimen>
+
+  <!-- OptionAudioLanguage -->
+  <dimen name="option_audio_language_padding_start">16dp</dimen>
+  <dimen name="option_audio_language_padding_end">16dp</dimen>
+
+  <!-- OptionsStoryTextSize -->
+  <dimen name="option_story_text_size_padding_start">16dp</dimen>
+  <dimen name="option_story_text_size_padding_end">16dp</dimen>
+
+  <!-- TopicFragment -->
+  <dimen name="topic_fragment_tab_layout_margin_start">64dp</dimen>
+  <dimen name="topic_fragment_tab_layout_margin_end">64dp</dimen>
+  <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
+
+  <!-- ProfileChooserFragment -->
+  <dimen name="profile_chooser_profile_select_text_margin_start">64dp</dimen>
+  <dimen name="profile_chooser_margin_top_profile_already_added">24dp</dimen>
+  <dimen name="profile_chooser_margin_top_profile_not_added">124dp</dimen>
+  <dimen name="profile_chooser_administrator_controls_margin_bottom">32dp</dimen>
+  <dimen name="profile_chooser_setting_icon_margin_end">64dp</dimen>
 </resources>

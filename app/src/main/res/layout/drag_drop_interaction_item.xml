@@ -64,7 +64,7 @@
       app:allowMultipleItemsInSamePosition="@{viewModel.getGroupingStatus()}"
       app:entityId="@{viewModel.entityId}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      app:list="@{viewModel.choiceItems}"
+      app:draggableData="@{viewModel.choiceItems}"
       app:onDragEnded="@{(adapter) -> viewModel.onDragEnded(adapter)}"
       app:onItemDrag="@{(indexFrom, indexTo, adapter) -> viewModel.onItemDragged(indexFrom, indexTo, adapter)}" />
   </LinearLayout>

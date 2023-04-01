@@ -4,39 +4,54 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.topic.TopicFragment
+import org.oppia.android.app.utility.SplitScreenManager
 import javax.inject.Inject
 
 /** The activity for testing [TopicFragment]. */
 class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
   @Inject
-  lateinit var explorationTestActivityPresenter: ExplorationTestActivityPresenter
+  lateinit var presenter: ExplorationTestActivityPresenter
+
+  /**
+   * Exposes the [SplitScreenManager] corresponding to the fragment under test for tests to interact
+   * with.
+   */
+  val splitScreenManager: SplitScreenManager
+    get() = getTestFragment().splitScreenManager
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    explorationTestActivityPresenter.handleOnCreate()
+    presenter.handleOnCreate()
   }
 
   override fun routeToExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
-        backflowScreen,
+        parentScreen,
         isCheckpointingEnabled
       )
     )
+  }
+
+  private fun getTestFragment() = checkNotNull(presenter.getTestFragment()) {
+    "Expected TestFragment to be present in inflated test activity. Did you try to retrieve the" +
+      " screen manager too early in the test?"
   }
 }

@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
@@ -53,6 +54,7 @@ private typealias TimeoutBlock<T> = suspend CoroutineScope.() -> T
  * allow cooperation with Oppia's test coroutine dispatchers utility (which is the purpose of this
  * class).
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineExecutorService(
   private val backgroundDispatcher: CoroutineDispatcher
 ) : ExecutorService {
@@ -167,7 +169,6 @@ class CoroutineExecutorService(
         // timeout due to cooperation.
         val timeoutMillis = unit?.toMillis(timeout) ?: 0
         if (timeoutMillis > 0) {
-          @Suppress("EXPERIMENTAL_API_USAGE")
           onTimeout(timeoutMillis) { throw TimeoutException("Timed out after $timeoutMillis") }
         }
         resultChannel.onReceive { it }

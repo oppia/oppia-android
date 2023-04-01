@@ -1,0 +1,31 @@
+region_definitions {
+  region: BRAZIL
+  region_id {
+    ietf_region_tag: "BR"
+  }
+  languages: PORTUGUESE
+  languages: BRAZILIAN_PORTUGUESE
+}
+region_definitions {
+  region: INDIA
+  region_id {
+    ietf_region_tag: "IN"
+  }
+  languages: HINDI
+  languages: HINGLISH
+}
+region_definitions {
+  region: UNITED_STATES
+  region_id {
+    ietf_region_tag: "US"
+  }
+  languages: ENGLISH
+}
+region_definitions {
+  region: KENYA
+  region_id {
+    ietf_region_tag: "KE"
+  }
+  languages: ENGLISH
+  languages: SWAHILI
+}

@@ -56,43 +56,52 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -118,11 +127,14 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -164,6 +176,9 @@ class StoryFragmentTest {
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var accessibilityService: FakeAccessibilityService
 
   @Captor
   lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
@@ -434,9 +449,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "Learning about oppia app in First Story. It is very long " +
-              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
-              "There is no second story to follow-up, but there is a second chapter."
+            "This is the outline/summary for the first exploration of the story. It is very long" +
+              " but it has to be fully visible. You wil be learning about Oppia interactions." +
+              " There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
@@ -462,9 +477,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "Learning about oppia app in First Story. It is very long " +
-              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
-              "There is no second story to follow-up, but there is a second chapter."
+            "This is the outline/summary for the first exploration of the story. It is very long" +
+              " but it has to be fully visible. You wil be learning about Oppia interactions." +
+              " There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
@@ -486,7 +501,7 @@ class StoryFragmentTest {
           position = 2,
           targetViewId = R.id.chapter_thumbnail
         )
-      ).check { view, noViewFoundException ->
+      ).check { view, _ ->
         var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
           R.id.chapter_thumbnail
         )
@@ -543,6 +558,52 @@ class StoryFragmentTest {
         matches(
           withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
         )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_checkClickableSpanWithoutScreenReader_isClickable() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      accessibilityService.setScreenReaderEnabled(false)
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
+        )
+      ).check(
+        matches(hasClickableSpanWithText("Chapter 1: What is a Fraction?"))
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_checkClickableSpanWithScreenReader_isNotClickable() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      accessibilityService.setScreenReaderEnabled(true)
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
+        )
+      ).check(
+        matches(not(hasClickableSpanWithText("Chapter 1: What is a Fraction?")))
       )
     }
   }
@@ -885,18 +946,26 @@ class StoryFragmentTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(storyFragmentTest: StoryFragmentTest)
   }

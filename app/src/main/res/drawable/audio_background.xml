@@ -4,5 +4,5 @@
   <corners
     android:bottomLeftRadius="@dimen/audio_fragment_corner_radius"
     android:bottomRightRadius="@dimen/audio_fragment_corner_radius" />
-  <solid android:color="@color/audio_component_background" />
+  <solid android:color="@color/component_color_audio_fragment_background_color" />
 </shape>

@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName.PIN_PASSWORD_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 const val PIN_PASSWORD_PROFILE_ID_EXTRA_KEY = "PinPasswordActivity.pin_password_profile_id"
@@ -21,10 +23,11 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
       adminPin: String,
       profileId: Int
     ): Intent {
-      val intent = Intent(context, PinPasswordActivity::class.java)
-      intent.putExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, profileId)
-      intent.putExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY, adminPin)
-      return intent
+      return Intent(context, PinPasswordActivity::class.java).apply {
+        putExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, profileId)
+        putExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY, adminPin)
+        decorateWithScreenName(PIN_PASSWORD_ACTIVITY)
+      }
     }
   }
 
@@ -44,6 +47,6 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
 
   override fun onDestroy() {
     super.onDestroy()
-    pinPasswordActivityPresenter.dismissAlertDialog()
+    pinPasswordActivityPresenter.handleOnDestroy()
   }
 }

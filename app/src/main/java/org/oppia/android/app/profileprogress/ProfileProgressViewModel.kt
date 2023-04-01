@@ -20,6 +20,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
@@ -36,7 +37,8 @@ class ProfileProgressViewModel @Inject constructor(
   private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
   @StoryHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -74,14 +76,14 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileProgressFragment",
-        "Failed to retrieve profile",
-        profileResult.getErrorOrNull()!!
-      )
+    return when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("ProfileProgressFragment", "Failed to retrieve profile", profileResult.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
     }
-    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private val promotedActivityListResultLiveData:
@@ -113,16 +115,20 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private fun processPromotedActivityListResult(
-    promotedActivityListtResult: AsyncResult<PromotedActivityList>
+    promotedActivityListResult: AsyncResult<PromotedActivityList>
   ): PromotedActivityList {
-    if (promotedActivityListtResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileProgressFragment",
-        "Failed to retrieve promoted story list: ",
-        promotedActivityListtResult.getErrorOrNull()!!
-      )
+    return when (promotedActivityListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileProgressFragment",
+          "Failed to retrieve promoted story list: ",
+          promotedActivityListResult.error
+        )
+        PromotedActivityList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> PromotedActivityList.getDefaultInstance()
+      is AsyncResult.Success -> promotedActivityListResult.value
     }
-    return promotedActivityListtResult.getOrDefault(PromotedActivityList.getDefaultInstance())
   }
 
   private fun processPromotedActivityList(
@@ -142,7 +148,13 @@ class ProfileProgressViewModel @Inject constructor(
       itemViewModelList.addAll(
         itemList.map { story ->
           RecentlyPlayedStorySummaryViewModel(
-            activity, internalProfileId, story, entityType, intentFactoryShim, resourceHandler
+            activity,
+            internalProfileId,
+            story,
+            entityType,
+            intentFactoryShim,
+            resourceHandler,
+            translationController
           )
         }
       )
@@ -169,14 +181,18 @@ class ProfileProgressViewModel @Inject constructor(
   private fun processGetCompletedStoryListResult(
     completedStoryListResult: AsyncResult<CompletedStoryList>
   ): CompletedStoryList {
-    if (completedStoryListResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileProgressFragment",
-        "Failed to retrieve completed story list",
-        completedStoryListResult.getErrorOrNull()!!
-      )
+    return when (completedStoryListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileProgressFragment",
+          "Failed to retrieve completed story list",
+          completedStoryListResult.error
+        )
+        CompletedStoryList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> CompletedStoryList.getDefaultInstance()
+      is AsyncResult.Success -> completedStoryListResult.value
     }
-    return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
   }
 
   private fun subscribeToOngoingTopicListLiveData() {
@@ -198,13 +214,17 @@ class ProfileProgressViewModel @Inject constructor(
   private fun processGetOngoingTopicListResult(
     ongoingTopicListResult: AsyncResult<OngoingTopicList>
   ): OngoingTopicList {
-    if (ongoingTopicListResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileProgressFragment",
-        "Failed to retrieve ongoing topic list",
-        ongoingTopicListResult.getErrorOrNull()!!
-      )
+    return when (ongoingTopicListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileProgressFragment",
+          "Failed to retrieve ongoing topic list",
+          ongoingTopicListResult.error
+        )
+        OngoingTopicList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> OngoingTopicList.getDefaultInstance()
+      is AsyncResult.Success -> ongoingTopicListResult.value
     }
-    return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
   }
 }

@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName.WALKTHROUGH_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
@@ -36,9 +38,10 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
       "WalkthroughActivity.internal_profile_id"
 
     fun createWalkthroughActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val intent = Intent(context, WalkthroughActivity::class.java)
-      intent.putExtra(WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
-      return intent
+      return Intent(context, WalkthroughActivity::class.java).apply {
+        putExtra(WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
+        decorateWithScreenName(WALKTHROUGH_ACTIVITY)
+      }
     }
   }
 }

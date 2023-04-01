@@ -3,7 +3,6 @@ package org.oppia.android.domain.topic
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.SystemClock
@@ -73,7 +72,7 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
  */
 @Singleton
 class PrimeTopicAssetsControllerImpl @Inject constructor(
-  private val context: Context,
+  private val application: Application,
   private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
   private val topicController: TopicController,
@@ -100,7 +99,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   // dispatcher-intensive operation and using the shared background dispatcher ends up blocking the
   // app UI, potentially in a breaking way.
   private val extraDispatcher = Executors.newFixedThreadPool(
-    /* nThreads= */ 4
+    /* nThreads = */ 4
   ).asCoroutineDispatcher()
 
   // NOTE TO DEVELOPERS: Never do this. We should never hold activity references in singleton
@@ -197,7 +196,6 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
 
   private fun prepareUiForDownloadStatusChanges(dialogStyleResId: Int) {
     // Reference: https://stackoverflow.com/a/37713320.
-    val application = context.applicationContext as Application
     application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
       override fun onActivityPaused(activity: Activity) {}
       override fun onActivityResumed(activity: Activity) {}
@@ -207,18 +205,15 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       override fun onActivityStopped(activity: Activity) {}
       override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (!dialogDismissed.get()) {
-          activity?.let {
+          activity.let {
             val appCompatActivity = it as AppCompatActivity
-            primeDownloadStatus.observe(
-              appCompatActivity,
-              Observer<PrimeAssetsStatus> { primeAssetsStatus ->
-                primeAssetsStatus?.let { status ->
-                  if (status.totalDownloadCount > 0 && !dialogShown.get()) {
-                    showProgressDialog(appCompatActivity, dialogStyleResId)
-                  }
+            primeDownloadStatus.observe(appCompatActivity) { primeAssetsStatus ->
+              primeAssetsStatus?.let { status ->
+                if (status.totalDownloadCount > 0 && !dialogShown.get()) {
+                  showProgressDialog(appCompatActivity, dialogStyleResId)
                 }
               }
-            )
+            }
           }
         }
       }
@@ -238,16 +233,16 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics
     ).toInt()
     (textView.layoutParams as LinearLayout.LayoutParams).setMargins(
-      /* left= */ marginPx, /* top= */ marginPx, /* right= */ marginPx, /* bottom= */ marginPx
+      /* left = */ marginPx, /* top = */ marginPx, /* right = */ marginPx, /* bottom = */ marginPx
     )
     textView.textSize = 14f
     textView.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
     val progressBar = ProgressBar(
-      activity, /* attrs= */ null, android.R.attr.progressBarStyleHorizontal
+      activity, /* attrs = */ null, android.R.attr.progressBarStyleHorizontal
     )
     layout.addView(progressBar)
     (progressBar.layoutParams as LinearLayout.LayoutParams).setMargins(
-      /* left= */ marginPx, /* top= */ 0, /* right= */ marginPx, /* bottom= */ 0
+      /* left = */ marginPx, /* top = */ 0, /* right = */ marginPx, /* bottom = */ 0
     )
     val dialog = AlertDialog.Builder(activity, dialogStyleResId)
       .setView(layout)
@@ -279,12 +274,12 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   }
 
   private fun loadTopics(topicIds: Collection<String>): Collection<Topic> {
-    return topicIds.map(topicController::retrieveTopic)
+    // Ignore topics no longer on the device.
+    return topicIds.mapNotNull(topicController::retrieveTopic)
   }
 
-  private fun loadExplorations(explorationIds: Collection<String>): Collection<Exploration> {
-    return explorationIds.map(explorationRetriever::loadExploration)
-  }
+  private suspend fun loadExplorations(explorationIds: Collection<String>) =
+    explorationIds.map { explorationRetriever.loadExploration(it) }
 
   private fun loadQuestions(skillIds: Collection<String>): Collection<Question> {
     return questionRetriever.loadQuestions(skillIds.toList())

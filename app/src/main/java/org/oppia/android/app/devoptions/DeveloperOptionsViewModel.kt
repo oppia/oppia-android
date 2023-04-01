@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsItemViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsModifyLessonProgressViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel
+import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsTestParsersViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
@@ -28,6 +29,8 @@ class DeveloperOptionsViewModel @Inject constructor(
     activity as RouteToMarkTopicsCompletedListener
   private val routeToViewEventLogsListener = activity as RouteToViewEventLogsListener
   private val routeToForceNetworkTypeListener = activity as RouteToForceNetworkTypeListener
+  private val routeToMathExpressionParserTestListener =
+    activity as RouteToMathExpressionParserTestListener
 
   /**
    * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
@@ -49,7 +52,8 @@ class DeveloperOptionsViewModel @Inject constructor(
         forceCrashButtonClickListener,
         routeToForceNetworkTypeListener,
         showAllHintsAndSolutionController
-      )
+      ),
+      DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener)
     )
   }
 }

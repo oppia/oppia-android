@@ -86,6 +86,18 @@ class TestNoOpAssetRepositoryTest {
   }
 
   @Test
+  fun testMaybeLoadProtoFromLocalAssets_returnsDefaultProto() {
+    val testMessage = TestMessage.newBuilder().apply {
+      intValue = 12
+    }.build()
+
+    val result = assetRepository.maybeLoadProtoFromLocalAssets("test", testMessage)
+
+    // The load is always failing (since the implementation no-ops), so null is returned.
+    assertThat(result).isNull()
+  }
+
+  @Test
   fun testGetLocalAssetProtoSize_returnsNegativeOne() {
     val size = assetRepository.getLocalAssetProtoSize("test")
 

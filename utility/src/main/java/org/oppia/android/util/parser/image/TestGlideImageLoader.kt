@@ -2,6 +2,8 @@ package org.oppia.android.util.parser.image
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import androidx.annotation.DrawableRes
+import org.oppia.android.util.parser.math.MathModel
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,9 +17,11 @@ import javax.inject.Singleton
 class TestGlideImageLoader @Inject constructor(
   private val glideImageLoader: GlideImageLoader
 ) : ImageLoader {
+  private val availableBitmaps = mutableMapOf<String, Int>()
   private val loadedBitmaps = mutableListOf<String>()
   private val loadedBlockSvgs = mutableListOf<String>()
   private val loadedTextSvgs = mutableListOf<String>()
+  private val loadedMathDrawables = mutableListOf<MathModel>()
 
   override fun loadBitmap(
     imageUrl: String,
@@ -25,7 +29,13 @@ class TestGlideImageLoader @Inject constructor(
     transformations: List<ImageTransformation>
   ) {
     loadedBitmaps += imageUrl
-    glideImageLoader.loadBitmap(imageUrl, target, transformations)
+    val filename = imageUrl.substringAfterLast('/')
+    if (filename in availableBitmaps) {
+      check(target is ImageViewTarget) {
+        "Only ImageViewTarget-type loads are supported to be overwritten in TestGlideImageLoader."
+      }
+      target.imageView.setImageResource(availableBitmaps.getValue(filename))
+    } else glideImageLoader.loadBitmap(imageUrl, target, transformations)
   }
 
   override fun loadBlockSvg(
@@ -62,6 +72,30 @@ class TestGlideImageLoader @Inject constructor(
     }
   }
 
+  override fun loadMathDrawable(
+    rawLatex: String,
+    lineHeight: Float,
+    useInlineRendering: Boolean,
+    target: ImageTarget<Bitmap>
+  ) {
+    loadedMathDrawables += MathModel(rawLatex, lineHeight, useInlineRendering)
+    glideImageLoader.loadMathDrawable(rawLatex, lineHeight, useInlineRendering, target)
+  }
+
+  /**
+   * Sets a test bitmap to load when [loadBitmap] is called, based on a specified filename.
+   *
+   * The image loaded will correspond to [imageDrawableResId] instead of being loaded from the
+   * requested image URL.
+   *
+   * Subsequent calls to this method will override any previous arrangements. Multiple filenames may
+   * point to the same drawable IDs. Referenced drawables do not actually need to be bitmaps (they
+   * can be any types of drawable).
+   */
+  fun arrangeBitmap(filename: String, @DrawableRes imageDrawableResId: Int) {
+    availableBitmaps[filename] = imageDrawableResId
+  }
+
   /**
    * Returns the list of image URLs that have been loaded as bitmaps since the start of the
    * application.
@@ -79,4 +113,7 @@ class TestGlideImageLoader @Inject constructor(
    * start of the application.
    */
   fun getLoadedTextSvgs(): List<String> = loadedTextSvgs
+
+  /** Returns the list of renderable math LaTeX [MathModel]s that have been loaded as drawables. */
+  fun getLoadedMathDrawables(): List<MathModel> = loadedMathDrawables
 }

@@ -8,14 +8,14 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
-import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.RevisionCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
@@ -23,12 +23,13 @@ import javax.inject.Inject
 class RevisionCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock,
+  private val analyticsController: AnalyticsController,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
-  private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  private val revisionCardViewModelFactory: RevisionCardViewModel.Factory
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: ProfileId
 
@@ -37,7 +38,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     topicId: String,
     subtopicId: Int,
-    profileId: ProfileId
+    profileId: ProfileId,
+    subtopicListSize: Int
   ): View? {
     this.profileId = profileId
 
@@ -48,9 +50,13 @@ class RevisionCardFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
     val view = binding.revisionCardExplanationText
-    val viewModel = getReviewCardViewModel()
+    val viewModel = revisionCardViewModelFactory.create(
+      topicId,
+      subtopicId,
+      profileId,
+      subtopicListSize
+    )
 
-    viewModel.initialize(topicId, subtopicId, profileId)
     logRevisionCardEvent(topicId, subtopicId)
 
     binding.let {
@@ -59,21 +65,21 @@ class RevisionCardFragmentPresenter @Inject constructor(
     }
 
     viewModel.revisionCardLiveData.observe(
-      fragment,
-      { ephemeralRevisionCard ->
-        val pageContentsHtml =
-          translationController.extractString(
-            ephemeralRevisionCard.revisionCard.pageContents,
-            ephemeralRevisionCard.writtenTranslationContext
-          )
-        view.text = htmlParserFactory.create(
-          resourceBucketName, entityType, topicId, imageCenterAlign = true,
-          customOppiaTagActionListener = this
-        ).parseOppiaHtml(
-          pageContentsHtml, view, supportsLinks = true, supportsConceptCards = true
+      fragment
+    ) { ephemeralRevisionCard ->
+      val pageContentsHtml =
+        translationController.extractString(
+          ephemeralRevisionCard.revisionCard.pageContents,
+          ephemeralRevisionCard.writtenTranslationContext
         )
-      }
-    )
+      view.text = htmlParserFactory.create(
+        resourceBucketName, entityType, topicId, imageCenterAlign = true,
+        customOppiaTagActionListener = this,
+        displayLocale = appLanguageResourceHandler.getDisplayLocale()
+      ).parseOppiaHtml(
+        pageContentsHtml, view, supportsLinks = true, supportsConceptCards = true
+      )
+    }
 
     return binding.root
   }
@@ -87,14 +93,10 @@ class RevisionCardFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun getReviewCardViewModel(): RevisionCardViewModel {
-    return viewModelProvider.getForFragment(fragment, RevisionCardViewModel::class.java)
-  }
-
   private fun logRevisionCardEvent(topicId: String, subTopicId: Int) {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(),
-      oppiaLogger.createOpenRevisionCardContext(topicId, subTopicId)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenRevisionCardContext(topicId, subTopicId),
+      profileId
     )
   }
 

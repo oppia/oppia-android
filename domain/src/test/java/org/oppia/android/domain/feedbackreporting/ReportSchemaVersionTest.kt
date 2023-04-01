@@ -18,9 +18,14 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingDeviceConte
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingEntryPoint
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemContext
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -167,7 +172,10 @@ class ReportSchemaVersionTest {
   @Component(
     modules = [
       TestModule::class, FeedbackReportingModule::class, TestDispatcherModule::class,
-      TestLogReportingModule::class, RobolectricModule::class
+      TestLogReportingModule::class, RobolectricModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent {

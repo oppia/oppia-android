@@ -13,9 +13,9 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ResetPinDialogBinding
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
@@ -25,13 +25,9 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<ResetPinViewModel>,
+  private val resetViewModel: ResetPinViewModel,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  private val resetViewModel by lazy {
-    getResetPinViewModel()
-  }
-
   fun handleOnCreateDialog(
     routeDialogInterface: ProfileRouteDialogInterface,
     profileId: Int,
@@ -67,7 +63,11 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.reset_pin_enter)
       .setView(binding.root)
-      .setMessage("This PIN wil be $name's new PIN and will be required when signing in.")
+      .setMessage(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.reset_pin_enter_dialog_message, name
+        )
+      )
       .setPositiveButton(R.string.admin_settings_submit, null)
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
         dialog.dismiss()
@@ -95,7 +95,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
             .observe(
               fragment,
               Observer {
-                if (it.isSuccess()) {
+                if (it is AsyncResult.Success) {
                   routeDialogInterface.routeToSuccessDialog()
                 }
               }
@@ -110,9 +110,5 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       }
     }
     return dialog
-  }
-
-  private fun getResetPinViewModel(): ResetPinViewModel {
-    return viewModelProvider.getForFragment(fragment, ResetPinViewModel::class.java)
   }
 }

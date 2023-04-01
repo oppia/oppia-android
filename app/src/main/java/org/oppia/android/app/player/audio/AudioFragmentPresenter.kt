@@ -19,10 +19,13 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
 import org.oppia.android.domain.audio.CellularAudioDialogController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -30,6 +33,8 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
@@ -45,9 +50,10 @@ class AudioFragmentPresenter @Inject constructor(
   private val cellularAudioDialogController: CellularAudioDialogController,
   private val profileManagementController: ProfileManagementController,
   private val networkConnectionUtil: NetworkConnectionUtil,
-  private val viewModelProvider: ViewModelProvider<AudioViewModel>,
+  private val audioViewModel: AudioViewModel,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableSpotlightUi private val enableSpotlightUi: PlatformParameterValue<Boolean>
 ) {
   var userIsSeeking = false
   var userProgress = 0
@@ -56,9 +62,9 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
-  private val viewModel by lazy {
-    getAudioViewModel()
-  }
+
+  private var isPauseAudioRequestPending = false
+  private lateinit var binding: AudioFragmentBinding
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
   fun handleCreateView(
@@ -71,15 +77,14 @@ class AudioFragmentPresenter @Inject constructor(
       .observe(
         fragment,
         Observer<AsyncResult<CellularDataPreference>> {
-          if (it.isSuccess()) {
-            val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
-            showCellularDataDialog = !(prefs.hideDialog)
-            useCellularData = prefs.useCellularData
+          if (it is AsyncResult.Success) {
+            showCellularDataDialog = !it.value.hideDialog
+            useCellularData = it.value.useCellularData
           }
         }
       )
 
-    val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.audioProgressSeekBar.setOnSeekBarChangeListener(
       object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -93,25 +98,53 @@ class AudioFragmentPresenter @Inject constructor(
         }
 
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
-          viewModel.handleSeekTo(userProgress)
+          audioViewModel.handleSeekTo(userProgress)
           userIsSeeking = false
         }
       })
-    viewModel.playStatusLiveData.observe(
+    audioViewModel.playStatusLiveData.observe(
       fragment,
       Observer {
         prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
         binding.audioProgressSeekBar.isEnabled = prepared
+
+        // This check will execute any pending pause request that causes issues with
+        // audio not being paused as the user navigates through lessons in a topic.
+        // Check #1801 for more details, and specifically
+        // https://github.com/oppia/oppia-android/pull/4629#issuecomment-1410005186
+        // for notes on why this fix works.
+        if (prepared && isPauseAudioRequestPending) {
+          pauseAudio()
+        }
       }
     )
 
     binding.let {
-      it.viewModel = viewModel
+      it.viewModel = audioViewModel
       it.audioFragment = fragment as AudioFragment
       it.lifecycleOwner = fragment
     }
     subscribeToAudioLanguageLiveData()
     return binding.root
+  }
+
+  private fun startSpotlights() {
+    val audioLanguageIconSpotlightTarget = SpotlightTarget(
+      binding.audioLanguageIcon,
+      resourceHandler.getStringInLocale(R.string.voiceover_language_icon_spotlight_hint),
+      SpotlightShape.Circle,
+      Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
+    )
+
+    checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(
+      audioLanguageIconSpotlightTarget
+    )
+  }
+
+  private fun getSpotlightManager(): SpotlightManager? {
+    return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
   }
 
   private fun getProfileData(): LiveData<String> {
@@ -125,8 +158,8 @@ class AudioFragmentPresenter @Inject constructor(
     getProfileData().observe(
       activity,
       Observer<String> { result ->
-        viewModel.selectedLanguageCode = result
-        viewModel.loadMainContentAudio(false)
+        audioViewModel.selectedLanguageCode = result
+        audioViewModel.loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
       }
     )
   }
@@ -134,25 +167,31 @@ class AudioFragmentPresenter @Inject constructor(
   /** Gets language code by [AudioLanguage]. */
   private fun getAudioLanguage(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "en"
       AudioLanguage.HINDI_AUDIO_LANGUAGE -> "hi"
       AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "fr"
       AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "zh"
-      else -> "en"
+      AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> "pt"
+      AudioLanguage.NO_AUDIO, AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "en"
     }
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    val profile = when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
     }
-    return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
+    return getAudioLanguage(profile.audioLanguage)
   }
 
   /** Sets selected language code in presenter and ViewModel */
   fun languageSelected(language: String) {
-    if (viewModel.selectedLanguageCode != language) {
-      viewModel.setAudioLanguageCode(language)
+    if (audioViewModel.selectedLanguageCode != language) {
+      audioViewModel.setAudioLanguageCode(language)
     }
   }
 
@@ -163,8 +202,8 @@ class AudioFragmentPresenter @Inject constructor(
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = LanguageDialogFragment.newInstance(
-      ArrayList(viewModel.languages),
-      viewModel.selectedLanguageCode
+      ArrayList(audioViewModel.languages),
+      audioViewModel.selectedLanguageCode
     )
     dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
   }
@@ -172,28 +211,32 @@ class AudioFragmentPresenter @Inject constructor(
   /** Pauses audio if in prepared state */
   fun handleOnStop() {
     if (!activity.isChangingConfigurations && prepared) {
-      viewModel.pauseAudio()
+      audioViewModel.pauseAudio()
     }
   }
 
   /** Releases audio player resources */
   fun handleOnDestroy() {
     if (!activity.isChangingConfigurations) {
-      viewModel.handleRelease()
+      audioViewModel.handleRelease()
     }
   }
 
   fun setStateAndExplorationId(newState: State, explorationId: String) =
-    viewModel.setStateAndExplorationId(newState, explorationId)
+    audioViewModel.setStateAndExplorationId(newState, explorationId)
 
-  fun loadMainContentAudio(allowAutoPlay: Boolean) = viewModel.loadMainContentAudio(allowAutoPlay)
+  fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) =
+    audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
-    viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
+    audioViewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
-    if (prepared)
-      viewModel.pauseAudio()
+    isPauseAudioRequestPending = true
+    if (prepared && isPauseAudioRequestPending) {
+      audioViewModel.pauseAudio()
+      isPauseAudioRequestPending = false
+    }
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
@@ -251,11 +294,13 @@ class AudioFragmentPresenter @Inject constructor(
     audioButtonListener.showAudioStreamingOn()
     audioButtonListener.scrollToTop()
     if (feedbackId == null) {
-      loadMainContentAudio(true)
+      // This isn't reloading content since it's the first case of the content auto-playing.
+      loadMainContentAudio(allowAutoPlay = !enableSpotlightUi.value, reloadingContent = false)
     } else {
-      loadFeedbackAudio(feedbackId!!, true)
+      loadFeedbackAudio(feedbackId!!, !enableSpotlightUi.value)
     }
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
+    startSpotlights()
   }
 
   private fun hideAudioFragment() {
@@ -291,9 +336,5 @@ class AudioFragmentPresenter @Inject constructor(
       ) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
-  }
-
-  private fun getAudioViewModel(): AudioViewModel {
-    return viewModelProvider.getForFragment(fragment, AudioViewModel::class.java)
   }
 }

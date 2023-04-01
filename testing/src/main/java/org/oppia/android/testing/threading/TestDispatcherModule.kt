@@ -3,8 +3,6 @@ package org.oppia.android.testing.threading
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -20,42 +18,30 @@ import javax.inject.Singleton
 @Module
 class TestDispatcherModule {
   @Provides
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   @BackgroundDispatcher
   fun provideBackgroundDispatcher(
     @BackgroundTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher
-  ): CoroutineDispatcher {
-    return testCoroutineDispatcher
-  }
+  ): CoroutineDispatcher = testCoroutineDispatcher
 
   @Provides
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   @BlockingDispatcher
   fun provideBlockingDispatcher(
     @BlockingTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher
-  ): CoroutineDispatcher {
-    return testCoroutineDispatcher
-  }
+  ): CoroutineDispatcher = testCoroutineDispatcher
 
   @Provides
   @BackgroundTestDispatcher
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   @Singleton
   fun provideBackgroundTestDispatcher(
     factory: TestCoroutineDispatcher.Factory
   ): TestCoroutineDispatcher {
     return factory.createDispatcher(
-      Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher()
+      Executors.newFixedThreadPool(/* nThreads = */ 4).asCoroutineDispatcher()
     )
   }
 
   @Provides
   @BlockingTestDispatcher
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   @Singleton
   fun provideBlockingTestDispatcher(
     factory: TestCoroutineDispatcher.Factory
@@ -64,8 +50,6 @@ class TestDispatcherModule {
   }
 
   @Provides
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun provideTestCoroutineDispatchers(
     @IsOnRobolectric isOnRobolectric: Boolean,
     robolectricImplProvider: Provider<TestCoroutineDispatchersRobolectricImpl>,
@@ -75,8 +59,6 @@ class TestDispatcherModule {
   }
 
   @Provides
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun provideTestCoroutineDispatcherFactory(
     @IsOnRobolectric isOnRobolectric: Boolean,
     robolectricFactoryProvider: Provider<TestCoroutineDispatcherRobolectricImpl.FactoryImpl>,

@@ -9,9 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPages
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
@@ -26,14 +27,20 @@ import javax.inject.Inject
 class WalkthroughTopicListFragmentPresenter @Inject constructor(
   val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<WalkthroughTopicViewModel>
+  private val viewModel: WalkthroughTopicViewModel,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: WalkthroughTopicListFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val viewModel = getWalkthroughTopicViewModel()
+    val profileId = ProfileId.newBuilder().apply {
+      internalId = activity.intent.getIntExtra(
+        WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, /* defaultValue= */ -1
+      )
+    }.build()
+    viewModel.initialize(profileId)
 
     binding =
       WalkthroughTopicListFragmentBinding.inflate(
@@ -73,14 +80,13 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<WalkthroughTopicItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is WalkthroughTopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+        is WalkthroughTopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = WalkthroughTopicHeaderViewBinding::inflate,
@@ -94,10 +100,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
         transformViewModel = { it as WalkthroughTopicSummaryViewModel }
       )
       .build()
-  }
-
-  private fun getWalkthroughTopicViewModel(): WalkthroughTopicViewModel {
-    return viewModelProvider.getForFragment(fragment, WalkthroughTopicViewModel::class.java)
   }
 
   private enum class ViewType {

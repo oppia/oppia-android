@@ -3,7 +3,6 @@ package org.oppia.android.domain.util
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.AnswerGroup
-import org.oppia.android.app.model.CorrectAnswer
 import org.oppia.android.app.model.CustomSchemaValue
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Hint
@@ -56,6 +55,9 @@ class StateRetriever @Inject constructor() {
           createWrittenTranslationMappingsFromJson(stateJson.getJSONObject("written_translations"))
         )
       }
+      stateJson.optString("linked_skill_id").takeIf {
+        it.isNotEmpty() && it != "null"
+      }?.let { linkedSkillId = it }
     }.build()
 
   // Creates an interaction from JSON
@@ -78,7 +80,7 @@ class StateRetriever @Inject constructor() {
       addAllHint(createListOfHintsFromJson(interactionJson.getJSONArray("hints")))
 
       // Only set the solution if one has been defined.
-      createSolutionFromJson(interactionJson.optJSONObject("solution"))?.let { solution = it }
+      createSolutionFromJson(interactionJson.optJSONObject("solution"), id)?.let { solution = it }
     }.build()
   }
 
@@ -149,33 +151,17 @@ class StateRetriever @Inject constructor() {
   }
 
   // Creates a solution object from JSON
-  private fun createSolutionFromJson(optionalSolutionJson: JSONObject?): Solution? {
+  private fun createSolutionFromJson(
+    optionalSolutionJson: JSONObject?,
+    interactionId: String
+  ): Solution? {
     return optionalSolutionJson?.let { solutionJson ->
       return Solution.newBuilder().apply {
-        correctAnswer = createCorrectAnswer(solutionJson)
+        correctAnswer =
+          parseExactSolutionObject(solutionJson.optJSONObject("correct_answer"), interactionId)
         explanation = parseSubtitledHtml(solutionJson.getJSONObject("explanation"))
         answerIsExclusive = solutionJson.getBoolean("answer_is_exclusive")
       }.build()
-    }
-  }
-
-  private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
-    val correctAnswerObject = containerObject.optJSONObject("correct_answer")
-    return when {
-      correctAnswerObject != null -> {
-        CorrectAnswer.newBuilder()
-          .setNumerator(correctAnswerObject.getInt("numerator"))
-          .setDenominator(correctAnswerObject.getInt("denominator"))
-          .setWholeNumber(correctAnswerObject.getInt("wholeNumber"))
-          .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
-          .build()
-      }
-      containerObject.optString("correct_answer", /* fallback= */ null) != null -> {
-        CorrectAnswer.newBuilder()
-          .setCorrectAnswer(containerObject.getStringFromObject("correct_answer"))
-          .build()
-      }
-      else -> CorrectAnswer.getDefaultInstance() // For incompatible types.
     }
   }
 
@@ -273,38 +259,47 @@ class StateRetriever @Inject constructor() {
     ruleType: String
   ): InteractionObject {
     return when (interactionId) {
-      "MultipleChoiceInput" ->
-        InteractionObject.newBuilder()
-          .setNonNegativeInt(inputJson.getInt(keyName))
-          .build()
-      "ItemSelectionInput" ->
-        InteractionObject.newBuilder()
-          .setSetOfTranslatableHtmlContentIds(
+      "MultipleChoiceInput" -> {
+        InteractionObject.newBuilder().apply {
+          nonNegativeInt = inputJson.getInt(keyName)
+        }.build()
+      }
+      "ItemSelectionInput" -> {
+        InteractionObject.newBuilder().apply {
+          setOfTranslatableHtmlContentIds =
             parseSetOfTranslatableHtmlContentIds(inputJson.getJSONArray(keyName))
-          )
-          .build()
-      "TextInput" ->
-        InteractionObject.newBuilder()
-          .setTranslatableSetOfNormalizedString(
+        }.build()
+      }
+      "TextInput" -> {
+        InteractionObject.newBuilder().apply {
+          translatableSetOfNormalizedString =
             parseTranslatableSetOfNormalizedString(inputJson.getJSONObject(keyName))
-          )
-          .build()
-      "NumberWithUnits" ->
-        InteractionObject.newBuilder()
-          .setNumberWithUnits(parseNumberWithUnitsObject(inputJson.getJSONObject(keyName)))
-          .build()
-      "NumericInput" ->
-        InteractionObject.newBuilder()
-          .setReal(inputJson.getDouble(keyName))
-          .build()
+        }.build()
+      }
+      "NumberWithUnits" -> {
+        InteractionObject.newBuilder().apply {
+          numberWithUnits = parseNumberWithUnitsObject(inputJson.getJSONObject(keyName))
+        }.build()
+      }
+      "NumericInput" -> {
+        InteractionObject.newBuilder().apply {
+          real = inputJson.getDouble(keyName)
+        }.build()
+      }
       "FractionInput" -> createExactInputForFractionInput(inputJson, keyName, ruleType)
       "DragAndDropSortInput" -> createExactInputForDragDropAndSort(inputJson, keyName, ruleType)
-      "ImageClickInput" ->
-        InteractionObject.newBuilder()
-          .setNormalizedString(inputJson.getStringFromObject(keyName))
-          .build()
+      "ImageClickInput" -> {
+        InteractionObject.newBuilder().apply {
+          normalizedString = inputJson.getStringFromObject(keyName)
+        }.build()
+      }
       "RatioExpressionInput" ->
         createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
+      "NumericExpressionInput", "AlgebraicExpressionInput", "MathEquationInput" -> {
+        InteractionObject.newBuilder().apply {
+          mathExpression = inputJson.getStringFromObject(keyName)
+        }.build()
+      }
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
@@ -388,6 +383,41 @@ class StateRetriever @Inject constructor() {
         InteractionObject.newBuilder()
           .setRatioExpression(parseRatio(inputJson.getJSONArray(keyName)))
           .build()
+    }
+  }
+
+  private fun parseExactSolutionObject(
+    inputJson: JSONObject?,
+    interactionId: String
+  ): InteractionObject {
+    if (inputJson == null) return InteractionObject.getDefaultInstance()
+    return when (interactionId) {
+      "TextInput" -> {
+        InteractionObject.newBuilder().apply {
+          normalizedString = inputJson.getStringFromObject("normalized_string")
+        }.build()
+      }
+      "NumericInput" -> {
+        InteractionObject.newBuilder().apply {
+          real = inputJson.getDouble("real")
+        }.build()
+      }
+      "FractionInput" -> {
+        InteractionObject.newBuilder().apply {
+          fraction = parseFraction(inputJson.getJSONObject("fraction"))
+        }.build()
+      }
+      "RatioExpressionInput" -> {
+        InteractionObject.newBuilder().apply {
+          ratioExpression = parseRatio(inputJson.getJSONArray("ratio_expression"))
+        }.build()
+      }
+      "NumericExpressionInput", "AlgebraicExpressionInput", "MathEquationInput" -> {
+        InteractionObject.newBuilder().apply {
+          mathExpression = inputJson.getStringFromObject("math_expression")
+        }.build()
+      }
+      else -> error("Encountered unsupported interaction ID for solutions: $interactionId")
     }
   }
 
@@ -495,6 +525,12 @@ class StateRetriever @Inject constructor() {
       "RatioExpressionInput" -> {
         createRatioExpressionInputCustomizationArgsMap(customizationArgsJson)
       }
+      "NumericExpressionInput" -> {
+        createNumericExpressionInputCustomizationArgsMap(customizationArgsJson)
+      }
+      "AlgebraicExpressionInput", "MathEquationInput" -> {
+        createAlgebraicExpressionMathEquationInputsCustomizationArgsMap(customizationArgsJson)
+      }
       else -> mutableMapOf()
     }
   }
@@ -601,14 +637,50 @@ class StateRetriever @Inject constructor() {
     customizationArgsJson: JSONObject
   ): Map<String, SchemaObject> {
     val customizationArgsMap = mutableMapOf<String, SchemaObject>()
-    customizationArgsMap["placeholder"] =
-      parseSubtitledUnicode(
-        customizationArgsJson.getJSONObject("placeholder").getJSONObject("value")
-      )
-    customizationArgsMap["rows"] =
-      parseIntegerSchemaObject(
-        customizationArgsJson.getJSONObject("rows").getInt("value")
-      )
+    customizationArgsJson.optJSONObject("placeholder")?.optJSONObject("value")?.let { placeholder ->
+      customizationArgsMap["placeholder"] = parseSubtitledUnicode(placeholder)
+    }
+    customizationArgsJson.optJSONObject("rows")?.optInt("value")?.let { rows ->
+      customizationArgsMap["rows"] = parseIntegerSchemaObject(rows)
+    }
+    return customizationArgsMap
+  }
+
+  private fun createNumericExpressionInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
+    if (customizationArgsJson.has("placeholder")) {
+      customizationArgsMap["placeholder"] =
+        parseSubtitledUnicode(
+          customizationArgsJson.getJSONObject("placeholder").getJSONObject("value")
+        )
+    }
+    if (customizationArgsJson.has("useFractionForDivision")) {
+      customizationArgsMap["useFractionForDivision"] =
+        parseBooleanSchemaObject(
+          customizationArgsJson.getJSONObject("useFractionForDivision").getBoolean("value")
+        )
+    }
+    return customizationArgsMap
+  }
+
+  private fun createAlgebraicExpressionMathEquationInputsCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
+    if (customizationArgsJson.has("customOskLetters")) {
+      customizationArgsMap["customOskLetters"] =
+        parseCustomOskLetters(
+          customizationArgsJson.getJSONObject("customOskLetters").getJSONArray("value")
+        )
+    }
+    if (customizationArgsJson.has("useFractionForDivision")) {
+      customizationArgsMap["useFractionForDivision"] =
+        parseBooleanSchemaObject(
+          customizationArgsJson.getJSONObject("useFractionForDivision").getBoolean("value")
+        )
+    }
     return customizationArgsMap
   }
 
@@ -673,6 +745,7 @@ class StateRetriever @Inject constructor() {
   private fun parseLabeledRegion(jsonObject: JSONObject): LabeledRegion {
     return LabeledRegion.newBuilder()
       .setLabel(jsonObject.getStringFromObject("label"))
+      .setContentDescription(jsonObject.getStringFromObject("contentDescription"))
       .setRegion(parseRegion(jsonObject.getJSONObject("region")))
       .build()
   }
@@ -703,5 +776,23 @@ class StateRetriever @Inject constructor() {
       .setX(points.getDouble(0).toFloat())
       .setY(points.getDouble(1).toFloat())
       .build()
+  }
+
+  private fun parseCustomOskLetters(jsonArray: JSONArray): SchemaObject {
+    val letters = mutableListOf<String>()
+    for (i in 0 until jsonArray.length()) {
+      letters += jsonArray.getStringFromArray(i)
+    }
+    return SchemaObject.newBuilder().apply {
+      schemaObjectList = SchemaObjectList.newBuilder().apply {
+        addAllSchemaObject(
+          letters.map { letter ->
+            SchemaObject.newBuilder().apply {
+              normalizedString = letter
+            }.build()
+          }
+        )
+      }.build()
+    }.build()
   }
 }

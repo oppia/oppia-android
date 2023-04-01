@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserViewModel" />
+
+    <import type="org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserViewModel.ParseType" />
+
+    <import type="org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserViewModel.ResultType" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/math_expression_parser_fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_shared_screen_primary_background_color">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/math_expression_parser_app_bar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/math_expression_parser_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/component_color_shared_activity_toolbar_color"
+        android:minHeight="?attr/actionBarSize"
+        android:textSize="20sp"
+        app:navigationContentDescription="@string/navigate_up"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="@string/developer_options_math_expressions"
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:background="@color/component_color_shared_screen_primary_background_color"
+      android:fillViewport="true"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/math_expression_parser_app_bar_layout">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatEditText
+          android:id="@+id/math_expression_input_edit_text"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_margin="4dp"
+          android:hint="@string/math_expression_input_hint"
+          android:text="@={viewModel.mathExpression}"
+          android:textColor="@color/component_color_shared_primary_dark_text_color"
+          android:textColorHint="@color/component_color_shared_secondary_2_text_color"
+          app:layout_constraintEnd_toStartOf="@+id/parse_math_expression_button"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+          android:id="@+id/parse_math_expression_button"
+          style="@style/StateButtonActive"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/state_button_primary_background"
+          android:clickable="true"
+          android:enabled="true"
+          android:onClick="@{(v) -> viewModel.onParseButtonClicked()}"
+          android:text="@string/math_expression_parse_button_label"
+          android:textAllCaps="true"
+          android:textSize="14sp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/math_expression_parse_type_label_text_view"
+          style="@style/TextViewStart"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_margin="4dp"
+          android:background="@color/component_color_shared_screen_primary_background_color"
+          android:text="@string/math_expression_parse_type_label"
+          android:textColor="@color/component_color_shared_primary_text_color"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/parse_math_expression_button" />
+
+        <RadioGroup
+          android:id="@+id/math_expression_parse_type_radio_group"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="4dp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/math_expression_parse_type_label_text_view">
+
+          <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/math_expression_parse_type_numeric_expression_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:checked="true"
+            android:minWidth="20dp"
+            android:minHeight="20dp"
+            android:onClick="@{(v) -> viewModel.onParseTypeSelected(ParseType.NUMERIC_EXPRESSION)}"
+            android:text="@string/math_expression_parse_type_numeric_expressions"
+            android:textColor="@color/component_color_shared_primary_dark_text_color" />
+
+          <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/math_expression_parse_type_algebraic_expression_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:checked="false"
+            android:minWidth="20dp"
+            android:minHeight="20dp"
+            android:onClick="@{(v) -> viewModel.onParseTypeSelected(ParseType.ALGEBRAIC_EXPRESSION)}"
+            android:text="@string/math_expression_parse_type_algebraic_expressions"
+            android:textColor="@color/component_color_shared_primary_dark_text_color" />
+
+          <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/math_expression_parse_type_algebraic_equation_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:checked="false"
+            android:minWidth="20dp"
+            android:minHeight="20dp"
+            android:onClick="@{(v) -> viewModel.onParseTypeSelected(ParseType.ALGEBRAIC_EQUATION)}"
+            android:text="@string/math_expression_parse_type_algebraic_equations"
+            android:textColor="@color/component_color_shared_primary_dark_text_color" />
+        </RadioGroup>
+
+        <TextView
+          android:id="@+id/math_expression_result_type_label_text_view"
+          style="@style/TextViewStart"
+          android:layout_width="match_parent"
+          android:layout_margin="4dp"
+          android:background="@color/component_color_shared_screen_primary_background_color"
+          android:text="@string/math_expression_result_type_label"
+          android:textColor="@color/component_color_shared_primary_dark_text_color"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/math_expression_parse_type_radio_group" />
+
+        <RadioGroup
+          android:id="@+id/math_expression_result_type_radio_group"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="4dp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/math_expression_result_type_label_text_view">
+
+          <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/math_expression_result_type_math_expression_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:checked="true"
+            android:minWidth="20dp"
+            android:minHeight="20dp"
+            android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.MATH_EXPRESSION)}"
+            android:text="@string/math_expression_result_type_math_expression"
+            android:textColor="@color/component_color_shared_primary_dark_text_color" />
+
+          <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/math_expression_result_type_comparable_operation_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:checked="false"
+            android:minWidth="20dp"
+            android:minHeight="20dp"
+            android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.COMPARABLE_OPERATION)}"
+            android:text="@string/math_expression_result_type_comparable_operation"
+            android:textColor="@color/component_color_shared_primary_dark_text_color" />
+
+          <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/math_expression_result_type_polynomial_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:checked="false"
+            android:minWidth="20dp"
+            android:minHeight="20dp"
+            android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.POLYNOMIAL)}"
+            android:text="@string/math_expression_result_type_polynomial"
+            android:textColor="@color/component_color_shared_primary_dark_text_color" />
+
+          <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/math_expression_result_type_latex_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:checked="false"
+            android:minWidth="20dp"
+            android:minHeight="20dp"
+            android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.LATEX)}"
+            android:text="@string/math_expression_result_latex"
+            android:textColor="@color/component_color_shared_primary_dark_text_color" />
+
+          <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/math_expression_result_type_human_readable_string_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:checked="false"
+            android:minWidth="20dp"
+            android:minHeight="20dp"
+            android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.HUMAN_READABLE_STRING)}"
+            android:text="@string/math_expression_human_readable_string"
+            android:textColor="@color/component_color_shared_primary_dark_text_color" />
+        </RadioGroup>
+
+        <androidx.appcompat.widget.AppCompatEditText
+          android:id="@+id/allowed_variables_edit_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="4dp"
+          android:hint="@string/math_expression_allowed_variables_input_hint"
+          android:text="@={viewModel.allowedVariables}"
+          android:textColor="@color/component_color_shared_primary_dark_text_color"
+          android:textColorHint="@color/component_color_shared_secondary_2_text_color"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/math_expression_result_type_radio_group" />
+
+        <androidx.appcompat.widget.SwitchCompat
+          android:id="@+id/math_expression_treat_divisions_as_fractions_switch"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="4dp"
+          android:onCheckedChanged="@{(switch, checked) -> viewModel.onChangedUseDivAsFractions(checked)}"
+          android:text="@string/math_expression_treat_divisions_as_fractions_label"
+          android:textColor="@color/component_color_shared_primary_dark_text_color"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/allowed_variables_edit_text" />
+
+        <HorizontalScrollView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/math_expression_treat_divisions_as_fractions_switch">
+
+          <TextView
+            android:id="@+id/math_expression_parse_result_text_view"
+            style="@style/TextViewStart"
+            android:layout_width="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@color/component_color_shared_screen_primary_background_color"
+            android:fontFamily="serif-monospace"
+            android:textColor="@color/component_color_shared_primary_text_color"
+            android:textIsSelectable="true" />
+        </HorizontalScrollView>
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

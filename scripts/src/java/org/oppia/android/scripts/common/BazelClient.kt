@@ -2,15 +2,13 @@ package org.oppia.android.scripts.common
 
 import java.io.File
 import java.lang.IllegalArgumentException
+import java.util.Locale
 
 /**
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
  * the specified root directory).
  */
-class BazelClient(
-  private val rootDirectory: File,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
-) {
+class BazelClient(private val rootDirectory: File, private val commandExecutor: CommandExecutor) {
   /** Returns all Bazel test targets in the workspace. */
   fun retrieveAllTestTargets(): List<String> {
     return correctPotentiallyBrokenTargetNames(
@@ -21,11 +19,11 @@ class BazelClient(
   /** Returns all Bazel file targets that correspond to each of the relative file paths provided. */
   fun retrieveBazelTargets(changedFileRelativePaths: Iterable<String>): List<String> {
     return correctPotentiallyBrokenTargetNames(
-      executeBazelCommand(
-        "query",
+      runPotentiallyShardedQueryCommand(
+        "set(%s)",
+        changedFileRelativePaths,
         "--noshow_progress",
         "--keep_going",
-        "set(${changedFileRelativePaths.joinToString(" ")})",
         allowPartialFailures = true
       )
     )
@@ -34,12 +32,12 @@ class BazelClient(
   /** Returns all test targets in the workspace that are affected by the list of file targets. */
   fun retrieveRelatedTestTargets(fileTargets: Iterable<String>): List<String> {
     return correctPotentiallyBrokenTargetNames(
-      executeBazelCommand(
-        "query",
+      runPotentiallyShardedQueryCommand(
+        "kind(test, allrdeps(set(%s)))",
+        fileTargets,
         "--noshow_progress",
         "--universe_scope=//...",
-        "--order_output=no",
-        "kind(test, allrdeps(set(${fileTargets.joinToString(" ")})))"
+        "--order_output=no"
       )
     )
   }
@@ -56,27 +54,30 @@ class BazelClient(
     // Note that this check is needed since rbuildfiles() doesn't like taking an empty list.
     return if (buildFileList.isNotEmpty()) {
       val referencingBuildFiles =
-        executeBazelCommand(
-          "query",
+        runPotentiallyShardedQueryCommand(
+          "filter('^[^@]', rbuildfiles(%s))", // Use a filter to limit the search space.
+          buildFiles,
           "--noshow_progress",
           "--universe_scope=//...",
           "--order_output=no",
-          "rbuildfiles($buildFileList)"
+          delimiter = ","
         )
       // Compute only test & library siblings for each individual build file. While this is both
       // much slower than a fully combined query & can potentially miss targets, it runs
-      // substantially faster per query and helps to avoid potential hanging in CI.
+      // substantially faster per query and helps to avoid potential hanging in CI. Note also that
+      // this is more correct than a combined query since it ensures that siblings checks are
+      // properly unique for each file being considered (vs. searching for common siblings).
       val relevantSiblings = referencingBuildFiles.flatMap { buildFileTarget ->
         retrieveFilteredSiblings(filterRuleType = "test", buildFileTarget) +
           retrieveFilteredSiblings(filterRuleType = "android_library", buildFileTarget)
       }.toSet()
       return correctPotentiallyBrokenTargetNames(
-        executeBazelCommand(
-          "query",
+        runPotentiallyShardedQueryCommand(
+          "filter('^[^@]', kind(test, allrdeps(set(%s))))",
+          relevantSiblings,
           "--noshow_progress",
           "--universe_scope=//...",
-          "--order_output=no",
-          "filter('^[^@]', kind(test, allrdeps(set(${relevantSiblings.joinToString(" ")}))))",
+          "--order_output=no"
         )
       )
     } else listOf()
@@ -129,6 +130,44 @@ class BazelClient(
     return correctedTargets
   }
 
+  /**
+   * Returns the results of a query command with a potentially large list of [values] that will be
+   * split up into multiple commands to avoid overflow the system's maximum argument limit.
+   *
+   * Note that [queryFormatStr] is expected to have 1 string variable (which will be the
+   * space-separated join of [values] or a partition of [values]).
+   */
+  @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
+  private fun runPotentiallyShardedQueryCommand(
+    queryFormatStr: String,
+    values: Iterable<String>,
+    vararg prefixArgs: String,
+    delimiter: String = " ",
+    allowPartialFailures: Boolean = false
+  ): List<String> {
+    // Split up values into partitions to ensure that the argument calls don't over-run the limit.
+    var partitionCount = 0
+    lateinit var partitions: List<List<String>>
+    do {
+      partitionCount++
+      partitions = values.chunked((values.count() + 1) / partitionCount)
+    } while (computeMaxArgumentLength(partitions) >= MAX_ALLOWED_ARG_STR_LENGTH)
+
+    // Fragment the query across the partitions to ensure all values can be considered.
+    return partitions.flatMap { partition ->
+      val lastArgument = queryFormatStr.format(Locale.US, partition.joinToString(delimiter))
+      val allArguments = prefixArgs.toList() + lastArgument
+      executeBazelCommand(
+        "query", *allArguments.toTypedArray(), allowPartialFailures = allowPartialFailures
+      )
+    }
+  }
+
+  private fun computeMaxArgumentLength(partitions: List<List<String>>) =
+    partitions.map(this::computeArgumentLength).maxOrNull() ?: 0
+
+  private fun computeArgumentLength(args: List<String>) = args.joinToString(" ").length
+
   @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
   private fun executeBazelCommand(
     vararg arguments: String,
@@ -149,6 +188,10 @@ class BazelClient(
         "\nError output:\n${result.errorOutput.joinToString("\n")}"
     }
     return result.output
+  }
+
+  private companion object {
+    private const val MAX_ALLOWED_ARG_STR_LENGTH = 50_000
   }
 }
 

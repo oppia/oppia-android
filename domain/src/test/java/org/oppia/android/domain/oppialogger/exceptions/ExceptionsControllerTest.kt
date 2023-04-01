@@ -2,7 +2,6 @@ package org.oppia.android.domain.oppialogger.exceptions
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,28 +10,18 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ExceptionLog.ExceptionType
-import org.oppia.android.app.model.OppiaExceptionLogs
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -53,35 +42,18 @@ private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094110000
 private const val TEST_TIMESTAMP_IN_MILLIS_THREE = 1556094100000
 private const val TEST_TIMESTAMP_IN_MILLIS_FOUR = 1556094000000
 
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExceptionsControllerTest.TestApplication::class)
 class ExceptionsControllerTest {
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Inject
-  lateinit var exceptionsController: ExceptionsController
-
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockOppiaExceptionLogsObserver: Observer<AsyncResult<OppiaExceptionLogs>>
-
-  @Captor
-  lateinit var oppiaExceptionLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaExceptionLogs>>
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
@@ -108,7 +80,8 @@ class ExceptionsControllerTest {
     assertThat(exceptionLogged).isEqualTo(exceptionThrown)
   }
 
-  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
+  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to
+  //  the remote service.
 
   @Test
   fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() {
@@ -116,17 +89,10 @@ class ExceptionsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions =
-      exceptionsController.getExceptionLogStore().toLiveData()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
+    val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
 
-    verify(
-      mockOppiaExceptionLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaExceptionLogsResultCaptor.capture())
-
-    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
+    val exceptionsLog = monitorFactory.waitForNextSuccessfulResult(cachedExceptionsProvider)
+    val exceptionLog = exceptionsLog.getExceptionLog(0)
     val exception = exceptionLog.toException()
     val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
     val thrownCauseExceptionStackTraceElems = exception.cause?.stackTrace?.extractRelevantDetails()
@@ -148,15 +114,10 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST"))
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions =
-      exceptionsController.getExceptionLogStore().toLiveData()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
+    val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
 
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
-
-    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
+    val exceptionsLog = monitorFactory.waitForNextSuccessfulResult(cachedExceptionsProvider)
+    val exceptionLog = exceptionsLog.getExceptionLog(0)
     val exception = exceptionLog.toException()
     val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
     val thrownCauseExceptionStackTraceElems = exception.cause?.stackTrace?.extractRelevantDetails()
@@ -193,25 +154,25 @@ class ExceptionsControllerTest {
       TEST_TIMESTAMP_IN_MILLIS_FOUR
     )
 
-    val cachedExceptions =
-      exceptionsController.getExceptionLogStore().toLiveData()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
+    val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
 
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
+    val exceptionsLog = monitorFactory.waitForNextSuccessfulResult(cachedExceptionsProvider)
+    val exceptionOne = exceptionsLog.getExceptionLog(0)
+    val exceptionTwo = exceptionsLog.getExceptionLog(1)
 
-    val exceptionOne = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
-    val exceptionTwo = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(1)
-
-    // In this case, 3 fatal and 1 non-fatal exceptions were logged. The order of logging was fatal->non-fatal->fatal->fatal.
-    // So after pruning, none of the retained logs should have non-fatal exception type.
+    // In this case, 3 fatal and 1 non-fatal exceptions were logged. The order of logging was
+    // fatal->non-fatal->fatal->fatal. So after pruning, none of the retained logs should have
+    // non-fatal exception type.
     assertThat(exceptionOne.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
     assertThat(exceptionTwo.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
-    // If we analyse the order of logging of exceptions, we can see that record pruning will begin from the logging of the third record.
-    // At first, the second exception log will be removed as it has non-fatal exception type and the exception logged at the third place will become the exception record at the second place in the store.
-    // When the forth exception gets logged then the pruning will be purely based on timestamp of the exception as both exception logs have fatal exception type.
-    // As the third exceptions's timestamp was lesser than that of the first event, it will be pruned from the store and the forth exception will become the second exception in the store.
+    // If we analyse the order of logging of exceptions, we can see that record pruning will begin
+    // from the logging of the third record. At first, the second exception log will be removed as
+    // it has non-fatal exception type and the exception logged at the third place will become the
+    // exception record at the second place in the store. When the forth exception gets logged then
+    // the pruning will be purely based on timestamp of the exception as both exception logs have
+    // fatal exception type. As the third exceptions's timestamp was lesser than that of the first
+    // event, it will be pruned from the store and the forth exception will become the second
+    // exception in the store.
     assertThat(exceptionOne.timestampInMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
     assertThat(exceptionTwo.timestampInMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_FOUR)
     assertThat(exceptionOne.message).isEqualTo("TEST1")
@@ -235,16 +196,10 @@ class ExceptionsControllerTest {
       TEST_TIMESTAMP_IN_MILLIS_THREE
     )
 
-    val cachedExceptions =
-      exceptionsController.getExceptionLogStore().toLiveData()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
+    val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
 
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
-    val cacheStoreSize = oppiaExceptionLogsResultCaptor.value.getOrThrow().exceptionLogList.size
-
-    assertThat(cacheStoreSize).isEqualTo(2)
+    val exceptionsLog = monitorFactory.waitForNextSuccessfulResult(cachedExceptionsProvider)
+    assertThat(exceptionsLog.exceptionLogList).hasSize(2)
   }
 
   @Test
@@ -254,16 +209,11 @@ class ExceptionsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions =
-      exceptionsController.getExceptionLogStore().toLiveData()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
+    val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
 
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
+    val exceptionsLog = monitorFactory.waitForNextSuccessfulResult(cachedExceptionsProvider)
     val exceptionFromRemoteService = fakeExceptionLogger.getMostRecentException()
-    val exceptionFromCacheStorage =
-      oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
+    val exceptionFromCacheStorage = exceptionsLog.getExceptionLog(0)
     val exception = exceptionFromCacheStorage.toException()
     val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
     val thrownCauseExceptionStackTraceElems = exception.cause?.stackTrace?.extractRelevantDetails()
@@ -287,15 +237,11 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions =
-      exceptionsController.getExceptionLogStore().toLiveData()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
+    val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
 
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
-    val exceptionOne = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
-    val exceptionTwo = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(1)
+    val exceptionsLog = monitorFactory.waitForNextSuccessfulResult(cachedExceptionsProvider)
+    val exceptionOne = exceptionsLog.getExceptionLog(0)
+    val exceptionTwo = exceptionsLog.getExceptionLog(1)
     assertThat(exceptionOne.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
     assertThat(exceptionTwo.exceptionType).isEqualTo(ExceptionType.FATAL)
   }
@@ -306,15 +252,10 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception()
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions =
-      exceptionsController.getExceptionLogStore().toLiveData()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
+    val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
 
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
-    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
-    val exception = exceptionLog.toException()
+    val exceptionsLog = monitorFactory.waitForNextSuccessfulResult(cachedExceptionsProvider)
+    val exception = exceptionsLog.getExceptionLog(0).toException()
     val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
     val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
     assertThat(exception.message).isEqualTo(null)
@@ -330,15 +271,10 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception("TEST")
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions =
-      exceptionsController.getExceptionLogStore().toLiveData()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
+    val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
 
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
-    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
-    val exception = exceptionLog.toException()
+    val exceptionsLog = monitorFactory.waitForNextSuccessfulResult(cachedExceptionsProvider)
+    val exception = exceptionsLog.getExceptionLog(0).toException()
     val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
     val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
     assertThat(exception.message).isEqualTo("TEST")

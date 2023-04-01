@@ -11,7 +11,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/component_color_shared_screen_primary_background_color">
 
     <FrameLayout
       android:layout_width="match_parent"
@@ -22,7 +23,6 @@
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/profile_progress_list"
-        android:background="@color/color_def_transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/profile_progress_fragment_margin_start"

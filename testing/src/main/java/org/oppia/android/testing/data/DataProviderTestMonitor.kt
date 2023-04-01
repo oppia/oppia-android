@@ -5,19 +5,21 @@ import androidx.lifecycle.Observer
 import androidx.test.platform.app.InstrumentationRegistry
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.atMost
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor.Factory
 import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
-// TODO(#3813): Migrate all data provider tests over to using this utility.
 /**
  * A test monitor for [DataProvider]s that provides operations to simplify waiting for the
  * provider's results, or to verify that notifications actually change the data provider when
@@ -40,7 +42,6 @@ class DataProviderTestMonitor<T> private constructor(
   private val dataProvider: DataProvider<T>
 ) {
   private val mockObserver by lazy { createMock<Observer<AsyncResult<T>>>() }
-  private val resultCaptor by lazy { createCaptor<AsyncResult<T>>() }
   private val liveData: LiveData<AsyncResult<T>> by lazy { dataProvider.toLiveData() }
 
   /**
@@ -112,23 +113,38 @@ class DataProviderTestMonitor<T> private constructor(
     // and an explicit monitor, it either means the provider hasn't updated or it requires advancing
     // the clock (in which case you should use TestCoroutineDispatchers.advanceUntilIdle() and an
     // ensure* method from this class).
-    verify(mockObserver, atLeastOnce()).onChanged(resultCaptor.capture())
-    reset(mockObserver)
-    return resultCaptor.value
+    return createCaptor<AsyncResult<T>>().also { resultCaptor ->
+      verify(mockObserver, atLeastOnce()).onChanged(resultCaptor.capture())
+      reset(mockObserver)
+    }.value
   }
 
   private fun retrieveSuccess(operation: () -> AsyncResult<T>): T {
-    return operation().also {
-      // Sanity check.
-      check(it.isSuccess()) { "Expected next result to be a success, not: $it" }
-    }.getOrThrow()
+    return when (val result = operation()) {
+      // Sanity check. Ensure that the full failure stack trace is thrown.
+      is AsyncResult.Failure -> {
+        throw IllegalStateException(
+          "Expected next result to be a success, not: $result", result.error
+        )
+      }
+      is AsyncResult.Pending -> error("Expected next result to be a success, not: $result")
+      is AsyncResult.Success -> result.value
+    }
   }
 
   private fun retrieveFailing(operation: () -> AsyncResult<T>): Throwable {
-    return operation().also {
-      // Sanity check.
-      check(it.isFailure()) { "Expected next result to be a failure, not: $it" }
-    }.getErrorOrNull() ?: error("Expect result to have a failure error")
+    return when (val result = operation()) {
+      is AsyncResult.Failure -> result.error
+      is AsyncResult.Pending, is AsyncResult.Success ->
+        error("Expected next result to be a failure, not: $result")
+    }
+  }
+
+  private fun collectAllResults(): List<AsyncResult<T>> {
+    return createCaptor<AsyncResult<T>>().also { resultCaptor ->
+      testCoroutineDispatchers.advanceUntilIdle()
+      verify(mockObserver, AnyNumber).onChanged(resultCaptor.capture())
+    }.allValues
   }
 
   /**
@@ -149,6 +165,32 @@ class DataProviderTestMonitor<T> private constructor(
     }
 
     /**
+     * Convenience method for verifying that [dataProvider] has at least one result (whether it be
+     * successful or an error), waiting if needed for the result (see [waitForNextResult]).
+     *
+     * This method ought to be used when data providers need to be processed mid-test since using
+     * [waitForNextSuccessfulResult] or [waitForNextFailureResult] have the disadvantages that they
+     * are also verifying pass/fail state (which is usually not desired mid-test during the
+     * arrangement and act portions). While this method is also verifying something (execution), it
+     * can be considered more of a sanity check than an actual check for correctness (i.e. "this
+     * data provider must have executed for the test to proceed").
+     *
+     * Note that this will fail if the result of the data provider is pending (it must provide at
+     * least one success or failure).
+     */
+    fun <T> ensureDataProviderExecutes(dataProvider: DataProvider<T>) {
+      // Waiting for a result is the same as ensuring the conditions are right for the provider to
+      // execute (since it must return a result if it's executed, even if it's pending).
+      val monitor = createMonitor(dataProvider)
+      monitor.waitForNextResult().also {
+        monitor.stopObservingDataProvider()
+      }.also {
+        // There must be an actual result for the provider to be successful.
+        assertThat(it).isNotPending()
+      }
+    }
+
+    /**
      * Convenience function for monitoring the specified data provider & waiting for its next result
      * (expected to be a success). See [waitForNextSuccessResult] for specifics.
      *
@@ -156,9 +198,7 @@ class DataProviderTestMonitor<T> private constructor(
      */
     fun <T> waitForNextSuccessfulResult(dataProvider: DataProvider<T>): T {
       val monitor = createMonitor(dataProvider)
-      return monitor.waitForNextSuccessResult().also {
-        monitor.stopObservingDataProvider()
-      }
+      return monitor.waitForNextSuccessResult().also { monitor.stopObservingDataProvider() }
     }
 
     /**
@@ -169,9 +209,35 @@ class DataProviderTestMonitor<T> private constructor(
      */
     fun <T> waitForNextFailureResult(dataProvider: DataProvider<T>): Throwable {
       val monitor = createMonitor(dataProvider)
-      return monitor.waitForNextFailingResult().also {
-        monitor.stopObservingDataProvider()
-      }
+      return monitor.waitForNextFailingResult().also { monitor.stopObservingDataProvider() }
+    }
+
+    /**
+     * Monitors for all possible results that are received starting exactly from the moment a new
+     * [DataProvider] is created by [createProvider].
+     *
+     * Note a few things:
+     * 1. This method tries to keep provider creation as close as possible to observation, but the
+     *    asynchronous nature of [DataProvider]s means that early results can still be missed.
+     * 2. [DataProvider]s are not an event system. Their "eventual consistency" property means that
+     *    the last result is most important to guarantee, so "in-between" states are possible to
+     *    miss (even in carefully time-coordinated test environments like Oppia's). It's
+     *    **highly suggested** to verify tests across ~100 runs that depend on this method to ensure
+     *    that they cannot flake out. Callers may need to verify specific values are present in the
+     *    list rather than verifying the whole list (since it could potentially change across test
+     *    runs with only the ending being reliable).
+     * 3. This method makes use of [TestCoroutineDispatchers.advanceUntilIdle] to minimize the
+     *    possibility of missing events, so callers should be aware that this will cause all pending
+     *    operations (even those in the future) to be run.
+     * 4. Care needs to be taken when [createProvider] returns, rather than creates, a
+     *    [DataProvider] as other methods in this class may cause the provider's results to be fully
+     *    observed before this method runs (which will cause it to return an empty list since it
+     *    only observes values *starting* at the time [createProvider] is called; any prior provided
+     *    values will be lost except the provider's latest value).
+     */
+    fun <T> waitForAllNextResults(createProvider: () -> DataProvider<T>): List<AsyncResult<T>> {
+      val monitor = createMonitor(createProvider())
+      return monitor.collectAllResults().also { monitor.stopObservingDataProvider() }
     }
   }
 
@@ -180,5 +246,8 @@ class DataProviderTestMonitor<T> private constructor(
 
     private inline fun <reified T> createCaptor(): ArgumentCaptor<T> =
       ArgumentCaptor.forClass(T::class.java)
+
+    // Approximate "any number" by limiting to a max number of calls.
+    private val AnyNumber by lazy { atMost(Integer.MAX_VALUE) }
   }
 }

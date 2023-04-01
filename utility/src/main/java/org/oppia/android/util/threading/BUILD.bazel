@@ -2,8 +2,7 @@
 General purpose utilities for multi-threading and concurrency.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "annotations",
@@ -18,6 +17,33 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "dispatcher_injector",
+    srcs = [
+        "DispatcherInjector.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        ":annotations",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_android_library(
+    name = "dispatcher_injector_provider",
+    srcs = [
+        "DispatcherInjectorProvider.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        ":dispatcher_injector",
+    ],
+)
+
+kt_android_library(
     name = "prod_module",
     srcs = [
         "DispatcherModule.kt",
@@ -25,10 +51,8 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":annotations",
-        ":dagger",
+        "//:dagger",
         "//third_party:javax_inject_javax_inject",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-android",
     ],
 )
-
-dagger_rules()

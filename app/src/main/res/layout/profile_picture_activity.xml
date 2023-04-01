@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools"
   xmlns:tools="http://schemas.android.com/tools">
 
   <data>
@@ -27,8 +26,9 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/profile_picture_activity_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppia_primary"
+        android:layout_height="wrap_content"
+        android:background="@color/component_color_shared_activity_toolbar_color"
+        android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
@@ -46,7 +46,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/profile_picture_activity_app_bar_layout"
-      profile:src="@{viewModel.profileAvatar}"
+      app:profileImageSource="@{viewModel.profileAvatar}"
       tools:src="@drawable/ic_default_avatar" />
 
     <View

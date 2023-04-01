@@ -31,6 +31,11 @@ interface AssetRepository {
    */
   fun <T : MessageLite> tryLoadProtoFromLocalAssets(assetName: String, defaultMessage: T): T
 
+  /**
+   * A version of [loadProtoFromLocalAssets] that returns null if the specified asset doesn't exist.
+   */
+  fun <T : MessageLite> maybeLoadProtoFromLocalAssets(assetName: String, baseMessage: T): T?
+
   /** Returns the size of the specified proto asset, or -1 if the asset doesn't exist. */
   fun getLocalAssetProtoSize(assetName: String): Int
 

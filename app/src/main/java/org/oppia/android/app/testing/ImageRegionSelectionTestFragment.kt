@@ -8,16 +8,20 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.utility.ClickableAreasImage
+import org.oppia.android.app.utility.OnClickableAreaClickedListener
+import org.oppia.android.app.utility.RegionClickedEvent
 import javax.inject.Inject
 
 const val IMAGE_REGION_SELECTION_TEST_FRAGMENT_TAG = "image_region_selection_test_fragment"
 
 // TODO(#59): Make this fragment only included in relevant tests instead of all prod builds.
 /** Test Fragment used for testing [ClickableAreasImage] functionality */
-class ImageRegionSelectionTestFragment : InjectableFragment() {
+class ImageRegionSelectionTestFragment : InjectableFragment(), OnClickableAreaClickedListener {
   @Inject
   lateinit var imageRegionSelectionTestFragmentPresenter:
     ImageRegionSelectionTestFragmentPresenter
+
+  lateinit var mockOnClickableAreaClickedListener: OnClickableAreaClickedListener
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -30,5 +34,9 @@ class ImageRegionSelectionTestFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     return imageRegionSelectionTestFragmentPresenter.handleCreateView(inflater, container)
+  }
+
+  override fun onClickableAreaTouched(region: RegionClickedEvent) {
+    mockOnClickableAreaClickedListener.onClickableAreaTouched(region)
   }
 }

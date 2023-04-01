@@ -54,19 +54,4 @@ class IntentFactoryShimImpl @Inject constructor(
       topicId
     )
   }
-
-  /**
-   * Creates a recently played activity intent for [PromotedStoryListViewModel] and passes
-   * necessary string data.
-   */
-  override fun createRecentlyPlayedActivityIntent(
-    context: Context,
-    internalProfileId: Int
-  ): Intent {
-    return recentlyPlayedActivityIntentFactory.createIntent(
-      ProfileId.newBuilder().apply {
-        internalId = internalProfileId
-      }.build()
-    )
-  }
 }

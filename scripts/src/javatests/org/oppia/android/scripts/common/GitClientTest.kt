@@ -20,12 +20,11 @@ import java.lang.IllegalStateException
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class GitClientTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private lateinit var testGitRepository: TestGitRepository
-  private val commandExecutor by lazy { CommandExecutorImpl() }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
 
   @Before
   fun setUp() {
@@ -38,11 +37,48 @@ class GitClientTest {
     // and to help manually verify the expect git state at the end of each test.
     println("git status (at end of test):")
     println(testGitRepository.status())
+    scriptBgDispatcher.close()
+  }
+
+  @Test
+  fun testCurrentCommit_forNonRepository_throwsException() {
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
+
+    val exception = assertThrows(IllegalStateException::class) { gitClient.currentCommit }
+
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+    assertThat(exception).hasMessageThat().ignoringCase().contains("not a git repository")
+  }
+
+  @Test
+  fun testCurrentCommit_forValidRepository_returnsCorrectBranch() {
+    initializeRepoWithDevelopBranch()
+    val developHash = getMostRecentCommitOnCurrentBranch()
+
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
+    val currentCommit = gitClient.currentCommit
+
+    assertThat(currentCommit).isEqualTo(developHash)
+  }
+
+  @Test
+  fun testCurrentCommit_switchBranch_returnsCorrectBranch() {
+    initializeRepoWithDevelopBranch()
+    val developHash = getMostRecentCommitOnCurrentBranch()
+    testGitRepository.checkoutNewBranch("introduce-feature")
+    testGitRepository.commit(message = "Test empty commit", allowEmpty = true)
+    val featureBranchHash = getMostRecentCommitOnCurrentBranch()
+
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
+    val currentCommit = gitClient.currentCommit
+
+    assertThat(currentCommit).isNotEqualTo(developHash)
+    assertThat(currentCommit).isEqualTo(featureBranchHash)
   }
 
   @Test
   fun testCurrentBranch_forNonRepository_throwsException() {
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
 
     val exception = assertThrows(IllegalStateException::class) { gitClient.currentBranch }
 
@@ -54,7 +90,7 @@ class GitClientTest {
   fun testCurrentBranch_forValidRepository_returnsCorrectBranch() {
     initializeRepoWithDevelopBranch()
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val currentBranch = gitClient.currentBranch
 
     assertThat(currentBranch).isEqualTo("develop")
@@ -65,7 +101,7 @@ class GitClientTest {
     initializeRepoWithDevelopBranch()
     testGitRepository.checkoutNewBranch("introduce-feature")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val currentBranch = gitClient.currentBranch
 
     assertThat(currentBranch).isEqualTo("introduce-feature")
@@ -76,7 +112,7 @@ class GitClientTest {
     initializeRepoWithDevelopBranch()
     val developHash = getMostRecentCommitOnCurrentBranch()
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val mergeBase = gitClient.branchMergeBase
 
     assertThat(mergeBase).isEqualTo(developHash)
@@ -88,7 +124,7 @@ class GitClientTest {
     val developHash = getMostRecentCommitOnCurrentBranch()
     testGitRepository.checkoutNewBranch("introduce-feature")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val mergeBase = gitClient.branchMergeBase
 
     assertThat(mergeBase).isEqualTo(developHash)
@@ -101,7 +137,7 @@ class GitClientTest {
     testGitRepository.checkoutNewBranch("introduce-feature")
     commitNewFile("example_file")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val mergeBase = gitClient.branchMergeBase
 
     // The merge base is the latest common hash between this & the develop branch.
@@ -113,7 +149,7 @@ class GitClientTest {
     initializeRepoWithDevelopBranch()
     testGitRepository.checkoutNewBranch("introduce-feature")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val changedFiles = gitClient.changedFiles
 
     assertThat(changedFiles).isEmpty()
@@ -125,7 +161,7 @@ class GitClientTest {
     testGitRepository.checkoutNewBranch("introduce-feature")
     createNewFile("example_file")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val changedFiles = gitClient.changedFiles
 
     assertThat(changedFiles).containsExactly("example_file")
@@ -137,7 +173,7 @@ class GitClientTest {
     testGitRepository.checkoutNewBranch("introduce-feature")
     stageNewFile("example_file")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val changedFiles = gitClient.changedFiles
 
     assertThat(changedFiles).containsExactly("example_file")
@@ -149,7 +185,7 @@ class GitClientTest {
     testGitRepository.checkoutNewBranch("introduce-feature")
     commitNewFile("example_file")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val changedFiles = gitClient.changedFiles
 
     assertThat(changedFiles).containsExactly("example_file")
@@ -161,7 +197,7 @@ class GitClientTest {
     commitNewFile("develop_file")
     testGitRepository.checkoutNewBranch("introduce-feature")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val changedFiles = gitClient.changedFiles
 
     // Committed files to the develop branch are not included since they aren't part of the feature
@@ -176,7 +212,7 @@ class GitClientTest {
     commitNewFile("example_file")
     modifyFile("example_file")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val changedFiles = gitClient.changedFiles
 
     assertThat(changedFiles).containsExactly("example_file")
@@ -189,7 +225,7 @@ class GitClientTest {
     testGitRepository.checkoutNewBranch("introduce-feature")
     deleteFile("develop_file")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val changedFiles = gitClient.changedFiles
 
     assertThat(changedFiles).containsExactly("develop_file")
@@ -208,7 +244,7 @@ class GitClientTest {
     modifyFile("develop_branch_file_changed_not_staged")
     deleteFile("develop_branch_file_removed")
 
-    val gitClient = GitClient(tempFolder.root, "develop")
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
     val changedFiles = gitClient.changedFiles
 
     assertThat(changedFiles).containsExactly(

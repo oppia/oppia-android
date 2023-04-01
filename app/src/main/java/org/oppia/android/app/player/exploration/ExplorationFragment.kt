@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.ExplorationFragmentArguments
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment that contains displays single exploration. */
@@ -16,81 +18,45 @@ class ExplorationFragment : InjectableFragment() {
   @Inject
   lateinit var explorationFragmentPresenter: ExplorationFragmentPresenter
 
-  @Inject
-  lateinit var fontScaleConfigurationUtil: FontScaleConfigurationUtil
-
   companion object {
-    internal const val INTERNAL_PROFILE_ID_ARGUMENT_KEY =
-      "ExplorationFragment.internal_profile_id"
-    internal const val TOPIC_ID_ARGUMENT_KEY = "ExplorationFragment.topic_id"
-    internal const val STORY_ID_ARGUMENT_KEY = "ExplorationFragment.story_id"
-    internal const val STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY =
-      "ExplorationFragment.story_default_font_size"
-    internal const val EXPLORATION_ID_ARGUMENT_KEY =
-      "ExplorationFragment.exploration_id"
-
-    /** Returns a new [ExplorationFragment] to pass the profileId, topicId, storyId, readingTextSize and explorationId. */
+    /** Returns a new [ExplorationFragment] with the corresponding fragment parameters. */
     fun newInstance(
-      internalProfileId: Int,
+      profileId: ProfileId,
       topicId: String,
       storyId: String,
-      readingTextSize: String,
-      explorationId: String
+      explorationId: String,
+      readingTextSize: ReadingTextSize
     ): ExplorationFragment {
-      val explorationFragment = ExplorationFragment()
-      val args = Bundle()
-      args.putInt(
-        INTERNAL_PROFILE_ID_ARGUMENT_KEY,
-        internalProfileId
-      )
-      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-      args.putString(STORY_ID_ARGUMENT_KEY, storyId)
-      args.putString(
-        STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY,
-        readingTextSize
-      )
-      args.putString(
-        EXPLORATION_ID_ARGUMENT_KEY,
-        explorationId
-      )
-      explorationFragment.arguments = args
-      return explorationFragment
+      val args = ExplorationFragmentArguments.newBuilder().apply {
+        this.profileId = profileId
+        this.topicId = topicId
+        this.storyId = storyId
+        this.explorationId = explorationId
+        this.readingTextSize = readingTextSize
+      }.build()
+      return ExplorationFragment().apply {
+        arguments = Bundle().apply {
+          putProto(ExplorationFragmentPresenter.ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-    val readingTextSize =
-      arguments!!.getStringFromBundle(STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
-    checkNotNull(readingTextSize) { "ExplorationFragment must be created with a reading text size" }
-    fontScaleConfigurationUtil.adjustFontScale(context, readingTextSize)
+    explorationFragmentPresenter.handleAttach(context)
   }
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
-    val profileId =
-      arguments!!.getInt(INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)
-    val topicId =
-      arguments!!.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)
-    checkNotNull(topicId) { "StateFragment must be created with an topic ID" }
-    val storyId =
-      arguments!!.getStringFromBundle(STORY_ID_ARGUMENT_KEY)
-    checkNotNull(storyId) { "StateFragment must be created with an story ID" }
-    val explorationId =
-      arguments!!.getStringFromBundle(EXPLORATION_ID_ARGUMENT_KEY)
-    checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
-    return explorationFragmentPresenter.handleCreateView(
-      inflater,
-      container,
-      profileId,
-      topicId,
-      storyId,
-      explorationId
-    )
+  ): View = explorationFragmentPresenter.handleCreateView(inflater, container)
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    explorationFragmentPresenter.handleViewCreated()
   }
 
   fun handlePlayAudio() = explorationFragmentPresenter.handlePlayAudio()

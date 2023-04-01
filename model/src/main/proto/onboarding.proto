@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package model;
 
+import "version.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -24,15 +26,51 @@ message AppStartupState {
     APP_IS_DEPRECATED = 3;
   }
 
+  // Describes different notices that may be shown to the user on startup depending on whether
+  // they're using or have used a pre-release version of the app.
+  enum BuildFlavorNoticeMode {
+    // Indicates that the current build flavor notice mode is unknown.
+    FLAVOR_NOTICE_MODE_UNSPECIFIED = 0;
+
+    // Indicates that the user is not in a situation where a notice should be shown (either because
+    // they aren't or haven't recently used a pre-release version of the app, or they've asked to
+    // not see those notices again).
+    NO_NOTICE = 1;
+
+    // Indicates that the user should be a shown a notice mentioning that they're currently using a
+    // beta version of the app.
+    SHOW_BETA_NOTICE = 2;
+
+    // Indicates that the user should be shown a notice mentioning that they've recently upgraded to
+    // the general availability version of the app.
+    SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE = 3;
+  }
+
   // Contains the user's startup state upon opening the app. This may change from app open to app
   // open, but should remain constant throughout the lifetime of a single process.
   StartupMode startup_mode = 1;
+
   // Indicates if the app is starting up again immediately after a crash has occurred.
   bool is_from_crash = 2;
+
+  // Indicates whether the user should be shown a startup notice based on their recent usage of
+  // different build flavors of the app.
+  BuildFlavorNoticeMode build_flavor_notice_mode = 3;
 }
 
 // Stores the completion state of the user's progress through the app onboarding flow.
 message OnboardingState {
   // Indicates whether user has fully completed the onboarding flow.
   bool already_onboarded_app = 1;
+
+  // Represents the build flavor of the app the last time the user used it.
+  BuildFlavor last_used_build_flavor = 2;
+
+  // Represents whether the user has seen, and asked to not see again, the notice that they're using
+  // a beta version of the app.
+  bool permanently_dismissed_beta_notice = 3;
+
+  // Represents whether the user has seen, and asked to not see again, the notice that they're using
+  // the general availability version of the app after having previously used a pre-release version.
+  bool permanently_dismissed_ga_upgrade_notice = 4;
 }

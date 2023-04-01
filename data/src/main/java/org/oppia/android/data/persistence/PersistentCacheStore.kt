@@ -1,6 +1,6 @@
 package org.oppia.android.data.persistence
 
-import android.content.Context
+import android.app.Application
 import androidx.annotation.GuardedBy
 import com.google.protobuf.MessageLite
 import kotlinx.coroutines.Deferred
@@ -21,24 +21,27 @@ import kotlin.concurrent.withLock
 
 /**
  * An on-disk persistent cache for proto messages that ensures reads and writes happen in a
- * well-defined order. Note that if this cache is used like a [DataProvider], there is a race
- * condition between the initial store's data being retrieved and any early writes to the store
- * (writes generally win). If this is not ideal, callers should use [primeCacheAsync] to
- * synchronously kick-off a read update to the store that is guaranteed to complete before any
- * writes. This will be reflected in the first time the store's state is delivered to a subscriber
- * to a LiveData version of this data provider.
+ * well-defined order.
  *
- * Note that this is a fast-response data provider, meaning it will provide a pending [AsyncResult]
- * to subscribers immediately until the actual store is retrieved from disk.
+ * Note that if this cache is used like a [DataProvider], there is a race condition between the
+ * initial store's data being retrieved and any early writes to the store (writes generally win). If
+ * this is not ideal, callers should use [primeInMemoryAndDiskCacheAsync] to synchronously kick-off
+ * a read update to the store that is guaranteed to complete before any writes. This will be
+ * reflected in the first time the store's state is delivered to a subscriber to a LiveData version
+ * of this data provider. Note that this priming will always complete before any updates if it's
+ * called before updates/reads.
+ *
+ * Note that this is a fast-response data provider, meaning it will provide a [AsyncResult.Pending]
+ * result to subscribers immediately until the actual store is retrieved from disk.
  */
 class PersistentCacheStore<T : MessageLite> private constructor(
-  context: Context,
+  application: Application,
   cacheFactory: InMemoryBlockingCache.Factory,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   cacheName: String,
   private val initialValue: T,
-  directory: File = context.filesDir
-) : DataProvider<T>(context) {
+  directory: File = application.filesDir
+) : DataProvider<T>(application) {
   private val cacheFileName = "$cacheName.cache"
   private val providerId = PersistentCacheStoreId(cacheFileName)
   private val failureLock = ReentrantLock()
@@ -50,21 +53,28 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     cacheFactory.create(CachePayload(state = CacheState.UNLOADED, value = initialValue))
 
   init {
-    cache.observeChanges {
-      asyncDataSubscriptionManager.notifyChange(providerId)
+    cache.observeChanges { oldValue, newValue ->
+      // Only notice subscribers if the in-memory version of the cache actually changed (not just
+      // its load state). This extra check ensures that priming the cache does not unnecessarily
+      // trigger a notification which would result in an unnecessary retrieveData() call. The
+      // exception is that changing from an UNLOADED state always results in a notification (since
+      // UNLOADED is treated as 'pending' by default).
+      val wasPending = oldValue?.state == CacheState.UNLOADED
+      val nowPending = newValue?.state == CacheState.UNLOADED
+      if ((wasPending && !nowPending) || oldValue?.value != newValue?.value) {
+        asyncDataSubscriptionManager.notifyChange(providerId)
+      }
     }
   }
 
-  override fun getId(): Any {
-    return providerId
-  }
+  override fun getId(): Any = providerId
 
   override suspend fun retrieveData(): AsyncResult<T> {
     cache.readIfPresentAsync().await().let { cachePayload ->
       // First, determine whether the current cache has been attempted to be retrieved from disk.
       if (cachePayload.state == CacheState.UNLOADED) {
         deferLoadFile()
-        return AsyncResult.pending()
+        return AsyncResult.Pending()
       }
 
       // Second, check if a previous deferred read failed. The store stays in a failed state until
@@ -74,39 +84,92 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       failureLock.withLock {
         deferredLoadCacheFailure?.let {
           // A previous read failed.
-          return AsyncResult.failed(it)
+          return AsyncResult.Failure(it)
         }
       }
 
       // Finally, check if there's an in-memory cached value that can be loaded now.
       // Otherwise, there should be a guaranteed in-memory value to use, instead.
-      return AsyncResult.success(cachePayload.value)
+      return AsyncResult.Success(cachePayload.value)
     }
   }
 
   /**
-   * Kicks off a read operation to update the in-memory cache. This operation blocks against calls
-   * to [storeDataAsync] and deferred calls to [retrieveData].
+   * Primes the current cache such that certain guarantees can be assured for both the in-memory and
+   * on-disk version of this cache, depending on which policies are selected.
    *
-   * @param forceUpdate indicates whether to force a reset of the in-memory cache. Note that this
-   *     only forces a load; if the load fails then the store will remain in its same state. If this
-   *     value is false (the default), it will only perform file I/O if the cache is not already
-   *     loaded into memory.
-   * @returns a [Deferred] that completes upon the completion of priming the cache, or failure to do
-   *     so with the failed exception. Note that the failure reason will not be propagated to a
-   *     LiveData-converted version of this data provider, so it must be handled at the callsite for
-   *     this method.
+   * Note that the value of the returned [Deferred] is not useful. The state of the cache should
+   * monitored by treating this provider as a [DataProvider]. This method may result in an update
+   * notification to observers of this [DataProvider].
+   *
+   * Note also that this method is particularly useful in two specific cases:
+   * 1. When an instance of this cache needs to be loaded from disk before an update operation
+   *   occurs (otherwise update() will likely complete before a load, overwriting the current
+   *   on-disk cache state).
+   * 2. When the cache needs to be initialized exactly once to a specific value (such as the case
+   *   when an ID that cannot change after initialization needs to be generated and stored exactly
+   *   once).
+   *
+   * Each of the above states are possible using different combinations of the provided [UpdateMode]
+   * and [PublishMode] parameters.
+   *
+   * Finally, this method succeeding more or less guarantees that the cache store is now in a good
+   * state (i.e. it will even recover from a corrupted or invalid disk cache file).
+   *
+   * @param updateMode how the cache should be changed (depending on whether it's been loaded yet,
+   *     and whether it has an on-disk cache)
+   * @param publishMode whether changes to the cache's in-memory copy during priming should be kept
+   *     in-memory and sent to observers (otherwise, only store the results on-disk and do not
+   *     notify changes). Note that the in-memory cache *will* be updated if it hasn't yet been
+   *     initialized (which may mean saving a result from [update]).
+   * @param update an optional function to transform the cache's current (in-memory if loaded, or
+   *     from-disk if not) state to a new state, and then update the on-disk cache (and potentially
+   *     the in-memory cache based on [publishMode]). Note that if the cache has not been loaded yet
+   *     and has no on-disk copy then the cache's [initialValue] will be passed, instead. Omitting
+   *     this transformation will just ensure the in-memory and/or on-disk cache are appropriately
+   *     initialized.
+   * @return a [Deferred] tracking the success/failure of priming this cache store
    */
-  fun primeCacheAsync(forceUpdate: Boolean = false): Deferred<Any> {
+  fun primeInMemoryAndDiskCacheAsync(
+    updateMode: UpdateMode,
+    publishMode: PublishMode,
+    update: (T) -> T = { it }
+  ): Deferred<Any> {
     return cache.updateIfPresentAsync { cachePayload ->
-      if (forceUpdate || cachePayload.state == CacheState.UNLOADED) {
-        // Store the retrieved on-disk cache, if it's present (otherwise set up state such that
-        // retrieveData() does not attempt to load the file from disk again since the attempt was
-        // made here).
-        loadFileCache(cachePayload)
-      } else {
-        // Otherwise, keep the cache the same.
-        cachePayload
+      // It's expected 'oldState' to match 'cachePayload' unless the cache hasn't yet been read
+      // (since then 'cachePayload' will be based on the store's default value).
+      val (oldState, newState) = when (cachePayload.state) {
+        CacheState.UNLOADED -> {
+          val loadedPayload = loadFileCache(cachePayload)
+          when (loadedPayload.state) {
+            // The state should never stay as UNLOADED.
+            CacheState.UNLOADED ->
+              error("Something went wrong loading the cache during priming: $cacheFile")
+            CacheState.IN_MEMORY_ONLY -> {
+              // Needs saving. In this case, there is no "old" value since the cache was never
+              // initialized.
+              val storedPayload = storeFileCache(loadedPayload, update)
+              storedPayload to storedPayload
+            }
+            CacheState.IN_MEMORY_AND_ON_DISK -> // Loaded from disk successfully.
+              loadedPayload to loadedPayload.maybeReprimePayload(updateMode, update)
+          }
+        }
+        // Generally indicates that the cache was loaded but never written.
+        CacheState.IN_MEMORY_ONLY -> cachePayload to storeFileCache(cachePayload, update)
+        CacheState.IN_MEMORY_AND_ON_DISK ->
+          cachePayload to cachePayload.maybeReprimePayload(updateMode, update)
+      }
+
+      // The returned payload is always expected to be IN_MEMORY_AND_ON_DISK, but the in-memory copy
+      // may be intentionally kept out-of-date so that cache reads pick up the original version
+      // rather than the new one stored on-disk. Furthermore, this method guarantees by this point
+      // that the cache is in a good, non-error state (so the error is cleared in case one occurred
+      // during early priming).
+      failureLock.withLock { deferredLoadCacheFailure = null }
+      return@updateIfPresentAsync when (publishMode) {
+        PublishMode.PUBLISH_TO_IN_MEMORY_CACHE -> newState
+        PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE -> newState.copy(value = oldState.value)
       }
     }
   }
@@ -157,7 +220,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   /** See [storeDataAsync]. Stores data and allows for a custom deferred result. */
   fun <V> storeDataWithCustomChannelAsync(
     updateInMemoryCache: Boolean = true,
-    update: (T) -> Pair<T, V>
+    update: suspend (T) -> Pair<T, V>
   ): Deferred<V> {
     return cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
       val (updatedPayload, customResult) = storeFileCacheWithCustomChannel(cachedPayload, update)
@@ -173,7 +236,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    * does notify subscribers.
    */
   fun clearCacheAsync(): Deferred<Any> {
-    return cache.updateIfPresentAsync {
+    return cache.updateIfPresentAsync { currentPayload ->
       if (cacheFile.exists()) {
         cacheFile.delete()
       }
@@ -183,7 +246,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       // Always clear the in-memory cache and reset it to the initial value (the cache itself should
       // never be fully deleted since the rest of the store assumes a value is always present in
       // it).
-      CachePayload(state = CacheState.UNLOADED, value = initialValue)
+      currentPayload.copy(state = CacheState.UNLOADED, value = initialValue)
     }
   }
 
@@ -206,12 +269,18 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   private fun loadFileCache(currentPayload: CachePayload<T>): CachePayload<T> {
     if (!cacheFile.exists()) {
       // The store is not yet persisted on disk.
-      return currentPayload.moveToState(CacheState.IN_MEMORY_ONLY)
+      return currentPayload.copy(state = CacheState.IN_MEMORY_ONLY)
     }
+
+    // It's possible for multiple load requests to happen simultaneously, but finish out of order.
+    // Attempting to load the cache a second time can result in a number of problems:
+    // - Losing in-memory cache state.
+    // - Duplicating loaded on-disk state (since "mergeFrom()" is used for loading).
+    if (currentPayload.state != CacheState.UNLOADED) return currentPayload
 
     val cacheBuilder = currentPayload.value.toBuilder()
     return try {
-      CachePayload(
+      currentPayload.copy(
         state = CacheState.IN_MEMORY_AND_ON_DISK,
         value = FileInputStream(cacheFile).use { cacheBuilder.mergeFrom(it) }.build() as T
       )
@@ -221,10 +290,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       }
       // Update the cache to have an in-memory copy of the current payload since on-disk retrieval
       // failed.
-      CachePayload(
-        state = CacheState.IN_MEMORY_ONLY,
-        value = currentPayload.value
-      )
+      currentPayload.copy(state = CacheState.IN_MEMORY_ONLY, value = currentPayload.value)
     }
   }
 
@@ -235,20 +301,31 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   private fun storeFileCache(currentPayload: CachePayload<T>, update: (T) -> T): CachePayload<T> {
     val updatedCacheValue = update(currentPayload.value)
     FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
-    return CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue)
+    return currentPayload.copy(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue)
   }
 
   /** See [storeFileCache]. Returns payload and custom result. */
-  private fun <V> storeFileCacheWithCustomChannel(
+  private suspend fun <V> storeFileCacheWithCustomChannel(
     currentPayload: CachePayload<T>,
-    update: (T) -> Pair<T, V>
+    update: suspend (T) -> Pair<T, V>
   ): Pair<CachePayload<T>, V> {
     val (updatedCacheValue, customResult) = update(currentPayload.value)
+    // TODO(#4264): Move this over to using an I/O-specific dispatcher.
     FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
     return Pair(
-      CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue),
+      currentPayload.copy(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue),
       customResult
     )
+  }
+
+  private fun CachePayload<T>.maybeReprimePayload(
+    updateMode: UpdateMode,
+    initialize: (T) -> T
+  ): CachePayload<T> {
+    return when (updateMode) {
+      UpdateMode.UPDATE_IF_NEW_CACHE -> this // Nothing extra to do.
+      UpdateMode.UPDATE_ALWAYS -> storeFileCache(this, initialize) // Recompute the payload.
+    }
   }
 
   private data class PersistentCacheStoreId(private val id: String)
@@ -265,22 +342,48 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     IN_MEMORY_AND_ON_DISK
   }
 
-  private data class CachePayload<T>(val state: CacheState, val value: T) {
-    /** Returns a copy of this payload with the new, specified [CacheState]. */
-    fun moveToState(newState: CacheState): CachePayload<T> {
-      return CachePayload(state = newState, value = value)
-    }
+  private data class CachePayload<T>(val state: CacheState, val value: T)
+
+  /**
+   * The mode of on-disk data updating that can be configured for specific operations like cache
+   * priming.
+   *
+   * This mode only configures on-disk data changes, not in-memory (see [PublishMode] for that).
+   */
+  enum class UpdateMode {
+    /** Indicates that the on-disk cache should only be changed if it doesn't already exist. */
+    UPDATE_IF_NEW_CACHE,
+
+    /**
+     * Indicates that the on-disk cache should always be changed regardless of if it already exists.
+     */
+    UPDATE_ALWAYS
   }
 
-  // TODO(#59): Use @ApplicationContext instead of Context once package dependencies allow for
-  //  cross-module circular ependencies. Currently, the data module cannot depend on the app module.
+  /**
+   * The mode of in-memory data updating that can be configured for specific operations like cache
+   * priming.
+   *
+   * This mode only configures in-memory data changes, not on-disk (see [UpdateMode] for that).
+   */
+  enum class PublishMode {
+    /**
+     * Indicates that data changes should update the in-memory cache and be broadcast to
+     * subscribers.
+     */
+    PUBLISH_TO_IN_MEMORY_CACHE,
+
+    /** Indicates that data changes should not change the in-memory cache. */
+    DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+  }
+
   /**
    * An injectable factory for [PersistentCacheStore]s. The stores themselves should be retrievable
    * from central controllers since they can't be placed directly in the Dagger graph.
    */
   @Singleton
   class Factory @Inject constructor(
-    private val context: Context,
+    private val application: Application,
     private val cacheFactory: InMemoryBlockingCache.Factory,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private val directoryManagementUtil: DirectoryManagementUtil
@@ -293,7 +396,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
      */
     fun <T : MessageLite> create(cacheName: String, initialValue: T): PersistentCacheStore<T> {
       return PersistentCacheStore(
-        context,
+        application,
         cacheFactory,
         asyncDataSubscriptionManager,
         cacheName,
@@ -312,7 +415,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     ): PersistentCacheStore<T> {
       val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.internalId.toString())
       return PersistentCacheStore(
-        context,
+        application,
         cacheFactory,
         asyncDataSubscriptionManager,
         cacheName,

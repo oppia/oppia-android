@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.CompletedStoryItemBinding
 import org.oppia.android.databinding.CompletedStoryListFragmentBinding
 import javax.inject.Inject
@@ -17,7 +16,8 @@ import javax.inject.Inject
 class CompletedStoryListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<CompletedStoryListViewModel>
+  private val viewModel: CompletedStoryListViewModel,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private lateinit var binding: CompletedStoryListFragmentBinding
@@ -27,7 +27,6 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     internalProfileId: Int
   ): View? {
-    val viewModel = getCompletedStoryListViewModel()
     viewModel.setProfileId(internalProfileId)
 
     binding = CompletedStoryListFragmentBinding
@@ -52,16 +51,11 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<CompletedStoryItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<CompletedStoryItemViewModel>()
+    return singleTypeBuilderFactory.create<CompletedStoryItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = CompletedStoryItemBinding::inflate,
         setViewModel = CompletedStoryItemBinding::setViewModel
       )
       .build()
-  }
-
-  private fun getCompletedStoryListViewModel(): CompletedStoryListViewModel {
-    return viewModelProvider.getForFragment(fragment, CompletedStoryListViewModel::class.java)
   }
 }

@@ -7,7 +7,9 @@ import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Activity for Mark Topics Completed. */
@@ -40,9 +42,10 @@ class MarkTopicsCompletedActivity : InjectableAppCompatActivity() {
     const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedActivity.profile_id"
 
     fun createMarkTopicsCompletedIntent(context: Context, internalProfileId: Int): Intent {
-      val intent = Intent(context, MarkTopicsCompletedActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
-      return intent
+      return Intent(context, MarkTopicsCompletedActivity::class.java).apply {
+        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        decorateWithScreenName(MARK_TOPICS_COMPLETED_ACTIVITY)
+      }
     }
   }
 }

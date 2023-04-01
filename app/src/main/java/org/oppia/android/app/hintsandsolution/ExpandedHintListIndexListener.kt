@@ -7,7 +7,7 @@ package org.oppia.android.app.hintsandsolution
 interface ExpandedHintListIndexListener {
 
   /** Manage expanded list icon */
-  fun onExpandListIconClicked(index: Int?)
+  fun onExpandListIconClicked(expandedItemsList: ArrayList<Int>)
 
   /** Manage reveal hint button visibility while orientation change */
   fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?)

@@ -15,9 +15,9 @@ private const val EXTRA_LARGE_TEXT_SIZE_SCALE = 1.4f
 
 /** Text Size item view model for the recycler view in [ReadingTextSizeFragment]. */
 class TextSizeItemViewModel(
-  val resources: Resources,
+  private val resources: Resources,
   val readingTextSize: ReadingTextSize,
-  private val selectedTextSize: LiveData<String>,
+  private val selectedTextSize: LiveData<ReadingTextSize>,
   val textSizeRadioButtonListener: TextSizeRadioButtonListener,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
@@ -44,6 +44,6 @@ class TextSizeItemViewModel(
     }
   }
   val isTextSizeSelected: LiveData<Boolean> by lazy {
-    Transformations.map(selectedTextSize) { it == textSizeName }
+    Transformations.map(selectedTextSize) { it == readingTextSize }
   }
 }

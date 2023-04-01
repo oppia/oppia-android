@@ -41,13 +41,15 @@ class ConceptCardViewModel @Inject constructor(
   private fun processConceptCardResult(
     conceptCardResult: AsyncResult<EphemeralConceptCard>
   ): EphemeralConceptCard {
-    if (conceptCardResult.isFailure()) {
-      oppiaLogger.e(
-        "ConceptCardFragment",
-        "Failed to retrieve Concept Card",
-        conceptCardResult.getErrorOrNull()!!
-      )
+    return when (conceptCardResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.error
+        )
+        EphemeralConceptCard.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> EphemeralConceptCard.getDefaultInstance()
+      is AsyncResult.Success -> conceptCardResult.value
     }
-    return conceptCardResult.getOrDefault(EphemeralConceptCard.getDefaultInstance())
   }
 }

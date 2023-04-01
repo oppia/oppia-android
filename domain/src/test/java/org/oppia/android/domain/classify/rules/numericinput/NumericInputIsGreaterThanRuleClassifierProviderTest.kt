@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -64,7 +64,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
         .matches(
           answer = POSITIVE_REAL_VALUE_1_5,
           inputs = inputs,
-          writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+          classificationContext = ClassificationContext()
         )
 
     assertThat(matches).isFalse()
@@ -78,7 +78,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -92,7 +92,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -106,7 +106,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -120,7 +120,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -134,7 +134,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -148,7 +148,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -162,7 +162,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -176,7 +176,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_INT_VALUE_1,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -190,7 +190,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_INT_VALUE_1,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -204,7 +204,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -221,7 +221,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

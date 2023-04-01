@@ -1,11 +1,11 @@
 package org.oppia.android.domain.classify.rules.numericinput
 
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
-import org.oppia.android.domain.util.approximatelyEquals
+import org.oppia.android.util.math.isApproximatelyEqualTo
 import javax.inject.Inject
 
 /**
@@ -29,6 +29,6 @@ class NumericInputEqualsRuleClassifierProvider @Inject constructor(
   override fun matches(
     answer: Double,
     input: Double,
-    writtenTranslationContext: WrittenTranslationContext
-  ): Boolean = input.approximatelyEquals(answer)
+    classificationContext: ClassificationContext
+  ): Boolean = input.isApproximatelyEqualTo(answer)
 }

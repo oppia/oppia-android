@@ -4,6 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.animation.BounceInterpolator
+import android.view.animation.Interpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -32,13 +35,16 @@ import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.SplitScreenManager
-import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.StoryProgressController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
@@ -60,14 +66,17 @@ class StateFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val context: Context,
-  private val viewModelProvider: ViewModelProvider<StateViewModel>,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
   private val oppiaLogger: OppiaLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val stateViewModel: StateViewModel,
+  private val accessibilityService: AccessibilityService,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -82,10 +91,8 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var helpIndex: HelpIndex
+  private var forceAnnouncedForHintsBar = false
 
-  private val viewModel: StateViewModel by lazy {
-    getStateViewModel()
-  }
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState().toLiveData()
@@ -105,6 +112,7 @@ class StateFragmentPresenter @Inject constructor(
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
+    stateViewModel.initializeProfile(profileId)
 
     binding = StateFragmentBinding.inflate(
       inflater,
@@ -129,7 +137,7 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAdapter = stateRecyclerViewAdapter
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = this.viewModel
+      it.viewModel = stateViewModel
     }
 
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
@@ -162,7 +170,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun onContinueButtonClicked() {
-    viewModel.setHintBulbVisibility(false)
+    stateViewModel.setHintBulbVisibility(false)
     hideKeyboard()
     moveToNextState()
   }
@@ -177,7 +185,7 @@ class StateFragmentPresenter @Inject constructor(
     hideKeyboard()
     markExplorationCompleted()
     (activity as StopStatePlayingSessionWithSavedProgressListener)
-      .deleteCurrentProgressAndStopSession()
+      .deleteCurrentProgressAndStopSession(isCompletion = true)
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -190,11 +198,13 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
+    handleSubmitAnswer(
+      stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+    )
   }
 
   fun onResponsesHeaderClicked() {
-    recyclerViewAssembler.togglePreviousAnswers(viewModel.itemList)
+    recyclerViewAssembler.togglePreviousAnswers(stateViewModel.itemList)
     recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
@@ -202,8 +212,10 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleKeyboardAction() {
     hideKeyboard()
-    if (viewModel.getCanSubmitAnswer().get() == true) {
-      handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
+    if (stateViewModel.getCanSubmitAnswer().get() == true) {
+      handleSubmitAnswer(
+        stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+      )
     }
   }
 
@@ -223,7 +235,7 @@ class StateFragmentPresenter @Inject constructor(
       .hasConversationView(hasConversationView)
       .addContentSupport()
       .addFeedbackSupport()
-      .addInteractionSupport(viewModel.getCanSubmitAnswer())
+      .addInteractionSupport(stateViewModel.getCanSubmitAnswer())
       .addPastAnswersSupport()
       .addWrongAnswerCollapsingSupport()
       .addBackwardNavigationSupport()
@@ -240,7 +252,7 @@ class StateFragmentPresenter @Inject constructor(
       )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
-        explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
+        explorationId, stateViewModel.currentStateName, stateViewModel.isAudioBarVisible,
         this::getAudioUiManager
       )
       .addConceptCardSupport()
@@ -253,10 +265,6 @@ class StateFragmentPresenter @Inject constructor(
 
   fun revealSolution() {
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
-  }
-
-  private fun getStateViewModel(): StateViewModel {
-    return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
 
   private fun getAudioFragment(): Fragment? {
@@ -282,27 +290,23 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
-    if (result.isFailure()) {
-      oppiaLogger.e(
-        "StateFragment",
-        "Failed to retrieve ephemeral state",
-        result.getErrorOrNull()!!
-      )
-      return
-    } else if (result.isPending()) {
-      // Display nothing until a valid result is available.
-      return
+    when (result) {
+      is AsyncResult.Failure ->
+        oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
+      is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
+      is AsyncResult.Success -> processEphemeralState(result.value)
     }
+  }
 
-    val ephemeralState = result.getOrThrow()
+  private fun processEphemeralState(ephemeralState: EphemeralState) {
     explorationCheckpointState = ephemeralState.checkpointState
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
-      viewModel.isSplitView.set(true)
-      viewModel.centerGuidelinePercentage.set(0.5f)
+      stateViewModel.isSplitView.set(true)
+      stateViewModel.centerGuidelinePercentage.set(0.5f)
     } else {
-      viewModel.isSplitView.set(false)
-      viewModel.centerGuidelinePercentage.set(1f)
+      stateViewModel.isSplitView.set(false)
+      stateViewModel.centerGuidelinePercentage.set(1f)
     }
 
     val isInNewState =
@@ -319,10 +323,10 @@ class StateFragmentPresenter @Inject constructor(
       shouldSplit
     )
 
-    viewModel.itemList.clear()
-    viewModel.itemList += dataPair.first
-    viewModel.rightItemList.clear()
-    viewModel.rightItemList += dataPair.second
+    stateViewModel.itemList.clear()
+    stateViewModel.itemList += dataPair.first
+    stateViewModel.rightItemList.clear()
+    stateViewModel.rightItemList += dataPair.second
 
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
@@ -333,17 +337,15 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** Subscribes to the result of requesting to show a hint or solution. */
-  private fun subscribeToHintSolution(resultLiveData: LiveData<AsyncResult<Any?>>) {
-    resultLiveData.observe(
+  private fun subscribeToHintSolution(resultDataProvider: DataProvider<Any?>) {
+    resultDataProvider.toLiveData().observe(
       fragment,
       { result ->
-        if (result.isFailure()) {
-          oppiaLogger.e(
-            "StateFragment", "Failed to retrieve hint/solution", result.getErrorOrNull()!!
-          )
+        if (result is AsyncResult.Failure) {
+          oppiaLogger.e("StateFragment", "Failed to retrieve hint/solution", result.error)
         } else {
           // If the hint/solution, was revealed remove dot and radar.
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          setHintOpenedAndUnRevealed(false)
         }
       }
     )
@@ -370,7 +372,7 @@ class StateFragmentPresenter @Inject constructor(
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.showCelebrationOnCorrectAnswer(result.feedback)
           } else {
-            viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+            stateViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }
           recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
         }
@@ -389,18 +391,20 @@ class StateFragmentPresenter @Inject constructor(
   private fun processAnswerOutcome(
     ephemeralStateResult: AsyncResult<AnswerOutcome>
   ): AnswerOutcome {
-    if (ephemeralStateResult.isFailure()) {
-      oppiaLogger.e(
-        "StateFragment",
-        "Failed to retrieve answer outcome",
-        ephemeralStateResult.getErrorOrNull()!!
-      )
+    return when (ephemeralStateResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.error
+        )
+        AnswerOutcome.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> AnswerOutcome.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralStateResult.value
     }
-    return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
   }
 
   fun dismissConceptCard() {
@@ -412,8 +416,8 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
-    viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
-    explorationProgressController.moveToNextState().observe(
+    stateViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+    explorationProgressController.moveToNextState().toLiveData().observe(
       fragment,
       Observer {
         recyclerViewAssembler.collapsePreviousResponses()
@@ -430,8 +434,7 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  fun setAudioBarVisibility(visibility: Boolean) =
-    getStateViewModel().setAudioBarVisibility(visibility)
+  fun setAudioBarVisibility(visibility: Boolean) = stateViewModel.setAudioBarVisibility(visibility)
 
   fun scrollToTop() {
     binding.stateRecyclerView.smoothScrollToPosition(0)
@@ -440,9 +443,9 @@ class StateFragmentPresenter @Inject constructor(
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
     if (inputAnswerAvailable) {
-      viewModel.setCanSubmitAnswer(pendingAnswerError == null)
+      stateViewModel.setCanSubmitAnswer(pendingAnswerError == null)
     } else {
-      viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+      stateViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     }
   }
 
@@ -460,33 +463,94 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
-      viewModel.setHintOpenedAndUnRevealedVisibility(false)
-      viewModel.setHintBulbVisibility(false)
+      setHintOpenedAndUnRevealed(false)
+      stateViewModel.setHintBulbVisibility(false)
     } else {
       when (helpIndex.indexTypeCase) {
         HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX -> {
-          viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+          stateViewModel.setHintBulbVisibility(true)
+          setHintOpenedAndUnRevealed(true)
         }
         HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
-          viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          stateViewModel.setHintBulbVisibility(true)
+          setHintOpenedAndUnRevealed(false)
         }
         HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-          viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+          stateViewModel.setHintBulbVisibility(true)
+          setHintOpenedAndUnRevealed(true)
         }
         HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
-          viewModel.setHintBulbVisibility(true)
+          setHintOpenedAndUnRevealed(false)
+          stateViewModel.setHintBulbVisibility(true)
         }
         else -> {
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
-          viewModel.setHintBulbVisibility(false)
+          setHintOpenedAndUnRevealed(false)
+          stateViewModel.setHintBulbVisibility(false)
         }
       }
+    }
+  }
+
+  private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
+    stateViewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
+    if (isHintUnrevealed) {
+
+      val hintBulbAnimation = AnimationUtils.loadAnimation(
+        context,
+        R.anim.hint_bulb_animation
+      ).also { it.interpolator = BounceUpAndDownInterpolator() }
+
+      // The bulb should start bouncing every 30 seconds. Note that an initial delay is used for
+      // cases like configuration changes, or returning from a saved checkpoint.
+      lifecycleSafeTimerFactory.run {
+        activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
+          return@runPeriodically stateViewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
+            if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
+            // Make a forced announcement when the hint bar becomes visible so that the non sighted
+            // users know about the availability of hints. Instead of suddenly changing the focus of
+            // the app (which is a bad practice) to the hints bar upon availability, make a forced
+            // announcement. The forced announcement should be called after 5 seconds after the
+            // hints bar appears otherwise it might interrupt with the submit button's content
+            // description during Talkback.
+            if (!forceAnnouncedForHintsBar) {
+              forceAnnouncedForHintsBar = true
+              accessibilityService.announceForAccessibilityForView(
+                binding.hintsAndSolutionFragmentContainer,
+                resourceHandler.getStringInLocale(
+                  R.string.state_fragment_hint_bar_forced_announcement_text
+                )
+              )
+            }
+          }
+        }
+      }
+    } else {
+      binding.hintBulb.clearAnimation()
+    }
+  }
+
+  /**
+   * An [Interpolator] when performs a reversed, then regular bounce interpolation using
+   * [BounceInterpolator].
+   *
+   * This interpolator maps input time from [0, 0.5] to [1.0, 0.0] and (0.5, 1.0] to (0.0, 1.0],
+   * allowing a clean continuous reverse bounce animation such that the item being bounced returns
+   * to its original position (which is expected to be the "final" transformation value). Note the
+   * start and end of the same time values for output--interpolators in Android normally don't allow
+   * this which is why modeling this animation behavior any other way is particularly challenging.
+   */
+  private class BounceUpAndDownInterpolator : Interpolator {
+    private val bounceInterpolator by lazy { BounceInterpolator() }
+
+    override fun getInterpolation(input: Float): Float {
+      // To get the correct continuous bounce, run the reverse bounce from 100% to 0% for the first
+      // 50% of time, then run the regular bounce from 0% to 100% for the remaining 50%.
+      return if (input <= 0.5f) {
+        bounceInterpolator.getInterpolation(1f - input * 2f)
+      } else bounceInterpolator.getInterpolation(input * 2f - 1f)
     }
   }
 }

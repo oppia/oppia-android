@@ -10,6 +10,7 @@ import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
@@ -22,6 +23,7 @@ class CompletedStoryListViewModel @Inject constructor(
   private val intentFactoryShim: IntentFactoryShim,
   private val topicController: TopicController,
   private val oppiaLogger: OppiaLogger,
+  private val translationController: TranslationController,
   @StoryHtmlParserEntityType private val entityType: String
 ) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
@@ -48,14 +50,18 @@ class CompletedStoryListViewModel @Inject constructor(
   private fun processCompletedStoryListResult(
     completedStoryListResult: AsyncResult<CompletedStoryList>
   ): CompletedStoryList {
-    if (completedStoryListResult.isFailure()) {
-      oppiaLogger.e(
-        "CompletedStoryListFragment",
-        "Failed to retrieve CompletedStory list: ",
-        completedStoryListResult.getErrorOrNull()!!
-      )
+    return when (completedStoryListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "CompletedStoryListFragment",
+          "Failed to retrieve CompletedStory list: ",
+          completedStoryListResult.error
+        )
+        CompletedStoryList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> CompletedStoryList.getDefaultInstance()
+      is AsyncResult.Success -> completedStoryListResult.value
     }
-    return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
   }
 
   private fun processCompletedStoryList(
@@ -69,7 +75,8 @@ class CompletedStoryListViewModel @Inject constructor(
           internalProfileId,
           completedStory,
           entityType,
-          intentFactoryShim
+          intentFactoryShim,
+          translationController
         )
       }
     )

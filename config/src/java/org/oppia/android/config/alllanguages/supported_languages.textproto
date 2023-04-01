@@ -1,0 +1,140 @@
+language_definitions {
+  language: ARABIC
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "ar"
+    }
+    android_resources_language_id {
+      language_code: "ar"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "ar"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "ar"
+    }
+  }
+}
+language_definitions {
+  language: ENGLISH
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "en"
+    }
+    android_resources_language_id {
+      # Note that while English is the default language for Oppia & no special language code is
+      # needed for it, "en" is still used here for consistency. Technically this will match strings
+      # against "values-en", but because the team will never define strings with that qualifier they
+      # will always fallback to the default English strings under "values".
+      language_code: "en"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "en"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "en"
+    }
+  }
+}
+language_definitions {
+  language: HINDI
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "hi"
+    }
+    android_resources_language_id {
+      language_code: "hi"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "hi"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "hi"
+    }
+  }
+}
+language_definitions {
+  language: HINGLISH
+  fallback_macro_language: ENGLISH
+  min_android_sdk_version: 1
+  content_string_id {
+    macaronic_id {
+      combined_language_code: "hi-en"
+    }
+  }
+  audio_translation_id {
+    macaronic_id {
+      combined_language_code: "hi-en"
+    }
+  }
+}
+language_definitions {
+  language: PORTUGUESE
+  min_android_sdk_version: 1
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt"
+    }
+  }
+}
+language_definitions {
+  language: BRAZILIAN_PORTUGUESE
+  fallback_macro_language: PORTUGUESE
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt-BR"
+    }
+    android_resources_language_id {
+      language_code: "pt"
+      region_code: "BR"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt-BR"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt-BR"
+    }
+  }
+}
+language_definitions {
+  language: SWAHILI
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "sw"
+    }
+    android_resources_language_id {
+      language_code: "sw"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "sw"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "sw"
+    }
+  }
+}

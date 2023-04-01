@@ -31,7 +31,9 @@ class ProfilePictureActivityPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
 
   fun handleOnCreate(internalProfileId: Int) {
-    StatusBarColor.statusBarColorUpdate(R.color.profile_status_bar, activity, false)
+    StatusBarColor.statusBarColorUpdate(
+      R.color.component_color_shared_profile_status_bar_color, activity, false
+    )
     val binding = DataBindingUtil
       .setContentView<ProfilePictureActivityBinding>(
         activity,
@@ -80,14 +82,14 @@ class ProfilePictureActivityPresenter @Inject constructor(
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfilePictureActivity",
-        "Failed to retrieve profile",
-        profileResult.getErrorOrNull()!!
-      )
+    return when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("ProfilePictureActivity", "Failed to retrieve profile", profileResult.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
     }
-    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private fun setProfileAvatar(avatar: ProfileAvatar) {

@@ -2,8 +2,7 @@
 General-purpose utilities for parsing & rendering HTML within the app.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "html_parser",
@@ -12,11 +11,12 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":custom_bullet_span",
         ":custom_html_content_handler",
+        ":list_item_leading_margin_span",
         ":tag_handlers",
         "//third_party:androidx_core_core-ktx",
         "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/parser/image:url_image_parser",
     ],
@@ -25,22 +25,40 @@ kt_android_library(
 kt_android_library(
     name = "tag_handlers",
     srcs = [
-        "BulletTagHandler.kt",
         "ConceptCardTagHandler.kt",
         "ImageTagHandler.kt",
+        "LiTagHandler.kt",
         "MathTagHandler.kt",
+        "PolicyPageTagHandler.kt",
     ],
     visibility = ["//utility:__subpackages__"],
     deps = [
         ":custom_html_content_handler",
+        ":list_item_leading_margin_span",
+        ":policy_type",
+        "//third_party:io_github_karino2_kotlitex",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )
 
 kt_android_library(
-    name = "custom_bullet_span",
+    name = "list_item_leading_margin_span",
     srcs = [
-        "CustomBulletSpan.kt",
+        "ListItemLeadingMarginSpan.kt",
+    ],
+    visibility = [
+        "//app:__subpackages__",
+    ],
+    deps = [
+        "//utility",
+    ],
+)
+
+kt_android_library(
+    name = "policy_type",
+    srcs = [
+        "PolicyType.kt",
     ],
     visibility = [
         "//app:__subpackages__",
@@ -86,10 +104,8 @@ kt_android_library(
     ],
     deps = [
         ":custom_html_content_handler",
-        ":dagger",
         ":exploration_html_parser_entity_type",
         ":tag_handlers",
+        "//:dagger",
     ],
 )
-
-dagger_rules()

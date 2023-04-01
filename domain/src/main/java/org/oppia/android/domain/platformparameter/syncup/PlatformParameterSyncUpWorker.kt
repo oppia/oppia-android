@@ -5,10 +5,10 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.base.Optional
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
@@ -16,6 +16,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.util.getStringFromData
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.threading.BackgroundDispatcher
 import retrofit2.Response
 import java.lang.IllegalArgumentException
@@ -53,23 +54,13 @@ class PlatformParameterSyncUpWorker private constructor(
 
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
-    val result = backgroundScope.async {
+    // TODO(#3715): Add withTimeout() to avoid potential hanging.
+    return backgroundScope.async {
       when (inputData.getStringFromData(WORKER_TYPE_KEY)) {
         PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
         else -> Result.failure()
       }
-    }
-
-    val future = SettableFuture.create<Result>()
-    result.invokeOnCompletion { failure ->
-      if (failure != null) {
-        future.setException(failure)
-      } else {
-        future.set(result.getCompleted())
-      }
-    }
-    // TODO(#3715): Add withTimeout() to avoid potential hanging.
-    return future
+    }.asListenableFuture()
   }
 
   /**
@@ -112,8 +103,8 @@ class PlatformParameterSyncUpWorker private constructor(
         val cachingResult = platformParameterController
           .updatePlatformParameterDatabase(platformParameterList)
           .retrieveData()
-        if (cachingResult.isFailure()) {
-          throw IllegalStateException(cachingResult.getErrorOrNull())
+        if (cachingResult is AsyncResult.Failure) {
+          throw IllegalStateException(cachingResult.error)
         }
         Result.success()
       } else {

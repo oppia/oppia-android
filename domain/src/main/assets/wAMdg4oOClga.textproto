@@ -1,5 +1,4 @@
 story_id: "wAMdg4oOClga"
-story_name: "Ratios: Part 1"
 story_thumbnail {
   background_color_rgb: 11786481
 }
@@ -8,12 +7,53 @@ chapters {
   chapter_thumbnail {
     background_color_rgb: 14061432
   }
-  title: "What is a Ratio?"
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "What is a Ratio?"
+    content_id: "title"
+  }
+  translatable_description {
+    content_id: "description"
+  }
 }
 chapters {
   exploration_id: "5NWuolNcwH6e"
   chapter_thumbnail {
     background_color_rgb: 14088824
   }
-  title: "Order is important"
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "Order is important"
+    content_id: "title"
+  }
+  translatable_description {
+    content_id: "description"
+  }
+}
+written_translations {
+  key: "title"
+  value {
+  }
+}
+translatable_story_name {
+  html: "Ratios: Part 1"
+  content_id: "title"
 }

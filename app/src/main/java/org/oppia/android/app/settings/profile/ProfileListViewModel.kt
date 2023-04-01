@@ -28,14 +28,16 @@ class ProfileListViewModel @Inject constructor(
   }
 
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
-    if (profilesResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileListViewModel",
-        "Failed to retrieve the list of profiles",
-        profilesResult.getErrorOrNull()!!
-      )
+    val profileList = when (profilesResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileListViewModel", "Failed to retrieve the list of profiles", profilesResult.error
+        )
+        emptyList()
+      }
+      is AsyncResult.Pending -> emptyList()
+      is AsyncResult.Success -> profilesResult.value
     }
-    val profileList = profilesResult.getOrDefault(emptyList())
 
     val sortedProfileList = profileList.sortedBy {
       machineLocale.run { it.name.toMachineLowerCase() }

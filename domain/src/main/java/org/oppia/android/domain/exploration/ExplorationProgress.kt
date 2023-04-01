@@ -119,7 +119,7 @@ internal class ExplorationProgress {
    * instance, the variables of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
    * re-initialized with the values created from the saved [ExplorationCheckpoint].
    */
-  fun resumeStateDeckForSavedState(exploration: Exploration) {
+  fun resumeStateDeckForSavedState() {
     stateDeck.resumeDeck(
       stateGraph.getState(explorationCheckpoint.pendingStateName),
       getPreviousStatesFromCheckpoint(),

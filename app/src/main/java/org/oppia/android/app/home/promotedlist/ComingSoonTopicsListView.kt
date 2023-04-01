@@ -32,6 +32,11 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   @Inject
   lateinit var oppiaLogger: OppiaLogger
 
+  @Inject
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+
+  private lateinit var comingSoonDataList: List<ComingSoonTopicsViewModel>
+
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
@@ -45,11 +50,22 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
     val snapHelper = StartSnapHelper()
     onFlingListener = null
     snapHelper.attachToRecyclerView(this)
+    maybeInitializeAdapter()
+  }
+
+  private fun maybeInitializeAdapter() {
+    if (::bindingInterface.isInitialized &&
+      ::bindingInterface.isInitialized &&
+      ::oppiaLogger.isInitialized &&
+      ::singleTypeBuilderFactory.isInitialized &&
+      ::comingSoonDataList.isInitialized
+    ) {
+      bindDataToAdapter()
+    }
   }
 
   /**
    * Sets the list of coming soon topics that this view shows to the learner.
-   *
    * @param newDataList the new list of topics to present
    */
   fun setComingSoonTopicList(newDataList: List<ComingSoonTopicsViewModel>?) {
@@ -58,18 +74,29 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
     // way to check that the adapter is created.
     // This ensures that the adapter will only be created once and correctly rebinds the data.
     // For more context:  https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462
-    if (adapter == null) {
-      adapter = createAdapter()
-    }
     if (newDataList == null) {
-      oppiaLogger.w(COMING_SOON_TOPIC_LIST_VIEW_TAG, "Failed to resolve upcoming topic list data")
+      oppiaLogger.w(COMING_SOON_TOPIC_LIST_VIEW_TAG, "Failed to resolve new topics list data")
     } else {
-      (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
+      comingSoonDataList = newDataList
+      maybeInitializeAdapter()
     }
   }
 
+  private fun bindDataToAdapter() {
+    // To reliably bind data only after the adapter is created, we manually set the data so we can first
+    // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
+    // way to check that the adapter is created.
+    // This ensures that the adapter will only be created once and correctly rebinds the data.
+    // For more context: https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462
+    if (adapter == null) {
+      adapter = createAdapter()
+    }
+
+    (adapter as BindableAdapter<*>).setDataUnchecked(comingSoonDataList)
+  }
+
   private fun createAdapter(): BindableAdapter<ComingSoonTopicsViewModel> {
-    return BindableAdapter.SingleTypeBuilder.newBuilder<ComingSoonTopicsViewModel>()
+    return singleTypeBuilderFactory.create<ComingSoonTopicsViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           bindingInterface.provideComingSoonTopicViewInflatedView(

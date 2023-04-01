@@ -11,4 +11,10 @@ interface LogUploader {
 
   /** Enqueues a [workRequest] using the [workManager] for uploading exception logs that are stored in the cache store. */
   fun enqueueWorkRequestForExceptions(workManager: WorkManager, workRequest: PeriodicWorkRequest)
+
+  /** Enqueues a [workRequest] using the [workManager] for uploading performance metrics logs that are stored in the cache store. */
+  fun enqueueWorkRequestForPerformanceMetrics(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
+  )
 }

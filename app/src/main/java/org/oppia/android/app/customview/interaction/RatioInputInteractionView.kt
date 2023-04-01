@@ -16,28 +16,31 @@ class RatioInputInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  private val hintText: CharSequence
+  private var hintText: CharSequence = ""
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
     onFocusChangeListener = this
-    hintText = (hint ?: "")
+    // Assume multi-line for the purpose of properly showing long hints.
+    setSingleLine(hint != null)
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
+  // TODO(#4574): Add tests to verify that the placeholder correctly shows/doesn’t show when expected
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
-    hint = ""
-    typeface = Typeface.DEFAULT
+    hintText = hint
+    hideHint()
     KeyboardHelper.showSoftKeyboard(v, context)
   } else {
-    hint = hintText
-    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    restoreHint()
     KeyboardHelper.hideSoftKeyboard(v, context)
   }
 
   override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
-    if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP)
-      this.clearFocus()
+    if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+      clearFocus()
+      restoreHint()
+    }
     return super.onKeyPreIme(keyCode, event)
   }
 
@@ -46,5 +49,17 @@ class RatioInputInteractionView @JvmOverloads constructor(
       stateKeyboardButtonListener.onEditorAction(EditorInfo.IME_ACTION_DONE)
     }
     super.onEditorAction(actionCode)
+  }
+
+  private fun hideHint() {
+    hint = ""
+    typeface = Typeface.DEFAULT
+    setSingleLine(true)
+  }
+
+  private fun restoreHint() {
+    hint = hintText
+    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    setSingleLine(false)
   }
 }

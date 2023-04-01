@@ -11,7 +11,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_shared_screen_tertiary_background_color">
 
     <TextView
       android:id="@+id/copyright_license_text_view"
@@ -19,7 +19,10 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
       android:autoLink="web"
+      android:background="@color/component_color_shared_content_container_background_color"
       android:padding="32dp"
-      android:text="@{viewModel.licenseText}" />
+      android:text="@{viewModel.licenseText}"
+      android:textColor="@color/component_color_shared_secondary_1_text_color"
+      android:textColorLink="@color/component_color_shared_link_text_color" />
   </ScrollView>
 </layout>

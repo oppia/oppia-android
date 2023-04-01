@@ -8,10 +8,13 @@ import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicProgressDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,7 +26,8 @@ const val RATIOS_STORY_ID_0 = "wAMdg4oOClga"
 const val RATIOS_STORY_ID_1 = "xBSdg4oOClga"
 const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
-const val TEST_EXPLORATION_ID_5 = "13"
+const val TEST_EXPLORATION_ID_5 = "test_exp_id_5"
+const val TEST_EXPLORATION_ID_13 = "13"
 const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
 const val FRACTIONS_EXPLORATION_ID_1 = "MjZzEVOG47_1"
 const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
@@ -37,6 +41,8 @@ private const val RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID =
   "retrieve_topic_progress_list_data_provider_id"
 private const val RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_topic_progress_data_provider_id"
+private const val RETRIEVE_TOPICS_PROGRESS_DATA_PROVIDER_ID =
+  "retrieve_topics_progress_data_provider_id"
 private const val RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_story_progress_data_provider_id"
 private const val RETRIEVE_CHAPTER_PLAY_STATE_DATA_PROVIDER_ID =
@@ -304,9 +310,9 @@ class StoryProgressController @Inject constructor(
       .transformAsync(RETRIEVE_CHAPTER_PLAY_STATE_DATA_PROVIDER_ID) {
         val chapterProgress = it.chapterProgressMap[explorationId]
         if (chapterProgress != null) {
-          AsyncResult.success(chapterProgress.chapterPlayState)
+          AsyncResult.Success(chapterProgress.chapterPlayState)
         } else {
-          AsyncResult.success(ChapterPlayState.NOT_STARTED)
+          AsyncResult.Success(ChapterPlayState.NOT_STARTED)
         }
       }
   }
@@ -319,18 +325,34 @@ class StoryProgressController @Inject constructor(
       .transformAsync(RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID) { topicProgressDatabase ->
         val topicProgressList = mutableListOf<TopicProgress>()
         topicProgressList.addAll(topicProgressDatabase.topicProgressMap.values)
-        AsyncResult.success(topicProgressList.toList())
+        AsyncResult.Success(topicProgressList.toList())
       }
   }
 
   /** Returns a [TopicProgress] [DataProvider] for a specific topicId, per-profile basis. */
-  internal fun retrieveTopicProgressDataProvider(
+  private fun retrieveTopicProgressDataProvider(
     profileId: ProfileId,
     topicId: String
   ): DataProvider<TopicProgress> {
+    return retrieveTopicsProgressDataProvider(profileId, listOf(topicId))
+      .transform(RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID) { it.single() }
+  }
+
+  /**
+   * Returns a [DataProvider] of [TopicProgress]es for the specified topic Ids, on a per-profile
+   * basis, in the same order as the list of IDs.
+   *
+   * The provider defaults the progress for any IDs that don't have progress corresponding to them.
+   */
+  internal fun retrieveTopicsProgressDataProvider(
+    profileId: ProfileId,
+    topicIds: List<String>
+  ): DataProvider<List<TopicProgress>> {
     return retrieveCacheStore(profileId)
-      .transformAsync(RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID) {
-        AsyncResult.success(it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance())
+      .transformAsync(RETRIEVE_TOPICS_PROGRESS_DATA_PROVIDER_ID) { progressDb ->
+        return@transformAsync AsyncResult.Success(
+          topicIds.map { progressDb.topicProgressMap[it] ?: TopicProgress.getDefaultInstance() }
+        )
       }
   }
 
@@ -342,7 +364,7 @@ class StoryProgressController @Inject constructor(
   ): DataProvider<StoryProgress> {
     return retrieveTopicProgressDataProvider(profileId, topicId)
       .transformAsync(RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID) {
-        AsyncResult.success(it.storyProgressMap[storyId] ?: StoryProgress.getDefaultInstance())
+        AsyncResult.Success(it.storyProgressMap[storyId] ?: StoryProgress.getDefaultInstance())
       }
   }
 
@@ -350,7 +372,7 @@ class StoryProgressController @Inject constructor(
     deferred: Deferred<StoryProgressActionStatus>
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
-      StoryProgressActionStatus.SUCCESS -> AsyncResult.success(null)
+      StoryProgressActionStatus.SUCCESS -> AsyncResult.Success(null)
     }
   }
 
@@ -370,11 +392,14 @@ class StoryProgressController @Inject constructor(
       cacheStore
     }
 
-    cacheStore.primeCacheAsync().invokeOnCompletion {
-      it?.let { it ->
+    cacheStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion {
+      if (it != null) {
         oppiaLogger.e(
           "StoryProgressController",
-          "Failed to prime cache ahead of LiveData conversion for StoryProgressController.",
+          "Failed to prime cache ahead of data retrieval for StoryProgressController.",
           it
         )
       }

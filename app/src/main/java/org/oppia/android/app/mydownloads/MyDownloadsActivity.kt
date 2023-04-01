@@ -7,6 +7,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.ScreenName.MY_DOWNLOADS_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** The activity for displaying [MyDownloadsFragment]. */
@@ -26,6 +28,7 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
     fun createMyDownloadsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, MyDownloadsActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
+      intent.decorateWithScreenName(MY_DOWNLOADS_ACTIVITY)
       return intent
     }
 

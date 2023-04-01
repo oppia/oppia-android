@@ -16,45 +16,45 @@ import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileChooserAddViewBinding
 import org.oppia.android.databinding.ProfileChooserFragmentBinding
 import org.oppia.android.databinding.ProfileChooserProfileViewBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
-  R.color.avatar_background_1,
-  R.color.avatar_background_2,
-  R.color.avatar_background_3,
-  R.color.avatar_background_4,
-  R.color.avatar_background_5,
-  R.color.avatar_background_6,
-  R.color.avatar_background_7,
-  R.color.avatar_background_8,
-  R.color.avatar_background_9,
-  R.color.avatar_background_10,
-  R.color.avatar_background_11,
-  R.color.avatar_background_12,
-  R.color.avatar_background_13,
-  R.color.avatar_background_14,
-  R.color.avatar_background_15,
-  R.color.avatar_background_16,
-  R.color.avatar_background_17,
-  R.color.avatar_background_18,
-  R.color.avatar_background_19,
-  R.color.avatar_background_20,
-  R.color.avatar_background_21,
-  R.color.avatar_background_22,
-  R.color.avatar_background_23,
-  R.color.avatar_background_24
+  R.color.color_def_avatar_background_1,
+  R.color.color_def_avatar_background_2,
+  R.color.color_def_avatar_background_3,
+  R.color.color_def_avatar_background_4,
+  R.color.color_def_avatar_background_5,
+  R.color.color_def_avatar_background_6,
+  R.color.color_def_avatar_background_7,
+  R.color.color_def_avatar_background_8,
+  R.color.color_def_avatar_background_9,
+  R.color.color_def_avatar_background_10,
+  R.color.color_def_avatar_background_11,
+  R.color.color_def_avatar_background_12,
+  R.color.color_def_avatar_background_13,
+  R.color.color_def_avatar_background_14,
+  R.color.color_def_avatar_background_15,
+  R.color.color_def_avatar_background_16,
+  R.color.color_def_avatar_background_17,
+  R.color.color_def_avatar_background_18,
+  R.color.color_def_avatar_background_19,
+  R.color.color_def_avatar_background_20,
+  R.color.color_def_avatar_background_21,
+  R.color.color_def_avatar_background_22,
+  R.color.color_def_avatar_background_23,
+  R.color.color_def_avatar_background_24
 )
 
 /** The presenter for [ProfileChooserFragment]. */
@@ -63,21 +63,20 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val context: Context,
-  private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
+  private val chooserViewModel: ProfileChooserViewModel,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock
+  private val analyticsController: AnalyticsController,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
 
-  private val chooserViewModel: ProfileChooserViewModel by lazy {
-    getProfileChooserViewModel()
-  }
-
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    StatusBarColor.statusBarColorUpdate(R.color.profile_status_bar, activity, false)
+    StatusBarColor.statusBarColorUpdate(
+      R.color.component_color_shared_profile_status_bar_color, activity, false
+    )
     binding = ProfileChooserFragmentBinding.inflate(
       inflater,
       container,
@@ -123,14 +122,18 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun processWasProfileEverBeenAddedResult(
     wasProfileEverBeenAddedResult: AsyncResult<Boolean>
   ): Boolean {
-    if (wasProfileEverBeenAddedResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileChooserFragment",
-        "Failed to retrieve the information on wasProfileEverBeenAdded",
-        wasProfileEverBeenAddedResult.getErrorOrNull()!!
-      )
+    return when (wasProfileEverBeenAddedResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileChooserFragment",
+          "Failed to retrieve the information on wasProfileEverBeenAdded",
+          wasProfileEverBeenAddedResult.error
+        )
+        false
+      }
+      is AsyncResult.Pending -> false
+      is AsyncResult.Success -> wasProfileEverBeenAddedResult.value
     }
-    return wasProfileEverBeenAddedResult.getOrDefault(/* defaultValue= */ false)
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */
@@ -140,15 +143,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }.minus(chooserViewModel.usedColors).random()
   }
 
-  private fun getProfileChooserViewModel(): ProfileChooserViewModel {
-    return viewModelProvider.getForFragment(fragment, ProfileChooserViewModel::class.java)
-  }
-
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<ProfileChooserUiModel, ProfileChooserUiModel.ModelTypeCase>(
-        ProfileChooserUiModel::getModelTypeCase
-      )
+    return multiTypeBuilderFactory.create<ProfileChooserUiModel,
+      ProfileChooserUiModel.ModelTypeCase>(
+      ProfileChooserUiModel::getModelTypeCase
+    )
       .registerViewDataBinderWithSameModelType(
         viewType = ProfileChooserUiModel.ModelTypeCase.PROFILE,
         inflateDataBinding = ProfileChooserProfileViewBinding::inflate,
@@ -169,11 +168,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.viewModel = model
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
+      updateLearnerIdIfAbsent(model.profile)
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
+            if (it is AsyncResult.Success) {
               activity.startActivity(
                 (
                   HomeActivity.createHomeActivity(
@@ -247,8 +247,16 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun logProfileChooserEvent() {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(), eventContext = oppiaLogger.createOpenProfileChooserContext()
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenProfileChooserContext(),
+      profileId = null // There's no profile currently logged in.
     )
+  }
+
+  private fun updateLearnerIdIfAbsent(profile: Profile) {
+    if (profile.learnerId.isNullOrEmpty()) {
+      // TODO(#4345): Block on the following data provider before allowing the user to log in.
+      profileManagementController.initializeLearnerId(profile.id)
+    }
   }
 }

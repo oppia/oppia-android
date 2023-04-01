@@ -27,27 +27,30 @@ class NumericInputInteractionView @JvmOverloads constructor(
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
-  private val hintText: CharSequence
+  private var hintText: CharSequence = ""
 
   init {
     onFocusChangeListener = this
-    hintText = (hint ?: "")
+    // Assume multi-line for the purpose of properly showing long hints.
+    setSingleLine(hint != null)
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
+  // TODO(#4574): Add tests to verify that the placeholder correctly shows/doesn’t show when expected
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
-    hint = ""
-    typeface = Typeface.DEFAULT
+    hintText = hint
+    hideHint()
     showSoftKeyboard(v, context)
   } else {
-    hint = hintText
-    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    restoreHint()
     hideSoftKeyboard(v, context)
   }
 
   override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
-    if (event.keyCode == KEYCODE_BACK && event.action == ACTION_UP)
-      this.clearFocus()
+    if (event.keyCode == KEYCODE_BACK && event.action == ACTION_UP) {
+      clearFocus()
+      restoreHint()
+    }
     return super.onKeyPreIme(keyCode, event)
   }
 
@@ -56,5 +59,17 @@ class NumericInputInteractionView @JvmOverloads constructor(
       stateKeyboardButtonListener.onEditorAction(EditorInfo.IME_ACTION_DONE)
     }
     super.onEditorAction(actionCode)
+  }
+
+  private fun hideHint() {
+    hint = ""
+    typeface = Typeface.DEFAULT
+    setSingleLine(true)
+  }
+
+  private fun restoreHint() {
+    hint = hintText
+    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    setSingleLine(false)
   }
 }

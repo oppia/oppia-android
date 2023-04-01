@@ -6,5 +6,7 @@ build --android_databinding_use_v3_4_args \
     --define=android_standalone_dexing_tool=d8_compat_dx \
     --android_databinding_use_androidx
 
+build --javacopt="-Werror"
+
 # Show all test output by default (for better debugging).
 test --test_output=all

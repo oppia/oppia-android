@@ -3,7 +3,6 @@ package org.oppia.android.app.player.exploration
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
@@ -25,11 +24,11 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
 ) {
   private lateinit var profileId: ProfileId
 
-  fun handleCreate(internalProfileId: Int) {
-    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  fun handleCreate(profileId: ProfileId) {
+    this.profileId = profileId
     retrieveReadingTextSize().observe(
       fragment,
-      Observer<ReadingTextSize> { result ->
+      { result ->
         (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
       }
     )
@@ -45,13 +44,15 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
   private fun processReadingTextSizeResult(
     readingTextSizeResult: AsyncResult<Profile>
   ): ReadingTextSize {
-    if (readingTextSizeResult.isFailure()) {
-      oppiaLogger.e(
-        "ExplorationManagerFragment",
-        "Failed to retrieve profile",
-        readingTextSizeResult.getErrorOrNull()!!
-      )
-    }
-    return readingTextSizeResult.getOrDefault(Profile.getDefaultInstance()).readingTextSize
+    return when (readingTextSizeResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ExplorationManagerFragment", "Failed to retrieve profile", readingTextSizeResult.error
+        )
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> readingTextSizeResult.value
+    }.readingTextSize
   }
 }

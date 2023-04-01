@@ -9,6 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.util.extensions.getProto
@@ -16,7 +17,7 @@ import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
+private const val CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY =
   "HintsAndSolutionDialogFragment.current_expanded_list_index"
 private const val HINT_INDEX_SAVED_KEY = "HintsAndSolutionDialogFragment.hint_index"
 private const val IS_HINT_REVEALED_SAVED_KEY = "HintsAndSolutionDialogFragment.is_hint_revealed"
@@ -33,7 +34,7 @@ class HintsAndSolutionDialogFragment :
   @Inject
   lateinit var hintsAndSolutionDialogFragmentPresenter: HintsAndSolutionDialogFragmentPresenter
 
-  private var currentExpandedHintListIndex: Int? = null
+  private var expandedItemsList = ArrayList<Int>()
 
   private var index: Int? = null
   private var isHintRevealed: Boolean? = null
@@ -47,6 +48,8 @@ class HintsAndSolutionDialogFragment :
     internal const val HELP_INDEX_KEY = "HintsAndSolutionDialogFragment.help_index"
     internal const val WRITTEN_TRANSLATION_CONTEXT_KEY =
       "HintsAndSolutionDialogFragment.written_translation_context"
+    internal const val PROFILE_ID_KEY =
+      "HintsAndSolutionDialogFragment.profile_id"
 
     /**
      * Creates a new instance of a DialogFragment to display hints and solution
@@ -57,13 +60,15 @@ class HintsAndSolutionDialogFragment :
      * @param helpIndex the [HelpIndex] corresponding to the current hints/solution configuration
      * @param writtenTranslationContext the [WrittenTranslationContext] needed to translate the
      *     hints/solution
+     * @param profileId the ID of the profile viewing the hint/solution
      * @return [HintsAndSolutionDialogFragment]: DialogFragment
      */
     fun newInstance(
       id: String,
       state: State,
       helpIndex: HelpIndex,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      profileId: ProfileId
     ): HintsAndSolutionDialogFragment {
       return HintsAndSolutionDialogFragment().apply {
         arguments = Bundle().apply {
@@ -71,6 +76,7 @@ class HintsAndSolutionDialogFragment :
           putProto(STATE_KEY, state)
           putProto(HELP_INDEX_KEY, helpIndex)
           putProto(WRITTEN_TRANSLATION_CONTEXT_KEY, writtenTranslationContext)
+          putProto(PROFILE_ID_KEY, profileId)
         }
       }
     }
@@ -90,13 +96,10 @@ class HintsAndSolutionDialogFragment :
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
+  ): View {
     if (savedInstanceState != null) {
-      currentExpandedHintListIndex =
-        savedInstanceState.getInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, -1)
-      if (currentExpandedHintListIndex == -1) {
-        currentExpandedHintListIndex = null
-      }
+      expandedItemsList =
+        savedInstanceState.getIntegerArrayList(CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY) ?: ArrayList()
       index = savedInstanceState.getInt(HINT_INDEX_SAVED_KEY, -1)
       if (index == -1) index = null
       isHintRevealed = savedInstanceState.getBoolean(IS_HINT_REVEALED_SAVED_KEY, false)
@@ -117,6 +120,7 @@ class HintsAndSolutionDialogFragment :
     val helpIndex = args.getProto(HELP_INDEX_KEY, HelpIndex.getDefaultInstance())
     val writtenTranslationContext =
       args.getProto(WRITTEN_TRANSLATION_CONTEXT_KEY, WrittenTranslationContext.getDefaultInstance())
+    val profileId = args.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
 
     return hintsAndSolutionDialogFragmentPresenter.handleCreateView(
       inflater,
@@ -125,12 +129,13 @@ class HintsAndSolutionDialogFragment :
       helpIndex,
       writtenTranslationContext,
       id,
-      currentExpandedHintListIndex,
+      expandedItemsList,
       this as ExpandedHintListIndexListener,
       index,
       isHintRevealed,
       solutionIndex,
-      isSolutionRevealed
+      isSolutionRevealed,
+      profileId
     )
   }
 
@@ -141,9 +146,7 @@ class HintsAndSolutionDialogFragment :
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    if (currentExpandedHintListIndex != null) {
-      outState.putInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, currentExpandedHintListIndex!!)
-    }
+    outState.putIntegerArrayList(CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY, expandedItemsList)
     if (index != null) {
       outState.putInt(HINT_INDEX_SAVED_KEY, index!!)
     }
@@ -158,9 +161,8 @@ class HintsAndSolutionDialogFragment :
     }
   }
 
-  override fun onExpandListIconClicked(index: Int?) {
-    currentExpandedHintListIndex = index
-    hintsAndSolutionDialogFragmentPresenter.onExpandClicked(index)
+  override fun onExpandListIconClicked(expandedItemsList: ArrayList<Int>) {
+    this.expandedItemsList = expandedItemsList
   }
 
   override fun revealSolution() {

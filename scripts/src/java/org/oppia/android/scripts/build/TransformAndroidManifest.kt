@@ -1,7 +1,10 @@
 package org.oppia.android.scripts.build
 
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.GitClient
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.w3c.dom.Document
+import org.w3c.dom.NodeList
 import java.io.File
 import java.io.StringWriter
 import javax.xml.parsers.DocumentBuilderFactory
@@ -14,7 +17,7 @@ private const val USAGE_STRING =
     "</absolute/path/to/input/AndroidManifest.xml:Path> " +
     "</absolute/path/to/output/AndroidManifest.xml:Path> " +
     "<build_flavor:String> <major_app_version:Int> <minor_app_version:Int> <version_code:Int> " +
-    "<base_develop_branch_reference:String>"
+    "<application_relative_qualified_class:String> <base_develop_branch_reference:String>"
 
 /**
  * The main entrypoint for transforming an AndroidManifest to include both a version code and
@@ -38,6 +41,7 @@ private const val USAGE_STRING =
  *     <major_app_version> \\
  *     <minor_app_version> \\
  *     <version_code> \\
+ *     <qualified_application_class_relative_to_app_package> \\
  *     <base_develop_branch_reference>
  *
  * Arguments:
@@ -54,26 +58,30 @@ private const val USAGE_STRING =
  * Example:
  *   bazel run //scripts:transform_android_manifest -- $(pwd) \\
  *     $(pwd)/app/src/main/AndroidManifest.xml $(pwd)/TransformedAndroidManifest.xml alpha 0 6 6 \\
- *     origin/develop
+ *     .app.application.alpha.AlphaOppiaApplication origin/develop
  */
 fun main(args: Array<String>) {
-  check(args.size >= 8) { USAGE_STRING }
+  check(args.size >= 9) { USAGE_STRING }
 
   val repoRoot = File(args[0]).also { if (!it.exists()) error("File doesn't exist: ${args[0]}") }
-  TransformAndroidManifest(
-    repoRoot = repoRoot,
-    sourceManifestFile = File(args[1]).also {
-      if (!it.exists()) {
-        error("File doesn't exist: ${args[1]}")
-      }
-    },
-    outputManifestFile = File(args[2]),
-    buildFlavor = args[3],
-    majorVersion = args[4].toIntOrNull() ?: error(USAGE_STRING),
-    minorVersion = args[5].toIntOrNull() ?: error(USAGE_STRING),
-    versionCode = args[6].toIntOrNull() ?: error(USAGE_STRING),
-    baseDevelopBranchReference = args[7]
-  ).generateAndOutputNewManifest()
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    TransformAndroidManifest(
+      repoRoot = repoRoot,
+      sourceManifestFile = File(args[1]).also {
+        if (!it.exists()) {
+          error("File doesn't exist: ${args[1]}")
+        }
+      },
+      outputManifestFile = File(args[2]),
+      buildFlavor = args[3],
+      majorVersion = args[4].toIntOrNull() ?: error(USAGE_STRING),
+      minorVersion = args[5].toIntOrNull() ?: error(USAGE_STRING),
+      versionCode = args[6].toIntOrNull() ?: error(USAGE_STRING),
+      relativelyQualifiedApplicationClass = args[7],
+      baseDevelopBranchReference = args[8],
+      scriptBgDispatcher
+    ).generateAndOutputNewManifest()
+  }
 }
 
 private class TransformAndroidManifest(
@@ -84,11 +92,12 @@ private class TransformAndroidManifest(
   private val majorVersion: Int,
   private val minorVersion: Int,
   private val versionCode: Int,
-  private val baseDevelopBranchReference: String
+  private val relativelyQualifiedApplicationClass: String,
+  private val baseDevelopBranchReference: String,
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
-  private val gitClient by lazy {
-    GitClient(repoRoot, baseDevelopBranchReference)
-  }
+  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
+  private val gitClient by lazy { GitClient(repoRoot, baseDevelopBranchReference, commandExecutor) }
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }
   private val transformerFactory by lazy { TransformerFactory.newInstance() }
 
@@ -104,13 +113,28 @@ private class TransformAndroidManifest(
     }
     val versionNameAttribute = manifestDocument.createAttribute("android:versionName").apply {
       value = computeVersionName(
-        buildFlavor, majorVersion, minorVersion, commitHash = gitClient.branchMergeBase
+        buildFlavor, majorVersion, minorVersion, commitHash = gitClient.currentCommit
       )
+    }
+    val applicationNameAttribute = manifestDocument.createAttribute("android:name").apply {
+      value = relativelyQualifiedApplicationClass
+    }
+    val replaceNameAttribute = manifestDocument.createAttribute("tools:replace").apply {
+      // Other manifests may define duplicate names. Make sure the manifest merger knows to
+      // prioritize this name.
+      value = "android:name"
     }
     val manifestNode = manifestDocument.childNodes.item(0)
     manifestNode.attributes.apply {
       setNamedItem(versionCodeAttribute)
       setNamedItem(versionNameAttribute)
+    }
+    val applicationNode =
+      manifestNode.childNodes.asSequence().find { it.nodeName == "application" }
+        ?: error("Failed to find an 'application' tag in manifest.")
+    applicationNode.attributes.apply {
+      setNamedItem(applicationNameAttribute)
+      setNamedItem(replaceNameAttribute)
     }
 
     // Output the new transformed manifest.
@@ -134,5 +158,9 @@ private class TransformAndroidManifest(
     return StringWriter().apply {
       transformer.transform(DOMSource(this@toSource), StreamResult(this@apply))
     }.toString()
+  }
+
+  private companion object {
+    private fun NodeList.asSequence() = (0 until length).asSequence().map { item(it) }
   }
 }

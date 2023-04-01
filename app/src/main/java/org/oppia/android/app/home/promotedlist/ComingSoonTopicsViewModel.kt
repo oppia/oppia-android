@@ -6,15 +6,19 @@ import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.UpcomingTopic
+import org.oppia.android.domain.translation.TranslationController
 
 /** [ViewModel] for displaying a coming soon topic summaries. */
 class ComingSoonTopicsViewModel(
   private val activity: AppCompatActivity,
   val topicSummary: UpcomingTopic,
   val entityType: String,
-  val comingSoonTopicList: ComingSoonTopicList
+  val comingSoonTopicList: ComingSoonTopicList,
+  translationController: TranslationController
 ) : HomeItemViewModel() {
-  val name: String = topicSummary.name
+  val topicTitle: String by lazy {
+    translationController.extractString(topicSummary.title, topicSummary.writtenTranslationContext)
+  }
 
   /**
    * Returns the padding placed at the start of the coming soon topics list.

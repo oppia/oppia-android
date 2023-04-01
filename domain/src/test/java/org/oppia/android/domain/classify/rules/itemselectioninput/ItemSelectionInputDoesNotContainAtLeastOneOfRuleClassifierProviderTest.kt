@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
 import org.oppia.android.testing.assertThrows
@@ -55,7 +55,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SET_12345,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isFalse()
@@ -68,7 +68,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SET_12345,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isFalse()
@@ -81,7 +81,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SET_12345,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isFalse()
@@ -94,7 +94,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SET_12345,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isFalse()
@@ -107,7 +107,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SET_12345,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -120,7 +120,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SET_12345,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -133,7 +133,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SET_EMPTY,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -146,7 +146,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SET_12,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isFalse()
@@ -160,7 +160,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
       inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SET_12345,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -177,7 +177,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
       inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SET_12345,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -194,7 +194,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
       inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
         answer = DIFFERENT_INTERACTION_OBJECT_TYPE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

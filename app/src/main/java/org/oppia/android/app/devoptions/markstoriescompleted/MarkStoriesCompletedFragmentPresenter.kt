@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.MarkStoriesCompletedFragmentBinding
 import org.oppia.android.databinding.MarkStoriesCompletedStorySummaryViewBinding
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
@@ -20,8 +19,9 @@ import javax.inject.Inject
 class MarkStoriesCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<MarkStoriesCompletedViewModel>,
-  private val modifyLessonProgressController: ModifyLessonProgressController
+  private val viewModel: MarkStoriesCompletedViewModel,
+  private val modifyLessonProgressController: ModifyLessonProgressController,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : StorySelector {
   private lateinit var binding: MarkStoriesCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -47,13 +47,13 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
 
     binding.apply {
       this.lifecycleOwner = fragment
-      this.viewModel = getMarkStoriesCompletedViewModel()
+      this.viewModel = this@MarkStoriesCompletedFragmentPresenter.viewModel
     }
 
     this.selectedStoryIdList = selectedStoryIdList
 
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    getMarkStoriesCompletedViewModel().setProfileId(profileId)
+    viewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -64,15 +64,22 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     }
 
     binding.markStoriesCompletedAllCheckBoxContainer.setOnClickListener {
-      if (binding.isAllChecked == null || binding.isAllChecked == false)
+      if (binding.isAllChecked == null || binding.isAllChecked == false) {
         binding.isAllChecked = true
+      } else if (binding.isAllChecked == true) {
+        binding.isAllChecked = false
+      }
     }
 
     binding.markStoriesCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        getMarkStoriesCompletedViewModel().getStorySummaryMap().values.forEach { viewModel ->
+        viewModel.getStorySummaryMap().values.forEach { viewModel ->
           if (!viewModel.isCompleted)
             storySelected(viewModel.storySummary.storyId)
+        }
+      } else {
+        viewModel.getStorySummaryMap().values.forEach { viewModel ->
+          if (!viewModel.isCompleted) storyUnselected(viewModel.storySummary.storyId)
         }
       }
       bindingAdapter.notifyDataSetChanged()
@@ -81,8 +88,9 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     binding.markStoriesCompletedMarkCompletedTextView.setOnClickListener {
       modifyLessonProgressController.markMultipleStoriesCompleted(
         profileId,
-        getMarkStoriesCompletedViewModel().getStorySummaryMap()
-          .filterKeys { selectedStoryIdList.contains(it) }.mapValues { it.value.topicId }
+        viewModel.getStorySummaryMap().filterKeys {
+          selectedStoryIdList.contains(it)
+        }.mapValues { it.value.topicId }
       )
       activity.finish()
     }
@@ -91,8 +99,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StorySummaryViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<StorySummaryViewModel>()
+    return singleTypeBuilderFactory.create<StorySummaryViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = MarkStoriesCompletedStorySummaryViewBinding::inflate,
         setViewModel = this::bindStorySummaryView
@@ -105,9 +112,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     model: StorySummaryViewModel
   ) {
     binding.viewModel = model
-    if (getMarkStoriesCompletedViewModel().getStorySummaryMap().values
-      .count { !it.isCompleted } == 0
-    ) {
+    if (viewModel.getStorySummaryMap().values.count { !it.isCompleted } == 0) {
       this.binding.isAllChecked = true
     }
     if (model.isCompleted) {
@@ -125,17 +130,13 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun getMarkStoriesCompletedViewModel(): MarkStoriesCompletedViewModel {
-    return viewModelProvider.getForFragment(fragment, MarkStoriesCompletedViewModel::class.java)
-  }
-
   override fun storySelected(storyId: String) {
     if (!selectedStoryIdList.contains(storyId)) {
       selectedStoryIdList.add(storyId)
     }
 
     if (selectedStoryIdList.size ==
-      getMarkStoriesCompletedViewModel().getStorySummaryMap().values.count { !it.isCompleted }
+      viewModel.getStorySummaryMap().values.count { !it.isCompleted }
     ) {
       binding.isAllChecked = true
     }
@@ -147,7 +148,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     }
 
     if (selectedStoryIdList.size !=
-      getMarkStoriesCompletedViewModel().getStorySummaryMap().values.count { !it.isCompleted }
+      viewModel.getStorySummaryMap().values.count { !it.isCompleted }
     ) {
       binding.isAllChecked = false
     }

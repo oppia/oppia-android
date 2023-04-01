@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.ReadingTextSizeFragmentArguments
+import org.oppia.android.app.model.ReadingTextSizeFragmentStateBundle
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY =
-  "ReadingTextSizeFragment.reading_text_size_preference_summary_value"
-private const val SELECTED_READING_TEXT_SIZE_SAVED_KEY =
-  "ReadingTextSizeFragment.selected_text_size"
+private const val FRAGMENT_ARGUMENTS_KEY = "ReadingTextSizeFragment.arguments"
+private const val FRAGMENT_SAVED_STATE_KEY = "ReadingTextSizeFragment.saved_state"
 
 /** The fragment to change the text size of the reading content in the app. */
 class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListener {
@@ -20,12 +23,15 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
   lateinit var readingTextSizeFragmentPresenter: ReadingTextSizeFragmentPresenter
 
   companion object {
-    fun newInstance(readingTextSize: String): ReadingTextSizeFragment {
-      val args = Bundle()
-      args.putString(READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY, readingTextSize)
-      val fragment = ReadingTextSizeFragment()
-      fragment.arguments = args
-      return fragment
+    fun newInstance(readingTextSize: ReadingTextSize): ReadingTextSizeFragment {
+      val protoArguments = ReadingTextSizeFragmentArguments.newBuilder().apply {
+        this.readingTextSize = readingTextSize
+      }.build()
+      return ReadingTextSizeFragment().apply {
+        arguments = Bundle().apply {
+          putProto(FRAGMENT_ARGUMENTS_KEY, protoArguments)
+        }
+      }
     }
   }
 
@@ -39,25 +45,33 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
-      checkNotNull(arguments) { "Expected arguments to be passed to ReadingTextSizeFragment" }
-    val readingTextSize = if (savedInstanceState == null) {
-      args.get(READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY) as String
-    } else {
-      savedInstanceState.get(SELECTED_READING_TEXT_SIZE_SAVED_KEY) as String
-    }
+    val readingTextSize =
+      savedInstanceState?.retrieveStateBundle()?.selectedReadingTextSize
+        ?: retrieveFragmentArguments().readingTextSize
     return readingTextSizeFragmentPresenter.handleOnCreateView(inflater, container, readingTextSize)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putString(
-      SELECTED_READING_TEXT_SIZE_SAVED_KEY,
-      readingTextSizeFragmentPresenter.getTextSizeSelected()
-    )
+    val stateBundle = ReadingTextSizeFragmentStateBundle.newBuilder().apply {
+      selectedReadingTextSize = readingTextSizeFragmentPresenter.getTextSizeSelected()
+    }.build()
+    outState.putProto(FRAGMENT_SAVED_STATE_KEY, stateBundle)
   }
 
-  override fun onTextSizeSelected(selectedTextSize: String) {
+  override fun onTextSizeSelected(selectedTextSize: ReadingTextSize) {
     readingTextSizeFragmentPresenter.onTextSizeSelected(selectedTextSize)
+  }
+
+  private fun retrieveFragmentArguments(): ReadingTextSizeFragmentArguments {
+    return checkNotNull(arguments) {
+      "Expected arguments to be passed to ReadingTextSizeFragment"
+    }.getProto(FRAGMENT_ARGUMENTS_KEY, ReadingTextSizeFragmentArguments.getDefaultInstance())
+  }
+
+  private fun Bundle.retrieveStateBundle(): ReadingTextSizeFragmentStateBundle {
+    return getProto(
+      FRAGMENT_SAVED_STATE_KEY, ReadingTextSizeFragmentStateBundle.getDefaultInstance()
+    )
   }
 }

@@ -19,39 +19,48 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.databinding.TextViewBindingAdapters.setDrawableEndCompat
 import org.oppia.android.app.databinding.TextViewBindingAdapters.setProfileDataText
 import org.oppia.android.app.databinding.TextViewBindingAdapters.setProfileLastVisitedText
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.TextViewBindingAdaptersTestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -69,7 +78,9 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -79,6 +90,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+// Time: Wed Apr 24 2019 08:22:00
+private const val TIMESTAMP = 1556094120000
 
 /** Tests for [TextViewBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -100,6 +114,8 @@ class TextViewBindingAdaptersTest {
       )
     )
 
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -111,19 +127,13 @@ class TextViewBindingAdaptersTest {
     Intents.release()
   }
 
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  // Time: Wed Apr 24 2019 08:22:00
-  private val TIMESTAMP = 1556094120000
-
   @Test
   fun testTextViewBindingAdapters_profileDataTextIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileDataText(textView, /* setText= */ TIMESTAMP)
+      setProfileDataText(textView, TIMESTAMP)
       assertThat(textView.text.toString()).isEqualTo("Created on April 24, 2019")
     }
   }
@@ -135,10 +145,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs)
       assertThat(textView.text.toString()).isEqualTo("Last used just now")
     }
   }
@@ -150,10 +157,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 60000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 60000)
       assertThat(textView.text.toString()).isEqualTo("Last used a minute ago")
     }
   }
@@ -165,10 +169,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 120000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 120000)
       assertThat(textView.text.toString()).isEqualTo("Last used 2 minutes ago")
     }
   }
@@ -180,10 +181,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 3600000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 3600000)
       assertThat(textView.text.toString()).isEqualTo("Last used an hour ago")
     }
   }
@@ -195,10 +193,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 7200000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 7200000)
       assertThat(textView.text.toString()).isEqualTo("Last used 2 hours ago")
     }
   }
@@ -210,10 +205,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 86400000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 86400000)
       assertThat(textView.text.toString()).isEqualTo("Last used yesterday")
     }
   }
@@ -225,10 +217,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 172800000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 172800000)
       assertThat(textView.text.toString()).isEqualTo("Last used 2 days ago")
     }
   }
@@ -240,10 +229,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs + 172800000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs + 172800000)
       assertThat(textView.text.toString()).isEqualTo("Last used recently")
     }
   }
@@ -252,12 +238,11 @@ class TextViewBindingAdaptersTest {
   fun testSetProfileLastVisitedText_forTimeZero_setsLastUsedRecently() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
-    val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
         textView,
-        /* setText= */ 0
+        /* timestamp = */ 0
       )
       assertThat(textView.text.toString()).isEqualTo("Last used recently")
     }
@@ -267,12 +252,11 @@ class TextViewBindingAdaptersTest {
   fun testSetProfileLastVisitedText_forNegativeTime_setsLastUsedRecently() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
-    val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
         textView,
-        /* setText= */ -1
+        /* timestamp = */ -1
       )
       assertThat(textView.text.toString()).isEqualTo("Last used recently")
     }
@@ -288,7 +272,7 @@ class TextViewBindingAdaptersTest {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setDrawableEndCompat(
         textView,
-        /* setDrawableEndCompat= */ drawable
+        /* drawable = */ drawable
       )
       assertThat(textView.compoundDrawablesRelative[2]).isEqualTo(drawable)
     }
@@ -314,18 +298,26 @@ class TextViewBindingAdaptersTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(textViewBindingAdaptersTest: TextViewBindingAdaptersTest)
   }

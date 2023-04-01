@@ -4,21 +4,26 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
+import javax.inject.Inject
 
 /** [StateItemViewModel] for the text input interaction. */
-class TextInputViewModel(
+class TextInputViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
+  private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
@@ -82,6 +87,38 @@ class TextInputViewModel(
       placeholderUnicodeOption2?.let { unicode ->
         translationController.extractString(unicode, writtenTranslationContext)
       } ?: "" // The default placeholder for text input is empty.
-    return if (placeholder1.isNotEmpty()) placeholder1 else placeholder2
+    return when {
+      placeholder1.isNotEmpty() -> placeholder1
+      placeholder2.isNotEmpty() -> placeholder2
+      else -> resourceHandler.getStringInLocale(R.string.text_input_default_hint_text)
+    }
+  }
+
+  /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
+  class FactoryImpl @Inject constructor(
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController
+  ) : InteractionItemFactory {
+    override fun create(
+      entityId: String,
+      hasConversationView: Boolean,
+      interaction: Interaction,
+      interactionAnswerReceiver: InteractionAnswerReceiver,
+      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+      hasPreviousButton: Boolean,
+      isSplitView: Boolean,
+      writtenTranslationContext: WrittenTranslationContext,
+      timeToStartNoticeAnimationMs: Long?
+    ): StateItemViewModel {
+      return TextInputViewModel(
+        interaction,
+        hasConversationView,
+        answerErrorReceiver,
+        isSplitView,
+        writtenTranslationContext,
+        resourceHandler,
+        translationController
+      )
+    }
   }
 }

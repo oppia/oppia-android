@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -111,7 +111,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -126,7 +126,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -141,7 +141,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -156,7 +156,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -171,7 +171,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -186,7 +186,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     // Even if creator does not input simplest form, learner's answer must still be in simplest form
@@ -202,7 +202,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -217,7 +217,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -232,7 +232,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -247,7 +247,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -262,7 +262,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -277,7 +277,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -292,7 +292,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -310,7 +310,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -328,7 +328,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

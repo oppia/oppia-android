@@ -10,9 +10,11 @@ import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -27,38 +29,48 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -67,12 +79,14 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -82,7 +96,10 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -94,7 +111,11 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
+
 /** Tests for [RevisionCardActivity]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -102,23 +123,14 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class RevisionCardActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -131,6 +143,15 @@ class RevisionCardActivityTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
+      context, 1, FRACTIONS_TOPIC_ID, 1, FRACTIONS_SUBTOPIC_LIST_SIZE
+    ).extractCurrentAppScreenName()
+
+    assertThat(currentScreenName).isEqualTo(ScreenName.REVISION_CARD_ACTIVITY)
   }
 
   @Test
@@ -197,7 +218,7 @@ class RevisionCardActivityTest {
       profileId = profileId,
       topicId = "test_topic_id_0",
       subtopicId = 1
-    ).use { scenario ->
+    ).use {
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("sample subtopic with dummy content"))))
     }
@@ -212,9 +233,117 @@ class RevisionCardActivityTest {
       profileId = profileId,
       topicId = "test_topic_id_0",
       subtopicId = 1
-    ).use { scenario ->
+    ).use {
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
+    }
+  }
+
+  @Test
+  fun testActivity_requestReturnToTopic_finishesActivity() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.onReturnToTopicRequested()
+        testCoroutineDispatchers.runCurrent()
+
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_requestReturnToTopic_logsCloseRevisionEvent() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.onReturnToTopicRequested()
+        testCoroutineDispatchers.runCurrent()
+
+        val latestEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+        assertThat(latestEvent).hasCloseRevisionCardContextThat {
+          hasTopicIdThat().isEqualTo(FRACTIONS_TOPIC_ID)
+          hasSubtopicIndexThat().isEqualTo(1)
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_clickNavigationBack_finishesActivity() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      onView(withContentDescription("Navigate up")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_clickNavigationBack_logsCloseRevisionEvent() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      onView(withContentDescription("Navigate up")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        val latestEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+        assertThat(latestEvent).hasCloseRevisionCardContextThat {
+          hasTopicIdThat().isEqualTo(FRACTIONS_TOPIC_ID)
+          hasSubtopicIndexThat().isEqualTo(1)
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_pressBack_finishesActivity() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_pressBack_logsCloseRevisionEvent() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        val latestEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+        assertThat(latestEvent).hasCloseRevisionCardContextThat {
+          hasTopicIdThat().isEqualTo(FRACTIONS_TOPIC_ID)
+          hasSubtopicIndexThat().isEqualTo(1)
+        }
+      }
     }
   }
 
@@ -237,9 +366,9 @@ class RevisionCardActivityTest {
   private fun createRevisionCardActivityIntent(
     internalProfileId: Int,
     topicId: String,
-    subtopicId: Int
+    subtopicId: Int,
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
-    context, internalProfileId, topicId, subtopicId
+    context, internalProfileId, topicId, subtopicId, FRACTIONS_SUBTOPIC_LIST_SIZE
   )
 
   private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
@@ -267,19 +396,27 @@ class RevisionCardActivityTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterSingletonModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(revisionCardActivityTest: RevisionCardActivityTest)
   }

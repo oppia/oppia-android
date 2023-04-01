@@ -9,14 +9,9 @@
       type="org.oppia.android.app.help.HelpListViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/help_fragment_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/help_fragment_recycler_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      app:list="@{viewModel.helpItemList}" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="match_parent"
+    app:list="@{viewModel.helpItemList}" />
 </layout>

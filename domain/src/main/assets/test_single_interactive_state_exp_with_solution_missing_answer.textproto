@@ -71,7 +71,6 @@ states {
         }
       }
       solution {
-        interaction_id: "TextInput"
         explanation {
           html: "<p>'Oppia' is translated from Finnish.</p>"
           content_id: "solution"
@@ -135,6 +134,22 @@ states {
   }
 }
 init_state_name: "Text"
-objective: "Test exploration."
-title: "Prototype exploration with only one solution and no hints"
 language_code: "en"
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Prototype exploration with only one solution and no hints"
+  content_id: "title"
+}
+description {
+  html: "Test exploration."
+  content_id: "description"
+}

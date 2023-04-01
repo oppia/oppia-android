@@ -24,9 +24,10 @@
 -dontwarn sun.misc.Signal
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
+# TODO(#4120): Reevaluate if these exemptions are needed long-term.
+-dontwarn kotlin.text.Regex$splitToSequence*
 # Potentially a Kotlin 1.4-only exception.
 -dontwarn kotlin.time.jdk8.DurationConversionsJDK8Kt
-
 # This seems to be a Kotlin 1.6-specific issue. It seems safe to ignore since the class appears to
 # be fully generated.
 -dontwarn kotlinx.coroutines.internal.ClassValueCtorCache

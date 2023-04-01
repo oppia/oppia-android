@@ -3,6 +3,7 @@ package org.oppia.android.util.parser.svg
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.Paint
@@ -20,7 +21,7 @@ import org.oppia.android.util.parser.image.ImageTransformation
  * rendering methods available.
  */
 abstract class SvgPictureDrawable(
-  context: Context,
+  private val context: Context,
   private val scalableVectorGraphic: ScalableVectorGraphic
 ) : Drawable() {
   // TODO(#1523): Once Glide can be orchestrated, add tests for verifying this drawable's state.
@@ -34,7 +35,8 @@ abstract class SvgPictureDrawable(
   private val bitmapBlurrer by lazy { BitmapBlurrer(context) }
 
   private var picture: Picture? = null
-  private var intrinsicSize = ScalableVectorGraphic.SvgSizeSpecs(width = -1f, height = -1f)
+  private var intrinsicSize =
+    ScalableVectorGraphic.SvgSizeSpecs(intrinsicWidth = -1f, intrinsicHeight = -1f)
   private var bitmap: Bitmap? = null
 
   override fun draw(canvas: Canvas) {
@@ -59,7 +61,13 @@ abstract class SvgPictureDrawable(
             translate(left.toFloat(), top.toFloat())
           }
 
-          drawPicture(picture)
+          // If the destination is larger than the intrinsic size (such as when the app needs the
+          // image to be larger for accessibility) then ensure the picture is correspondingly
+          // scaled.
+          val scaleX = bounds.width().toFloat() / intrinsicWidth
+          val scaleY = bounds.height().toFloat() / intrinsicHeight
+          scale(scaleX, scaleY)
+          drawPicture(picture, /* dst= */ intrinsicSize.computeRenderingBounds())
         }
       }
 
@@ -69,13 +77,17 @@ abstract class SvgPictureDrawable(
   }
 
   /**
-   * See the super class for specifics. Note that the returned width will not be valid until this
-   * drawable is initialized (which is the responsibility of the subclass implementation).
+   * See the super class for specifics.
+   *
+   * Note that the returned width will not be valid until this drawable is initialized (which is the
+   * responsibility of the subclass implementation). Note also that implementations are allowed to
+   * render the drawable at a different scale from the image itself (to ensure it's both rendered
+   * and finally sized correctly, in parity with Oppia web).
    */
-  override fun getIntrinsicWidth(): Int = intrinsicSize.width.toInt()
+  override fun getIntrinsicWidth(): Int = intrinsicSize.renderedWidth.toInt()
 
   /** See [getIntrinsicWidth]. */
-  override fun getIntrinsicHeight(): Int = intrinsicSize.height.toInt()
+  override fun getIntrinsicHeight(): Int = intrinsicSize.renderedHeight.toInt()
 
   override fun setAlpha(alpha: Int) { /* Unsupported. */ }
 
@@ -91,6 +103,7 @@ abstract class SvgPictureDrawable(
     picture = textPaint?.let {
       scalableVectorGraphic.renderToTextPicture(it)
     } ?: scalableVectorGraphic.renderToBlockPicture()
+    // TODO(#4246): Fix both SVG rendering performance and upscaling to ensure images aren't blurry.
     intrinsicSize = scalableVectorGraphic.computeSizeSpecs(textPaint)
     if (scalableVectorGraphic.shouldBeRenderedAsBitmap()) {
       recomputeBitmap()
@@ -99,10 +112,9 @@ abstract class SvgPictureDrawable(
 
   private fun recomputeBitmap() {
     bitmap = picture?.let { picture ->
-      val renderedPictureBitmap =
-        Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+      val renderedPictureBitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, ARGB_8888)
       val canvas = Canvas(renderedPictureBitmap)
-      canvas.drawPicture(picture)
+      canvas.drawPicture(picture, /* dst= */ intrinsicSize.computeRenderingBounds())
       return@let transformBitmap(renderedPictureBitmap)
     }
   }
@@ -120,15 +132,26 @@ abstract class SvgPictureDrawable(
       ImageTransformation.BLUR -> bitmapBlurrer.blur(bitmap)
     }
   }
+
+  private companion object {
+    private fun ScalableVectorGraphic.SvgSizeSpecs.computeRenderingBounds(): Rect {
+      return Rect().apply {
+        left = 0
+        right = renderedWidth.toInt()
+        top = 0
+        bottom = renderedHeight.toInt()
+      }
+    }
+
+    private fun ScalableVectorGraphic.shouldBeRenderedAsBitmap() =
+      hasTransformations() || isUsingAndroidSdkWithSvgRenderingIssues()
+
+    private fun ScalableVectorGraphic.hasTransformations() = transformations.isNotEmpty()
+
+    // TODO(#3961): Remove this & instead rely on native SVG rendering for older SDK versions.
+    // See #3938 for context on why these OS versions are being forced to bitmap rendering.
+    @SuppressLint("ObsoleteSdkInt") // Incorrect warning.
+    private fun isUsingAndroidSdkWithSvgRenderingIssues() =
+      Build.VERSION.SDK_INT <= Build.VERSION_CODES.M
+  }
 }
-
-private fun ScalableVectorGraphic.shouldBeRenderedAsBitmap() =
-  hasTransformations() || isUsingAndroidSdkWithSvgRenderingIssues()
-
-private fun ScalableVectorGraphic.hasTransformations() = transformations.isNotEmpty()
-
-// TODO(#3961): Remove this & instead rely on native SVG rendering for older SDK versions.
-// See #3938 for context on why these OS versions are being forced to bitmap rendering.
-@SuppressLint("ObsoleteSdkInt") // Incorrect warning.
-private fun isUsingAndroidSdkWithSvgRenderingIssues() =
-  Build.VERSION.SDK_INT <= Build.VERSION_CODES.M

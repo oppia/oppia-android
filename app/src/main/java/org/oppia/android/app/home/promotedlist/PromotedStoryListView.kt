@@ -32,9 +32,13 @@ class PromotedStoryListView @JvmOverloads constructor(
   @Inject
   lateinit var oppiaLogger: OppiaLogger
 
+  @Inject
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+
+  private lateinit var promotedDataList: List<PromotedStoryViewModel>
+
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
@@ -45,14 +49,34 @@ class PromotedStoryListView @JvmOverloads constructor(
     val snapHelper = StartSnapHelper()
     onFlingListener = null
     snapHelper.attachToRecyclerView(this)
+    maybeInitializeAdapter()
+  }
+
+  private fun maybeInitializeAdapter() {
+    if (::bindingInterface.isInitialized &&
+      ::bindingInterface.isInitialized &&
+      ::oppiaLogger.isInitialized &&
+      ::singleTypeBuilderFactory.isInitialized &&
+      ::promotedDataList.isInitialized
+    ) {
+      bindDataToAdapter()
+    }
   }
 
   /**
    * Sets the list of promoted stories that this view shows to the learner.
-   *
    * @param newDataList the new list of stories to present
    */
   fun setPromotedStoryList(newDataList: List<PromotedStoryViewModel>?) {
+    if (newDataList == null) {
+      oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new topics list data")
+    } else {
+      promotedDataList = newDataList
+      maybeInitializeAdapter()
+    }
+  }
+
+  private fun bindDataToAdapter() {
     // To reliably bind data only after the adapter is created, we manually set the data so we can first
     // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
     // way to check that the adapter is created.
@@ -61,15 +85,12 @@ class PromotedStoryListView @JvmOverloads constructor(
     if (adapter == null) {
       adapter = createAdapter()
     }
-    if (newDataList == null) {
-      oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new story list data")
-    } else {
-      (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
-    }
+
+    (adapter as BindableAdapter<*>).setDataUnchecked(promotedDataList)
   }
 
   private fun createAdapter(): BindableAdapter<PromotedStoryViewModel> {
-    return BindableAdapter.SingleTypeBuilder.newBuilder<PromotedStoryViewModel>()
+    return singleTypeBuilderFactory.create<PromotedStoryViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           bindingInterface.providePromotedStoryCardInflatedView(

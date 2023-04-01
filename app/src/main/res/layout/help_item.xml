@@ -20,6 +20,7 @@
     android:paddingEnd="16dp"
     android:paddingBottom="20dp"
     android:text="@{viewModel.title}"
+    android:textColor="@color/component_color_shared_primary_dark_text_color"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 </layout>

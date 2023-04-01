@@ -12,6 +12,7 @@ import javax.inject.Singleton
 class FakeLogUploader @Inject constructor() : LogUploader {
   private val eventRequestIdList = mutableListOf<UUID>()
   private val exceptionRequestIdList = mutableListOf<UUID>()
+  private val performanceMetricsRequestIdList = mutableListOf<UUID>()
 
   override fun enqueueWorkRequestForEvents(
     workManager: WorkManager,
@@ -27,9 +28,19 @@ class FakeLogUploader @Inject constructor() : LogUploader {
     exceptionRequestIdList.add(workRequest.id)
   }
 
+  override fun enqueueWorkRequestForPerformanceMetrics(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
+  ) {
+    performanceMetricsRequestIdList.add(workRequest.id)
+  }
+
   /** Returns the most recent work request id that's stored in the [eventRequestIdList]. */
   fun getMostRecentEventRequestId() = eventRequestIdList.last()
 
   /** Returns the most recent work request id that's stored in the [exceptionRequestIdList]. */
   fun getMostRecentExceptionRequestId() = exceptionRequestIdList.last()
+
+  /** Returns the most recent work request id that's stored in the [performanceMetricsRequestIdList]. */
+  fun getMostRecentPerformanceMetricsRequestId() = performanceMetricsRequestIdList.last()
 }

@@ -9,52 +9,53 @@
       type="org.oppia.android.app.administratorcontrols.appversion.AppVersionViewModel" />
   </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_shared_screen_tertiary_background_color">
+
+    <TextView
+      android:id="@+id/app_version_text_view"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/app_version_background">
+      android:layout_height="wrap_content"
+      android:background="@drawable/general_item_background_border"
+      android:fontFamily="sans-serif"
+      android:paddingStart="@dimen/app_version_text_view_padding_start"
+      android:paddingTop="20dp"
+      android:paddingEnd="@dimen/app_version_text_view_padding_end"
+      android:paddingBottom="20dp"
+      android:text="@{viewModel.computeVersionNameText()}"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
+      android:textSize="16sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
-      <TextView
-        android:id="@+id/app_version_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_app_version"
-        android:fontFamily="sans-serif"
-        android:paddingStart="@dimen/app_version_text_view_padding_start"
-        android:paddingTop="20dp"
-        android:paddingEnd="@dimen/app_version_text_view_padding_end"
-        android:paddingBottom="20dp"
-        android:text="@{viewModel.computeVersionNameText()}"
-        android:textColor="@color/oppia_primary_text_dark"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+      android:id="@+id/app_info_image_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/app_version_image_view_margin_start"
+      app:layout_constraintEnd_toStartOf="@id/app_last_update_date_text_view"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@id/app_last_update_date_text_view"
+      app:srcCompat="@drawable/ic_info_icon_gray_24dp"
+      app:tint="@color/component_color_app_version_activity_info_icon_color" />
 
-      <ImageView
-        android:id="@+id/app_info_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/app_version_image_view_margin_start"
-        app:srcCompat="@drawable/ic_info_icon_gray_24dp"
-        app:layout_constraintEnd_toStartOf="@id/app_last_update_date_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/app_last_update_date_text_view" />
-
-      <TextView
-        android:id="@+id/app_last_update_date_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="@dimen/app_version_text_view_margin_end"
-        android:fontFamily="sans-serif"
-        android:text="@{viewModel.computeLastUpdatedDateText()}"
-        android:textColor="@color/oppia_secondary_text"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/app_info_image_view"
-        app:layout_constraintTop_toBottomOf="@id/app_version_text_view" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+      android:id="@+id/app_last_update_date_text_view"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="12dp"
+      android:layout_marginTop="28dp"
+      android:layout_marginEnd="@dimen/app_version_text_view_margin_end"
+      android:fontFamily="sans-serif"
+      android:text="@{viewModel.computeLastUpdatedDateText()}"
+      android:textColor="@color/component_color_app_version_activity_description_text_color"
+      android:textSize="12sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_weight="1"
+      app:layout_constraintStart_toEndOf="@id/app_info_image_view"
+      app:layout_constraintTop_toBottomOf="@id/app_version_text_view" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

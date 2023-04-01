@@ -3,41 +3,43 @@ package org.oppia.android.domain.onboarding
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Rule
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.AppStartupState
-import org.oppia.android.app.model.AppStartupState.StartupMode
+import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED
+import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.NO_NOTICE
+import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_BETA_NOTICE
+import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE
 import org.oppia.android.app.model.AppStartupState.StartupMode.APP_IS_DEPRECATED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
+import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -45,6 +47,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.Shadows.shadowOf
@@ -58,94 +61,74 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [AppStartupStateController]. */
-@RunWith(AndroidJUnit4::class)
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
+@RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @Config(application = AppStartupStateControllerTest.TestApplication::class)
 class AppStartupStateControllerTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Rule
-  @JvmField
-  val executorRule = InstantTaskExecutorRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var appStartupStateController: AppStartupStateController
-
-  @Inject
-  lateinit var cacheFactory: PersistentCacheStore.Factory
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockOnboardingObserver: Observer<AsyncResult<AppStartupState>>
-
-  @Captor
-  lateinit var appStartupStateCaptor: ArgumentCaptor<AsyncResult<AppStartupState>>
+  @Inject lateinit var context: Context
+  @Inject lateinit var appStartupStateController: AppStartupStateController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Parameter lateinit var initialFlavorName: String
 
   // TODO(#3792): Remove this usage of Locale (probably by introducing a test utility in the locale
   //  package to generate these strings).
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
-  @Test
-  fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() {
-    setUpDefaultTestApplicationComponent()
-
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+  @Before
+  fun setUp() {
+    TestModule.buildFlavor = BuildFlavor.BUILD_FLAVOR_UNSPECIFIED
   }
 
   @Test
-  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() { // ktlint-disable max-line-length
+  fun testController_providesInitialState_indicatesUserHasNotOnboardedTheApp() {
     setUpDefaultTestApplicationComponent()
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
 
-    appStartupState.observeForever(mockOnboardingObserver)
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
+
+  @Test
+  fun testControllerObserver_observedAfterSettingAppOnboarded_providesState_userDidNotOnboardApp() {
+    setUpDefaultTestApplicationComponent()
+    val appStartupState = appStartupStateController.getAppStartupState()
+
     appStartupStateController.markOnboardingFlowCompleted()
     testCoroutineDispatchers.runCurrent()
 
     // The result should not indicate that the user onboarded the app because markUserOnboardedApp
     // does not notify observers of the change.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
   fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() {
     // Simulate the previous app already having completed onboarding.
-    executeInPreviousApp { testComponent ->
+    executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
     // Create the application after previous arrangement to simulate a re-creation.
     setUpDefaultTestApplicationComponent()
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    // The app should be considered onboarded since a new LiveData instance was observed after
-    // marking the app as onboarded.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_IS_ONBOARDED)
+    // The user should be considered onboarded since a new DataProvider instance was observed after
+    // marking the user as onboarded.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_IS_ONBOARDED)
   }
 
   @Test
   @Suppress("DeferredResultUnused")
   fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() {
     // Simulate the previous app already having completed onboarding, then cleared.
-    executeInPreviousApp { testComponent ->
+    executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
 
@@ -162,14 +145,11 @@ class AppStartupStateControllerTest {
 
     // Create the application after previous arrangement to simulate a re-creation.
     setUpDefaultTestApplicationComponent()
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
     // The app should be considered not yet onboarded since the previous history was cleared.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
@@ -177,13 +157,10 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
@@ -191,13 +168,10 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
   }
 
   @Test
@@ -205,13 +179,10 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
   }
 
   @Test
@@ -219,18 +190,15 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = false, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
   fun testSecondAppOpen_onboardingFlowNotDone_deprecationEnabled_beforeDepDate_appNotDeprecated() {
-    executeInPreviousApp { testComponent ->
+    executeInPreviousAppInstance { testComponent ->
       setUpOppiaApplicationForContext(
         context = testComponent.getContext(),
         expirationEnabled = true,
@@ -240,18 +208,15 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
   fun testSecondAppOpen_onboardingFlowNotDone_deprecationEnabled_afterDepDate_appIsDeprecated() {
-    executeInPreviousApp { testComponent ->
+    executeInPreviousAppInstance { testComponent ->
       setUpOppiaApplicationForContext(
         context = testComponent.getContext(),
         expirationEnabled = true,
@@ -261,18 +226,15 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
   }
 
   @Test
   fun testSecondAppOpen_onboardingFlowCompleted_depEnabled_beforeDepDate_appNotDeprecated() {
-    executeInPreviousApp { testComponent ->
+    executeInPreviousAppInstance { testComponent ->
       setUpOppiaApplicationForContext(
         context = testComponent.getContext(),
         expirationEnabled = true,
@@ -285,19 +247,16 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
     // The user should be considered onboarded, but the app is not yet deprecated.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_IS_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_IS_ONBOARDED)
   }
 
   @Test
   fun testSecondAppOpen_onboardingFlowCompleted_deprecationEnabled_afterDepDate_appIsDeprecated() {
-    executeInPreviousApp { testComponent ->
+    executeInPreviousAppInstance { testComponent ->
       setUpOppiaApplicationForContext(
         context = testComponent.getContext(),
         expirationEnabled = true,
@@ -310,14 +269,500 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
     // Despite the user completing the onboarding flow, the app is still deprecated.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
+  }
+
+  /* Tests to verify that beta & no notices are shown at the expected times. */
+
+  @Test
+  fun testController_initialState_testingBuild_showsUnspecifiedNotice() {
+    TestModule.buildFlavor = BuildFlavor.TESTING
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Testing mode is specially handled as it's generally not expected to be encountered (but is
+    // still possible).
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(FLAVOR_NOTICE_MODE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testController_initialState_developerBuild_showNoNotice() {
+    TestModule.buildFlavor = BuildFlavor.DEVELOPER
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_initialState_alphaBuild_showNoNotice() {
+    TestModule.buildFlavor = BuildFlavor.ALPHA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_initialState_betaBuild_showNoNotice() {
+    TestModule.buildFlavor = BuildFlavor.BETA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // No notice is shown here since the 'prior' version is beta, and the notice is only shown if
+    // the build flavor changes for the user.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_initialState_gaBuild_showNoNotice() {
+    TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_appDeprecated_testingBuild_showsUnspecifiedNotice() {
+    TestModule.buildFlavor = BuildFlavor.TESTING
+    setUpDefaultTestApplicationComponent()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Testing mode is specially handled as it's generally not expected to be encountered (but is
+    // still possible).
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(FLAVOR_NOTICE_MODE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testController_appDeprecated_developerBuild_showNoNotice() {
+    TestModule.buildFlavor = BuildFlavor.DEVELOPER
+    setUpDefaultTestApplicationComponent()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_appDeprecated_alphaBuild_showNoNotice() {
+    TestModule.buildFlavor = BuildFlavor.ALPHA
+    setUpDefaultTestApplicationComponent()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_appDeprecated_betaBuild_showNoNotice() {
+    TestModule.buildFlavor = BuildFlavor.BETA
+    setUpDefaultTestApplicationComponent()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // The beta notice is not shown in cases when the app is deprecated (since there's no point in
+    // showing it; the user can't actually use the app).
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_appDeprecated_gaBuild_showNoNotice() {
+    TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+    setUpDefaultTestApplicationComponent()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_testingBuild_showsUnspecifiedNotice() {
+    // Simulate the previous app already having completed onboarding.
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.TESTING
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Testing mode is specially handled as it's generally not expected to be encountered (but is
+    // still possible).
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(FLAVOR_NOTICE_MODE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testController_userOnboarded_developerBuild_showNoNotice() {
+    // Simulate the previous app already having completed onboarding.
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.DEVELOPER
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_alphaBuild_showNoNotice() {
+    // Simulate the previous app already having completed onboarding.
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.ALPHA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_betaBuild_showBetaNotice() {
+    // Simulate the previous app already having completed onboarding.
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.BETA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Beta is shown when using beta mode.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(SHOW_BETA_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_gaBuild_showNoNotice() {
+    // Simulate the previous app already having completed onboarding.
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  /* Tests to verify that changing from one build flavor to another can cause notices to show. */
+
+  @Test
+  fun testController_userOnboarded_changeToTestingBuild_showsUnspecifiedNotice() {
+    // Simulate the previous app already having completed onboarding in a non-testing build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.DEVELOPER
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.TESTING
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(FLAVOR_NOTICE_MODE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testController_userOnboarded_changeToDevBuild_showNoNotice() {
+    // Simulate the previous app already having completed onboarding in a non-dev build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.TESTING
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.DEVELOPER
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_changeToAlphaBuild_showNoNotice() {
+    // Simulate the previous app already having completed onboarding in a non-alpha build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.DEVELOPER
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.ALPHA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_changeToBetaBuild_fromAlpha_showBetaNotice() {
+    // Simulate the previous app already having completed onboarding in an alpha build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.ALPHA
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.BETA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Changing from alpha to beta should result in the notice showing.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(SHOW_BETA_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_changeToBetaBuild_fromBetaAgain_showNoNotice() {
+    // Simulate the previous app already having completed onboarding in a beta build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.BETA
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.BETA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // The beta notice was shown on the last run; don't show it again.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_changeToBetaBuild_fromGa_showBetaNotice() {
+    // Simulate the previous app already having completed onboarding in a generally available build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.BETA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Changing from GA to beta should result in the notice showing.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(SHOW_BETA_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_changeToGaBuild_fromDeveloperBuild_showNoNotice() {
+    // Simulate the previous app already having completed onboarding in an developer-only build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.DEVELOPER
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // The GA upgrade notice is only shown when changing from alpha or beta.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_changeToGaBuild_fromAlpha_showGaNotice() {
+    // Simulate the previous app already having completed onboarding in an alpha build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.ALPHA
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Changing from alpha to GA should result in the GA upgrade notice showing.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_changeToGaBuild_fromBeta_showGaNotice() {
+    // Simulate the previous app already having completed onboarding in a beta build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.BETA
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Changing from beta to GA should result in the GA upgrade notice showing.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE)
+  }
+
+  @Test
+  fun testController_userOnboarded_changeToGaBuild_fromGaAgain_showNoNotice() {
+    // Simulate the previous app already having completed onboarding in a generally available build.
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // The GA upgrade notice is only shown when changing from beta.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  /* Tests to verify that notices can be permanently dismissed. */
+
+  @Test
+  fun testController_dismissBetaNoticePermanently_scenariosWithoutBetaNotice_showNoNotice() {
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.BETA
+      testComponent.getAppStartupStateController().apply {
+        markOnboardingFlowCompleted()
+        // While this is technically impossible for this exact configuration, it could be done by
+        // permanently dismissing during an earlier time when the notice was shown before the user
+        // returned to the beta flavor of the app.
+        dismissBetaNoticesPermanently()
+      }
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.BETA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // No notice is shown in this case (beta -> beta).
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("testing_to_beta", "initialFlavorName=TESTING"),
+    Iteration("dev_to_beta", "initialFlavorName=DEVELOPER"),
+    Iteration("alpha_to_beta", "initialFlavorName=ALPHA"),
+    Iteration("ga_to_beta", "initialFlavorName=GENERAL_AVAILABILITY")
+  )
+  fun testController_dismissBetaNoticePermanently_scenariosWhenBetaNoticeDoesShow_showNoNotice() {
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.valueOf(initialFlavorName)
+      testComponent.getAppStartupStateController().apply {
+        markOnboardingFlowCompleted()
+        dismissBetaNoticesPermanently()
+      }
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.BETA
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Despite a notice normally showing in this circumstance, it doesn't here since the beta notice
+    // was permanently disabled.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("testing_to_ga", "initialFlavorName=TESTING"),
+    Iteration("dev_to_ga", "initialFlavorName=DEVELOPER")
+  )
+  fun testController_dismissGaNoticePermanently_scenariosWhenGaNoticeDoesNotShow_showNoNotice() {
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.valueOf(initialFlavorName)
+      testComponent.getAppStartupStateController().apply {
+        markOnboardingFlowCompleted()
+        dismissGaUpgradeNoticesPermanently()
+      }
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // A notice does not show in these circumstances (though, it wouldn't be expected to regardless
+    // of whether the GA notice was permanently disabled).
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("alpha_to_ga", "initialFlavorName=ALPHA"),
+    Iteration("beta_to_ga", "initialFlavorName=BETA")
+  )
+  fun testController_dismissGaNoticePermanently_scenariosWhenGaNoticeDoesShow_showNoNotice() {
+    executeInPreviousAppInstance { testComponent ->
+      TestModule.buildFlavor = BuildFlavor.valueOf(initialFlavorName)
+      testComponent.getAppStartupStateController().apply {
+        markOnboardingFlowCompleted()
+        dismissGaUpgradeNoticesPermanently()
+      }
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    TestModule.buildFlavor = BuildFlavor.GENERAL_AVAILABILITY
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    // Despite a notice normally showing in this circumstance, it doesn't here since the GA upgrade
+    // notice was permanently disabled.
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -339,7 +784,7 @@ class AppStartupStateControllerTest {
    * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
    * used, not any class-level injected dependencies.
    */
-  private fun executeInPreviousApp(block: (TestApplicationComponent) -> Unit) {
+  private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
     val testApplication = TestApplication()
     // The true application is hooked as a base context. This is to make sure the new application
     // can behave like a real Android application class (per Robolectric) without having a shared
@@ -400,13 +845,13 @@ class AppStartupStateControllerTest {
     packageManager.installPackage(packageInfo)
   }
 
-  private fun ArgumentCaptor<AsyncResult<AppStartupState>>.getStartupMode(): StartupMode {
-    return value.getOrThrow().startupMode
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+    companion object {
+      var buildFlavor = BuildFlavor.BUILD_FLAVOR_UNSPECIFIED
+    }
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -426,6 +871,9 @@ class AppStartupStateControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @Provides
+    fun provideTestingBuildFlavor(): BuildFlavor = buildFlavor
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -436,7 +884,10 @@ class AppStartupStateControllerTest {
       TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
       NetworkConnectionUtilDebugModule::class,
       OppiaClockModule::class, LocaleProdModule::class,
-      ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
+      ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

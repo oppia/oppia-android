@@ -1,3 +1,9 @@
 id: "test_topic_id_2"
-name: "Third Test Topic"
-description: "A topic that\'s not yet ready to be played."
+translatable_title {
+  html: "Third Test Topic"
+  content_id: "title"
+}
+translatable_description {
+  html: "A topic that\'s not yet ready to be played."
+  content_id: "description"
+}

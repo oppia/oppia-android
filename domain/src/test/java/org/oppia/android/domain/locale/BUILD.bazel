@@ -2,28 +2,7 @@
 Tests for language & locale domain components.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
-
-oppia_android_test(
-    name = "AndroidLocaleFactoryTest",
-    srcs = ["AndroidLocaleFactoryTest.kt"],
-    custom_package = "org.oppia.android.domain.locale",
-    test_class = "org.oppia.android.domain.locale.AndroidLocaleFactoryTest",
-    test_manifest = "//domain:test_manifest",
-    deps = [
-        ":dagger",
-        "//domain/src/main/java/org/oppia/android/domain/locale:android_locale_factory",
-        "//testing",
-        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:com_google_truth_truth",
-        "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
-    ],
-)
 
 oppia_android_test(
     name = "ContentLocaleImplTest",
@@ -32,38 +11,16 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.locale.ContentLocaleImplTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
+        "//config/src/java/org/oppia/android/config:all_languages_config",
         "//domain/src/main/java/org/oppia/android/domain/locale:content_locale_impl",
-        "//model:languages_java_proto_lite",
+        "//model/src/main/proto:languages_java_proto_lite",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_extensions_truth-liteproto-extension",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-    ],
-)
-
-oppia_android_test(
-    name = "DisplayLocaleImplTest",
-    srcs = ["DisplayLocaleImplTest.kt"],
-    custom_package = "org.oppia.android.domain.locale",
-    test_class = "org.oppia.android.domain.locale.DisplayLocaleImplTest",
-    test_manifest = "//domain:test_manifest",
-    deps = [
-        ":dagger",
-        "//domain:test_resources",
-        "//domain/src/main/java/org/oppia/android/domain/locale:display_locale_impl",
-        "//model:languages_java_proto_lite",
-        "//testing",
-        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
-        "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
     ],
 )
 
@@ -74,7 +31,33 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.locale.LanguageConfigRetrieverTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
+        "//config/src/java/org/oppia/android/config:all_languages_config",
+        "//domain/src/main/java/org/oppia/android/domain/locale:language_config_retriever",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+oppia_android_test(
+    name = "LanguageConfigRetrieverProductionTest",
+    srcs = ["LanguageConfigRetrieverProductionTest.kt"],
+    custom_package = "org.oppia.android.domain.locale",
+    test_class = "org.oppia.android.domain.locale.LanguageConfigRetrieverProductionTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        "//:dagger",
+        "//config/src/java/org/oppia/android/config:production_languages_config",
         "//domain/src/main/java/org/oppia/android/domain/locale:language_config_retriever",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -98,7 +81,8 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.locale.LanguageConfigRetrieverWithoutAssetsTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
+        "//config/src/java/org/oppia/android/config:all_languages_config",
         "//domain/src/main/java/org/oppia/android/domain/locale:language_config_retriever",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -119,9 +103,12 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.locale.LocaleControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
+        "//config/src/java/org/oppia/android/config:all_languages_config",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
-        "//model:languages_java_proto_lite",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+        "//model/src/main/proto:languages_java_proto_lite",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -136,8 +123,8 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
-
-dagger_rules()

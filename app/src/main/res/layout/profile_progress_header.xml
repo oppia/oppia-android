@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -20,13 +19,13 @@
     android:importantForAccessibility="no"
     android:paddingTop="32dp">
 
-    <com.jackandphantom.circularimageview.CircleImage
+    <com.google.android.material.imageview.ShapeableImageView
       android:id="@+id/profile_edit_image"
       android:layout_width="100dp"
       android:layout_height="100dp"
-      android:background="@color/color_def_white_light"
       android:clickable="true"
       android:contentDescription="@string/current_profile_picture_content_description"
+      android:elevation="4dp"
       android:focusable="true"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       app:add_shadow="true"
@@ -34,12 +33,14 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:shadow_radius="8"
-      profile:src="@{viewModel.profile.avatar}" />
+      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
+      app:profileImageSource="@{viewModel.profile.avatar}" />
 
     <ImageView
       android:layout_width="48dp"
       android:layout_height="48dp"
       android:contentDescription="@string/edit_profile_picture_content_description"
+      android:elevation="4dp"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="8dp"
       android:paddingTop="8dp"
@@ -55,7 +56,7 @@
       android:layout_marginTop="12dp"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
-      android:textColor="@color/oppia_primary_text"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="20sp"
       app:layout_constraintEnd_toEndOf="@+id/completed_stories_container"
       app:layout_constraintStart_toStartOf="@+id/ongoing_topics_container"
@@ -69,16 +70,18 @@
       android:layout_marginTop="32dp"
       android:layout_marginEnd="24dp"
       android:layout_weight="1"
-      android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.ongoingTopicCount > 0}"
       android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnOngoingTopicCount()}"
+      app:cardBackgroundColor="@color/component_color_shared_rounded_rect_background_color"
       app:cardElevation="2dp"
       app:contentPadding="8dp"
       app:layout_constraintEnd_toStartOf="@+id/completed_stories_container"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/profile_name_text_view">
+      app:layout_constraintTop_toBottomOf="@+id/profile_name_text_view"
+      app:strokeColor="@color/component_color_profile_progress_activity_story_count_card_stroke_color"
+      app:strokeWidth="0.5dp">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -94,18 +97,20 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
+          android:minWidth="60dp"
           android:text="@{Integer.toString(viewModel.ongoingTopicCount)}"
-          android:textColor="@color/oppia_primary_text"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="24sp" />
 
         <TextView
           android:id="@+id/ongoing_topics_description_text_view"
           style="@style/TextViewCenter"
-          android:layout_width="60dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
+          android:minWidth="60dp"
           android:text="@{viewModel.ongoingTopicCount != 1 ? @string/topics_in_progress : @string/topic_in_progress}"
-          android:textColor="@color/oppia_primary_text"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="12sp" />
       </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -116,16 +121,18 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="28dp"
       android:layout_weight="1"
-      android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.completedStoryCount > 0}"
       android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnCompletedStoryCount()}"
+      app:cardBackgroundColor="@color/component_color_shared_rounded_rect_background_color"
       app:cardElevation="2dp"
       app:contentPadding="8dp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toEndOf="@+id/ongoing_topics_container"
-      app:layout_constraintTop_toTopOf="@+id/ongoing_topics_container">
+      app:layout_constraintTop_toTopOf="@+id/ongoing_topics_container"
+      app:strokeColor="@color/component_color_profile_progress_activity_story_count_card_stroke_color"
+      app:strokeWidth="0.5dp">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -142,17 +149,18 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:text="@{Integer.toString(viewModel.completedStoryCount)}"
-          android:textColor="@color/oppia_primary_text"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="24sp" />
 
         <TextView
           android:id="@+id/completed_stories_description_text_view"
           style="@style/TextViewCenter"
-          android:layout_width="60dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
+          android:minWidth="60dp"
           android:text="@{viewModel.completedStoryCount != 1 ? @string/stories_completed : @string/story_completed}"
-          android:textColor="@color/oppia_primary_text"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="12sp" />
       </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -167,7 +175,7 @@
       android:fontFamily="sans-serif-medium"
       android:minHeight="48dp"
       android:text="@string/recently_played_stories"
-      android:textColor="@color/oppia_primary_text"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="18sp"
       android:visibility="@{viewModel.headerTextVisibility}"
       app:layout_constraintEnd_toStartOf="@+id/view_all_text_view"
@@ -187,7 +195,7 @@
       android:onClick="@{() -> viewModel.clickOnViewAll()}"
       android:text="@string/view_all"
       android:textAllCaps="true"
-      android:textColor="@color/oppia_primary"
+      android:textColor="@color/component_color_profile_progress_activity_view_all_text_color"
       android:textSize="14sp"
       android:visibility="@{viewModel.viewAllButtonVisibility}"
       app:layout_constraintEnd_toEndOf="parent"

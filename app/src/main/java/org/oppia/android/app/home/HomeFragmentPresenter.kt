@@ -13,6 +13,7 @@ import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -24,11 +25,12 @@ import org.oppia.android.databinding.PromotedStoryListBinding
 import org.oppia.android.databinding.TopicSummaryViewBinding
 import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -38,14 +40,16 @@ class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
-  private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val dateTimeUtil: DateTimeUtil
+  private val dateTimeUtil: DateTimeUtil,
+  private val translationController: TranslationController,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
-  private val routeToTopicListener = activity as RouteToTopicListener
+  private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
 
@@ -67,7 +71,8 @@ class HomeFragmentPresenter @Inject constructor(
       topicEntityType,
       storyEntityType,
       resourceHandler,
-      dateTimeUtil
+      dateTimeUtil,
+      translationController
     )
 
     val homeAdapter = createRecyclerViewAdapter()
@@ -95,17 +100,16 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<HomeItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
-          is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
-          is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
-          is AllTopicsViewModel -> ViewType.ALL_TOPICS
-          is TopicSummaryViewModel -> ViewType.TOPIC_LIST
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<HomeItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
+        is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
+        is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
+        is AllTopicsViewModel -> ViewType.ALL_TOPICS
+        is TopicSummaryViewModel -> ViewType.TOPIC_LIST
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.WELCOME_MESSAGE,
         inflateDataBinding = WelcomeBinding::inflate,
@@ -148,12 +152,17 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
+    routeToTopicPlayStoryListener.routeToTopicPlayStory(
+      internalProfileId,
+      topicSummary.topicId,
+      topicSummary.firstStoryId
+    )
   }
 
   private fun logHomeActivityEvent() {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(), eventContext = oppiaLogger.createOpenHomeContext()
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenHomeContext(),
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }
 }

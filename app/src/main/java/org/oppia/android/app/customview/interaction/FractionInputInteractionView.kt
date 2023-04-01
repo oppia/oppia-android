@@ -20,34 +20,39 @@ import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 //  background="@drawable/edit_text_background"
 //  maxLength="200".
 
+// TODO(#4135): Add a dedicated test suite for this class.
+
 /** The custom EditText class for fraction input interaction view. */
 class FractionInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  private val hintText: CharSequence
+  private var hintText: CharSequence = ""
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
     onFocusChangeListener = this
-    hintText = (hint ?: "")
+    // Assume multi-line for the purpose of properly showing long hints.
+    setSingleLine(hint != null)
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
+  // TODO(#4574): Add tests to verify that the placeholder correctly shows/doesn’t show when expected
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
-    hint = ""
-    typeface = Typeface.DEFAULT
+    hintText = hint
+    hideHint()
     showSoftKeyboard(v, context)
   } else {
-    hint = hintText
-    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    restoreHint()
     hideSoftKeyboard(v, context)
   }
 
   override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
-    if (event.keyCode == KEYCODE_BACK && event.action == ACTION_UP)
-      this.clearFocus()
+    if (event.keyCode == KEYCODE_BACK && event.action == ACTION_UP) {
+      clearFocus()
+      restoreHint()
+    }
     return super.onKeyPreIme(keyCode, event)
   }
 
@@ -56,5 +61,17 @@ class FractionInputInteractionView @JvmOverloads constructor(
       stateKeyboardButtonListener.onEditorAction(EditorInfo.IME_ACTION_DONE)
     }
     super.onEditorAction(actionCode)
+  }
+
+  private fun hideHint() {
+    hint = ""
+    typeface = Typeface.DEFAULT
+    setSingleLine(true)
+  }
+
+  private fun restoreHint() {
+    hint = hintText
+    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    setSingleLine(false)
   }
 }

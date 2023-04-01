@@ -48,13 +48,14 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.work:work-runtime": "2.4.0",
     "androidx.work:work-runtime-ktx": "2.4.0",
     "com.android.support:support-annotations": "28.0.0",
-    "com.crashlytics.sdk.android:crashlytics": "2.9.8",
+    "com.android.tools.build:aapt2-proto": "7.3.1-8691043",
     "com.github.bumptech.glide:compiler": "4.11.0",
     "com.github.bumptech.glide:glide": "4.11.0",
     "com.google.android.flexbox:flexbox": "3.0.0",
-    "com.google.android.material:material": "1.2.0-alpha02",
+    "com.google.android.material:material": "1.3.0",
     "com.google.errorprone:error_prone_annotations": "2.11.0",
     "com.google.firebase:firebase-analytics": "17.5.0",
+    "com.google.firebase:firebase-common": "19.3.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
     "com.google.guava:failureaccess": "1.0.1",
@@ -70,13 +71,12 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
-    "org.checkerframework:checker": "3.21.3",
     "org.checkerframework:checker-compat-qual": "2.5.5",
     "org.checkerframework:checker-qual": "3.21.3",
-    "org.jetbrains.kotlin:kotlin-stdlib-common": "1.6.10",
-    "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.10",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.0",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.0",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.4.1",
     "org.jetbrains:annotations:jar": "13.0",
 }
 
@@ -84,7 +84,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 # This list should only contain test-only dependencies. These are dependencies that are guaranteed
 # cannot be included in production builds of the app.
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
-    "android.arch.core:core-testing": "1.1.1",
     "androidx.arch.core:core-testing": "2.1.0",
     "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
@@ -136,15 +135,20 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "1.6.0",
     },
     "protobuf_tools": {
+        "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
         "version": "3.11.0",
+    },
+    "robolectric": {
+        "sha": "af0177d32ecd2cd68ee6e9f5d38288e1c4de0dd2a756bb7133c243f2d5fe06f7",
+        "version": "4.5",
     },
     "rules_java": {
         "sha": "34b41ec683e67253043ab1a3d1e8b7c61e4e8edefbcad485381328c934d072fe",
         "version": "4.0.0",
     },
     "rules_jvm": {
-        "sha": "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",
-        "version": "4.1",
+        "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
+        "version": "5.1",
     },
     "rules_kotlin": {
         "sha": "12d22a3d9cbcf00f2e2d8f0683ba87d3823cb8c7f6837568dd7e48846e023307",

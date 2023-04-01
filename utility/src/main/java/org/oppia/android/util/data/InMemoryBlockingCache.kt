@@ -28,10 +28,10 @@ class InMemoryBlockingCache<T : Any> private constructor(
    */
   private var value: T? = initialValue
 
-  private var changeObserver: suspend () -> Unit = {}
+  private var changeObserver: suspend (T?, T?) -> Unit = { _, _ -> }
 
   /** Registers an observer that is called synchronously whenever this cache's contents are changed. */
-  fun observeChanges(changeObserver: suspend () -> Unit) {
+  fun observeChanges(changeObserver: suspend (T?, T?) -> Unit) {
     this.changeObserver = changeObserver
   }
 
@@ -168,14 +168,16 @@ class InMemoryBlockingCache<T : Any> private constructor(
   }
 
   private suspend fun setCache(newValue: T): T {
+    val oldValue = value
     value = newValue
-    changeObserver()
+    changeObserver(oldValue, newValue)
     return newValue
   }
 
   private suspend fun clearCache() {
+    val oldValue = value
     value = null
-    changeObserver()
+    changeObserver(oldValue, null)
   }
 
   /** An injectable factory for [InMemoryBlockingCache]es. */

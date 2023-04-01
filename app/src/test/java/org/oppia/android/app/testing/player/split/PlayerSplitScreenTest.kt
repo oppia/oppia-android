@@ -3,6 +3,7 @@ package org.oppia.android.app.testing.player.split
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -14,38 +15,46 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationTestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -61,7 +70,9 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -80,6 +91,7 @@ class PlayerSplitScreenTest {
 
   @Before
   fun setUp() {
+    setUpTestApplicationComponent()
     Intents.init()
   }
 
@@ -93,7 +105,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_540x960_xhdpi_continueInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("Continue")).isFalse()
       }
     }
   }
@@ -103,7 +115,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_540x960_xhdpi_dragInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("DragAndDropSortInput")).isFalse()
       }
     }
   }
@@ -113,7 +125,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_800x1280_xhdpi_continueInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("Continue")).isFalse()
       }
     }
   }
@@ -123,7 +135,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_800x1280_xhdpi_dragInteraction_split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isTrue()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("DragAndDropSortInput")).isTrue()
       }
     }
   }
@@ -133,7 +145,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_411x731_xxxhdpi_dragInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("DragAndDropSortInput")).isFalse()
       }
     }
   }
@@ -143,7 +155,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_540x960_xhdpi_imageClickInput_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("ImageClickInput")).isFalse()
       }
     }
   }
@@ -153,7 +165,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_800x1280_xhdpi_imageClickInput_split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isTrue()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("ImageClickInput")).isTrue()
       }
     }
   }
@@ -163,9 +175,13 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_411x731_xxxhdpi_imageClickInput_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("ImageClickInput")).isFalse()
       }
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -183,19 +199,27 @@ class PlayerSplitScreenTest {
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NetworkConfigProdModule::class
+      NetworkConfigProdModule::class, NumericExpressionInputModule::class,
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
+      SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(playerSplitScreenTest: PlayerSplitScreenTest)
   }

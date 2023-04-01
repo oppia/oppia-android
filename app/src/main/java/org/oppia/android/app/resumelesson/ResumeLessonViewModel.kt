@@ -20,6 +20,9 @@ class ResumeLessonViewModel @Inject constructor(
   /** The chapter summary for the exploration that may be resumed. */
   val chapterSummary = ObservableField(ChapterSummary.getDefaultInstance())
 
+  /** The title of the chapter/exploration being resumed. */
+  val chapterTitle = ObservableField<String>()
+
   /** The [ExplorationCheckpoint] that may be used to resume the exploration. */
   val explorationCheckpoint = ObservableField(ExplorationCheckpoint.getDefaultInstance())
 }

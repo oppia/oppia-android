@@ -15,7 +15,7 @@ on:
 jobs:
   bazel_compute_affected_targets:
     name: Compute affected tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.compute-test-matrix.outputs.matrix }}
       have_tests_to_run: ${{ steps.compute-test-matrix.outputs.have_tests_to_run }}
@@ -76,10 +76,12 @@ jobs:
         id: compute-test-matrix
         env:
           compute_all_targets: ${{ contains(github.event.pull_request.title, '[RunAllTests]') }}
+          # See: https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request.
+          base_commit_hash: ${{ github.event.pull_request.base.sha }}
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
         run: |
-          bazel run //scripts:compute_affected_tests -- $(pwd) $(pwd)/affected_targets.log origin/develop compute_all_tests=$compute_all_targets
+          bazel run //scripts:compute_affected_tests -- $(pwd) $(pwd)/affected_targets.log $base_commit_hash compute_all_tests=$compute_all_targets
           TEST_BUCKET_LIST=$(cat ./affected_targets.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if configured to run all or on the develop branch): $TEST_BUCKET_LIST"
           echo "::set-output name=matrix::{\"affected-tests-bucket-base64-encoded-shard\":[$TEST_BUCKET_LIST]}"
@@ -94,7 +96,7 @@ jobs:
     name: Run Bazel Test
     needs: bazel_compute_affected_targets
     if: ${{ needs.bazel_compute_affected_targets.outputs.have_tests_to_run == 'true' }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -319,7 +321,7 @@ jobs:
       name: Check Bazel Test Results
       needs: [bazel_compute_affected_targets, bazel_run_test]
       if: ${{ always() }}
-      runs-on: ubuntu-18.04
+      runs-on: ubuntu-20.04
       steps:
         # This step will be skipped if there are no tests to run, so the overall job should pass.
         - name: Check tests passed (for tests that ran)

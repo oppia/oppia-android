@@ -5,10 +5,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
@@ -23,6 +29,8 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var profileId: ProfileId
+  private lateinit var state: State
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
 
   fun handleOnCreate(profileId: ProfileId) {
     this.profileId = profileId
@@ -101,20 +109,14 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     startDataProvider.toLiveData().observe(
       activity,
       {
-        when {
-          it.isPending() -> oppiaLogger.d(
-            "QuestionPlayerActivity",
-            "Starting training session"
-          )
-          it.isFailure() -> {
-            oppiaLogger.e(
-              "QuestionPlayerActivity",
-              "Failed to start training session",
-              it.getErrorOrNull()!!
-            )
+        when (it) {
+          is AsyncResult.Pending ->
+            oppiaLogger.d("QuestionPlayerActivity", "Starting training session")
+          is AsyncResult.Failure -> {
+            oppiaLogger.e("QuestionPlayerActivity", "Failed to start training session", it.error)
             activity.finish() // Can't recover from the session failing to start.
           }
-          else -> {
+          is AsyncResult.Success -> {
             oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
             callback()
           }
@@ -127,20 +129,14 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
       activity,
       {
-        when {
-          it.isPending() -> oppiaLogger.d(
-            "QuestionPlayerActivity",
-            "Stopping training session"
-          )
-          it.isFailure() -> {
-            oppiaLogger.e(
-              "QuestionPlayerActivity",
-              "Failed to stop training session",
-              it.getErrorOrNull()!!
-            )
+        when (it) {
+          is AsyncResult.Pending ->
+            oppiaLogger.d("QuestionPlayerActivity", "Stopping training session")
+          is AsyncResult.Failure -> {
+            oppiaLogger.e("QuestionPlayerActivity", "Failed to stop training session", it.error)
             activity.finish() // Can't recover from the session failing to stop.
           }
-          else -> {
+          is AsyncResult.Success -> {
             oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
             callback()
           }
@@ -166,6 +162,30 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     ) as QuestionPlayerFragment?
   }
 
+  fun loadQuestionState(state: State, writtenTranslationContext: WrittenTranslationContext) {
+    this.state = state
+    this.writtenTranslationContext = writtenTranslationContext
+  }
+
+  fun routeToHintsAndSolution(
+    questionId: String,
+    helpIndex: HelpIndex
+  ) {
+    if (getHintsAndSolutionDialogFragment() == null) {
+      val hintsAndSolutionDialogFragment =
+        HintsAndSolutionDialogFragment.newInstance(
+          questionId,
+          state,
+          helpIndex,
+          writtenTranslationContext,
+          profileId
+        )
+      hintsAndSolutionDialogFragment.showNow(
+        activity.supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG
+      )
+    }
+  }
+
   fun revealHint(hintIndex: Int) {
     val questionPlayerFragment =
       activity.supportFragmentManager.findFragmentByTag(
@@ -182,5 +202,15 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     questionPlayerFragment.revealSolution()
   }
 
+  fun dismissHintsAndSolutionDialog() {
+    getHintsAndSolutionDialogFragment()?.dismiss()
+  }
+
   fun dismissConceptCard() = getQuestionPlayerFragment()?.dismissConceptCard()
+
+  private fun getHintsAndSolutionDialogFragment(): HintsAndSolutionDialogFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_DIALOG
+    ) as? HintsAndSolutionDialogFragment
+  }
 }

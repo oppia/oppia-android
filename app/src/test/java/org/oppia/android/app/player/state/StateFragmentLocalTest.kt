@@ -2,8 +2,13 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.text.Spannable
+import android.text.Spanned
+import android.text.style.ClickableSpan
+import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
@@ -14,6 +19,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
@@ -22,9 +28,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -46,18 +54,20 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
-import org.oppia.android.app.application.ApplicationContext
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
@@ -67,48 +77,59 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.ALGEBRAIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
@@ -116,6 +137,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -124,6 +146,7 @@ import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiv
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
@@ -139,13 +162,15 @@ import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -165,41 +190,23 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StateFragmentLocalTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StateFragmentLocalTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   private val AUDIO_URL_1 =
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  @field:ApplicationContext
-  lateinit var context: Context
-
-  @Inject
-  @field:BackgroundDispatcher
-  lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
-  @Inject
-  lateinit var accessibilityManager: FakeAccessibilityService
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @Inject lateinit var accessibilityManager: FakeAccessibilityService
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
@@ -212,7 +219,7 @@ class StateFragmentLocalTest {
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
     val executorService = MockGlideExecutor.newTestExecutor(
-      CoroutineExecutorService(backgroundCoroutineDispatcher)
+      CoroutineExecutorService(backgroundDispatcher)
     )
     Glide.init(
       context,
@@ -256,6 +263,175 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withSubstring("of the above circle is red?")).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_ClickContinueButton_checkAnimSeenStatusIsTrue() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      val continueButtonAnimationSeenStatus =
+        profileTestHelper.getContinueButtonAnimationSeenStatus(profileId)
+      assertThat(continueButtonAnimationSeenStatus).isTrue()
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_checkAnimIsNotShownInTheBeginning() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_ContButtonAnimAlreadySeen_checkAnimIsNotShown() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughTestState1()
+
+      it.onActivity { activity ->
+        activity.stopExploration(false)
+      }
+
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testNavBtnAnim_openProtExp_waitFor30Sec_pressCont_submitAnswer_checkContNavBtnDoesNotAnim() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      playThroughTestState1()
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimHasNotStarted() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testConIntAnim_openProtExp_orientLandAfter30Sec_checkAnimStartsIn15SecAfterOrientChange() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(CONTINUE_INTERACTION)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testContNavBtnAnim_openMathExp_checkContNavBtnAnimatesAfter45Seconds() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
+      clickSubmitAnswerButton()
+
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isAnimating()))
+    }
+  }
+
+  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
+  @Ignore("Continue navigation animation behavior fails during testing")
+  @Test
+  fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
+      clickSubmitAnswerButton()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
+  @Ignore("Continue navigation animation behavior fails during testing")
+  @Test
+  fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughTestState1()
+      submitFractionAnswer(text = "1/2")
+
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
     }
   }
 
@@ -612,9 +788,11 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       playThroughFractionsState1()
       submitTwoWrongAnswersForFractionsState2()
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
       moveToPreviousAndBackToCurrentStateWithSubmitButton()
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -627,19 +805,19 @@ class StateFragmentLocalTest {
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
       closeHintsAndSolutionsDialog()
 
       moveToPreviousAndBackToCurrentStateWithSubmitButton()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
+  fun testStateFragment_showFirstHint_prevState_currentState_checkFirstHintRevealed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
@@ -652,7 +830,7 @@ class StateFragmentLocalTest {
         .perform(scrollToPosition<ViewHolder>(0))
       testCoroutineDispatchers.runCurrent()
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        atPositionOnView(
           R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
         )
       ).perform(click())
@@ -665,6 +843,39 @@ class StateFragmentLocalTest {
           )
         )
       )
+    }
+  }
+
+  @Test
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_checkAnnouncesAfter5Seconds() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+      openHintsAndSolutionsDialog()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(5))
+      assertThat(fakeAccessibilityService.getLatestAnnouncement()).isEqualTo(
+        "Go to the bottom of the screen for a hint."
+      )
+    }
+  }
+
+  @Test
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_doesNotRepeatAnnouncementAfter30Sec() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+      openHintsAndSolutionsDialog()
+
+      // announcement played
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(5))
+      fakeAccessibilityService.resetLatestAnnouncement()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      assertThat(fakeAccessibilityService.getLatestAnnouncement()).isEqualTo(null)
     }
   }
 
@@ -707,7 +918,8 @@ class StateFragmentLocalTest {
       closeHintsAndSolutionsDialog()
 
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -720,7 +932,8 @@ class StateFragmentLocalTest {
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -734,7 +947,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
       // After the first hint, waiting 30 more seconds is sufficient for displaying another hint.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -812,7 +1026,8 @@ class StateFragmentLocalTest {
       submitWrongAnswerToFractionsState2()
 
       // Submitting a single wrong answer after the previous hint won't immediately show another.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -827,7 +1042,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Waiting 10 seconds after submitting a wrong answer should allow another hint to be shown.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -873,7 +1089,8 @@ class StateFragmentLocalTest {
 
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -889,7 +1106,8 @@ class StateFragmentLocalTest {
       // Since no answer was submitted after viewing the first hint, the second hint should be
       // revealed in 30 seconds.
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -899,10 +1117,12 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       playThroughFractionsState1()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -914,7 +1134,8 @@ class StateFragmentLocalTest {
       produceAndViewFirstHintForFractionState2()
       clickPreviousStateNavigationButton()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -927,7 +1148,8 @@ class StateFragmentLocalTest {
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -941,7 +1163,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
       // The solution should now be visible after waiting for 30 seconds.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -956,13 +1179,11 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
-      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -978,7 +1199,8 @@ class StateFragmentLocalTest {
       submitWrongAnswerToFractionsState2()
 
       // Submitting a wrong answer will not immediately reveal the solution.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -993,7 +1215,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Submitting a wrong answer and waiting will reveal the solution.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -1009,20 +1232,18 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
-      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_nextState_viewSolution_clickRevealSolutionButton_showsDialog() {
+  fun testStateFragment_nextState_viewSolution_clickShowSolutionButton_showsDialog() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
@@ -1033,18 +1254,16 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
-      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText("This will reveal the solution. Are you sure?"))
+      onView(withText("This will show the solution. Are you sure?"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1084,9 +1303,74 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickConfirmRevealSolutionButton(scenario)
 
-      onView(withId(R.id.reveal_solution_button))
+      onView(withId(R.id.show_solution_button))
         .inRoot(isDialog())
         .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showSolution_hasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+
+      submitWrongAnswerToFractionsState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+
+      onView(withId(R.id.solution_summary)).check(
+        matches(
+          withContentDescription(
+            "Start by dividing the cake into equal parts:\n\nThree of " +
+              "the four equal parts are red. So, the answer is 3/4.\n\n"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_showSolution_checkExpandListIconWithScreenReader_isClickable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+
+      submitWrongAnswerToFractionsState2()
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_solution_list_icon)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showSolution_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+
+      submitWrongAnswerToFractionsState2()
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(false)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_solution_list_icon)).check(matches(not(isClickable())))
     }
   }
 
@@ -1111,7 +1395,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
+  fun testStateFragment_nextState_viewShowSolutionDialog_clickCancel_canViewShowSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughFractionsState1()
@@ -1124,7 +1408,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickCancelInRevealSolutionDialog(scenario)
 
-      onView(withSubstring("Reveal Solution"))
+      onView(withText("SHOW SOLUTION"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1140,7 +1424,8 @@ class StateFragmentLocalTest {
       produceAndViewSolutionInFractionsState2(scenario, revealedHintCount = 4)
 
       // No hint should be indicated as available after revealing the solution.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1155,7 +1440,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
       // Even waiting 30 seconds should not indicate anything since the solution's been revealed.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1171,7 +1457,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Submitting a wrong answer should not change anything since the solution's been revealed.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1183,7 +1470,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
 
       // No hint should be shown since there are no hints for this state.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1198,12 +1486,10 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // No hint indicator should be shown since there is no solution for this state.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
-
-  // TODO(#1050): Add a test for verifying that the solution is correct for non-text & non-fraction
-  //  interactions.
 
   @Test
   fun testStateFragment_stateWithNumericSolution_revealHint_reopenDialog_onlyOneHintShown() {
@@ -1249,7 +1535,179 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // The new hint indicator should be shown since a solution is now available.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_stateWithFractionInp_showSolution_exclusive_solutionHasCorrectAnswerText() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      playThroughTestState1()
+      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState2() }
+
+      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState2() }
+
+      // Verify that the solution answer text is correctly generated.
+      onView(withId(R.id.solution_correct_answer))
+        .check(matches(withText("The only solution is: 1/2")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_stateWithNumericInp_showSolution_exclusive_solutionHasCorrectAnswerText() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      playThroughTestState1()
+      playThroughTestState2()
+      playThroughTestState3()
+      playThroughTestState4()
+      playThroughTestState5()
+      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState6() }
+
+      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState6() }
+
+      // Verify that the solution answer text is correctly generated.
+      onView(withId(R.id.solution_correct_answer))
+        .check(matches(withText("The only solution is: 121")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_stateWithNumericExpr_showSolution_solutionHasCorrectAnswerContentDesc() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      playThroughTestState1()
+      playThroughTestState2()
+      playThroughTestState3()
+      playThroughTestState4()
+      playThroughTestState5()
+      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState6() }
+
+      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState6() }
+
+      // Verify that the solution answer text is correctly generated.
+      onView(withId(R.id.solution_correct_answer))
+        .check(matches(withContentDescription("The only solution is: 121")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_stateWithRatioInp_showSolution_notExclusive_solutionHasCorrectAnswerText() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      playThroughTestState1()
+      playThroughTestState2()
+      playThroughTestState3()
+      playThroughTestState4()
+      playThroughTestState5()
+      playThroughTestState6()
+      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState7() }
+
+      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState7() }
+
+      // Verify that the solution answer text is correctly generated.
+      onView(withId(R.id.solution_correct_answer)).check(matches(withText("One solution is: 4:5")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_stateWithTextInput_showSolution_exclusive_solutionHasCorrectAnswerText() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      playThroughTestState1()
+      playThroughTestState2()
+      playThroughTestState3()
+      playThroughTestState4()
+      playThroughTestState5()
+      playThroughTestState6()
+      playThroughTestState7()
+      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState8() }
+
+      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState8() }
+
+      // Verify that the solution answer text is correctly generated.
+      onView(withId(R.id.solution_correct_answer))
+        .check(matches(withText("The only solution is: finnish")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_stateWithAlgebraicExpr_showSolution_solutionHasCorrectHtmlAnswerText() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use { scenario ->
+      // Play through the first three states.
+      startPlayingExploration()
+      playThroughExp5NumericExpressionState()
+      playThroughExp5NumericExpressionState()
+      playThroughExp5NumericExpressionState()
+
+      produceAndViewSolutionAsFirstHint(scenario) { submitWrongAnswerToTestExp5State4() }
+
+      // Verify that the solution answer text is correctly generated.
+      onView(withId(R.id.solution_correct_answer))
+        .check(matches(withText(containsString("One solution is:"))))
+      scenario.onActivity { activity ->
+        val dialogFragment =
+          activity.supportFragmentManager.findFragmentByTag("HINTS_AND_SOLUTION_DIALOG")
+        val htmlTextView =
+          dialogFragment?.view?.findViewById<TextView>(R.id.solution_correct_answer)
+        assertThat(htmlTextView?.getSpans<ImageSpan>()).hasSize(1)
+
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+        assertThat(loadedModels.count()).isAtLeast(1)
+        assertThat(loadedModels.last().rawLatex).isEqualTo("x ^ {2} - x - 2")
+        assertThat(loadedModels.last().useInlineRendering).isTrue()
+      }
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testStateFragment_stateWithAlgebraicExpr_showSolution_solutionHasCorrectHtmlContentDesc() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use { scenario ->
+      // Play through the first three states.
+      startPlayingExploration()
+      playThroughExp5NumericExpressionState()
+      playThroughExp5NumericExpressionState()
+      playThroughExp5NumericExpressionState()
+
+      produceAndViewSolutionAsFirstHint(scenario) { submitWrongAnswerToTestExp5State4() }
+
+      // Verify that the solution answer text is correctly generated.
+      onView(withId(R.id.solution_correct_answer))
+        .check(
+          matches(
+            withContentDescription("One solution is: x raised to the power of 2 minus x minus 2")
+          )
+        )
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  fun testStateFragment_englishLocale_defaultContentLang_hint_titlesAreCorrectInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(text = "1/3")
+      submitFractionAnswer(text = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint title text should be in English with the correct number
+      onView(withId(R.id.hint_title))
+        .check(matches(withText(containsString("Hint 1"))))
     }
   }
 
@@ -1266,15 +1724,15 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(answerText = "1/3")
-      submitFractionAnswer(answerText = "1/4")
+      submitFractionAnswer(text = "1/3")
+      submitFractionAnswer(text = "1/4")
 
       // Reveal the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
       // The hint button label should be in English.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
@@ -1291,10 +1749,10 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(answerText = "1/3")
-      submitFractionAnswer(answerText = "1/4")
+      submitFractionAnswer(text = "1/3")
+      submitFractionAnswer(text = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
@@ -1320,10 +1778,10 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(answerText = "1/3")
-      submitFractionAnswer(answerText = "1/4")
+      submitFractionAnswer(text = "1/3")
+      submitFractionAnswer(text = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
@@ -1346,8 +1804,8 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(answerText = "1/3")
-      submitFractionAnswer(answerText = "1/4")
+      submitFractionAnswer(text = "1/3")
+      submitFractionAnswer(text = "1/4")
 
       // Reveal the hint.
       openHintsAndSolutionsDialog()
@@ -1374,16 +1832,16 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(answerText = "1/3")
-      submitFractionAnswer(answerText = "1/4")
+      submitFractionAnswer(text = "1/3")
+      submitFractionAnswer(text = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
       // The hint button label should be in English since the app string locale is unaffected by the
       // content string setting.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
@@ -1402,10 +1860,10 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       clickContinueButton()
       // Submit two incorrect answers.
-      submitFractionAnswer(answerText = "1/3")
-      submitFractionAnswer(answerText = "1/4")
+      submitFractionAnswer(text = "1/3")
+      submitFractionAnswer(text = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
@@ -1564,6 +2022,203 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_bulbHasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withContentDescription(R.string.new_hint_available)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_bulbHasCorrectDrawable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_resolvedHint_bulbHasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      closeHintsAndSolutionsDialog()
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withContentDescription(R.string.no_new_hint_available)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_resolvedHint_bulbHasCorrectDrawable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      closeHintsAndSolutionsDialog()
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_arrowHasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.open_hint_dialog_arrow))
+        .check(matches(withContentDescription(R.string.show_hints_and_solution)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_arrowHasCorrectDrawable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_keyboard_arrow_down_white_48dp)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_resolvedHint_arrowHasCorrectDrawable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      closeHintsAndSolutionsDialog()
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_keyboard_arrow_right_white_48)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_openHintsAndSolution_checkReturnToLessonButtonIsVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      submitTwoWrongAnswersForFractionsState2()
+
+      openHintsAndSolutionsDialog()
+      onView(allOf(withId(R.id.return_to_lesson_button), isDisplayed())).inRoot(isDialog())
+    }
+  }
+
+  @Test
+  fun testStateFragment_openHint_clickConceptCardLink_opensConceptCard() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      submitTwoWrongAnswersToTestExpState2()
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // Click on the link for opening the concept card.
+      onView(withId(R.id.hints_and_solution_summary))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText("Another important skill")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_openSolution_clickConceptCardLink_opensConceptCard() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      clickContinueButton()
+      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState2() }
+      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState2() }
+
+      // Click on the link for opening the concept card.
+      onView(withId(R.id.solution_summary))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText("Another important skill")))
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1603,73 +2258,73 @@ class StateFragmentLocalTest {
 
   private fun playThroughFractionsState2() {
     // Correct answer to 'Matthew gets conned'
-    submitFractionAnswer(answerText = "3/4")
+    submitFractionAnswer(text = "3/4")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState3() {
     // Correct answer to 'Question 1'
-    submitFractionAnswer(answerText = "4/9")
+    submitFractionAnswer(text = "4/9")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState4() {
     // Correct answer to 'Question 2'
-    submitFractionAnswer(answerText = "1/4")
+    submitFractionAnswer(text = "1/4")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState5() {
     // Correct answer to 'Question 3'
-    submitFractionAnswer(answerText = "1/8")
+    submitFractionAnswer(text = "1/8")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState6() {
     // Correct answer to 'Question 4'
-    submitFractionAnswer(answerText = "1/2")
+    submitFractionAnswer(text = "1/2")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState7() {
     // Correct answer to 'Question 5' which redirects the learner to 'Thinking in fractions Q1'
-    submitFractionAnswer(answerText = "2/9")
+    submitFractionAnswer(text = "2/9")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState8() {
     // Correct answer to 'Thinking in fractions Q1'
-    submitFractionAnswer(answerText = "7/9")
+    submitFractionAnswer(text = "7/9")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState9() {
     // Correct answer to 'Thinking in fractions Q2'
-    submitFractionAnswer(answerText = "4/9")
+    submitFractionAnswer(text = "4/9")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState10() {
     // Correct answer to 'Thinking in fractions Q3'
-    submitFractionAnswer(answerText = "5/8")
+    submitFractionAnswer(text = "5/8")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState11() {
     // Correct answer to 'Thinking in fractions Q4' which redirects the learner to 'Final Test A'
-    submitFractionAnswer(answerText = "3/4")
+    submitFractionAnswer(text = "3/4")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState12() {
     // Correct answer to 'Final Test A' redirects learner to 'Happy ending'
-    submitFractionAnswer(answerText = "2/4")
+    submitFractionAnswer(text = "2/4")
     clickContinueNavigationButton()
   }
 
   private fun playThroughFractionsState12WithWrongAnswer() {
     // Incorrect answer to 'Final Test A' redirects the learner to 'Final Test A second try'
-    submitFractionAnswer(answerText = "1/9")
+    submitFractionAnswer(text = "1/9")
     clickContinueNavigationButton()
   }
 
@@ -1708,7 +2363,7 @@ class StateFragmentLocalTest {
   }
 
   private fun playThroughTestState2() {
-    submitFractionAnswer(answerText = "1/2")
+    submitFractionAnswer(text = "1/2")
     clickContinueNavigationButton()
   }
 
@@ -1730,6 +2385,21 @@ class StateFragmentLocalTest {
     clickContinueNavigationButton()
   }
 
+  private fun playThroughTestState6() {
+    submitNumericInput(text = "121")
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughTestState7() {
+    submitRatioInput(text = "4:5")
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughExp5NumericExpressionState() {
+    submitNumericExpressionAnswer(text = "1 + 2")
+    clickContinueNavigationButton()
+  }
+
   private fun clickContinueNavigationButton() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
     testCoroutineDispatchers.runCurrent()
@@ -1740,7 +2410,7 @@ class StateFragmentLocalTest {
   private fun clickContinueButton() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
     testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.continue_button)).perform(click())
+    onView(withId(R.id.continue_interaction_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -1751,6 +2421,7 @@ class StateFragmentLocalTest {
   }
 
   private fun clickNextStateNavigationButton() {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
     onView(withId(R.id.next_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
@@ -1767,32 +2438,28 @@ class StateFragmentLocalTest {
 
   private fun showRevealSolutionDialog() {
     // The reveal solution button should now be visible.
-    // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-    // introduces divider in UI as a separate item.
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
-      .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
-    onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
+    onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
   }
 
   private fun pressRevealHintButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.reveal_hint_button, hintPosition)
+    pressShowHintOrSolutionButton(R.id.reveal_hint_button, hintPosition)
   }
 
-  private fun pressRevealSolutionButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.reveal_solution_button, hintPosition)
+  private fun pressShowSolutionButton(hintPosition: Int) {
+    pressShowHintOrSolutionButton(R.id.show_solution_button, hintPosition)
   }
 
-  private fun pressRevealHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
+  private fun pressShowHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
     // There should only ever be a single reveal button currently displayed; click that one.
     // However, it may need to be scrolled to in case many hints are showing.
-    // NOTE: hintPosition is multiplied by 2, because the implementation of hints and solution
-    // introduces divider in UI as a separate item.
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
-      .perform(scrollToPosition<ViewHolder>(hintPosition * 2))
+      .perform(scrollToPosition<ViewHolder>(hintPosition))
     onView(allOf(withId(buttonId), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
@@ -1804,13 +2471,35 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun typeFractionAnswer(answerText: String) {
+  private fun typeFractionAnswer(text: String) {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(FRACTION_INPUT_INTERACTION))
-    typeTextIntoInteraction(answerText, interactionViewId = R.id.fraction_input_interaction_view)
+    typeTextIntoInteraction(text, interactionViewId = R.id.fraction_input_interaction_view)
   }
 
-  private fun submitFractionAnswer(answerText: String) {
-    typeFractionAnswer(answerText)
+  private fun submitFractionAnswer(text: String) {
+    typeFractionAnswer(text)
+    clickSubmitAnswerButton()
+  }
+
+  private fun typeNumericExpressionAnswer(text: String) {
+    onView(withId(R.id.state_recycler_view))
+      .perform(scrollToViewType(NUMERIC_EXPRESSION_INPUT_INTERACTION))
+    typeTextIntoInteraction(text, interactionViewId = R.id.math_expression_input_interaction_view)
+  }
+
+  private fun submitNumericExpressionAnswer(text: String) {
+    typeNumericExpressionAnswer(text)
+    clickSubmitAnswerButton()
+  }
+
+  private fun typeAlgebraicExpressionAnswer(text: String) {
+    onView(withId(R.id.state_recycler_view))
+      .perform(scrollToViewType(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION))
+    typeTextIntoInteraction(text, interactionViewId = R.id.math_expression_input_interaction_view)
+  }
+
+  private fun submitAlgebraicExpressionAnswer(text: String) {
+    typeAlgebraicExpressionAnswer(text)
     clickSubmitAnswerButton()
   }
 
@@ -1840,6 +2529,27 @@ class StateFragmentLocalTest {
 
   private fun submitNumericInput(text: String) {
     typeNumericInput(text)
+    clickSubmitAnswerButton()
+  }
+
+  private fun typeRatioInput(text: String) {
+    onView(withId(R.id.state_recycler_view))
+      .perform(scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION))
+    typeTextIntoInteraction(text, interactionViewId = R.id.ratio_input_interaction_view)
+  }
+
+  private fun submitRatioInput(text: String) {
+    typeRatioInput(text)
+    clickSubmitAnswerButton()
+  }
+
+  private fun typeTextInput(text: String) {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(TEXT_INPUT_INTERACTION))
+    typeTextIntoInteraction(text, interactionViewId = R.id.text_input_interaction_view)
+  }
+
+  private fun submitTextInput(text: String) {
+    typeTextInput(text)
     clickSubmitAnswerButton()
   }
 
@@ -1875,7 +2585,7 @@ class StateFragmentLocalTest {
   }
 
   private fun submitWrongAnswerToFractionsState2() {
-    submitFractionAnswer(answerText = "1/2")
+    submitFractionAnswer(text = "1/2")
   }
 
   private fun submitWrongAnswerToFractionsState2AndWait() {
@@ -1884,7 +2594,7 @@ class StateFragmentLocalTest {
   }
 
   private fun submitWrongAnswerToFractionsState13() {
-    submitFractionAnswer(answerText = "1/9")
+    submitFractionAnswer(text = "1/9")
   }
 
   private fun submitWrongAnswerToFractionsState13AndWait() {
@@ -1918,6 +2628,39 @@ class StateFragmentLocalTest {
     )
   }
 
+  private fun submitWrongAnswerToTestExpState2() {
+    submitFractionAnswer(text = "1/4")
+  }
+
+  private fun submitWrongAnswerToTestExpState6() {
+    submitNumericInput(text = "101")
+  }
+
+  private fun submitWrongAnswerToTestExpState7() {
+    submitRatioInput(text = "5:4")
+  }
+
+  private fun submitWrongAnswerToTestExpState8() {
+    submitTextInput(text = "finish")
+  }
+
+  private fun submitTwoWrongAnswersToTestExpState2() {
+    submitWrongAnswerToTestExpState2()
+    submitWrongAnswerToTestExpState2()
+  }
+
+  private fun submitWrongAnswerToTestExp5State4() {
+    submitAlgebraicExpressionAnswer(text = "1 + 2")
+  }
+
+  private fun produceAndViewFirstHint(hintPosition: Int, submitAnswer: () -> Unit) {
+    produceAndViewNextHint(hintPosition) {
+      // Submit the wrong answer twice.
+      submitAnswer()
+      submitAnswer()
+    }
+  }
+
   /**
    * Causes a hint after the first one to be shown (at approximately the specified recycler view
    * index for scrolling purposes), and then reveals it and closes the hints & solutions dialog.
@@ -1927,6 +2670,28 @@ class StateFragmentLocalTest {
     openHintsAndSolutionsDialog()
     pressRevealHintButton(hintPosition)
     closeHintsAndSolutionsDialog()
+  }
+
+  private fun produceAndViewSolutionAsFirstHint(
+    activityScenario: ActivityScenario<StateFragmentTestActivity>,
+    submitAnswer: () -> Unit
+  ) {
+    produceAndViewSolution(activityScenario) {
+      // Submit the wrong answer twice.
+      submitAnswer()
+      submitAnswer()
+    }
+  }
+
+  private fun produceAndViewSolution(
+    activityScenario: ActivityScenario<StateFragmentTestActivity>,
+    submitAnswer: () -> Unit
+  ) {
+    submitAnswer()
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    openHintsAndSolutionsDialog()
+    showRevealSolutionDialog()
+    clickConfirmRevealSolutionButton(activityScenario)
   }
 
   private fun produceAndViewThreeHintsInFractionsState13() {
@@ -1963,7 +2728,7 @@ class StateFragmentLocalTest {
   ) {
     submitWrongAnswerToFractionsState2AndWait()
     openHintsAndSolutionsDialog()
-    pressRevealSolutionButton(revealedHintCount)
+    pressShowSolutionButton(revealedHintCount)
     clickConfirmRevealSolutionButton(activityScenario)
     closeHintsAndSolutionsDialog()
   }
@@ -2042,6 +2807,20 @@ class StateFragmentLocalTest {
     Locale.setDefault(locale)
   }
 
+  private fun isAnimating(): TypeSafeMatcher<View> {
+    return ActiveAnimationMatcher()
+  }
+
+  private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("View is animating")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view.animation?.hasStarted() ?: false
+    }
+  }
+
   /**
    * Returns a [ViewAssertion] that can be used to check the specified matcher applies the specified
    * number of times for children against the view under test. If the count does not exactly match,
@@ -2077,6 +2856,48 @@ class StateFragmentLocalTest {
       })
   }
 
+  private fun openClickableSpan(text: String): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String = "openClickableSpan"
+
+      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // The view shouldn't be null if the constraints are being met.
+        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  private fun hasClickableSpanWithText(text: String): Matcher<View> {
+    return object : TypeSafeMatcher<View>(TextView::class.java) {
+      override fun describeTo(description: Description?) {
+        description?.appendText("has ClickableSpan with text")?.appendValue(text)
+      }
+
+      override fun matchesSafely(item: View?): Boolean {
+        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
+      }
+    }
+  }
+
+  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
+    val viewText = text
+    return (viewText as Spannable).getSpans(
+      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+    ).map {
+      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+    }
+  }
+
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) =
+    find { text in it.first }?.second
+
+  private inline fun <reified T : Any> TextView.getSpans(): List<T> = (text as Spanned).getSpans()
+
+  private inline fun <reified T : Any> Spanned.getSpans(): List<T> =
+    getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -2103,28 +2924,36 @@ class StateFragmentLocalTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      RobolectricModule::class, PlatformParameterModule::class,
+      RobolectricModule::class, TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(stateFragmentLocalTest: StateFragmentLocalTest)
   }

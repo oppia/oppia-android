@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -49,7 +49,7 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val matches = inputEqualsRuleClassifier.matches(
       answer = NON_NEGATIVE_VALUE_TEST_0,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -62,7 +62,7 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val matches = inputEqualsRuleClassifier.matches(
       answer = NON_NEGATIVE_VALUE_TEST_1,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isFalse()
@@ -76,7 +76,7 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = NON_NEGATIVE_VALUE_TEST_0,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -93,7 +93,7 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -110,7 +110,7 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = NON_NEGATIVE_VALUE_TEST_0,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

@@ -25,7 +25,7 @@ import org.oppia.android.util.parser.image.ImageViewTarget
 import javax.inject.Inject
 
 /**
- * A custom [AppCompatImageView] with a list of [LabeledRegion] to work with
+ * A custom [AppCompatImageView] with a list of [ImageWithRegions.LabeledRegion]s to work with
  * [ClickableAreasImage].
  *
  * In order to correctly work with this interaction make sure you've called attached an listener
@@ -36,67 +36,34 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
+  @field:[Inject ExplorationHtmlParserEntityType] lateinit var entityType: String
+  @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
+  @field:[Inject ImageDownloadUrlTemplate] lateinit var imageDownloadUrlTemplate: String
+  @field:[Inject DefaultGcsPrefix] lateinit var gcsPrefix: String
 
-  private var isAccessibilityEnabled: Boolean = false
-  private lateinit var imageUrl: String
-  private var clickableAreas: List<ImageWithRegions.LabeledRegion> = emptyList()
-  private lateinit var listener: OnClickableAreaClickedListener
-
-  @Inject
-  lateinit var accessibilityService: AccessibilityService
-
-  @Inject
-  lateinit var imageLoader: ImageLoader
-
-  @Inject
-  @field:ExplorationHtmlParserEntityType
-  lateinit var entityType: String
-
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
-
-  @Inject
-  @field:ImageDownloadUrlTemplate
-  lateinit var imageDownloadUrlTemplate: String
-
-  @Inject
-  @field:DefaultGcsPrefix
-  lateinit var gcsPrefix: String
-
-  @Inject
-  lateinit var bindingInterface: ViewBindingShim
-
-  @Inject
-  lateinit var machineLocale: OppiaLocale.MachineLocale
+  @Inject lateinit var bindingInterface: ViewBindingShim
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+  @Inject lateinit var accessibilityService: AccessibilityService
+  @Inject lateinit var imageLoader: ImageLoader
 
   private lateinit var entityId: String
   private lateinit var overlayView: FrameLayout
   private lateinit var onRegionClicked: OnClickableAreaClickedListener
+  private lateinit var imageUrl: String
+  private lateinit var clickableAreas: List<ImageWithRegions.LabeledRegion>
 
   /**
-   * Sets the URL for the image & initiates loading it. This is intended to be called via data-binding.
+   * Sets the URL for the image & initiates loading it. This is intended to be called via
+   * data-binding.
    */
   fun setImageUrl(imageUrl: String) {
     this.imageUrl = imageUrl
-    loadImage()
-  }
-
-  /** Initiates the asynchronous loading process for the interaction's image region. */
-  private fun loadImage() {
-    val imageName = machineLocale.run {
-      imageDownloadUrlTemplate.formatForMachines(entityType, entityId, imageUrl)
-    }
-    val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
-    if (machineLocale.run { imageUrl.endsWithIgnoreCase("svg") }) {
-      imageLoader.loadBlockSvg(imageUrl, ImageViewTarget(this))
-    } else {
-      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))
-    }
+    maybeInitializeClickableAreas()
   }
 
   fun setEntityId(entityId: String) {
     this.entityId = entityId
+    maybeInitializeClickableAreas()
   }
 
   fun setClickableAreas(clickableAreas: List<ImageWithRegions.LabeledRegion>) {
@@ -112,26 +79,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         }
       }
     }
-  }
-
-  /** Binds [OnClickableAreaClickedListener] with the view inorder to get callback from [ClickableAreasImage]. */
-  fun setListener(onClickableAreaClickedListener: OnClickableAreaClickedListener) {
-    this.listener = onClickableAreaClickedListener
-    val area = ClickableAreasImage(
-      this,
-      this.parent as FrameLayout,
-      listener,
-      bindingInterface
-    )
-    area.addRegionViews()
-  }
-
-  fun getClickableAreas(): List<ImageWithRegions.LabeledRegion> {
-    return clickableAreas
-  }
-
-  fun isAccessibilityEnabled(): Boolean {
-    return isAccessibilityEnabled
+    maybeInitializeClickableAreas()
   }
 
   override fun onAttachedToWindow() {
@@ -140,34 +88,56 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
-
-    isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled()
+    maybeInitializeClickableAreas()
   }
 
   fun setOnRegionClicked(onRegionClicked: OnClickableAreaClickedListener) {
     this.onRegionClicked = onRegionClicked
-    checkIfSettingIsPossible()
+    maybeInitializeClickableAreas()
   }
 
   fun setOverlayView(overlayView: FrameLayout) {
     this.overlayView = overlayView
-    checkIfSettingIsPossible()
+    maybeInitializeClickableAreas()
   }
 
-  private fun checkIfSettingIsPossible() {
-    if (::onRegionClicked.isInitialized && ::overlayView.isInitialized) {
-      performAttachment()
+  private fun maybeInitializeClickableAreas() {
+    if (::accessibilityService.isInitialized &&
+      ::clickableAreas.isInitialized &&
+      ::entityId.isInitialized &&
+      ::imageUrl.isInitialized &&
+      ::onRegionClicked.isInitialized &&
+      ::overlayView.isInitialized
+    ) {
+      loadImage()
+
+      val areasImage = ClickableAreasImage(
+        this,
+        this.parent as FrameLayout,
+        onRegionClicked,
+        bindingInterface,
+        isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled(),
+        clickableAreas
+      )
+      areasImage.addRegionViews()
+      performAttachment(areasImage)
     }
   }
 
-  private fun performAttachment() {
-    val area = ClickableAreasImage(
-      this,
-      overlayView,
-      onRegionClicked,
-      bindingInterface
-    )
+  /** Initiates the asynchronous loading process for the interaction's image region. */
+  private fun loadImage() {
+    val imageName = machineLocale.run {
+      imageDownloadUrlTemplate.formatForMachines(entityType, entityId, imageUrl)
+    }
+    val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
+    if (machineLocale.run { imageUrl.endsWithIgnoreCase("svg") }) {
+      imageLoader.loadBlockSvg(imageUrl, ImageViewTarget(this))
+    } else {
+      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))
+    }
+  }
 
+  private fun performAttachment(areasImage: ClickableAreasImage) {
     this.addOnLayoutChangeListener {
       _,
       left,
@@ -179,8 +149,9 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
       oldRight,
       oldBottom ->
       // Update the regions, as the bounds have changed
-      if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
-        area.addRegionViews()
+      if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom) {
+        areasImage.addRegionViews()
+      }
     }
   }
 }

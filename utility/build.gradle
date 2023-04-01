@@ -4,12 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 30
+  compileSdkVersion 31
   buildToolsVersion "29.0.2"
 
   defaultConfig {
     minSdkVersion 19
-    targetSdkVersion 30
+    targetSdkVersion 31
     versionCode 1
     versionName "1.0"
     javaCompileOptions {
@@ -58,20 +58,39 @@ android {
   }
 }
 
+// These tests aren't supported in Gradle since they make use of test resources & AGP doesn't
+// support merging resources for test builds, or they rely on a compile-time built proto
+// configuration file which the current Gradle configuration doesn't support. This test runs
+// correctly for Bazel & is included in the CI workflow that runs Bazel tests.
+// https://stackoverflow.com/a/69141612 seems like the only solution that actually works (versus
+// trying to exclude via sourceSets), so the following is an adapted version that ensures all
+// generated sources that may reference the test also don't exist (such as Dagger running to
+// generate a test application component). Note that this must exist in tandem with the sourceSet
+// exclusion in order to properly work.
+def filesToExclude = [
+    '**/*DisplayLocaleImplTest*.kt'
+]
+tasks.withType(SourceTask.class).configureEach {
+  it.exclude(filesToExclude)
+}
+android.sourceSets.test.java.exclude(filesToExclude)
+android.sourceSets.test.kotlin.exclude(filesToExclude)
+
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'androidx.work:work-runtime-ktx:2.4.0',
-      'com.github.oppia:androidsvg:6bd15f69caee3e6857fcfcd123023716b4adec1d',
+      'com.github.oppia:androidsvg:4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf',
+      'com.github.oppia:kotlitex:43139c140833c7120f351d63d74b42c253d2b213',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.protobuf:protobuf-javalite:3.17.3',
-      "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1',
   )
   compileOnly(
@@ -90,6 +109,7 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:3.19.0',
       'org.robolectric:robolectric:4.5',
+      project(":data"),
       project(":testing"),
   )
   kapt(

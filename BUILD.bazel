@@ -1,5 +1,6 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:build_flavors.bzl", "AVAILABLE_FLAVORS", "define_oppia_aab_binary_flavor", "transform_android_manifest")
 load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
 
@@ -75,6 +76,7 @@ package_group(
 [
     transform_android_manifest(
         name = "oppia_apk_%s_transformed_manifest" % apk_flavor_metadata["flavor"],
+        application_relative_qualified_class = ".app.application.dev.DeveloperOppiaApplication",
         build_flavor = apk_flavor_metadata["flavor"],
         input_file = "//app:src/main/AndroidManifest.xml",
         major_version = MAJOR_VERSION,
@@ -108,7 +110,7 @@ package_group(
         },
         multidex = apk_flavor_metadata["multidex"],
         deps = [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
         ],
     )
     for apk_flavor_metadata in [
@@ -116,14 +118,14 @@ package_group(
             "flavor": "oppia",
             "min_sdk_version": 21,
             "multidex": "native",
-            "target_sdk_version": 30,
+            "target_sdk_version": 31,
         },
         {
             "flavor": "oppia_kitkat",
             "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
             "min_sdk_version": 19,
             "multidex": "manual_main_dex",
-            "target_sdk_version": 30,
+            "target_sdk_version": 31,
         },
     ]
 ]
@@ -135,3 +137,5 @@ package_group(
     define_oppia_aab_binary_flavor(flavor = flavor)
     for flavor in AVAILABLE_FLAVORS
 ]
+
+dagger_rules()

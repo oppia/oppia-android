@@ -2,16 +2,22 @@ package org.oppia.android.app.topic.conceptcard
 
 import android.app.Application
 import android.content.Context
+import android.text.Spannable
+import android.text.style.ClickableSpan
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -22,9 +28,12 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,40 +42,49 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -94,7 +112,9 @@ import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -209,43 +229,22 @@ class ConceptCardFragmentTest {
 
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
-        .check(
-          matches(
-            withText(
-              "Hello. Welcome to Oppia."
-            )
-          )
-        )
-      onView(withId(R.id.concept_card_explanation_text))
-        .inRoot(isDialog())
-        .check(matches(not(containsRichText())))
+        .check(matches(withText(containsString("Hello. Welcome to Oppia."))))
     }
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() { // ktlint-disable max-line-length
+  fun testConceptCardFragment_openDialogFragment0_checkExplanationDisplayedWithoutRichText() {
     launchTestActivity().use {
       onView(withId(R.id.open_dialog_0)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
-        .check(
-          matches(
-            withText(
-              "An important skill"
-            )
-          )
-        )
+        .check(matches(withText("An important skill")))
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
-        .check(
-          matches(
-            withText(
-              "Hello. Welcome to Oppia."
-            )
-          )
-        )
+        .check(matches(withText(containsString("Hello. Welcome to Oppia."))))
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
         .check(matches(not(containsRichText())))
@@ -253,29 +252,20 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() { // ktlint-disable max-line-length
+  fun testConceptCardFragment_openDialogFragment1_checkExplanationDisplayedWithRichText() {
     launchTestActivity().use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
-        .check(
-          matches(
-            withText(
-              "Another important skill"
-            )
-          )
-        )
+        .check(matches(withText("Another important skill")))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(not(withText("An important skill"))))
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
-        .check(
-          matches(
-            withText(
-              "Explanation with rich text."
-            )
-          )
-        )
+        .check(matches(withText(containsString("Explanation with rich text."))))
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
         .check(matches(containsRichText()))
@@ -283,7 +273,29 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() { // ktlint-disable max-line-length
+  fun testConceptCardFragment_openDialogFragment1_clickOnConceptCardLink_opensConceptCard() {
+    launchTestActivity().use {
+      onView(withId(R.id.open_dialog_1)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Click the concept card link to open it.
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_0 concept card"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText("An important skill")))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Hello. Welcome to Oppia."))))
+    }
+  }
+
+  @Test
+  fun testConceptCardFragment_openDialogFragmentWithSkill2_configChange_workedExamplesDisplayed() {
     launchTestActivity().use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -293,22 +305,10 @@ class ConceptCardFragmentTest {
 
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
-        .check(
-          matches(
-            withText(
-              "Another important skill"
-            )
-          )
-        )
+        .check(matches(withText("Another important skill")))
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
-        .check(
-          matches(
-            withText(
-              "Explanation with rich text."
-            )
-          )
-        )
+        .check(matches(withText(containsString("Explanation with rich text."))))
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
         .check(matches(containsRichText()))
@@ -381,6 +381,43 @@ class ConceptCardFragmentTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
+  private fun openClickableSpan(text: String): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String = "openClickableSpan"
+
+      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // The view shouldn't be null if the constraints are being met.
+        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  private fun hasClickableSpanWithText(text: String): Matcher<View> {
+    return object : TypeSafeMatcher<View>(TextView::class.java) {
+      override fun describeTo(description: Description?) {
+        description?.appendText("has ClickableSpan with text")?.appendValue(text)
+      }
+
+      override fun matchesSafely(item: View?): Boolean {
+        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
+      }
+    }
+  }
+
+  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
+    val viewText = text
+    return (viewText as Spannable).getSpans(
+      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+    ).map {
+      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+    }
+  }
+
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) =
+    find { text in it.first }?.second
+
   @Module
   class TestModule {
     @Provides
@@ -416,19 +453,27 @@ class ConceptCardFragmentTest {
       AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterSingletonModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(conceptCardFragmentTest: ConceptCardFragmentTest)
   }

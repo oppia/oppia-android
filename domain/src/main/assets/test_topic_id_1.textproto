@@ -1,7 +1,23 @@
 id: "test_topic_id_1"
-name: "Second Test Topic"
-description: "A topic considering the various implications of having especially long topic descriptions. These descriptions almost certainly need to wrap, which should be interesting in the UI (especially on small screens). Consider also that there may even be multiple points pertaining to a topic, some of which may require expanding the description section in order to read the whole topic description."
 canonical_story_ids: "test_story_id_2"
 is_published: true
 topic_thumbnail {
+}
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Second Test Topic"
+  content_id: "title"
+}
+translatable_description {
+  html: "A topic considering the various implications of having especially long topic descriptions. These descriptions almost certainly need to wrap, which should be interesting in the UI (especially on small screens). Consider also that there may even be multiple points pertaining to a topic, some of which may require expanding the description section in order to read the whole topic description."
+  content_id: "description"
 }

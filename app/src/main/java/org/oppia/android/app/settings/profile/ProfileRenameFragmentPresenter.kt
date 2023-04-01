@@ -13,7 +13,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileRenameFragmentBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
@@ -26,13 +25,9 @@ class ProfileRenameFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<ProfileRenameViewModel>,
+  private val renameViewModel: ProfileRenameViewModel,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  private val renameViewModel: ProfileRenameViewModel by lazy {
-    getProfileRenameViewModel()
-  }
-
   private lateinit var binding: ProfileRenameFragmentBinding
 
   /** Handles onCreateView() method of [ProfileRenameFragment]. */
@@ -101,12 +96,12 @@ class ProfileRenameFragmentPresenter @Inject constructor(
   }
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
-    if (result.isSuccess()) {
+    if (result is AsyncResult.Success) {
       val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       activity.startActivity(intent)
-    } else if (result.isFailure()) {
-      when (result.getErrorOrNull()) {
+    } else if (result is AsyncResult.Failure) {
+      when (result.error) {
         is ProfileManagementController.ProfileNameNotUniqueException ->
           renameViewModel.nameErrorMsg.set(
             resourceHandler.getStringInLocale(
@@ -121,9 +116,5 @@ class ProfileRenameFragmentPresenter @Inject constructor(
           )
       }
     }
-  }
-
-  private fun getProfileRenameViewModel(): ProfileRenameViewModel {
-    return viewModelProvider.getForFragment(fragment, ProfileRenameViewModel::class.java)
   }
 }

@@ -27,11 +27,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
-        app:srcCompat="@{viewModel.slideImage}"
         app:layout_constraintDimensionRatio="5:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@{viewModel.slideImage}" />
 
       <TextView
         android:id="@+id/slide_title_text_view"
@@ -41,8 +41,8 @@
         android:layout_marginTop="48dp"
         android:layout_marginEnd="160dp"
         android:gravity="center_horizontal"
-        android:maxLines="1"
         android:text="@{viewModel.title}"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +59,7 @@
         android:maxLines="2"
         android:minLines="2"
         android:text="@{viewModel.description}"
+        android:textColor="@color/component_color_shared_secondary_1_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/slide_title_text_view" />

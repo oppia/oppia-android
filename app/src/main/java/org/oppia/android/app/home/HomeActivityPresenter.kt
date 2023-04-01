@@ -7,6 +7,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import javax.inject.Inject
 
 const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"
@@ -16,7 +18,7 @@ const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"
 class HomeActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
-  fun handleOnCreate() {
+  fun handleOnCreate(internalProfileId: Int) {
     activity.setContentView(R.layout.home_activity)
     setUpNavigationDrawer()
     if (getHomeFragment() == null) {
@@ -24,6 +26,14 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
         R.id.home_fragment_placeholder,
         HomeFragment(),
         TAG_HOME_FRAGMENT
+      ).commitNow()
+    }
+
+    if (getSpotlightFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.home_spotlight_fragment_placeholder,
+        SpotlightFragment.newInstance(internalProfileId),
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }
@@ -49,5 +59,11 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
     return activity.supportFragmentManager.findFragmentById(
       R.id.home_fragment_placeholder
     ) as HomeFragment?
+  }
+
+  private fun getSpotlightFragment(): SpotlightFragment? {
+    return activity.supportFragmentManager.findFragmentById(
+      R.id.home_spotlight_fragment_placeholder
+    ) as? SpotlightFragment
   }
 }

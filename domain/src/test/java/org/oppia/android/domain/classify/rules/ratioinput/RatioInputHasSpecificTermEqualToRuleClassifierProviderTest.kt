@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -49,7 +49,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -66,7 +66,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     // The ratio has value 3, but the value 2 was expected.
@@ -84,7 +84,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     // A value was expected at index 2, but the ratio doesn't have that.
@@ -99,7 +99,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -113,7 +113,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     // The ratio has value 3 at index 1, but the value 2 was expected.
@@ -128,7 +128,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -142,7 +142,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     // The ratio has value 2 at index 2, but the value 3 was expected.
@@ -157,7 +157,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     // A value was expected at index 3, but the ratio doesn't have that.
@@ -172,7 +172,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     // A value was expected at index 0, but the ratio doesn't have that.
@@ -187,7 +187,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     // A value was expected at index 4, but the ratio doesn't have that.
@@ -202,7 +202,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -219,7 +219,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -236,7 +236,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -253,7 +253,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -268,7 +268,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = mapOf(),
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

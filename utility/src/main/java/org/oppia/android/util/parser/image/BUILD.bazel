@@ -2,8 +2,7 @@
 General-purpose utilities for image loading and processing.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "bitmap_blurrer",
@@ -42,6 +41,7 @@ kt_android_library(
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/caching:annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+        "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_blur_transformation",
@@ -59,9 +59,9 @@ kt_android_library(
         "//:oppia_prod_module_visibility",
     ],
     deps = [
-        ":dagger",
         ":glide_image_loader",
         ":image_loader",
+        "//:dagger",
     ],
 )
 
@@ -111,8 +111,8 @@ kt_android_library(
         "//:oppia_testing_visibility",
     ],
     deps = [
-        ":dagger",
         ":image_parsing_annonations",
+        "//:dagger",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -149,9 +149,11 @@ kt_android_library(
     deps = [
         ":image_asset_fetcher",
         ":repository_model_loader",
+        "//:dagger",
         "//third_party:glide_compiler",
         "//utility/src/main/java/org/oppia/android/util/caching:annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+        "//utility/src/main/java/org/oppia/android/util/parser/math:math_bitmap_model_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:block_svg_drawable_transcoder",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
@@ -222,5 +224,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
     ],
 )
-
-dagger_rules()

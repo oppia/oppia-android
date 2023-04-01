@@ -1,5 +1,4 @@
 story_id: "wANbh4oOClga"
-story_name: "Matthew Goes to the Bakery"
 story_thumbnail {
   background_color_rgb: 11786481
 }
@@ -8,14 +7,55 @@ chapters {
   chapter_thumbnail {
     background_color_rgb: 14061432
   }
-  title: "What is a Fraction?"
-  description: "Matthew learns about fractions."
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "What is a Fraction?"
+    content_id: "title"
+  }
+  translatable_description {
+    html: "Matthew learns about fractions."
+    content_id: "description"
+  }
 }
 chapters {
   exploration_id: "MjZzEVOG47_1"
   chapter_thumbnail {
     background_color_rgb: 14055672
   }
-  title: "The Meaning of Equal Parts"
-  description: "Matthew learns about equal parts in fractions."
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "The Meaning of Equal Parts"
+    content_id: "title"
+  }
+  translatable_description {
+    html: "Matthew learns about equal parts in fractions."
+    content_id: "description"
+  }
+}
+written_translations {
+  key: "title"
+  value {
+  }
+}
+translatable_story_name {
+  html: "Matthew Goes to the Bakery"
+  content_id: "title"
 }

@@ -136,6 +136,7 @@ class RemoteAuthNetworkInterceptorTest {
         .setApplicationInfo(applicationInfo)
         .build()
     packageInfo.versionName = testVersionName
+    @Suppress("DEPRECATION") // versionCode is needed to test production code.
     packageInfo.versionCode = testVersionCode
     packageManager.installPackage(packageInfo)
   }

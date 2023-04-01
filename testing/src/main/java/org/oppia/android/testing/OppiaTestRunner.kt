@@ -27,7 +27,7 @@ class OppiaTestRunner : AndroidJUnitRunner() {
     // Load a new application if it's different than the original.
     val bindApplication = retrieveTestApplicationName(arguments?.getString("class"))?.let {
       newApplication(applicationClassLoader, it, targetContext)
-    } ?: targetContext.applicationContext as Application
+    } ?: targetContext as Application
 
     // Ensure the bound application is forcibly overwritten in the target context, and used
     // subsequently throughout the runner since it's replacing the previous application.
@@ -78,11 +78,13 @@ class OppiaTestRunner : AndroidJUnitRunner() {
   }
 
   private fun overrideApplicationInContext(context: Context, application: Application) {
-    val packageInfo = getPrivateFieldFromObject(context, "mPackageInfo")
+    val packageInfo = checkNotNull(getPrivateFieldFromObject(context, "mPackageInfo")) {
+      "Failed to retrieve mPackageInfo from context: $context."
+    }
     setPrivateFieldFromObject(packageInfo, "mApplication", application)
   }
 
-  private fun getPrivateFieldFromObject(container: Any, fieldName: String): Any {
+  private fun getPrivateFieldFromObject(container: Any, fieldName: String): Any? {
     return retrieveAccessibleFieldFromObject(container, fieldName).get(container)
   }
 

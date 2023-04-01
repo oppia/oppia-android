@@ -37,6 +37,7 @@ gradlew.bat @BenHenning
 .gitignore @BenHenning
 /.github/*.md @BenHenning
 /.github/ISSUE_TEMPLATE @BenHenning
+/.github/DISCUSSION_TEMPLATE/q-a-installation.yml @BenHenning
 
 # Git secret files & related configurations.
 /.gitsecret/ @BenHenning
@@ -47,16 +48,15 @@ gradlew.bat @BenHenning
 /.github/workflows/ @BenHenning
 /.github/stale.yml @BenHenning
 
+# Wiki
+/wiki/ @BenHenning
+
 # Devbots configurations.
 /.devbots/ @BenHenning
 
-# All tests.
-*Test.kt @anandwana001
-
 # All resource files.
-/app/src/main/res/**/*.xml @rt4914
-/utility/src/main/res/**/*.xml @rt4914
-/app/src/main/res/values/colors_migrating.xml @ayush0402 @rt4914
+/app/src/main/res/**/*.xml @BenHenning
+/utility/src/main/res/**/*.xml @BenHenning
 
 # App UI strings.
 /app/src/main/res/values*/strings.xml @BenHenning
@@ -66,13 +66,13 @@ gradlew.bat @BenHenning
 *.pro @BenHenning
 
 # Lesson assets.
-/domain/src/main/assets/ @BenHenning @rt4914
+/domain/src/main/assets/ @BenHenning
 
 # Android manifests and top-level app configuration.
 *Manifest.xml @BenHenning
 
 # Linter configuration.
-buf.yaml @anandwana001
+buf.yaml @BenHenning
 
 # Third-party dependencies.
 /third_party/ @BenHenning
@@ -98,7 +98,8 @@ LICENSE @BenHenning
 NOTICE @BenHenning
 
 # Language configuration files.
-config/**/languages/*.textproto @BenHenning
+config/**/alllanguages/*.textproto @BenHenning
+config/**/productionlanguages/*.textproto @BenHenning
 
 # Configuration for KitKat-specific curated builds.
 config/kitkat_main_dex_class_list.txt @BenHenning
@@ -108,8 +109,8 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # Global app module code ownership.
-/app/**/*.kt @rt4914
-/app/**/*.java @rt4914
+/app/**/*.kt @BenHenning
+/app/**/*.java @BenHenning
 
 # State players.
 /app/src/*/java/org/oppia/android/app/player/ @BenHenning
@@ -128,8 +129,8 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 # Databinding adapters.
 /app/src/main/java/org/oppia/android/app/databinding/ @BenHenning
 
-# App deprecation functionality.
-/app/src/*/java/org/oppia/android/app/deprecation/ @BenHenning
+# App notices functionality (such as for deprecations).
+/app/src/*/java/org/oppia/android/app/notice/ @BenHenning
 
 # Parsing functionality needed for interactions.
 /app/src/*/java/org/oppia/android/app/parser/ @BenHenning
@@ -144,7 +145,7 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 /app/src/*/java/org/oppia/android/app/viewmodel/ @BenHenning
 
 # App testing infrastructure.
-/app/src/*/java/org/oppia/android/app/testing/ @anandwana001
+/app/src/*/java/org/oppia/android/app/testing/ @BenHenning
 
 #####################################################################################
 #                                  domain module                                    #
@@ -153,21 +154,18 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 # Global domain module code ownership.
 /domain/**/*.kt @BenHenning
 
-# Domain test resources.
-/domain/src/test/res/values/strings.xml @BenHenning
-
 # Questions support.
-/domain/src/*/java/org/oppia/android/domain/question/ @vinitamurthi
+/domain/src/*/java/org/oppia/android/domain/question/ @BenHenning
 
 # Oppia logging support.
-/domain/src/main/java/org/oppia/android/domain/oppialogger/ @vinitamurthi
+/domain/src/main/java/org/oppia/android/domain/oppialogger/ @BenHenning
 
 #####################################################################################
 #                                  testing module                                   #
 #####################################################################################
 
 # Global testing module code ownership.
-/testing/**/*.kt @anandwana001 @BenHenning
+/testing/**/*.kt @BenHenning
 
 #####################################################################################
 #                                    data module                                    #
@@ -184,14 +182,17 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 # Global utility module code ownership.
 /utility/**/*.kt @BenHenning
 
+# Utility test resources.
+/utility/src/test/res/values/strings.xml @BenHenning
+
 # Accessibility utilities.
-/utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
+/utility/src/*/java/org/oppia/android/util/accessibility/ @BenHenning
 
 # Core logging infrastructure.
-/utility/src/*/java/org/oppia/android/util/logging/ @vinitamurthi
+/utility/src/*/java/org/oppia/android/util/logging/ @BenHenning
 
 # Miscellaneous statusbar UI utilities.
-/utility/src/*/java/org/oppia/android/util/statusbar/ @rt4914
+/utility/src/*/java/org/oppia/android/util/statusbar/ @BenHenning
 
 #####################################################################################
 #                                     scripts                                       #
@@ -199,9 +200,6 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 
 # Global scripts code ownership.
 /scripts/ @BenHenning
-
-# Shell file ownership.
-/scripts/**/*.sh @anandwana001 @BenHenning
 
 # Script proto ownership.
 /scripts/**/*.proto @BenHenning
@@ -214,10 +212,10 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # Global proto file ownership for model/.
-/model/**/*.proto @vinitamurthi @BenHenning
+/model/**/*.proto @BenHenning
 
 # Global model ownership.
-/model/ @vinitamurthi @BenHenning
+/model/ @BenHenning
 
 
 #####################################################################################
@@ -225,7 +223,7 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # End-to-end test utilities and modules.
-/instrumentation/src/java/**/*.kt @anandwana001 @BenHenning
+/instrumentation/**/*.kt @BenHenning
 
 #####################################################################################
 #                                global overrides                                   #

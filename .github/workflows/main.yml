@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -99,11 +99,11 @@ jobs:
 
   run_app_module_test:
     name: Run app module Robolectric test shard
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        shard: [shard0, shard1, shard2, shard3]
+        shard: [shard0, shard1, shard2, shard3, shard4, shard5, shard6, shard7]
     steps:
       - uses: actions/checkout@v2
 
@@ -145,7 +145,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     steps:
       - name: Check tests passed (for tests that ran)
         if: ${{ needs.run_app_module_test.result != 'success' }}

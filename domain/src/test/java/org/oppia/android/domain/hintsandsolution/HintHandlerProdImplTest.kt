@@ -10,6 +10,13 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,6 +31,7 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.exploration.ExplorationRetriever
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -37,6 +45,7 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
@@ -53,154 +62,169 @@ class HintHandlerProdImplTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock
-  lateinit var mockHintMonitor: HintHandler.HintMonitor
+  @Mock lateinit var mockHelpIndexFlowMonitor: Runnable
+  @Inject lateinit var hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl
+  @Inject lateinit var explorationRetriever: ExplorationRetriever
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @field:[Inject BlockingDispatcher] lateinit var blockingCoroutineDispatcher: CoroutineDispatcher
 
-  @Inject
-  lateinit var hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl
-
-  @Inject
-  lateinit var explorationRetriever: ExplorationRetriever
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
+  private lateinit var blockingCoroutineScope: CoroutineScope
   private lateinit var hintHandler: HintHandler
+
   private val expWithNoHintsOrSolution by lazy {
-    explorationRetriever.loadExploration("test_single_interactive_state_exp_no_hints_no_solution")
+    runBlocking {
+      explorationRetriever.loadExploration("test_single_interactive_state_exp_no_hints_no_solution")
+    }
   }
   private val expWithOneHintAndNoSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_one_hint_and_no_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_one_hint_and_no_solution"
+      )
+    }
   }
   private val expWithOneHintAndSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_one_hint_and_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_one_hint_and_solution"
+      )
+    }
   }
   private val expWithNoHintsAndOneSolution by lazy {
-    explorationRetriever.loadExploration("test_single_interactive_state_exp_with_only_solution")
+    runBlocking {
+      explorationRetriever.loadExploration("test_single_interactive_state_exp_with_only_solution")
+    }
   }
   private val expWithHintsAndSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_hints_and_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_hints_and_solution"
+      )
+    }
   }
   private val expWithSolutionMissingCorrectAnswer by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_solution_missing_answer"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_solution_missing_answer"
+      )
+    }
   }
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    blockingCoroutineScope = CoroutineScope(blockingCoroutineDispatcher)
+
     // Use the direct HintHandler factory to avoid testing the module setup.
-    hintHandler = hintHandlerProdImplFactory.create(mockHintMonitor)
+    hintHandler = hintHandlerProdImplFactory.create()
   }
 
   /* Tests for startWatchingForHintsInNewState */
 
   @Test
-  fun testStartWatchingForHints_stateWithoutHints_callsMonitor() {
+  fun testStartWatchingForHints_stateWithoutHints_doesNotChangeHelpIndex() {
     val state = expWithNoHintsOrSolution.getInitialState()
+    hintHandler.monitorHelpIndex()
 
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    verify(mockHintMonitor).onHelpIndexChanged()
+    // There's nothing to show, so the help index won't change.
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testStartWatchingForHints_stateWithoutHints_helpIndexIsEmpty() {
     val state = expWithNoHintsOrSolution.getInitialState()
 
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
   fun testStartWatchingForHints_stateWithoutHints_wait60Seconds_monitorNotCalledAgain() {
     val state = expWithNoHintsOrSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testStartWatchingForHints_stateWithoutHints_wait60Seconds_helpIndexIsEmpty() {
     val state = expWithNoHintsOrSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     waitFor60Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
-  fun testStartWatchingForHints_stateWithHints_callsMonitor() {
+  fun testStartWatchingForHints_stateWithHints_doesNotChangeHelpIndex() {
     val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.monitorHelpIndex()
 
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    verify(mockHintMonitor).onHelpIndexChanged()
+    // The default state is default instance and doesn't change due to starting a new state without
+    // any additional activity.
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testStartWatchingForHints_stateWithHints_helpIndexIsEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
 
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
-  fun testStartWatchingForHints_stateWithHints_wait10Seconds_doesNotCallMonitorAgain() {
+  fun testStartWatchingForHints_stateWithHints_wait10Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testStartWatchingForHints_stateWithHints_wait30Seconds_doesNotCallMonitorAgain() {
+  fun testStartWatchingForHints_stateWithHints_wait30Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testStartWatchingForHints_stateWithHints_wait60Seconds_callsMonitorAgain() {
+  fun testStartWatchingForHints_stateWithHints_wait60Seconds_changesHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
     // Verify that the monitor is called again (since there's a hint now available).
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testStartWatchingForHints_stateWithHints_wait60Seconds_firstHintIsAvailable() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     waitFor60Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         nextAvailableHintIndex = 0
       }.build()
@@ -210,60 +234,66 @@ class HintHandlerProdImplTest {
   /* Tests for resumeHintsForSavedState */
 
   @Test
-  fun testResumeHint_stateWithoutHints_noTrackedAnswers_noHintVisible_callsMonitor() {
+  fun testResumeHint_stateWithoutHints_noTrackedAnswers_noHintVisible_doesNotChangeHelpIndex() {
     val state = expWithNoHintsOrSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.monitorHelpIndex()
+
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
       state
     )
 
-    verify(mockHintMonitor).onHelpIndexChanged()
+    // Nothing should be called since the help index didn't actually change due to there being
+    // nothing to show.
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testResumeHint_stateWithoutHints_noTrackedAnswer_noHintVisible_helpIndexIsEmpty() {
     val state = expWithNoHintsOrSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
       state
     )
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
   fun testResumeHint_stateWithoutHint_twoTrackedAnswer_noHintVisible_helpIndexIsEmpty() {
     val state = expWithNoHintsOrSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 2,
       HelpIndex.getDefaultInstance(),
       state
     )
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
   fun testResumeHint_stateWithoutHints_noTrackedAnswers_wait60Seconds_monitorNotCalledAgain() {
     val state = expWithNoHintsOrSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testResumeHint_stateWithoutHints_twoTrackedAns_noHintVisible_wait60Sec_helpIndexIsEmpty() {
     val state = expWithNoHintsOrSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 2,
       HelpIndex.getDefaultInstance(),
       state
@@ -271,92 +301,94 @@ class HintHandlerProdImplTest {
 
     waitFor60Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
-  fun testResumeHint_stateWithHints_noTrackedAnswers_noHintVisible_callsMonitor() {
+  fun testResumeHint_stateWithHints_noTrackedAnswers_noHintVisible_doesNotChangeHelpIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.monitorHelpIndex()
+
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.getDefaultInstance(),
       state = state
     )
 
-    verify(mockHintMonitor).onHelpIndexChanged()
+    // There's nothing to restore, so show nothing.
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testResumeHints_stateWithHints_noTrackedAnswers_noHintVisible_helpIndexIsEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
       state
     )
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
-  fun testResumeHints_stateWithHints_noHintVisible_wait10Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_noHintVisible_wait10Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithHints_noHintVisible_wait30Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_noHintVisible_wait30Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithHints_noHintVisible_wait60Seconds_callsMonitorAgain() {
+  fun testResumeHints_stateWithHints_noHintVisible_wait60Seconds_changesHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
     // Verify that the monitor is called again (since there's a hint now available).
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testResumeHints_stateWithHints_noHintVisible_wait60Seconds_helpIndexHasNewAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
       state
     )
-    reset(mockHintMonitor)
 
     waitFor60Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         nextAvailableHintIndex = 0
       }.build()
@@ -364,106 +396,106 @@ class HintHandlerProdImplTest {
   }
 
   @Test
-  fun testResumeHints_stateWithHints_hintVisible_wait10Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_hintVisible_wait10Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         nextAvailableHintIndex = 0
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithHints_hintVisible_wait30Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_hintVisible_wait30Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         nextAvailableHintIndex = 0
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithHints_hintVisible_wait60Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_hintVisible_wait60Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         nextAvailableHintIndex = 0
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithHints_hintRevealed_wait10Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_hintRevealed_wait10Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         latestRevealedHintIndex = 0
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithOneHint_hintRevealed_wait30Seconds_callsMonitorAgain() {
+  fun testResumeHints_stateWithOneHint_hintRevealed_wait30Seconds_changesHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         latestRevealedHintIndex = 0
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
     // Verify that the monitor is called again (since there's a solution now available).
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testResumeHints_stateWithOneHint_hintRevealed_wait30Seconds_helpIndexHasSolution() {
     val state = expWithOneHintAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         latestRevealedHintIndex = 0
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         showSolution = true
       }.build()
@@ -471,38 +503,38 @@ class HintHandlerProdImplTest {
   }
 
   @Test
-  fun testResumeHints_stateWithTwoHints_secondHintRevealed_wait30Seconds_callsMonitorAgain() {
+  fun testResumeHints_stateWithTwoHints_secondHintRevealed_wait30Seconds_changesHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         latestRevealedHintIndex = 1
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
     // Verify that the monitor is called again (since there's a solution now available).
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testResumeHints_stateWithTwoHints_secondHintRevealed_wait30Seconds_helpIndexHasSolution() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         latestRevealedHintIndex = 1
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         showSolution = true
       }.build()
@@ -510,9 +542,11 @@ class HintHandlerProdImplTest {
   }
 
   @Test
-  fun testResumeHint_stateWithHints_solutionVisible_callsMonitor() {
+  fun testResumeHints_stateWithHints_solutionVisible_changesHelpIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.monitorHelpIndex()
+
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         showSolution = true
@@ -520,13 +554,13 @@ class HintHandlerProdImplTest {
       state
     )
 
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
-  fun testResumeHint_stateWithHints_solutionVisible_helpIndexHasSolution() {
+  fun testResumeHints_stateWithHints_solutionVisible_helpIndexHasSolution() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         showSolution = true
@@ -534,7 +568,7 @@ class HintHandlerProdImplTest {
       state
     )
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         showSolution = true
       }.build()
@@ -542,60 +576,62 @@ class HintHandlerProdImplTest {
   }
 
   @Test
-  fun testResumeHints_stateWithHints_solutionVisible_wait10Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_solutionVisible_wait10Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         showSolution = true
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithHints_solutionVisible_wait30Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_solutionVisible_wait30Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         showSolution = true
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithHints_solutionVisible_wait60Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_solutionVisible_wait60Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         showSolution = true
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHint_stateWithHints_everythingVisible_callsMonitor() {
+  fun testResumeHint_stateWithHints_everythingVisible_changesHelpIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.monitorHelpIndex()
+
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         everythingRevealed = true
@@ -603,13 +639,14 @@ class HintHandlerProdImplTest {
       state
     )
 
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testResumeHint_stateWithHints_everythingVisible_helpIndexShowsEverything() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         everythingRevealed = true
@@ -617,7 +654,7 @@ class HintHandlerProdImplTest {
       state
     )
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         everythingRevealed = true
       }.build()
@@ -625,144 +662,159 @@ class HintHandlerProdImplTest {
   }
 
   @Test
-  fun testResumeHints_stateWithHints_everythingVisible_wait10Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_everythingVisible_wait10Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         everythingRevealed = true
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithHints_everythingVisible_wait30Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_everythingVisible_wait30Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         everythingRevealed = true
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
-  fun testResumeHints_stateWithHints_everythingVisible_wait60Seconds_doesNotCallMonitorAgain() {
+  fun testResumeHints_stateWithHints_everythingVisible_wait60Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.resumeHintsForSavedState(
+    hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.newBuilder().apply {
         everythingRevealed = true
       }.build(),
       state
     )
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   /* Tests for finishState */
 
   @Test
-  fun testFinishState_defaultState_callsMonitor() {
+  fun testFinishState_defaultState_noLogicalChangeToHints_doesNotChangeHelpIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
     // Simulate the default instance case (which can occur specifically for questions).
-    hintHandler.finishState(State.getDefaultInstance())
+    hintHandler.finishStateSync(State.getDefaultInstance())
 
-    verify(mockHintMonitor).onHelpIndexChanged()
+    // The flow monitor isn't notified if the help index value stays the same.
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testFinishState_defaultState_helpIndexIsEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     // Simulate the default instance case (which can occur specifically for questions).
-    hintHandler.finishState(State.getDefaultInstance())
+    hintHandler.finishStateSync(State.getDefaultInstance())
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testFinishState_nonDefaultState_toDefaultState_changesHelpIndex() {
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    waitFor60Seconds()
+    hintHandler.monitorHelpIndex()
+
+    // Simulate the default instance case (which can occur specifically for questions).
+    hintHandler.finishStateSync(State.getDefaultInstance())
+
+    // The monitor should be called in this case since the help index has changed.
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testFinishState_defaultState_wait60Seconds_monitorNotCalledAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.finishState(State.getDefaultInstance())
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.finishStateSync(State.getDefaultInstance())
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testFinishState_defaultState_wait60Seconds_helpIndexStaysEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.finishState(State.getDefaultInstance())
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.finishStateSync(State.getDefaultInstance())
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
   fun testFinishState_newStateWithHints_helpIndexIsEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     // Note that this is slightly suspect: normally, a state would be sourced from an independent
     // question or from the same exploration. This tactic is taken to simplify the data structure
     // requirements for the test, and because it should be more or less functionally equivalent.
-    hintHandler.finishState(expWithOneHintAndNoSolution.getInitialState())
+    hintHandler.finishStateSync(expWithOneHintAndNoSolution.getInitialState())
 
     // The help index should be reset.
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
-  fun testFinishState_newStateWithHints_wait60Seconds_callsMonitorAgain() {
+  fun testFinishState_newStateWithHints_wait60Seconds_changesHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.finishState(expWithOneHintAndNoSolution.getInitialState())
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.finishStateSync(expWithOneHintAndNoSolution.getInitialState())
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
     // The index should be called again now that there's a new index.
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testFinishState_previousStateFullyRevealed_newStateWithHints_wait60Seconds_indexHasNewHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealEverythingInMultiHintState()
-    hintHandler.finishState(expWithOneHintAndNoSolution.getInitialState())
+    hintHandler.finishStateSync(expWithOneHintAndNoSolution.getInitialState())
 
     waitFor60Seconds()
 
     // A new hint index should be revealed despite the entire previous state being completed (since
     // the handler has been reset).
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         nextAvailableHintIndex = 0
       }.build()
@@ -770,17 +822,17 @@ class HintHandlerProdImplTest {
   }
 
   @Test
-  fun testFinishState_newStateWithoutHints_wait60Seconds_doesNotCallMonitorAgain() {
+  fun testFinishState_newStateWithoutHints_wait60Seconds_doesNotChangeHelpIndexAgain() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealEverythingInMultiHintState()
-    hintHandler.finishState(expWithNoHintsOrSolution.getInitialState())
-    reset(mockHintMonitor)
+    hintHandler.finishStateSync(expWithNoHintsOrSolution.getInitialState())
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
     // Since the new state doesn't have any hints, the index will not change.
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   /* Tests for handleWrongAnswerSubmission */
@@ -788,70 +840,70 @@ class HintHandlerProdImplTest {
   @Test
   fun testWrongAnswerSubmission_stateWithHints_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testWrongAnswerSubmission_stateWithHints_helpIndexStaysEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   @Test
   fun testWrongAnswerSubmission_stateWithHints_wait10seconds_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testWrongAnswerSubmission_stateWithHints_wait30seconds_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testWrongAnswerSubmission_stateWithHints_wait60seconds_monitorCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
     // A hint should now be available, so the monitor will be notified.
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testWrongAnswerSubmission_stateWithHints_wait60seconds_helpIndexHasAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
 
     waitFor60Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         nextAvailableHintIndex = 0
       }.build()
@@ -861,27 +913,28 @@ class HintHandlerProdImplTest {
   @Test
   fun testWrongAnswerSubmission_twice_stateWithHints_monitorCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
     // Simulate two answers being submitted subsequently.
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
-    // Submitting two wrong answers subsequently should immediately result in a hint being available.
-    verify(mockHintMonitor).onHelpIndexChanged()
+    // Submitting two wrong answers subsequently should immediately result in a hint being
+    // available.
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testWrongAnswerSubmission_twice_stateWithHints_helpIndexHasAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     // Simulate two answers being submitted subsequently.
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         nextAvailableHintIndex = 0
       }.build()
@@ -891,28 +944,28 @@ class HintHandlerProdImplTest {
   @Test
   fun testWrongAnswerSubmission_twice_stateWithoutHints_monitorNotCalled() {
     val state = expWithNoHintsOrSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
     // Simulate two answers being submitted subsequently.
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
     // No notification should happen since the state doesn't have any hints.
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testWrongAnswerSubmission_twice_stateWithoutHints_helpIndexIsEmpty() {
     val state = expWithNoHintsOrSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     // Simulate two answers being submitted subsequently.
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
     // No hint is available since the state has no hints.
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
   /* Tests for viewHint */
@@ -920,10 +973,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewHint_noHintAvailable_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewHint(hintIndex = 0)
+      hintHandler.viewHintSync(hintIndex = 0)
     }
 
     // No hint is available to reveal.
@@ -931,28 +984,27 @@ class HintHandlerProdImplTest {
   }
 
   @Test
-  fun testViewHint_hintAvailable_callsMonitor() {
+  fun testViewHint_hintAvailable_changesHelpIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerFirstHint()
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
-    hintHandler.viewHint(hintIndex = 0)
+    hintHandler.viewHintSync(hintIndex = 0)
 
     // Viewing the hint should trigger a change in the help index.
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testViewHint_hintAvailable_helpIndexUpdatedToShowHintShown() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerFirstHint()
-    reset(mockHintMonitor)
 
-    hintHandler.viewHint(hintIndex = 0)
+    hintHandler.viewHintSync(hintIndex = 0)
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         latestRevealedHintIndex = 0
       }.build()
@@ -962,40 +1014,40 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewHint_hintAvailable_multiHintState_wait10Seconds_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerFirstHint()
-    hintHandler.viewHint(hintIndex = 0)
-    reset(mockHintMonitor)
+    hintHandler.viewHintSync(hintIndex = 0)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testViewHint_hintAvailable_multiHintState_wait30Seconds_monitorCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerFirstHint()
-    hintHandler.viewHint(hintIndex = 0)
-    reset(mockHintMonitor)
+    hintHandler.viewHintSync(hintIndex = 0)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
     // 30 seconds is long enough to trigger a second hint to be available.
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testViewHint_hintAvailable_multiHintState_wait30Seconds_helpIndexHasNewAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerFirstHint()
-    hintHandler.viewHint(hintIndex = 0)
+    hintHandler.viewHintSync(hintIndex = 0)
 
     waitFor30Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         nextAvailableHintIndex = 1
       }.build()
@@ -1005,12 +1057,12 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewHint_hintAvailable_multiHintState_allHintsRevealed_indexShowsLastRevealedHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         latestRevealedHintIndex = 1
       }.build()
@@ -1020,13 +1072,13 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewHint_multiHintState_allHintsRevealed_triggerSolution_indexShowsSolution() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
     triggerSolution()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         showSolution = true
       }.build()
@@ -1036,37 +1088,37 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewHint_hintAvailable_oneHintState_withSolution_wait10Sec_monitorNotCalled() {
     val state = expWithOneHintAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testViewHint_hintAvailable_oneHintState_withSolution_wait30Sec_monitorCalled() {
     val state = expWithOneHintAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
     // The solution should now be available.
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testViewHint_hintAvailable_oneHintState_withSolution_wait30Sec_indexShowsSolution() {
     val state = expWithOneHintAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
 
     waitFor30Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         showSolution = true
       }.build()
@@ -1076,36 +1128,36 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewHint_hintAvailable_oneHintState_noSolution_wait10Sec_monitorNotCalled() {
     val state = expWithOneHintAndNoSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testViewHint_hintAvailable_oneHintState_noSolution_wait30Sec_monitorNotCalled() {
     val state = expWithOneHintAndNoSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
     // The index is still unchanged since there's nothing left to see.
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testViewHint_latestHintViewed_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
 
     val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewHint(hintIndex = 0)
+      hintHandler.viewHintSync(hintIndex = 0)
     }
 
     // No hint is available to reveal since it's already been revealed.
@@ -1115,12 +1167,12 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewHint_solutionAvailable_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
     val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewHint(hintIndex = 0)
+      hintHandler.viewHintSync(hintIndex = 0)
     }
 
     // No hint is available to reveal since all hints have been revealed.
@@ -1130,13 +1182,13 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewHint_everythingRevealed_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     triggerAndRevealSolution()
 
     val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewHint(hintIndex = 0)
+      hintHandler.viewHintSync(hintIndex = 0)
     }
 
     // No hint is available to reveal since everything has been revealed.
@@ -1148,10 +1200,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewSolution_nothingAvailable_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewSolution()
+      hintHandler.viewSolutionSync()
     }
 
     // The solution is not yet available to be seen (no hints have been viewed).
@@ -1161,11 +1213,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewSolution_hintAvailable_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerFirstHint()
 
     val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewSolution()
+      hintHandler.viewSolutionSync()
     }
 
     // The solution is not yet available to be seen (one hint is available, but hasn't been viewed).
@@ -1175,11 +1227,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewSolution_hintViewed_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
 
     val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewSolution()
+      hintHandler.viewSolutionSync()
     }
 
     // The solution is not yet available to be seen (one hint was viewed, but the solution isn't
@@ -1190,12 +1242,12 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewSolution_allHintsViewed_solutionNotTriggered_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
     val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewSolution()
+      hintHandler.viewSolutionSync()
     }
 
     // The solution is not yet available to be seen since the user hasn't triggered the solution to
@@ -1204,31 +1256,31 @@ class HintHandlerProdImplTest {
   }
 
   @Test
-  fun testViewSolution_solutionAvailable_callsMonitor() {
+  fun testViewSolution_solutionAvailable_changesHelpIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     triggerSolution()
-    reset(mockHintMonitor)
+    hintHandler.monitorHelpIndex()
 
-    hintHandler.viewSolution()
+    hintHandler.viewSolutionSync()
 
     // The help index should change when the solution is revealed.
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testViewSolution_solutionAvailable_helpIndexUpdatedToShowEverything() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     triggerSolution()
 
-    hintHandler.viewSolution()
+    hintHandler.viewSolutionSync()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         everythingRevealed = true
       }.build()
@@ -1238,61 +1290,61 @@ class HintHandlerProdImplTest {
   @Test
   fun testViewSolution_solutionAvailable_wait10Sec_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     triggerSolution()
-    hintHandler.viewSolution()
-    reset(mockHintMonitor)
+    hintHandler.viewSolutionSync()
+    hintHandler.monitorHelpIndex()
 
     waitFor10Seconds()
 
     // There's nothing left to be revealed.
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testViewSolution_solutionAvailable_wait30Sec_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     triggerSolution()
-    hintHandler.viewSolution()
-    reset(mockHintMonitor)
+    hintHandler.viewSolutionSync()
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
     // There's nothing left to be revealed.
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testViewSolution_solutionAvailable_wait60Sec_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     triggerSolution()
-    hintHandler.viewSolution()
-    reset(mockHintMonitor)
+    hintHandler.viewSolutionSync()
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
     // There's nothing left to be revealed.
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testViewSolution_everythingViewed_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     triggerAndRevealSolution()
 
     val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewSolution()
+      hintHandler.viewSolutionSync()
     }
 
     // The solution has already been revealed.
@@ -1304,30 +1356,30 @@ class HintHandlerProdImplTest {
   @Test
   fun testNavigateToPreviousState_pendingHint_wait60Sec_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
-    hintHandler.navigateToPreviousState()
+    hintHandler.navigateToPreviousStateSync()
     waitFor60Seconds()
 
     // The monitor should not be called since the user navigated away from the pending state.
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testNavigateToPreviousState_multipleTimes_pendingHint_wait60Sec_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.monitorHelpIndex()
 
     // Simulate navigating back three states.
-    hintHandler.navigateToPreviousState()
-    hintHandler.navigateToPreviousState()
-    hintHandler.navigateToPreviousState()
+    hintHandler.navigateToPreviousStateSync()
+    hintHandler.navigateToPreviousStateSync()
+    hintHandler.navigateToPreviousStateSync()
     waitFor60Seconds()
 
     // The monitor should not be called since the pending state isn't visible.
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   /* Tests for navigateBackToLatestPendingState */
@@ -1335,44 +1387,44 @@ class HintHandlerProdImplTest {
   @Test
   fun testNavigateBackToLatestPendingState_fromPreviousState_pendingHint_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.navigateToPreviousState()
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.navigateToPreviousStateSync()
+    hintHandler.monitorHelpIndex()
 
-    hintHandler.navigateBackToLatestPendingState()
+    hintHandler.navigateBackToLatestPendingStateSync()
 
     // The monitor should not be called immediately after returning to the pending state.
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   @Test
   fun testNavigateBackToLatestPendingState_fromPreviousState_pendingHint_wait60Sec_monitorCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.navigateToPreviousState()
-    hintHandler.navigateBackToLatestPendingState()
-    reset(mockHintMonitor)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.navigateToPreviousStateSync()
+    hintHandler.navigateBackToLatestPendingStateSync()
+    hintHandler.monitorHelpIndex()
 
     waitFor60Seconds()
 
     // The hint should not be available since the user has waited for the counter to finish.
-    verify(mockHintMonitor).onHelpIndexChanged()
+    verify(mockHelpIndexFlowMonitor).run()
   }
 
   @Test
   fun testNavigateBackToLatestPendingState_fromPreviousState_waitRemainingTime_monitorNotCalled() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     waitFor30Seconds()
-    hintHandler.navigateToPreviousState()
-    hintHandler.navigateBackToLatestPendingState()
-    reset(mockHintMonitor)
+    hintHandler.navigateToPreviousStateSync()
+    hintHandler.navigateBackToLatestPendingStateSync()
+    hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
     // Waiting half the necessary time is insufficient to show the hint (since the timer is not
     // resumed, it's reset after returning the pending state).
-    verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
   /*
@@ -1384,9 +1436,9 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_initialState_isEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1394,10 +1446,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_wait10Sec_isEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1405,10 +1457,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_wait30Sec_isEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     waitFor30Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1416,10 +1468,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_wait60Sec_hasAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     waitFor60Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1431,10 +1483,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_oneWrongAnswer_isEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1442,11 +1494,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_oneWrongAnswer_wait10Sec_isEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1454,11 +1506,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_oneWrongAnswer_wait30Sec_isEmpty() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
     waitFor30Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1466,11 +1518,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_oneWrongAnswer_wait60Sec_hasAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
     waitFor60Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1482,11 +1534,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_twoWrongAnswers_hasAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1498,11 +1550,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_withAvailableHint_anotherWrongAnswer_hasSameAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerFirstHint()
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1514,10 +1566,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_viewAvailableHint_hasShownHintIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1529,11 +1581,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_viewAvailableHint_wait10Sec_hasShownHintIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1545,11 +1597,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_viewAvailableHint_wait30Sec_hasNewAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     waitFor30Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1561,11 +1613,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_viewAvailableHint_oneWrongAnswer_hasShownHintIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1577,12 +1629,12 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_viewAvailableHint_oneWrongAnswer_wait10Sec_hasNewAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1594,12 +1646,12 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_viewAvailableHint_twoWrongAnswers_hasShownHintIndex() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     // Multiple wrong answers do not force a hint to be shown except for the first hint.
     assertThat(helpIndex).isEqualTo(
@@ -1612,13 +1664,13 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_viewAvailableHint_twoWrongAnswers_wait10Sec_hasNewAvailableHint() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1630,12 +1682,12 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_allHintsViewed_noSolution_everythingRevealed() {
     val state = expWithOneHintAndNoSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
     triggerAndRevealFirstHint()
 
     // All hints have been viewed for this state, so nothing remains.
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
       HelpIndex.newBuilder().apply {
         everythingRevealed = true
       }.build()
@@ -1645,11 +1697,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_allHintsViewed_lastIndexViewed() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1661,12 +1713,12 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_allHintsViewed_wait10Sec_lastIndexViewed() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1678,12 +1730,12 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_allHintsViewed_wait30Sec_canShowSolution() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     waitFor30Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1695,13 +1747,13 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_allHintsViewed_wait30Sec_revealSolution_everythingRevealed() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
     waitFor30Seconds()
-    hintHandler.viewSolution()
+    hintHandler.viewSolutionSync()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1713,12 +1765,12 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_allHintsViewed_oneWrongAnswer_lastIndexViewed() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1730,13 +1782,13 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_allHintsViewed_oneWrongAnswer_wait10Sec_canShowSolution() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1748,13 +1800,13 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_allHintsViewed_twoWrongAnswers_lastIndexViewed() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     // Multiple subsequent wrong answers only affects the first hint.
     assertThat(helpIndex).isEqualTo(
@@ -1767,14 +1819,14 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_allHintsViewed_twoWrongAnswers_wait10Sec_canShowSolution() {
     val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1786,9 +1838,9 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_isEmpty() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1796,10 +1848,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_wait10Sec_isEmpty() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1807,10 +1859,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_wait30Sec_isEmpty() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     waitFor30Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1818,10 +1870,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_wait60Sec_canShowSolution() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     waitFor60Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1833,10 +1885,10 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_oneWrongAnswer_isEmpty() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1844,11 +1896,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_oneWrongAnswer_wait10Sec_isEmpty() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
     waitFor10Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1856,11 +1908,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_oneWrongAnswer_wait30Sec_isEmpty() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
     waitFor30Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1868,11 +1920,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_oneWrongAnswer_wait60Sec_canShowSolution() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
     waitFor60Seconds()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1884,11 +1936,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_twoWrongAnswers_canShowSolution() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1900,11 +1952,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_triggeredAndRevealed_everythingIsRevealed() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     waitFor60Seconds()
-    hintHandler.viewSolution()
+    hintHandler.viewSolutionSync()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1916,9 +1968,9 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_missingCorrectAnswer_isEmpty() {
     val state = expWithSolutionMissingCorrectAnswer.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualToDefaultInstance()
   }
@@ -1926,11 +1978,11 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_missingCorrectAnswer_twoWrongAnswers_canShowSolution() {
     val state = expWithSolutionMissingCorrectAnswer.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
-    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
@@ -1942,17 +1994,69 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_missingCorrectAnswer_triggeredAndShown_allRevealed() {
     val state = expWithSolutionMissingCorrectAnswer.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewStateSync(state)
     waitFor60Seconds()
-    hintHandler.viewSolution()
+    hintHandler.viewSolutionSync()
 
-    val helpIndex = hintHandler.getCurrentHelpIndex()
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
         everythingRevealed = true
       }.build()
     )
+  }
+
+  private fun HintHandler.startWatchingForHintsInNewStateSync(
+    state: State
+  ) = runSynchronouslyInBackground { startWatchingForHintsInNewState(state) }
+
+  private fun HintHandler.resumeHintsForSavedStateSync(
+    trackedWrongAnswerCount: Int,
+    helpIndex: HelpIndex,
+    state: State
+  ) = runSynchronouslyInBackground {
+    resumeHintsForSavedState(trackedWrongAnswerCount, helpIndex, state)
+  }
+
+  private fun HintHandler.finishStateSync(newState: State) = runSynchronouslyInBackground {
+    finishState(newState)
+  }
+
+  private fun HintHandler.handleWrongAnswerSubmissionSync(
+    wrongAnswerCount: Int
+  ) = runSynchronouslyInBackground { handleWrongAnswerSubmission(wrongAnswerCount) }
+
+  private fun HintHandler.viewHintSync(hintIndex: Int) = runSynchronouslyInBackground {
+    viewHint(hintIndex)
+  }
+
+  private fun HintHandler.viewSolutionSync() = runSynchronouslyInBackground { viewSolution() }
+
+  private fun HintHandler.navigateToPreviousStateSync() = runSynchronouslyInBackground {
+    navigateToPreviousState()
+  }
+
+  private fun HintHandler.navigateBackToLatestPendingStateSync() = runSynchronouslyInBackground {
+    navigateBackToLatestPendingState()
+  }
+
+  private fun HintHandler.monitorHelpIndex() {
+    getCurrentHelpIndex().onEach {
+      mockHelpIndexFlowMonitor.run()
+    }.launchIn(blockingCoroutineScope)
+
+    // Allow the initial onEach call to change the mock, then reset it so that it's in a clean
+    // state.
+    testCoroutineDispatchers.runCurrent()
+    reset(mockHelpIndexFlowMonitor)
+  }
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private fun runSynchronouslyInBackground(operation: suspend () -> Unit) {
+    val result = blockingCoroutineScope.async { operation() }
+    testCoroutineDispatchers.runCurrent()
+    result.getCompletionExceptionOrNull()?.let { throw it }
   }
 
   private fun Exploration.getInitialState(): State = statesMap.getValue(initStateName)
@@ -1965,17 +2069,17 @@ class HintHandlerProdImplTest {
 
   private fun triggerAndRevealFirstHint() {
     triggerFirstHint()
-    hintHandler.viewHint(hintIndex = 0)
+    hintHandler.viewHintSync(hintIndex = 0)
   }
 
   private fun triggerAndRevealSecondHint() {
     triggerSecondHint()
-    hintHandler.viewHint(hintIndex = 1)
+    hintHandler.viewHintSync(hintIndex = 1)
   }
 
   private fun triggerAndRevealSolution() {
     triggerSolution()
-    hintHandler.viewSolution()
+    hintHandler.viewSolutionSync()
   }
 
   private fun triggerAndRevealEverythingInMultiHintState() {
@@ -2020,7 +2124,8 @@ class HintHandlerProdImplTest {
     modules = [
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+      ExplorationStorageTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

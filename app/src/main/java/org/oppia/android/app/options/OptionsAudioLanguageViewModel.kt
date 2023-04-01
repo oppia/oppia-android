@@ -1,23 +1,23 @@
 package org.oppia.android.app.options
 
-import androidx.databinding.ObservableField
+import org.oppia.android.app.model.AudioLanguage
 
 /** Audio language settings view model for the recycler view in [OptionsFragment]. */
 class OptionsAudioLanguageViewModel(
   private val routeToAudioLanguageListListener: RouteToAudioLanguageListListener,
-  private val loadAudioLanguageListListener: LoadAudioLanguageListListener
+  private val loadAudioLanguageListListener: LoadAudioLanguageListListener,
+  private val audioLanguage: AudioLanguage,
+  val audioLanguageDisplayName: String
 ) : OptionsItemViewModel() {
-  val audioLanguage = ObservableField<String>("")
-
-  fun setAudioLanguage(audioLanguageValue: String) {
-    audioLanguage.set(audioLanguageValue)
-  }
-
+  /**
+   * Handles when the user wishes to change their default audio language and clicks on the button to
+   * open that configuration screen/pane.
+   */
   fun onAudioLanguageClicked() {
     if (isMultipane.get()!!) {
-      loadAudioLanguageListListener.loadAudioLanguageFragment(audioLanguage.get()!!)
+      loadAudioLanguageListListener.loadAudioLanguageFragment(audioLanguage)
     } else {
-      routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage.get())
+      routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage)
     }
   }
 }

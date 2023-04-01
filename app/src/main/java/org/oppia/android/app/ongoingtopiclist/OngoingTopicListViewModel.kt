@@ -11,6 +11,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
@@ -24,7 +25,8 @@ class OngoingTopicListViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -50,14 +52,18 @@ class OngoingTopicListViewModel @Inject constructor(
   private fun processOngoingTopicResult(
     ongoingTopicListResult: AsyncResult<OngoingTopicList>
   ): OngoingTopicList {
-    if (ongoingTopicListResult.isFailure()) {
-      oppiaLogger.e(
-        "OngoingTopicListFragment",
-        "Failed to retrieve OngoingTopicList: ",
-        ongoingTopicListResult.getErrorOrNull()!!
-      )
+    return when (ongoingTopicListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "OngoingTopicListFragment",
+          "Failed to retrieve OngoingTopicList: ",
+          ongoingTopicListResult.error
+        )
+        OngoingTopicList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> OngoingTopicList.getDefaultInstance()
+      is AsyncResult.Success -> ongoingTopicListResult.value
     }
-    return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
   }
 
   private fun processOngoingTopicList(
@@ -65,9 +71,15 @@ class OngoingTopicListViewModel @Inject constructor(
   ): List<OngoingTopicItemViewModel> {
     val itemViewModelList: MutableList<OngoingTopicItemViewModel> = mutableListOf()
     itemViewModelList.addAll(
-      ongoingTopicList.topicList.map { topic ->
+      ongoingTopicList.topicList.map { ephemeralTopic ->
         OngoingTopicItemViewModel(
-          activity, internalProfileId, topic, entityType, intentFactoryShim, resourceHandler
+          activity,
+          internalProfileId,
+          ephemeralTopic,
+          entityType,
+          intentFactoryShim,
+          resourceHandler,
+          translationController
         )
       }
     )

@@ -1,5 +1,4 @@
 story_id: "xBSdg4oOClga"
-story_name: "Ratios: Part 2"
 story_thumbnail {
   background_color_rgb: 11792856
 }
@@ -8,12 +7,53 @@ chapters {
   chapter_thumbnail {
     background_color_rgb: 16158584
   }
-  title: "Equivalent Ratios"
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "Equivalent Ratios"
+    content_id: "title"
+  }
+  translatable_description {
+    content_id: "description"
+  }
 }
 chapters {
   exploration_id: "tIoSb3HZFN6e"
   chapter_thumbnail {
     background_color_rgb: 16158584
   }
-  title: "Writing Ratios in Simplest Form"
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "Writing Ratios in Simplest Form"
+    content_id: "title"
+  }
+  translatable_description {
+    content_id: "description"
+  }
+}
+written_translations {
+  key: "title"
+  value {
+  }
+}
+translatable_story_name {
+  html: "Ratios: Part 2"
+  content_id: "title"
 }

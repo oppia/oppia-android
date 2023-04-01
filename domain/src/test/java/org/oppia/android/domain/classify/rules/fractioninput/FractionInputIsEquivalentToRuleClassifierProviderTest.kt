@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -100,7 +100,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -114,7 +114,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -128,7 +128,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_8,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -142,7 +142,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_8,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -156,7 +156,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_1_OVER_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -170,7 +170,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = MIXED_NUMBER_VALUE_TEST_6_1_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -184,7 +184,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = MIXED_NUMBER_VALUE_TEST_55_1_OVER_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -198,7 +198,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_13_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -212,7 +212,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_254,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -226,7 +226,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = MIXED_NUMBER_VALUE_TEST_55_1_OVER_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -240,7 +240,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = MIXED_NUMBER_VALUE_TEST_6_1_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -254,7 +254,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_8,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

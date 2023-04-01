@@ -1,11 +1,15 @@
 package org.oppia.android.util.data
 
-import android.content.Context
+import android.app.Application
 import androidx.lifecycle.LiveData
 import dagger.Reusable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -22,7 +26,7 @@ import javax.inject.Inject
  */
 @Reusable // Since otherwise a new provider will be created for each companion object call.
 class DataProviders @Inject constructor(
-  private val context: Context,
+  private val application: Application,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val exceptionLogger: ExceptionLogger
@@ -42,7 +46,7 @@ class DataProviders @Inject constructor(
     fun <I, O> DataProvider<I>.transform(newId: Any, function: (I) -> O): DataProvider<O> {
       val dataProviders = getDataProviders()
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
-      return object : DataProvider<O>(context) {
+      return object : DataProvider<O>(application) {
         override fun getId(): Any = newId
 
         override suspend fun retrieveData(): AsyncResult<O> {
@@ -50,7 +54,7 @@ class DataProviders @Inject constructor(
             this@transform.retrieveData().transform(function)
           } catch (e: Exception) {
             dataProviders.exceptionLogger.logException(e)
-            AsyncResult.failed(e)
+            AsyncResult.Failure(e)
           }
         }
       }
@@ -66,7 +70,7 @@ class DataProviders @Inject constructor(
     ): DataProvider<O> {
       val dataProviders = getDataProviders()
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
-      return object : DataProvider<O>(context) {
+      return object : DataProvider<O>(application) {
         override fun getId(): Any = newId
 
         override suspend fun retrieveData(): AsyncResult<O> {
@@ -86,7 +90,7 @@ class DataProviders @Inject constructor(
       function: suspend (I) -> AsyncResult<O>
     ): NestedTransformedDataProvider<O> {
       return NestedTransformedDataProvider.createNestedTransformedDataProvider(
-        context, newId, this, function, getDataProviders().asyncDataSubscriptionManager
+        application, newId, this, function, getDataProviders().asyncDataSubscriptionManager
       )
     }
 
@@ -109,7 +113,7 @@ class DataProviders @Inject constructor(
       val dataProviders = getDataProviders()
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
-      return object : DataProvider<O>(context) {
+      return object : DataProvider<O>(application) {
         override fun getId(): Any {
           return newId
         }
@@ -119,7 +123,7 @@ class DataProviders @Inject constructor(
             this@combineWith.retrieveData().combineWith(dataProvider.retrieveData(), function)
           } catch (e: Exception) {
             dataProviders.exceptionLogger.logException(e)
-            AsyncResult.failed(e)
+            AsyncResult.Failure(e)
           }
         }
       }
@@ -137,7 +141,7 @@ class DataProviders @Inject constructor(
       val dataProviders = getDataProviders()
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
-      return object : DataProvider<O>(context) {
+      return object : DataProvider<O>(application) {
         override fun getId(): Any {
           return newId
         }
@@ -163,7 +167,7 @@ class DataProviders @Inject constructor(
     }
 
     private fun <T> DataProvider<T>.getDataProviders(): DataProviders {
-      val injectorProvider = context.applicationContext as DataProvidersInjectorProvider
+      val injectorProvider = application as DataProvidersInjectorProvider
       return injectorProvider.getDataProvidersInjector().getDataProviders()
     }
   }
@@ -180,17 +184,17 @@ class DataProviders @Inject constructor(
    * [AsyncDataSubscriptionManager.notifyChange] with the in-memory provider's identifier.
    */
   fun <T> createInMemoryDataProvider(id: Any, loadFromMemory: () -> T): DataProvider<T> {
-    return object : DataProvider<T>(context) {
+    return object : DataProvider<T>(application) {
       override fun getId(): Any {
         return id
       }
 
       override suspend fun retrieveData(): AsyncResult<T> {
         return try {
-          AsyncResult.success(loadFromMemory())
+          AsyncResult.Success(loadFromMemory())
         } catch (e: Exception) {
           exceptionLogger.logException(e)
-          AsyncResult.failed(e)
+          AsyncResult.Failure(e)
         }
       }
     }
@@ -204,7 +208,7 @@ class DataProviders @Inject constructor(
     id: Any,
     loadFromMemoryAsync: suspend () -> AsyncResult<T>
   ): DataProvider<T> {
-    return object : DataProvider<T>(context) {
+    return object : DataProvider<T>(application) {
       override fun getId(): Any {
         return id
       }
@@ -216,16 +220,69 @@ class DataProviders @Inject constructor(
   }
 
   /**
+   * Returns a [DataProvider] that sources its data from this [StateFlow] with the specified [id].
+   *
+   * Note that changes to the [StateFlow] will **not** result in changes to the returned
+   * [DataProvider] (though callers can still notify that [id] has changes to re-pull data from the
+   * [StateFlow]). If callers want the provider to automatically update with the [StateFlow] they
+   * should use [convertToAutomaticDataProvider].
+   *
+   * The returned [DataProvider] will always be in a passing state.
+   */
+  fun <T> StateFlow<T>.convertToSimpleDataProvider(id: Any): DataProvider<T> =
+    createInMemoryDataProvider(id) { value }
+
+  /**
+   * Returns a [DataProvider] for this [StateFlow] in the same way as [convertToSimpleDataProvider]
+   * except the [StateFlow] has a payload of an [AsyncResult] to affect the pending/success/failure
+   * state of the provider.
+   */
+  fun <T> StateFlow<AsyncResult<T>>.convertAsyncToSimpleDataProvider(id: Any): DataProvider<T> =
+    createInMemoryDataProviderAsync(id) { value }
+
+  /**
+   * Returns a [DataProvider] for this [StateFlow] in the same way as [convertToSimpleDataProvider]
+   * except changes to the [StateFlow]'s [StateFlow.value] will result in notifications being
+   * triggered for the returned [DataProvider].
+   *
+   * Note that the subscription to the [StateFlow] never expires and will remain for the lifetime of
+   * the flow (at least until both the [StateFlow] and [DataProvider] go out of memory and are
+   * cleaned up).
+   */
+  fun <T> StateFlow<T>.convertToAutomaticDataProvider(id: Any): DataProvider<T> {
+    return convertToSimpleDataProvider(id).also {
+      onEach {
+        // Synchronously notify subscribers whenever the flow's state changes.
+        asyncDataSubscriptionManager.notifyChange(id)
+      }.launchIn(CoroutineScope(backgroundDispatcher))
+    }
+  }
+
+  /**
+   * Returns a [DataProvider] for this [StateFlow] in the same way as
+   * [convertToAutomaticDataProvider] with the same async behavior as
+   * [convertAsyncToSimpleDataProvider].
+   */
+  fun <T> StateFlow<AsyncResult<T>>.convertAsyncToAutomaticDataProvider(id: Any): DataProvider<T> {
+    return convertAsyncToSimpleDataProvider(id).also {
+      onEach {
+        // Synchronously notify subscribers whenever the flow's state changes.
+        asyncDataSubscriptionManager.notifyChange(id)
+      }.launchIn(CoroutineScope(backgroundDispatcher))
+    }
+  }
+
+  /**
    * A [DataProvider] that acts in the same way as [transformAsync] except the underlying base data
    * provider can change.
    */
   class NestedTransformedDataProvider<O> private constructor(
-    context: Context,
+    application: Application,
     private val id: Any,
     private var baseId: Any,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private var retrieveTransformedData: suspend () -> AsyncResult<O>
-  ) : DataProvider<O>(context) {
+  ) : DataProvider<O>(application) {
     init {
       initializeTransformer()
     }
@@ -263,14 +320,14 @@ class DataProviders @Inject constructor(
     companion object {
       /** Returns a new [NestedTransformedDataProvider]. */
       internal fun <I, O> createNestedTransformedDataProvider(
-        context: Context,
+        application: Application,
         id: Any,
         baseDataProvider: DataProvider<I>,
         transform: suspend (I) -> AsyncResult<O>,
         asyncDataSubscriptionManager: AsyncDataSubscriptionManager
       ): NestedTransformedDataProvider<O> {
         return NestedTransformedDataProvider(
-          context, id, baseDataProvider.getId(), asyncDataSubscriptionManager
+          application, id, baseDataProvider.getId(), asyncDataSubscriptionManager
         ) {
           baseDataProvider.retrieveData().transformAsync(transform)
         }
@@ -329,7 +386,9 @@ class DataProviders @Inject constructor(
       checkNotNull(value) { "Null values should not be posted to NotifiableAsyncLiveData." }
       val currentCache = cache // This is safe because cache can only be changed on the main thread.
       if (currentCache != null) {
-        if (value.isNewerThanOrSameAgeAs(currentCache) && currentCache != value) {
+        if (value.isNewerThanOrSameAgeAs(currentCache) &&
+          !currentCache.hasSameEffectiveValueAs(value)
+        ) {
           // Only propagate the value if it's changed and is newer since it's possible for observer
           // callbacks to happen out-of-order.
           cache = value

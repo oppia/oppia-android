@@ -19,70 +19,89 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.logging.TestSyncStatusManager
+import org.oppia.android.testing.mockito.anyOrNull
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.AnalyticsEventLogger
+import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
+private const val TEST_APK_SIZE = Long.MAX_VALUE
 
+/** Tests for [LogUploadWorker]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
-
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-
-  @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-
-  @Inject
-  lateinit var analyticsController: AnalyticsController
-
-  @Inject
-  lateinit var exceptionsController: ExceptionsController
-
-  @Inject
-  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
 
   private lateinit var context: Context
 
@@ -100,26 +119,57 @@ class LogUploadWorkerTest {
     .setTimestamp(TEST_TIMESTAMP)
     .build()
 
+  private val apkSizeTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
+    .setApkSizeMetric(
+      OppiaMetricLog.ApkSizeMetric.newBuilder()
+        .setApkSizeBytes(TEST_APK_SIZE)
+        .build()
+    ).build()
+
   private val exception = Exception("TEST")
 
-  @Before
-  fun setUp() {
+  @Test
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyFailed() {
     setUpTestApplicationComponent()
-    context = InstrumentationRegistry.getInstrumentation().targetContext
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(logUploadWorkerFactory)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
       .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    // The enqueue should fail since the worker shouldn't be running when there's no network
+    // connectivity.
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
   }
 
   @Test
-  fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifySuccess() {
+  fun testWorker_logEvent_withNetwork_enqueueRequest_verifySuccess() {
+    setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logTransitionEvent(
-      eventLogTopicContext.timestamp,
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
     )
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -137,13 +187,46 @@ class LogUploadWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(fakeEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
+  }
+
+  @Test
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_writeFails_verifyFailure() {
+    setUpTestApplicationComponent()
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    setUpEventLoggerToFail()
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
   fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
+    setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
+    testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -170,36 +253,215 @@ class LogUploadWorkerTest {
     assertThat(loggedExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
   }
 
+  @Test
+  fun testWorker_logPerformanceMetric_withoutNetwork_enqueueRequest_verifySuccess() {
+    setUpTestApplicationComponent()
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_NAME_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      OppiaMetricLog.Priority.LOW_PRIORITY
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.PERFORMANCE_METRICS_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val workInfo = workManager.getWorkInfoById(request.id)
+    val loggedPerformanceMetric =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(loggedPerformanceMetric.loggableMetric.loggableMetricTypeCase).isEqualTo(
+      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
+    )
+    assertThat(loggedPerformanceMetric.currentScreen).isEqualTo(
+      SCREEN_NAME_UNSPECIFIED
+    )
+    assertThat(loggedPerformanceMetric.priority).isEqualTo(OppiaMetricLog.Priority.LOW_PRIORITY)
+    assertThat(loggedPerformanceMetric.timestampMillis).isEqualTo(TEST_TIMESTAMP)
+    assertThat(loggedPerformanceMetric.loggableMetric.apkSizeMetric.apkSizeBytes).isEqualTo(
+      TEST_APK_SIZE
+    )
+  }
+
+  @Test
+  fun testWorker_logEvent_withNetwork_enqueueRequest_studyOn_verifySyncStatusesHasSuccess() {
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
+    )
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val currentStatus =
+      monitorFactory.waitForNextSuccessfulResult(testSyncStatusManager.getSyncStatus())
+    val statusList = testSyncStatusManager.getSyncStatuses()
+    assertThat(statusList)
+      .containsAtLeast(INITIAL_UNKNOWN, DATA_UPLOADED, DATA_UPLOADING, DATA_UPLOADED)
+      .inOrder()
+    assertThat(currentStatus).isEqualTo(DATA_UPLOADED)
+  }
+
+  @Test
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_studyOn_verifySyncStatusesHasFailed() {
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val currentStatus =
+      monitorFactory.waitForNextSuccessfulResult(testSyncStatusManager.getSyncStatus())
+    val statusList = testSyncStatusManager.getSyncStatuses()
+    // The operation should fail since there's no internet connectivity with which to upload the
+    // events. It's not valid to try.
+    assertThat(statusList)
+      .containsAtLeast(INITIAL_UNKNOWN, DATA_UPLOADING, UPLOAD_ERROR, NO_CONNECTIVITY)
+      .inOrder()
+    assertThat(currentStatus).isEqualTo(NO_CONNECTIVITY)
+  }
+
+  @Test
+  fun testWorker_logEvent_noNetwork_enqueueRequest_writeFails_studyOn_verifyHasFailedSyncStatus() {
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    setUpEventLoggerToFail()
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    // Note that "no connectivity" is the last item because it takes priority over an error.
+    val statusList = testSyncStatusManager.getSyncStatuses()
+    val currentStatus =
+      monitorFactory.waitForNextSuccessfulResult(testSyncStatusManager.getSyncStatus())
+    assertThat(statusList)
+      .containsAtLeast(INITIAL_UNKNOWN, DATA_UPLOADING, UPLOAD_ERROR, NO_CONNECTIVITY)
+      .inOrder()
+    assertThat(currentStatus).isEqualTo(NO_CONNECTIVITY)
+  }
+
+  private fun setUpEventLoggerToFail() {
+    // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
+    // to remove the default stubbing for the mock so that it can properly trigger a failure.
+    reset(mockAnalyticsEventLogger)
+    `when`(mockAnalyticsEventLogger.logEvent(anyOrNull()))
+      .thenThrow(IllegalStateException("Failure."))
+  }
+
   /**
    * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
    * comparison in a way that's consistent across JDK versions.
    */
-  private fun Array<StackTraceElement>.extractRelevantDetails(): List<List<Any>> {
-    return this.map { element ->
-      return@map listOf(
-        element.fileName,
-        element.methodName,
-        element.lineNumber,
-        element.className
-      )
-    }
+  private fun Array<StackTraceElement>.extractRelevantDetails(): List<List<Any>> =
+    map { elem -> listOf(elem.fileName, elem.methodName, elem.lineNumber, elem.className) }
+
+  private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    context = InstrumentationRegistry.getInstrumentation().targetContext
+    val config = Configuration.Builder()
+      .setExecutor(SynchronousExecutor())
+      .setWorkerFactory(logUploadWorkerFactory)
+      .build()
+    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
-  private fun setUpTestApplicationComponent() {
-    DaggerLogUploadWorkerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
-  }
+  @Qualifier
+  annotation class MockEventLogger
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
+    fun provideContext(application: Application): Context = application
+
+    @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
+    @MockEventLogger
+    fun bindMockEventLogger(fakeAnalyticsLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger {
+      return mock(AnalyticsEventLogger::class.java).also {
+        `when`(it.logEvent(anyOrNull())).then { answer ->
+          fakeAnalyticsLogger.logEvent(
+            answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
+          )
+          return@then null
+        }
+      }
     }
+
+    @Provides
+    fun bindFakeEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):
+      AnalyticsEventLogger = delegate
+
+    @Provides
+    fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger
+
+    @Provides
+    fun bindFakePerformanceMetricsLogger(
+      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+    ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
   }
 
   @Module
@@ -212,6 +474,10 @@ class LogUploadWorkerTest {
     @Provides
     @ExceptionLogStorageCacheSize
     fun provideExceptionLogStorageSize(): Int = 2
+
+    @Provides
+    @PerformanceMetricsLogStorageCacheSize
+    fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
   }
 
   @Module
@@ -225,14 +491,17 @@ class LogUploadWorkerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestLogStorageModule::class, TestDispatcherModule::class,
-      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
-      FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class
+      TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
+      TestDispatcherModule::class, LogReportWorkerModule::class,
+      TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
+      AssetModule::class, TestPlatformParameterModule::class,
+      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      SyncStatusTestModule::class, PerformanceMetricsAssessorModule::class,
+      ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -241,5 +510,19 @@ class LogUploadWorkerTest {
     }
 
     fun inject(logUploadWorkerTest: LogUploadWorkerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerLogUploadWorkerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(logUploadWorkerTest: LogUploadWorkerTest) {
+      component.inject(logUploadWorkerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

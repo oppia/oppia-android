@@ -11,11 +11,11 @@
     android:id="@+id/radio_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/general_item_background_border_light"
+    android:background="@drawable/general_item_background_border"
     android:gravity="center_vertical"
-    android:minHeight="48dp"
-    android:onClick="@{() -> viewModel.textSizeRadioButtonListener.onTextSizeSelected(viewModel.textSizeName)}"
     android:importantForAccessibility="yes"
+    android:minHeight="48dp"
+    android:onClick="@{() -> viewModel.textSizeRadioButtonListener.onTextSizeSelected(viewModel.readingTextSize)}"
     android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatRadioButton
@@ -40,7 +40,7 @@
       android:layout_marginEnd="24dp"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.textSizeName}"
-      android:textColor="@color/oppia_primary_text"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="@{viewModel.textSize}" />
   </LinearLayout>
 </layout>

@@ -2,15 +2,16 @@ package org.oppia.android.domain.classify.rules.fractioninput
 
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.util.math.toWholeNumber
 import javax.inject.Inject
 
 /**
- * Provider for a classifier that determines whether a fraction has an integer part equal to the specified value per the
- * fraction input interaction.
+ * Provider for a classifier that determines whether a fraction has an integer part equal to the
+ * specified value per the fraction input interaction.
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/FractionInput/directives/fraction-input-rules.service.ts#L48
  */
@@ -22,7 +23,7 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProvider @Inject construct
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createMultiTypeSingleInputClassifier(
       InteractionObject.ObjectTypeCase.FRACTION,
-      InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
+      InteractionObject.ObjectTypeCase.SIGNED_INT,
       "x",
       this
     )
@@ -31,8 +32,6 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProvider @Inject construct
   override fun matches(
     answer: Fraction,
     input: Int,
-    writtenTranslationContext: WrittenTranslationContext
-  ): Boolean {
-    return answer.wholeNumber == input
-  }
+    classificationContext: ClassificationContext
+  ): Boolean = answer.toWholeNumber() == input
 }

@@ -52,7 +52,16 @@ android_library(
 )
 
 android_library(
+    name = "com_github_takusemba_spotlight",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@android-spotlight//spotlight",
+    ],
+)
+
+android_library(
     name = "robolectric_android-all",
+    testonly = True,
     visibility = ["//visibility:public"],
     exports = [
         "@robolectric//bazel:android-all",
@@ -73,6 +82,29 @@ java_library(
     visibility = ["//visibility:public"],
     exports = [
         "//third_party:com_squareup_moshi_moshi-kotlin",
+    ],
+)
+
+android_library(
+    name = "io_github_karino2_kotlitex",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@kotlitex//kotlitex",
+    ],
+)
+
+# Creates an alias for Guava Android to support maven_install's override of Guava. This ensures that
+# Guava-Android is always used in builds, even if dependencies request a newer version of Guava-JRE.
+android_library(
+    name = "com_google_guava_guava",
+    visibility = ["//visibility:public"],
+    exports = [
+        "//third_party:com_google_errorprone_error_prone_annotations",
+        "//third_party:com_google_guava_failureaccess",
+        "//third_party:com_google_j2objc_j2objc-annotations",
+        "//third_party:org_checkerframework_checker-compat-qual",
+        "//third_party:org_checkerframework_checker-qual",
+        "@guava_android//jar",
     ],
 )
 

@@ -4,6 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /**
@@ -21,11 +24,25 @@ class ExplorationManagerFragment : InjectableFragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val internalProfileId =
-      arguments!!.getInt(
-        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-        /* defaultValue= */ -1
-      )
-    explorationManagerFragmentPresenter.handleCreate(internalProfileId)
+    val profileId = checkNotNull(arguments) {
+      "Expected arguments to be provided for fragment."
+    }.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    explorationManagerFragmentPresenter.handleCreate(profileId)
+  }
+
+  companion object {
+    private const val PROFILE_ID_ARGUMENT_KEY = "ExplorationManagerFragment.profile_id"
+
+    /**
+     * Returns a new instance of [ExplorationManagerFragment] corresponding to the specified
+     * [profileId].
+     */
+    fun createNewInstance(profileId: ProfileId): ExplorationManagerFragment {
+      return ExplorationManagerFragment().apply {
+        arguments = Bundle().apply {
+          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+        }
+      }
+    }
   }
 }

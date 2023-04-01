@@ -25,7 +25,7 @@ class SubmittedAnswerViewModel(
     )
   private var accessibleAnswer: String? = DEFAULT_ACCESSIBLE_ANSWER
 
-  fun setSubmittedAnswer(submittedAnswer: CharSequence, accessibleAnswer: String? = null) {
+  fun setSubmittedAnswer(submittedAnswer: CharSequence, accessibleAnswer: String?) {
     this.submittedAnswer.set(submittedAnswer)
     this.accessibleAnswer = accessibleAnswer
     updateSubmittedAnswerContentDescription()

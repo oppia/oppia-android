@@ -9,23 +9,18 @@
       type="org.oppia.android.app.topic.revision.TopicRevisionViewModel" />
   </data>
 
-  <FrameLayout
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/revision_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/oppia_background">
-
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/revision_recycler_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:clipToPadding="false"
-      android:overScrollMode="never"
-      android:paddingStart="@dimen/topic_revision_fragment_padding_start"
-      android:paddingTop="@dimen/topic_revision_fragment_padding_top"
-      android:paddingEnd="@dimen/topic_revision_fragment_padding_end"
-      android:paddingBottom="@dimen/topic_revision_fragment_padding_bottom"
-      android:scrollbars="none"
-      android:tag="@string/topic_revision_recyclerview_tag"
-      app:data="@{viewModel.subtopicLiveData}" />
-  </FrameLayout>
+    android:layout_height="wrap_content"
+    android:background="@color/component_color_shared_screen_quaternary_background_color"
+    android:clipToPadding="false"
+    android:overScrollMode="never"
+    android:paddingStart="@dimen/topic_revision_fragment_padding_start"
+    android:paddingTop="@dimen/topic_revision_fragment_padding_top"
+    android:paddingEnd="@dimen/topic_revision_fragment_padding_end"
+    android:paddingBottom="@dimen/topic_revision_fragment_padding_bottom"
+    android:scrollbars="none"
+    android:tag="@string/topic_revision_recyclerview_tag"
+    app:data="@{viewModel.subtopicLiveData}" />
 </layout>

@@ -12,9 +12,9 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
@@ -24,16 +24,12 @@ class AdminPinActivityPresenter @Inject constructor(
   private val context: Context,
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<AdminPinViewModel>,
+  private val adminViewModel: AdminPinViewModel,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private var inputtedPin = false
   private var inputtedConfirmPin = false
-
-  private val adminViewModel by lazy {
-    getAdminPinViewModel()
-  }
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
@@ -114,7 +110,7 @@ class AdminPinActivityPresenter @Inject constructor(
       profileManagementController.updatePin(profileId, inputPin).toLiveData().observe(
         activity,
         Observer {
-          if (it.isSuccess()) {
+          if (it is AsyncResult.Success) {
             when (activity.intent.getIntExtra(ADMIN_PIN_ENUM_EXTRA_KEY, 0)) {
               AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
                 activity.startActivity(
@@ -160,14 +156,6 @@ class AdminPinActivityPresenter @Inject constructor(
   }
 
   private fun setValidPin() {
-    if (inputtedPin && inputtedConfirmPin) {
-      getAdminPinViewModel().isButtonActive.set(true)
-    } else {
-      getAdminPinViewModel().isButtonActive.set(false)
-    }
-  }
-
-  private fun getAdminPinViewModel(): AdminPinViewModel {
-    return viewModelProvider.getForActivity(activity, AdminPinViewModel::class.java)
+    adminViewModel.isButtonActive.set(inputtedPin && inputtedConfirmPin)
   }
 }

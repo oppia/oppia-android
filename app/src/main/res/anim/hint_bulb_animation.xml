@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><!-- NOTE: This animation must be used in conjunction with the
+app's custom BounceUpAndDownInterpolator in order to animate correctly. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+  <translate
+    android:duration="2000"
+    android:fromYDelta="-50%"
+    android:repeatCount="2"
+    android:toYDelta="0" />
+</set>

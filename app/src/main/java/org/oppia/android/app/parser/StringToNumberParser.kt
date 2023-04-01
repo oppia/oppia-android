@@ -3,7 +3,7 @@ package org.oppia.android.app.parser
 import androidx.annotation.StringRes
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.domain.util.normalizeWhitespace
+import org.oppia.android.util.extensions.normalizeWhitespace
 
 /**
  * This class contains methods that help to parse string to number, check realtime and submit time

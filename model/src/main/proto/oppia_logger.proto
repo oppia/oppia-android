@@ -2,7 +2,8 @@ syntax = "proto3";
 
 package model;
 
-import "exploration.proto";
+import "languages.proto";
+import "profile.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -11,21 +12,39 @@ option java_multiple_files = true;
 message EventLog {
   // The timestamp of the event.
   int64 timestamp = 1;
+
   // Deprecated Event Action. This is now handled via the context below.
   reserved 2;
+
   // The priority of the event.
   Priority priority = 3;
+
   // The activity context of the event.
   Context context = 4;
 
+  // The profile to which this event corresponds, or empty if this event is not tied to a particular
+  // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
+  // at source.
+  ProfileId profile_id = 8;
+
+  // The app language selection context at the time of this event's creation.
+  AppLanguageSelection app_language_selection = 5;
+
+  // The written language selection context at the time of this event's creation.
+  WrittenTranslationLanguageSelection written_translation_language_selection = 6;
+
+  // The audio language selection context at the time of this event's creation.
+  AudioTranslationLanguageSelection audio_translation_language_selection = 7;
+
   // Structure of an activity context.
   message Context {
-
-    // Deprecated exploration context. This is now handled via the open_exploration_activity context below.
+    // Deprecated exploration context. This is now handled via the open_exploration_activity context
+    // below.
     reserved 1;
 
     // Deprecated topic context. This is now broken down into 4 different contexts and is handled
-    // via the open_info_tab, open_lessons_tab, open_practice_tab and open_revision_tab contexts below.
+    // via the open_info_tab, open_lessons_tab, open_practice_tab and open_revision_tab contexts
+    // below.
     reserved 2;
 
     // Deprecated question context. This is now handled via the open_question_player context below.
@@ -37,7 +56,8 @@ message EventLog {
     // Deprecated concept card context. This is now handled via the open_concept_card context below.
     reserved 5;
 
-    // Deprecated revision card context. This is now handled via the open_concept_card context below.
+    // Deprecated revision card context. This is now handled via the open_concept_card context
+    // below.
     reserved 6;
 
     oneof activity_context {
@@ -65,8 +85,11 @@ message EventLog {
       // The event being logged is related to the opening of concept card.
       ConceptCardContext open_concept_card = 14;
 
-      // The event being logged is related to the opening of revision card.
+      // The event being logged is related to the opening of a revision card.
       RevisionCardContext open_revision_card = 15;
+
+      // The event being logged is related to the closing of a revision card.
+      RevisionCardContext close_revision_card = 36;
 
       // The event being logged is related to starting an exploration card.
       CardContext start_card_context = 16;
@@ -75,13 +98,13 @@ message EventLog {
       CardContext end_card_context = 17;
 
       // The event being logged is related to offering a hint when it becomes available.
-      HintContext hint_offered_context = 18;
+      HintContext hint_unlocked_context = 18;
 
       // The event being logged is related to accessing a hint.
       HintContext access_hint_context = 19;
 
       // The event being logged is related to offering a solution when it becomes available.
-      ExplorationContext solution_offered_context = 20;
+      ExplorationContext solution_unlocked_context = 20;
 
       // The event being logged is related to accessing a solution.
       ExplorationContext access_solution_context = 21;
@@ -90,7 +113,10 @@ message EventLog {
       SubmitAnswerContext submit_answer_context = 22;
 
       // The event being logged is related to playing a voiceover.
-      PlayVoiceOverContext play_voice_over_context = 23;
+      VoiceoverActionContext play_voice_over_context = 23;
+
+      // The event being logged is related to pausing a voiceover.
+      VoiceoverActionContext pause_voice_over_context = 35;
 
       // The event being logged is related to backgrounding of the application.
       LearnerDetailsContext app_in_background_context = 24;
@@ -113,13 +139,25 @@ message EventLog {
       // The event being logged is related to deleting a profile.
       LearnerDetailsContext delete_profile_context = 30;
 
-      // The event being logged is related to the opening of home activity. The boolean value here has no
-      // importance and is always 'true'.
+      // The event being logged is related to the opening of home activity. The boolean value here
+      // has no importance and is always 'true'.
       bool open_home = 31;
 
-      // The event being logged is related to the opening of profile chooser activity. The boolean value here
-      // has no importance and is always 'true'.
+      // The event being logged is related to the opening of profile chooser activity. The boolean
+      // value here has no importance and is always 'true'.
       bool open_profile_chooser = 32;
+
+      // The event being logged indicates that the user has reached an invested level of learning
+      // engagement in a lesson.
+      ExplorationContext reach_invested_engagement = 34;
+
+      // The event being logged indicates that the user switched their lesson's content language
+      // using the in-lesson language switcher.
+      SwitchInLessonLanguageEventContext switch_in_lesson_language = 37;
+
+      // Indicates that something went wrong when trying to log a learner analytics even for the
+      // device corresponding to the specified device ID.
+      string install_id_for_failed_analytics_log = 33;
     }
   }
 
@@ -173,12 +211,11 @@ message EventLog {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
 
-    // Corresponds to the index of a hint or solution in a state. This structure is set up
-    // to properly account for variable numbers of hints, for cases when only a solution or no solution
-    // exists, and for when there are no hints or solutions. This structure represents the entire state
-    // needed to determine which hints can be shown, have been seen, whether the solution can be shown,
-    // and whether the solution has been seen.
-    HelpIndex help_index = 3;
+    // Corresponds to the index of the index being shown or last seen.
+    int32 hint_index = 4;
+
+    reserved 2;
+    reserved 3;
   }
 
   // Represents the event context for submitting an answer within an exploration.
@@ -186,26 +223,39 @@ message EventLog {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
 
+    // A stringified representation of the answer submitted by the learner.
+    string stringified_answer = 2;
+
     // Whether the answer that the learner submitted is the correct answer.
     bool is_answer_correct = 3;
   }
 
-  // Represents the event context for playing a voiceover within an exploration.
-  message PlayVoiceOverContext {
+  // Represents the event context for performing an action pertaining to a voiceover within an
+  // exploration.
+  message VoiceoverActionContext {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
 
+    // This field index was previously skipped, so it's been marked as reserved to ensure no
+    // possible binary compatibility issues occur in the future due to potential developer
+    // confusion.
+    reserved 2;
+
     // The content id of the voiceover recording being played.
     string content_id = 3;
+
+    // The language code being played.
+    string language_code = 4;
   }
 
-  // Represents event context which contains learner-specific details that are logged with every event.
+  // Represents event context which contains learner-specific details that are logged with every
+  // event.
   message LearnerDetailsContext {
     // The learner id of the current user. This id is profile-specific.
     string learner_id = 1;
 
     // The device id of the current device. This id is common across all profiles.
-    string device_id = 2;
+    string install_id = 2;
   }
 
   // Represents the event context for all exploration related events containing learner-specific and
@@ -223,14 +273,30 @@ message EventLog {
     // The session id of the current learning session.
     string session_id = 4;
 
+    reserved 5; // Deprecated string version of exploration version.
+
     // The version of the exploration.
-    string exploration_version = 5;
+    int32 exploration_version = 8;
 
     // The name of the current state of the exploration.
     string state_name = 6;
 
     // Defined attributes that are common among all learner analytics related event log contexts.
     LearnerDetailsContext learner_details = 7;
+  }
+
+  // Represents the event context for switching a lesson's content language mid-lesson. Note that
+  // this differs from the language selection available via the options menu since the latter
+  // changes the app language rather than just specifically the content language.
+  message SwitchInLessonLanguageEventContext {
+    // Defined attributes that are common among other exploration related event log contexts.
+    ExplorationContext exploration_details = 1;
+
+    // The content language from which the lesson is being switched.
+    OppiaLanguage switch_from_language = 2;
+
+    // The content language to which the lesson is being switched.
+    OppiaLanguage switch_to_language = 3;
   }
 
   // Supported priority of events for event logging
@@ -240,7 +306,8 @@ message EventLog {
     // The priority of events whose logs should not be removed from the storage on most occasions
     // but can be removed if they're the only ones there and size limit exceeds.
     ESSENTIAL = 1;
-    // The priority of events whose logs can be removed from the storage if the size exceeds a certain limit
+    // The priority of events whose logs can be removed from the storage if the size exceeds a
+    // certain limit
     OPTIONAL = 2;
   }
 }
@@ -282,10 +349,26 @@ message ExceptionLog {
 
 // Structure for a container that contains event log reports.
 message OppiaEventLogs {
-  repeated EventLog event_log = 1;
+  // Contains all event logs pending to be uploaded for analytics that are likely cached due to the
+  // app not have internet connectivity at the time of wanting to originally log the event.
+  repeated EventLog event_logs_to_upload = 1;
+
+  // Contains all events that have been uploaded remotely to the analytics service. This is only
+  // used for special builds of the app that have additional telemetry diagnostics enabled.
+  repeated EventLog uploaded_event_logs = 2;
 }
 
 // Structure for a container that contains exception log reports.
 message OppiaExceptionLogs {
   repeated ExceptionLog exception_log = 1;
+}
+
+// Data structure of device & app context that's stored on disk to be unique to each app
+// installation (or cross-installation if restoring from an app backup).
+message DeviceContextDatabase {
+  // The per-installation UUID that can be used to generally uniquely identify this device among all
+  // others present in a user study. This shouldn't be relied on for anything other than analytics,
+  // and only for specific studies as the ID is not stable across app installations (but should
+  // survive app data backups & restores, as well as app upgrades).
+  string installation_id = 1;
 }

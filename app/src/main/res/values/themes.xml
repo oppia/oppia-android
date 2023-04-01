@@ -14,7 +14,12 @@
     <item name="colorAccent">@color/color_palette_accent_color</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
+    <item name="android:editTextStyle">@style/InputInteractionEditText</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+  </style>
+
+  <style name="RevisionCardActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <item name="colorPrimaryDark">@color/component_color_revision_card_activity_status_bar_color</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -27,17 +32,21 @@
   </style>
 
   <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">
-    <item name="colorAccent">@color/color_palette_primary_color</item>
+    <item name="colorAccent">@color/component_color_shared_dialogs_primary_color</item>
+    <item name="colorBackgroundFloating">@color/component_color_shared_item_background_solid_color</item>
+    <item name="android:textColorPrimary">@color/component_color_shared_primary_dark_text_color</item>
   </style>
 
   <style name="OppiaSwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorControlActivated">@color/color_palette_primary_color</item>
+    <item name="colorControlActivated">@color/component_color_shared_switch_color</item>
   </style>
 
   <style name="OppiaAlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
-    <item name="colorPrimary">@color/color_palette_primary_color</item>
-    <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
-    <item name="colorAccent">@color/color_palette_primary_color</item>
+    <item name="colorPrimary">@color/component_color_shared_dialogs_primary_color</item>
+    <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
+    <item name="colorAccent">@color/component_color_shared_dialogs_primary_color</item>
+    <item name="colorBackgroundFloating">@color/component_color_shared_item_background_solid_color</item>
+    <item name="android:textColorPrimary">@color/component_color_shared_primary_dark_text_color</item>
   </style>
 
   <style name="OppiaActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >

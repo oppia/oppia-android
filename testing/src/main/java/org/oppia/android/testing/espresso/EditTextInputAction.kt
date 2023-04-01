@@ -5,6 +5,8 @@ import android.view.View
 import android.widget.EditText
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
 import org.hamcrest.Matcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -26,21 +28,31 @@ class EditTextInputAction @Inject constructor(
    * Returns a [ViewAction] that appends the specified string into the view targeted by the
    * [ViewAction].
    */
-  fun appendText(text: String): ViewAction {
-    val typeTextViewAction = typeText(text)
-    return object : ViewAction {
-      override fun getDescription(): String = typeTextViewAction.description
+  fun appendText(text: String): ViewAction = updateText(text, baseAction = typeText(text))
 
-      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
+  /**
+   * Returns a [ViewAction] that replaces the current text in the specified view with the specified
+   * string.
+   *
+   * Note that this should only be used over [appendText] in the following cases:
+   * 1. When there's existing text to first erase before adding new text
+   * 2. When Unicode text needs to be inputted (since otherwise Espresso will fail to type the text)
+   */
+  fun replaceText(text: String): ViewAction =
+    updateText(text, baseAction = ViewActions.replaceText(text))
+
+  private fun updateText(text: String, baseAction: ViewAction): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String = baseAction.description
+
+      override fun getConstraints(): Matcher<View> = baseAction.constraints
 
       override fun perform(uiController: UiController?, view: View?) {
         // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
         if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
           (view as? EditText)?.append(text)
           testCoroutineDispatchers.runCurrent()
-        } else {
-          typeTextViewAction.perform(uiController, view)
-        }
+        } else baseAction.perform(uiController, view)
       }
     }
   }

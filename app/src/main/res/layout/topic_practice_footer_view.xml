@@ -20,7 +20,8 @@
     <Button
       android:id="@+id/topic_practice_start_button"
       style="@style/StateButtonInactive"
-      android:layout_width="160dp"
+      android:layout_width="wrap_content"
+      android:minWidth="160dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/topic_practice_footer_view_margin_top"
       android:layout_marginBottom="@dimen/topic_practice_footer_view_margin_bottom"
@@ -30,7 +31,7 @@
       android:fontFamily="sans-serif-medium"
       android:minHeight="@dimen/clickable_item_min_height"
       android:text="@string/topic_practice_start"
-      android:textColor="@{isSubmitButtonActive ? @color/color_def_white : @color/submit_button_text_inactive}"
+      android:textColor="@{isSubmitButtonActive ? @color/component_color_shared_submit_text_active_color : @color/component_color_shared_submit_text_inactive_color}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

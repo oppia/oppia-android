@@ -7,14 +7,14 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ConceptCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
@@ -22,13 +22,16 @@ import javax.inject.Inject
 class ConceptCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock,
+  private val analyticsController: AnalyticsController,
   private val htmlParserFactory: HtmlParser.Factory,
   @ConceptCardHtmlParserEntityType private val entityType: String,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
-  private val translationController: TranslationController
-) {
+  private val conceptCardViewModel: ConceptCardViewModel,
+  private val translationController: TranslationController,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler
+) : HtmlParser.CustomOppiaTagActionListener {
+  private lateinit var profileId: ProfileId
+
   /**
    * Sets up data binding and toolbar.
    * Host activity must inherit ConceptCardListener to dismiss this fragment.
@@ -39,15 +42,15 @@ class ConceptCardFragmentPresenter @Inject constructor(
     skillId: String,
     profileId: ProfileId
   ): View? {
+    this.profileId = profileId
     val binding = ConceptCardFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
     val view = binding.conceptCardExplanationText
-    val viewModel = getConceptCardViewModel()
 
-    viewModel.initialize(skillId, profileId)
+    conceptCardViewModel.initialize(skillId, profileId)
     logConceptCardEvent(skillId)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -59,35 +62,46 @@ class ConceptCardFragmentPresenter @Inject constructor(
     }
 
     binding.let {
-      it.viewModel = viewModel
+      it.viewModel = conceptCardViewModel
       it.lifecycleOwner = fragment
     }
 
-    viewModel.conceptCardLiveData.observe(
-      fragment,
-      { ephemeralConceptCard ->
-        val explanationHtml =
-          translationController.extractString(
-            ephemeralConceptCard.conceptCard.explanation,
-            ephemeralConceptCard.writtenTranslationContext
-          )
-        view.text = htmlParserFactory
-          .create(resourceBucketName, entityType, skillId, imageCenterAlign = true)
-          .parseOppiaHtml(explanationHtml, view)
-      }
-    )
+    conceptCardViewModel.conceptCardLiveData.observe(
+      fragment
+    ) { ephemeralConceptCard ->
+      val explanationHtml =
+        translationController.extractString(
+          ephemeralConceptCard.conceptCard.explanation,
+          ephemeralConceptCard.writtenTranslationContext
+        )
+      view.text =
+        htmlParserFactory.create(
+          resourceBucketName,
+          entityType,
+          skillId,
+          customOppiaTagActionListener = this,
+          imageCenterAlign = true,
+          displayLocale = appLanguageResourceHandler.getDisplayLocale()
+        ).parseOppiaHtml(
+          explanationHtml,
+          view,
+          supportsLinks = true,
+          supportsConceptCards = true
+        )
+    }
 
     return binding.root
   }
 
-  private fun getConceptCardViewModel(): ConceptCardViewModel {
-    return viewModelProvider.getForFragment(fragment, ConceptCardViewModel::class.java)
+  private fun logConceptCardEvent(skillId: String) {
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenConceptCardContext(skillId), profileId
+    )
   }
 
-  private fun logConceptCardEvent(skillId: String) {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(),
-      oppiaLogger.createOpenConceptCardContext(skillId)
-    )
+  override fun onConceptCardLinkClicked(view: View, skillId: String) {
+    ConceptCardFragment
+      .newInstance(skillId, profileId)
+      .showNow(fragment.childFragmentManager, ConceptCardFragment.CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 }

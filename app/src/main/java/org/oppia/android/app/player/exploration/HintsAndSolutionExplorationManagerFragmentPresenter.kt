@@ -40,25 +40,26 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
-    if (result.isFailure()) {
-      oppiaLogger.e(
-        "HintsAndSolutionExplorationManagerFragmentPresenter",
-        "Failed to retrieve ephemeral state",
-        result.getErrorOrNull()!!
-      )
-      return
-    } else if (result.isPending()) {
+    when (result) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "HintsAndSolutionExplorationManagerFragmentPresenter",
+          "Failed to retrieve ephemeral state",
+          result.error
+        )
+      }
       // Display nothing until a valid result is available.
-      return
-    }
-
-    val ephemeralState = result.getOrThrow()
-
-    // Check if hints are available for this state.
-    if (ephemeralState.state.interaction.hintList.size != 0) {
-      (activity as HintsAndSolutionExplorationManagerListener).onExplorationStateLoaded(
-        ephemeralState.state, ephemeralState.writtenTranslationContext
-      )
+      is AsyncResult.Pending -> {}
+      is AsyncResult.Success -> {
+        // Check if hints are available for this state.
+        val ephemeralState = result.value
+        val state = ephemeralState.state
+        if (state.interaction.hintList.isNotEmpty() || state.interaction.hasSolution()) {
+          (activity as HintsAndSolutionExplorationManagerListener).onExplorationStateLoaded(
+            state, ephemeralState.writtenTranslationContext
+          )
+        }
+      }
     }
   }
 }

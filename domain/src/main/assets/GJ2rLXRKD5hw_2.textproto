@@ -1,10 +1,14 @@
-subtopic_title: "Fractions of a group"
 page_contents {
-  html: "<p>Description of subtopic is here. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;5RM9KPfQxobH&amp;quot;\" text-with-value=\"&amp;quot;Learn more&amp;quot;\"></oppia-noninteractive-skillreview></p>"
+  html: "<p>Description of subtopic is here. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;5RM9KPfQxobH&amp;quot;\" text-with-value=\"&amp;quot;This concept card demonstrates overall concept card functionality.&amp;quot;\"></oppia-noninteractive-skillreview></p>"
   content_id: "content"
 }
 recorded_voiceover {
   key: "content"
+  value {
+  }
+}
+written_translation {
+  key: "title"
   value {
   }
 }
@@ -17,4 +21,8 @@ skill_ids: "B39yK4cbHZYI"
 skill_ids: "UxTGIJqaHMLa"
 subtopic_thumbnail {
   background_color_rgb: 16741119
+}
+title {
+  html: "Fractions of a group"
+  content_id: "title"
 }

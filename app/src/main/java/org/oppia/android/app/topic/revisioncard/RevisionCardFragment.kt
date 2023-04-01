@@ -18,21 +18,24 @@ class RevisionCardFragment : InjectableDialogFragment() {
   companion object {
     private const val TOPIC_ID_ARGUMENT_KEY = "RevisionCardFragment.topic_id"
     private const val SUBTOPIC_ID_ARGUMENT_KEY = "RevisionCardFragment.subtopic_id"
+    private const val SUBTOPIC_LIST_SIZE_ARGUMENT_KEY = "RevisionCardFragment.subtopic_list_size"
     private const val PROFILE_ID_ARGUMENT_KEY = "RevisionCardFragment.profile_id"
 
     /**
      * Returns a new [RevisionCardFragment] to display the specific subtopic for the given topic &
      * profile.
      */
-    fun newInstance(topicId: String, subtopicId: Int, profileId: ProfileId): RevisionCardFragment {
-      return RevisionCardFragment().apply {
-        arguments = Bundle().apply {
-          putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-          putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
-          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+    fun newInstance(topicId: String, subtopicId: Int, profileId: ProfileId, subtopicListSize: Int):
+      RevisionCardFragment {
+        return RevisionCardFragment().apply {
+          arguments = Bundle().apply {
+            putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+            putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
+            putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+            putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
+          }
         }
       }
-    }
   }
 
   @Inject
@@ -58,8 +61,9 @@ class RevisionCardFragment : InjectableDialogFragment() {
       }
     val subtopicId = args.getInt(SUBTOPIC_ID_ARGUMENT_KEY, -1)
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    val subtopicListSize = args.getInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, -1)
     return revisionCardFragmentPresenter.handleCreateView(
-      inflater, container, topicId, subtopicId, profileId
+      inflater, container, topicId, subtopicId, profileId, subtopicListSize
     )
   }
 

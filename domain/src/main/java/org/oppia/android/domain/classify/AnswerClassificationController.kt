@@ -42,7 +42,7 @@ class AnswerClassificationController @Inject constructor(
       interaction.defaultOutcome,
       interactionClassifier,
       interaction.id,
-      writtenTranslationContext
+      ClassificationContext(writtenTranslationContext, interaction.customizationArgsMap)
     )
   }
 
@@ -54,7 +54,7 @@ class AnswerClassificationController @Inject constructor(
     defaultOutcome: Outcome,
     interactionClassifier: InteractionClassifier,
     interactionId: String,
-    writtenTranslationContext: WrittenTranslationContext
+    classificationContext: ClassificationContext
   ): ClassificationResult {
     for (answerGroup in answerGroups) {
       for (ruleSpec in answerGroup.ruleSpecsList) {
@@ -65,7 +65,7 @@ class AnswerClassificationController @Inject constructor(
               " has: ${interactionClassifier.getRuleTypes()}"
           }
         try {
-          if (ruleClassifier.matches(answer, ruleSpec.inputMap, writtenTranslationContext)) {
+          if (ruleClassifier.matches(answer, ruleSpec.inputMap, classificationContext)) {
             // Explicit classification matched.
             return if (!answerGroup.hasTaggedSkillMisconception()) {
               ClassificationResult.OutcomeOnly(answerGroup.outcome)

@@ -3,7 +3,7 @@
     "thumbnail_bg_color": "#b378f1",
     "description": "<removed>",
     "title": "First Story",
-    "node_titles": ["Prototype Exploration", "Image Region Selection Exploration"],
+    "node_titles": ["Prototype Exploration", "Image Region Selection Exploration", "Math Expressions"],
     "thumbnail_filename": "",
     "published": true,
     "id": "test_story_id_0"

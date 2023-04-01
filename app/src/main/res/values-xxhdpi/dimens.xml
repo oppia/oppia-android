@@ -5,4 +5,11 @@
   <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">36dp</dimen>
   <dimen name="profile_chooser_profile_view_view_margin_top">60dp</dimen>
   <dimen name="profile_chooser_add_view_margin_top_profile_not_added">60dp</dimen>
+
+  <!-- Policies -->
+  <dimen name="policies_fragment_page_padding_start">24dp</dimen>
+  <dimen name="policies_fragment_page_padding_top">22dp</dimen>
+  <dimen name="policies_fragment_page_padding_end">28dp</dimen>
+  <dimen name="policies_fragment_page_padding_bottom">60dp</dimen>
+  <dimen name="policies_fragment_page_scroll_padding_bottom">80dp</dimen>
 </resources>

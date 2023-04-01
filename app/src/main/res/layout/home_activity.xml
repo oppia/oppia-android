@@ -6,14 +6,25 @@
   android:layout_height="match_parent"
   tools:context=".app.home.HomeActivity">
 
+  <FrameLayout
+    android:id="@+id/home_spotlight_fragment_placeholder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
+    <androidx.appcompat.widget.Toolbar
       android:id="@+id/home_activity_toolbar"
-      layout="@layout/toolbar" />
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/component_color_shared_activity_toolbar_color"
+      android:minHeight="?attr/actionBarSize"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:titleTextAppearance="@style/ToolbarTextAppearance" />
 
     <FrameLayout
       android:id="@+id/home_fragment_placeholder"
@@ -25,9 +36,10 @@
   <fragment
     android:id="@+id/home_activity_fragment_navigation_drawer"
     android:name="org.oppia.android.app.drawer.NavigationDrawerFragment"
-    android:layout_width="@dimen/navigation_drawer_width"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="start"
+    android:minWidth="@dimen/navigation_drawer_width"
     app:layout="@layout/drawer_fragment"
     tools:layout="@layout/drawer_fragment" />
 </androidx.drawerlayout.widget.DrawerLayout>

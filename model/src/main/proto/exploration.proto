@@ -22,11 +22,23 @@ message Exploration {
   repeated ParamChange param_changes = 3;
   repeated ParamSpec param_specs = 4;
   string init_state_name = 5;
-  string objective = 6;
+  reserved 6; // objective string that was replaced with a translatable version.
   bool correctness_feedback_enabled = 7;
-  string title = 8;
+  reserved 8; // title string that was replaced with a translatable version.
   string language_code = 9;
   int32 version = 10;
+  map<string, TranslationMapping> written_translations = 11;
+  SubtitledHtml translatable_title = 12;
+  SubtitledHtml description = 13;
+}
+
+// Corresponds to an exploration that is currently being viewed.
+message EphemeralExploration {
+  // The exploration to view.
+  Exploration exploration = 1;
+
+  // The translation context that should be used for this exploration.
+  WrittenTranslationContext written_translation_context = 2;
 }
 
 // Structure for a param change.
@@ -69,6 +81,9 @@ message State {
   // from the learner about why they picked a particular answer while
   // playing the exploration.
   bool solicit_answer_details = 8;
+
+  // Corresponds to the global skill ID being taught/evaluated by the interaction of this state.
+  string linked_skill_id = 9;
 }
 
 // Structure for customization args for ParamChange objects.
@@ -157,12 +172,16 @@ message TrainingData {
 // Structure for a single solution
 // Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeSolution.kt
 message Solution {
-  string interaction_id = 1;
+  reserved 1; // Was a string containing the ID of the interaction containing the solution.
+
   // Flag that is true if correct_answer is the only correct answer of the question.
   bool answer_is_exclusive = 2;
 
-  // correct_answer of the State.
-  CorrectAnswer correct_answer = 3;
+  // Represented a representation of correct_answer that was specific to strings and fractions.
+  reserved 3;
+
+  // The correct answer to the state's primary question prompt.
+  InteractionObject correct_answer = 6;
 
   // Core explanation to the correct answer.
   SubtitledHtml explanation = 4;
@@ -170,16 +189,6 @@ message Solution {
   // Whether the solution was revealed (deprecated). This information is now available through the
   // HelpIndex message passed with EphemeralState.
   reserved 5;
-}
-
-// Structure for a Correct answer in Solution
-// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeSolution.kt
-message CorrectAnswer {
-  int32 denominator = 1;
-  int32 numerator = 2;
-  int32 whole_number = 3;
-  bool is_negative = 4;
-  string correct_answer = 5;
 }
 
 // Structure for a single hint
@@ -252,6 +261,15 @@ message EphemeralState {
 
   // The current context that should be used for selecting written translations.
   WrittenTranslationContext written_translation_context = 8;
+
+  // The identifier of the current session that'd be used for analytics logging.
+  string session_id = 9;
+
+  // Determines if the continue button animation should be shown or not.
+  bool show_continue_button_animation = 10;
+
+  // The timestamp at which continue buttons (both interaction & navigation) should start animating.
+  int64 continue_button_animation_timestamp_ms = 11;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
@@ -310,6 +328,9 @@ message AnswerAndResponse {
 
   // Oppia's response to the answer the learner submitted.
   SubtitledHtml feedback = 2;
+
+  // Whether the answer was labelled by the creator as correct.
+  bool is_correct_answer = 3;
 }
 
 message AnswerOutcome {

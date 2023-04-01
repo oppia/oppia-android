@@ -2,7 +2,7 @@
 Kotlin-based scripts to help developers or perform continuous integration tasks.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_binary", "kt_jvm_library")
 load("@rules_java//java:defs.bzl", "java_binary")
 load(
     "//scripts:script_assets.bzl",
@@ -100,6 +100,20 @@ kt_jvm_binary(
     testonly = True,
     main_class = "org.oppia.android.scripts.xml.XmlSyntaxCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_check_lib"],
+)
+
+kt_jvm_binary(
+    name = "string_language_translation_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.xml.StringLanguageTranslationCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:string_language_translation_check_lib"],
+)
+
+kt_jvm_binary(
+    name = "string_resource_validation_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.xml.StringResourceValidationCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:string_resource_validation_check_lib"],
 )
 
 TEST_FILE_EXEMPTION_ASSETS = generate_test_file_assets_list_from_text_protos(
@@ -234,5 +248,16 @@ java_binary(
     ],
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/build:transform_android_manifest_lib",
+    ],
+)
+
+java_binary(
+    name = "filter_per_language_resources",
+    main_class = "org.oppia.android.scripts.build.FilterPerLanguageResourcesKt",
+    visibility = [
+        "//:oppia_binary_visibility",
+    ],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:filter_per_language_resources_lib",
     ],
 )

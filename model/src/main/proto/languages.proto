@@ -27,6 +27,9 @@ enum OppiaLanguage {
 
   // Corresponds to the Brazilian variant of Portuguese. IETF BCP 47 language tag: pt-BR.
   BRAZILIAN_PORTUGUESE = 6;
+
+  // Corresponds to the Swahili (Kiswahili) macro language. IETF BCP 47 language tag: sw.
+  SWAHILI = 7;
 }
 
 // The list of regions explicitly supported natively by the Android app. Note that the app is not
@@ -51,6 +54,9 @@ enum OppiaRegion {
 
   // Corresponds to United State of America (U.S.A.). IETF BCP 47 region tag: US.
   UNITED_STATES = 3;
+
+  // Corresponds to Kenya (Jamhuri ya Kenya). IETF BCP 47 region tag: KE.
+  KENYA = 4;
 }
 
 // Defines the list of supported languages in the app.
