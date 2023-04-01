@@ -687,7 +687,9 @@ class BindableAdapterTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun getTestActivityComponentBuilderProvider(): Provider<TestActivityComponent.Builder>
 
