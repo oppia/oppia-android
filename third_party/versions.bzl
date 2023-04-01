@@ -84,7 +84,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 # This list should only contain test-only dependencies. These are dependencies that are guaranteed
 # cannot be included in production builds of the app.
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
-    "android.arch.core:core-testing": "1.1.1",
     "androidx.arch.core:core-testing": "2.1.0",
     "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
