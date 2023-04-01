@@ -4,7 +4,7 @@ package org.oppia.android.app.help.thirdparty
 interface RouteToLicenseTextListener {
   /**
    * Called when the user wants to see the license text for a particular copyright license of a
-   * third-party Maven dependency.
+   * third-party maven dependency.
    *
    * @param dependencyIndex index of the dependency clicked by the user in
    *   [ThirdPartyDependencyListFragment]

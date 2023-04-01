@@ -23,15 +23,20 @@ load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPEND
 [android_library(
     name = name.replace(":", "_").replace(".", "_"),
     visibility = ["//visibility:public"],
-    exports = [artifact(name)],
-) for name, details in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()]
+    exports = [
+        artifact("%s:%s" % (name, version)),
+    ],
+) for name, version in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()]
 
-# Create an android library wrapper for each test dependency.
+# Create an android library wrapper for all test dependencies.
 [android_library(
     name = name.replace(":", "_").replace(".", "_"),
+    testonly = True,
     visibility = ["//visibility:public"],
-    exports = [artifact(name)],
-) for name, details in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
+    exports = [
+        artifact("%s:%s" % (name, version)),
+    ],
+) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
 
 android_library(
     name = "circularimageview_circular_image_view",
