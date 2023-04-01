@@ -123,7 +123,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     lastLoadedFragment = APP_VERSION_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
     setMultipaneBackButtonVisibility(View.GONE)
-    activity.supportFragmentManager.beginTransaction().add(
+    activity.supportFragmentManager.beginTransaction().replace(
       R.id.administrator_controls_fragment_multipane_placeholder,
       AppVersionFragment()
     ).commitNow()

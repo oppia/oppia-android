@@ -33,7 +33,8 @@ class RegexPatternValidationCheckTest {
       "file_content_validation_checks.textproto."
   private val settableFutureUsageErrorMessage =
     "SettableFuture should only be used in pre-approved locations since it's easy to potentially " +
-      "mess up & lead to a hanging ListenableFuture."
+      "mess up & lead to a hanging ListenableFuture. If using a Deferred, convert it to a " +
+      "ListenableFuture using asListenableFuture()."
   private val androidLayoutIncludeTagErrorMessage =
     "Remove <include .../> tag from layouts and instead use the widget directly, e.g. AppBarLayout."
   private val androidGravityLeftErrorMessage =

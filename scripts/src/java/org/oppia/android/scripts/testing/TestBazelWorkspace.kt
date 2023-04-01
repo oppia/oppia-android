@@ -239,10 +239,9 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
             sha256 = "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
             urls = ["$rulesKotlinReleaseUrl"],
         )
-        load("$rulesKotlinBazelPrefix:dependencies.bzl", "kt_download_local_dev_dependencies")
-        load("$rulesKotlinBazelPrefix:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
-        kt_download_local_dev_dependencies()
+        load("$rulesKotlinBazelPrefix:repositories.bzl", "kotlin_repositories")
         kotlin_repositories()
+        load("$rulesKotlinBazelPrefix:core.bzl", "kt_register_toolchains")
         kt_register_toolchains()
         """.trimIndent() + "\n"
       )

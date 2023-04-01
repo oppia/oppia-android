@@ -103,8 +103,6 @@ class QuestionAssessmentProgressController @Inject constructor(
 ) {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
   //  training session.
-  // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating
-  //  sufficient proficiency.
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentQuestion).

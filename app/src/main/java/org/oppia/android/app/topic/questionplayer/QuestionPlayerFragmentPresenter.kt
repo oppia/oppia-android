@@ -328,8 +328,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     congratulationsTextView: TextView,
     congratulationsTextConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
-    // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
-    //  controller & possibly the ephemeral question data model.
     // TODO(#502): Add support for surfacing skills that need to be reviewed by the learner.
     return builder
       .hasConversationView(hasConversationView)
