@@ -8,6 +8,7 @@ import java.util.Locale
 import java.util.StringTokenizer
 import java.util.zip.ZipFile
 import kotlin.math.absoluteValue
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 // TODO(#1719): Add support for showing count & itemization of modified files/resources (vs. just
 //  new/removed).
@@ -60,11 +61,10 @@ fun main(vararg args: String) {
 
   val workingDirectoryPath = "."
   val sdkProperties = AndroidBuildSdkProperties()
-  val aapt2Client = Aapt2Client(workingDirectoryPath, sdkProperties.buildToolsVersion)
-  val apkAnalyzerClient = ApkAnalyzerClient(aapt2Client)
-  val bundleToolClient = BundleToolClient(workingDirectoryPath)
-  val computer = ComputeAabDifferences(aapt2Client, apkAnalyzerClient, bundleToolClient)
-  val buildStats = computer.computeBuildStats(*profiles.toTypedArray())
+  val buildStats = ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    val computer = ComputeAabDifferences(workingDirectoryPath, sdkProperties, scriptBgDispatcher)
+    return@use computer.computeBuildStats(*profiles.toTypedArray())
+  }
   PrintStream(outputSummaryFilePath).use { stream ->
     buildStats.writeSummariesTo(stream, longSummary = false)
   }
@@ -75,18 +75,26 @@ fun main(vararg args: String) {
 
 /** Utility to compute the build differences between sets of AABs. */
 class ComputeAabDifferences(
-  private val aapt2Client: Aapt2Client,
-  private val apkAnalyzerClient: ApkAnalyzerClient,
-  private val bundleToolClient: BundleToolClient
+  workingDirectoryPath: String,
+  sdkProperties: AndroidBuildSdkProperties,
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
+  private val bundleToolClient by lazy {
+    BundleToolClient(workingDirectoryPath, scriptBgDispatcher)
+  }
+  private val aapt2Client by lazy {
+    Aapt2Client(workingDirectoryPath, sdkProperties.buildToolsVersion, scriptBgDispatcher)
+  }
+  private val apkAnalyzerClient by lazy { ApkAnalyzerClient(aapt2Client) }
+
   /**
    * Returns the [BuildStats] for the provided set of [AabProfile]s. All profiles will be
    * represented in the returned stats.
    */
   fun computeBuildStats(vararg aabProfiles: AabProfile): BuildStats {
-    val aabStats = aabProfiles.map { profile ->
+    val aabStats = aabProfiles.associate { profile ->
       profile.buildFlavor to computeAabStats(profile.oldAabFilePath, profile.newAabFilePath)
-    }.toMap()
+    }
     return BuildStats(aabStats)
   }
 
@@ -216,12 +224,12 @@ class ComputeAabDifferences(
       val features = apkAnalyzerClient.computeFeatures(path)
       val rawPermissions = aapt2Client.dumpPermissions(path)
       return@let features to extractPermissions(rawPermissions)
-    } ?: listOf<String>() to listOf()
+    } ?: (listOf<String>() to listOf())
     val (featuresWithChanges, permissionsWithChanges) = apkWithChangesPath?.let { path ->
       val features = apkAnalyzerClient.computeFeatures(path)
       val rawPermissions = aapt2Client.dumpPermissions(path)
       return@let features to extractPermissions(rawPermissions)
-    } ?: listOf<String>() to listOf()
+    } ?: (listOf<String>() to listOf())
 
     return ManifestStats(
       features = DiffList(featuresWithoutChanges, featuresWithChanges),
@@ -251,8 +259,8 @@ class ComputeAabDifferences(
     println("Computing asset stats for: $apkWithoutChangesPath and $apkWithChangesPath")
     return AssetStats(
       DiffList(
-        File(apkWithoutChangesPath).extractAssetFileNamesFromApk(),
-        File(apkWithChangesPath).extractAssetFileNamesFromApk()
+        apkWithoutChangesPath?.let(::File)?.extractAssetFileNamesFromApk() ?: listOf(),
+        apkWithChangesPath?.let(::File)?.extractAssetFileNamesFromApk() ?: listOf()
       )
     )
   }
@@ -330,7 +338,10 @@ class ComputeAabDifferences(
       itemLimit: Int,
       longSummary: Boolean
     ) {
-      stream.println("## ${buildFlavor.capitalize(Locale.US)}")
+      val buildFlavorTitle = buildFlavor.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
+      }
+      stream.println("## $buildFlavorTitle")
       stream.println()
 
       if (!longSummary) {
@@ -519,8 +530,8 @@ class ComputeAabDifferences(
      * @param itemize whether to expand lists of items
      */
     fun writeTo(stream: PrintStream, itemize: Boolean, itemLimit: Int): Boolean {
-      val totalOldCount = resources.values.map { it.oldCount }.sum()
-      val totalNewCount = resources.values.map { it.newCount }.sum()
+      val totalOldCount = resources.values.sumOf { it.oldCount }
+      val totalNewCount = resources.values.sumOf { it.newCount }
       val totalDifference = totalNewCount - totalOldCount
       if (itemize || totalDifference != 0) {
         stream.println(
@@ -531,7 +542,10 @@ class ComputeAabDifferences(
           if (itemize || resourcesList.hasDifference()) {
             stream.print("- ")
             resourcesList.writeTo(
-              stream, typeName.capitalize(Locale.US), itemize, itemLimit, listIndentation = 2
+              stream,
+              linePrefix = typeName.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
+              }, itemize, itemLimit, listIndentation = 2
             )
           }
         }

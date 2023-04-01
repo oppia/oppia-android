@@ -3,6 +3,7 @@ package org.oppia.android.scripts.apkstats
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import java.io.File
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 /**
  * General utility for interfacing with AAPT2 in the local system at the specified working directory
@@ -23,7 +24,8 @@ import java.io.File
 class Aapt2Client(
   private val workingDirectoryPath: String,
   private val buildToolsVersion: String,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
   private val workingDirectory by lazy { File(workingDirectoryPath) }
   // Note that this pathing will not work by default on Windows (since executables end with '.exe').

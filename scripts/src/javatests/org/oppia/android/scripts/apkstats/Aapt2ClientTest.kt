@@ -8,6 +8,8 @@ import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.testing.assertThrows
 import java.util.concurrent.TimeUnit
+import org.junit.After
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 /**
  * Tests for [Aapt2Client].
@@ -18,15 +20,19 @@ import java.util.concurrent.TimeUnit
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
 class Aapt2ClientTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] var tempFolder = TemporaryFolder()
 
   private val sdkProperties = AndroidBuildSdkProperties()
 
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
   // TODO: finish tests for this suite.
+
+  @After
+  fun tearDown() {
+    scriptBgDispatcher.close()
+  }
 
   @Test
   fun testDumpResources_forNonExistentApk_throwsException() {
@@ -43,11 +49,14 @@ class Aapt2ClientTest {
     return Aapt2Client(
       tempFolder.root.absolutePath,
       sdkProperties.buildToolsVersion,
+      scriptBgDispatcher,
       commandExecutor
     )
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 }

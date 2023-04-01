@@ -23,7 +23,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.annotation:annotation": "1.1.0",
     "androidx.appcompat:appcompat": "1.2.0",
     "androidx.constraintlayout:constraintlayout": "1.1.3",
-    "androidx.core:core": "1.3.0",
+    "androidx.core:core": "1.0.1",
     "androidx.core:core-ktx": "1.0.1",
     "androidx.databinding:databinding-adapters": "3.4.2",
     "androidx.databinding:databinding-common": "3.4.2",
@@ -40,7 +40,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.navigation:navigation-fragment-ktx": "2.0.0",
     "androidx.navigation:navigation-ui": "2.0.0",
     "androidx.navigation:navigation-ui-ktx": "2.0.0",
-    "androidx.recyclerview:recyclerview": "1.1.0",
+    "androidx.recyclerview:recyclerview": "1.0.0",
     "androidx.room:room-runtime": "2.2.5",
     "androidx.test.uiautomator:uiautomator": "2.2.0",
     "androidx.viewpager2:viewpager2": "1.0.0",
@@ -91,23 +91,23 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.test.espresso:espresso-intents": "3.1.0",
     "androidx.test.ext:junit": "1.1.1",
     "androidx.test.ext:truth": "1.4.0",
-    "androidx.test:core": "1.4.0",
+    "androidx.test:core": "1.0.0",
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
     "com.android.tools.apkparser:apkanalyzer": "30.0.4",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
-    "com.google.truth:truth": "1.1.3",
+    "com.google.truth:truth": "0.43",
     "com.squareup.okhttp3:mockwebserver": "4.7.2",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
-    "junit:junit": "4.13.2",
+    "junit:junit": "4.12",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
-    "org.mockito:mockito-core": "3.9.0",
+    "org.mockito:mockito-core": "2.19.0",
     "org.robolectric:annotations": "4.5",
     "org.robolectric:robolectric": "4.5",
 }
@@ -166,11 +166,9 @@ MAVEN_REPOSITORIES = [
     "https://repo1.maven.org/maven2",
 ]
 
-def get_maven_dependencies(dependency_versions):
+def get_maven_dependencies():
     """
     Returns a list of maven dependencies to install to fulfill third-party dependencies.
     """
-    return [
-        "%s:%s" % (name, details["version"] if type(details) == "dict" else details)
-        for name, details in dependency_versions.items()
-    ]
+    return (["%s:%s" % (name, version) for name, version in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()] +
+            ["%s:%s" % (name, version) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()])

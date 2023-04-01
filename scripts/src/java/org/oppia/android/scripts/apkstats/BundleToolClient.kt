@@ -4,6 +4,7 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import java.io.File
 import java.util.zip.ZipFile
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 /**
  * General utility for interfacing with bundletool in the local system at the specified working
@@ -13,7 +14,8 @@ import java.util.zip.ZipFile
  */
 class BundleToolClient(
   private val workingDirectoryPath: String,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
   private val workingDirectory by lazy { File(workingDirectoryPath) }
 

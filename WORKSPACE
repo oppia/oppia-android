@@ -156,6 +156,7 @@ git_repository(
     name = "archive_patcher",
     commit = "d1c18b0035d5f669ddaefadade49cae0748f9df2",
     remote = "https://github.com/oppia/archive-patcher",
+    shallow_since = "1642022460 -0800",
 )
 
 bind(
@@ -195,20 +196,9 @@ http_jar(
 )
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
-# Further, multiple maven_installs are used to separate Android-specific & isolated script
-# dependencies per https://github.com/bazelbuild/rules_jvm_external#multiple-maven_install-declarations-for-isolated-artifact-version-trees.
-# Note that this is called 'maven' since Dagger expects it to be called that.
 maven_install(
-    name = "maven",
-    artifacts = (
-        DAGGER_ARTIFACTS + (
-            get_maven_dependencies(MAVEN_PRODUCTION_DEPENDENCY_VERSIONS)
-        ) + get_maven_dependencies(MAVEN_TEST_DEPENDENCY_VERSIONS)
-    ),
+    artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
     duplicate_version_warning = "error",
-    excluded_artifacts = [
-        "org.jetbrains.kotlin:kotlin-reflect",
-    ],
     fail_if_repin_required = True,
     maven_install_json = "//third_party:maven_install.json",
     override_targets = {

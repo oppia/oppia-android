@@ -5,10 +5,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
-import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.testing.assertThrows
 import java.lang.IllegalStateException
-import java.util.concurrent.TimeUnit
+import org.junit.After
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 /**
  * Tests for [ComputeAabDifferences].
@@ -19,15 +19,16 @@ import java.util.concurrent.TimeUnit
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
 class ComputeAabDifferencesTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] var tempFolder = TemporaryFolder()
 
-  private val sdkProperties = AndroidBuildSdkProperties()
-
-  private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
 
   // TODO: finish tests for this suite.
+
+  @After
+  fun tearDown() {
+    scriptBgDispatcher.close()
+  }
 
   @Test
   fun testComputeBuildStats_forZeroProfiles_returnsEmptyStats() {
@@ -51,15 +52,10 @@ class ComputeAabDifferencesTest {
   }
 
   private fun createComputeAabDifferences(): ComputeAabDifferences {
-    val aapt2Client = Aapt2Client(
-      tempFolder.root.absolutePath,
-      sdkProperties.buildToolsVersion,
-      commandExecutor
-    )
     return ComputeAabDifferences(
-      aapt2Client,
-      ApkAnalyzerClient(aapt2Client),
-      BundleToolClient(tempFolder.root.absolutePath, commandExecutor)
+      workingDirectoryPath = tempFolder.root.absoluteFile.normalize().path,
+      sdkProperties = AndroidBuildSdkProperties(),
+      scriptBgDispatcher
     )
   }
 
@@ -69,9 +65,5 @@ class ComputeAabDifferencesTest {
     buildFlavor: String = "dev"
   ): ComputeAabDifferences.AabProfile {
     return ComputeAabDifferences.AabProfile(buildFlavor, oldAabFilePath, newAabFilePath)
-  }
-
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
   }
 }

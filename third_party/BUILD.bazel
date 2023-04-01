@@ -12,7 +12,7 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_import")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_import")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
@@ -108,21 +108,6 @@ android_library(
     ],
 )
 
-# Creates an alias for Guava Android to support maven_install's override of Guava. This ensures that
-# Guava-Android is always used in builds, even if dependencies request a newer version of Guava-JRE.
-android_library(
-    name = "guava_android",
-    visibility = ["@maven//:__subpackages__"],
-    exports = [
-        "//third_party:com_google_errorprone_error_prone_annotations",
-        "//third_party:com_google_guava_failureaccess",
-        "//third_party:com_google_j2objc_j2objc-annotations",
-        "//third_party:org_checkerframework_checker-compat-qual",
-        "//third_party:org_checkerframework_checker-qual",
-        "@guava_android//jar",
-    ],
-)
-
 kt_jvm_import(
     name = "kotlinx-coroutines-core-jvm",
     jars = ["@kotlinx-coroutines-core-jvm//jar:file"],
@@ -135,7 +120,8 @@ kt_jvm_import(
 )
 
 java_library(
-    name = "guava_jre",
+    name = "com_google_guava_guava_jre",
+    visibility = ["//scripts:__subpackages__"],
     exports = [
         "//third_party:com_google_errorprone_error_prone_annotations",
         "//third_party:com_google_guava_failureaccess",
@@ -167,18 +153,6 @@ java_library(
         "sun/misc/SignalHandler.java",
     ],
     neverlink = True,
-)
-
-alias(
-    name = "com_google_guava_guava",
-    actual = ":guava_android",
-    visibility = ["//visibility:public"],
-)
-
-alias(
-    name = "com_google_guava_guava_jre",
-    actual = ":guava_jre",
-    visibility = ["//scripts:__subpackages__"],
 )
 
 # Define a separate target for the Glide annotation processor compiler. Unfortunately, this library

@@ -7,6 +7,8 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.testing.assertThrows
 import java.util.concurrent.TimeUnit
+import org.junit.After
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 /**
  * Tests for [BundleToolClient].
@@ -17,17 +19,22 @@ import java.util.concurrent.TimeUnit
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
 class BundleToolClientTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] var tempFolder = TemporaryFolder()
 
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
   // TODO: finish tests for this suite.
 
+  @After
+  fun tearDown() {
+    scriptBgDispatcher.close()
+  }
+
   @Test
   fun testBuildUniversalApk_forNonExistentAab_throwsException() {
-    val bundleToolClient = BundleToolClient(tempFolder.root.absolutePath, commandExecutor)
+    val bundleToolClient =
+      BundleToolClient(tempFolder.root.absolutePath, scriptBgDispatcher, commandExecutor)
 
     val exception = assertThrows(IllegalStateException::class) {
       bundleToolClient.buildUniversalApk("fake.aab", "fake.apk")
@@ -37,6 +44,8 @@ class BundleToolClientTest {
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 }
