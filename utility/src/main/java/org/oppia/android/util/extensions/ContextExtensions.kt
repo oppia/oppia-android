@@ -11,7 +11,7 @@ fun Context.getVersionName(): String {
 
 /** Returns the current app version code. */
 fun Context.getVersionCode(): Int {
-  // TODO: Add TODO to add Android 28+ codepath.
+  // TODO(#3616): Migrate to the proper SDK 28+ APIs.
   @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
   return this.packageManager.getPackageInfo(this.packageName, /* flags = */ 0).versionCode
 }

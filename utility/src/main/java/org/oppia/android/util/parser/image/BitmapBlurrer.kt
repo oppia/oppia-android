@@ -1,5 +1,5 @@
+// TODO(#3616): Migrate to the proper SDK 31+ APIs (migrate away from RenderScript).
 @file:Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
-// TODO: Add TODO to add Android 31+ codepath (migration from RenderScript).
 
 package org.oppia.android.util.parser.image
 

@@ -908,7 +908,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String? {
-    // TODO: File an issue to add support for API 29+ version.
+    // TODO(#3616): Migrate to the proper SDK 29+ APIs.
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
     val fileName = avatarImagePath.pathSegments.last()

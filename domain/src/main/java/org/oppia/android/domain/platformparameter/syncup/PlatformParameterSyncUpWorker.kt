@@ -8,6 +8,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
@@ -21,7 +22,6 @@ import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
-import kotlinx.coroutines.guava.asListenableFuture
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(

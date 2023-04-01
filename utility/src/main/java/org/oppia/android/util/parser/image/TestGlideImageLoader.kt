@@ -1,6 +1,5 @@
 package org.oppia.android.util.parser.image
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes

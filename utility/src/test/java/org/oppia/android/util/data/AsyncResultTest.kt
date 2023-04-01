@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +24,6 @@ import org.oppia.android.util.data.AsyncResult.ChainedFailureException
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /** Tests for [AsyncResult]. */
 // FunctionName: test names are conventionally named with underscores.

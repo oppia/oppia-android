@@ -226,7 +226,8 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     if (!isConfiguredForKotlin) {
       // Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
       val rulesKotlinReleaseUrl =
-        "https://github.com/bazelbuild/rules_kotlin/releases/download/v1.7.1/rules_kotlin_release.tgz"
+        "https://github.com/bazelbuild/rules_kotlin/releases/download/v1.7.1" +
+          "/rules_kotlin_release.tgz"
       val rulesKotlinArchiveName = "io_bazel_rules_kotlin"
       val rulesKotlinBazelPrefix = "@$rulesKotlinArchiveName//kotlin"
 
