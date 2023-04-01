@@ -129,13 +129,12 @@ class InputInteractionViewTestActivity :
     binding.fractionInteractionViewModel = fractionInteractionViewModel
     binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
     binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
-  }
-
-  fun getPendingAnswerErrorOnSubmitClick() {
-    fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-    numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-    ratioExpressionInputInteractionViewModel
-      .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
+      fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      ratioExpressionInputInteractionViewModel
+        .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    }
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(

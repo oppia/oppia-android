@@ -145,7 +145,6 @@ if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--list-shards"
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
-      'android.arch.lifecycle:extensions:1.1.1',
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.constraintlayout:constraintlayout:1.1.3',
       'androidx.core:core-ktx:1.0.2',
@@ -164,7 +163,7 @@ dependencies {
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.android.flexbox:flexbox:3.0.0',
       'com.google.android.material:material:1.3.0',
-      'com.google.dagger:dagger:2.24',
+      'com.google.dagger:dagger:2.41',
       'com.google.firebase:firebase-analytics:17.5.0',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-core:17.5.0',
@@ -237,13 +236,13 @@ dependencies {
       'androidx.test:orchestrator:1.2.0',
   )
   kapt(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.41'
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.41'
   )
   kaptAndroidTest(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.41'
   )
   // TODO(#59): Remove this once Bazel is introduced
   api project(':data')
