@@ -1,16 +1,16 @@
 package org.oppia.android.scripts.apkstats
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.testing.assertThrows
 import java.lang.IllegalArgumentException
 import java.util.concurrent.TimeUnit
-import org.junit.After
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 /**
  * Tests for [ApkAnalyzerClient].

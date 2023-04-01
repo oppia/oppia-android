@@ -2,9 +2,9 @@ package org.oppia.android.scripts.apkstats
 
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 import java.util.zip.ZipFile
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 /**
  * General utility for interfacing with bundletool in the local system at the specified working

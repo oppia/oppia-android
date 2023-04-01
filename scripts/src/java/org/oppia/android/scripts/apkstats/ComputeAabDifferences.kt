@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.apkstats
 
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 import java.io.PrintStream
 import java.nio.file.Files
@@ -8,7 +9,6 @@ import java.util.Locale
 import java.util.StringTokenizer
 import java.util.zip.ZipFile
 import kotlin.math.absoluteValue
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 // TODO(#1719): Add support for showing count & itemization of modified files/resources (vs. just
 //  new/removed).
@@ -545,7 +545,8 @@ class ComputeAabDifferences(
               stream,
               linePrefix = typeName.replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
-              }, itemize, itemLimit, listIndentation = 2
+              },
+              itemize, itemLimit, listIndentation = 2
             )
           }
         }

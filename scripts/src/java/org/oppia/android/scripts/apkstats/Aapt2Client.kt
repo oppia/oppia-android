@@ -2,8 +2,8 @@ package org.oppia.android.scripts.apkstats
 
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import java.io.File
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import java.io.File
 
 /**
  * General utility for interfacing with AAPT2 in the local system at the specified working directory

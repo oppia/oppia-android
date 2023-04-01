@@ -31,3 +31,6 @@
 # This seems to be a Kotlin 1.6-specific issue. It seems safe to ignore since the class appears to
 # be fully generated.
 -dontwarn kotlinx.coroutines.internal.ClassValueCtorCache
+-dontwarn kotlinx.coroutines.DelayKt
+-dontwarn kotlinx.coroutines.flow.Flow*
+-dontwarn kotlinx.coroutines.flow.SharingStartedKt
