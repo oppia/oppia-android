@@ -32,7 +32,6 @@ http_archive(
 #)
 http_archive(
     name = "io_bazel_rules_kotlin",
-    patches = ["//tools/kotlin:add_kotlinc_optin_support.patch"],
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin_prerelease"]["sha"],
     urls = ["https://github.com/oppia/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin_prerelease"]["version"]],
 )

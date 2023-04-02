@@ -2,16 +2,10 @@
 
 load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
 
-# This exposes a patch file that retroactively adds opt-in support to kt_kotlinc_options (which was
-# added in a later version of rules_kotlin that's not available for the version of Bazel used at the
-# time of this introduction).
-exports_files(["add_kotlinc_optin_support.patch"])
-
 kt_kotlinc_options(
     name = "oppia_kotlinc_options",
     warn = "error",
     x_optin = ["kotlin.RequiresOptIn"],
-    x_use_experimental = False,
 )
 
 # TODO(#4936): Fix "warnings as errors" for processor-generated Java code.
