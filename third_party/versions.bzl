@@ -47,9 +47,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.viewpager:viewpager": "1.0.0",
     "androidx.work:work-runtime": "2.4.0",
     "androidx.work:work-runtime-ktx": "2.4.0",
-    "com.android.support:support-annotations": "28.0.0",
     "com.android.tools.build:aapt2-proto": "7.3.1-8691043",
-    "com.crashlytics.sdk.android:crashlytics": "2.9.8",
     "com.github.bumptech.glide:compiler": "4.11.0",
     "com.github.bumptech.glide:glide": "4.11.0",
     "com.google.android.flexbox:flexbox": "3.0.0",
@@ -77,6 +75,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.4.1",
     "org.jetbrains:annotations:jar": "13.0",
 }
 
@@ -84,7 +83,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 # This list should only contain test-only dependencies. These are dependencies that are guaranteed
 # cannot be included in production builds of the app.
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
-    "android.arch.core:core-testing": "1.1.1",
     "androidx.arch.core:core-testing": "2.1.0",
     "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
@@ -95,6 +93,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.test:core": "1.0.0",
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
+    "com.android.tools.apkparser:apkanalyzer": "30.0.4",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
@@ -126,16 +125,29 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
         "version": "31.0.1",
     },
+    "guava_jre": {
+        "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
+        "version": "31.0.1",
+    },
+    "kotlinx-coroutines-core-jvm": {
+        "sha": "acc8c74b1fb88121c51221bfa7b6f5e920201bc20183ebf74165dcf5d45a8003",
+        "version": "1.6.0",
+    },
     "protobuf_tools": {
+        "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
         "version": "3.11.0",
+    },
+    "robolectric": {
+        "sha": "af0177d32ecd2cd68ee6e9f5d38288e1c4de0dd2a756bb7133c243f2d5fe06f7",
+        "version": "4.5",
     },
     "rules_java": {
         "sha": "c73336802d0b4882e40770666ad055212df4ea62cfa6edf9cb0f9d29828a0934",
         "version": "5.3.5",
     },
     "rules_jvm": {
-        "sha": "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",
-        "version": "4.1",
+        "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
+        "version": "5.1",
     },
     "rules_kotlin": {
         "sha": "12d22a3d9cbcf00f2e2d8f0683ba87d3823cb8c7f6837568dd7e48846e023307",

@@ -12,6 +12,7 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_import")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
@@ -72,6 +73,14 @@ android_library(
     ],
 )
 
+android_library(
+    name = "com_google_archivepatcher",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@archive_patcher//tools",
+    ],
+)
+
 java_library(
     name = "moshi",
     exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
@@ -104,6 +113,53 @@ android_library(
     ],
 )
 
+kt_jvm_import(
+    name = "kotlinx-coroutines-core-jvm",
+    jars = ["@kotlinx-coroutines-core-jvm//jar:file"],
+    visibility = ["@maven//:__subpackages__"],
+    deps = [
+        ":_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-common",
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8",
+    ],
+)
+
+java_library(
+    name = "com_google_guava_guava_jre",
+    visibility = ["//scripts:__subpackages__"],
+    exports = [
+        "//third_party:com_google_errorprone_error_prone_annotations",
+        "//third_party:com_google_guava_failureaccess",
+        "//third_party:com_google_j2objc_j2objc-annotations",
+        "//third_party:org_checkerframework_checker-compat-qual",
+        "//third_party:org_checkerframework_checker-qual",
+        "@guava_jre//jar",
+    ],
+)
+
+# This solution is based on https://github.com/Bencodes/bazel_issue_13553 for Bazel issue:
+# https://github.com/bazelbuild/bazel/issues/13553.
+genrule(
+    name = "_generate_stopgap_files_for_kotlinx_coroutines_desugar",
+    outs = [
+        "sun/misc/Signal.java",
+        "sun/misc/SignalHandler.java",
+    ],
+    cmd = """
+    echo "package sun.misc; public final class Signal {}" > $(location sun/misc/Signal.java)
+    echo "package sun.misc; public interface SignalHandler {}" > $(location sun/misc/SignalHandler.java)
+    """,
+)
+
+java_library(
+    name = "_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
+    srcs = [
+        "sun/misc/Signal.java",
+        "sun/misc/SignalHandler.java",
+    ],
+    neverlink = True,
+)
+
 # Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
 # can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
 # Android assets which java_library targets do not export.
@@ -111,14 +167,17 @@ java_library(
     name = "glide_compiler",
     exported_plugins = ["//tools:glide_compiler_plugin"],
     visibility = ["//visibility:public"],
-    exports = [
-        "//third_party:com_github_bumptech_glide_compiler",
-    ],
+)
+
+android_library(
+    name = "android_bundletool",
+    visibility = ["//visibility:public"],
+    exports = ["@android_bundletool//jar"],
 )
 
 java_binary(
-    name = "android_bundletool",
+    name = "android_bundletool_binary",
     main_class = "com.android.tools.build.bundletool.BundleToolMain",
     visibility = ["//visibility:public"],
-    runtime_deps = ["@android_bundletool//jar"],
+    runtime_deps = [":android_bundletool"],
 )

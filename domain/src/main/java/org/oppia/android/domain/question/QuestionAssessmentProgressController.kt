@@ -2,6 +2,7 @@ package org.oppia.android.domain.question
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
@@ -102,8 +103,6 @@ class QuestionAssessmentProgressController @Inject constructor(
 ) {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
   //  training session.
-  // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating
-  //  sufficient proficiency.
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentQuestion).
@@ -361,6 +360,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     return scoresResultFlow.convertToSessionProvider(CALCULATE_SCORES_PROVIDER_ID)
   }
 
+  @OptIn(ObsoleteCoroutinesApi::class)
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking

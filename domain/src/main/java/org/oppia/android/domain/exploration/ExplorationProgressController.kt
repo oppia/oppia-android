@@ -2,6 +2,8 @@ package org.oppia.android.domain.exploration
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
@@ -113,7 +115,6 @@ class ExplorationProgressController @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
-  // TODO(#179): Add support for parameters.
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
   //  callback on the deferred returned on saving checkpoints. In this case ExplorationActivity will
@@ -414,6 +415,7 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  @OptIn(ObsoleteCoroutinesApi::class)
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
 
@@ -915,6 +917,7 @@ class ExplorationProgressController @Inject constructor(
    * Note that while this is changing internal ephemeral state, it does not notify of changes (it
    * instead expects callers to do this when it's best to notify frontend observers of the changes).
    */
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun ControllerState.saveExplorationCheckpoint() {
     // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
     // when the current exploration has been already completed previously.

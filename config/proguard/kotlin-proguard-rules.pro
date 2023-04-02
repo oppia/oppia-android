@@ -24,7 +24,14 @@
 -dontwarn sun.misc.Signal
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
+# TODO(#4120): Reevaluate if these exemptions are needed long-term.
+-dontwarn kotlin.text.Regex$splitToSequence*
+# Potentially a Kotlin 1.4-only exception.
+-dontwarn kotlin.time.jdk8.DurationConversionsJDK8Kt
+# This seems to be a Kotlin 1.6-specific issue. It seems safe to ignore since the class appears to
+# be fully generated.
+-dontwarn kotlinx.coroutines.internal.ClassValueCtorCache
 # TODO: Figure out why these are needed now (is it specific to Bazel 6.x or Kotlin 1.x?).
 -dontwarn kotlinx.coroutines.DelayKt
--dontwarn kotlinx.coroutines.flow.FlowKt*
+-dontwarn kotlinx.coroutines.flow.Flow*
 -dontwarn kotlinx.coroutines.flow.SharingStartedKt

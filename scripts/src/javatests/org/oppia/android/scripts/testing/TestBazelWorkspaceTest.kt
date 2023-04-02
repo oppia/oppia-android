@@ -23,9 +23,7 @@ import java.lang.IllegalStateException
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class TestBazelWorkspaceTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Test
   fun testCreateTestUtility_doesNotImmediatelyCreateAnyFiles() {

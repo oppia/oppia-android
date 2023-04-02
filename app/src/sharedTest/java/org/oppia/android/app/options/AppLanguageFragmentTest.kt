@@ -214,13 +214,8 @@ class AppLanguageFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
-    return AppLanguageActivity.createAppLanguageActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      APP_LANGUAGE,
-      summaryValue
-    )
-  }
+  private fun createAppLanguageActivityIntent(summaryValue: String): Intent =
+    AppLanguageActivity.createAppLanguageActivityIntent(context, summaryValue)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -266,7 +261,9 @@ class AppLanguageFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(appLanguageFragmentTest: AppLanguageFragmentTest)
   }

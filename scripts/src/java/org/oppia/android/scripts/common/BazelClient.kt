@@ -8,10 +8,7 @@ import java.util.Locale
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
  * the specified root directory).
  */
-class BazelClient(
-  private val rootDirectory: File,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
-) {
+class BazelClient(private val rootDirectory: File, private val commandExecutor: CommandExecutor) {
   /** Returns all Bazel test targets in the workspace. */
   fun retrieveAllTestTargets(): List<String> {
     return correctPotentiallyBrokenTargetNames(
@@ -87,8 +84,8 @@ class BazelClient(
   }
 
   /**
-   * Returns the list of direct and indirect maven third-party dependencies on which the specified
-   * binary depends.
+   * Returns the list of direct and indirect production Maven third-party dependencies on which the
+   * specified binary depends.
    */
   fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> {
     return executeBazelCommand(

@@ -600,10 +600,10 @@ class BindableAdapterTest {
       }
       return object : BindableAdapterTestFragmentPresenter.BindableAdapterFactory {
         override fun create(
-          singleTypeBuilder: SingleTypeBuilder.Factory,
+          singleTypeBuilderFactory: SingleTypeBuilder.Factory,
           multiTypeBuilderFactory: MultiTypeBuilder.Factory
         ): BindableAdapter<BindableAdapterTestDataModel> {
-          return createFunction(singleTypeBuilder, multiTypeBuilderFactory)
+          return createFunction(singleTypeBuilderFactory, multiTypeBuilderFactory)
         }
       }
     }
@@ -687,7 +687,9 @@ class BindableAdapterTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun getTestActivityComponentBuilderProvider(): Provider<TestActivityComponent.Builder>
 

@@ -5,6 +5,7 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.AffectedTestsBucket
 import java.io.File
 import java.util.Locale
@@ -28,19 +29,20 @@ private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
  * - path_to_output_file: path to the file in which the affected test targets will be printed.
- * - base_develop_branch_reference: the reference to the local develop branch that should be use.
- *     Generally, this is 'origin/develop'.
+ * - merge_base_commit: the base commit against which the local changes will be compared when
+ *     determining which tests to run. When running outside of CI you can use the result of running:
+ *     'git merge-base develop HEAD'
  * - compute_all_tests: whether to compute a list of all tests to run.
  *
  * Example:
  *   bazel run //scripts:compute_affected_tests -- $(pwd) /tmp/affected_test_buckets.proto64 \\
- *     origin/develop compute_all_tests=false
+ *     abcdef0123456789 compute_all_tests=false
  */
 fun main(args: Array<String>) {
   if (args.size < 4) {
     println(
       "Usage: bazel run //scripts:compute_affected_tests --" +
-        " <path_to_directory_root> <path_to_output_file> <base_develop_branch_reference>" +
+        " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
         " <compute_all_tests=true/false>"
     )
     exitProcess(1)
@@ -48,7 +50,7 @@ fun main(args: Array<String>) {
 
   val pathToRoot = args[0]
   val pathToOutputFile = args[1]
-  val baseDevelopBranchReference = args[2]
+  val baseCommit = args[2]
   val computeAllTestsSetting = args[3].let {
     check(it.startsWith(COMPUTE_ALL_TESTS_PREFIX)) {
       "Expected last argument to start with '$COMPUTE_ALL_TESTS_PREFIX'"
@@ -60,14 +62,15 @@ fun main(args: Array<String>) {
           " '$computeAllTestsValue'"
       )
   }
-  ComputeAffectedTests().compute(
-    pathToRoot, pathToOutputFile, baseDevelopBranchReference, computeAllTestsSetting
-  )
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    ComputeAffectedTests(scriptBgDispatcher)
+      .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllTestsSetting)
+  }
 }
 
 // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
 private fun String.toBooleanStrictOrNull(): Boolean? {
-  return when (toLowerCase(Locale.US)) {
+  return when (lowercase(Locale.US)) {
     "false" -> false
     "true" -> true
     else -> null
@@ -76,11 +79,14 @@ private fun String.toBooleanStrictOrNull(): Boolean? {
 
 /** Utility used to compute affected test targets. */
 class ComputeAffectedTests(
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
   val maxTestCountPerLargeShard: Int = MAX_TEST_COUNT_PER_LARGE_SHARD,
   val maxTestCountPerMediumShard: Int = MAX_TEST_COUNT_PER_MEDIUM_SHARD,
   val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD,
   val commandExecutor: CommandExecutor =
-    CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+    CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
 ) {
   private companion object {
     private const val GENERIC_TEST_BUCKET_NAME = "generic"
@@ -92,30 +98,30 @@ class ComputeAffectedTests(
    * @param pathToRoot the absolute path to the working root directory
    * @param pathToOutputFile the absolute path to the file in which the encoded Base64 test bucket
    *     protos should be printed
-   * @param baseDevelopBranchReference see [GitClient]
+   * @param baseCommit see [GitClient]
    * @param computeAllTestsSetting whether all tests should be outputted versus only the ones which
    *     are affected by local changes in the repository
    */
   fun compute(
     pathToRoot: String,
     pathToOutputFile: String,
-    baseDevelopBranchReference: String,
+    baseCommit: String,
     computeAllTestsSetting: Boolean
   ) {
     val rootDirectory = File(pathToRoot).absoluteFile
     check(rootDirectory.isDirectory) { "Expected '$pathToRoot' to be a directory" }
-    check(rootDirectory.list().contains("WORKSPACE")) {
+    check(rootDirectory.list()?.contains("WORKSPACE") == true) {
       "Expected script to be run from the workspace's root directory"
     }
 
     println("Running from directory root: $rootDirectory.")
 
-    val gitClient = GitClient(rootDirectory, baseDevelopBranchReference, commandExecutor)
+    val gitClient = GitClient(rootDirectory, baseCommit, commandExecutor)
     val bazelClient = BazelClient(rootDirectory, commandExecutor)
     println("Current branch: ${gitClient.currentBranch}.")
     println("Most recent common commit: ${gitClient.branchMergeBase}.")
 
-    val currentBranch = gitClient.currentBranch.toLowerCase(Locale.US)
+    val currentBranch = gitClient.currentBranch.lowercase(Locale.US)
     val affectedTestTargets = if (computeAllTestsSetting || currentBranch == "develop") {
       computeAllTestTargets(bazelClient)
     } else computeAffectedTargetsForNonDevelopBranch(gitClient, bazelClient, rootDirectory)
@@ -327,7 +333,7 @@ class ComputeAffectedTests(
       private val EXTRACT_BUCKET_REGEX = "^//([^(/|:)]+?)[/:].+?\$".toRegex()
 
       /** Returns the [TestBucket] that corresponds to the specific [testTarget]. */
-      fun retrieveCorrespondingTestBucket(testTarget: String): TestBucket? {
+      fun retrieveCorrespondingTestBucket(testTarget: String): TestBucket {
         return EXTRACT_BUCKET_REGEX.matchEntire(testTarget)
           ?.groupValues
           ?.maybeSecond()

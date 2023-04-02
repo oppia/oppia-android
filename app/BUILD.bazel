@@ -10,7 +10,7 @@ order to build with Bazel.
 - All binding adapters must be written in Java.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
@@ -208,6 +208,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/recentlyplayed/PromotedStoryViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedViewModel.kt",
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt",
@@ -684,7 +685,6 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
-        "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
         "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
@@ -762,6 +762,7 @@ kt_android_library(
         ":resources",
         ":view_models",
         ":views",
+        "//:dagger",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
@@ -836,6 +837,7 @@ TEST_DEPS = [
     ":app",
     ":resources",
     ":test_deps",
+    "//:dagger",
     "//app/src/main/java/org/oppia/android/app/application:application_component",
     "//app/src/main/java/org/oppia/android/app/application:application_injector",
     "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
@@ -988,7 +990,6 @@ crashlytics_android_library(
 android_library(
     name = "crashlytics_deps",
     exports = [
-        "//third_party:com_crashlytics_sdk_android_crashlytics",
         "//third_party:com_google_firebase_firebase-analytics",
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:io_fabric_sdk_android_fabric",

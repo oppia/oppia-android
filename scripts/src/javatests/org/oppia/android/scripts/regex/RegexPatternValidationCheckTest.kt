@@ -33,7 +33,8 @@ class RegexPatternValidationCheckTest {
       "file_content_validation_checks.textproto."
   private val settableFutureUsageErrorMessage =
     "SettableFuture should only be used in pre-approved locations since it's easy to potentially " +
-      "mess up & lead to a hanging ListenableFuture."
+      "mess up & lead to a hanging ListenableFuture. If using a Deferred, convert it to a " +
+      "ListenableFuture using asListenableFuture()."
   private val androidLayoutIncludeTagErrorMessage =
     "Remove <include .../> tag from layouts and instead use the widget directly, e.g. AppBarLayout."
   private val androidGravityLeftErrorMessage =
@@ -172,9 +173,7 @@ class RegexPatternValidationCheckTest {
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {

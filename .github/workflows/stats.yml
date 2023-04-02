@@ -1,0 +1,134 @@
+# Contains jobs corresponding to stats, including build stats due to changes in a PR.
+
+name: Stats Checks & Reports
+
+on:
+  pull_request:
+
+jobs:
+  build_stats:
+    name: Build Stats
+    runs-on: ubuntu-18.04
+    env:
+      ENABLE_CACHING: false
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      # For reference on this & the later cache actions, see:
+      # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
+      # https://github.com/actions/cache/issues/109#issuecomment-558771281. Note that these work
+      # with Bazel since Bazel can share the most recent cache from an unrelated build and still
+      # benefit from incremental build performance (assuming that actions/cache aggressively removes
+      # older caches due to the 5GB cache limit size & Bazel's large cache size).
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
+      # situation where the cache never updates (e.g. due to exceeding GitHub's cache size limit)
+      # thereby only ever using the last successful cache version. This solution will result in a
+      # few slower CI actions around the time cache is detected to be too large, but it should
+      # incrementally improve thereafter.
+      - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
+          # to only increase by a few hundred megabytes across changes for unrelated branches. This
+          # is also a reasonable upper-bound (local tests as of 2021-03-31 suggest that a full build
+          # of the codebase (e.g. //...) from scratch only requires a ~2.1GB uncompressed/~900MB
+          # compressed cache).
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
+      - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Check Bazel environment
+        run: bazel info
+      - name: Change to develop
+        run: |
+          git checkout develop
+          git log -n 1
+
+      - name: Build Oppia dev, alpha, and KitKat alpha (develop)
+        run: |
+          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_alpha_kitkat
+          cp bazel-bin/oppia_dev.aab ./oppia_dev_without_changes.aab
+          cp bazel-bin/oppia_alpha.aab ./oppia_alpha_without_changes.aab
+          cp bazel-bin/oppia_alpha_kitkat.aab ./oppia_alpha_kitkat_without_changes.aab
+
+      - name: Change to feature branch
+        run: |
+          git checkout $GITHUB_SHA
+          git log -n 1
+
+      - name: Build Oppia dev, alpha, and KitKat alpha (branch)
+        run: |
+          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_alpha_kitkat
+          cp bazel-bin/oppia_dev.aab ./oppia_dev_with_changes.aab
+          cp bazel-bin/oppia_alpha.aab ./oppia_alpha_with_changes.aab
+          cp bazel-bin/oppia_alpha_kitkat.aab ./oppia_alpha_kitkat_with_changes.aab
+
+      - name: Run stats analysis tool
+        run: |
+          bazel run //scripts:compute_aab_differences -- \
+            $(pwd)/brief_build_summary.log $(pwd)/full_build_summary.log \
+            dev $(pwd)/oppia_dev_without_changes.aab $(pwd)/oppia_dev_with_changes.aab \
+            alpha $(pwd)/oppia_alpha_without_changes.aab $(pwd)/oppia_alpha_with_changes.aab \
+            alpha_kitkat $(pwd)/oppia_alpha_kitkat_without_changes.aab $(pwd)/oppia_alpha_kitkat_with_changes.aab
+
+      # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
+      - name: Extract reports for uploading & commenting
+        id: compute-comment-body
+        run: |
+          comment_body="$(cat /home/runner/work/oppia-android/oppia-android/brief_build_summary.log)"
+          comment_body="${comment_body//'%'/'%25'}"
+          comment_body="${comment_body//$'\n'/'%0A'}"
+          comment_body="${comment_body//$'\r'/'%0D'}"
+          echo "::set-output name=comment_body::$comment_body"
+
+      - name: Add build stats summary comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.compute-comment-body.outputs.comment_body }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: fill-build-summary.log
+          path: |
+            /home/runner/work/oppia-android/oppia-android/full_build_summary.log

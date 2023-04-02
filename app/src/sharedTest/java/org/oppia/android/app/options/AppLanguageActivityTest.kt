@@ -139,13 +139,8 @@ class AppLanguageActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.app_language_activity_title))
   }
 
-  private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
-    return AppLanguageActivity.createAppLanguageActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      APP_LANGUAGE,
-      summaryValue
-    )
-  }
+  private fun createAppLanguageActivityIntent(summaryValue: String): Intent =
+    AppLanguageActivity.createAppLanguageActivityIntent(context, summaryValue)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -180,7 +175,9 @@ class AppLanguageActivityTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(appLanguageActivityTest: AppLanguageActivityTest)
   }

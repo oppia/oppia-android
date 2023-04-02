@@ -11,7 +11,6 @@ import org.oppia.android.app.help.faq.faqItemViewModel.FAQContentViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQHeaderViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQItemViewModel
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.FaqContentBinding
 import org.oppia.android.databinding.FaqItemHeaderBinding
 import org.oppia.android.databinding.FaqListFragmentBinding
@@ -22,14 +21,12 @@ import javax.inject.Inject
 class FAQListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<FAQListViewModel>,
+  private val faqListViewModel: FAQListViewModel,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: FaqListFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val viewModel = getFAQListViewModel()
-
     binding = FaqListFragmentBinding.inflate(
       inflater,
       container,
@@ -43,7 +40,7 @@ class FAQListFragmentPresenter @Inject constructor(
 
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = viewModel
+      it.viewModel = faqListViewModel
     }
     return binding.root
   }
@@ -69,10 +66,6 @@ class FAQListFragmentPresenter @Inject constructor(
         transformViewModel = { it as FAQContentViewModel }
       )
       .build()
-  }
-
-  private fun getFAQListViewModel(): FAQListViewModel {
-    return viewModelProvider.getForFragment(fragment, FAQListViewModel::class.java)
   }
 
   private enum class ViewType {

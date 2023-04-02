@@ -3,5 +3,7 @@ build --android_databinding_use_v3_4_args \
     --experimental_android_databinding_v2 \
     --android_databinding_use_androidx
 
+build --javacopt="-Werror"
+
 # Show all test output by default (for better debugging).
 test --test_output=all

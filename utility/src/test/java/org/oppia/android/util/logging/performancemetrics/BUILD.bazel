@@ -11,6 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
@@ -38,6 +39,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -60,6 +62,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

@@ -2,7 +2,7 @@
 Constructs for setting up spotlights.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 genrule(
     name = "update_SpotlightFragment",
