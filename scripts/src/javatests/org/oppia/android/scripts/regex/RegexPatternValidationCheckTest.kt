@@ -168,6 +168,12 @@ class RegexPatternValidationCheckTest {
     "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one" +
       " using getInstance (as the latter may create a WorkManager if one isn't already present, " +
       "and the application may intend to disable it)."
+  private val doesNotUsePostorPostDelayed =
+    "Prefer avoiding post() and postDelayed() method as they can can lead to subtle and " +
+      "difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when " +
+      "an operation needs to run at a future time. For cases when state needs to be synchronized " +
+      "with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying " +
+      "issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -2304,6 +2310,14 @@ class RegexPatternValidationCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUsePostorPostDelayed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
   }
 
   @Test
@@ -2321,6 +2335,14 @@ class RegexPatternValidationCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUsePostorPostDelayed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
   }
 
   /** Runs the regex_pattern_validation_check. */
