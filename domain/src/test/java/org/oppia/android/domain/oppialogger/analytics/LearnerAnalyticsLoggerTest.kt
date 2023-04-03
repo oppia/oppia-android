@@ -47,7 +47,6 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -1119,11 +1118,9 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install"),
-    Iteration("missing_install_and_learner_ids", "lid=null", "iid=null", "elid=", "eid=")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
+  @Iteration("missing_install_and_learner_ids", "lid=null", "iid=null", "elid=", "eid=")
   fun testExpLogger_logResumeExploration_missingOneOrMoreIds_logsEventWithMissingIds() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1143,11 +1140,9 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install"),
-    Iteration("missing_install_and_learner_ids", "lid=null", "iid=null", "elid=", "eid=")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
+  @Iteration("missing_install_and_learner_ids", "lid=null", "iid=null", "elid=", "eid=")
   fun testExpLogger_logStartExplorationOver_missingOneOrMoreIds_logsEventWithMissingIds() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1167,10 +1162,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testExpLogger_logExitExploration_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1214,10 +1207,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testExpLogger_logFinishExploration_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1259,10 +1250,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testStateAnalyticsLogger_logStartCard_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1306,10 +1295,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testStateAnalyticsLogger_logEndCard_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1353,10 +1340,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testStateAnalyticsLogger_logHintUnlocked_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1400,10 +1385,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testStateAnalyticsLogger_logViewHint_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1447,10 +1430,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testStateAnalyticsLogger_logSolutionUnlocked_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1492,10 +1473,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testStateAnalyticsLogger_logViewSolution_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1537,10 +1516,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testStateAnalyticsLogger_logSubmitAnswer_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1592,10 +1569,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testStateAnalyticsLogger_logPlayVoiceOver_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
@@ -1639,10 +1614,8 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
-    Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  )
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   fun testStateAnalyticsLogger_logPauseVoiceOver_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
