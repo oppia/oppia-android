@@ -114,7 +114,6 @@ class ExplorationProgressController @Inject constructor(
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val explorationProgressListener: ExplorationProgressListener
 ) {
-  // TODO(#179): Add support for parameters.
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
   //  callback on the deferred returned on saving checkpoints. In this case ExplorationActivity will
