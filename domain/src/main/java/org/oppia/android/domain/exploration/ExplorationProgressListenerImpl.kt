@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 /** Implementation of [ExplorationProgressListener] */
 class ExplorationProgressListenerImpl @Inject constructor(
-  private val topicLearningTimeController: TopicLearningTimeController,
+  private val explorationActiveTimeController: ExplorationActiveTimeController,
   private val consoleLogger: ConsoleLogger
 ) : ExplorationProgressListener, ApplicationLifecycleListener {
   val profileId = ProfileId.getDefaultInstance()
@@ -30,10 +30,10 @@ class ExplorationProgressListenerImpl @Inject constructor(
   }
 
   private fun startTimer() {
-    topicLearningTimeController.setExplorationSessionStarted()
+    explorationActiveTimeController.setExplorationSessionStarted()
   }
 
   private fun stopTimerAndSave() {
-    topicLearningTimeController.setExplorationSessionPaused(profileId, topicId)
+    explorationActiveTimeController.setExplorationSessionPaused(profileId, topicId)
   }
 }

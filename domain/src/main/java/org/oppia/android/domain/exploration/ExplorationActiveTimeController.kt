@@ -22,7 +22,7 @@ private const val RETRIEVE_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
 private val LEARNING_TIME_STALENESS_THRESHOLD_MILLIS = TimeUnit.DAYS.toMillis(10)
 
 /** Controller for tracking the amount of active time a user has spent in a topic. */
-class TopicLearningTimeController @Inject constructor(
+class ExplorationActiveTimeController @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
@@ -169,7 +169,7 @@ class TopicLearningTimeController @Inject constructor(
     ).invokeOnCompletion {
       if (it != null) {
         oppiaLogger.e(
-          "TopicLearningTimeController",
+          "ExplorationActiveTimeController",
           "Failed to prime cache ahead of data retrieval.",
           it
         )

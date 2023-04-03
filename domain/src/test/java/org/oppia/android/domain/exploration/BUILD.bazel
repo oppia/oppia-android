@@ -125,10 +125,10 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "TopicLearningTimeControllerTest",
-    srcs = ["TopicLearningTimeControllerTest.kt"],
+    name = "ExplorationActiveTimeControllerTest",
+    srcs = ["ExplorationActiveTimeControllerTest.kt"],
     custom_package = "org.oppia.android.domain.exploration",
-    test_class = "org.oppia.android.domain.exploration.TopicLearningTimeControllerTest",
+    test_class = "org.oppia.android.domain.exploration.ExplorationActiveTimeControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
         ":dagger",

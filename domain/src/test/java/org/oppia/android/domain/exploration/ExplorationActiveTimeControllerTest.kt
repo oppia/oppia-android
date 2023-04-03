@@ -35,16 +35,16 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [TopicLearningTimeController]. */
+/** Tests for [ExplorationActiveTimeController]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = TopicLearningTimeControllerTest.TestApplication::class)
-class TopicLearningTimeControllerTest {
+@Config(application = ExplorationActiveTimeControllerTest.TestApplication::class)
+class ExplorationActiveTimeControllerTest {
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var oppiaClock: FakeOppiaClock
-  @Inject lateinit var topicLearningTimeController: TopicLearningTimeController
+  @Inject lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
   private val sessionDuration = 5000L
@@ -57,14 +57,14 @@ class TopicLearningTimeControllerTest {
   @Test
   fun testExplorationSessionStarted_setsStartExplorationTimestampToCurrentTime() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    topicLearningTimeController.setExplorationSessionStarted()
+    explorationActiveTimeController.setExplorationSessionStarted()
     val currentTime = oppiaClock.getCurrentTimeMs()
-    assertThat(topicLearningTimeController.startExplorationTimestampMs).isEqualTo(currentTime)
+    assertThat(explorationActiveTimeController.startExplorationTimestampMs).isEqualTo(currentTime)
   }
 
   @Test
   fun testRecordAggregateTopicLearningTime_returnsSuccess() {
-    val recordAggregateTimeProvider = topicLearningTimeController.recordAggregateTopicLearningTime(
+    val recordAggregateTimeProvider = explorationActiveTimeController.recordAggregateTopicLearningTime(
       profileId, TEST_TOPIC_ID_0, sessionDuration
     )
     monitorFactory.waitForNextSuccessfulResult(recordAggregateTimeProvider)
@@ -114,7 +114,7 @@ class TopicLearningTimeControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(topicLearningTimeControllerTest: TopicLearningTimeControllerTest)
+    fun inject(explorationActiveTimeControllerTest: ExplorationActiveTimeControllerTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
@@ -124,8 +124,8 @@ class TopicLearningTimeControllerTest {
         .build()
     }
 
-    fun inject(topicLearningTimeControllerTest: TopicLearningTimeControllerTest) {
-      component.inject(topicLearningTimeControllerTest)
+    fun inject(explorationActiveTimeControllerTest: ExplorationActiveTimeControllerTest) {
+      component.inject(explorationActiveTimeControllerTest)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component

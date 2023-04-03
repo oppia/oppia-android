@@ -1,7 +1,7 @@
 package org.oppia.android.domain.survey
 
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.domain.exploration.TopicLearningTimeController
+import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -31,7 +31,7 @@ class SurveyGatingController @Inject constructor(
   private val dataProviders: DataProviders,
   private val profileManagementController: ProfileManagementController,
   private val oppiaClock: OppiaClock,
-  private val topicLearningTimeController: TopicLearningTimeController
+  private val explorationActiveTimeController: ExplorationActiveTimeController
 ) {
 
   /**
@@ -100,7 +100,7 @@ class SurveyGatingController @Inject constructor(
   }
 
   private fun getAggregateLearningTime(profileId: ProfileId, topicId: String): DataProvider<Long> {
-    return topicLearningTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+    return explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
       profileId, topicId
     ).transform(SURVEY_TOPIC_LEARNING_TIME_GATING_PROVIDER_ID) { topicLearningTime ->
       topicLearningTime.topicLearningTimeMs
