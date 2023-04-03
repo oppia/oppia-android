@@ -153,7 +153,7 @@ class TopicRevisionFragmentTest {
     Intents.init()
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     setUpTestApplicationComponent()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     testCoroutineDispatchers.registerIdlingResource()
     markAllSpotlightsSeen()
   }

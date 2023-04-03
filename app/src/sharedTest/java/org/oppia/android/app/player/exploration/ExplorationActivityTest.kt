@@ -225,7 +225,7 @@ class ExplorationActivityTest {
   @Before
   fun setUp() {
     Intents.init()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()

@@ -133,7 +133,7 @@ class ProfileEditFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     profileIdFour = ProfileId.newBuilder().apply { internalId = 4 }.build()
-    profileIdZero = ProfileId.getDefaultInstance()
+    profileIdZero = ProfileId.newBuilder().apply { internalId = 0 }.build()
     profileTestHelper.initializeProfiles()
   }
 

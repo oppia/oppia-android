@@ -122,7 +122,7 @@ class MarkTopicsCompletedActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   private fun setUpTestApplicationComponent() {

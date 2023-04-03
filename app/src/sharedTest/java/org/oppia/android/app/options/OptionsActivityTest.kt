@@ -124,7 +124,7 @@ class OptionsActivityTest {
   fun testOptionsActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = createOptionsActivityIntent().extractCurrentUserProfileId()
 
-    assertThat(profileId).isEqualTo(ProfileId.getDefaultInstance())
+    assertThat(profileId).isEqualTo(ProfileId.newBuilder().apply { internalId = 0 }.build())
   }
 
   @Test

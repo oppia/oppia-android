@@ -140,7 +140,7 @@ class MarkStoriesCompletedFragmentTest {
 
   @Before
   fun setUp() {
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     testCoroutineDispatchers.registerIdlingResource()

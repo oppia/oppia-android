@@ -125,7 +125,7 @@ class HelpActivityTest {
     val profileId = createHelpActivityIntent()
       .extractCurrentUserProfileId()
 
-    assertThat(profileId).isEqualTo(ProfileId.getDefaultInstance())
+    assertThat(profileId).isEqualTo(ProfileId.newBuilder().apply { internalId = 0 }.build())
   }
 
   @Test
@@ -146,7 +146,7 @@ class HelpActivityTest {
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
       isFromNavigationDrawer = false,
-      profileId = ProfileId.getDefaultInstance()
+      profileId = profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     )
   }
 

@@ -138,7 +138,7 @@ class AppVersionActivityTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     testCoroutineDispatchers.registerIdlingResource()
   }
 

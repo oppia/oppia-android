@@ -167,7 +167,7 @@ class TopicInfoFragmentTest {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   @After

@@ -142,7 +142,7 @@ class ProfileEditActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     userProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
-    adminProfileId = ProfileId.getDefaultInstance()
+    adminProfileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     profileTestHelper.initializeProfiles()
   }
 

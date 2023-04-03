@@ -150,7 +150,7 @@ class TopicPracticeFragmentTest {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     skillIdList.add("5RM9KPfQxobH")
     skillIdList.add("B39yK4cbHZYI")
     markAllSpotlightsSeen()

@@ -141,7 +141,7 @@ class StoryActivityTest {
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     Intents.init()
   }
 

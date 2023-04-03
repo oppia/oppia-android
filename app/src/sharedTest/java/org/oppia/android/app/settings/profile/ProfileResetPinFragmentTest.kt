@@ -151,7 +151,7 @@ class ProfileResetPinFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     profileIdOne = ProfileId.newBuilder().apply { internalId = 1 }.build()
     profileTestHelper.initializeProfiles()
   }

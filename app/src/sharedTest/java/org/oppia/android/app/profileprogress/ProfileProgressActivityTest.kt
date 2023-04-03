@@ -114,7 +114,7 @@ class ProfileProgressActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   @Test

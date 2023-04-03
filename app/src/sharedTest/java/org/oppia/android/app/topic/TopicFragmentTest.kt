@@ -161,7 +161,7 @@ class TopicFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   @After

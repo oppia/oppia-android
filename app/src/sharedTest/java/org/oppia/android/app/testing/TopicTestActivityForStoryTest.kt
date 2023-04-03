@@ -197,7 +197,7 @@ class TopicTestActivityForStoryTest {
         )
         val profileId = fragment?.arguments?.extractCurrentUserProfileId()
 
-        assertThat(profileId).isEqualTo(ProfileId.getDefaultInstance())
+        assertThat(profileId).isEqualTo(ProfileId.newBuilder().apply { internalId = 0 }.build())
       }
     }
   }

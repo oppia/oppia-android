@@ -175,7 +175,7 @@ class TopicLessonsFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.getDefaultInstance()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     markAllSpotlightsSeen()
   }
