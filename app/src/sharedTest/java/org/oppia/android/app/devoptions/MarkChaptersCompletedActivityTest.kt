@@ -170,9 +170,12 @@ class MarkChaptersCompletedActivityTest {
     }
   }
 
-  private fun createMarkChaptersCompletedActivityIntent(profileId: ProfileId): Intent {
+  private fun createMarkChaptersCompletedActivityIntent(
+    profileId: ProfileId,
+    showConfirmationNotice: Boolean = false
+  ): Intent {
     return MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-      context, profileId
+      context, profileId, showConfirmationNotice
     )
   }
 

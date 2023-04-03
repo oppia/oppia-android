@@ -753,7 +753,7 @@ class MarkChaptersCompletedFragmentTest {
 
   private fun createMarkChaptersCompletedTestActivityIntent(profileId: ProfileId): Intent {
     return MarkChaptersCompletedTestActivity.createMarkChaptersCompletedTestIntent(
-      context, profileId
+      context, profileId, false
     )
   }
 

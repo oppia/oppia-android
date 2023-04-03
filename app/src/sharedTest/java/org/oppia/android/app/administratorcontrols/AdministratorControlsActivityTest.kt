@@ -386,7 +386,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_defaultTabletConfig_openAppVersion_replacesPreviousFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
