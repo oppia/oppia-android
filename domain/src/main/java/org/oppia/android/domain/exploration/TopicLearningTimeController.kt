@@ -40,7 +40,7 @@ class TopicLearningTimeController @Inject constructor(
   private val cacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<TopicLearningTimeDatabase>>()
 
-  private var startExplorationTimestamp = 0L
+  var startExplorationTimestampMs = 0L
 
   /**
    * Begin tracking the active learning time in an exploration.
@@ -53,7 +53,7 @@ class TopicLearningTimeController @Inject constructor(
    * backgrounded.
    */
   fun setExplorationSessionStarted() {
-    this.startExplorationTimestamp = oppiaClock.getCurrentTimeMs()
+    this.startExplorationTimestampMs = oppiaClock.getCurrentTimeMs()
   }
 
   /**
@@ -66,7 +66,7 @@ class TopicLearningTimeController @Inject constructor(
     recordAggregateTopicLearningTime(
       profileId = profileId,
       topicId = topicId,
-      sessionDuration = oppiaClock.getCurrentTimeMs() - startExplorationTimestamp
+      sessionDuration = oppiaClock.getCurrentTimeMs() - startExplorationTimestampMs
     )
   }
 
