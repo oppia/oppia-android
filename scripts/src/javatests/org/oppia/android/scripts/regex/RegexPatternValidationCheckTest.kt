@@ -173,7 +173,8 @@ class RegexPatternValidationCheckTest {
       "difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when " +
       "an operation needs to run at a future time. For cases when state needs to be synchronized " +
       "with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying " +
-      "issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2."
+      "issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your" +
+      "-android-views-9d1c8eeaadf2."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
