@@ -18,14 +18,22 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
   lateinit var markChaptersCompletedFragmentPresenter: MarkChaptersCompletedFragmentPresenter
 
   companion object {
+    private const val SHOW_CONFIRMATION_NOTICE_ARGUMENT_KEY =
+      "MarkChaptersCompletedFragment.show_confirmation_notice"
     private const val EXPLORATION_ID_LIST_ARGUMENT_KEY =
       "MarkChaptersCompletedFragment.exploration_id_list"
+    private const val EXPLORATION_TITLE_LIST_ARGUMENT_KEY =
+      "MarkChaptersCompletedFragment.exploration_title_list"
 
     /** Returns a new [MarkChaptersCompletedFragment]. */
-    fun newInstance(profileId: ProfileId): MarkChaptersCompletedFragment {
+    fun newInstance(
+      profileId: ProfileId,
+      showConfirmationNotice: Boolean
+    ): MarkChaptersCompletedFragment {
       val markChaptersCompletedFragment = MarkChaptersCompletedFragment()
       val args = Bundle()
       args.decorateWithUserProfileId(profileId)
+      args.putBoolean(SHOW_CONFIRMATION_NOTICE_ARGUMENT_KEY, showConfirmationNotice)
       markChaptersCompletedFragment.arguments = args
       return markChaptersCompletedFragment
     }
@@ -44,16 +52,15 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkChaptersCompletedFragment" }
     val profileId = args.extractCurrentUserProfileId()
-    var selectedExplorationIdList = ArrayList<String>()
-    if (savedInstanceState != null) {
-      selectedExplorationIdList =
-        savedInstanceState.getStringArrayList(EXPLORATION_ID_LIST_ARGUMENT_KEY)!!
-    }
+    val showConfirmationNotice =
+      args.getBoolean(SHOW_CONFIRMATION_NOTICE_ARGUMENT_KEY, /* defaultValue= */ false)
     return markChaptersCompletedFragmentPresenter.handleCreateView(
       inflater,
       container,
       profileId,
-      selectedExplorationIdList
+      showConfirmationNotice,
+      savedInstanceState?.getStringArrayList(EXPLORATION_ID_LIST_ARGUMENT_KEY) ?: listOf(),
+      savedInstanceState?.getStringArrayList(EXPLORATION_TITLE_LIST_ARGUMENT_KEY) ?: listOf()
     )
   }
 
@@ -61,7 +68,11 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
     super.onSaveInstanceState(outState)
     outState.putStringArrayList(
       EXPLORATION_ID_LIST_ARGUMENT_KEY,
-      markChaptersCompletedFragmentPresenter.selectedExplorationIdList
+      markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+    )
+    outState.putStringArrayList(
+      EXPLORATION_TITLE_LIST_ARGUMENT_KEY,
+      markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
     )
   }
 }

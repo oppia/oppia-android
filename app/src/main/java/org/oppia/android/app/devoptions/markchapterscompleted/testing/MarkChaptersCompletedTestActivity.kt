@@ -23,9 +23,11 @@ class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_chapters_completed_activity)
     profileId = intent.extractCurrentUserProfileId()
+    val showConfirmationNotice =
+      intent.getBooleanExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, /* default= */ false)
     if (getMarkChaptersCompletedFragment() == null) {
       val markChaptersCompletedFragment = MarkChaptersCompletedFragment
-        .newInstance(profileId)
+        .newInstance(profileId, showConfirmationNotice)
       supportFragmentManager.beginTransaction().add(
         R.id.mark_chapters_completed_container,
         markChaptersCompletedFragment
@@ -39,11 +41,18 @@ class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
+      "MarkChaptersCompletedTestActivity.show_confirmation_notice"
 
     /** Returns an [Intent] for [MarkChaptersCompletedTestActivity]. */
-    fun createMarkChaptersCompletedTestIntent(context: Context, profileId: ProfileId): Intent {
+    fun createMarkChaptersCompletedTestIntent(
+      context: Context,
+      profileId: ProfileId,
+      showConfirmationNotice: Boolean
+    ): Intent {
       val intent = Intent(context, MarkChaptersCompletedTestActivity::class.java)
       intent.decorateWithUserProfileId(profileId)
+      intent.putExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, showConfirmationNotice)
       return intent
     }
   }

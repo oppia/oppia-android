@@ -30,7 +30,9 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     profileId = intent.extractCurrentUserProfileId()
-    markChaptersCompletedActivityPresenter.handleOnCreate(profileId)
+    val showConfirmationNotice =
+      intent.getBooleanExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, /* defaultValue= */ false)
+    markChaptersCompletedActivityPresenter.handleOnCreate(profileId, showConfirmationNotice)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
   }
 
@@ -42,11 +44,18 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
+      "MarkChaptersCompletedActivity.show_confirmation_notice"
 
-    fun createMarkChaptersCompletedIntent(context: Context, profileId: ProfileId): Intent {
+    fun createMarkChaptersCompletedIntent(
+      context: Context,
+      profileId: ProfileId,
+      showConfirmationNotice: Boolean
+    ): Intent {
       return Intent(context, MarkChaptersCompletedActivity::class.java).apply {
         decorateWithScreenName(MARK_CHAPTERS_COMPLETED_ACTIVITY)
         decorateWithUserProfileId(profileId)
+        putExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, showConfirmationNotice)
       }
     }
   }
