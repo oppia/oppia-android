@@ -12,7 +12,7 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_import")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_import", "kt_jvm_library")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
@@ -113,14 +113,26 @@ android_library(
     ],
 )
 
+# Note that the output from kt_jvm_import needs to be wrapped in a kt_jvm_library in order to work
+# with the Bazel IntelliJ plugin correctly (since kt_jvm_library provides the expected IDE output
+# for syncing).
 kt_jvm_import(
-    name = "kotlinx-coroutines-core-jvm",
+    name = "_kotlinx-coroutines-core-jvm_import_do_not_depend",
     jars = ["@kotlinx-coroutines-core-jvm//jar:file"],
-    visibility = ["@maven//:__subpackages__"],
+    tags = ["no-ide"],
     deps = [
         ":_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
         "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
     ],
+)
+
+kt_jvm_library(
+    name = "kotlinx-coroutines-core-jvm",
+    visibility = [
+        "//:oppia_api_visibility",
+        "@maven//:__subpackages__",
+    ],
+    exports = [":_kotlinx-coroutines-core-jvm_import_do_not_depend"],
 )
 
 java_library(

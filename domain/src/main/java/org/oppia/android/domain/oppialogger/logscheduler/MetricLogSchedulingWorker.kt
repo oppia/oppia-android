@@ -56,7 +56,7 @@ class MetricLogSchedulingWorker private constructor(
 
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
-    // TODO(#3715): Add withTimeout() to avoid potential hanging.
+    // TODO(#4463): Add withTimeout() to avoid potential hanging.
     return backgroundScope.async {
       when (inputData.getStringFromData(WORKER_CASE_KEY)) {
         PERIODIC_BACKGROUND_METRIC_WORKER -> schedulePeriodicBackgroundMetricLogging()
