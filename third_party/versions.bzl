@@ -73,9 +73,9 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "org.checkerframework:checker-compat-qual": "2.5.5",
     "org.checkerframework:checker-qual": "3.21.3",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.6.4",
     "org.jetbrains:annotations:jar": "13.0",
 }
 
@@ -123,6 +123,10 @@ HTTP_DEPENDENCY_VERSIONS = {
     "guava_android": {
         "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
         "version": "31.0.1",
+    },
+    "kotlinx-coroutines-core-jvm": {
+        "sha": "acc8c74b1fb88121c51221bfa7b6f5e920201bc20183ebf74165dcf5d45a8003",
+        "version": "1.6.0",
     },
     "protobuf_tools": {
         "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",

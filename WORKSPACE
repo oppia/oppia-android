@@ -195,6 +195,7 @@ maven_install(
     maven_install_json = "//third_party:maven_install.json",
     override_targets = {
         "com.google.guava:guava": "@//third_party:com_google_guava_guava",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "@//third_party:kotlinx-coroutines-core-jvm",
     },
     repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
     strict_visibility = True,
@@ -211,6 +212,18 @@ http_jar(
         "{0}/com/google/guava/guava/{1}-android/guava-{1}-android.jar".format(
             url_base,
             HTTP_DEPENDENCY_VERSIONS["guava_android"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+    ],
+)
+
+http_jar(
+    name = "kotlinx-coroutines-core-jvm",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["sha"],
+    urls = [
+        "{0}/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{1}/kotlinx-coroutines-core-jvm-{1}.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["version"],
         )
         for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
     ],
