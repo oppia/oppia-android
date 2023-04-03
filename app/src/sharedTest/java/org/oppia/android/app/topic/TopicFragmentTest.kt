@@ -138,28 +138,18 @@ private const val REVISION_TAB_POSITION_EXTRA_TABS_DISABLED = 1
   qualifiers = "port-xxhdpi"
 )
 class TopicFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var spotlightStateController: SpotlightStateController
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var spotlightStateController: SpotlightStateController
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
@@ -782,7 +772,9 @@ class TopicFragmentTest {
     topicId: String,
     storyId: String
   ): ActivityScenario<TopicActivity> {
-    return launch(createTopicPlayStoryActivityIntent(profileId, topicId, storyId))
+    return launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(profileId, topicId, storyId)
+    ).also { testCoroutineDispatchers.runCurrent() }
   }
 
   private fun clickTabAtPosition(position: Int) {

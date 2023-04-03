@@ -113,31 +113,17 @@ import javax.inject.Singleton
 @Config(application = ProfileEditFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class ProfileEditFragmentTest {
 
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-
-  @Inject
-  lateinit var dataProviderTestMonitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private lateinit var profileId: ProfileId
-
   private lateinit var profileIdFour: ProfileId
-
   private lateinit var profileIdZero: ProfileId
 
   @Before
@@ -276,7 +262,7 @@ class ProfileEditFragmentTest {
       colorRgb = -10710042,
       isAdmin = false
     )
-    dataProviderTestMonitorFactory.waitForNextSuccessfulResult(addProfileProvider)
+    monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,

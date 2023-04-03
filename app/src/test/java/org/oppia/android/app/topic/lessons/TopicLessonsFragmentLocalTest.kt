@@ -95,8 +95,7 @@ private const val TEST_STORY_ID = "GJ2rLXRKD5hw"
   qualifiers = "port-xxhdpi"
 )
 class TopicLessonsFragmentLocalTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers

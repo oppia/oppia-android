@@ -1045,8 +1045,7 @@ class HomeActivityTest {
       it.onActivity { activity ->
         assertThat(
           activity.intent.extractCurrentUserProfileId()
-            .internalId
-        ).isEqualTo(profileId1.internalId)
+        ).isEqualTo(profileId1)
       }
     }
   }

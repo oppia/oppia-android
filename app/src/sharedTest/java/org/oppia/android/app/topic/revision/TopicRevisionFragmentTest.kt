@@ -287,13 +287,11 @@ class TopicRevisionFragmentTest {
       profileId,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
-      it.onActivity {
-        activity ->
+      it.onActivity { activity ->
         val fragment = activity.supportFragmentManager.findFragmentById(
           R.id.topic_fragment_placeholder
         )
         val profileId = fragment?.arguments?.extractCurrentUserProfileId()
-
         assertThat(profileId).isEqualTo(this.profileId)
       }
     }

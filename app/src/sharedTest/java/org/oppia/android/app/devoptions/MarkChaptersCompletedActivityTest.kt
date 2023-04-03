@@ -101,13 +101,12 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class MarkChaptersCompletedActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   private lateinit var profileId: ProfileId
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
   @get:Rule
   val activityTestRule = ActivityTestRule(
@@ -115,9 +114,6 @@ class MarkChaptersCompletedActivityTest {
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
 
   @Before
   fun setUp() {

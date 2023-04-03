@@ -391,8 +391,7 @@ class TopicPracticeFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 5)
 
-      it.onActivity {
-        activity ->
+      it.onActivity { activity ->
         val fragment = activity.supportFragmentManager.findFragmentById(
           R.id.topic_fragment_placeholder
         )

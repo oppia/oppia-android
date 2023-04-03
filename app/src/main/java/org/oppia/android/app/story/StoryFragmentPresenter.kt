@@ -65,11 +65,8 @@ class StoryFragmentPresenter @Inject constructor(
   private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
   private lateinit var profileId: ProfileId
 
-  @Inject
-  lateinit var storyViewModel: StoryViewModel
-
-  @Inject
-  lateinit var accessibilityService: AccessibilityService
+  @Inject lateinit var storyViewModel: StoryViewModel
+  @Inject lateinit var accessibilityService: AccessibilityService
 
   fun handleCreateView(
     inflater: LayoutInflater,
