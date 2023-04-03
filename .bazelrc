@@ -6,6 +6,8 @@ build --android_databinding_use_v3_4_args \
     --define=android_standalone_dexing_tool=d8_compat_dx \
     --android_databinding_use_androidx
 
+# Ensure all built Java files treat warnings as errors (similar to the Kotlin configuration) to help
+# reduce code smell & potential bugs during development.
 build --javacopt="-Werror"
 
 # Show all test output by default (for better debugging).
