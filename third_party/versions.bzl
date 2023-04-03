@@ -73,9 +73,9 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "org.checkerframework:checker-compat-qual": "2.5.5",
     "org.checkerframework:checker-qual": "3.21.3",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.6.4",
     "org.jetbrains:annotations:jar": "13.0",
 }
 
@@ -104,7 +104,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.6.4",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "2.19.0",
     "org.robolectric:annotations": "4.5",

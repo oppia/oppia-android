@@ -1,4 +1,6 @@
-# This package defines codebase-wide third-party build configurations for Kotlin.
+"""
+Configurations for a codebase-wide build toolchain for Kotlin.
+"""
 
 load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
 

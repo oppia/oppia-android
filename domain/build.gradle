@@ -96,7 +96,7 @@ dependencies {
       'com.google.guava:guava:28.1-android',
       'com.google.protobuf:protobuf-javalite:3.17.3',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-      'org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.4.1'
+      'org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.4'
   )
   compileOnly(
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
@@ -114,7 +114,7 @@ dependencies {
       'junit:junit:4.12',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
       'org.mockito:mockito-core:3.9.0',
       'org.robolectric:robolectric:4.5',
       project(":testing"),

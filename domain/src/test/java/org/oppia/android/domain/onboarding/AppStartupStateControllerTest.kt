@@ -34,7 +34,6 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -689,12 +688,10 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("testing_to_beta", "initialFlavorName=TESTING"),
-    Iteration("dev_to_beta", "initialFlavorName=DEVELOPER"),
-    Iteration("alpha_to_beta", "initialFlavorName=ALPHA"),
-    Iteration("ga_to_beta", "initialFlavorName=GENERAL_AVAILABILITY")
-  )
+  @Iteration("testing_to_beta", "initialFlavorName=TESTING")
+  @Iteration("dev_to_beta", "initialFlavorName=DEVELOPER")
+  @Iteration("alpha_to_beta", "initialFlavorName=ALPHA")
+  @Iteration("ga_to_beta", "initialFlavorName=GENERAL_AVAILABILITY")
   fun testController_dismissBetaNoticePermanently_scenariosWhenBetaNoticeDoesShow_showNoNotice() {
     executeInPreviousAppInstance { testComponent ->
       TestModule.buildFlavor = BuildFlavor.valueOf(initialFlavorName)
@@ -716,10 +713,8 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("testing_to_ga", "initialFlavorName=TESTING"),
-    Iteration("dev_to_ga", "initialFlavorName=DEVELOPER")
-  )
+  @Iteration("testing_to_ga", "initialFlavorName=TESTING")
+  @Iteration("dev_to_ga", "initialFlavorName=DEVELOPER")
   fun testController_dismissGaNoticePermanently_scenariosWhenGaNoticeDoesNotShow_showNoNotice() {
     executeInPreviousAppInstance { testComponent ->
       TestModule.buildFlavor = BuildFlavor.valueOf(initialFlavorName)
@@ -741,10 +736,8 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("alpha_to_ga", "initialFlavorName=ALPHA"),
-    Iteration("beta_to_ga", "initialFlavorName=BETA")
-  )
+  @Iteration("alpha_to_ga", "initialFlavorName=ALPHA")
+  @Iteration("beta_to_ga", "initialFlavorName=BETA")
   fun testController_dismissGaNoticePermanently_scenariosWhenGaNoticeDoesShow_showNoNotice() {
     executeInPreviousAppInstance { testComponent ->
       TestModule.buildFlavor = BuildFlavor.valueOf(initialFlavorName)

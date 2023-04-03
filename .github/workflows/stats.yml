@@ -79,29 +79,33 @@ jobs:
 
       - name: Check Bazel environment
         run: bazel info
-      - name: Change to develop
+      - name: Change to base
+        env:
+          base_commit_hash: ${{ github.event.pull_request.base.sha }}
         run: |
-          git checkout develop
+          git checkout $base_commit_hash
           git log -n 1
 
-      - name: Build Oppia dev, alpha, and KitKat alpha (develop)
+      - name: Build Oppia dev, alpha, beta, and GA (base)
         run: |
-          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_alpha_kitkat
+          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
           cp bazel-bin/oppia_dev.aab ./oppia_dev_without_changes.aab
           cp bazel-bin/oppia_alpha.aab ./oppia_alpha_without_changes.aab
-          cp bazel-bin/oppia_alpha_kitkat.aab ./oppia_alpha_kitkat_without_changes.aab
+          cp bazel-bin/oppia_beta.aab ./oppia_beta_without_changes.aab
+          cp bazel-bin/oppia_ga.aab ./oppia_ga_without_changes.aab
 
       - name: Change to feature branch
         run: |
           git checkout $GITHUB_SHA
           git log -n 1
 
-      - name: Build Oppia dev, alpha, and KitKat alpha (branch)
+      - name: Build Oppia dev, alpha, beta, and GA (branch)
         run: |
-          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_alpha_kitkat
+          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
           cp bazel-bin/oppia_dev.aab ./oppia_dev_with_changes.aab
           cp bazel-bin/oppia_alpha.aab ./oppia_alpha_with_changes.aab
-          cp bazel-bin/oppia_alpha_kitkat.aab ./oppia_alpha_kitkat_with_changes.aab
+          cp bazel-bin/oppia_beta.aab ./oppia_beta_with_changes.aab
+          cp bazel-bin/oppia_ga.aab ./oppia_ga_with_changes.aab
 
       - name: Run stats analysis tool
         run: |
@@ -109,7 +113,8 @@ jobs:
             $(pwd)/brief_build_summary.log $(pwd)/full_build_summary.log \
             dev $(pwd)/oppia_dev_without_changes.aab $(pwd)/oppia_dev_with_changes.aab \
             alpha $(pwd)/oppia_alpha_without_changes.aab $(pwd)/oppia_alpha_with_changes.aab \
-            alpha_kitkat $(pwd)/oppia_alpha_kitkat_without_changes.aab $(pwd)/oppia_alpha_kitkat_with_changes.aab
+            beta $(pwd)/oppia_beta_without_changes.aab $(pwd)/oppia_beta_with_changes.aab \
+            ga $(pwd)/oppia_ga_without_changes.aab $(pwd)/oppia_ga_with_changes.aab
 
       # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
       - name: Extract reports for uploading & commenting

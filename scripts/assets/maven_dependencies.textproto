@@ -1253,8 +1253,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.6.0"
-  artifact_version: "1.6.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.6.21"
+  artifact_version: "1.6.21"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1264,8 +1264,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.0"
-  artifact_version: "1.6.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.21"
+  artifact_version: "1.6.21"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1275,8 +1275,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.0"
-  artifact_version: "1.6.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.21"
+  artifact_version: "1.6.21"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1286,8 +1286,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0"
-  artifact_version: "1.6.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21"
+  artifact_version: "1.6.21"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1297,8 +1297,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
-  artifact_version: "1.4.1"
+  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+  artifact_version: "1.6.4"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1308,8 +1308,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
-  artifact_version: "1.4.1"
+  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+  artifact_version: "1.6.4"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1319,8 +1319,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.4.1"
-  artifact_version: "1.4.1"
+  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.4"
+  artifact_version: "1.6.4"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
