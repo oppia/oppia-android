@@ -80,6 +80,7 @@ import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 
 /** Tests for [AudioPlayerControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -860,7 +861,7 @@ class AudioPlayerControllerTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
-      HintsAndSolutionConfigModule::class, LoggerModule::class
+      HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -68,6 +68,7 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 
 /** Tests for [LearnerAnalyticsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -1827,7 +1828,7 @@ class LearnerAnalyticsLoggerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      CachingTestModule::class
+      CachingTestModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

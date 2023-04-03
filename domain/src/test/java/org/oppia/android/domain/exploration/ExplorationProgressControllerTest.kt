@@ -3172,7 +3172,8 @@ class ExplorationProgressControllerTest {
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterSingletonModule::class
+      SyncStatusModule::class, PlatformParameterSingletonModule::class,
+      ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

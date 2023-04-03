@@ -79,6 +79,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 
 /**
  * The base exploration id for every exploration used for testing [ExplorationCheckpointController].
@@ -998,7 +999,8 @@ class ExplorationCheckpointControllerTest {
       DragDropSortInputModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
