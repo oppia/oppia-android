@@ -146,7 +146,7 @@ class HelpActivityTest {
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
       isFromNavigationDrawer = false,
-      profileId = profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
+      profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     )
   }
 
