@@ -64,9 +64,10 @@ class ExplorationActiveTimeControllerTest {
 
   @Test
   fun testRecordAggregateTopicLearningTime_returnsSuccess() {
-    val recordAggregateTimeProvider = explorationActiveTimeController.recordAggregateTopicLearningTime(
-      profileId, TEST_TOPIC_ID_0, sessionDuration
-    )
+    val recordAggregateTimeProvider =
+      explorationActiveTimeController.recordAggregateTopicLearningTime(
+        profileId, TEST_TOPIC_ID_0, sessionDuration
+      )
     monitorFactory.waitForNextSuccessfulResult(recordAggregateTimeProvider)
   }
 
