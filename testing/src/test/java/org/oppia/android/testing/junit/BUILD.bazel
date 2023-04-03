@@ -11,6 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.junit.InitializeDefaultLocaleRuleCustomContextTest",
     test_manifest = "//testing:test_manifest",
     deps = [
+        "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
@@ -65,6 +66,7 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.junit.InitializeDefaultLocaleRuleOmissionTest",
     test_manifest = "//testing:test_manifest",
     deps = [
+        "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
@@ -118,6 +120,7 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.junit.InitializeDefaultLocaleRuleTest",
     test_manifest = "//testing:test_manifest",
     deps = [
+        "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",

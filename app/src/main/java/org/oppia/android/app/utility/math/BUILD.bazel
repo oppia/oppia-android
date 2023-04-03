@@ -2,7 +2,7 @@
 General purposes utilities corresponding to displaying math expressions & constructs.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 # Resource shim needed so that MathExpressionAccessibilityUtil can build in both Gradle & Bazel.
 genrule(

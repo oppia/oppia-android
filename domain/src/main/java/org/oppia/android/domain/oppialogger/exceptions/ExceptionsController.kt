@@ -79,26 +79,20 @@ class ExceptionsController @Inject constructor(
     }
   }
 
-  /** Returns an [ExceptionLog] from a [throwable]. */
+  /** Returns an [ExceptionLog] from this [Throwable]. */
   private fun Throwable.toExceptionLog(
     timestampInMillis: Long,
     exceptionType: ExceptionType
   ): ExceptionLog {
-    val exceptionLogBuilder = ExceptionLog.newBuilder()
-    this.message?.let {
-      exceptionLogBuilder.message = it
-    }
-    exceptionLogBuilder.timestampInMillis = timestampInMillis
-    this.cause?.let {
-      exceptionLogBuilder.cause = it.toExceptionLog(timestampInMillis, exceptionType)
-    }
-    this.stackTrace?.let {
-      exceptionLogBuilder.addAllStacktraceElement(
-        it.map(this@ExceptionsController::convertStackTraceElementToLog)
-      )
-    }
-    exceptionLogBuilder.exceptionType = exceptionType
-    return exceptionLogBuilder.build()
+    return ExceptionLog.newBuilder().apply {
+      this@toExceptionLog.message?.let { this.message = it }
+      this.timestampInMillis = timestampInMillis
+      this@toExceptionLog.cause?.let {
+        this.cause = it.toExceptionLog(timestampInMillis, exceptionType)
+      }
+      addAllStacktraceElement(this@toExceptionLog.stackTrace.map(::convertStackTraceElementToLog))
+      this.exceptionType = exceptionType
+    }.build()
   }
 
   /** Builds the [ExceptionLog.StackTraceElement] from a [stackTraceElement]. */

@@ -2,7 +2,7 @@
 Utilities corresponding to simplify using Jetpack's view model functionality.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "observable_array_list",
@@ -22,21 +22,6 @@ kt_android_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//third_party/app_prod:androidx_databinding_databinding-adapters",
-        "//third_party/app_prod:androidx_lifecycle_lifecycle-extensions",
-    ],
-)
-
-kt_android_library(
-    name = "view_model_provider",
-    srcs = [
-        "ViewModelBridgeFactory.kt",
-        "ViewModelProvider.kt",
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//third_party/app_prod:androidx_appcompat_appcompat",
-        "//third_party/app_prod:androidx_lifecycle_lifecycle-extensions",
-        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party:androidx_databinding_databinding-adapters",
     ],
 )

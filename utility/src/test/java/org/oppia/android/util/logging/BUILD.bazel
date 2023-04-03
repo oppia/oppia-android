@@ -2,7 +2,7 @@
 Tests for logging utilities.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 kt_android_library(
@@ -30,6 +30,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.EventBundleCreatorTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
@@ -50,12 +51,13 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.EventLoggingConfigurationModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing:assertion_helpers",
-        "//third_party/app_test:androidx_test_ext_junit",
-        "//third_party/app_test:androidx_test_ext_truth",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_robolectric_robolectric",
-        "//third_party/app_test:robolectric_android-all",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
     ],
 )
@@ -67,12 +69,13 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.KenyaAlphaEventBundleCreatorTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing:assertion_helpers",
-        "//third_party/app_test:androidx_test_ext_junit",
-        "//third_party/app_test:androidx_test_ext_truth",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_robolectric_robolectric",
-        "//third_party/app_test:robolectric_android-all",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
         "//utility/src/main/java/org/oppia/android/util/logging:kenya_alpha_event_logging_configuration_module",
     ],
@@ -85,12 +88,13 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.KenyaAlphaEventLoggingConfigurationModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing:assertion_helpers",
-        "//third_party/app_test:androidx_test_ext_junit",
-        "//third_party/app_test:androidx_test_ext_truth",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_robolectric_robolectric",
-        "//third_party/app_test:robolectric_android-all",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/logging:kenya_alpha_event_logging_configuration_module",
     ],
 )
@@ -102,11 +106,12 @@ oppia_android_test(
     test_class = "org.oppia.android.util.logging.StandardEventTypeToHumanReadableNameConverterImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//:dagger",
         "//testing:assertion_helpers",
-        "//third_party/app_test:androidx_test_ext_junit",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_robolectric_robolectric",
-        "//third_party/app_test:robolectric_android-all",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
     ],
 )
@@ -119,6 +124,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         ":sync_status_manager_test_base",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

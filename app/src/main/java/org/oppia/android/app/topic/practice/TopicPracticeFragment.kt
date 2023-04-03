@@ -46,6 +46,8 @@ class TopicPracticeFragment : InjectableFragment() {
     var selectedSkillId = HashMap<Int, MutableList<String>>()
     if (savedInstanceState != null) {
       selectedIdList = savedInstanceState.getIntegerArrayList(SUBTOPIC_ID_LIST_ARGUMENT_KEY)!!
+      // TODO(#4437): Convert this to a type-safe proto.
+      @Suppress("UNCHECKED_CAST") // Not quite safe.
       selectedSkillId = savedInstanceState
         .getSerializable(SKILL_ID_LIST_ARGUMENT_KEY)!! as HashMap<Int, MutableList<String>>
     }

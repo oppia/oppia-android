@@ -2,7 +2,7 @@
 General testing utilities and truth subjects for math structures and utilities.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 # TODO(#2747): Move these libraries to be under utility/.../math/testing.
 

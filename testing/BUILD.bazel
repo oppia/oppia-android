@@ -3,7 +3,7 @@
 This library contains fake objects used for testing as well as tests for these objects.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//testing:testing_test.bzl", "testing_test")
 
 # Source files that have been migrated to their own package-based libraries. Files added to this
@@ -72,6 +72,7 @@ kt_android_library(
 TEST_DEPS = [
     ":assertion_helpers",
     ":testing",
+    "//:dagger",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
     "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",

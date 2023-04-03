@@ -3,7 +3,7 @@ Package for utility libraries that aid in script-related test suites by performi
 arrangement or operations.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "test_bazel_workspace",

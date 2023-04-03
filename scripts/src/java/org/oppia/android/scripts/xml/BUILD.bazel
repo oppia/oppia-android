@@ -3,7 +3,7 @@ Libraries corresponding to XML syntax based check to ensure that all the XML fil
 are syntactically correct and consistent.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "string_language_translation_check_lib",

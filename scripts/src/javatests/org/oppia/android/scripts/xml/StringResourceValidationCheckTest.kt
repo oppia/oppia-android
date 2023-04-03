@@ -37,7 +37,7 @@ class StringResourceValidationCheckTest {
     private const val SW_STRING_TWO_NEWLINES = "\\nMsaada\\n"
   }
 
-  @field:[Rule JvmField] var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val originalOut: PrintStream = System.out
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }

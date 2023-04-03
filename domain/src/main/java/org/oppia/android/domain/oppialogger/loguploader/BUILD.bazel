@@ -2,7 +2,7 @@
 Library for providing log uploading functionality to the Oppia android app.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "initializer",
@@ -36,8 +36,9 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
-        "//third_party/app_prod:androidx_work_work-runtime-ktx",
-        "//third_party/app_prod:com_google_guava_guava",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_google_guava_guava",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",

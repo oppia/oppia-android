@@ -1,9 +1,11 @@
 package org.oppia.android.scripts.maven
 
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.license.LicenseFetcher
-import org.oppia.android.scripts.license.LicenseFetcherImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.license.MavenArtifactPropertyFetcher
+import org.oppia.android.scripts.license.MavenArtifactPropertyFetcherImpl
 import org.oppia.android.scripts.license.MavenDependenciesRetriever
 import org.oppia.android.scripts.proto.MavenDependencyList
 
@@ -18,7 +20,7 @@ import org.oppia.android.scripts.proto.MavenDependencyList
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
- * - path_to_maven_install_json: relative path to the maven_install.json file.
+ * - path_to_maven_install_json: relative path to the Maven install manifest file.
  * - path_to_maven_dependencies_textproto: relative path to the maven_dependencies.textproto
  * - path_to_maven_dependencies_pb: relative path to the maven_dependencies.pb file.
  * Example:
@@ -27,16 +29,19 @@ import org.oppia.android.scripts.proto.MavenDependencyList
  *   scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
-  GenerateMavenDependenciesList(LicenseFetcherImpl()).main(args)
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    GenerateMavenDependenciesList(MavenArtifactPropertyFetcherImpl(), scriptBgDispatcher).main(args)
+  }
 }
 
 /** Wrapper class to pass dependencies to be utilized by the the main method. */
 class GenerateMavenDependenciesList(
-  private val licenseFetcher: LicenseFetcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
   /**
-   * Compiles a list of third-party maven dependencies along with their license links on
+   * Compiles a list of third-party Maven dependencies along with their license links on
    * which Oppia Android depends and write them in maven_dependencies.textproto.
    */
   fun main(args: Array<String>) {
@@ -47,50 +52,60 @@ class GenerateMavenDependenciesList(
     val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
     val pathToMavenDependenciesPb = args[3]
+    ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+      runBlocking {
+        generateDependenciesList(
+          pathToRoot,
+          pathToMavenInstallJson,
+          pathToMavenDependenciesTextProto,
+          pathToMavenDependenciesPb,
+          scriptBgDispatcher
+        )
+      }
+    }
+  }
 
-    val MavenDependenciesRetriever = MavenDependenciesRetriever(pathToRoot, licenseFetcher)
+  private suspend fun generateDependenciesList(
+    pathToRoot: String,
+    pathToMavenInstallJson: String,
+    pathToMavenDependenciesTextProto: String,
+    pathToMavenDependenciesPb: String,
+    scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  ) {
+    val retriever =
+      MavenDependenciesRetriever(
+        pathToRoot, mavenArtifactPropertyFetcher, scriptBgDispatcher, commandExecutor
+      )
 
     val bazelQueryDepsList =
-      MavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
-    val mavenInstallDepsList = MavenDependenciesRetriever.getDependencyListFromMavenInstall(
-      pathToMavenInstallJson,
-      bazelQueryDepsList
-    )
+      retriever.retrieveThirdPartyMavenDependenciesList()
+    val mavenInstallDepsList =
+      retriever.generateDependenciesListFromMavenInstall(pathToMavenInstallJson, bazelQueryDepsList)
 
     val dependenciesListFromPom =
-      MavenDependenciesRetriever
-        .retrieveDependencyListFromPom(mavenInstallDepsList)
-        .mavenDependencyList
+      retriever.retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
     val dependenciesListFromTextProto =
-      MavenDependenciesRetriever.retrieveMavenDependencyList(pathToMavenDependenciesPb)
+      retriever.retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
-    val updatedDependenciesList = MavenDependenciesRetriever.addChangesFromTextProto(
-      dependenciesListFromPom,
-      dependenciesListFromTextProto
+    val updatedDependenciesList = retriever.addChangesFromTextProto(
+      dependenciesListFromPom, dependenciesListFromTextProto
     )
 
     val manuallyUpdatedLicenses =
-      MavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
+      retriever.retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
 
-    val finalDependenciesList = MavenDependenciesRetriever.updateMavenDependenciesList(
-      updatedDependenciesList,
-      manuallyUpdatedLicenses
-    )
-    MavenDependenciesRetriever.writeTextProto(
+    val finalDependenciesList =
+      retriever.updateMavenDependenciesList(updatedDependenciesList, manuallyUpdatedLicenses)
+    retriever.writeTextProto(
       pathToMavenDependenciesTextProto,
       MavenDependencyList.newBuilder().addAllMavenDependency(finalDependenciesList).build()
     )
 
-    val licensesToBeFixed =
-      MavenDependenciesRetriever.getAllBrokenLicenses(finalDependenciesList)
-
+    val licensesToBeFixed = retriever.getAllBrokenLicenses(finalDependenciesList)
     if (licensesToBeFixed.isNotEmpty()) {
-      val licenseToDependencyMap = MavenDependenciesRetriever
-        .findFirstDependenciesWithBrokenLicenses(
-          finalDependenciesList,
-          licensesToBeFixed
-        )
+      val licenseToDependencyMap =
+        retriever.findFirstDependenciesWithBrokenLicenses(finalDependenciesList, licensesToBeFixed)
       println(
         """
         Some licenses do not have their 'original_link' verified. To verify a license link, click
@@ -150,7 +165,7 @@ class GenerateMavenDependenciesList(
     }
 
     val dependenciesWithoutAnyLinks =
-      MavenDependenciesRetriever.getDependenciesThatNeedIntervention(finalDependenciesList)
+      retriever.getDependenciesThatNeedIntervention(finalDependenciesList)
     if (dependenciesWithoutAnyLinks.isNotEmpty()) {
       println(
         """
@@ -184,6 +199,6 @@ class GenerateMavenDependenciesList(
       }
       throw Exception("License links are invalid or not available for some dependencies")
     }
-    println("\nScript executed succesfully: maven_dependencies.textproto updated successfully.")
+    println("\nScript executed successfully: maven_dependencies.textproto updated successfully.")
   }
 }

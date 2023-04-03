@@ -11,6 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.translation.TranslationControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
+        "//:dagger",
         "//config/src/java/org/oppia/android/config:all_languages_config",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",

@@ -1,0 +1,26 @@
+"""
+Configurations for a codebase-wide build toolchain for Kotlin.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
+
+kt_kotlinc_options(
+    name = "oppia_kotlinc_options",
+    warn = "error",
+    x_optin = ["kotlin.RequiresOptIn"],
+)
+
+# TODO(#4936): Fix "warnings as errors" for processor-generated Java code.
+kt_javac_options(
+    name = "oppia_javac_options",
+    warn = "error",
+)
+
+define_kt_toolchain(
+    name = "kotlin_16_jdk9_toolchain",
+    api_version = "1.6",
+    javac_options = ":oppia_javac_options",
+    jvm_target = "9",
+    kotlinc_options = ":oppia_kotlinc_options",
+    language_version = "1.6",
+)

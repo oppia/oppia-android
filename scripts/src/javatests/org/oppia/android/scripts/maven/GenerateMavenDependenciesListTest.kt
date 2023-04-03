@@ -11,7 +11,8 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.license.LicenseFetcher
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.license.MavenArtifactPropertyFetcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
 import org.oppia.android.scripts.proto.License
@@ -26,54 +27,19 @@ import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
 /** Tests for [GenerateMavenDependenciesList]. */
+// FunctionName: test names are conventionally named with underscores.
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 class GenerateMavenDependenciesListTest {
-
-  private val THIRD_PARTY_PREFIX = "//third_pary:"
-  private val DEP_WITH_SCRAPABLE_LICENSE = "androidx.databinding:databinding-adapters:3.4.2"
-  private val DEP_WITH_NO_LICENSE = "com.google.protobuf:protobuf-lite:3.0.0"
-  private val DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES =
-    "com.github.bumptech.glide:annotations:4.11.0"
-  private val DEP_WITH_DIRECT_LINK_ONLY_LICENSE = "com.google.firebase:firebase-analytics:17.5.0"
-  private val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
-  private val DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME =
-    "com.squareup.moshi:moshi:1.11.0"
-
-  private val DATA_BINDING_VERSION = "3.4.2"
-  private val PROTO_LITE_VERSION = "3.0.0"
-  private val GLIDE_ANNOTATIONS_VERSION = "4.11.0"
-  private val FIREBASE_ANALYTICS_VERSION = "17.5.0"
-  private val IO_FABRIC_VERSION = "1.4.7"
-  private val MOSHI_VERSION = "1.11.0"
-
-  private val DATA_BINDING_POM = "https://maven.google.com/androidx/databinding/databinding-" +
-    "adapters/$DATA_BINDING_VERSION/databinding-adapters-$DATA_BINDING_VERSION.pom"
-  private val PROTO_LITE_POM = "https://repo1.maven.org/maven2/com/google/protobuf/protobuf" +
-    "-lite/$PROTO_LITE_VERSION/protobuf-lite-$PROTO_LITE_VERSION.pom"
-  private val IO_FABRIC_POM = "https://maven.google.com/io/fabric/sdk/android/fabric/" +
-    "$IO_FABRIC_VERSION/fabric-$IO_FABRIC_VERSION.pom"
-  private val GLIDE_ANNOTATIONS_POM = "https://repo1.maven.org/maven2/com/github/bumptech/glide" +
-    "/annotations/$GLIDE_ANNOTATIONS_VERSION/annotations-$GLIDE_ANNOTATIONS_VERSION.pom"
-  private val FIREBASE_ANALYTICS_POM = "https://maven.google.com/com/google/firebase/firebase-" +
-    "analytics/$FIREBASE_ANALYTICS_VERSION/firebase-analytics-$FIREBASE_ANALYTICS_VERSION.pom"
-  private val MOSHI_POM = "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/" +
-    "$MOSHI_VERSION/moshi-$MOSHI_VERSION.pom"
-
-  private val LICENSE_DETAILS_INCOMPLETE_FAILURE = "Licenses details are not completed"
-  private val UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE =
-    "License links are invalid or not available for some dependencies"
-  private val SCRIPT_PASSED_MESSAGE =
-    "Script executed succesfully: maven_dependencies.textproto updated successfully."
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
-  private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val mockArtifactPropertyFetcher by lazy { initializeArtifactPropertyFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
-
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
@@ -86,6 +52,7 @@ class GenerateMavenDependenciesListTest {
   @After
   fun restoreStreams() {
     System.setOut(originalOut)
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -98,7 +65,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -182,7 +150,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -206,7 +175,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -248,7 +218,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -315,7 +286,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -357,7 +329,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -425,7 +398,8 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     GenerateMavenDependenciesList(
-      mockLicenseFetcher,
+      mockArtifactPropertyFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -518,7 +492,8 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     GenerateMavenDependenciesList(
-      mockLicenseFetcher,
+      mockArtifactPropertyFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -616,7 +591,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -679,7 +655,8 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     GenerateMavenDependenciesList(
-      mockLicenseFetcher,
+      mockArtifactPropertyFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -792,7 +769,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -917,7 +895,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -1030,7 +1009,8 @@ class GenerateMavenDependenciesListTest {
 
     val exception = assertThrows(Exception::class) {
       GenerateMavenDependenciesList(
-        mockLicenseFetcher,
+        mockArtifactPropertyFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -1149,7 +1129,8 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     GenerateMavenDependenciesList(
-      mockLicenseFetcher,
+      mockArtifactPropertyFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -1361,37 +1342,41 @@ class GenerateMavenDependenciesListTest {
     )
   }
 
-  /** Helper function to write a fake maven_install.json file. */
+  /** Helper function to write a fake maven install manifest file. */
   private fun writeMavenInstallJson(file: File) {
     file.writeText(
       """
       {
-        "dependency_tree": {
-          "dependencies": [
-            {
-              "coord": "androidx.databinding:databinding-adapters:3.4.2",
-              "url": "${DATA_BINDING_POM.dropLast(3)}aar"
-            },
-            {
-              "coord": "com.github.bumptech.glide:annotations:4.11.0",
-              "url": "${GLIDE_ANNOTATIONS_POM.dropLast(3)}jar"
-            },
-            {
-              "coord": "com.google.firebase:firebase-analytics:17.5.0",
-              "url": "${FIREBASE_ANALYTICS_POM.dropLast(3)}aar"
-            },
-            {
-               "coord": "com.google.protobuf:protobuf-lite:3.0.0",
-               "url": "${PROTO_LITE_POM.dropLast(3)}jar"
-            },
-            {
-              "coord": "com.squareup.moshi:moshi:1.11.0",
-               "url": "${MOSHI_POM.dropLast(3)}jar"
-            },
-            {
-              "coord": "io.fabric.sdk.android:fabric:1.4.7",
-              "url": "${IO_FABRIC_POM.dropLast(3)}aar"
-            }
+        "artifacts": {
+          "androidx.databinding:databinding-adapters": {
+            "version": "3.4.2"
+          },
+          "com.github.bumptech.glide:annotations": {
+            "version": "4.11.0"
+          },
+          "com.google.firebase:firebase-analytics": {
+            "version": "17.5.0"
+          },
+          "com.google.protobuf:protobuf-lite": {
+            "version": "3.0.0"
+          },
+          "com.squareup.moshi:moshi": {
+            "version": "1.11.0"
+          },
+          "io.fabric.sdk.android:fabric": {
+            "version": "1.4.7"
+          }
+        },
+        "repositories": {
+          "$GOOGLE_MAVEN_URL": [
+            "androidx.databinding:databinding-adapters",
+            "com.google.firebase:firebase-analytics",
+            "io.fabric.sdk.android:fabric"
+          ],
+          "$PUBLIC_MAVEN_URL": [
+            "com.github.bumptech.glide:annotations",
+            "com.google.protobuf:protobuf-lite",
+            "com.squareup.moshi:moshi"
           ]
         }
       }  
@@ -1400,13 +1385,15 @@ class GenerateMavenDependenciesListTest {
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 
-  /** Returns a mock for the [LicenseFetcher]. */
-  private fun initializeLicenseFetcher(): LicenseFetcher {
-    return mock<LicenseFetcher> {
-      on { scrapeText(eq(DATA_BINDING_POM)) }
+  /** Returns a mock for the [MavenArtifactPropertyFetcher]. */
+  private fun initializeArtifactPropertyFetcher(): MavenArtifactPropertyFetcher {
+    return mock {
+      on { scrapeText(eq(DATA_BINDING_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
@@ -1419,7 +1406,7 @@ class GenerateMavenDependenciesListTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(GLIDE_ANNOTATIONS_POM)) }
+      on { scrapeText(eq(GLIDE_ANNOTATIONS_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
@@ -1437,7 +1424,7 @@ class GenerateMavenDependenciesListTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(FIREBASE_ANALYTICS_POM)) }
+      on { scrapeText(eq(FIREBASE_ANALYTICS_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
@@ -1450,7 +1437,7 @@ class GenerateMavenDependenciesListTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(MOSHI_POM)) }
+      on { scrapeText(eq(MOSHI_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
@@ -1463,7 +1450,7 @@ class GenerateMavenDependenciesListTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(IO_FABRIC_POM)) }
+      on { scrapeText(eq(IO_FABRIC_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
@@ -1476,13 +1463,80 @@ class GenerateMavenDependenciesListTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(PROTO_LITE_POM)) }
+      on { scrapeText(eq(PROTO_LITE_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           <project>Random Project</project>
           """.trimIndent()
         )
+      on { isValidArtifactFileUrl(eq(DATA_BINDING_ARTIFACT_URL)) }.thenReturn(true)
+      on { isValidArtifactFileUrl(eq(PROTO_LITE_ARTIFACT_URL)) }.thenReturn(true)
+      on { isValidArtifactFileUrl(eq(IO_FABRIC_ARTIFACT_URL)) }.thenReturn(true)
+      on { isValidArtifactFileUrl(eq(GLIDE_ANNOTATIONS_ARTIFACT_URL)) }.thenReturn(true)
+      on { isValidArtifactFileUrl(eq(FIREBASE_ANALYTICS_ARTIFACT_URL)) }.thenReturn(true)
+      on { isValidArtifactFileUrl(eq(MOSHI_ARTIFACT_URL)) }.thenReturn(true)
     }
+  }
+
+  private companion object {
+    private const val DEP_WITH_SCRAPABLE_LICENSE = "androidx.databinding:databinding-adapters:3.4.2"
+    private const val DEP_WITH_NO_LICENSE = "com.google.protobuf:protobuf-lite:3.0.0"
+    private const val DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES =
+      "com.github.bumptech.glide:annotations:4.11.0"
+    private const val DEP_WITH_DIRECT_LINK_ONLY_LICENSE =
+      "com.google.firebase:firebase-analytics:17.5.0"
+    private const val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
+    private const val DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME =
+      "com.squareup.moshi:moshi:1.11.0"
+
+    private const val GOOGLE_MAVEN_URL = "https://maven.google.com"
+    private const val PUBLIC_MAVEN_URL = "https://repo1.maven.org/maven2"
+
+    private const val DATA_BINDING_VERSION = "3.4.2"
+    private const val DATA_BINDING_BASE_URL =
+      "$GOOGLE_MAVEN_URL/androidx/databinding/databinding-adapters" +
+        "/$DATA_BINDING_VERSION/databinding-adapters-$DATA_BINDING_VERSION"
+    private const val DATA_BINDING_ARTIFACT_URL = "$DATA_BINDING_BASE_URL.jar"
+    private const val DATA_BINDING_POM_URL = "$DATA_BINDING_BASE_URL.pom"
+
+    private const val PROTO_LITE_VERSION = "3.0.0"
+    private const val PROTO_LITE_BASE_URL =
+      "$PUBLIC_MAVEN_URL/com/google/protobuf/protobuf-lite/$PROTO_LITE_VERSION" +
+        "/protobuf-lite-$PROTO_LITE_VERSION"
+    private const val PROTO_LITE_POM_URL = "$PROTO_LITE_BASE_URL.pom"
+    private const val PROTO_LITE_ARTIFACT_URL = "$PROTO_LITE_BASE_URL.jar"
+
+    private const val IO_FABRIC_VERSION = "1.4.7"
+    private const val IO_FABRIC_BASE_URL =
+      "$GOOGLE_MAVEN_URL/io/fabric/sdk/android/fabric/$IO_FABRIC_VERSION/fabric-$IO_FABRIC_VERSION"
+    private const val IO_FABRIC_POM_URL = "$IO_FABRIC_BASE_URL.pom"
+    private const val IO_FABRIC_ARTIFACT_URL = "$IO_FABRIC_BASE_URL.jar"
+
+    private const val GLIDE_ANNOTATIONS_VERSION = "4.11.0"
+    private const val GLIDE_ANNOTATIONS_BASE_URL =
+      "$PUBLIC_MAVEN_URL/com/github/bumptech/glide/annotations/$GLIDE_ANNOTATIONS_VERSION" +
+        "/annotations-$GLIDE_ANNOTATIONS_VERSION"
+    private const val GLIDE_ANNOTATIONS_POM_URL = "$GLIDE_ANNOTATIONS_BASE_URL.pom"
+    private const val GLIDE_ANNOTATIONS_ARTIFACT_URL = "$GLIDE_ANNOTATIONS_BASE_URL.jar"
+
+    private const val FIREBASE_ANALYTICS_VERSION = "17.5.0"
+    private const val FIREBASE_ANALYTICS_BASE_URL =
+      "$GOOGLE_MAVEN_URL/com/google/firebase/firebase-analytics/$FIREBASE_ANALYTICS_VERSION" +
+        "/firebase-analytics-$FIREBASE_ANALYTICS_VERSION"
+    private const val FIREBASE_ANALYTICS_POM_URL = "$FIREBASE_ANALYTICS_BASE_URL.pom"
+    private const val FIREBASE_ANALYTICS_ARTIFACT_URL = "$FIREBASE_ANALYTICS_BASE_URL.jar"
+
+    private const val MOSHI_VERSION = "1.11.0"
+    private const val MOSHI_BASE_URL =
+      "$PUBLIC_MAVEN_URL/com/squareup/moshi/moshi/$MOSHI_VERSION/moshi-$MOSHI_VERSION"
+    private const val MOSHI_POM_URL = "$MOSHI_BASE_URL.pom"
+    private const val MOSHI_ARTIFACT_URL = "$MOSHI_BASE_URL.jar"
+
+    private const val LICENSE_DETAILS_INCOMPLETE_FAILURE = "Licenses details are not completed"
+    private const val UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE =
+      "License links are invalid or not available for some dependencies"
+    private const val SCRIPT_PASSED_MESSAGE =
+      "Script executed successfully: maven_dependencies.textproto updated successfully."
   }
 }

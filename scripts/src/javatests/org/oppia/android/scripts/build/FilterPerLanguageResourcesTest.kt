@@ -66,7 +66,7 @@ class FilterPerLanguageResourcesTest {
     createSupportedLanguages(ENGLISH, BRAZILIAN_PORTUGUESE, SWAHILI)
   private val SUPPORTED_LANGUAGES_EN_AR = createSupportedLanguages(ENGLISH, ARABIC)
 
-  @field:[Rule JvmField] var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out

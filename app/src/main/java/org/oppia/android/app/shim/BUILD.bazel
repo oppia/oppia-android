@@ -3,7 +3,7 @@ Temporary shims for providing indirection in the Bazel build graph to unblock mo
 parts of the app layer.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 IMPL_FILES = [
     "IntentFactoryShimImpl.kt",

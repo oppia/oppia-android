@@ -10,6 +10,7 @@ app_test(
     processed_src = test_with_resources("BottomSheetOptionsMenuTest.kt"),
     test_class = "org.oppia.android.app.player.exploration.BottomSheetOptionsMenuTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
@@ -46,6 +47,7 @@ app_test(
     processed_src = test_with_resources("ExplorationActivityTest.kt"),
     test_class = "org.oppia.android.app.player.exploration.ExplorationActivityTest",
     deps = [
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/application:application_component",

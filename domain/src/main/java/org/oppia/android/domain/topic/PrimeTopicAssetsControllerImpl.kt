@@ -99,7 +99,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   // dispatcher-intensive operation and using the shared background dispatcher ends up blocking the
   // app UI, potentially in a breaking way.
   private val extraDispatcher = Executors.newFixedThreadPool(
-    /* nThreads= */ 4
+    /* nThreads = */ 4
   ).asCoroutineDispatcher()
 
   // NOTE TO DEVELOPERS: Never do this. We should never hold activity references in singleton
@@ -205,18 +205,15 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       override fun onActivityStopped(activity: Activity) {}
       override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (!dialogDismissed.get()) {
-          activity?.let {
+          activity.let {
             val appCompatActivity = it as AppCompatActivity
-            primeDownloadStatus.observe(
-              appCompatActivity,
-              Observer<PrimeAssetsStatus> { primeAssetsStatus ->
-                primeAssetsStatus?.let { status ->
-                  if (status.totalDownloadCount > 0 && !dialogShown.get()) {
-                    showProgressDialog(appCompatActivity, dialogStyleResId)
-                  }
+            primeDownloadStatus.observe(appCompatActivity) { primeAssetsStatus ->
+              primeAssetsStatus?.let { status ->
+                if (status.totalDownloadCount > 0 && !dialogShown.get()) {
+                  showProgressDialog(appCompatActivity, dialogStyleResId)
                 }
               }
-            )
+            }
           }
         }
       }
@@ -236,16 +233,16 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics
     ).toInt()
     (textView.layoutParams as LinearLayout.LayoutParams).setMargins(
-      /* left= */ marginPx, /* top= */ marginPx, /* right= */ marginPx, /* bottom= */ marginPx
+      /* left = */ marginPx, /* top = */ marginPx, /* right = */ marginPx, /* bottom = */ marginPx
     )
     textView.textSize = 14f
     textView.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
     val progressBar = ProgressBar(
-      activity, /* attrs= */ null, android.R.attr.progressBarStyleHorizontal
+      activity, /* attrs = */ null, android.R.attr.progressBarStyleHorizontal
     )
     layout.addView(progressBar)
     (progressBar.layoutParams as LinearLayout.LayoutParams).setMargins(
-      /* left= */ marginPx, /* top= */ 0, /* right= */ marginPx, /* bottom= */ 0
+      /* left = */ marginPx, /* top = */ 0, /* right = */ marginPx, /* bottom = */ 0
     )
     val dialog = AlertDialog.Builder(activity, dialogStyleResId)
       .setView(layout)

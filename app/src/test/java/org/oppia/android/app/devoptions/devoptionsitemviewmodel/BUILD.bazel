@@ -11,6 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsTestParsersViewModelTest",
     test_manifest = "//app:test_manifest",
     deps = [
+        "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
