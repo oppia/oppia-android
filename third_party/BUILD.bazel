@@ -119,8 +119,7 @@ kt_jvm_import(
     visibility = ["@maven//:__subpackages__"],
     deps = [
         ":_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
-        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-common",
-        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8",
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
     ],
 )
 
