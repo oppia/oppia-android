@@ -2220,6 +2220,7 @@ class RegexPatternValidationCheckTest {
         R.color.color_def_avatar_background_1
         R.color.color_palette_primary_color
       """.trimIndent()
+
     tempFolder.newFolder(
       "testfiles",
       "app",
@@ -2270,8 +2271,6 @@ class RegexPatternValidationCheckTest {
         $wikiReferenceNote
         """.trimIndent()
       )
-
-
   }
 
   @Test
