@@ -23,7 +23,7 @@ kt_jvm_test(
     srcs = ["AndroidBuildSdkPropertiesTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
-        "//third_party:com_google_truth_truth",
+        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -76,7 +76,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//testing:assertion_helpers",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
-        "//third_party:org_mockito_mockito-core",
+        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party/app_test:org_mockito_mockito-core",
     ],
 )

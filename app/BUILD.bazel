@@ -989,8 +989,8 @@ crashlytics_android_library(
 android_library(
     name = "crashlytics_deps",
     exports = [
-        "//third_party:com_google_firebase_firebase-analytics",
-        "//third_party:com_google_firebase_firebase-crashlytics",
-        "//third_party:io_fabric_sdk_android_fabric",
+        "//third_party/app_prod:com_google_firebase_firebase-analytics",
+        "//third_party/app_prod:com_google_firebase_firebase-crashlytics",
+        "//third_party/app_prod:io_fabric_sdk_android_fabric",
     ],
 )

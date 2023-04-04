@@ -25,9 +25,8 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/src/java/org/oppia/android/scripts/maven/model",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
-        "//third_party:com_google_protobuf_protobuf-java",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party/scripts:com_google_protobuf_protobuf-java",
+        "//third_party/scripts:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 

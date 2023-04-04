@@ -39,11 +39,11 @@ kt_jvm_library(
     ],
     visibility = ["//scripts:oppia_script_test_visibility"],
     runtime_deps = [
-        "//third_party:com_google_archivepatcher",
+        "//third_party/scripts:com_google_archivepatcher",
     ],
     deps = [
         ":aapt2_client",
-        "//third_party:com_android_tools_apkparser_apkanalyzer",
+        "//third_party/scripts:com_android_tools_apkparser_apkanalyzer",
     ],
 )
 
@@ -55,8 +55,8 @@ kt_jvm_library(
     ],
     visibility = ["//scripts:oppia_script_test_visibility"],
     runtime_deps = [
-        "//third_party:android_bundletool",
-        "//third_party:com_google_guava_guava_jre",
+        "//third_party/scripts:android_bundletool",
+        "//third_party/scripts:com_google_guava_guava_jre",
     ],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",

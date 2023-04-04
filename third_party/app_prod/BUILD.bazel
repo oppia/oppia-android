@@ -85,7 +85,7 @@ kt_jvm_import(
     tags = ["no-ide"],
     deps = [
         ":_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
-        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
+        "//third_party/app_prod:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
     ],
 )
 
@@ -93,7 +93,7 @@ kt_jvm_library(
     name = "kotlinx-coroutines-core-jvm",
     visibility = [
         "//:oppia_api_visibility",
-        "@maven//:__subpackages__",
+        "@maven_app_prod//:__pkg__",
     ],
     exports = [":_kotlinx-coroutines-core-jvm_import_do_not_depend"],
 )

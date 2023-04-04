@@ -1286,7 +1286,7 @@ class GenerateMavenDependenciesListTest {
     writeMavenInstallJson(mavenInstallJson)
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
     val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
-      "//third_party/app_test:${omitVersionAndReplaceColonsHyphensPeriods(coordinate)}"
+      "//third_party:${omitVersionAndReplaceColonsHyphensPeriods(coordinate)}"
     }
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList)
