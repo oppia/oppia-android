@@ -2215,6 +2215,7 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_kotlinFiles_includesNonColorComponentReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
+        decorateWithScreenName(HOME_ACTIVITY)
         R.color.component_color_shared_activity_status_bar_color
         R.color.color_def_avatar_background_1
         R.color.color_palette_primary_color
@@ -2230,12 +2231,14 @@ class RegexPatternValidationCheckTest {
       "android",
       "app"
     )
-    val stringFilePath1 = "app/src/main/java/org/oppia/android/app/TestFileActivityPresenter.kt"
-    val stringFilePath2 = "app/src/main/java/org/oppia/android/app/TestFileFragmentPresenter.kt"
-    val stringFilePath3 = "app/src/main/java/org/oppia/android/app/TestFileViewPresenter.kt"
-    val stringFilePath4 = "app/src/main/java/org/oppia/android/app/TestFileActivity.kt"
-    val stringFilePath5 = "app/src/main/java/org/oppia/android/app/TestFileFragment.kt"
-    val stringFilePath6 = "app/src/main/java/org/oppia/android/app/TestFileView.kt"
+
+    val stringFilePath1 = "app/src/main/java/org/oppia/android/app/TestFileViewPresenter.kt"
+    val stringFilePath2 = "app/src/main/java/org/oppia/android/app/TestFileView.kt"
+    val stringFilePath3 = "app/src/main/java/org/oppia/android/app/HomeActivity.kt"
+    val stringFilePath4 = "app/src/main/java/org/oppia/android/app/TestFileActivityPresenter.kt"
+    val stringFilePath5 = "app/src/main/java/org/oppia/android/app/TestFileFragmentPresenter.kt"
+    val stringFilePath6 = "app/src/main/java/org/oppia/android/app/TestFileFragment.kt"
+
     tempFolder.newFile("testfiles/$stringFilePath1").writeText(prohibitedContent)
     tempFolder.newFile("testfiles/$stringFilePath2").writeText(prohibitedContent)
     tempFolder.newFile("testfiles/$stringFilePath3").writeText(prohibitedContent)
@@ -2252,51 +2255,23 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath1:2: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath1:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath2:2: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath1:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath2:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath3:2: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath2:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath3:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath4:2: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath3:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath4:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath5:2: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath4:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath5:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath6:2: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath5:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath6:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath6:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $wikiReferenceNote
         """.trimIndent()
       )
+
+
   }
 
   @Test
