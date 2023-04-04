@@ -2233,12 +2233,12 @@ class RegexPatternValidationCheckTest {
       "app"
     )
 
-    val stringFilePath1 = "app/src/main/java/org/oppia/android/app/TestFileViewPresenter.kt"
-    val stringFilePath2 = "app/src/main/java/org/oppia/android/app/TestFileView.kt"
-    val stringFilePath3 = "app/src/main/java/org/oppia/android/app/HomeActivity.kt"
-    val stringFilePath4 = "app/src/main/java/org/oppia/android/app/TestFileActivityPresenter.kt"
-    val stringFilePath5 = "app/src/main/java/org/oppia/android/app/TestFileFragmentPresenter.kt"
-    val stringFilePath6 = "app/src/main/java/org/oppia/android/app/TestFileFragment.kt"
+    val stringFilePath1 = "app/src/main/java/org/oppia/android/app/HomeActivity.kt"
+    val stringFilePath2 = "app/src/main/java/org/oppia/android/app/TestFileActivityPresenter.kt"
+    val stringFilePath3 = "app/src/main/java/org/oppia/android/app/TestFileFragment.kt"
+    val stringFilePath4 = "app/src/main/java/org/oppia/android/app/TestFileFragmentPresenter.kt"
+    val stringFilePath5 = "app/src/main/java/org/oppia/android/app/TestFileView.kt"
+    val stringFilePath6 = "app/src/main/java/org/oppia/android/app/TestFileViewPresenter.kt"
 
     tempFolder.newFile("testfiles/$stringFilePath1").writeText(prohibitedContent)
     tempFolder.newFile("testfiles/$stringFilePath2").writeText(prohibitedContent)
