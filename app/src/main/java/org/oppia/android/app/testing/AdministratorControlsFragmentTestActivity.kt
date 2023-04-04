@@ -35,7 +35,7 @@ class AdministratorControlsFragmentTestActivity :
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
-  lateinit var profileId: ProfileId
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
