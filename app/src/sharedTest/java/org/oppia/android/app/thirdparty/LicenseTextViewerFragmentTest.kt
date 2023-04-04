@@ -31,6 +31,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -108,12 +109,14 @@ class LicenseTextViewerFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   @After
@@ -320,7 +323,8 @@ class LicenseTextViewerFragmentTest {
     return LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
       ApplicationProvider.getApplicationContext(),
       dependencyIndex,
-      licenseIndex
+      licenseIndex,
+      profileId
     )
   }
 

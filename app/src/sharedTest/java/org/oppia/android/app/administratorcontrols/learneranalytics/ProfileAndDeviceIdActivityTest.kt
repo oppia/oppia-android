@@ -124,7 +124,7 @@ class ProfileAndDeviceIdActivityTest {
   var activityRule =
     ActivityScenarioRule<ProfileAndDeviceIdActivity>(
       ProfileAndDeviceIdActivity.createIntent(
-        ApplicationProvider.getApplicationContext(), profileId
+        ApplicationProvider.getApplicationContext(), ProfileId.getDefaultInstance()
       )
     )
 
@@ -141,10 +141,9 @@ class ProfileAndDeviceIdActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
-    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
-
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
       .setWorkerFactory(logUploadWorkerFactory)
