@@ -5,10 +5,10 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.profile_edit_fragment.*
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.profile_edit_fragment.*
 
 class SnackbarManager @Inject constructor(private val snackbarController: SnackbarController) {
   // Use SnackbarController for displaying the current snackbar, hiding it after the snackbar hides, or showing a new one.
