@@ -2257,7 +2257,6 @@ class RegexPatternValidationCheckTest {
         $wikiReferenceNote
         """.trimIndent()
       )
-
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
