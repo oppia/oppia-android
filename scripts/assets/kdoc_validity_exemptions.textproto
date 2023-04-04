@@ -42,7 +42,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopi
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedViewModel.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/testing/DeveloperOptionsTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsFragment.kt"

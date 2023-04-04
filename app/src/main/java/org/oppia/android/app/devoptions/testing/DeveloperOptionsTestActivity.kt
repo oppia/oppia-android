@@ -81,7 +81,6 @@ class DeveloperOptionsTestActivity :
   }
 
   companion object {
-
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
