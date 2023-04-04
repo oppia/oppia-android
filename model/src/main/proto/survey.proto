@@ -167,7 +167,7 @@ enum SurveyCompletionStatus {
   DECLINED = 1;
 
   // Corresponds to the survey being exited before the mandatory questions are completed.
-  STARTED_NOT_COMPLETED = 2;
+  EXITED_NOT_COMPLETED = 2;
 
   // Corresponds to the mandatory part of the survey being completed.
   MANDATORY_PART_COMPLETED = 3;
