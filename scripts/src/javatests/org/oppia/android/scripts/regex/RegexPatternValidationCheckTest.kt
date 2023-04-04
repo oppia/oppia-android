@@ -2322,10 +2322,35 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_postUsed_fileContentIsNotCorrect() {
+  fun testFileContent_postUsed_withParenthesis_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         binding.view.post({ binding.view.visibility = View.GONE })
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUsePostorPostDelayed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_postUsed_withCurlyBraces_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        binding.view.post { binding.view.visibility = View.GONE }
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
