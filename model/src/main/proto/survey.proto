@@ -39,6 +39,9 @@ message SurveyQuestion {
     // Indicates whether this question takes a free-text response.
     bool free_form_text = 6;
   }
+
+  // The language code to which this question is localized.
+  string language_code = 7;
 }
 
 // Represents a list of answer options for a multiple choice question.
