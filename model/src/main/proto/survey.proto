@@ -83,16 +83,7 @@ message SurveyQuestionOption {
   QuestionName question_name = 2;
 
   // The actual text value of the answer.
-  oneof answer {
-    // The enum representation of the type of user answer selected.
-    UserTypeAnswer user_type_answer = 3;
-
-    // The enum representation of the market fit answer selected.
-    MarketFitAnswer market_fit_answer = 4;
-
-    // The integer value representing the nps score selected by the user.
-    int32 nps_answer = 5;
-  }
+  string answer = 3;
 }
 
 // Represents an answer that was selected by a user for a survey question.
@@ -105,7 +96,16 @@ message SurveyUserAnswer {
   QuestionName question_name = 2;
 
   // The value of the answer the user gave.
-  string user_answer = 3;
+  oneof answer {
+    // The enum representation of the type of user answer selected.
+    UserTypeAnswer user_type_answer = 3;
+
+    // The enum representation of the market fit answer selected.
+    MarketFitAnswer market_fit_answer = 4;
+
+    // The integer value representing the nps score selected by the user.
+    int32 nps_answer = 5;
+  }
 }
 
 // Represents the different types of users who could be taking the survey.
