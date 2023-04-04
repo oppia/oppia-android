@@ -2219,7 +2219,17 @@ class RegexPatternValidationCheckTest {
         R.color.color_def_avatar_background_1
         R.color.color_palette_primary_color
       """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android", "app")
+    tempFolder.newFolder(
+      "testfiles",
+      "app",
+      "src",
+      "main",
+      "java",
+      "org",
+      "oppia",
+      "android",
+      "app"
+    )
     val stringFilePath1 = "app/src/main/java/org/oppia/android/app/TestFileActivityPresenter.kt"
     val stringFilePath2 = "app/src/main/java/org/oppia/android/app/TestFileFragmentPresenter.kt"
     val stringFilePath3 = "app/src/main/java/org/oppia/android/app/TestFileViewPresenter.kt"
@@ -2288,7 +2298,6 @@ class RegexPatternValidationCheckTest {
         $wikiReferenceNote
         """.trimIndent()
       )
-
   }
 
   @Test
