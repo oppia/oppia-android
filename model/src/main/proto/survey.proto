@@ -82,8 +82,20 @@ message SurveyQuestionOption {
   // The semantic name of the question this answer option is tied to.
   QuestionName question_name = 2;
 
-  // The actual text value of the answer.
-  string answer = 3;
+  // The actual text value of the answer option.
+  string label = 3;
+
+  // The type of answer this option represents.
+  oneof answer {
+    // The enum representation of the type of user answer option.
+    UserTypeAnswer user_type = 4;
+
+    // The enum representation of the market fit answer option.
+    MarketFitAnswer market_fit = 5;
+
+    // The integer value representing the nps score option.
+    int32 nps = 6;
+  }
 }
 
 // Represents an answer that was selected by a user for a survey question.
@@ -98,13 +110,13 @@ message SurveyUserAnswer {
   // The value of the answer the user gave.
   oneof answer {
     // The enum representation of the type of user answer selected.
-    UserTypeAnswer user_type_answer = 3;
+    UserTypeAnswer user_type = 3;
 
     // The enum representation of the market fit answer selected.
-    MarketFitAnswer market_fit_answer = 4;
+    MarketFitAnswer market_fit = 4;
 
     // The integer value representing the nps score selected by the user.
-    int32 nps_answer = 5;
+    int32 nps = 5;
   }
 }
 
