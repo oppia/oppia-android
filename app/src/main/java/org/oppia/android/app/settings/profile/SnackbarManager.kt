@@ -32,9 +32,7 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
           SnackbarController.SnackbarRequest.ShowNothing -> {} // Do nothing.
         }
         // Other cases...
-        else -> {
-
-        }
+        else -> {}
       }
     }
   }

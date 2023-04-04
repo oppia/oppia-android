@@ -3,9 +3,7 @@ package org.oppia.android.app.settings.profile
 import androidx.annotation.StringRes
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.R
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
 
 @Singleton
 abstract class SnackbarController @Inject constructor() {
@@ -24,14 +22,15 @@ abstract class SnackbarController @Inject constructor() {
   }
 
   fun dismissCurrentSnackbar() {
-      //dismiss the current snackbar
+    //dismiss the current snackbar
 
   }
 
   sealed class SnackbarRequest {
-    data class ShowSnackbar(@StringRes val messageStringId: Int, val duration: SnackbarDuration): SnackbarRequest()
+    data class ShowSnackbar(@StringRes val messageStringId: Int, val duration: SnackbarDuration) :
+      SnackbarRequest()
 
-    object ShowNothing: SnackbarRequest()
+    object ShowNothing : SnackbarRequest()
   }
 
   // Abstraction for Snackbar's length constants.
