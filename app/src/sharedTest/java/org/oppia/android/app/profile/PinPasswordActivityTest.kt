@@ -185,7 +185,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivity_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = PinPasswordActivity.createPinPasswordActivityIntent(
       context = context,
       adminPin = adminPin,

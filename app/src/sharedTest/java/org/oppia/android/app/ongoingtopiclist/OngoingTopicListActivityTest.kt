@@ -164,7 +164,7 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  fun testOngoingTopicListActivity_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = createOngoingTopicListActivityIntent(profileId = this.profileId)
       .extractCurrentUserProfileId()
 

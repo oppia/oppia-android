@@ -340,7 +340,7 @@ class NavigationDrawerActivityDebugTest {
   }
 
   @Test
-  fun testNavigationDrawerActivityDebug_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = createNavigationDrawerActivityIntent(
       this.profileId
     ).extractCurrentUserProfileId()

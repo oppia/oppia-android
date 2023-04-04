@@ -186,7 +186,7 @@ class CompletedStoryListActivityTest {
   }
 
   @Test
-  fun testCompletedStoryListActivity_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = createCompletedStoryListActivityIntent(
       profileId
     ).extractCurrentUserProfileId()

@@ -183,7 +183,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = AdminPinActivity.createAdminPinActivityIntent(
       context = context,
       profileId = this.profileId,

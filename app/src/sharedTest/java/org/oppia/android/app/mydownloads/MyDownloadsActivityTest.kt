@@ -135,7 +135,7 @@ class MyDownloadsActivityTest {
   }
 
   @Test
-  fun testMyDownloadsActivity_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = MyDownloadsActivity.createMyDownloadsActivityIntent(
       ApplicationProvider.getApplicationContext(),
       ProfileId.newBuilder().setInternalId(1).build()

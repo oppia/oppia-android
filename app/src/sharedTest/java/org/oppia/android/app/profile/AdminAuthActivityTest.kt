@@ -173,7 +173,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = AdminAuthActivity.createAdminAuthActivityIntent(
       context = context,
       adminPin = "12345",

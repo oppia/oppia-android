@@ -121,7 +121,7 @@ class HelpActivityTest {
   }
 
   @Test
-  fun testHelpActivity_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = createHelpActivityIntent()
       .extractCurrentUserProfileId()
 

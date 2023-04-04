@@ -175,7 +175,7 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptionActivity_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = createDeveloperOptionsActivityIntent(profileId = this.profileId)
       .extractCurrentUserProfileId()
 

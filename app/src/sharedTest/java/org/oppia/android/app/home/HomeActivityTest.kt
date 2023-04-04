@@ -246,7 +246,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_createIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = createHomeActivityIntent(profileId).extractCurrentUserProfileId()
 
     assertThat(profileId).isEqualTo(this.profileId)

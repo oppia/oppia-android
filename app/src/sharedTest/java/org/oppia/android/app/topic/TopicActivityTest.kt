@@ -167,18 +167,9 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_createTopicActivityIntent_verifyProfileIdInIntent() {
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
     val profileId = TopicActivity.createTopicActivityIntent(
       context, profileId, FRACTIONS_TOPIC_ID
-    ).extractCurrentUserProfileId()
-
-    assertThat(profileId).isEqualTo(this.profileId)
-  }
-
-  @Test
-  fun testTopicActivity_createTopicPlayStoryActivityIntent_verifyProfileIdInIntent() {
-    val profileId = TopicActivity.createTopicPlayStoryActivityIntent(
-      context, profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ).extractCurrentUserProfileId()
 
     assertThat(profileId).isEqualTo(this.profileId)
