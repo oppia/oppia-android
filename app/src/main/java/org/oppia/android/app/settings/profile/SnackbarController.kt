@@ -1,9 +1,9 @@
 package org.oppia.android.app.settings.profile
 
 import androidx.annotation.StringRes
+import org.oppia.android.util.data.DataProvider
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.data.DataProvider
 
 @Singleton
 abstract class SnackbarController @Inject constructor() {
@@ -12,7 +12,6 @@ abstract class SnackbarController @Inject constructor() {
   fun getCurrentSnackbar(): DataProvider<SnackbarRequest> {
     // Return a data provider that will provide the current snackbar request.
     // not getting how to return a data provider
-
   }
 
   fun enqueueSnackbar(request: SnackbarRequest.ShowSnackbar) {
@@ -22,8 +21,7 @@ abstract class SnackbarController @Inject constructor() {
   }
 
   fun dismissCurrentSnackbar() {
-    //dismiss the current snackbar
-
+    // dismiss the current snackbar
   }
 
   sealed class SnackbarRequest {
