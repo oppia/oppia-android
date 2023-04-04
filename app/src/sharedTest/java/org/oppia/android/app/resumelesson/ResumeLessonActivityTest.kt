@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
@@ -102,6 +103,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -123,6 +125,7 @@ class ResumeLessonActivityTest {
 
   @Inject
   lateinit var context: Context
+  private lateinit var profileId: ProfileId
 
   @get:Rule
   val resumeLessonActivityTestRule = ActivityTestRule(
@@ -138,6 +141,7 @@ class ResumeLessonActivityTest {
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   }
 
   @After
@@ -154,6 +158,13 @@ class ResumeLessonActivityTest {
     val currentScreenName = createResumeLessonActivityIntent().extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.RESUME_LESSON_ACTIVITY)
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = createResumeLessonActivityIntent().extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
@@ -202,7 +213,7 @@ class ResumeLessonActivityTest {
   private fun createResumeLessonActivityIntent(): Intent {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
-      ProfileId.newBuilder().apply { internalId = 1 }.build(),
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,

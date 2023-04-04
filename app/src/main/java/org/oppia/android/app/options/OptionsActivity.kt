@@ -18,6 +18,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
@@ -44,6 +45,7 @@ class OptionsActivity :
   // used to initially load the suitable fragment in the case of multipane.
   private var isFirstOpen = true
   private lateinit var selectedFragment: String
+  private lateinit var profileId: ProfileId
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
@@ -78,6 +80,8 @@ class OptionsActivity :
     } else {
       savedInstanceState.get(SELECTED_FRAGMENT_SAVED_KEY) as String
     }
+
+    profileId = intent.extractCurrentUserProfileId()
     val extraOptionsTitle =
       savedInstanceState?.getStringFromBundle(SELECTED_OPTIONS_TITLE_SAVED_KEY)
     optionActivityPresenter.handleOnCreate(
@@ -120,7 +124,8 @@ class OptionsActivity :
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
         APP_LANGUAGE,
-        appLanguage
+        appLanguage,
+        profileId
       ),
       REQUEST_CODE_APP_LANGUAGE
     )
@@ -128,14 +133,14 @@ class OptionsActivity :
 
   override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
     startActivityForResult(
-      AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage),
+      AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage, profileId),
       REQUEST_CODE_AUDIO_LANGUAGE
     )
   }
 
   override fun routeReadingTextSize(readingTextSize: ReadingTextSize) {
     startActivityForResult(
-      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(this, readingTextSize),
+      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(this, readingTextSize, profileId),
       REQUEST_CODE_TEXT_SIZE
     )
   }

@@ -8,12 +8,14 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityStateBundle
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.AUDIO_LANGUAGE_ACTIVITY
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The activity to change the Default Audio language of the app. */
@@ -45,7 +47,8 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
     /** Returns a new [Intent] to route to [AudioLanguageActivity]. */
     fun createAudioLanguageActivityIntent(
       context: Context,
-      audioLanguage: AudioLanguage
+      audioLanguage: AudioLanguage,
+      profileId: ProfileId
     ): Intent {
       return Intent(context, AudioLanguageActivity::class.java).apply {
         val arguments = AudioLanguageActivityParams.newBuilder().apply {
@@ -53,6 +56,7 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
         }.build()
         putProtoExtra(ACTIVITY_PARAMS_KEY, arguments)
         decorateWithScreenName(AUDIO_LANGUAGE_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
     }
 

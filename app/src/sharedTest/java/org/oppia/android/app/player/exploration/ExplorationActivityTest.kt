@@ -42,6 +42,7 @@ import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -163,6 +164,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
@@ -279,6 +281,19 @@ class ExplorationActivityTest {
     ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.EXPLORATION_ACTIVITY)
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = createExplorationActivityIntent(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ).extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test

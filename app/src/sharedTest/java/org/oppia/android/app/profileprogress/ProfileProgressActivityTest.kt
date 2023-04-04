@@ -134,6 +134,14 @@ class ProfileProgressActivityTest {
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_PROGRESS_ACTIVITY)
   }
 
+  @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = createProfileProgressActivityIntent()
+      .extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }

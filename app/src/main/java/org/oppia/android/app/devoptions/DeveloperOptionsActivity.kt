@@ -69,15 +69,15 @@ class DeveloperOptionsActivity :
   }
 
   override fun routeToViewEventLogs() {
-    startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
+    startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this, profileId))
   }
 
   override fun routeToForceNetworkType() {
-    startActivity(ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(this))
+    startActivity(ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(this, profileId))
   }
 
   override fun routeToMathExpressionParserTest() {
-    startActivity(MathExpressionParserActivity.createIntent(this))
+    startActivity(MathExpressionParserActivity.createIntent(this, profileId))
   }
 
   companion object {

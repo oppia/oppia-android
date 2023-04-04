@@ -34,6 +34,7 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -241,6 +242,15 @@ class QuestionPlayerActivityTest {
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.QUESTION_PLAYER_ACTIVITY)
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+      context, ArrayList(SKILL_ID_LIST), profileId
+    ).extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test

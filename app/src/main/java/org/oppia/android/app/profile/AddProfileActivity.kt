@@ -5,8 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
@@ -15,12 +18,18 @@ const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_colo
 class AddProfileActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
+  private lateinit var profileId: ProfileId
 
   companion object {
-    fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
+    fun createAddProfileActivityIntent(
+      context: Context,
+      colorRgb: Int,
+      profileId: ProfileId
+    ): Intent {
       return Intent(context, AddProfileActivity::class.java).apply {
         putExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, colorRgb)
         decorateWithScreenName(ADD_PROFILE_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
     }
   }
@@ -28,6 +37,7 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    profileId = intent.extractCurrentUserProfileId()
     addProfileFragmentPresenter.handleOnCreate()
   }
 

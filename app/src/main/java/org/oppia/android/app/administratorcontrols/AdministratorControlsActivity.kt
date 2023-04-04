@@ -66,6 +66,7 @@ class AdministratorControlsActivity :
   lateinit var resourceHandler: AppLanguageResourceHandler
   private lateinit var lastLoadedFragment: String
   private var isProfileDeletionDialogVisible: Boolean = false
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -80,27 +81,27 @@ class AdministratorControlsActivity :
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    val selectedProfileId = savedInstanceState?.extractCurrentUserProfileId()
+    profileId = savedInstanceState?.extractCurrentUserProfileId()
       ?: ProfileId.newBuilder().apply { internalId = -1 }.build()
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
       lastLoadedFragment,
-      selectedProfileId,
+      profileId,
       isProfileDeletionDialogVisible
     )
     title = resourceHandler.getStringInLocale(R.string.administrator_controls)
   }
 
   override fun routeToAppVersion() {
-    startActivity(AppVersionActivity.createAppVersionActivityIntent(this))
+    startActivity(AppVersionActivity.createAppVersionActivityIntent(this, profileId))
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileListActivity.createProfileListActivityIntent(this))
+    startActivity(ProfileListActivity.createProfileListActivityIntent(this, profileId))
   }
 
   override fun routeToLearnerAnalytics() {
-    startActivity(ProfileAndDeviceIdActivity.createIntent(this))
+    startActivity(ProfileAndDeviceIdActivity.createIntent(this, profileId))
   }
 
   override fun loadProfileEdit(profileId: ProfileId, profileName: String) {

@@ -21,6 +21,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
@@ -56,6 +57,7 @@ class HelpActivity :
 
   private lateinit var selectedFragment: String
   private lateinit var selectedHelpOptionsTitle: String
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -75,6 +77,7 @@ class HelpActivity :
       POLICIES_ARGUMENT_PROTO,
       PoliciesActivityParams.getDefaultInstance()
     )
+    profileId = intent.extractCurrentUserProfileId()
     helpActivityPresenter.handleOnCreate(
       selectedHelpOptionsTitle,
       isFromNavigationDrawer,
@@ -105,12 +108,13 @@ class HelpActivity :
   }
 
   override fun onRouteToFAQList() {
-    val intent = FAQListActivity.createFAQListActivityIntent(this)
+    val intent = FAQListActivity.createFAQListActivityIntent(this, profileId)
     startActivity(intent)
   }
 
   override fun onRouteToThirdPartyDependencyList() {
-    val intent = ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(this)
+    val intent =
+      ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(this, profileId)
     startActivity(intent)
   }
 
@@ -137,7 +141,10 @@ class HelpActivity :
 
   // TODO(#3681): Add support to display Single FAQ in split mode on tablet devices.
   override fun onRouteToFAQSingle(question: String, answer: String) {
-    startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
+    startActivity(
+      FAQSingleActivity.createFAQSingleActivityIntent
+      (this, question, answer, profileId)
+    )
   }
 
   override fun onRouteToPolicies(policyPage: PolicyPage) {

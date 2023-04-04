@@ -151,6 +151,14 @@ class ProfilePictureActivityTest {
   }
 
   @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = createProfilePictureActivityIntent(profileId)
+      .extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
+  }
+
+  @Test
   fun testProfilePictureActivity_hasCorrectActivityLabel() {
     launch(ProfilePictureActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->

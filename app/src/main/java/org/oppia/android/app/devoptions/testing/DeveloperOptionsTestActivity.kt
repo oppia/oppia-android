@@ -73,7 +73,7 @@ class DeveloperOptionsTestActivity :
   }
 
   override fun routeToViewEventLogs() {
-    startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
+    startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this, profileId))
   }
 
   override fun forceCrash() {
@@ -81,7 +81,6 @@ class DeveloperOptionsTestActivity :
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "DeveloperOptionsTestActivity.profile_id"
 
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, profileId: ProfileId): Intent {

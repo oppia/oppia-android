@@ -7,6 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
@@ -26,6 +27,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -82,6 +84,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -104,10 +107,12 @@ class AudioLanguageActivityTest {
   )
 
   @Inject lateinit var context: Context
+  lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -123,6 +128,14 @@ class AudioLanguageActivityTest {
   }
 
   @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId =
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE).extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
+  }
+
+  @Test
   fun testAudioLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE))
 
@@ -134,7 +147,7 @@ class AudioLanguageActivityTest {
 
   @Suppress("SameParameterValue")
   private fun createDefaultAudioActivityIntent(audioLanguage: AudioLanguage) =
-    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
+    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage, profileId)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.APP_VERSION_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Activity for App Version. */
@@ -29,9 +31,10 @@ class AppVersionActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    fun createAppVersionActivityIntent(context: Context): Intent {
+    fun createAppVersionActivityIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, AppVersionActivity::class.java).apply {
         decorateWithScreenName(APP_VERSION_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
     }
   }

@@ -35,6 +35,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -117,11 +118,13 @@ class AudioLanguageFragmentTest {
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   @Test
@@ -209,7 +212,7 @@ class AudioLanguageFragmentTest {
   }
 
   private fun createDefaultAudioActivityIntent(audioLanguage: AudioLanguage) =
-    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
+    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage, profileId)
 
   private fun rotateToLandscape() {
     onView(isRoot()).perform(orientationLandscape())

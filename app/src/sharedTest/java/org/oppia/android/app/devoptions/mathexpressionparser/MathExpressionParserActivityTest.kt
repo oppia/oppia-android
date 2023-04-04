@@ -11,6 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -29,6 +30,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -85,6 +87,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -105,11 +108,13 @@ class MathExpressionParserActivityTest {
 
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   @After
@@ -119,10 +124,19 @@ class MathExpressionParserActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = MathExpressionParserActivity.createIntent(context)
+    val screenName = MathExpressionParserActivity.createIntent(context, profileId)
       .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.MATH_EXPRESSION_PARSER_ACTIVITY)
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = MathExpressionParserActivity.createIntent(
+      context, profileId
+    ).extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
@@ -144,7 +158,7 @@ class MathExpressionParserActivityTest {
   }
 
   private fun launchMathExpressionParserActivity(): ActivityScenario<MathExpressionParserActivity> =
-    ActivityScenario.launch(MathExpressionParserActivity.createIntent(context))
+    ActivityScenario.launch(MathExpressionParserActivity.createIntent(context, profileId))
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

@@ -196,7 +196,7 @@ class ReadingTextSizeFragmentTest {
   }
 
   private fun createReadingTextSizeActivityIntent() =
-    ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, SMALL_TEXT_SIZE)
+    ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, SMALL_TEXT_SIZE, profileId)
 
   private fun createOptionActivityIntent(
     profileId: ProfileId,

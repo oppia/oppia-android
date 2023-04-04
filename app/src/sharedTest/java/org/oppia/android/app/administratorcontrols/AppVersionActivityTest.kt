@@ -102,6 +102,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -154,7 +155,7 @@ class AppVersionActivityTest {
 
   private fun createAppVersionActivityIntent(): Intent {
     return AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
+      ApplicationProvider.getApplicationContext(), profileId
     )
   }
 
@@ -173,6 +174,13 @@ class AppVersionActivityTest {
     val screenName = createAppVersionActivityIntent().extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.APP_VERSION_ACTIVITY)
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = createAppVersionActivityIntent().extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
@@ -269,7 +277,7 @@ class AppVersionActivityTest {
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
     val intent = AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
+      ApplicationProvider.getApplicationContext(), profileId
     )
     return ActivityScenario.launch(intent)
   }

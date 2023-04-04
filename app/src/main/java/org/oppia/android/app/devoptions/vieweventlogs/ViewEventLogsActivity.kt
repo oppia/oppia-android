@@ -6,9 +6,11 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.VIEW_EVENT_LOGS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Activity for View Event Logs. */
@@ -27,9 +29,10 @@ class ViewEventLogsActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    fun createViewEventLogsActivityIntent(context: Context): Intent {
+    fun createViewEventLogsActivityIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, ViewEventLogsActivity::class.java).apply {
         decorateWithScreenName(VIEW_EVENT_LOGS_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
     }
   }

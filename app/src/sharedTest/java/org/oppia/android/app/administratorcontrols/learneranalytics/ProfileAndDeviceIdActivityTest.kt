@@ -32,6 +32,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
@@ -95,6 +96,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -121,7 +123,9 @@ class ProfileAndDeviceIdActivityTest {
   @get:Rule
   var activityRule =
     ActivityScenarioRule<ProfileAndDeviceIdActivity>(
-      ProfileAndDeviceIdActivity.createIntent(ApplicationProvider.getApplicationContext())
+      ProfileAndDeviceIdActivity.createIntent(
+        ApplicationProvider.getApplicationContext(), profileId
+      )
     )
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
@@ -132,12 +136,14 @@ class ProfileAndDeviceIdActivityTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
   @Inject lateinit var syncStatusManager: SyncStatusManager
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
 
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
@@ -165,10 +171,19 @@ class ProfileAndDeviceIdActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = ProfileAndDeviceIdActivity.createIntent(
-      ApplicationProvider.getApplicationContext()
+      ApplicationProvider.getApplicationContext(), profileId
     ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY)
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = ProfileAndDeviceIdActivity.createIntent(
+      ApplicationProvider.getApplicationContext(), profileId
+    ).extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test

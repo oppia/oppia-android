@@ -19,6 +19,7 @@ import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Activity for recent stories. */
@@ -56,6 +57,7 @@ class RecentlyPlayedActivity :
           recentlyPlayedActivityParams
         )
         decorateWithScreenName(ScreenName.RECENTLY_PLAYED_ACTIVITY)
+        decorateWithUserProfileId(recentlyPlayedActivityParams.profileId)
       }
     }
   }

@@ -37,6 +37,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -96,6 +97,7 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -131,11 +133,13 @@ class FAQSingleActivityTest {
 
   @Inject
   lateinit var context: Context
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
     val intent = createFAQSingleActivity()
     launchedActivity = activityTestRule.launchActivity(intent)
   }
@@ -150,6 +154,13 @@ class FAQSingleActivityTest {
     val screenName = createFAQSingleActivity().extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.FAQ_SINGLE_ACTIVITY)
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = createFAQSingleActivity().extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
@@ -203,7 +214,8 @@ class FAQSingleActivityTest {
     return FAQSingleActivity.createFAQSingleActivityIntent(
       ApplicationProvider.getApplicationContext(),
       getResources().getString(R.string.faq_question_1),
-      getResources().getString(R.string.faq_answer_1)
+      getResources().getString(R.string.faq_answer_1),
+      profileId
     )
   }
 

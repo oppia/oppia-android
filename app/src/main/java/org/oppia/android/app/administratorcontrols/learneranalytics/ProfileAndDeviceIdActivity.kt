@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /**
@@ -35,9 +37,10 @@ class ProfileAndDeviceIdActivity : InjectableAppCompatActivity() {
 
   companion object {
     /** Returns an [Intent] to launch [ProfileAndDeviceIdActivity]. */
-    fun createIntent(context: Context): Intent {
+    fun createIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, ProfileAndDeviceIdActivity::class.java).apply {
         decorateWithScreenName(PROFILE_AND_DEVICE_ID_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
     }
   }

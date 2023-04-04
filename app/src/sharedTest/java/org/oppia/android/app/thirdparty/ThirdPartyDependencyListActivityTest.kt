@@ -8,6 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
@@ -26,6 +27,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -82,6 +84,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -111,10 +114,12 @@ class ThirdPartyDependencyListActivityTest {
 
   @Inject
   lateinit var context: Context
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    profileId = ProfileId.newBuilder().apply { internalId = 0 }.build()
   }
 
   @Test
@@ -123,6 +128,14 @@ class ThirdPartyDependencyListActivityTest {
       .extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY)
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = createThirdPartyDependencyListActivityIntent()
+      .extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
   }
 
   @Test
@@ -143,7 +156,7 @@ class ThirdPartyDependencyListActivityTest {
 
   private fun createThirdPartyDependencyListActivityIntent(): Intent {
     return ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(
-      ApplicationProvider.getApplicationContext()
+      ApplicationProvider.getApplicationContext(), profileId
     )
   }
 

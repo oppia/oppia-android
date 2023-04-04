@@ -128,7 +128,8 @@ class AdminPinActivityPresenter @Inject constructor(
                     context,
                     activity.intent.getIntExtra(
                       ADMIN_PIN_COLOR_RGB_EXTRA_KEY, -10710042
-                    )
+                    ),
+                    activity.intent.extractCurrentUserProfileId()
                   )
                 )
                 activity.finish()

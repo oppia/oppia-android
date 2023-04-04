@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
@@ -15,6 +16,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 private const val ACTIVITY_PARAMS_KEY = "ReadingTextSizeActivity.params"
@@ -40,7 +42,8 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
     /** Returns a new [Intent] to route to [ReadingTextSizeActivity]. */
     fun createReadingTextSizeActivityIntent(
       context: Context,
-      initialReadingTextSize: ReadingTextSize
+      initialReadingTextSize: ReadingTextSize,
+      profileId: ProfileId
     ): Intent {
       val params = ReadingTextSizeActivityParams.newBuilder().apply {
         readingTextSize = initialReadingTextSize
@@ -48,6 +51,7 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
       return Intent(context, ReadingTextSizeActivity::class.java).apply {
         putProtoExtra(ACTIVITY_PARAMS_KEY, params)
         decorateWithScreenName(READING_TEXT_SIZE_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
     }
   }

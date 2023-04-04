@@ -41,6 +41,10 @@ class OnboardingActivity :
   }
 
   override fun onRouteToPolicies(policyPage: PolicyPage) {
-    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policyPage))
+    startActivity(
+      PoliciesActivity.createPoliciesActivityIntent(
+        this, policyPage
+      )
+    )
   }
 }

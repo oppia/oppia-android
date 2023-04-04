@@ -139,6 +139,15 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  fun testActivity_createIntent_verifyProfileIdInIntent() {
+    val profileId = WalkthroughActivity.createWalkthroughActivityIntent(
+      context, profileId
+    ).extractCurrentUserProfileId()
+
+    assertThat(profileId).isEqualTo(this.profileId)
+  }
+
+  @Test
   fun testWalkthroughActivity_defaultProgressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))

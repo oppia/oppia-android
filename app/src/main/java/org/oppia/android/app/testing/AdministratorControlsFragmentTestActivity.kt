@@ -16,6 +16,7 @@ import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Test activity for [AdministratorControlsFragmentTest]. */
@@ -34,18 +35,21 @@ class AdministratorControlsFragmentTestActivity :
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
+  lateinit var profileId: ProfileId
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    profileId = intent.extractCurrentUserProfileId()
     administratorControlsFragmentTestActivityPresenter.handleOnCreate()
   }
 
   override fun routeToAppVersion() {
-    startActivity(AppVersionActivity.createAppVersionActivityIntent(this))
+    startActivity(AppVersionActivity.createAppVersionActivityIntent(this, profileId))
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileListActivity.createProfileListActivityIntent(this))
+    startActivity(ProfileListActivity.createProfileListActivityIntent(this, profileId))
   }
 
   override fun loadProfileList() {}
