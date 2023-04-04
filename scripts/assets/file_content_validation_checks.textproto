@@ -410,9 +410,8 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?.kt"
-  prohibited_content_regex: ".+?\\.(post|postDelayed)[\\s]*(\\(|\\{).+?"
+  prohibited_content_regex: ".+?\\.(post|postDelayed)[\\s]*(\\(|\\{).*?"
   failure_message: "Prefer avoiding post() and postDelayed() method as they can can lead to subtle and difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when an operation needs to run at a future time. For cases when state needs to be synchronized with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2."
-  exempted_file_name: "app/src/main/java/org/oppia/android/app/spotlight/SpotlightFragment.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/topic/info/TopicInfoFragmentPresenter.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/drawer/NavigationDrawerFragmentPresenter.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt"
