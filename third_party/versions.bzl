@@ -237,59 +237,151 @@ _MAVEN_SCRIPTS_DEPENDENCY_VERSIONS = {
     "org.checkerframework:checker-qual": "3.21.3",
 }
 
-# Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
-HTTP_DEPENDENCY_VERSIONS = {
-    "android_bundletool": {
-        "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
-        "version": "1.8.0",
-    },
-    "dagger": {
-        "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
-        "version": "2.41",
-    },
-    "guava_android": {
-        "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
-        "version": "31.0.1",
-    },
-    "guava_jre": {
-        "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
-        "version": "31.0.1",
-    },
-    "kotlinx-coroutines-core-jvm": {
-        "sha": "acc8c74b1fb88121c51221bfa7b6f5e920201bc20183ebf74165dcf5d45a8003",
-        "version": "1.6.0",
-    },
-    "protobuf_tools": {
-        "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
-        "version": "3.11.0",
-    },
-    "robolectric": {
-        "sha": "af0177d32ecd2cd68ee6e9f5d38288e1c4de0dd2a756bb7133c243f2d5fe06f7",
-        "version": "4.5",
-    },
-    "rules_java": {
-        "sha": "c73336802d0b4882e40770666ad055212df4ea62cfa6edf9cb0f9d29828a0934",
-        "version": "5.3.5",
-    },
-    "rules_jvm": {
-        "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
-        "version": "5.1",
-    },
-    "rules_kotlin": {
-        "sha": "1d872b9c6546f0f737a356d873b164d70282760fe4c880349770abc9e494c9ce",
-        "version": "v1.7.2",
-    },
-    "rules_proto": {
-        "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
-        "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
-    },
-}
-
 MAVEN_REPOSITORIES = [
     "https://maven.fabric.io/public",
     "https://maven.google.com",
     "https://repo1.maven.org/maven2",
 ]
+
+# Contains dependencies to automatically download via Bazel's http_archive. Note that keys in this
+# dict will be made available via their own workspace, e.g. 'dagger' would be available via
+# '@dagger//'. Note also that URLs and strip_prefix values may include "{0}" to be replaced with the
+# dependency's version when preparing to the dependency for downloading. strip_prefix is optional.
+# An additional 'import_bind_name' may be used to specify an import name, otherwise the dictionary
+# key will be used. Note to developers: Please keep this dict sorted by key to make it easier to
+# find dependencies.
+HTTP_ARCHIVE_DEPENDENCY_VERSIONS = {
+    "android_test_support": {
+        "sha": "dcd1ff76aef1a26329d77863972780c8fe1fc8ff625747342239f0489c2837ec",
+        "strip_prefix": "android-test-{0}",
+        "urls": ["https://github.com/android/android-test/archive/{0}.tar.gz"],
+        "version": "1edfdab3134a7f01b37afabd3eebfd2c5bb05151",
+    },
+    "bazel_skylib": {
+        "sha": "b8a1527901774180afc798aeb28c4634bdccf19c4d98e7bdd1ce79d1fe9aaad7",
+        "urls": [
+            "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/{0}/bazel-skylib-{0}.tar.gz",
+            "https://github.com/bazelbuild/bazel-skylib/releases/download/{0}/bazel-skylib-{0}.tar.gz",
+        ],
+        "version": "1.4.1",
+    },
+    "dagger": {
+        "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
+        "strip_prefix": "dagger-dagger-{0}",
+        "urls": ["https://github.com/google/dagger/archive/dagger-{0}.zip"],
+        "version": "2.41",
+    },
+    "protobuf_tools": {
+        "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
+        "strip_prefix": "protobuf-{0}",
+        "urls": ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip"],
+        "version": "3.11.0",
+    },
+    "robolectric": {
+        "sha": "af0177d32ecd2cd68ee6e9f5d38288e1c4de0dd2a756bb7133c243f2d5fe06f7",
+        "strip_prefix": "robolectric-bazel-{0}",
+        "urls": ["https://github.com/robolectric/robolectric-bazel/archive/{0}.tar.gz"],
+        "version": "4.5",
+    },
+    "rules_java": {
+        "sha": "c73336802d0b4882e40770666ad055212df4ea62cfa6edf9cb0f9d29828a0934",
+        "urls": ["https://github.com/bazelbuild/rules_java/releases/download/{0}/rules_java-{0}.tar.gz"],
+        "version": "5.3.5",
+    },
+    "rules_jvm": {
+        "import_bind_name": "rules_jvm_external",
+        "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
+        "strip_prefix": "rules_jvm_external-{0}",
+        "urls": ["https://github.com/bazelbuild/rules_jvm_external/archive/{0}.zip"],
+        "version": "5.1",
+    },
+    # TODO: Move this back to rules_kotlin once it has a 1.7.x release with the needed fix.
+    "rules_kotlin": {
+        "import_bind_name": "io_bazel_rules_kotlin",
+        "sha": "1d872b9c6546f0f737a356d873b164d70282760fe4c880349770abc9e494c9ce",
+        "urls": ["https://github.com/oppia/rules_kotlin/releases/download/{0}/rules_kotlin_release.tgz"],
+        "version": "v1.7.2",
+    },
+    "rules_proto": {
+        "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
+        "strip_prefix": "rules_proto-{0}",
+        "urls": ["https://github.com/bazelbuild/rules_proto/archive/{0}.tar.gz"],
+        "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
+    },
+}
+
+# Similar to HTTP_ARCHIVE_DEPENDENCY_VERSIONS except these dependencies are imported using http_jar.
+# Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
+HTTP_JAR_DEPENDENCY_VERSIONS = {
+    "android_bundletool": {
+        "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
+        "urls": ["https://github.com/google/bundletool/releases/download/{0}/bundletool-all-{0}.jar"],
+        "version": "1.8.0",
+    },
+    "guava_android": {
+        "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
+        "urls": [
+            "%s/com/google/guava/guava/android-{0}/guava-android-{0}.jar" % url_base
+            for url_base in MAVEN_REPOSITORIES
+        ],
+        "version": "31.0.1",
+    },
+    "guava_jre": {
+        "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
+        "urls": [
+            "%s/com/google/guava/guava/jre-{0}/guava-jre-{0}.jar" % url_base
+            for url_base in MAVEN_REPOSITORIES
+        ],
+        "version": "31.0.1",
+    },
+    "kotlinx-coroutines-core-jvm": {
+        "sha": "acc8c74b1fb88121c51221bfa7b6f5e920201bc20183ebf74165dcf5d45a8003",
+        "urls": [
+            "%s/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{0}/kotlinx-coroutines-core-jvm-{0}.jar" % url_base
+            for url_base in MAVEN_REPOSITORIES
+        ],
+        "version": "1.6.0",
+    },
+}
+
+# Similar to HTTP_ARCHIVE_DEPENDENCY_VERSIONS except these dependencies are imported using
+# git_repository. Entries may contain an optional repo_mapping which will be passed to Bazel's
+# git_repository macro. Note to developers: Please keep this dict sorted by key to make it easier to
+# find dependencies.
+GIT_REPOSITORY_DEPENDENCY_VERSIONS = {
+    "android-spotlight": {
+        "commit": "cc23499d37dc8533a2876e45b5063e981a4583f4",
+        "remote": "https://github.com/oppia/android-spotlight",
+        "repo_mapping": {"@maven": "@maven_app_prod"},
+        "shallow_since": "1680147372 -0700",
+    },
+    "androidsvg": {
+        "commit": "4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf",
+        "remote": "https://github.com/oppia/androidsvg",
+        "shallow_since": "1647295507 -0700",
+    },
+    "archive_patcher": {
+        "commit": "d1c18b0035d5f669ddaefadade49cae0748f9df2",
+        "remote": "https://github.com/oppia/archive-patcher",
+        "shallow_since": "1642022460 -0800",
+    },
+    "circularimageview": {
+        "commit": "35d08ba88a4a22e6e9ac96bdc5a68be27b55d09f",
+        "remote": "https://github.com/oppia/CircularImageview",
+        "shallow_since": "1622148929 -0700",
+    },
+    "kotlitex": {
+        "commit": "ccdf4170817fa3b48b8e1e452772dd58ecb71cf2",
+        "remote": "https://github.com/oppia/kotlitex",
+        "repo_mapping": {"@maven": "@maven_app_prod"},
+        "shallow_since": "1679426649 -0700",
+    },
+    "tools_android": {
+        "commit": "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
+        "remote": "https://github.com/bazelbuild/tools_android",
+        "shallow_since": "1594238320 -0400",
+    },
+}
 
 # TODO: Maybe have tests as a separate build context, instead?
 # TODO: Document transitive_deps.

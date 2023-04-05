@@ -1,5 +1,5 @@
 """
-Imports required data-binding annotation processor.
+Configurations for plugins required to build Android targets.
 """
 
 load("@rules_java//java:defs.bzl", "java_plugin")

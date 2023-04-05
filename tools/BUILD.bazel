@@ -1,8 +1,6 @@
 """
-Custom Java/Android tools needed by the Oppia Android build pipeline. Note that many of these are
-automatically set up in Gradle, or just require adding targets to 'kapt'. Bazel requires a bit more
-work since kapt isn't directly supported, but Java annotation processors can be initiated using
-java_plugin.
+This package contains macros and subpackages for initializing all of the individual libraries and
+toolchains required to build the Oppia Android project & its constituent projects (such as scripts).
 """
 
 load("@rules_java//java:defs.bzl", "java_plugin")
