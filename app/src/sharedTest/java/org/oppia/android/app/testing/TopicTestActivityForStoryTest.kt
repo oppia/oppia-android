@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.containsString
 import org.junit.After
@@ -100,7 +101,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 
 /** Tests for [TopicTestActivityForStory]. */
 @RunWith(AndroidJUnit4::class)
