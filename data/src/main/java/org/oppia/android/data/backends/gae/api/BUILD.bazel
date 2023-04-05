@@ -22,6 +22,6 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/backends/gae/model",
-        "//third_party/app_prod:com_squareup_retrofit2_retrofit",
+        "//third_party:com_squareup_retrofit2_retrofit",
     ],
 )

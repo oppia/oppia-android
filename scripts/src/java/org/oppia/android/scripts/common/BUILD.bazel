@@ -49,7 +49,7 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":script_background_coroutine_dispatcher",
-        "//third_party/scripts:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 
@@ -59,7 +59,7 @@ kt_jvm_library(
     srcs = ["ProtoStringEncoder.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
-        "//third_party/scripts:com_google_protobuf_protobuf-java",
+        "//scripts/third_party:com_google_protobuf_protobuf-java",
     ],
 )
 
@@ -69,7 +69,7 @@ kt_jvm_library(
     srcs = ["RepositoryFile.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
-        "//third_party/scripts:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
     ],
 )
 
@@ -78,7 +78,7 @@ kt_jvm_library(
     srcs = ["ScriptBackgroundCoroutineDispatcher.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
-        "//third_party/scripts:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 

@@ -12,5 +12,5 @@ kt_jvm_library(
         "MavenInstallJson.kt",
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = ["//third_party/scripts:moshi"],
+    deps = ["//scripts/third_party:moshi"],
 )

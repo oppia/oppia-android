@@ -10,7 +10,7 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//model/src/main/proto:languages_java_proto",
-        "//third_party/scripts:com_android_tools_build_aapt2-proto",
+        "//scripts/third_party:com_android_tools_build_aapt2-proto",
     ],
 )
 

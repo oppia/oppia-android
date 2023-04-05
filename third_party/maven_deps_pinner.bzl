@@ -2,8 +2,7 @@
 Provides Starlark macros for pinning downloaded Maven dependencies for local analysis & tracking.
 """
 
-load("@maven_app_prod//:defs.bzl", pinned_maven_install_app_prod = "pinned_maven_install")
-load("@maven_app_test//:defs.bzl", pinned_maven_install_app_test = "pinned_maven_install")
+load("@maven_app//:defs.bzl", pinned_maven_install_app = "pinned_maven_install")
 load("@maven_scripts//:defs.bzl", pinned_maven_install_scripts = "pinned_maven_install")
 
 def pinMavenDependencies():
@@ -21,6 +20,5 @@ def pinMavenDependencies():
 
     # TODO: Verify removing this fails build correctly.
     # TODO: Update third-party deps collection to include scripts.
-    pinned_maven_install_app_prod()
-    pinned_maven_install_app_test()
+    pinned_maven_install_app()
     pinned_maven_install_scripts()

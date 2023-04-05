@@ -11,7 +11,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party/app_prod:com_google_protobuf_protobuf-javalite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
     ],
 )
 
@@ -22,7 +22,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party/app_prod:com_google_protobuf_protobuf-javalite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
     ],
 )
 

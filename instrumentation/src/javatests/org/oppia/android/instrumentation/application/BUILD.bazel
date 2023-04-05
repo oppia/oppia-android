@@ -13,11 +13,11 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
-        "//third_party/app_test:androidx_test_ext_junit",
-        "//third_party/app_test:androidx_test_runner",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_robolectric_robolectric",
-        "//third_party/app_test:robolectric_android-all",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
     ],
 )
 
@@ -30,11 +30,11 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
-        "//third_party/app_test:androidx_test_ext_junit",
-        "//third_party/app_test:androidx_test_runner",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_robolectric_robolectric",
-        "//third_party/app_test:robolectric_android-all",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
     ],
 )
 
@@ -47,10 +47,10 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
-        "//third_party/app_test:androidx_test_ext_junit",
-        "//third_party/app_test:androidx_test_runner",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_robolectric_robolectric",
-        "//third_party/app_test:robolectric_android-all",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
     ],
 )

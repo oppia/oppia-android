@@ -145,4 +145,4 @@ package_group(
     for flavor in AVAILABLE_FLAVORS
 ]
 
-dagger_rules(repo_name = "@maven_app_prod")
+dagger_rules(repo_name = "@maven_app")

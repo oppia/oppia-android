@@ -8,12 +8,25 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 # scopes (e.g. app vs. scripts), or to specific build contexts (e.g. tests) to help ensure
 # cross-dependencies can't accidentally occur.
 
-def create_dependency_wrappers(build_context, artifact_visibility):
-    artifact_tree = MAVEN_ARTIFACT_TREES[build_context]
-    for name, version in artifact_tree["deps"].items():
+def create_dependency_wrappers(build_context, prod_artifact_visibility, test_artifact_visibility):
+    _wrap_maven_dependencies(
+        build_context,
+        MAVEN_ARTIFACT_TREES[build_context]["deps"]["prod"]["direct"],
+        prod_artifact_visibility,
+        test_only = False,
+    )
+    _wrap_maven_dependencies(
+        build_context,
+        MAVEN_ARTIFACT_TREES[build_context]["deps"]["test"]["direct"],
+        test_artifact_visibility,
+        test_only = True,
+    )
+
+def _wrap_maven_dependencies(build_context, dependency_versions, artifact_visibility, test_only):
+    for name, version in dependency_versions.items():
         native.android_library(
             name = name.replace(":", "_").replace(".", "_"),
-            testonly = artifact_tree["test_only"],
+            testonly = test_only,
             visibility = artifact_visibility,
             exports = [artifact(
                 "%s:%s" % (name, version),

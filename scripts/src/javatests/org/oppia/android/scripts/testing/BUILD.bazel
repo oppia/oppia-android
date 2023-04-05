@@ -9,9 +9,9 @@ kt_jvm_test(
     srcs = ["TestBazelWorkspaceTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
 
@@ -20,8 +20,8 @@ kt_jvm_test(
     srcs = ["TestGitRepositoryTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )

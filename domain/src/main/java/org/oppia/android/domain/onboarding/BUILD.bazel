@@ -15,7 +15,7 @@ kt_android_library(
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//model/src/main/proto:onboarding_java_proto_lite",
-        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
@@ -50,6 +50,6 @@ kt_android_library(
     ],
     deps = [
         ":exploration_meta_data_retriever",
-        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party:javax_inject_javax_inject",
     ],
 )

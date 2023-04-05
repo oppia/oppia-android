@@ -15,7 +15,7 @@ kt_android_library(
         "//:oppia_testing_visibility",
     ],
     deps = [
-        "//third_party/app_prod:javax_inject_javax_inject",
-        "//third_party/app_test:org_robolectric_robolectric",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_robolectric_robolectric",
     ],
 )

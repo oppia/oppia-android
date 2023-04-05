@@ -14,7 +14,7 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
-        "//third_party/app_test:androidx_test_espresso_espresso-core",
+        "//third_party:androidx_test_espresso_espresso-core",
     ],
 )
 
@@ -26,7 +26,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party/app_test:androidx_test_espresso_espresso-core",
+        "//third_party:androidx_test_espresso_espresso-core",
     ],
 )
 
@@ -38,8 +38,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party/app_prod:nl_dionsegijn_konfetti",
-        "//third_party/app_test:androidx_test_espresso_espresso-core",
+        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:nl_dionsegijn_konfetti",
     ],
 )
 
@@ -51,7 +51,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party/app_test:androidx_test_espresso_espresso-core",
+        "//third_party:androidx_test_espresso_espresso-core",
     ],
 )
 
@@ -63,7 +63,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party/app_prod:com_google_android_material_material",
-        "//third_party/app_test:androidx_test_espresso_espresso-core",
+        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:com_google_android_material_material",
     ],
 )

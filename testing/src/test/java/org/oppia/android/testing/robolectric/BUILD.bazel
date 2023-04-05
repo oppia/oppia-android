@@ -13,11 +13,11 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:shadow_bidi_formatter",
-        "//third_party/app_prod:androidx_core_core",
-        "//third_party/app_test:androidx_test_ext_junit",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:junit_junit",
-        "//third_party/app_test:org_robolectric_robolectric",
-        "//third_party/app_test:robolectric_android-all",
+        "//third_party:androidx_core_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
     ],
 )

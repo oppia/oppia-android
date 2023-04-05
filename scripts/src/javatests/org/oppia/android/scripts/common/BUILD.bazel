@@ -11,10 +11,10 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_mockito_mockito-core",
         "//testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/mockito",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_mockito_mockito-core",
     ],
 )
 
@@ -23,7 +23,7 @@ kt_jvm_test(
     srcs = ["AndroidBuildSdkPropertiesTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
-        "//third_party/app_test:com_google_truth_truth",
+        "//scripts/third_party:com_google_truth_truth",
     ],
 )
 
@@ -32,8 +32,8 @@ kt_jvm_test(
     srcs = ["CommandExecutorImplTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/third_party:com_google_truth_truth",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -43,8 +43,8 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:git_client",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
+        "//scripts/third_party:com_google_truth_truth",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -54,9 +54,9 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
         "//scripts/src/java/org/oppia/android/scripts/testing/proto:test_java_proto",
+        "//scripts/third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//scripts/third_party:com_google_truth_truth",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party/app_test:com_google_truth_truth",
     ],
 )
 
@@ -65,8 +65,8 @@ kt_jvm_test(
     srcs = ["RepositoryFileTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
 
@@ -75,8 +75,8 @@ kt_jvm_test(
     srcs = ["ScriptBackgroundCoroutineDispatcherTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:org_mockito_mockito-core",
         "//testing:assertion_helpers",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
-        "//third_party/app_test:org_mockito_mockito-core",
     ],
 )

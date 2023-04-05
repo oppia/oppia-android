@@ -12,6 +12,6 @@ kt_jvm_library(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
-        "//third_party/scripts:org_jetbrains_kotlin_kotlin-compiler-embeddable",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-compiler-embeddable",
     ],
 )

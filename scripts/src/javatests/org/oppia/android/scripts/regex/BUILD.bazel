@@ -11,8 +11,8 @@ kt_jvm_test(
     deps = [
         "//scripts:regex_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )

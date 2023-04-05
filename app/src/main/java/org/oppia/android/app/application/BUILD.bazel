@@ -21,8 +21,8 @@ kt_android_library(
         ":application_injector",
         ":application_injector_provider",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//third_party/app_prod:androidx_work_work-runtime-ktx",
-        "//third_party/app_prod:com_google_firebase_firebase-common",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_google_firebase_firebase-common",
     ],
 )
 
@@ -39,7 +39,7 @@ kt_android_library(
         ":application_injector",
         "//app",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//third_party/app_prod:androidx_work_work-runtime-ktx",
+        "//third_party:androidx_work_work-runtime-ktx",
     ],
 )
 

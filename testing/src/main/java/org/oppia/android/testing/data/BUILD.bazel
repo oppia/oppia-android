@@ -13,9 +13,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party/app_prod:com_google_protobuf_protobuf-javalite",
-        "//third_party/app_test:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party/app_test:com_google_truth_truth",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
         "//utility/src/main/java/org/oppia/android/util/data:async_result",
     ],
 )
@@ -31,8 +31,8 @@ kt_android_library(
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/mockito",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
-        "//third_party/app_test:androidx_test_runner",
-        "//third_party/app_test:org_mockito_mockito-core",
+        "//third_party:androidx_test_runner",
+        "//third_party:org_mockito_mockito-core",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],

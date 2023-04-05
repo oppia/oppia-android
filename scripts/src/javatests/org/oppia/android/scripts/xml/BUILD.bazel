@@ -10,9 +10,9 @@ kt_jvm_test(
     srcs = ["StringLanguageTranslationCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:string_language_translation_check_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
 
@@ -21,9 +21,9 @@ kt_jvm_test(
     srcs = ["StringResourceParserTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:string_resource_parser",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
 
@@ -32,9 +32,9 @@ kt_jvm_test(
     srcs = ["StringResourceValidationCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:string_resource_validation_check_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
 
@@ -43,9 +43,9 @@ kt_jvm_test(
     srcs = ["XmlSyntaxCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_check_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
 
@@ -54,7 +54,7 @@ kt_jvm_test(
     srcs = ["XmlSyntaxErrorHandlerTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_error_handler",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )

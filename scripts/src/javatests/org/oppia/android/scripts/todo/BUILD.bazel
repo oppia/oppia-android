@@ -10,8 +10,8 @@ kt_jvm_test(
     srcs = ["TodoCollectorTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_collector",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
 
@@ -20,9 +20,9 @@ kt_jvm_test(
     srcs = ["TodoOpenCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_open_check_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
 
@@ -31,9 +31,9 @@ kt_jvm_test(
     srcs = ["TodoIssueResolvedCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_resolved_check_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
 
@@ -42,8 +42,8 @@ kt_jvm_test(
     srcs = ["TodoIssueCommentCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_comment_check_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
-        "//third_party/app_test:com_google_truth_truth",
-        "//third_party/app_test:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )

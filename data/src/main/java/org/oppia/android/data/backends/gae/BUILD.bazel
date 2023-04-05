@@ -17,8 +17,8 @@ kt_android_library(
         ":constants",
         ":network_config_annotations",
         "//model/src/main/proto:arguments_java_proto_lite",
-        "//third_party/app_prod:com_squareup_okhttp3_okhttp",
-        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
@@ -50,7 +50,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
@@ -61,7 +61,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party/app_prod:javax_inject_javax_inject",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
@@ -77,7 +77,7 @@ kt_android_library(
         ":oppia_retrofit",
         "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
-        "//third_party/app_prod:com_google_guava_guava",
-        "//third_party/app_prod:com_squareup_retrofit2_converter-moshi",
+        "//third_party:com_google_guava_guava",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
     ],
 )

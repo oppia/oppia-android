@@ -2,25 +2,35 @@ load("//third_party:load_utilities.bzl", "create_dependency_wrappers")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 
 package_group(
-    name = "script_artifact_visibility",
+    name = "script_all_artifact_visibility",
     includes = [
+        ":script_test_artifact_visibility",
         "//:oppia_binary_visibility",
         "//scripts:oppia_script_library_visibility",
         "//tools:tool_visibility",
     ],
 )
 
+package_group(
+    name = "script_test_artifact_visibility",
+    includes = [
+        "//scripts:oppia_script_test_visibility",
+        "//scripts:oppia_script_testing_library_visibility",
+    ],
+)
+
 create_dependency_wrappers(
-    artifact_visibility = ["//third_party/scripts:script_artifact_visibility"],
     build_context = "scripts",
+    prod_artifact_visibility = [":script_all_artifact_visibility"],
+    test_artifact_visibility = [":script_test_artifact_visibility"],
 )
 
 java_library(
     name = "moshi",
     exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
-    visibility = [":script_artifact_visibility"],
+    visibility = [":script_all_artifact_visibility"],
     exports = [
-        "//third_party/scripts:com_squareup_moshi_moshi-kotlin",
+        "//scripts/third_party:com_squareup_moshi_moshi-kotlin",
     ],
 )
 
@@ -41,7 +51,7 @@ android_library(
 java_binary(
     name = "android_bundletool_binary",
     main_class = "com.android.tools.build.bundletool.BundleToolMain",
-    visibility = [":script_artifact_visibility"],
+    visibility = [":script_all_artifact_visibility"],
     runtime_deps = ["@android_bundletool//jar"],
 )
 
@@ -49,11 +59,11 @@ java_library(
     name = "com_google_guava_guava_jre",
     visibility = ["//scripts:__subpackages__"],
     exports = [
-        "//third_party/scripts:com_google_errorprone_error_prone_annotations",
-        "//third_party/scripts:com_google_guava_failureaccess",
-        "//third_party/scripts:com_google_j2objc_j2objc-annotations",
-        "//third_party/scripts:org_checkerframework_checker-compat-qual",
-        "//third_party/scripts:org_checkerframework_checker-qual",
+        "//scripts/third_party:com_google_errorprone_error_prone_annotations",
+        "//scripts/third_party:com_google_guava_failureaccess",
+        "//scripts/third_party:com_google_j2objc_j2objc-annotations",
+        "//scripts/third_party:org_checkerframework_checker-compat-qual",
+        "//scripts/third_party:org_checkerframework_checker-qual",
         "@guava_jre//jar",
     ],
 )

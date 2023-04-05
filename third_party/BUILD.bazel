@@ -13,12 +13,155 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
-load(":versions.bzl", "MAVEN_ARTIFACT_TREES")
+load("//third_party:load_utilities.bzl", "create_dependency_wrappers")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_import", "kt_jvm_library")
+load("@rules_java//java:defs.bzl", "java_library")
 
 package_group(
-    name = "artifact_visibility",
-    packages = [
-        "//third_party/%s" % build_context
-        for build_context in MAVEN_ARTIFACT_TREES.keys()
-    ] + ["//"],
+    name = "app_prod_artifact_visibility",
+    includes = [
+        "//:oppia_api_visibility",
+        "//tools:tool_visibility",
+    ],
+)
+
+package_group(
+    name = "app_test_artifact_visibility",
+    includes = [
+        "//:oppia_testing_visibility",
+        "//tools:tool_visibility",
+    ],
+)
+
+create_dependency_wrappers(
+    build_context = "app",
+    prod_artifact_visibility = [":app_prod_artifact_visibility"],
+    test_artifact_visibility = [":app_test_artifact_visibility"],
+)
+
+android_library(
+    name = "circularimageview_circular_image_view",
+    visibility = [":app_prod_artifact_visibility"],
+    exports = [
+        "@circularimageview//circularimageview:circular_image_view",
+    ],
+)
+
+# A wrapper dependency for the custom Git import of Android SVG (so that dependencies on this
+# library still routes through //third_party).
+android_library(
+    name = "com_caverock_androidsvg",
+    visibility = [":app_prod_artifact_visibility"],
+    exports = [
+        "@androidsvg//androidsvg",
+    ],
+)
+
+android_library(
+    name = "com_github_takusemba_spotlight",
+    visibility = [":app_prod_artifact_visibility"],
+    exports = [
+        "@android-spotlight//spotlight",
+    ],
+)
+
+java_library(
+    name = "moshi",
+    exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
+    visibility = [":app_prod_artifact_visibility"],
+    exports = [
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+    ],
+)
+
+android_library(
+    name = "io_github_karino2_kotlitex",
+    visibility = [":app_prod_artifact_visibility"],
+    exports = [
+        "@kotlitex//kotlitex",
+    ],
+)
+
+# Creates an alias for Guava Android to support maven_install's override of Guava. This ensures that
+# Guava-Android is always used in builds, even if dependencies request a newer version of Guava-JRE.
+android_library(
+    name = "com_google_guava_guava",
+    visibility = [
+        ":app_prod_artifact_visibility",
+        "@maven_app//:__pkg__",
+    ],
+    exports = [
+        "//third_party:com_google_errorprone_error_prone_annotations",
+        "//third_party:com_google_guava_failureaccess",
+        "//third_party:com_google_j2objc_j2objc-annotations",
+        "//third_party:org_checkerframework_checker-compat-qual",
+        "//third_party:org_checkerframework_checker-qual",
+        "@guava_android//jar",
+    ],
+)
+
+# Note that the output from kt_jvm_import needs to be wrapped in a kt_jvm_library in order to work
+# with the Bazel IntelliJ plugin correctly (since kt_jvm_library provides the expected IDE output
+# for syncing).
+kt_jvm_import(
+    name = "_kotlinx-coroutines-core-jvm_import_do_not_depend",
+    jars = ["@kotlinx-coroutines-core-jvm//jar:file"],
+    tags = ["no-ide"],
+    deps = [
+        ":_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
+    ],
+)
+
+kt_jvm_library(
+    name = "kotlinx-coroutines-core-jvm",
+    visibility = [
+        "//:oppia_api_visibility",
+        "@maven_app//:__pkg__",
+    ],
+    exports = [":_kotlinx-coroutines-core-jvm_import_do_not_depend"],
+)
+
+# Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
+# can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
+# Android assets which java_library targets do not export.
+java_library(
+    name = "glide_compiler",
+    exported_plugins = ["//tools:glide_compiler_plugin"],
+    visibility = [":app_prod_artifact_visibility"],
+    exports = [
+        "//third_party:com_github_bumptech_glide_compiler",
+    ],
+)
+
+# This solution is based on https://github.com/Bencodes/bazel_issue_13553 for Bazel issue:
+# https://github.com/bazelbuild/bazel/issues/13553.
+genrule(
+    name = "_generate_stopgap_files_for_kotlinx_coroutines_desugar",
+    outs = [
+        "sun/misc/Signal.java",
+        "sun/misc/SignalHandler.java",
+    ],
+    cmd = """
+    echo "package sun.misc; public final class Signal {}" > $(location sun/misc/Signal.java)
+    echo "package sun.misc; public interface SignalHandler {}" > $(location sun/misc/SignalHandler.java)
+    """,
+)
+
+java_library(
+    name = "_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
+    srcs = [
+        "sun/misc/Signal.java",
+        "sun/misc/SignalHandler.java",
+    ],
+    neverlink = True,
+)
+
+android_library(
+    name = "robolectric_android-all",
+    testonly = True,
+    visibility = [":app_test_artifact_visibility"],
+    exports = [
+        "@robolectric//bazel:android-all",
+    ],
 )
