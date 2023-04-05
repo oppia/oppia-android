@@ -220,6 +220,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedItemViewModel.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/SectionTitleViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/topiclist/AllTopicsViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryClickListener.kt"
