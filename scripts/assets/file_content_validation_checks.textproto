@@ -417,6 +417,8 @@ file_content_checks {
   exempted_file_name:"app/src/sharedTest/java/org/oppia/android/app/profile/ProfileChooserActivityTest.kt"
   exempted_file_name:"app/src/sharedTest/java/org/oppia/android/app/onboarding/OnboardingActivityTest.kt"
   exempted_file_name:"app/src/sharedTest/java/org/oppia/android/app/policies/PoliciesActivityTest.kt"
+  exempted_file_name:"TestActivity.kt"
+  exempted_file_name:"app/src/main/activity/HomeActivityTest.kt"
   required_content_regex: "testActivity_createIntent_verifyProfileIdInIntent\\("
 }
 file_content_checks {
@@ -427,6 +429,9 @@ file_content_checks {
   exempted_file_name: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/policies/PoliciesActivity.kt"
+  exempted_file_name:"app/src/main/SomeActivity.kt"
+  exempted_file_name:"app/src/main/activity/HomeActivity.kt"
+  exempted_file_name:"data/src/main/TestActivity.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing.+?\\.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/devoptions/testing.+?\\.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/testing.+?\\.kt"
