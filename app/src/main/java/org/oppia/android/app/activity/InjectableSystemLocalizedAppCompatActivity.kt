@@ -8,28 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
-import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.translation.AppLanguageActivityInjector
-import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider
 import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
-
-/**
- * [Boolean] value that is passed to [AppLanguageWatcherMixin] and should not change for activities inheriting [InjectableSystemLocalizedAppCompatActivity].
- */
-private const val SHOULD_USE_SYSTEM_LANGUAGE = true
 
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent
  * fragments that extend [org.oppia.android.app.fragment.InjectableFragment].
  */
 abstract class InjectableSystemLocalizedAppCompatActivity :
-  AppCompatActivity(), FragmentComponentFactory, AppLanguageActivityInjectorProvider {
-  /**
-   * The [ActivityComponent] corresponding to this activity. This cannot be used before
-   * [attachBaseContext] is called, and can be used to inject lateinit fields in child activities
-   * during activity creation (which is recommended to be done in an override of [onCreate]).
-   */
-  lateinit var activityComponent: ActivityComponent
+  InjectableAppCompatActivity() {
+
+  override var shouldUseSystemLanguage: Boolean = true
 
   override fun attachBaseContext(newBase: Context?) {
     val applicationContext = checkNotNull(newBase?.applicationContext) {
@@ -77,7 +66,7 @@ abstract class InjectableSystemLocalizedAppCompatActivity :
     val appLanguageActivityInjector = activityComponent as AppLanguageActivityInjector
     val appLanguageLocaleHandler = appLanguageAppInjector.getAppLanguageHandler()
     val appLanguageWatcherMixin = appLanguageActivityInjector.getAppLanguageWatcherMixin()
-    appLanguageWatcherMixin.initialize(SHOULD_USE_SYSTEM_LANGUAGE)
+    appLanguageWatcherMixin.initialize(shouldUseSystemLanguage)
 
     return Configuration(newBase?.resources?.configuration).also { newConfiguration ->
       appLanguageLocaleHandler.initializeLocaleForActivity(newConfiguration)

@@ -8,17 +8,29 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
+import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.translation.AppLanguageActivityInjector
+import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider
 import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
 
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent
  * fragments that extend [org.oppia.android.app.fragment.InjectableFragment].
  */
-abstract class InjectableAutoLocalizedAppCompatActivity :
-  InjectableAppCompatActivity() {
+abstract class InjectableAppCompatActivity :
+  AppCompatActivity(), FragmentComponentFactory, AppLanguageActivityInjectorProvider {
+  /**
+   * The [ActivityComponent] corresponding to this activity. This cannot be used before
+   * [attachBaseContext] is called, and can be used to inject lateinit fields in child activities
+   * during activity creation (which is recommended to be done in an override of [onCreate]).
+   */
+  lateinit var activityComponent: ActivityComponent
 
-  override var shouldUseSystemLanguage: Boolean = false
+  /**
+   * [Boolean] value that is passed to [AppLanguageWatcherMixin]. This allows activities to use either System language or
+   * automatic language based on user preferences.
+   */
+  abstract var shouldUseSystemLanguage: Boolean
 
   override fun attachBaseContext(newBase: Context?) {
     val applicationContext = checkNotNull(newBase?.applicationContext) {
