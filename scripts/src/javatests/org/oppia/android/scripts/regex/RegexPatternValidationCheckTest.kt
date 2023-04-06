@@ -164,6 +164,11 @@ class RegexPatternValidationCheckTest {
     "Only colors from color_palette.xml may be used in component_colors.xml."
   private val doesNotReferenceColorFromColorDefs =
     "Only colors from color_defs.xml may be used in color_palette.xml."
+  private val doesNotReferenceColorFromComponentColorInLayouts =
+    "Only colors from component_colors.xml may be used in layouts."
+  private val doesNotReferenceColorFromComponentColorInKotlinFiles =
+    "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments, " +
+      "Views and Presenters)."
   private val doesNotUseWorkManagerGetInstance =
     "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one" +
       " using getInstance (as the latter may create a WorkManager if one isn't already present, " +
@@ -2155,6 +2160,121 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:2: $doesNotReferenceColorFromColorPalette
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_xmlLayouts_includesNonColorComponentReferences_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColor="@color/color_defs_shared_primary_text_color"
+        android:textColor="@color/color_palette_primary_text_color"
+        android:background="@color/component_color_shared_primary_text_color"
+        android:background="@color/color_defs_shared_primary_text_color"
+        android:background="@color/color_palette_primary_text_color"
+        app:tint="@color/component_color_shared_primary_text_color"
+        app:tint="@color/color_defs_shared_primary_text_color"
+        app:tint="@color/color_palette_primary_text_color"
+        app:strokeColor="@color/component_color_shared_primary_text_color"
+        app:strokeColor="@color/color_defs_shared_primary_text_color"
+        app:strokeColor="@color/color_palette_primary_text_color"
+        app:cardBackgroundColor="@color/component_color_shared_primary_text_color"
+        app:cardBackgroundColor="@color/color_defs_shared_primary_text_color"
+        app:cardBackgroundColor="@color/color_palette_primary_text_color"
+        android:background="@color/component_color_shared_primary_text_color"
+        android:background="@color/color_defs_shared_primary_text_color"
+        android:background="@color/color_palette_primary_text_color"
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "layout")
+    val stringFilePath = "app/src/main/res/layout/test_layout.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:2: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:3: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:5: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:6: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:8: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:9: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:11: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:12: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:14: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:15: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:17: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:18: $doesNotReferenceColorFromComponentColorInLayouts
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_kotlinFiles_includesNonColorComponentReferences_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        decorateWithScreenName(HOME_ACTIVITY)
+        R.color.component_color_shared_activity_status_bar_color
+        R.color.color_def_avatar_background_1
+        R.color.color_palette_primary_color
+      """.trimIndent()
+
+    tempFolder.newFolder(
+      "testfiles",
+      "app",
+      "src",
+      "main",
+      "java",
+      "org",
+      "oppia",
+      "android",
+      "app"
+    )
+
+    val stringFilePath1 = "app/src/main/java/org/oppia/android/app/HomeActivity.kt"
+    val stringFilePath2 = "app/src/main/java/org/oppia/android/app/TestFileActivityPresenter.kt"
+    val stringFilePath3 = "app/src/main/java/org/oppia/android/app/TestFileFragment.kt"
+    val stringFilePath4 = "app/src/main/java/org/oppia/android/app/TestFileFragmentPresenter.kt"
+    val stringFilePath5 = "app/src/main/java/org/oppia/android/app/TestFileView.kt"
+    val stringFilePath6 = "app/src/main/java/org/oppia/android/app/TestFileViewPresenter.kt"
+
+    tempFolder.newFile("testfiles/$stringFilePath1").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath2").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath3").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath4").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath5").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath6").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath1:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath1:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath2:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath2:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath3:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath3:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath4:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath4:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath5:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath5:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath6:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath6:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $wikiReferenceNote
         """.trimIndent()
       )
