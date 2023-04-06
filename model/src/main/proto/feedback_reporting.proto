@@ -329,7 +329,7 @@ message FeedbackReportingAppContext {
   // Reserve 6 which was used before as using it might cause import issues for older profiles.
   reserved 6;
   // The text language the app is set to.
-  OppiaLanguage app_language = 12;
+  OppiaLanguage app_language = 10;
   // The audio language the app is set to.
   AudioLanguage audio_language = 7;
   // The app's specific device settings.

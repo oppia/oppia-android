@@ -56,7 +56,7 @@ private const val AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
   "audio_translation_content_selection"
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
-private const val CACHE_NAME = "content_language_database"
+private const val APP_LANGUAGE_CONTENT_DATABASE = "app_language_content_database"
 private const val RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID =
   "retrieved_content_language_data_provider_id"
 
@@ -77,14 +77,7 @@ class TranslationController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger,
 ) {
-  // TODO(#4627): Finish this implementation. The implementation below doesn't actually save/restore
-  //  settings from the local filesystem since the UI has been currently disabled as part of #20.
-  //  Also, there should be a proper default locale for pre-profile selection (either a default
-  //  app-wide setting determined by the administrator, or the last locale used by a profile)--more
-  //  product & UX thought is needed here. Further, extra work is likely needed to handle the case
-  //  when the user switches between a system & non-system language since the existing system
-  //  defaulting behavior breaks down when the system locale is overwritten (such as when a
-  //  different language is selected).
+  // TODO(#4627): per profile audio language slection part not covered in this PR but should be when this to do is updated.
 
   private val dataLock = ReentrantLock()
   private val writtenTranslationLanguageSettings =
@@ -175,12 +168,8 @@ class TranslationController @Inject constructor(
     val deferred = retrieveLanguageContentCacheStore(profileId).storeDataAsync(
       updateInMemoryCache = true
     ) {
-      AppLanguageSelection.newBuilder().apply {
-        selectedLanguage = selection.selectedLanguage
-        selectedLanguageValue = selection.selectedLanguage.number
-      }.build()
+      it.toBuilder().apply { selectedLanguage = selection.selectedLanguage }.build()
     }
-
     return dataProviders.createInMemoryDataProviderAsync(
       UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID
     ) {
@@ -457,7 +446,7 @@ class TranslationController @Inject constructor(
   ): PersistentCacheStore<AppLanguageSelection> {
     return cacheStoreMap.getOrPut(profileId) {
       cacheStoreFactory.createPerProfile(
-        CACHE_NAME,
+        APP_LANGUAGE_CONTENT_DATABASE,
         AppLanguageSelection.getDefaultInstance(),
         profileId
       ).also<PersistentCacheStore<AppLanguageSelection>> {

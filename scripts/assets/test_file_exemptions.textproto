@@ -4,6 +4,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityCo
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityIntentFactoriesModule.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityModule.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityScope.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/InjectableSystemLocalizedAppCompatActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/route/Route.kt"

@@ -195,9 +195,19 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "\\sAppCompatActivity\\("
-  failure_message: "Never subclass AppCompatActivity directly. Instead, use InjectableAutoLocalizedAppCompatActivity."
-  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
+  failure_message: "Never subclass AppCompatActivity directly. Instead, use InjectableAppCompatActivity."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
+  exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing/.*?TestActivity.kt$"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/TextInputActionTestActivity.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "\\sInjectableAppCompatActivity\\("
+  failure_message: "Never subclass InjectableAppCompatActivity directly. Instead, use InjectableSystemLocalizedAppCompatActivity or InjectableAutoLocalizedAppCompatActivity."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableSystemLocalizedAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing/.*?TestActivity.kt$"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
