@@ -19,7 +19,7 @@ private const val RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
   "record_aggregate_learning_time_provider_id"
 private const val RETRIEVE_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
   "retrieve_aggregate_learning_time_provider_id"
-private val LEARNING_TIME_STALENESS_THRESHOLD_MILLIS = TimeUnit.DAYS.toMillis(10)
+val LEARNING_TIME_STALENESS_THRESHOLD_MILLIS = TimeUnit.DAYS.toMillis(10)
 
 /** Controller for tracking the amount of active time a user has spent in a topic. */
 class ExplorationActiveTimeController @Inject constructor(

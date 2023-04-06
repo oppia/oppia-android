@@ -674,13 +674,13 @@ message SubtopicRecord {
 
 // Top-level proto used to store the aggregate learning duration timestamps in a topic,
 // per-profile basis.
-message TopicLearningTimeDatabase{
+message TopicLearningTimeDatabase {
   // Map from topic ID to TopicLearningTime.
   map<string, TopicLearningTime> aggregate_topic_learning_time = 1;
 }
 
 // Represents the active learning time spent in a topic.
-message TopicLearningTime{
+message TopicLearningTime {
   // The ID of the topic for which this learning time has been recorded.
   string topic_id = 1;
 

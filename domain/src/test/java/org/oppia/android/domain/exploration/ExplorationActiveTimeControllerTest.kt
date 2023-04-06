@@ -13,6 +13,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.TopicLearningTime
+import org.oppia.android.app.model.TopicLearningTimeDatabase
+import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.FakeExceptionLogger
@@ -32,8 +35,12 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val CACHE_NAME = "topic_learning_time_database"
+private const val SESSION_LENGTH = 5000L
 
 /** Tests for [ExplorationActiveTimeController]. */
 @RunWith(AndroidJUnit4::class)
@@ -43,11 +50,11 @@ class ExplorationActiveTimeControllerTest {
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var cacheFactory: PersistentCacheStore.Factory
   @Inject lateinit var oppiaClock: FakeOppiaClock
   @Inject lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
-  private val sessionDuration = 5000L
 
   @Before
   fun setUp() {
@@ -66,9 +73,88 @@ class ExplorationActiveTimeControllerTest {
   fun testRecordAggregateTopicLearningTime_returnsSuccess() {
     val recordAggregateTimeProvider =
       explorationActiveTimeController.recordAggregateTopicLearningTime(
-        profileId, TEST_TOPIC_ID_0, sessionDuration
+        profileId, TEST_TOPIC_ID_0, SESSION_LENGTH
       )
     monitorFactory.waitForNextSuccessfulResult(recordAggregateTimeProvider)
+  }
+
+  @Test
+  fun testSaveSessionLength_previousAggregateIsStale_overwritesOldAggregateWithCurrentLength() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    val currentTime = oppiaClock.getCurrentTimeMs()
+
+    // set aggregate learning time last updated timestamp to
+    // [LEARNING_TIME_STALENESS_THRESHOLD_MILLIS]+1 days ago.
+    val lastUpdatedTimeMs = currentTime.minus(LEARNING_TIME_STALENESS_THRESHOLD_MILLIS).minus(
+      TimeUnit.DAYS.toMillis(1)
+    )
+
+    createCacheStore(lastUpdatedTimeMs)
+
+    val recordAggregateTimeProvider =
+      explorationActiveTimeController.recordAggregateTopicLearningTime(
+        profileId, TEST_TOPIC_ID_0, SESSION_LENGTH
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(recordAggregateTimeProvider)
+
+    val retrieveAggregateTimeProvider =
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        profileId, TEST_TOPIC_ID_0
+      )
+
+    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
+
+    assertThat(aggregateTime.lastUpdatedTimeMs).isEqualTo(currentTime)
+    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH)
+  }
+
+  @Test
+  fun testSaveSessionLength_previousAggregateIsNotStale_incrementsOldAggregateByCurrentLength() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    val currentTime = oppiaClock.getCurrentTimeMs()
+
+    // set aggregate learning time last updated timestamp to yesterday.
+    val lastUpdatedTimeMs = currentTime.minus(TimeUnit.DAYS.toMillis(1))
+
+    createCacheStore(lastUpdatedTimeMs)
+
+    val recordAggregateTimeProvider =
+      explorationActiveTimeController.recordAggregateTopicLearningTime(
+        profileId, TEST_TOPIC_ID_0, SESSION_LENGTH
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(recordAggregateTimeProvider)
+
+    val retrieveAggregateTimeProvider =
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        profileId, TEST_TOPIC_ID_0
+      )
+
+    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
+
+    val expectedAggregate = SESSION_LENGTH + SESSION_LENGTH
+    assertThat(aggregateTime.lastUpdatedTimeMs).isEqualTo(currentTime)
+    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(expectedAggregate)
+  }
+
+  private fun createCacheStore(lastUpdatedTimeMs: Long) {
+    cacheFactory.createPerProfile(
+      CACHE_NAME,
+      createTopicLearningTimeDatabase(lastUpdatedTimeMs),
+      profileId
+    )
+  }
+
+  private fun createTopicLearningTimeDatabase(lastUpdatedTimeMs: Long): TopicLearningTimeDatabase {
+    val topicLearningTime = TopicLearningTime.newBuilder()
+      .setTopicId(TEST_TOPIC_ID_0)
+      .setTopicLearningTimeMs(SESSION_LENGTH)
+      .setLastUpdatedTimeMs(lastUpdatedTimeMs)
+      .build()
+    return TopicLearningTimeDatabase.newBuilder()
+      .putAggregateTopicLearningTime(TEST_TOPIC_ID_0, topicLearningTime)
+      .build()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -105,7 +191,6 @@ class ExplorationActiveTimeControllerTest {
       LocaleTestModule::class, ExplorationProgressModule::class
     ]
   )
-
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
