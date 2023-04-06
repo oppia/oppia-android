@@ -446,6 +446,7 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?Activity.kt"
   failure_message: "Please add a Screen Name for this activity. To do this, add a value in the ScreenName enum of screens.proto and add that name to your activity using Intent.decorateWithScreenName(value) on the activity creation intent."
+  exempted_file_name:"app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableSystemLocalizedAppCompatActivity.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing.+?\\.kt"
