@@ -168,8 +168,8 @@ class RegexPatternValidationCheckTest {
     "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one" +
       " using getInstance (as the latter may create a WorkManager if one isn't already present, " +
       "and the application may intend to disable it)."
-  private val doesNotUsePostorPostDelayed =
-    "Prefer avoiding post() and postDelayed() method as they can can lead to subtle and " +
+  private val doesNotUsePostOrPostDelayed =
+    "Prefer avoiding post() and postDelayed() methods as they can can lead to subtle and " +
       "difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when " +
       "an operation needs to run at a future time. For cases when state needs to be synchronized " +
       "with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying " +
@@ -2315,7 +2315,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:1: $doesNotUsePostorPostDelayed
+        $stringFilePath:1: $doesNotUsePostOrPostDelayed
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -2340,7 +2340,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:1: $doesNotUsePostorPostDelayed
+        $stringFilePath:1: $doesNotUsePostOrPostDelayed
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -2365,7 +2365,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:1: $doesNotUsePostorPostDelayed
+        $stringFilePath:1: $doesNotUsePostOrPostDelayed
         $wikiReferenceNote
         """.trimIndent()
       )
