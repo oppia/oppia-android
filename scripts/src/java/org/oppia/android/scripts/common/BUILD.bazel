@@ -18,7 +18,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "bazel_client",
-    testonly = True,
     srcs = [
         "BazelClient.kt",
     ],
@@ -69,7 +68,7 @@ kt_jvm_library(
     srcs = ["RepositoryFile.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8",
     ],
 )
 

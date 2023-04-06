@@ -177,6 +177,12 @@ kt_jvm_binary(
 )
 
 kt_jvm_binary(
+    name = "validate_maven_dependencies",
+    main_class = "org.oppia.android.scripts.maven.ValidateMavenDependenciesKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:validate_maven_dependencies_lib"],
+)
+
+kt_jvm_binary(
     name = "license_texts_check",
     testonly = True,
     main_class = "org.oppia.android.scripts.license.LicenseTextsCheckKt",

@@ -18,16 +18,12 @@ https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies
 """
 
 # TODO: Make sure these versions align with those used in Gradle (pick latest?).
-# TODO: Find a new way to represent versions to avoid duplicating them.
-# TODO: Reverify that all deps are needed in their corresponding buckets.
-# TODO: Add checks to verify duplication rules between different version buckets, and to ensure transitive deps are correctly accounted for.
-# TODO: Maybe have four files, but split as two productions: app & scripts (prod & tests).
-# TODO: Maybe have a single list of artifacts & versions (including for HTTP), then reference them in specific lists. Could be enforced. Makes it easier to custom search for versions?
-# TODO: Remove ":jar" suffixes?
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
-# This list should contain only production (non-test) dependencies.
-_MAVEN_APP_PRODUCTION_DEPENDENCY_VERSIONS = {
+# This list should contain only production (non-test) dependencies. Note also that Dagger artifacts
+# are manually included here for better integration with version list maintenance despite this being
+# contrary to Dagger's suggested Bazel setup instructions.
+_MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.annotation:annotation": "1.1.0",
     "androidx.appcompat:appcompat": "1.2.0",
     "androidx.exifinterface:exifinterface": "1.0.0",
@@ -42,15 +38,10 @@ _MAVEN_APP_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.lifecycle:lifecycle-extensions": "2.2.0",
     "androidx.lifecycle:lifecycle-livedata-core": "2.2.0",
     "androidx.lifecycle:lifecycle-livedata-ktx": "2.2.0",
-    "androidx.lifecycle:lifecycle-viewmodel-ktx": "2.2.0",
     "androidx.multidex:multidex": "2.0.1",
-    "androidx.multidex:multidex-instrumentation": "2.0.0",
     "androidx.navigation:navigation-fragment": "2.0.0",
-    "androidx.navigation:navigation-fragment-ktx": "2.0.0",
     "androidx.navigation:navigation-ui": "2.0.0",
-    "androidx.navigation:navigation-ui-ktx": "2.0.0",
     "androidx.recyclerview:recyclerview": "1.1.0",
-    "androidx.room:room-runtime": "2.2.5",
     "androidx.viewpager2:viewpager2": "1.0.0",
     "androidx.viewpager:viewpager": "1.0.0",
     "androidx.work:work-runtime": "2.4.0",
@@ -59,11 +50,14 @@ _MAVEN_APP_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.github.bumptech.glide:glide": "4.11.0",
     "com.google.android.flexbox:flexbox": "3.0.0",
     "com.google.android.material:material": "1.3.0",
+    "com.google.dagger:dagger": "2.41",
+    "com.google.dagger:dagger-compiler": "2.41",
+    "com.google.dagger:dagger-producers": "2.41",
+    "com.google.dagger:dagger-spi": "2.41",
     "com.google.errorprone:error_prone_annotations": "2.11.0",
     "com.google.firebase:firebase-analytics": "17.5.0",
     "com.google.firebase:firebase-common": "19.3.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
-    "com.google.gms:google-services": "4.3.3",
     "com.google.guava:failureaccess": "1.0.1",
     "com.google.j2objc:j2objc-annotations": "1.3",
     "com.google.protobuf:protobuf-javalite": "3.17.3",
@@ -74,25 +68,116 @@ _MAVEN_APP_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "de.hdodenhof:circleimageview": "3.0.1",
     "io.fabric.sdk.android:fabric": "1.4.7",
-    "javax.annotation:javax.annotation-api:jar": "1.3.2",
+    "javax.annotation:javax.annotation-api": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
     "org.checkerframework:checker-compat-qual": "2.5.5",
     "org.checkerframework:checker-qual": "3.21.3",
-    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.6.21",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.21",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.6.4",
-    "org.jetbrains:annotations:jar": "13.0",
 }
 
-_MAVEN_APP_TRANSITIVE_DEPENDENCY_VERSIONS = {
+_MAVEN_PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
+    "androidx.activity:activity": "1.1.0",
+    "androidx.annotation:annotation-experimental": "1.0.0",
+    "androidx.appcompat:appcompat-resources": "1.2.0",
+    "androidx.arch.core:core-common": "2.1.0",
+    "androidx.arch.core:core-runtime": "2.1.0",
+    "androidx.cardview:cardview": "1.0.0",
+    "androidx.collection:collection": "1.1.0",
+    "androidx.constraintlayout:constraintlayout-solver": "2.0.1",
+    "androidx.coordinatorlayout:coordinatorlayout": "1.1.0",
+    "androidx.cursoradapter:cursoradapter": "1.0.0",
+    "androidx.customview:customview": "1.1.0",
+    "androidx.databinding:databinding-compiler-common": "3.4.2",
+    "androidx.documentfile:documentfile": "1.0.0",
+    "androidx.dynamicanimation:dynamicanimation": "1.0.0",
+    "androidx.fragment:fragment": "1.2.0",
+    "androidx.interpolator:interpolator": "1.0.0",
+    "androidx.legacy:legacy-support-core-utils": "1.0.0",
+    "androidx.lifecycle:lifecycle-common": "2.2.0",
+    "androidx.lifecycle:lifecycle-livedata": "2.2.0",
+    "androidx.lifecycle:lifecycle-livedata-core-ktx": "2.2.0",
+    "androidx.lifecycle:lifecycle-process": "2.2.0",
+    "androidx.lifecycle:lifecycle-runtime": "2.2.0",
+    "androidx.lifecycle:lifecycle-service": "2.2.0",
+    "androidx.lifecycle:lifecycle-viewmodel": "2.2.0",
+    "androidx.lifecycle:lifecycle-viewmodel-savedstate": "1.0.0",
+    "androidx.loader:loader": "1.0.0",
+    "androidx.localbroadcastmanager:localbroadcastmanager": "1.0.0",
+    "androidx.navigation:navigation-common": "2.0.0",
+    "androidx.navigation:navigation-runtime": "2.0.0",
+    "androidx.print:print": "1.0.0",
+    "androidx.room:room-common": "2.2.5",
+    "androidx.room:room-runtime": "2.2.5",
+    "androidx.savedstate:savedstate": "1.0.0",
+    "androidx.sqlite:sqlite": "2.1.0",
+    "androidx.sqlite:sqlite-framework": "2.1.0",
+    "androidx.transition:transition": "1.2.0",
+    "androidx.vectordrawable:vectordrawable": "1.1.0",
+    "androidx.vectordrawable:vectordrawable-animated": "1.1.0",
+    "androidx.versionedparcelable:versionedparcelable": "1.1.0",
+    "com.android.databinding:baseLibrary": "3.4.2",
+    "com.android.tools.build.jetifier:jetifier-core": "1.0.0-beta04",
+    "com.android.tools:annotations": "26.4.2",
+    "com.github.bumptech.glide:annotations": "4.11.0",
+    "com.github.bumptech.glide:disklrucache": "4.11.0",
+    "com.github.bumptech.glide:gifdecoder": "4.11.0",
+    "com.google.android.datatransport:transport-api": "2.2.0",
+    "com.google.android.datatransport:transport-backend-cct": "2.3.0",
+    "com.google.android.datatransport:transport-runtime": "2.2.3",
+    "com.google.android.gms:play-services-ads-identifier": "17.0.0",
+    "com.google.android.gms:play-services-base": "17.0.0",
+    "com.google.android.gms:play-services-basement": "17.0.0",
+    "com.google.android.gms:play-services-measurement": "17.5.0",
+    "com.google.android.gms:play-services-measurement-api": "17.5.0",
+    "com.google.android.gms:play-services-measurement-base": "17.5.0",
+    "com.google.android.gms:play-services-measurement-impl": "17.5.0",
+    "com.google.android.gms:play-services-measurement-sdk": "17.5.0",
+    "com.google.android.gms:play-services-measurement-sdk-api": "17.5.0",
+    "com.google.android.gms:play-services-stats": "17.0.0",
+    "com.google.android.gms:play-services-tasks": "17.0.0",
+    "com.google.auto.service:auto-service-annotations": "1.0",
+    "com.google.auto.value:auto-value-annotations": "1.8.1",
+    "com.google.code.findbugs:jsr305": "3.0.2",
+    "com.google.code.gson:gson": "2.8.0",
+    "com.google.devtools.ksp:symbol-processing-api": "1.5.30-1.0.0",
+    "com.google.errorprone:javac-shaded": "9-dev-r4023-3",
+    "com.google.firebase:firebase-components": "16.0.0",
+    "com.google.firebase:firebase-encoders-json": "16.1.0",
+    "com.google.firebase:firebase-iid": "20.1.5",
+    "com.google.firebase:firebase-iid-interop": "17.0.0",
+    "com.google.firebase:firebase-installations": "16.3.2",
+    "com.google.firebase:firebase-installations-interop": "16.0.0",
+    "com.google.firebase:firebase-measurement-connector": "18.0.0",
+    "com.google.googlejavaformat:google-java-format": "1.5",
+    "com.google.guava:guava": "31.0.1-jre",
+    "com.google.guava:listenablefuture": "9999.0-empty-to-avoid-conflict-with-guava",
+    "com.googlecode.juniversalchardet:juniversalchardet": "1.0.3",
+    "com.squareup.moshi:moshi": "1.13.0",
+    "com.squareup.okio:okio": "2.10.0",
+    "com.squareup:javapoet": "1.13.0",
+    "com.squareup:kotlinpoet": "1.10.2",
+    "commons-codec:commons-codec": "1.10",
+    "commons-io:commons-io": "2.4",
+    "net.ltgt.gradle.incap:incap": "0.2",
+    "org.antlr:antlr4": "4.5.3",
+    "org.jetbrains.kotlin:kotlin-reflect": "1.6.0",
+    "org.jetbrains.kotlin:kotlin-stdlib": "1.6.21",
+    "org.jetbrains.kotlin:kotlin-stdlib-common": "1.6.21",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk7": "1.6.21",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-metadata-jvm": "0.3.0",
+    "org.jetbrains:annotations": "13.0",
+    "org.ow2.asm:asm": "9.2",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
 # This list should only contain test-only dependencies. These are dependencies that are guaranteed
 # cannot be included in production builds of the app.
-_MAVEN_APP_TEST_DEPENDENCY_VERSIONS = {
+_MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.arch.core:core-testing": "2.1.0",
     "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
@@ -104,26 +189,58 @@ _MAVEN_APP_TEST_DEPENDENCY_VERSIONS = {
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
     "com.github.bumptech.glide:mocks": "4.11.0",
-    "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
     "com.google.truth:truth": "1.1.3",
     "com.squareup.okhttp3:mockwebserver": "4.7.2",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
     "junit:junit": "4.13.2",
-    "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-reflect": "1.6.0",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.6.4",
-    "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "3.9.0",
     "org.robolectric:annotations": "4.5",
     "org.robolectric:robolectric": "4.5",
 }
 
+_MAVEN_TEST_TRANSITIVE_DEPENDENCY_VERSIONS = {
+    "androidx.test.espresso:espresso-idling-resource": "3.2.0",
+    "androidx.test:monitor": "1.4.0",
+    "androidx.test:rules": "1.1.0",
+    "com.almworks.sqlite4java:sqlite4java": "1.0.392",
+    "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework": "2.0",
+    "com.ibm.icu:icu4j": "53.1",
+    "com.squareup:javawriter": "2.1.1",
+    "net.bytebuddy:byte-buddy": "1.10.20",
+    "net.bytebuddy:byte-buddy-agent": "1.10.20",
+    "net.sf.kxml:kxml2": "2.3.0",
+    "org.bouncycastle:bcprov-jdk15on": "1.65",
+    "org.hamcrest:hamcrest-core": "1.3",
+    "org.hamcrest:hamcrest-integration": "1.3",
+    "org.hamcrest:hamcrest-library": "1.3",
+    "org.jetbrains.kotlin:kotlin-test": "1.3.72",
+    "org.jetbrains.kotlin:kotlin-test-annotations-common": "1.3.72",
+    "org.jetbrains.kotlin:kotlin-test-common": "1.3.72",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm": "1.6.4",
+    "org.objenesis:objenesis": "3.2",
+    "org.ow2.asm:asm-analysis": "9.0",
+    "org.ow2.asm:asm-commons": "9.0",
+    "org.ow2.asm:asm-tree": "9.0",
+    "org.ow2.asm:asm-util": "9.0",
+    "org.robolectric:junit": "4.5",
+    "org.robolectric:pluginapi": "4.5",
+    "org.robolectric:plugins-maven-dependency-resolver": "4.5",
+    "org.robolectric:resources": "4.5",
+    "org.robolectric:sandbox": "4.5",
+    "org.robolectric:shadowapi": "4.5",
+    "org.robolectric:shadows-framework": "4.5",
+    "org.robolectric:utils": "4.5",
+    "org.robolectric:utils-reflector": "4.5",
+}
+
 _MAVEN_SCRIPTS_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.android.tools.apkparser:apkanalyzer": "30.0.4",
     "com.android.tools.build:aapt2-proto": "7.3.1-8691043",
-    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.6.21",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.21",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "com.google.errorprone:error_prone_annotations": "2.11.0",
@@ -177,7 +294,7 @@ HTTP_ARCHIVE_DEPENDENCY_VERSIONS = {
         "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
         "strip_prefix": "dagger-dagger-{0}",
         "urls": ["https://github.com/google/dagger/archive/dagger-{0}.zip"],
-        "version": "2.41",
+        "version": _MAVEN_PRODUCTION_DEPENDENCY_VERSIONS["com.google.dagger:dagger"],
     },
     "protobuf_tools": {
         "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
@@ -297,15 +414,14 @@ MAVEN_ARTIFACT_TREES = {
     "app": {
         "deps": {
             "prod": {
-                "direct": _MAVEN_APP_PRODUCTION_DEPENDENCY_VERSIONS,
-                "transitive": {},
+                "direct": _MAVEN_PRODUCTION_DEPENDENCY_VERSIONS,
+                "transitive": _MAVEN_PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS,
             },
             "test": {
-                "direct": _MAVEN_APP_TEST_DEPENDENCY_VERSIONS,
-                "transitive": {},
+                "direct": _MAVEN_TEST_DEPENDENCY_VERSIONS,
+                "transitive": _MAVEN_TEST_TRANSITIVE_DEPENDENCY_VERSIONS,
             },
         },
-        "include_dagger_artifacts": True,
         "maven_install_json": "//third_party:maven_install.json",
         "target_overrides": {
             "com.google.guava:guava": "@//third_party:com_google_guava_guava",
@@ -323,43 +439,34 @@ MAVEN_ARTIFACT_TREES = {
                 "transitive": {},
             },
         },
-        "include_dagger_artifacts": False,
         "maven_install_json": "//scripts/third_party:maven_install.json",
     },
 }
 
-def install_maven_dependencies(
-        maven,
-        maven_install,
-        parse,
-        build_context,
-        dagger_repositories,
-        dagger_artifacts):
+def install_maven_dependencies(maven, maven_install, parse, build_context):
     """
     Downloads all Maven dependencies corresponding to the specified build context.
     """
     artifact_tree = MAVEN_ARTIFACT_TREES[build_context]
     maven_install(
         name = "maven_%s" % build_context,
-        artifacts = _extract_maven_dependencies(maven, parse, artifact_tree, dagger_artifacts),
+        artifacts = _extract_maven_dependencies(maven, parse, artifact_tree),
         duplicate_version_warning = "error",
         fail_if_repin_required = True,
         maven_install_json = artifact_tree["maven_install_json"],
         override_targets = artifact_tree.get("target_overrides") or {},
-        repositories = dagger_repositories + MAVEN_REPOSITORIES,
+        repositories = MAVEN_REPOSITORIES,
         strict_visibility = True,
     )
 
-def _extract_maven_dependencies(maven, parse, artifact_tree, dagger_artifacts):
+def _extract_maven_dependencies(maven, parse, artifact_tree):
     """
     Returns a list of Maven dependency artifacts to install to fulfill all third-party dependencies.
     """
-    main_artifacts = (
+    return (
         _create_all_maven_deps(maven, parse, artifact_tree["deps"]["prod"], test_only = False) +
         _create_all_maven_deps(maven, parse, artifact_tree["deps"]["test"], test_only = True)
     )
-    additional_artifacts = dagger_artifacts if artifact_tree["include_dagger_artifacts"] else []
-    return main_artifacts + additional_artifacts
 
 def _create_all_maven_deps(maven, parse, deps_metadata, test_only):
     """

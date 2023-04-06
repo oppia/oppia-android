@@ -109,7 +109,7 @@ kt_jvm_import(
     tags = ["no-ide"],
     deps = [
         ":_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
-        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8",
     ],
 )
 

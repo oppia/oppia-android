@@ -1003,7 +1003,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_parseFrom_oneComponent_throwsException() {
     val exception = assertThrows(IllegalStateException::class) {
-      MavenDependenciesRetriever.MavenCoordinate.parseFrom("androidx.lifecycle")
+      MavenCoordinate.parseFrom("androidx.lifecycle")
     }
 
     assertThat(exception).hasMessageThat().contains("Invalid Maven coordinate string")
@@ -1012,7 +1012,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_parseFrom_twoComponents_throwsException() {
     val exception = assertThrows(IllegalStateException::class) {
-      MavenDependenciesRetriever.MavenCoordinate.parseFrom("androidx.lifecycle:lifecycle-viewmodel")
+      MavenCoordinate.parseFrom("androidx.lifecycle:lifecycle-viewmodel")
     }
 
     assertThat(exception).hasMessageThat().contains("Invalid Maven coordinate string")
@@ -1021,7 +1021,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_parseFrom_threeComponents_returnsCoordinateWithGroupArtifactVersion() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate.parseFrom(
+      MavenCoordinate.parseFrom(
         "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
       )
 
@@ -1035,7 +1035,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_parseFrom_fourComponents_returnsCoordinateWithExtension() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate.parseFrom(
+      MavenCoordinate.parseFrom(
         "androidx.lifecycle:lifecycle-viewmodel:aar:2.2.0"
       )
 
@@ -1049,7 +1049,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_parseFrom_fiveComponents_returnsCoordinateWithClassifierAndExtension() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate.parseFrom(
+      MavenCoordinate.parseFrom(
         "androidx.lifecycle:lifecycle-viewmodel:aar:sources:2.2.0"
       )
 
@@ -1063,7 +1063,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_parseFrom_sixComponents_throwsException() {
     val exception = assertThrows(IllegalStateException::class) {
-      MavenDependenciesRetriever.MavenCoordinate.parseFrom(
+      MavenCoordinate.parseFrom(
         "androidx.lifecycle:lifecycle-viewmodel:aar:sources:fake:2.2.0"
       )
     }
@@ -1074,7 +1074,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_reducedCoordinateString_simpleCoordinate_returnsCorrectValue() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0"
@@ -1089,7 +1089,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_reducedCoordinateString_coordWithExtension_returnsCoordStrNoExtension() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1105,7 +1105,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_reducedCoordinateString_coordWithClassifier_returnsCoordStrNoClass() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1121,7 +1121,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_reducedCoordinateString_coordWithClassAndExt_returnsStrWithoutBoth() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1138,7 +1138,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_bazelTarget_simpleCoordinate_returnsTargetIgnoringVersion() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0"
@@ -1153,7 +1153,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_bazelTarget_coordWithExtension_returnsTargetIgnoringExtension() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1169,7 +1169,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_bazelTarget_coordWithClassifier_returnsTargetIgnoringClassifier() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1185,7 +1185,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_bazelTarget_coordWithClassAndExt_returnsTargetIgnoringBoth() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1202,7 +1202,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_computeArtifactUrl_simpleCoordinate_returnsCorrectMavenUrl() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0"
@@ -1222,7 +1222,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_computeArtifactUrl_coordWithExtension_returnsUrlWithExtension() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1241,7 +1241,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_computeArtifactUrl_coordWithClassifier_returnsUrlWithClassifier() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1260,7 +1260,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_computeArtifactUrl_coordWithClassAndExt_returnsUrlWithBoth() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1280,7 +1280,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_computePomUrl_simpleCoordinate_returnsCorrectMavenUrl() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0"
@@ -1299,7 +1299,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_computePomUrl_coordWithExtension_returnsUrlWithExtension() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1319,7 +1319,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_computePomUrl_coordWithClassifier_returnsUrlWithClassifier() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1339,7 +1339,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testMavenCoordinate_computePomUrl_coordWithClassAndExt_returnsUrlWithBoth() {
     val coord =
-      MavenDependenciesRetriever.MavenCoordinate(
+      MavenCoordinate(
         groupId = "androidx.lifecycle",
         artifactId = "lifecycle-viewmodel",
         version = "2.2.0",
@@ -1616,7 +1616,7 @@ class MavenDependenciesRetrieverTest {
   }
 
   private fun String.coordStrToMavenCoord() =
-    MavenDependenciesRetriever.MavenCoordinate.parseFrom(this)
+    MavenCoordinate.parseFrom(this)
 
   private companion object {
     private const val DEP_WITH_SCRAPABLE_LICENSE = "androidx.databinding:databinding-adapters:3.4.2"

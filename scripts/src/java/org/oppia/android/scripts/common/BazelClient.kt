@@ -8,7 +8,11 @@ import java.util.Locale
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
  * the specified root directory).
  */
-class BazelClient(private val rootDirectory: File, private val commandExecutor: CommandExecutor) {
+class BazelClient(
+  private val rootDirectory: File,
+  private val commandExecutor: CommandExecutor,
+  private val universeScope: String = "//..."
+) {
   /** Returns all Bazel test targets in the workspace. */
   fun retrieveAllTestTargets(): List<String> {
     return correctPotentiallyBrokenTargetNames(
@@ -29,14 +33,28 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     )
   }
 
-  /** Returns all test targets in the workspace that are affected by the list of file targets. */
-  fun retrieveRelatedTestTargets(fileTargets: Iterable<String>): List<String> {
+  /** Returns all prod targets in the workspace that depend on the list of provided targets. */
+  fun retrieveDependingProdTargets(targets: Iterable<String>): List<String> {
+    // Reference for the "kind exclusion": https://stackoverflow.com/a/58667282/3689782.
     return correctPotentiallyBrokenTargetNames(
       runPotentiallyShardedQueryCommand(
-        "kind(test, allrdeps(set(%s)))",
-        fileTargets,
+        "filter('^[^@]', allrdeps(set(%1\$s)) except kind(test, allrdeps(set(%1\$s))))",
+        targets,
         "--noshow_progress",
-        "--universe_scope=//...",
+        "--universe_scope=$universeScope",
+        "--order_output=no"
+      )
+    )
+  }
+
+  /** Returns all test targets in the workspace that depend on the list of provided targets. */
+  fun retrieveDependingTestTargets(targets: Iterable<String>): List<String> {
+    return correctPotentiallyBrokenTargetNames(
+      runPotentiallyShardedQueryCommand(
+        "filter('^[^@]', kind(test, allrdeps(set(%s))))",
+        targets,
+        "--noshow_progress",
+        "--universe_scope=$universeScope",
         "--order_output=no"
       )
     )
@@ -45,7 +63,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   /**
    * Returns all test targets transitively tied to the specific Bazel BUILD/WORKSPACE files listed
    * in the provided [buildFiles] list. This may return different files than
-   * [retrieveRelatedTestTargets] since that method relies on the dependency graph to compute
+   * [retrieveDependingTestTargets] since that method relies on the dependency graph to compute
    * affected targets whereas this assumes that any changes to BUILD files could affect any test
    * directly or indirectly tied to that BUILD file, regardless of dependencies.
    */
@@ -58,7 +76,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
           "filter('^[^@]', rbuildfiles(%s))", // Use a filter to limit the search space.
           buildFiles,
           "--noshow_progress",
-          "--universe_scope=//...",
+          "--universe_scope=$universeScope",
           "--order_output=no",
           delimiter = ","
         )
@@ -76,7 +94,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
           "filter('^[^@]', kind(test, allrdeps(set(%s))))",
           relevantSiblings,
           "--noshow_progress",
-          "--universe_scope=//...",
+          "--universe_scope=$universeScope",
           "--order_output=no"
         )
       )
@@ -101,7 +119,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     return executeBazelCommand(
       "query",
       "--noshow_progress",
-      "--universe_scope=//...",
+      "--universe_scope=$universeScope",
       "--order_output=no",
       "kind($filterRuleType, siblings($buildFileTarget))"
     )
@@ -164,7 +182,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   }
 
   private fun computeMaxArgumentLength(partitions: List<List<String>>) =
-    partitions.map(this::computeArgumentLength).maxOrNull() ?: 0
+    partitions.maxOfOrNull(this::computeArgumentLength) ?: 0
 
   private fun computeArgumentLength(args: List<String>) = args.joinToString(" ").length
 

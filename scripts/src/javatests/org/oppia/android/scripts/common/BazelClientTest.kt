@@ -158,42 +158,42 @@ class BazelClientTest {
   }
 
   @Test
-  fun testRetrieveRelatedTestTargets_forTargetWithNoTestDependency_returnsNoTargets() {
+  fun testRetrieveDependingTestTargets_forTargetWithNoTestDependency_returnsNoTargets() {
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createLibrary("SomeDependency")
     testBazelWorkspace.createTest("FirstTest")
 
-    val testTargets = bazelClient.retrieveRelatedTestTargets(listOf("//:SomeDependency.kt"))
+    val testTargets = bazelClient.retrieveDependingTestTargets(listOf("//:SomeDependency.kt"))
 
     // Since the target doesn't have any tests depending on it, there are no targets to provide.
     assertThat(testTargets).isEmpty()
   }
 
   @Test
-  fun testRetrieveRelatedTestTargets_forTestFileTarget_returnsTestTarget() {
+  fun testRetrieveDependingTestTargets_forTestFileTarget_returnsTestTarget() {
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest")
 
-    val testTargets = bazelClient.retrieveRelatedTestTargets(listOf("//:FirstTest.kt"))
+    val testTargets = bazelClient.retrieveDependingTestTargets(listOf("//:FirstTest.kt"))
 
     assertThat(testTargets).containsExactly("//:FirstTest")
   }
 
   @Test
-  fun testRetrieveRelatedTestTargets_forDependentFileTarget_returnsTestTarget() {
+  fun testRetrieveDependingTestTargets_forDependentFileTarget_returnsTestTarget() {
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest", withGeneratedDependency = true)
 
-    val testTargets = bazelClient.retrieveRelatedTestTargets(listOf("//:FirstTestDependency.kt"))
+    val testTargets = bazelClient.retrieveDependingTestTargets(listOf("//:FirstTestDependency.kt"))
 
     assertThat(testTargets).containsExactly("//:FirstTest")
   }
 
   @Test
-  fun testRetrieveRelatedTestTargets_forMixedFileTargets_returnsRelatedTestTargets() {
+  fun testRetrieveDependingTestTargets_forMixedFileTargets_returnsRelatedTestTargets() {
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createLibrary("ExtraDep")
@@ -203,7 +203,7 @@ class BazelClientTest {
     testBazelWorkspace.createTest("FourthTest", subpackage = "subpackage")
 
     val testTargets =
-      bazelClient.retrieveRelatedTestTargets(
+      bazelClient.retrieveDependingTestTargets(
         listOf("//:SecondTestDependency.kt", "//subpackage:FourthTest.kt", "//:ExtraDep.kt")
       )
 
@@ -217,12 +217,12 @@ class BazelClientTest {
   }
 
   @Test
-  fun testRetrieveRelatedTestTargets_resultsJumbled_returnsCorrectTestTargets() {
+  fun testRetrieveDependingTestTargets_resultsJumbled_returnsCorrectTestTargets() {
     val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
     fakeCommandExecutorWithResult(singleLine = "//:FirstTest//:SecondTest")
 
     val testTargets =
-      bazelClient.retrieveRelatedTestTargets(listOf("//:FirstTest.kt", "//:SecondTest.kt"))
+      bazelClient.retrieveDependingTestTargets(listOf("//:FirstTest.kt", "//:SecondTest.kt"))
 
     assertThat(testTargets).containsExactly("//:FirstTest", "//:SecondTest")
   }

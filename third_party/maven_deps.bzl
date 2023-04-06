@@ -4,7 +4,6 @@ Provides Starlark macros for importing Maven-hosted dependencies.
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven", "parse")
-load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 load("//third_party:versions.bzl", "MAVEN_ARTIFACT_TREES", "install_maven_dependencies")
 
 def downloadMavenDependencies():
@@ -23,13 +22,6 @@ def downloadMavenDependencies():
     # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external. Note to
     # developers: new dependencies should be added to third_party/versions.bzl, not here.
     [
-        install_maven_dependencies(
-            maven,
-            maven_install,
-            parse,
-            build_context,
-            DAGGER_REPOSITORIES,
-            DAGGER_ARTIFACTS,
-        )
+        install_maven_dependencies(maven, maven_install, parse, build_context)
         for build_context in MAVEN_ARTIFACT_TREES.keys()
     ]

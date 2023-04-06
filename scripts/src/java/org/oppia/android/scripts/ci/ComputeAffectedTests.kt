@@ -172,7 +172,7 @@ class ComputeAffectedTests(
     val affectedTestTargets =
       changedFileTargets.chunked(size = 100)
         .fold(initial = setOf<String>()) { allTargets, targetChunk ->
-          allTargets + bazelClient.retrieveRelatedTestTargets(targetChunk).toSet()
+          allTargets + bazelClient.retrieveDependingTestTargets(targetChunk).toSet()
         }
     println(
       "Affected Bazel test targets (${affectedTestTargets.size} total): $affectedTestTargets."

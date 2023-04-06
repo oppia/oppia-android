@@ -15,12 +15,21 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "maven_coordinate",
+    srcs = [
+        "MavenCoordinate.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
     name = "maven_dependencies_retriever",
     testonly = True,
     srcs = ["MavenDependenciesRetriever.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":maven_artifact_property_fetcher",
+        ":maven_coordinate",
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/src/java/org/oppia/android/scripts/maven/model",
