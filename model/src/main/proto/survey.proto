@@ -8,7 +8,7 @@ option java_multiple_files = true;
 // Corresponds to a single survey.
 message Survey {
   // The ID of the survey. This is a string value that uniquely identifies the survey.
-  // The ID is guaranteed to be unique across all surveys.
+  // The ID is guaranteed to be unique across all surveys globally for the purpose of analysis.
   // This field is used to retrieve information about a survey, and should be treated as read-only.
   string survey_id = 1;
 
@@ -22,32 +22,31 @@ message SurveyQuestion {
   // within the context of the survey, and is guaranteed to be unique within the survey scope only.
   string question_id = 1;
 
-  // The type of question.
-  QuestionType question_type = 2;
+  // The semantic name of the question used to identify it in the analytics dashboard.
+  QuestionName question_name = 2;
 
   // The actual text value of the question.
   string question = 3;
 
-  // The semantic name of the question used to identify it in the analytics dashboard.
-  QuestionName question_name = 4;
+  // The type of question.
+  oneof question_type {
+    // Corresponds to a question with multiple choices.
+    SurveyQuestionOptionList multiple_choice = 4;
 
-  // A list of multi-choice answer options for a given question.
-  repeated SurveyAnswerOption answer_list = 5;
+    // Corresponds to a question with multiple choices and a free-text 'other' option.
+    SurveyQuestionOptionList multiple_choice_with_other = 5;
+
+    // Indicates whether this question takes a free-text response.
+    bool free_form_text = 6;
+  }
+
+  // The language code to which this question is localized.
+  string language_code = 7;
 }
 
-// The list of types a question can have that is used to determine how it is presented by the UI.
-enum QuestionType {
-  // The type of question is unknown.
-  QUESTION_TYPE_UNSPECIFIED = 0;
-
-  // Corresponds to a question with multiple choices.
-  MULTIPLE_CHOICE = 1;
-
-  // Corresponds to a question with multiple choices and a free-text 'other' option.
-  MULTIPLE_CHOICE_WITH_OTHER = 2;
-
-  // Corresponds to a question which takes a free-text response.
-  FREE_FORM = 3;
+// Represents a list of answer options for a multiple choice question.
+message SurveyQuestionOptionList {
+  repeated SurveyQuestionOption options = 1;
 }
 
 // Corresponds to the semantic name given to each question.
@@ -61,43 +60,64 @@ enum QuestionName {
   //  Corresponds to the market fit question.
   MARKET_FIT = 2;
 
-  // Corresponds to  the NPS question.
+  // Corresponds to the NPS question.
   NPS = 3;
 
-  // Corresponds to  the open-ended question for a NPS promoter.
+  // Corresponds to the open-ended question for a NPS promoter.
   PROMOTER_FEEDBACK = 4;
 
-  // Corresponds to  the open-ended question for a NPS passive.
+  // Corresponds to the open-ended question for a NPS passive.
   PASSIVE_FEEDBACK = 5;
 
-  // Corresponds to  the open-ended question for a NPS detractor.
+  // Corresponds to the open-ended question for a NPS detractor.
   DETRACTOR_FEEDBACK = 6;
 }
 
 // Represents the multiple choice answer available for a question.
-message SurveyAnswerOption {
-  // The ID of this answer option. It is a string value that uniquely identifies the answer option
-  // within the context of the question it belongs to.
-  string question_answer_id = 1;
+message SurveyQuestionOption {
+  // The ID of this question option. It is a string that uniquely identifies the question option
+  // within the context of a survey question. It is only unique within the scope of a survey.
+  string question_option_id = 1;
 
   // The semantic name of the question this answer option is tied to.
   QuestionName question_name = 2;
 
-  // The actual text value of the answer.
-  string answer = 3;
+  // The actual text value of the answer option.
+  string label = 3;
+
+  // The type of answer this option represents.
+  oneof answer {
+    // The enum representation of the type of user answer option.
+    UserTypeAnswer user_type = 4;
+
+    // The enum representation of the market fit answer option.
+    MarketFitAnswer market_fit = 5;
+
+    // The integer value representing the nps score option.
+    int32 nps = 6;
+  }
 }
 
 // Represents an answer that was selected by a user for a survey question.
 message SurveyUserAnswer {
   // The ID of the survey to which this answer is tied. This is a string value that uniquely
-  // identifies the survey.
+  // identifies the survey globally.
   string survey_id = 1;
 
   // Semantic name of the question the response is tied to.
   QuestionName question_name = 2;
 
   // The value of the answer the user gave.
-  string user_answer = 3;
+  oneof answer {
+    // The enum representation of the type of user answer selected.
+    UserTypeAnswer user_type = 3;
+
+    // The enum representation of the market fit answer selected.
+    MarketFitAnswer market_fit = 4;
+
+    // The integer value representing the nps score selected by the user.
+    int32 nps = 5;
+  }
 }
 
 // Represents the different types of users who could be taking the survey.
@@ -132,7 +152,7 @@ enum  MarketFitAnswer {
   DISAPPOINTED = 2;
 
   // Corresponds to the answer for  Not Disappointed.
-  NOT_DISAPPONTED = 3;
+  NOT_DISAPPOINTED = 3;
 
   // Corresponds to the answer for  N/A - Don't use Oppia Anymore.
   NOT_APPLICABLE_WONT_USE_OPPIA_ANYMORE = 4;
@@ -147,7 +167,7 @@ enum SurveyCompletionStatus {
   DECLINED = 1;
 
   // Corresponds to the survey being exited before the mandatory questions are completed.
-  STARTED_NOT_COMPLETED = 2;
+  EXITED_NOT_COMPLETED = 2;
 
   // Corresponds to the mandatory part of the survey being completed.
   MANDATORY_PART_COMPLETED = 3;
@@ -176,10 +196,9 @@ message EphemeralSurveyQuestion {
     bool pending_question = 4;
 
     // The SurveyUserAnswer given to complete the previous question.
-    SurveyUserAnswer user_answer = 5;
+    SurveyUserAnswer completion_user_answer = 5;
 
     // Present if this is the last question in the survey.
     bool terminal_question = 6;
   }
 }
-
