@@ -101,8 +101,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
   }
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
-    val currentFragment = fragment.childFragmentManager.findFragmentByTag(
-      CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+    val currentFragment =
+      fragment.childFragmentManager.findFragmentByTag(CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
     if (currentFragment == null) {
       val conceptCardFragment = ConceptCardFragment
         .newInstance(skillId, profileId)
