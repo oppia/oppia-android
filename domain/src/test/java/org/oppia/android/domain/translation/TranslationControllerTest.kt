@@ -475,66 +475,6 @@ class TranslationControllerTest {
     assertThat(selection.selectionTypeCase).isEqualTo(SELECTED_APP_LANGUAGE)
     assertThat(selection.selectedLanguage).isEqualTo(ENGLISH)
   }
-
-  @Test
-  fun testUpdateAppLanguage_uninitializedToSystem_returnsUninitializedSelection() {
-    forceDefaultLocale(Locale.ROOT)
-
-    val updateProvider = translationController.updateAppLanguage(
-      PROFILE_ID_0,
-      AppLanguageSelection.newBuilder().apply { useSystemLanguageOrAppDefault = true }.build()
-    )
-
-    // The previous selection was uninitialized.
-    val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection).isEqualToDefaultInstance()
-  }
-
-  @Test
-  fun testUpdateAppLanguage_uninitializedToEnglish_returnsUninitializedSelection() {
-    forceDefaultLocale(Locale.ROOT)
-
-    val updateProvider = translationController.updateAppLanguage(
-      PROFILE_ID_0,
-      AppLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
-
-    // The previous selection was uninitialized.
-    val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection).isEqualToDefaultInstance()
-  }
-
-  @Test
-  fun testUpdateAppLanguage_systemToEnglish_returnsSystemSelection() {
-    forceDefaultLocale(Locale.ROOT)
-    ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
-
-    val updateProvider = translationController.updateAppLanguage(
-      PROFILE_ID_0,
-      AppLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
-
-    // The previous selection was system language.
-    val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection.selectionTypeCase).isEqualTo(USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT)
-  }
-
-  @Test
-  fun testUpdateAppLanguage_englishToPortuguese_returnsEnglishSelection() {
-    forceDefaultLocale(Locale.ROOT)
-    ensureAppLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
-
-    val updateProvider = translationController.updateAppLanguage(
-      PROFILE_ID_0,
-      AppLanguageSelection.newBuilder().apply { selectedLanguage = BRAZILIAN_PORTUGUESE }.build()
-    )
-
-    // The previous selection was English.
-    val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection.selectionTypeCase).isEqualTo(SELECTED_APP_LANGUAGE)
-    assertThat(selection.selectedLanguage).isEqualTo(ENGLISH)
-  }
-
   /* Tests for written translation content functions */
 
   @Test
