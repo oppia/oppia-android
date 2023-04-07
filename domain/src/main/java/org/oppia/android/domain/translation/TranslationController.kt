@@ -142,7 +142,7 @@ class TranslationController @Inject constructor(
    * language for app strings (see [getAppLanguage]).
    *
    * Note that providing the returned selection to [updateAppLanguage] should result in no change to
-   * the underlying configuREvertred selection.
+   * the underlying configured selection.
    */
   fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> {
     val providerId = APP_LANGUAGE_SELECTION_DATA_PROVIDER_ID
