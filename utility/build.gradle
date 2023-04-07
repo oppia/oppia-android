@@ -79,8 +79,8 @@ android.sourceSets.test.kotlin.exclude(filesToExclude)
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
-      'androidx.appcompat:appcompat:1.0.2',
-      'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
+      'androidx.appcompat:appcompat:1.2.0',
+      'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0',
       'androidx.work:work-runtime-ktx:2.4.0',
       'com.github.oppia:androidsvg:4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf',
       'com.github.oppia:kotlitex:ccdf4170817fa3b48b8e1e452772dd58ecb71cf2',
@@ -88,7 +88,7 @@ dependencies {
       'com.google.dagger:dagger:2.41',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-core:17.5.0',
-      'com.google.firebase:firebase-crashlytics:17.0.0',
+      'com.google.firebase:firebase-crashlytics:17.1.1',
       'com.google.protobuf:protobuf-javalite:3.17.3',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4',
@@ -104,10 +104,10 @@ dependencies {
       'com.google.dagger:dagger:2.41',
       'com.google.truth:truth:1.1.3',
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
-      'junit:junit:4.12',
+      'junit:junit:4.13.2',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
-      'org.mockito:mockito-core:2.19.0',
+      'org.mockito:mockito-core:3.9.0',
       'org.robolectric:robolectric:4.5',
       project(":data"),
       project(":testing"),

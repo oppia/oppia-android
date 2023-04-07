@@ -17,8 +17,6 @@ Note that for making any change in 'MAVEN_PRODUCTION_DEPENDENCY_VERSIONS' or
 https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies
 """
 
-# TODO: Make sure these versions align with those used in Gradle (pick latest?).
-
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
 # This list should contain only production (non-test) dependencies. Note also that Dagger artifacts
 # are manually included here for better integration with version list maintenance despite this being
@@ -29,7 +27,7 @@ _MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.exifinterface:exifinterface": "1.0.0",
     "androidx.constraintlayout:constraintlayout": "2.0.1",
     "androidx.core:core": "1.3.1",
-    "androidx.core:core-ktx": "1.0.1",
+    "androidx.core:core-ktx": "1.0.2",
     "androidx.databinding:databinding-adapters": "3.4.2",
     "androidx.databinding:databinding-common": "3.4.2",
     "androidx.databinding:databinding-compiler": "3.4.2",
@@ -64,7 +62,7 @@ _MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.squareup.moshi:moshi-kotlin": "1.13.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.13.0",
     "com.squareup.okhttp3:okhttp": "4.7.2",
-    "com.squareup.retrofit2:converter-moshi": "2.5.0",
+    "com.squareup.retrofit2:converter-moshi": "2.7.2",
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "de.hdodenhof:circleimageview": "3.0.1",
     "io.fabric.sdk.android:fabric": "1.4.7",
@@ -191,10 +189,10 @@ _MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
     "com.google.truth:truth": "1.1.3",
     "com.squareup.okhttp3:mockwebserver": "4.7.2",
-    "com.squareup.retrofit2:retrofit-mock": "2.5.0",
+    "com.squareup.retrofit2:retrofit-mock": "2.9.0",
     "junit:junit": "4.13.2",
-    "org.jetbrains.kotlin:kotlin-reflect": "1.6.0",
-    "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
+    "org.jetbrains.kotlin:kotlin-reflect": "1.6.21",
+    "org.jetbrains.kotlin:kotlin-test-junit": "1.6.21",
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.6.4",
     "org.mockito:mockito-core": "3.9.0",
     "org.robolectric:annotations": "4.5",
@@ -216,9 +214,7 @@ _MAVEN_TEST_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "org.hamcrest:hamcrest-core": "1.3",
     "org.hamcrest:hamcrest-integration": "1.3",
     "org.hamcrest:hamcrest-library": "1.3",
-    "org.jetbrains.kotlin:kotlin-test": "1.3.72",
-    "org.jetbrains.kotlin:kotlin-test-annotations-common": "1.3.72",
-    "org.jetbrains.kotlin:kotlin-test-common": "1.3.72",
+    "org.jetbrains.kotlin:kotlin-test": "1.6.21",
     "org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm": "1.6.4",
     "org.objenesis:objenesis": "3.2",
     "org.ow2.asm:asm-analysis": "9.0",
