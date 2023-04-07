@@ -164,7 +164,6 @@ _MAVEN_PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "commons-io:commons-io": "2.4",
     "net.ltgt.gradle.incap:incap": "0.2",
     "org.antlr:antlr4": "4.5.3",
-    "org.jetbrains.kotlin:kotlin-reflect": "1.6.0",
     "org.jetbrains.kotlin:kotlin-stdlib": "1.6.21",
     "org.jetbrains.kotlin:kotlin-stdlib-common": "1.6.21",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk7": "1.6.21",
@@ -415,6 +414,12 @@ MAVEN_ARTIFACT_TREES = {
         "deps": {
             "prod": {
                 "direct": _MAVEN_PRODUCTION_DEPENDENCY_VERSIONS,
+                "exclusions": [
+                    # Don't allow production dependencies to use kotlin-reflect. Note that this may
+                    # result in runtime failures for libraries that depend on it, so care must be
+                    # taken or those libraries can't be used as dependencies.
+                    "org.jetbrains.kotlin:kotlin-reflect",
+                ],
                 "transitive": _MAVEN_PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS,
             },
             "test": {
@@ -473,18 +478,19 @@ def _create_all_maven_deps(maven, parse, deps_metadata, test_only):
     Returns a list of Maven dependency artifacts to install to fulfill specific third-party
     dependencies.
     """
+    exclusions = deps_metadata.get("exclusions")
     return (
-        _create_maven_deps(maven, parse, deps_metadata["direct"], test_only) +
-        _create_maven_deps(maven, parse, deps_metadata["transitive"], test_only)
+        _create_maven_deps(maven, parse, deps_metadata["direct"], exclusions, test_only) +
+        _create_maven_deps(maven, parse, deps_metadata["transitive"], exclusions, test_only)
     )
 
-def _create_maven_deps(maven, parse, dependency_versions, test_only):
+def _create_maven_deps(maven, parse, dependency_versions, exclusions, test_only):
     return [
-        _create_maven_artifact(maven, parse, name, version, test_only)
+        _create_maven_artifact(maven, parse, name, version, exclusions, test_only)
         for name, version in dependency_versions.items()
     ]
 
-def _create_maven_artifact(maven, parse, name, version, test_only):
+def _create_maven_artifact(maven, parse, name, version, exclusions, test_only):
     # Create production & test specific dependencies per:
     # https://github.com/bazelbuild/rules_jvm_external#test-only-dependencies.
     coordinate = parse.parse_maven_coordinate("%s:%s" % (name, version))
@@ -493,5 +499,6 @@ def _create_maven_artifact(maven, parse, name, version, test_only):
         coordinate["artifact"],
         coordinate["version"],
         packaging = coordinate.get("packaging"),
-        #        testonly = test_only, # TODO: fix (per https://github.com/bazelbuild/rules_jvm_external/issues/350)
+        exclusions = exclusions,
+        testonly = test_only,
     )

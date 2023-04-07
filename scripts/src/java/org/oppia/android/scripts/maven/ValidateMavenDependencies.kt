@@ -62,12 +62,15 @@ class ValidateMavenDependencies(
     checkForConflictResolutions(mavenInstallJson, versionsBazelFile, mavenInstallFile)
 
     // Second, verify that there are no duplications across any of the lists (they are all expected
-    // to be mutually exclusive, except for prod transitive & test direct since the latter might
-    // explicitly redefine the latter for access).
+    // to be mutually exclusive). Note that this includes cases when tests try to expose a reference
+    // to a transitive production dependency. This is, inherently, not allowed because prod
+    // dependencies cannot depend on artifacts marked as test-only. Such artifacts should be exposed
+    // as explicit production dependencies, instead.
     println("Checking for dependency list non-exclusivity...")
     checkForCommonDeps(prodDirectDeps, prodTransitiveDeps)
     checkForCommonDeps(prodDirectDeps, testDirectDeps)
     checkForCommonDeps(prodDirectDeps, testTransitiveDeps)
+    checkForCommonDeps(prodTransitiveDeps, testDirectDeps)
     checkForCommonDeps(prodTransitiveDeps, testTransitiveDeps)
     checkForCommonDeps(testDirectDeps, testTransitiveDeps)
 
