@@ -15,11 +15,11 @@ def setUp():
     # - https://github.com/bazelbuild/bazel/issues/7095
     native.bind(
         name = "proto_compiler",
-        actual = "//tools:protoc",
+        actual = "//third_party/tools:protoc",
     )
     native.bind(
         name = "proto_java_toolchain",
-        actual = "//tools:java_toolchain",
+        actual = "//third_party/tools:java_toolchain",
     )
 
     rules_proto_dependencies()

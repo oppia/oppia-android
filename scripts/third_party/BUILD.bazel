@@ -1,5 +1,10 @@
-load("//third_party:load_utilities.bzl", "create_dependency_wrappers")
-load("@rules_java//java:defs.bzl", "java_binary", "java_library")
+load(
+    "//third_party:load_utilities.bzl",
+    "create_direct_import_dependency_wrappers",
+    "create_maven_dependency_wrappers",
+)
+load(":versions.bzl", "DIRECT_REMOTE_DEPENDENCIES", "MAVEN_ARTIFACT_TREES")
+load("//third_party/tools/moshi:plugin_setup.bzl", setUpMoshiPlugin = "setUp")
 
 package_group(
     name = "script_all_artifact_visibility",
@@ -7,7 +12,6 @@ package_group(
         ":script_test_artifact_visibility",
         "//:oppia_binary_visibility",
         "//scripts:oppia_script_library_visibility",
-        "//tools:tool_visibility",
     ],
 )
 
@@ -19,51 +23,24 @@ package_group(
     ],
 )
 
-create_dependency_wrappers(
-    build_context = "scripts",
+create_maven_dependency_wrappers(
+    direct_prod_dependencies = MAVEN_ARTIFACT_TREES["deps"]["prod"]["direct"],
+    direct_test_dependencies = MAVEN_ARTIFACT_TREES["deps"]["test"]["direct"],
+    maven_repository_name = "maven_scripts",
     prod_artifact_visibility = [":script_all_artifact_visibility"],
     test_artifact_visibility = [":script_test_artifact_visibility"],
 )
 
-java_library(
+create_direct_import_dependency_wrappers(
+    dependency_imports_details = DIRECT_REMOTE_DEPENDENCIES,
+    maven_artifact_visibility = ["@maven_scripts//:__pkg__"],
+    prod_artifact_visibility = [":script_all_artifact_visibility"],
+    test_artifact_visibility = [":script_test_artifact_visibility"],
+)
+
+setUpMoshiPlugin(
     name = "moshi",
-    exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
+    moshi_compiler_dep = "//scripts/third_party:com_squareup_moshi_moshi-kotlin-codegen",
+    moshi_exported_library = "//scripts/third_party:com_squareup_moshi_moshi-kotlin",
     visibility = [":script_all_artifact_visibility"],
-    exports = [
-        "//scripts/third_party:com_squareup_moshi_moshi-kotlin",
-    ],
-)
-
-android_library(
-    name = "com_google_archivepatcher",
-    visibility = ["//scripts:oppia_script_library_visibility"],
-    exports = [
-        "@archive_patcher//tools",
-    ],
-)
-
-android_library(
-    name = "android_bundletool",
-    visibility = ["//scripts:oppia_script_library_visibility"],
-    exports = ["@android_bundletool//jar"],
-)
-
-java_binary(
-    name = "android_bundletool_binary",
-    main_class = "com.android.tools.build.bundletool.BundleToolMain",
-    visibility = [":script_all_artifact_visibility"],
-    runtime_deps = ["@android_bundletool//jar"],
-)
-
-java_library(
-    name = "com_google_guava_guava_jre",
-    visibility = ["//scripts:__subpackages__"],
-    exports = [
-        "//scripts/third_party:com_google_errorprone_error_prone_annotations",
-        "//scripts/third_party:com_google_guava_failureaccess",
-        "//scripts/third_party:com_google_j2objc_j2objc-annotations",
-        "//scripts/third_party:org_checkerframework_checker-compat-qual",
-        "//scripts/third_party:org_checkerframework_checker-qual",
-        "@guava_jre//jar",
-    ],
 )

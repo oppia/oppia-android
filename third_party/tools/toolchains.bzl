@@ -3,20 +3,20 @@ Defines Starlark macros that are used to set up dependency toolchains needed to 
 Android project.
 """
 
-load("//tools/android:setup.bzl", setUpAndroid = "setUp")
-load("//tools/java:setup.bzl", setUpJava = "setUp")
-load("//tools/kotlin:setup.bzl", setUpKotlin = "setUp")
-load("//tools/proto:setup.bzl", setUpProto = "setUp")
-load("//tools/robolectric:setup.bzl", setUpRobolectric = "setUp")
-load("//tools/skylib:setup.bzl", setUpSkylib = "setUp")
-load("//tools/tools_android:setup.bzl", setUpToolsAndroid = "setUp")
+load("//third_party/tools/android:toolchain_setup.bzl", setUpAndroid = "setUp")
+load("//third_party/tools/java:toolchain_setup.bzl", setUpJava = "setUp")
+load("//third_party/tools/kotlin:toolchain_setup.bzl", setUpKotlin = "setUp")
+load("//third_party/tools/proto:toolchain_setup.bzl", setUpProto = "setUp")
+load("//third_party/tools/robolectric:toolchain_setup.bzl", setUpRobolectric = "setUp")
+load("//third_party/tools/skylib:toolchain_setup.bzl", setUpSkylib = "setUp")
+load("//third_party/tools/tools_android:toolchain_setup.bzl", setUpToolsAndroid = "setUp")
 
 def initializeToolchainsForWorkspace():
     """
     Initializes the toolchains needed to be able to build the Oppia Android app & tests.
 
     Note that this must be called after loading in this toolchains file, for example:
-        load("//tools:toolchains.bzl", "initializeToolchainsForWorkspace")
+        load("//third_party/tools:toolchains.bzl", "initializeToolchainsForWorkspace")
         initializeToolchainsForWorkspace()
 
     Note also that this can't be called until the dependencies themselves are loaded (see

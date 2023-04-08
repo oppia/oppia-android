@@ -67,20 +67,22 @@ class ValidateMavenDependencies(
     // dependencies cannot depend on artifacts marked as test-only. Such artifacts should be exposed
     // as explicit production dependencies, instead.
     println("Checking for dependency list non-exclusivity...")
-    checkForCommonDeps(prodDirectDeps, prodTransitiveDeps)
-    checkForCommonDeps(prodDirectDeps, testDirectDeps)
-    checkForCommonDeps(prodDirectDeps, testTransitiveDeps)
-    checkForCommonDeps(prodTransitiveDeps, testDirectDeps)
-    checkForCommonDeps(prodTransitiveDeps, testTransitiveDeps)
-    checkForCommonDeps(testDirectDeps, testTransitiveDeps)
+    checkForCommonDeps(versionsBazelFile, prodDirectDeps, prodTransitiveDeps)
+    checkForCommonDeps(versionsBazelFile, prodDirectDeps, testDirectDeps)
+    checkForCommonDeps(versionsBazelFile, prodDirectDeps, testTransitiveDeps)
+    checkForCommonDeps(versionsBazelFile, prodTransitiveDeps, testDirectDeps)
+    checkForCommonDeps(versionsBazelFile, prodTransitiveDeps, testTransitiveDeps)
+    checkForCommonDeps(versionsBazelFile, testDirectDeps, testTransitiveDeps)
 
     // Third, check that direct dependencies have references within the universe scope. Note that
     // transitive dependencies do not need to be checked because they don't generate referenceable
     // third-party targets (so the build graph won't resolve).
     println("Check for unreferenced production dependencies...")
-    checkForUnreferencedDeps(prodDirectDeps, DIRECT_PRODUCTION_DEPENDENCY_EXEMPTIONS)
+    checkForUnreferencedDeps(
+      versionsBazelFile, prodDirectDeps, DIRECT_PRODUCTION_DEPENDENCY_EXEMPTIONS
+    )
     println("Check for unreferenced test dependencies...")
-    checkForUnreferencedDeps(testDirectDeps, exemptions = emptySet())
+    checkForUnreferencedDeps(versionsBazelFile, testDirectDeps, exemptions = emptySet())
 
     // Fourth, compute expected transitive dependencies & verify that all are explicitly listed.
     println("Checking for extra and missing transitive dependencies...")
@@ -89,11 +91,13 @@ class ValidateMavenDependencies(
     val expectedTestTransitiveDeps =
       testDirectDeps.computeExpectedTransitiveDependencies(mavenInstallJson)
     checkForExactExplicitTransitiveDeps(
+      versionsBazelFile,
       prodTransitiveDeps,
       extraTransitiveMavenVersionsLists = emptyList(),
       expectedProdTransitiveDeps
     )
     checkForExactExplicitTransitiveDeps(
+      versionsBazelFile,
       testTransitiveDeps,
       // Test deps can depend on prod deps and shouldn't lead to re-listing the dep.
       extraTransitiveMavenVersionsLists = listOf(prodDirectDeps, prodTransitiveDeps),
@@ -155,26 +159,30 @@ class ValidateMavenDependencies(
     }
   }
 
-  private fun checkForCommonDeps(list1: MavenVersionsList, list2: MavenVersionsList) {
+  private fun checkForCommonDeps(
+    versionsBazelFile: File, list1: MavenVersionsList, list2: MavenVersionsList
+  ) {
     val commonDeps = list1.dependencyCoords.intersect(list2.dependencyCoords)
     check(commonDeps.isEmpty()) {
-      "Some dependencies are common between ${list1.name} and ${list2.name} dependencies. All" +
-        " dependencies should be unique. Common dependencies:\n" +
-        commonDeps.asPrintableList().joinToString(separator = "\n") { "- $it" }
+      "In ${versionsBazelFile.toRelativeString(repoRoot)}, some dependencies are common between" +
+        " ${list1.name} and ${list2.name} dependencies. All dependencies should be unique. Common" +
+        " dependencies:\n" + commonDeps.asPrintableList().joinToString(separator = "\n") { "- $it" }
     }
   }
 
   private fun checkForUnreferencedDeps(
-    mavenVersionsList: MavenVersionsList, exemptions: Set<MavenCoordinate>
+    versionsBazelFile: File, mavenVersionsList: MavenVersionsList, exemptions: Set<MavenCoordinate>
   ) {
     val unusedTargets = mavenVersionsList.filterUnusedTargets() - exemptions
     check(unusedTargets.isEmpty()) {
-      "Direct dependency list ${mavenVersionsList.name} includes unused dependencies:\n" +
+      "In ${versionsBazelFile.toRelativeString(repoRoot)}, direct dependency list" +
+        " ${mavenVersionsList.name} includes unused dependencies:\n" +
         unusedTargets.asPrintableList().joinToString(separator = "\n") { "- $it" }
     }
   }
 
   private fun checkForExactExplicitTransitiveDeps(
+    versionsBazelFile: File,
     transitiveMavenVersionsList: MavenVersionsList,
     extraTransitiveMavenVersionsLists: List<MavenVersionsList>,
     transitiveDeps: Set<MavenCoordinate>
@@ -186,13 +194,15 @@ class ValidateMavenDependencies(
         extraTransitiveMavenVersionsLists.flatMapTo(mutableSetOf()) { it.dependencyCoords }
     val missingDeps = transitiveDeps - allowedTransitiveDeps
     check(extraListedDeps.isEmpty()) {
-      "Transitive dependencies list ${transitiveMavenVersionsList.name} has extra transitive deps" +
-        " not used by any direct targets. Please remove them:\n" +
+      "In ${versionsBazelFile.toRelativeString(repoRoot)}, transitive dependencies list" +
+        " ${transitiveMavenVersionsList.name} has extra transitive deps not used by any direct" +
+        " targets. Please remove them:\n" +
         extraListedDeps.asPrintableList().joinToString(separator = "\n") { "- $it" }
     }
     check(missingDeps.isEmpty()) {
-      "Transitive dependencies list ${transitiveMavenVersionsList.name} is missing expected " +
-        "extra transitive deps. Please add them:\n" +
+      "In ${versionsBazelFile.toRelativeString(repoRoot)}, transitive dependencies list" +
+        " ${transitiveMavenVersionsList.name} is missing expected extra transitive deps. Please" +
+        " add them:\n" +
         missingDeps.sorted().joinToString(separator = "\n") {
           "  \"${it.reducedCoordinateStringWithoutVersion}\": \"${it.version}\","
         }

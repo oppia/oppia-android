@@ -20,5 +20,5 @@ def setUp():
 
     native.bind(
         name = "databinding_annotation_processor",
-        actual = "//tools/android:compiler_annotation_processor",
+        actual = "//third_party/tools/android:compiler_annotation_processor",
     )

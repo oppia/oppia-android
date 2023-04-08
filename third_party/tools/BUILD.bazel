@@ -1,0 +1,5 @@
+# TODO: Update documentation.
+"""
+This package contains macros and subpackages for initializing all of the individual libraries and
+toolchains required to build the Oppia Android project & its constituent projects (such as scripts).
+"""

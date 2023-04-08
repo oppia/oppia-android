@@ -1,0 +1,3 @@
+"""
+Configurations for incorporating Glide (https://github.com/bumptech/glide) into Java build targets.
+"""

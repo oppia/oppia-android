@@ -11,4 +11,4 @@ def setUp():
 
     # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
     kotlin_repositories()
-    native.register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
+    native.register_toolchains("//third_party/tools/kotlin:kotlin_16_jdk9_toolchain")

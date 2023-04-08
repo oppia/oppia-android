@@ -1,0 +1,3 @@
+"""
+Configurations for incorporating Moshi (https://github.com/square/moshi) into Java build targets.
+"""

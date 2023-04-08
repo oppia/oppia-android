@@ -13,6 +13,7 @@ package_group(
     name = "oppia_api_visibility",
     packages = [
         "-//scripts/...",
+        "-//third_party/...",
         "//...",
     ],
 )

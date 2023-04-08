@@ -56,7 +56,7 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_test_visibility"],
     runtime_deps = [
         "//scripts/third_party:android_bundletool",
-        "//scripts/third_party:com_google_guava_guava_jre",
+        "//scripts/third_party:com_google_guava_guava",
     ],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
