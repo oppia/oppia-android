@@ -7,7 +7,6 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "accessibility_label_check_lib",
-    testonly = True,
     srcs = ["AccessibilityLabelCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [

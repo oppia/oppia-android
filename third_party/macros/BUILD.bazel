@@ -1,0 +1,4 @@
+"""
+This package provides Starlark macros for assembling and loading both direct HTTP/Git and Maven
+dependencies.
+"""

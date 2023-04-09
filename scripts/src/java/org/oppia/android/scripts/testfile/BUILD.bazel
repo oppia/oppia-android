@@ -7,7 +7,6 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "test_file_check_lib",
-    testonly = True,
     srcs = ["TestFileCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [

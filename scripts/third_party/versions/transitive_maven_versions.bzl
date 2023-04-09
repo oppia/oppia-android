@@ -1,68 +1,12 @@
-load(
-    "//third_party:load_defs.bzl",
-    "EXPORT_TOOLCHAIN",
-    "create_export_binary_details",
-    "create_export_library_details",
-    "create_git_repository_reference",
-    "create_http_jar_reference",
-)
+"""
+Provides the production & test transitive (i.e. indirect) dependencies needed for all of the direct
+dependencies requested via direct_maven_versions.bzl.
 
-_MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
-    "com.android.tools.apkparser:apkanalyzer": "30.0.4",
-    "com.android.tools.build:aapt2-proto": "7.3.1-8691043",
-    "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.21",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
-    "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
-    "com.google.guava:guava": "31.0.1-jre",
-    "com.google.protobuf:protobuf-java": "3.17.3",
-    "com.squareup.moshi:moshi-kotlin": "1.13.0",
-    "com.squareup.moshi:moshi-kotlin-codegen": "1.13.0",
-}
+This file should only need to be changed when //scripts:validate_maven_dependencies indicates that
+it needs to be updated.
+"""
 
-_MAVEN_TEST_DEPENDENCY_VERSIONS = {
-    "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
-    "com.google.truth:truth": "1.1.3",
-    "junit:junit": "4.13.2",
-    "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
-    "org.mockito.kotlin:mockito-kotlin": "3.2.0",
-    "org.mockito:mockito-core": "3.9.0",
-}
-
-DIRECT_REMOTE_DEPENDENCIES = [
-    create_http_jar_reference(
-        name = "android_bundletool",
-        sha = "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
-        version = "1.8.0",
-        url = "https://github.com/google/bundletool/releases/download/{0}/bundletool-all-{0}.jar",
-        test_only = False,
-        exports_details = [
-            create_export_library_details(
-                exposed_artifact_name = "android_bundletool",
-                exportable_target = "jar",
-                export_toolchain = EXPORT_TOOLCHAIN.ANDROID,
-            ),
-            create_export_binary_details(
-                exposed_artifact_name = "android_bundletool_binary",
-                main_class = "com.android.tools.build.bundletool.BundleToolMain",
-                exportable_runtime_target = "jar",
-            ),
-        ],
-    ),
-    create_git_repository_reference(
-        name = "archive_patcher",
-        commit = "d1c18b0035d5f669ddaefadade49cae0748f9df2",
-        remote = "https://github.com/oppia/archive-patcher",
-        shallow_since = "1642022460 -0800",
-        test_only = False,
-        export_details = create_export_library_details(
-            exposed_artifact_name = "com_google_archivepatcher",
-            exportable_target = "tools",
-            export_toolchain = EXPORT_TOOLCHAIN.ANDROID,
-        ),
-    ),
-]
-
-_MAVEN_PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
+PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "com.android.tools.analytics-library:protos": "30.0.4",
     "com.android.tools.analytics-library:shared": "30.0.4",
     "com.android.tools.apkparser:binary-resources": "30.0.4",
@@ -135,7 +79,7 @@ _MAVEN_PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "xml-apis:xml-apis": "1.4.01",
 }
 
-_MAVEN_TEST_TRANSITIVE_DEPENDENCY_VERSIONS = {
+TEST_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "com.google.auto.value:auto-value-annotations": "1.8.1",
     "net.bytebuddy:byte-buddy": "1.10.20",
     "net.bytebuddy:byte-buddy-agent": "1.10.20",
@@ -144,18 +88,4 @@ _MAVEN_TEST_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-test-annotations-common": "1.3.72",
     "org.jetbrains.kotlin:kotlin-test-common": "1.3.72",
     "org.objenesis:objenesis": "3.2",
-}
-
-MAVEN_ARTIFACT_TREES = {
-    "deps": {
-        "prod": {
-            "direct": _MAVEN_PRODUCTION_DEPENDENCY_VERSIONS,
-            "transitive": _MAVEN_PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS,
-        },
-        "test": {
-            "direct": _MAVEN_TEST_DEPENDENCY_VERSIONS,
-            "transitive": _MAVEN_TEST_TRANSITIVE_DEPENDENCY_VERSIONS,
-        },
-    },
-    "maven_install_json": "//scripts/third_party:maven_install.json",
 }

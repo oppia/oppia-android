@@ -6,7 +6,6 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "maven_artifact_property_fetcher",
-    testonly = True,
     srcs = [
         "MavenArtifactPropertyFetcher.kt",
         "MavenArtifactPropertyFetcherImpl.kt",
@@ -24,7 +23,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "maven_dependencies_retriever",
-    testonly = True,
     srcs = ["MavenDependenciesRetriever.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
@@ -41,7 +39,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "maven_dependencies_list_check_lib",
-    testonly = True,
     srcs = ["MavenDependenciesListCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
@@ -52,7 +49,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "license_texts_check_lib",
-    testonly = True,
     srcs = ["LicenseTextsCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
 )

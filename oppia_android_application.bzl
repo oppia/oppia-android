@@ -266,11 +266,11 @@ _restrict_languages_in_raw_module_zip = rule(
 
 _bundle_module_zip_into_deployable_aab = rule(
     attrs = {
-        "input_file": attr.label(
+        "config_file": attr.label(
             allow_single_file = True,
             mandatory = True,
         ),
-        "config_file": attr.label(
+        "input_file": attr.label(
             allow_single_file = True,
             mandatory = True,
         ),
@@ -292,11 +292,11 @@ _package_metadata_into_deployable_aab = rule(
             allow_single_file = True,
             mandatory = True,
         ),
-        "proguard_map_file": attr.label(
-            allow_single_file = True,
+        "output_aab_file": attr.output(
             mandatory = True,
         ),
-        "output_aab_file": attr.output(
+        "proguard_map_file": attr.label(
+            allow_single_file = True,
             mandatory = True,
         ),
     },
@@ -305,11 +305,11 @@ _package_metadata_into_deployable_aab = rule(
 
 _generate_apks_and_install = rule(
     attrs = {
-        "input_file": attr.label(
+        "debug_keystore": attr.label(
             allow_single_file = True,
             mandatory = True,
         ),
-        "debug_keystore": attr.label(
+        "input_file": attr.label(
             allow_single_file = True,
             mandatory = True,
         ),

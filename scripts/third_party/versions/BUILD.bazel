@@ -1,0 +1,7 @@
+"""
+Contains the versions and configurations for all direct archive & Maven dependencies needed to build
+Oppia Android scripts.
+
+Generally, the only files that need to be manually changed are direct_http_versions.bzl and
+direct_maven_versions.bzl.
+"""

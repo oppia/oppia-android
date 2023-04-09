@@ -1,10 +1,21 @@
+"""
+This package contains all third-party dependencies that script builds depend on.
+
+Note to developers: all new dependencies should go in one of versions/direct_http_versions.bzl or
+versions/direct_maven_versions.bzl, not here.
+
+Furthermore, annotation processor plugins must be configured within this file by loading the tool's
+corresponding setup macro.
+"""
+
+load("//scripts/third_party/versions:direct_http_versions.bzl", "DIRECT_REMOTE_DEPENDENCIES")
+load("//scripts/third_party/versions:maven_config.bzl", "MAVEN_ARTIFACT_CONFIGURATION")
 load(
-    "//third_party:load_utilities.bzl",
+    "//third_party/macros:direct_dep_loader.bzl",
     "create_direct_import_dependency_wrappers",
     "create_maven_dependency_wrappers",
 )
-load(":versions.bzl", "DIRECT_REMOTE_DEPENDENCIES", "MAVEN_ARTIFACT_TREES")
-load("//third_party/tools/moshi:plugin_setup.bzl", setUpMoshiPlugin = "setUp")
+load("//third_party/tools/moshi:plugin_setup.bzl", set_up_moshi_plugin = "set_up")
 
 package_group(
     name = "script_all_artifact_visibility",
@@ -24,8 +35,7 @@ package_group(
 )
 
 create_maven_dependency_wrappers(
-    direct_prod_dependencies = MAVEN_ARTIFACT_TREES["deps"]["prod"]["direct"],
-    direct_test_dependencies = MAVEN_ARTIFACT_TREES["deps"]["test"]["direct"],
+    maven_artifact_config = MAVEN_ARTIFACT_CONFIGURATION,
     maven_repository_name = "maven_scripts",
     prod_artifact_visibility = [":script_all_artifact_visibility"],
     test_artifact_visibility = [":script_test_artifact_visibility"],
@@ -38,7 +48,7 @@ create_direct_import_dependency_wrappers(
     test_artifact_visibility = [":script_test_artifact_visibility"],
 )
 
-setUpMoshiPlugin(
+set_up_moshi_plugin(
     name = "moshi",
     moshi_compiler_dep = "//scripts/third_party:com_squareup_moshi_moshi-kotlin-codegen",
     moshi_exported_library = "//scripts/third_party:com_squareup_moshi_moshi-kotlin",

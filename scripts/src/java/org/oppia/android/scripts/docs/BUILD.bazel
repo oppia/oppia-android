@@ -6,7 +6,6 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "kdoc_validity_check_lib",
-    testonly = True,
     srcs = ["KdocValidityCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [

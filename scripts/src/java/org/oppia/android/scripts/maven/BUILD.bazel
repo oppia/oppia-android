@@ -4,10 +4,8 @@ Libraries corresponding to attributing third-party library copyright licenses in
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
-# TODO: Remove all testonlys here because they're no longer needed with dependency isolation.
 kt_jvm_library(
     name = "generate_maven_dependencies_list_lib",
-    testonly = True,
     srcs = ["GenerateMavenDependenciesList.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
@@ -18,7 +16,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "retrieve_license_texts_lib",
-    testonly = True,
     srcs = ["RetrieveLicenseTexts.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [

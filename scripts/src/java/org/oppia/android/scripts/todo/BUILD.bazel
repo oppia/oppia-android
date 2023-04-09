@@ -7,7 +7,6 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "todo_collector",
-    testonly = True,
     srcs = ["TodoCollector.kt"],
     visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [
@@ -18,7 +17,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "todo_open_check_lib",
-    testonly = True,
     srcs = ["TodoOpenCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
@@ -31,7 +29,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "todo_issue_resolved_check_lib",
-    testonly = True,
     srcs = ["TodoIssueResolvedCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
@@ -43,7 +40,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "todo_issue_comment_check_lib",
-    testonly = True,
     srcs = ["TodoIssueCommentCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
 )

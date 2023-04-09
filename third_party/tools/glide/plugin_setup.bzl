@@ -4,11 +4,8 @@ Provides a macro for setting up support for using Glide in Java target builds.
 
 load("@rules_java//java:defs.bzl", "java_library", "java_plugin")
 
-def setUp(name, visibility, glide_compiler_dep):
-    """
-    Defines a new java_library with the specified name and visibility that exposes the provided
-    glide_compiler_dep as an annotation processor-enabled compiler plugin (which means dependencies
-    on the new target will run the Glide annotation processor).
+def set_up(name, visibility, glide_compiler_dep):
+    """Defines a new java_library that exposes Glide as both a dependency and annotation processor.
     """
     java_plugin(
         name = "%s_plugin" % name,

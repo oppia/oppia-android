@@ -142,7 +142,7 @@ package_group(
 # be installed on a local device or emulator using a 'bazel run' command like so:
 #  bazel run //:install_oppia_dev
 [
-    define_oppia_aab_binary_flavor(flavor = flavor)
+    define_oppia_aab_binary_flavor(name = flavor)
     for flavor in AVAILABLE_FLAVORS
 ]
 
