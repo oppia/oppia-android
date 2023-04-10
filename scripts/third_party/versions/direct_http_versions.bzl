@@ -34,13 +34,13 @@ DIRECT_REMOTE_DEPENDENCIES = [
     ),
     create_git_repository_reference(
         name = "archive_patcher",
-        commit = "d1c18b0035d5f669ddaefadade49cae0748f9df2",
-        remote = "https://github.com/oppia/archive-patcher",
-        shallow_since = "1642022460 -0800",
+        commit = "50ca40a3de7983392a383ed3cc7b48e25f1b69b3",
+        remote = "https://github.com/google/archive-patcher",
         test_only = False,
+        build_file = "//scripts/third_party/versions/mods:BUILD.archive-patcher",
         export_details = create_export_library_details(
             exposed_artifact_name = "com_google_archivepatcher",
-            exportable_target = "tools",
+            exportable_target = ":tools",
             export_toolchain = EXPORT_TOOLCHAIN.ANDROID,
         ),
     ),

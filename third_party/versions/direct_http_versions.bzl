@@ -10,6 +10,8 @@ load(
     "create_git_repository_reference",
     "create_http_archive_reference",
     "create_http_jar_reference",
+    "create_local_patch_config",
+    "create_remote_patch_config",
 )
 load(":direct_maven_versions.bzl", "PRODUCTION_DEPENDENCY_VERSIONS")
 
@@ -81,14 +83,20 @@ DIRECT_REMOTE_DEPENDENCIES = [
         import_bind_name = "rules_jvm_external",
         strip_prefix_template = "rules_jvm_external-{0}",
     ),
-    # TODO: Move this back to rules_kotlin once it has a 1.7.x release with the needed fix.
     create_http_archive_reference(
         name = "rules_kotlin",
-        sha = "1d872b9c6546f0f737a356d873b164d70282760fe4c880349770abc9e494c9ce",
-        version = "v1.7.2",
+        sha = "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
+        version = "v1.7.1",
         test_only = False,
-        url = "https://github.com/oppia/rules_kotlin/releases/download/{0}/rules_kotlin_release.tgz",
+        url = "https://github.com/bazelbuild/rules_kotlin/releases/download/{0}/rules_kotlin_release.tgz",
         import_bind_name = "io_bazel_rules_kotlin",
+        patches_details = [
+            create_remote_patch_config(
+                patch_url = "https://github.com/bazelbuild/rules_kotlin/commit/0b75e942.patch",
+                patch_sri = "sha256-cP0YqxMiQSye3T7E1w6c8HY6XDtd3CaYnGtnlmqRnKg=",
+            ),
+        ],
+        patch_path_start_removal_count = 1,
     ),
     create_http_archive_reference(
         name = "rules_proto",
@@ -139,22 +147,26 @@ DIRECT_REMOTE_DEPENDENCIES = [
     ),
     create_git_repository_reference(
         name = "android-spotlight",
-        commit = "cc23499d37dc8533a2876e45b5063e981a4583f4",
-        remote = "https://github.com/oppia/android-spotlight",
-        shallow_since = "1680147372 -0700",
+        commit = "d19e4ddc8dc0b2ced3b55d2a34dd68af96692d2d",
+        remote = "https://github.com/TakuSemba/Spotlight",
         test_only = False,
         repo_mapping = {"@maven": "@maven_app"},
+        build_file = "//third_party/versions/mods:BUILD.android-spotlight",
         export_details = create_export_library_details(
             exposed_artifact_name = "com_github_takusemba_spotlight",
-            exportable_target = "spotlight",
+            exportable_target = ":spotlight",
             export_toolchain = EXPORT_TOOLCHAIN.ANDROID,
         ),
+        patches_details = [
+            create_local_patch_config(
+                patch_file = "//third_party/versions/mods:android-spotlight-combined.patch",
+            ),
+        ],
     ),
     create_git_repository_reference(
         name = "androidsvg",
         commit = "4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf",
         remote = "https://github.com/oppia/androidsvg",
-        shallow_since = "1647295507 -0700",
         test_only = False,
         export_details = create_export_library_details(
             exposed_artifact_name = "com_caverock_androidsvg",
@@ -164,34 +176,43 @@ DIRECT_REMOTE_DEPENDENCIES = [
     ),
     create_git_repository_reference(
         name = "circularimageview",
-        commit = "35d08ba88a4a22e6e9ac96bdc5a68be27b55d09f",
-        remote = "https://github.com/oppia/CircularImageview",
-        shallow_since = "1622148929 -0700",
+        commit = "6cfbdf532e475af7152d49d748079a7bceaef9e9",
+        remote = "https://github.com/sparrow007/CircularImageview",
         test_only = False,
+        build_file = "//third_party/versions/mods:BUILD.circularimageview",
         export_details = create_export_library_details(
             exposed_artifact_name = "circularimageview_circular_image_view",
-            exportable_target = "circularimageview:circular_image_view",
+            exportable_target = ":circular_image_view",
             export_toolchain = EXPORT_TOOLCHAIN.ANDROID,
         ),
+        patches_details = [
+            create_local_patch_config(
+                patch_file = "//third_party/versions/mods:circularimageview-remove-app-name.patch",
+            ),
+        ],
     ),
     create_git_repository_reference(
         name = "kotlitex",
-        commit = "ccdf4170817fa3b48b8e1e452772dd58ecb71cf2",
-        remote = "https://github.com/oppia/kotlitex",
-        shallow_since = "1679426649 -0700",
+        commit = "97c146758dfe8481283ef9d3a4220264156e1296",
+        remote = "https://github.com/karino2/kotlitex",
         test_only = False,
         repo_mapping = {"@maven": "@maven_app"},
+        build_file = "//third_party/versions/mods:BUILD.kotlitex",
         export_details = create_export_library_details(
             exposed_artifact_name = "io_github_karino2_kotlitex",
-            exportable_target = "kotlitex",
+            exportable_target = ":kotlitex",
             export_toolchain = EXPORT_TOOLCHAIN.ANDROID,
         ),
+        patches_details = [
+            create_local_patch_config(
+                patch_file = "//third_party/versions/mods:kotlitex-combined.patch",
+            ),
+        ],
     ),
     create_git_repository_reference(
         name = "tools_android",
         commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
         remote = "https://github.com/bazelbuild/tools_android",
-        shallow_since = "1594238320 -0400",
         test_only = False,
     ),
 ]

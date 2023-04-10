@@ -1,0 +1,12 @@
+# The BUILD file for archive-patcher.
+java_library(
+    name = "tools",
+    srcs = glob([
+        "applier/src/main/java/**/*.java",
+        "explainer/src/main/java/**/*.java",
+        "generator/src/main/java/**/*.java",
+        "shared/src/main/java/**/*.java",
+        "tools/src/main/java/**/*.java",
+    ]),
+    visibility = ["//visibility:public"],
+)

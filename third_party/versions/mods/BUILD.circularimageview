@@ -1,0 +1,27 @@
+# Main BUILD file for CircularImageView.
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
+genrule(
+    name = "generate_kotlitex_manifest",
+    srcs = [],
+    outs = ["AndroidManifest.xml"],
+    cmd = """
+    echo "<manifest xmlns:android=\\"http://schemas.android.com/apk/res/android\\" package=\\"com.jackandphantom.circularimageview\\">" > \"$@\"
+    echo "    <application />" >> \"$@\"
+    echo "    <uses-sdk android:minSdkVersion=\\"19\\" android:targetSdkVersion=\\"29\\" />" >> \"$@\"
+    echo "</manifest>" >> \"$@\"
+    """,
+)
+
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
+android_library(
+    name = "circular_image_view",
+    custom_package = "com.jackandphantom.circularimageview",
+    srcs = glob(["circularimageview/src/main/java/**/*.java"]),
+    resource_files = glob(["circularimageview/src/main/res/**"]),
+    manifest = ":AndroidManifest.xml",
+    exports_manifest = True,
+    visibility = ["//visibility:public"],
+)

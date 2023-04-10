@@ -1,0 +1,147 @@
+index 02cf0ba..7e820b2 100644
+--- spotlight/src/main/java/com/takusemba/spotlight/SpotlightView.kt
++++ spotlight/src/main/java/com/takusemba/spotlight/SpotlightView.kt
+@@ -45,6 +45,7 @@ internal class SpotlightView @JvmOverloads constructor(
+   private var shapeAnimator: ValueAnimator? = null
+   private var effectAnimator: ValueAnimator? = null
+   private var target: Target? = null
++  private var anchorOnLayoutChangeListener: View.OnLayoutChangeListener? = null
+
+   init {
+     setWillNotDraw(false)
+@@ -60,7 +61,7 @@ internal class SpotlightView @JvmOverloads constructor(
+     if (currentTarget != null && currentEffectAnimator != null && currentShapeAnimator != null && !currentShapeAnimator.isRunning) {
+       currentTarget.effect.draw(
+           canvas = canvas,
+-          point = currentTarget.anchor,
++          point = currentTarget.anchorPosition,
+           value = currentEffectAnimator.animatedValue as Float,
+           paint = effectPaint
+       )
+@@ -68,7 +69,7 @@ internal class SpotlightView @JvmOverloads constructor(
+     if (currentTarget != null && currentShapeAnimator != null) {
+       currentTarget.shape.draw(
+           canvas = canvas,
+-          point = currentTarget.anchor,
++          point = currentTarget.anchorPosition,
+           value = currentShapeAnimator.animatedValue as Float,
+           paint = shapePaint
+       )
+@@ -113,12 +114,12 @@ internal class SpotlightView @JvmOverloads constructor(
+   fun startTarget(target: Target) {
+     removeAllViews()
+     addView(target.overlay, MATCH_PARENT, MATCH_PARENT)
+-    this.target = target.apply {
+-      // adjust anchor in case where custom container is set.
+-      val location = IntArray(2)
+-      getLocationInWindow(location)
+-      val offset = PointF(location[0].toFloat(), location[1].toFloat())
+-      anchor.offset(-offset.x, -offset.y)
++    anchorOnLayoutChangeListener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
++      // Force a re-draw since the anchor may have moved and/or been resized.
++      this@SpotlightView.invalidate()
++    }
++    this.target = target.also {
++      target.anchor.addOnLayoutChangeListener(anchorOnLayoutChangeListener)
+     }
+     this.shapeAnimator?.removeAllListeners()
+     this.shapeAnimator?.removeAllUpdateListeners()
+@@ -170,6 +171,7 @@ internal class SpotlightView @JvmOverloads constructor(
+    */
+   fun finishTarget(listener: Animator.AnimatorListener) {
+     val currentTarget = target ?: return
++    currentTarget.anchor.removeOnLayoutChangeListener(anchorOnLayoutChangeListener)
+     val currentAnimatedValue = shapeAnimator?.animatedValue ?: return
+     shapeAnimator?.removeAllListeners()
+     shapeAnimator?.removeAllUpdateListeners()
+index 4a16fc2..5873e32 100644
+--- spotlight/src/main/java/com/takusemba/spotlight/Target.kt
++++ spotlight/src/main/java/com/takusemba/spotlight/Target.kt
+@@ -11,50 +11,29 @@ import com.takusemba.spotlight.shape.Shape
+  * Target represents the spot that Spotlight will cast.
+  */
+ class Target(
+-    val anchor: PointF,
++    val anchor: View,
+     val shape: Shape,
+     val effect: Effect,
+     val overlay: View?,
+     val listener: OnTargetListener?
+ ) {
+
++  val anchorPosition: PointF
++    get() {
++      val location = IntArray(2).also { anchor.getLocationInWindow(it) }
++      return PointF(location[0] + anchor.width / 2f, location[1] + anchor.height / 2f)
++    }
++
+   /**
+    * [Builder] to build a [Target].
+    * All parameters should be set in this [Builder].
+    */
+   class Builder {
+-
+-    private var anchor: PointF = DEFAULT_ANCHOR
+     private var shape: Shape = DEFAULT_SHAPE
+     private var effect: Effect = DEFAULT_EFFECT
+     private var overlay: View? = null
+     private var listener: OnTargetListener? = null
+
+-    /**
+-     * Sets a pointer to start a [Target].
+-     */
+-    fun setAnchor(view: View): Builder = apply {
+-      val location = IntArray(2)
+-      view.getLocationInWindow(location)
+-      val x = location[0] + view.width / 2f
+-      val y = location[1] + view.height / 2f
+-      setAnchor(x, y)
+-    }
+-
+-    /**
+-     * Sets an anchor point to start [Target].
+-     */
+-    fun setAnchor(x: Float, y: Float): Builder = apply {
+-      setAnchor(PointF(x, y))
+-    }
+-
+-    /**
+-     * Sets an anchor point to start [Target].
+-     */
+-    fun setAnchor(anchor: PointF): Builder = apply {
+-      this.anchor = anchor
+-    }
+-
+     /**
+      * Sets [shape] of the spot of [Target].
+      */
+@@ -83,7 +62,7 @@ class Target(
+       this.listener = listener
+     }
+
+-    fun build() = Target(
++    fun build(anchor: View) = Target(
+         anchor = anchor,
+         shape = shape,
+         effect = effect,
+@@ -92,12 +71,9 @@ class Target(
+     )
+
+     companion object {
+-
+-      private val DEFAULT_ANCHOR = PointF(0f, 0f)
+-
+       private val DEFAULT_SHAPE = Circle(100f)
+
+       private val DEFAULT_EFFECT = EmptyEffect()
+     }
+   }
+-}
++}
+index 0d1b953..0000000
+--- spotlight/src/main/res/values/strings.xml
++++ /dev/null
+@@ -1,3 +0,0 @@
+-<resources>
+-  <string name="app_name">Spotlight</string>
+-</resources>

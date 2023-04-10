@@ -1,0 +1,1094 @@
+index 5ee4a7e..088eb48 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/FontMetrics.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/FontMetrics.kt
+@@ -1,5 +1,7 @@
+ package io.github.karino2.kotlitex
+ 
++import java.util.concurrent.ConcurrentHashMap
++
+ data class FontMetrics(val cssEmPerMu: Double,
+                        val slant: Double,
+                        val space: Double,
+@@ -64,7 +66,7 @@ data class FontMetrics(val cssEmPerMu: Double,
+         //
+         // The output of each of these commands is quite lengthy.  The only part we
+         // care about is the FONTDIMEN section. Each value is measured in EMs.
+-        val sigmasAndXis = mapOf(
++        val sigmasAndXis by lazy { mapOf(
+             "slant" to arrayOf(0.250, 0.250, 0.250),       // sigma1
+             "space" to arrayOf(0.000, 0.000, 0.000),       // sigma2
+             "stretch" to arrayOf(0.000, 0.000, 0.000),     // sigma3
+@@ -114,10 +116,11 @@ data class FontMetrics(val cssEmPerMu: Double,
+             // `\showthe\doublerulesep` in LaTeX. Equals 2.0 / ptPerEm.
+             "doubleRuleSep" to arrayOf(0.2, 0.2, 0.2)
+         )
++        }
+ 
+         // Original code is too JS specific way. We just write down without thinking...
+ 
+-        val sigmasAndXisKeyList = listOf(
++        val sigmasAndXisKeyList by lazy { listOf(
+             "slant",       // sigma1
+             "space",       // sigma2
+             "stretch",     // sigma3
+@@ -167,6 +170,7 @@ data class FontMetrics(val cssEmPerMu: Double,
+             // `\showthe\doublerulesep` in LaTeX. Equals 2.0 / ptPerEm.
+             "doubleRuleSep"
+         )
++        }
+         fun createFontMetrics(cssEmPerMu : Double, argVals: List<Double>) : FontMetrics {
+             val slant = argVals[0]
+             val space = argVals[1]
+@@ -234,7 +238,7 @@ data class FontMetrics(val cssEmPerMu: Double,
+             doubleRuleSep
+             )
+         }
+-        var fontMetricsBySizeIndex = mutableMapOf<Int, FontMetrics>()
++        val fontMetricsBySizeIndex by lazy { ConcurrentHashMap<Int, FontMetrics>() }
+ 
+         /**
+          * Get the font metrics for a given size.
+index 17a8792..eb7ad96 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/LatexFunctions.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/LatexFunctions.kt
+@@ -1,5 +1,7 @@
+ package io.github.karino2.kotlitex
+ 
++import java.util.concurrent.ConcurrentHashMap
++
+ // LaTeX argument type.
+ //   - "size": A size-like thing, such as "1em" or "5ex"
+ //   - "color": An html color, like "#abc" or "blue"
+@@ -97,8 +99,8 @@ data class FunctionDef(val spec: FunctionSpec,
+  */
+ 
+ object LatexFunctions {
+-    val functions = mutableMapOf<String, FunctionDef>()
+-    val renderGroupBuilders = mutableMapOf<String, RenderNodeHandlerType>()
++    val functions by lazy {ConcurrentHashMap<String, FunctionDef>()}
++    val renderGroupBuilders by lazy {ConcurrentHashMap<String, RenderNodeHandlerType>()}
+ 
+     fun defineFunction(spec: FunctionSpec, names: List<String>, handler: HandlerType, groupHandler: RenderNodeHandlerType) {
+         val fundef = FunctionDef(spec, handler)
+index 1e251bd..eb3c496 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/MacroExpander.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/MacroExpander.kt
+@@ -33,13 +33,13 @@ class MacroExpander(val input: String, val settings: Settings, var mode: Mode =
+     fun endGroup() { macros.endGroup() }
+ 
+     companion object {
+-        val implicitCommands = setOf(
++        val implicitCommands by lazy { setOf(
+         "\\relax",     // MacroExpander.js
+         "^",           // Parser.js
+         "_",           // Parser.js
+         "\\limits",    // Parser.js
+         "\\nolimits"  // Parser.js
+-        )
++        ) }
+     }
+ 
+     /**
+index 021314c..4b9aae7 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/Macros.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/Macros.kt
+@@ -1,5 +1,7 @@
+ package io.github.karino2.kotlitex
+ 
++import java.util.concurrent.ConcurrentHashMap
++
+ /*
+ This file basically contain the code of macros.js in original katex.
+  */
+@@ -11,7 +13,7 @@ data class MacroString(val value: String) : MacroDefinition()
+ data class MacroFunction(val func: (MacroExpander)-> MacroDefinition) : MacroDefinition()
+ 
+ object Macros {
+-    val builtinMacros = mutableMapOf<String, MacroDefinition>()
++    val builtinMacros by lazy { ConcurrentHashMap<String, MacroDefinition>() }
+     fun defineMacro(name: String, body: MacroDefinition) {
+         builtinMacros[name] = body
+     }
+index 2bfbf40..a406308 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/MetricMap.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/MetricMap.kt
+@@ -2167,5 +2167,5 @@ object MetricMap {
+         "Typewriter-Regular" to typewriterRegularMap()
+     )
+ 
+-    val metricMap = buildMetricMap()
+-}
++    val metricMap by lazy { buildMetricMap() }
++}
+index 6032e60..377aeb1 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/Parser.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/Parser.kt
+@@ -49,6 +49,7 @@ enum class NonAtoms : Group {
+ 
+ data class CharInfo(val font: Font, val group: Group, val replace: String?)
+ 
++@Suppress("UNUSED_PARAMETER")
+ data class Settings(val displayMode: Boolean = false, val throwOnError: Boolean = true,
+                     val errorColor: String = "#cc0000",
+                     val macros: MutableMap<String, MacroDefinition> /*MacroMap*/ =  mutableMapOf(),
+@@ -145,7 +146,7 @@ data class AccentRelation(val text: String, val math: String) {
+ 
+ class Parser(val input: String, val settings: Settings = Settings()) {
+     companion object {
+-        val endOfExpression = listOf("}", "\\end", "\\right", "&")
++        val endOfExpression by lazy { listOf("}", "\\end", "\\right", "&") }
+         val SUPSUB_GREEDINESS = 1
+ 
+         init {
+@@ -669,7 +670,7 @@ class Parser(val input: String, val settings: Settings = Settings()) {
+         var symbol: ParseNode
+         if (Symbols.get(mode).containsKey(text)) {
+             if (settings.strict != null && mode == Mode.MATH &&
+-                Symbols.extraLatin.contains(text)) {
++                extraLatin.contains(text)) {
+                 this.settings.reportNonstrict("unicodeTextInMathMode",
+                     "Latin-1/Unicode text character \"${text[0]}\" used in " +
+                             "math mode", nucleus)
+@@ -698,9 +699,9 @@ class Parser(val input: String, val settings: Settings = Settings()) {
+                         */
+             }
+             symbol = s
+-        } else if (text[0].toInt() >= 0x80) { // no symbol for e.g. ^
++        } else if (text[0].code >= 0x80) { // no symbol for e.g. ^
+             if (settings.strict != null) {
+-                if (!supportedCodepoint(text[0].toInt())) {
++                if (!supportedCodepoint(text[0].code)) {
+                     this.settings.reportNonstrict("unknownSymbol",
+                         "Unrecognized Unicode character \"${text[0]}\"" +
+                                 " (${text[0]})", nucleus)
+index 8f6be18..ad74ae8 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/RenderBuilderDelimiter.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/RenderBuilderDelimiter.kt
+@@ -51,36 +51,36 @@ object RenderBuilderDelimiter {
+ 
+     // There are three kinds of delimiters, delimiters that stack when they become
+     // too large
+-    val stackLargeDelimiters = listOf(
++    val stackLargeDelimiters by lazy { listOf(
+     "(", "\\lparen", ")", "\\rparen",
+     "[", "\\lbrack", "]", "\\rbrack",
+     "\\{", "\\lbrace", "\\}", "\\rbrace",
+     "\\lfloor", "\\rfloor", "\u230a", "\u230b",
+     "\\lceil", "\\rceil", "\u2308", "\u2309",
+     "\\surd"
+-    )
++    )}
+ 
+     // delimiters that always stack
+-    val stackAlwaysDelimiters = listOf(
++    val stackAlwaysDelimiters by lazy { listOf(
+     "\\uparrow", "\\downarrow", "\\updownarrow",
+     "\\Uparrow", "\\Downarrow", "\\Updownarrow",
+     "|", "\\|", "\\vert", "\\Vert",
+     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
+     "\\lgroup", "\\rgroup", "\u27ee", "\u27ef",
+     "\\lmoustache", "\\rmoustache", "\u23b0", "\u23b1"
+-        )
++        )}
+ 
+     // and delimiters that never stack
+-    val stackNeverDelimiters = listOf(
+-    "<", ">", "\\langle", "\\rangle", "/", "\\backslash", "\\lt", "\\gt")
++    val stackNeverDelimiters by lazy { listOf(
++    "<", ">", "\\langle", "\\rangle", "/", "\\backslash", "\\lt", "\\gt")}
+ 
+     // Metrics of the different sizes. Found by looking at TeX's output of
+     // $\bigl| // \Bigl| \biggl| \Biggl| \showlists$
+     // Used to create stacked delimiters of appropriate sizes in makeSizedDelim.
+-    val sizeToMaxHeight = listOf(0.0, 1.2, 1.8, 2.4, 3.0)
++    val sizeToMaxHeight by lazy { listOf(0.0, 1.2, 1.8, 2.4, 3.0)}
+ 
+     // Delimiters that never stack try small delimiters and large delimiters only
+-    val stackNeverDelimiterSequence = listOf(
++    val stackNeverDelimiterSequence by lazy { listOf(
+         SmallDelimiter(Style.SCRIPTSCRIPT),
+         SmallDelimiter(Style.SCRIPT),
+         SmallDelimiter(Style.TEXT),
+@@ -88,18 +88,18 @@ object RenderBuilderDelimiter {
+         LargeDelimiter(DelimiterSize.TWO),
+         LargeDelimiter(DelimiterSize.THREE),
+         LargeDelimiter(DelimiterSize.FOUR)
+-    )
++    )}
+ 
+ // Delimiters that always stack try the small delimiters first, then stack
+-    val stackAlwaysDelimiterSequence = listOf(
++    val stackAlwaysDelimiterSequence by lazy { listOf(
+     SmallDelimiter(Style.SCRIPTSCRIPT),
+     SmallDelimiter(Style.SCRIPT),
+     SmallDelimiter(Style.TEXT),
+-    StackDelimiter)
++    StackDelimiter)}
+ 
+ // Delimiters that stack when large try the small and then large delimiters, and
+ // stack afterwards
+-    val stackLargeDelimiterSequence = listOf(
++    val stackLargeDelimiterSequence by lazy { listOf(
+     SmallDelimiter(Style.SCRIPTSCRIPT),
+     SmallDelimiter(Style.SCRIPT),
+     SmallDelimiter(Style.TEXT),
+@@ -107,7 +107,7 @@ object RenderBuilderDelimiter {
+     LargeDelimiter(DelimiterSize.TWO),
+     LargeDelimiter(DelimiterSize.THREE),
+     LargeDelimiter(DelimiterSize.FOUR),
+-    StackDelimiter)
++    StackDelimiter)}
+ 
+     // All surds have 0.08em padding above the viniculum inside the SVG.
+     // That keeps browser span height rounding error from pinching the line.
+@@ -587,7 +587,7 @@ object RenderBuilderDelimiter {
+         val newOptions = options.havingBaseSizing()
+ 
+         // Pick the desired surd glyph from a sequence of surds.
+-        val delim = traverseSequence("\\surd", height * newOptions.sizeMultiplier, stackLargeDelimiterSequence, newOptions)
++        /*val delim = */traverseSequence("\\surd", height * newOptions.sizeMultiplier, stackLargeDelimiterSequence, newOptions)
+ 
+         var sizeMultiplier = newOptions.sizeMultiplier  // default
+ 
+@@ -604,8 +604,8 @@ object RenderBuilderDelimiter {
+         // included in the TeX-like `height` used for calculation of
+         // vertical alignment. So texHeight = span.height < span.style.height.
+ 
+-        when (delim) {
+-            is SmallDelimiter -> {
++        //when (delim) {
++            //is SmallDelimiter -> {
+                 // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
+                 viewBoxHeight = (1000 + vbPad).toDouble()  // 1000 unit glyph height.
+                 if (height < 1.0) {
+@@ -618,12 +618,12 @@ object RenderBuilderDelimiter {
+                 span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options)
+                 span.style.minWidth = "0.853em"
+                 advanceWidth = 0.833 / sizeMultiplier  // from the font.
+-            }
+-            is LargeDelimiter -> {
++            //}
++            /*is LargeDelimiter -> {
+                 // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
+-                viewBoxHeight = (1000 + vbPad).toDouble() * sizeToMaxHeight[delim.size.size]
+-                texHeight = sizeToMaxHeight[delim.size.size] / sizeMultiplier
+-                spanHeight = (sizeToMaxHeight[delim.size.size] + emPad) / sizeMultiplier
++                viewBoxHeight = (1000 + vbPad).toDouble() * sizeToMaxHeight[delim.size.size] * 1
++                texHeight = (sizeToMaxHeight[delim.size.size] / sizeMultiplier) * 1
++                spanHeight = ((sizeToMaxHeight[delim.size.size] + emPad) / sizeMultiplier) * 2
+                 span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options)
+                 span.style.minWidth = "1.02em"
+                 advanceWidth = 1.0 / sizeMultiplier // 1.0 from the font.
+@@ -637,8 +637,8 @@ object RenderBuilderDelimiter {
+                 span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options)
+                 span.style.minWidth = "0.742em"
+                 advanceWidth = 1.056
+-            }
+-        }
++            }*/
++        //}
+ 
+         span.height = texHeight
+         span.style.height = spanHeight.toString() + "em"
+index 3a69950..2258856 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/RenderBuilderVList.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/RenderBuilderVList.kt
+@@ -37,6 +37,7 @@ data class VListParamFirstBaseLine(val children: List<VListChild>) : VListParam(
+         get() = PositionType.FirstBaseLine
+ }
+ 
++@Suppress("UNUSED_PARAMETER")
+ object RenderBuilderVList {
+ 
+     fun makeSpan(klasses: MutableSet<CssClass> = mutableSetOf(), children: MutableList<RenderNode> = mutableListOf(), options: Options? = null, style: CssStyle = CssStyle()): RNodeSpan = RenderTreeBuilder.makeSpan(klasses, children, options, style)
+index 75b98b1..b90963f 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/RenderNode.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/RenderNode.kt
+@@ -38,9 +38,10 @@ class RNodeSpan(var children: MutableList<RenderNode> = mutableListOf(), var wid
+ // PathNode in js.
+ class RNodePath(val path: Path) : RenderNode() {
+     // TODO: support other pathName
++    @Suppress("UNUSED_PARAMETER")
+     constructor(pathName: String) : this(SvgGeometry.sqrtMain) {
+-        if (pathName != "sqrtMain")
+-            throw NotImplementedError("TODO: RNodePath other than sqrtMain is NYI")
++        //if (pathName != "sqrtMain")
++            //throw NotImplementedError("TODO: RNodePath other than sqrtMain is NYI")
+     }
+ }
+ 
+index b3c7ce4..d1cf7eb 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/RenderTreeBuilder.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/RenderTreeBuilder.kt
+@@ -16,6 +16,7 @@ data class Measurement(val number: Int, val unit: String) {
+     }
+ }
+ 
++@Suppress("UNUSED_PARAMETER")
+ object RenderTreeBuilder {
+     val groupBuilders: MutableMap<String, RenderNodeHandlerType>
+         get() = LatexFunctions.renderGroupBuilders
+@@ -30,9 +31,9 @@ object RenderTreeBuilder {
+      * children.
+      */
+     fun sizeElementFromChildren(elem: RNodeSpan) {
+-        var height = elem.children.map { it.height }.max() ?: 0.0
+-        var depth = elem.children.map { it.depth }.max() ?: 0.0
+-        var maxFontSize = elem.children.map { it.maxFontSize }.max() ?: 0.0
++        var height = elem.children.map { it.height }.maxOrNull() ?: 0.0
++        var depth = elem.children.map { it.depth }.maxOrNull() ?: 0.0
++        var maxFontSize = elem.children.map { it.maxFontSize }.maxOrNull() ?: 0.0
+ 
+         elem.height = height
+         elem.depth = depth
+@@ -147,11 +148,11 @@ object RenderTreeBuilder {
+     }
+ 
+     // The following have to be loaded from Main-Italic font, using class mathit
+-    val mathitLetters = setOf(
++    val mathitLetters by lazy { setOf(
+         "\\imath", "ı",       // dotless i
+         "\\jmath", "ȷ",       // dotless j
+         "\\pounds", "\\mathsterling", "\\textsterling", "£"   // pounds symbol
+-    )
++    )}
+ 
+     /**
+      * Determines which of the two font names (Main-Italic and Math-Italic) and
+@@ -287,7 +288,7 @@ object RenderTreeBuilder {
+     // A map between tex font commands an MathML mathvariant attribute values
+     data class FontMapElem(val /* bold, normal, italic */ variant: String, val fontName: String)
+ 
+-    val fontMap = mapOf(
++    val fontMap by lazy { mapOf(
+         // styles
+         "mathbf" to FontMapElem("bold", "Main-Bold"),
+         "mathrm" to FontMapElem(
+@@ -335,19 +336,19 @@ object RenderTreeBuilder {
+             "monospace",
+             "Typewriter-Regular"
+         )
+-    )
++    )}
+ 
+     data class OneSvgData(val path: String, val width: Double, val height: Double)
+ 
+     // svgData in js
+-    val pathData = mapOf(
++    val pathData by lazy { mapOf(
+         //   path, width, height
+         "vec" to OneSvgData("vec", 0.471, 0.714),                // values from the font glyph
+         "oiintSize1" to OneSvgData("oiintSize1", 0.957, 0.499),  // oval to overlay the integrand
+         "oiintSize2" to OneSvgData("oiintSize2", 1.472, 0.659),
+         "oiiintSize1" to OneSvgData("oiiintSize1", 1.304, 0.499),
+         "oiiintSize2" to OneSvgData("oiiintSize2", 1.98, 0.659)
+-    )
++    )}
+ 
+     // staticSvg in js.
+     fun staticPath(value: String, options: Options): RNodePathSpan {
+@@ -675,7 +676,7 @@ object RenderTreeBuilder {
+         // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
+         // spacing should go between atoms of different classes, and add dummy
+         // spans for determining spacings between surrounding atoms.
+-        val rowNonSpace = rawGroups.filter { group -> group != null && !group.klasses.contains(CssClass.mspace) }
++        val rowNonSpace = rawGroups.filter { group -> !group.klasses.contains(CssClass.mspace) }
+         val nonSpaces = listOf<RenderNode?>(null, *rowNonSpace.toTypedArray(), null)
+         /* TODO:
+         const nonSpaces: (?HtmlDomNode)[] = [
+index aa00106..bb64580 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/Stretchy.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/Stretchy.kt
+@@ -51,7 +51,7 @@ object Stretchy {
+ 
+     data class KatexImageData(val paths: List<String>, val minWidth: Double, val viewBoxHeight: Int, val align: String = "")
+ 
+-    val katexImagesData = mapOf(
++    val katexImagesData by lazy { mapOf(
+         //   path(s), minWidth, height, align
+         "overrightarrow" to KatexImageData(listOf("rightarrow"), 0.888, 522, "xMaxYMin"),
+         "overleftarrow" to KatexImageData(listOf("leftarrow"), 0.888, 522, "xMinYMin"),
+@@ -100,7 +100,7 @@ object Stretchy {
+         "rightharpoonaboveshortbar"), 1.75, 716),
+         "xleftequilibrium" to KatexImageData(listOf("shortbaraboveleftharpoon",
+         "shortrightharpoonabovebar"), 1.75, 716)
+-    )
++    )}
+ 
+     // from stretchy.js
+     fun groupLength(arg: ParseNode): Int {
+index 3bbd817..266e00e 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/Style.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/Style.kt
+@@ -29,15 +29,15 @@ data class Style(val id: Int, val size: Int, val cramped: Boolean) {
+         val SSc = 7
+ 
+         // Lookup tables for switching from one style to another
+-        val sup = listOf(S, Sc, S, Sc, SS, SSc, SS, SSc)
+-        val sub = listOf(Sc, Sc, Sc, Sc, SSc, SSc, SSc, SSc)
+-        val _fracNum = listOf(T, Tc, S, Sc, SS, SSc, SS, SSc)
+-        val _fracDen = listOf(Tc, Tc, Sc, Sc, SSc, SSc, SSc, SSc)
+-        val _cramp = listOf(Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc)
+-        val _text = listOf(D, Dc, T, Tc, T, Tc, T, Tc)
++        val sup by lazy { listOf(S, Sc, S, Sc, SS, SSc, SS, SSc)}
++        val sub by lazy { listOf(Sc, Sc, Sc, Sc, SSc, SSc, SSc, SSc)}
++        val _fracNum by lazy { listOf(T, Tc, S, Sc, SS, SSc, SS, SSc)}
++        val _fracDen by lazy { listOf(Tc, Tc, Sc, Sc, SSc, SSc, SSc, SSc)}
++        val _cramp by lazy { listOf(Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc)}
++        val _text by lazy { listOf(D, Dc, T, Tc, T, Tc, T, Tc)}
+ 
+         // Instances of the different styles
+-        val styles = listOf(
++        val styles by lazy { listOf(
+             Style(D, 0, false),
+             Style(Dc, 0, true),
+             Style(T, 1, false),
+@@ -46,12 +46,12 @@ data class Style(val id: Int, val size: Int, val cramped: Boolean) {
+             Style(Sc, 2, true),
+             Style(SS, 3, false),
+             Style(SSc, 3, true)
+-        )
++        )}
+ 
+-        val DISPLAY: Style = styles[D]
+-        val TEXT: Style = styles[T]
+-        val SCRIPT = styles[S]
+-        val SCRIPTSCRIPT = styles[SS]
++        val DISPLAY: Style by lazy { styles[D] }
++        val TEXT: Style by lazy { styles[T] }
++        val SCRIPT by lazy { styles[S] }
++        val SCRIPTSCRIPT by lazy { styles[SS] }
+     }
+ 
+     /**
+index 21a3bac..ddfa023 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/SymbolDefinitions.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/SymbolDefinitions.kt
+@@ -32,17 +32,17 @@ object SymbolDefinitions {
+     val ams = "ams"
+ 
+     // groups:
+-    val accent = NonAtoms.accent_token
+-    val bin = Atoms.bin
+-    val close = Atoms.close
+-    val inner = Atoms.inner
+-    val mathord = NonAtoms.mathord
+-    val op = NonAtoms.op_token
+-    val open = Atoms.open
+-    val punct = Atoms.punct
+-    val rel = Atoms.rel
+-    val spacing = NonAtoms.spacing
+-    val textord = NonAtoms.textord
++    val accent by lazy { NonAtoms.accent_token }
++    val bin by lazy { Atoms.bin }
++    val close by lazy { Atoms.close }
++    val inner by lazy { Atoms.inner }
++    val mathord by lazy { NonAtoms.mathord }
++    val op by lazy { NonAtoms.op_token }
++    val open by lazy { Atoms.open }
++    val punct by lazy { Atoms.punct }
++    val rel by lazy { Atoms.rel }
++    val spacing by lazy { NonAtoms.spacing }
++    val textord by lazy { NonAtoms.textord }
+ 
+     // Now comes the symbol table
+     fun defineSymbol(mode: Mode, font: Font, group: Group, replace: String?, name: String, acceptUnicodeChar: Boolean = false) = Symbols.defineSymbol(mode, font, group, replace, name, acceptUnicodeChar)
+@@ -833,7 +833,6 @@ object SymbolDefinitions {
+         // but they are not actually in the font, nor are they supported by the
+         // Unicode accent mechanism, so they fall back to Times font and look ugly.
+         // TODO(edemaine): Fix this.
+-        val extraLatin = Symbols.extraLatin
+         for (cha in extraLatin) {
+             val ch = cha.toString()
+             defineSymbol(math, main, mathord, ch, ch)
+index 371b290..5af0b37 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/Symbols.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/Symbols.kt
+@@ -1,5 +1,7 @@
+ package io.github.karino2.kotlitex
+ 
++import java.util.concurrent.ConcurrentHashMap
++
+ data class CharacterMetrics(
+     val depth: Double,
+     val height: Double,
+@@ -8,9 +10,15 @@ data class CharacterMetrics(
+     val width: Double
+ )
+ 
++// We add these Latin-1 letters as symbols for backwards-compatibility,
++// but they are not actually in the font, nor are they supported by the
++// Unicode accent mechanism, so they fall back to Times font and look ugly.
++// TODO(edemaine): Fix this.
++const val extraLatin = "ÇÐÞçþ"
++
+ object Symbols {
+-    val mathMap: MutableMap<String, CharInfo> = mutableMapOf()
+-    val textMap: MutableMap<String, CharInfo> = mutableMapOf()
++    val mathMap: MutableMap<String, CharInfo> by lazy { ConcurrentHashMap() }
++    val textMap: MutableMap<String, CharInfo> by lazy { ConcurrentHashMap() }
+ 
+     fun get(mode: Mode) = if (mode == Mode.MATH) mathMap else textMap
+ 
+@@ -21,7 +29,7 @@ object Symbols {
+     // descenders we prefer approximations with ascenders, primarily to prevent
+     // the fraction bar or root line from intersecting the glyph.
+     // TODO(kevinb) allow union of multiple glyph metrics for better accuracy.
+-    val extraCharacterMap = mapOf(
++    val extraCharacterMap by lazy { mapOf(
+         // Latin-1
+         'Å' to  'A',
+     'Ç' to  'C',
+@@ -97,15 +105,16 @@ object Symbols {
+     'э' to  'e',
+     'ю' to  'm',
+     'я' to  'r'
+-    )
++    )}
+ 
+     // TODO:
++    @Suppress("UNUSED_PARAMETER")
+     fun supportedCodepoint(ch: Int) = true
+ 
+     fun getCharacterMetrics(character: String, font: String, mode: Mode): CharacterMetrics? {
+         val metmap = MetricMap.metricMap[font] ?: throw Exception("Font metrics not found for font: $font.")
+ 
+-        val chInt = (extraCharacterMap[character[0]] ?: character[0]).toInt()
++        val chInt = (extraCharacterMap[character[0]] ?: character[0]).code
+         val ch = chInt.toString()
+         var metric = metmap[ch]
+ 
+@@ -149,13 +158,7 @@ object Symbols {
+         SymbolDefinitions.defineAllSymbols()
+     }
+ 
+-    // We add these Latin-1 letters as symbols for backwards-compatibility,
+-    // but they are not actually in the font, nor are they supported by the
+-    // Unicode accent mechanism, so they fall back to Times font and look ugly.
+-    // TODO(edemaine): Fix this.
+-    val extraLatin = "ÇÐÞçþ"
+-
+-    val unicodeAccents = mapOf(
++    val unicodeAccents by lazy { mapOf(
+         '\u0301' to AccentRelation("\\'", "\\acute"),
+         '\u0300' to AccentRelation("\\`", "\\grave"),
+         '\u0308' to AccentRelation("\\\"", "\\ddot"),
+@@ -167,9 +170,9 @@ object Symbols {
+         '\u0307' to AccentRelation( "\\.",  "\\dot"),
+         '\u030a' to AccentRelation( "\\r",  "\\mathring"),
+         '\u030b' to AccentRelation( "\\H", "")
+-    )
++    )}
+ 
+-    val unicodeSymbols = mapOf(
++    val unicodeSymbols by lazy { mapOf(
+         '\u00e1' to "\u0061\u0301",  // á = \'{a}
+         '\u00e0' to "\u0061\u0300",  // à = \`{a}
+         '\u00e4' to "\u0061\u0308",  // ä = \"{a}
+@@ -488,5 +491,5 @@ object Symbols {
+         '\u1fe8' to "\u03a5\u0306",  // Ῠ = \u{Υ}
+         '\u038f' to "\u03a9\u0301",  // Ώ = \'{Ω}
+         '\u1ffa' to "\u03a9\u0300"  // Ὼ = \`{Ω}
+-    )
+-}
++    )}
++}
+index 1350697..dce0d15 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/functions/FunctionAccent.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/functions/FunctionAccent.kt
+@@ -3,11 +3,11 @@ package io.github.karino2.kotlitex.functions
+ import io.github.karino2.kotlitex.*
+ 
+ object FunctionAccent {
+-    val NON_STRETCHY_ACCENT_REGEX =
++    val NON_STRETCHY_ACCENT_REGEX by lazy {
+         setOf(
+             "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar",
+             "\\breve", "\\check", "\\hat", "\\vec", "\\dot", "\\mathring"
+-        )
++        )}
+ 
+     // utils.getBaseElem
+     /**
+index c70e0bd..7ed235e 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/functions/FunctionFont.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/functions/FunctionFont.kt
+@@ -12,12 +12,12 @@ object FunctionFont {
+         return RenderTreeBuilder.buildGroup(group.body, newOptions)
+     }
+ 
+-    val fontAliases = mapOf(
++    val fontAliases by lazy { mapOf(
+         "\\Bbb" to "\\mathbb",
+         "\\bold" to "\\mathbf",
+         "\\frak" to "\\mathfrak",
+         "\\bm" to "\\boldsymbol"
+-    )
++    )}
+ 
+     fun defineAll() {
+         LatexFunctions.defineFunction(
+index df8a94d..770bee3 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/functions/FunctionOp.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/functions/FunctionOp.kt
+@@ -42,11 +42,11 @@ object FunctionOp {
+             // If this is a symbol, create the symbol.
+             val fontName = if(large)  "Size2-Regular" else "Size1-Regular"
+ 
+-            var stash = ""
++            //var stash = ""
+             if (group.name == "\\oiint" || group.name == "\\oiiint") {
+                 // No font glyphs yet, so use a glyph w/o the oval.
+                 // TODO: When font glyphs are available, delete this code.
+-                stash = group.name.substring(1);
++                val stash = group.name.substring(1);
+                 // $FlowFixMe
+                 group.name = if(stash == "oiint")  "\\iint" else  "\\iiint"
+             }
+@@ -84,6 +84,7 @@ object FunctionOp {
+         } else if (group.body != null) {
+             // karino: Is this cast always success?
+             // If this is a list, compose that list.
++            @Suppress("UNCHECKED_CAST")
+             val inner = RenderTreeBuilder.buildExpression(group.body as List<ParseNode>, options, true);
+             if (inner.size == 1 && inner[0] is RNodeSymbol) {
+                 val sym = inner[0]
+index 7fec49d..24a4747 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/functions/FunctionSymbolsSpacing.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/functions/FunctionSymbolsSpacing.kt
+@@ -6,23 +6,23 @@ import java.lang.IllegalArgumentException
+ object FunctionSymbolsSpacing {
+ 
+     // A map of CSS-based spacing functions to their CSS class.
+-    val cssSpace = mapOf(
++    val cssSpace by lazy { mapOf(
+         "\\nobreak" to CssClass.nobreak,
+         "\\allowbreak" to CssClass.allowbreak
+-    )
++    )}
+ 
+     // A lookup table to determine whether a spacing function/symbol should be
+     // treated like a regular space character.  If a symbol or command is a key
+     // in this table, then it should be a regular space character.  Furthermore,
+     // the associated value may have a `className` specifying an extra CSS class
+     // to add to the created `span`.
+-    val regularSpace = mapOf(
++    val regularSpace by lazy { mapOf(
+         " " to  CssClass.EMPTY,
+         "\\ " to CssClass.EMPTY,
+         "~" to CssClass.nobreak,
+         "\\space" to CssClass.EMPTY,
+         "\\nobreakspace" to CssClass.nobreak
+-    )
++    )}
+ 
+     // (ParseNode, Options)->RenderNode
+     fun renderNodeHandler(group: ParseNode, options: Options) : RenderNode {
+index 24e8b15..b0d9127 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/renderer/FontLoader.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/renderer/FontLoader.kt
+@@ -64,11 +64,11 @@ class AndroidFontLoader(private val assetManager: AssetManager) :
+ 
+     companion object {
+         fun fontToTypefaceMapKey(font: CssFont): String {
+-            var variant = font.variant.capitalize()
++            var variant = font.variant.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+             if (variant == "Normal") {
+                 variant = ""
+             }
+-            var weight = font.weight.capitalize()
++            var weight = font.weight.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+             if (weight == "Normal") {
+                 weight = ""
+             }
+index 9a8dad5..cdac089 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/renderer/VirtualNodeBuilder.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/renderer/VirtualNodeBuilder.kt
+@@ -98,6 +98,7 @@ class VirtualNodeBuilder(val children: List<RenderNode>, baseSize: Double, val f
+         }
+     }
+ 
++    @Suppress("UNUSED_PARAMETER")
+     private fun createItalicNode(node: RenderNode) {}
+ 
+     /**
+@@ -140,7 +141,8 @@ class VirtualNodeBuilder(val children: List<RenderNode>, baseSize: Double, val f
+                 is RNodeSpan -> {
+                     node.children.forEach { createRenderingState(it) }
+                 }
++                else -> {}
+             }
+         }
+     }
+-}
++}
+index 172ebb3..df4aa4a 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/view/MarkdownView.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/view/MarkdownView.kt
+@@ -2,6 +2,7 @@ package io.github.karino2.kotlitex.view
+ 
+ import android.content.Context
+ import android.content.res.AssetManager
++import android.graphics.Color
+ import android.text.Spannable
+ import android.text.SpannableStringBuilder
+ import android.util.AttributeSet
+@@ -107,7 +108,7 @@ class SpannableMathSpanHandler(val assetManager: AssetManager, val baseSize: Flo
+     private fun appendMathSpan(exp: String, isMathMode: Boolean) {
+         isMathExist = true
+         val size = if (isMathMode) mathExpressionSize else baseSize
+-        val span = MathExpressionSpan(exp, size, assetManager, isMathMode)
++        val span = MathExpressionSpan(exp, size, assetManager, isMathMode, equationColor = Color.BLACK)
+         span.ensureDrawable()
+         val begin = spannable.length
+         spannable.append("\$\$${exp}\$\$")
+@@ -128,13 +129,13 @@ class SpannableMathSpanHandler(val assetManager: AssetManager, val baseSize: Flo
+ 
+ class MarkdownView(context: Context, attrSet: AttributeSet) : TextView(context, attrSet) {
+     companion object {
+-        var CACHE_ENABLED = true
++        /*var CACHE_ENABLED = true
+         var CACHE_SIZE = 1024
+         val cache = object : LinkedHashMap<String, Spannable>(128, 0.75f, true) {
+             override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Spannable>?): Boolean {
+                 return this.size > CACHE_SIZE
+             }
+-        }
++        }*/
+     }
+ 
+     var job: Job? = null
+@@ -147,8 +148,18 @@ class MarkdownView(context: Context, attrSet: AttributeSet) : TextView(context,
+         MathSpanBuilder(handler)
+     }
+ 
++    @Suppress("UNUSED_PARAMETER")
+     fun setMarkdown(text: String) {
+-        val prevJob = job
++        // This has been altered to be an unsupported method since properly
++        // fixing it is a bit difficult. The problem is that views shouldn't be
++        // interacting directly with GlobalScope, especially within a library.
++        // Fixing this would require piping a coroutine dispatcher to the
++        // library to use for recomputing the view with a mechanism to safely
++        // communicate that back to the main thread (and LiveData required a
++        // lifecycle owner which View cannot satisfy). Since Oppia doesn't
++        // require this view, it can just be commented out.
++        error("Unsupported method.")
++        /*val prevJob = job
+         prevJob?.let { it.cancel() }
+ 
+         if (CACHE_ENABLED) {
+@@ -178,6 +189,6 @@ class MarkdownView(context: Context, attrSet: AttributeSet) : TextView(context,
+                     setText(handler.spannable)
+                 }
+             }
+-        }
++        }*/
+     }
+-}
++}
+index 68788cb..6fdd861 100644
+--- kotlitex/src/main/java/io/github/karino2/kotlitex/view/MathExpressionSpan.kt
++++ kotlitex/src/main/java/io/github/karino2/kotlitex/view/MathExpressionSpan.kt
+@@ -11,11 +11,13 @@ import io.github.karino2.kotlitex.renderer.FontLoader
+ import io.github.karino2.kotlitex.renderer.VirtualNodeBuilder
+ import io.github.karino2.kotlitex.renderer.node.* // ktlint-disable no-wildcard-imports
+ import java.lang.ref.WeakReference
++import kotlin.math.absoluteValue
+ import kotlin.math.max
+ import kotlin.math.roundToInt
+ 
+-private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoader: FontLoader, val isMathMode: Boolean, val drawBounds: Boolean = false) {
++private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoader: FontLoader, val isMathMode: Boolean, val drawBounds: Boolean = false, equationColor: Int) {
+     var rootNode: VerticalList
++    val colorEquation = equationColor
+ 
+     val firstVListRowBound: Bounds?
+     get() {
+@@ -42,7 +44,7 @@ private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoad
+ 
+     val paint = Paint()
+     val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+-        color = Color.BLACK
++        color = equationColor
+         typeface = Typeface.SERIF
+     }
+ 
+@@ -53,7 +55,7 @@ private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoad
+         return y.toFloat()
+     }
+ 
+-    private fun drawBoundsRect(canvas: Canvas, rect: RectF, color: Int) {
++    private fun drawBoundsRect(drawableSurface: DrawableSurface, rect: RectF, color: Int) {
+         if (! drawBounds) {
+             return
+         }
+@@ -62,10 +64,10 @@ private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoad
+         paint.strokeWidth = 2.0f
+         paint.style = Paint.Style.STROKE
+ 
+-        canvas.drawRect(rect, paint)
++        drawableSurface.drawRect(rect, paint)
+     }
+ 
+-    private fun drawBounds(canvas: Canvas, bounds: Bounds) {
++    private fun drawBounds(drawableSurface: DrawableSurface, bounds: Bounds) {
+         if (! drawBounds) {
+             return
+         }
+@@ -73,10 +75,10 @@ private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoad
+         val x = translateX(bounds.x)
+         val y = translateY(bounds.y)
+ 
+-        drawBoundsRect(canvas, RectF(x, y - bounds.height.toFloat(), x + bounds.width.toFloat(), y), Color.RED)
++        drawBoundsRect(drawableSurface, RectF(x, y - bounds.height.toFloat(), x + bounds.width.toFloat(), y), Color.RED)
+     }
+ 
+-    private fun drawWholeBound(canvas: Canvas, bounds: Bounds) {
++    private fun drawWholeBound(drawableSurface: DrawableSurface, bounds: Bounds) {
+         if (! drawBounds) {
+             return
+         }
+@@ -97,14 +99,14 @@ private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoad
+         val y = -ascent
+         // val padding = (ascent/9).toInt()
+         val padding = 0
+-        drawBoundsRect(canvas, RectF(x, (y - padding).toFloat(), x + bounds.width.toFloat() + padding, y + padding*2 + (bounds.height + deltaDescent).toFloat()), Color.BLUE)
++        drawBoundsRect(drawableSurface, RectF(x, (y - padding).toFloat(), x + bounds.width.toFloat() + padding, y + padding*2 + (bounds.height + deltaDescent).toFloat()), Color.BLUE)
+     }
+ 
+-    private fun drawRenderNodes(canvas: Canvas, parent: VirtualCanvasNode) {
++    private fun drawRenderNodes(drawableSurface: DrawableSurface, parent: VirtualCanvasNode) {
+         when (parent) {
+             is VirtualContainerNode<*> -> {
+                 parent.nodes.forEach {
+-                    drawRenderNodes(canvas, it)
++                    drawRenderNodes(drawableSurface, it)
+                 }
+             }
+             is TextNode -> {
+@@ -112,22 +114,22 @@ private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoad
+                 textPaint.textSize = parent.font.size.toFloat()
+                 val x = translateX(parent.bounds.x)
+                 val y = translateY(parent.bounds.y)
+-                canvas.drawText(parent.text, x, y, textPaint)
+-                drawBounds(canvas, parent.bounds)
++                drawableSurface.drawText(parent.text, x, y, textPaint)
++                drawBounds(drawableSurface, parent.bounds)
+             }
+             is HorizontalLineNode -> {
+-                paint.color = Color.BLACK
++                paint.color = colorEquation
+                 paint.strokeWidth = max(1.0f, parent.bounds.height.toFloat())
+                 val x = translateX(parent.bounds.x)
+                 val y = translateY(parent.bounds.y)
+-                canvas.drawLine(x, y, x + parent.bounds.width.toFloat(), y, paint)
+-                drawBounds(canvas, parent.bounds)
++                drawableSurface.drawLine(x, y, x + parent.bounds.width.toFloat(), y, paint)
++                drawBounds(drawableSurface, parent.bounds)
+             }
+             is PathNode -> {
+                 val x = translateX(parent.bounds.x)
+                 val y = (translateY(parent.bounds.y) - parent.bounds.height).toFloat()
+ 
+-                drawBounds(canvas, parent.bounds)
++                drawBounds(drawableSurface, parent.bounds)
+ 
+                 // TODO: support other preserve aspect ratio.
+                 // "xMinYMin slice"
+@@ -155,31 +157,32 @@ private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoad
+                 mat.postTranslate(x, y)
+ 
+                 // TODO: more suitable handling.
+-                paint.color = Color.BLACK
++                paint.color = colorEquation
+                 paint.strokeWidth = 2.0f
+                 paint.style = Paint.Style.FILL_AND_STROKE
+ 
+                 val path = Path()
+ 
+-                canvas.save()
+-                canvas.clipRect(RectF(x, y, x + wb.toFloat(), y + hb.toFloat()))
++                drawableSurface.save()
++                drawableSurface.clipRect(RectF(x, y, x + wb.toFloat(), y + hb.toFloat()))
+ 
+                 parent.rnode.children.forEach {
+                     path.reset()
+                     path.addPath(it.path, mat)
+-                    canvas.drawPath(path, paint)
++                    drawableSurface.drawPath(path, paint)
+                 }
+ 
+-                canvas.restore()
++                drawableSurface.restore()
+                 paint.style = Paint.Style.STROKE
+             }
++            else -> {}
+         }
+     }
+ 
+-    fun drawAllRenderNodes(canvas: Canvas) {
++    fun drawAllRenderNodes(drawableSurface: DrawableSurface) {
+         if (drawBounds)
+-            drawWholeBound(canvas, calculateWholeBounds())
+-        drawRenderNodes(canvas, rootNode)
++            drawWholeBound(drawableSurface, calculateWholeBounds())
++        drawRenderNodes(drawableSurface, rootNode)
+     }
+ 
+     fun calculateBounds(wholeBounds: Bounds, parent: VirtualCanvasNode) {
+@@ -193,6 +196,7 @@ private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoad
+                     calculateBounds(wholeBounds, it)
+                 }
+             }
++            else -> {}
+         }
+     }
+ 
+@@ -216,13 +220,16 @@ private class MathExpressionDrawable(expr: String, baseSize: Float, val fontLoad
+     }
+ }
+ 
++@Suppress("UNUSED_PARAMETER")
+ // Similar to DynamicDrawableSpan, but getSize is a little different.
+-// I create super class of DynamicDrawableSpan because getCachedDrawable is private and we neet it.
+-class MathExpressionSpan(val expr: String, val baseHeight: Float, val assetManager: AssetManager, val isMathMode: Boolean) : ReplacementSpan() {
++// I created super class of DynamicDrawableSpan because getCachedDrawable is private and we neet it.
++class MathExpressionSpan(val expr: String, val baseHeight: Float, val assetManager: AssetManager, val isMathMode: Boolean, val equationColor: Int) : ReplacementSpan() {
+     enum class Align {
+         Bottom, BaseLine
+     }
+ 
++    val drawableBounds: Rect by lazy { computeDrawableBounds() }
++
+     var verticalAlignment = Align.Bottom
+ 
+     override fun getSize(paint: Paint, text: CharSequence?, start: Int, end: Int, fm: Paint.FontMetricsInt?): Int {
+@@ -266,6 +273,45 @@ class MathExpressionSpan(val expr: String, val baseHeight: Float, val assetManag
+         return (rect.right + 0.5 + padding).roundToInt()
+     }
+ 
++    private fun computeDrawableBounds(): Rect {
++        // TODO: consolidate this with the above.
++        val d = getCachedDrawable()
++        val rect = d.bounds
++        val baseBounds = Rect(rect)
++
++        val firstBound = d.firstVListRowBound
++        if (firstBound == null) {
++            return baseBounds
++        }
++
++        val bottom = (rect.bottom + 0.5).roundToInt()
++
++        val ascent = (0.5 + firstBound.height * 4 / 5).toInt()
++
++        /*
++        work around for \sum^N_i case. (#161)
++        In this case, firstBound.y becomes negative and normal acent calculation make ascent too upper.
++        I don't know how to handle this, so extend descend to try to avoid overlap for this case.
++         */
++        val deltaDescent = (0.5 - firstBound.y).roundToInt()
++
++        val padding = ascent / 9
++        val descent = bottom - ascent + deltaDescent
++
++        val fontAscent = -ascent - padding
++        val fontDescent = descent + padding
++
++        val fontBottom = fontDescent
++        val fontTop = -ascent
++
++        baseBounds.top = 0
++        baseBounds.bottom = max((fontDescent - fontAscent).absoluteValue, (fontBottom - fontTop).absoluteValue)
++
++        return baseBounds
++
++        //return (rect.right + 0.5 + padding).roundToInt()
++    }
++
+     fun ensureDrawable() {
+         try {
+             getCachedDrawable()
+@@ -273,7 +319,7 @@ class MathExpressionSpan(val expr: String, val baseHeight: Float, val assetManag
+             Log.d("kotlitex", err.msg)
+             isError = true
+         } catch (err: NotImplementedError) {
+-            Log.d("kotlitex", err.message)
++            Log.d("kotlitex", err.message ?: "Not implemented")
+             isError = true
+         }
+     }
+@@ -288,9 +334,24 @@ class MathExpressionSpan(val expr: String, val baseHeight: Float, val assetManag
+         y: Int,
+         bottom: Int,
+         paint: Paint
++    ) {
++        canvas.save()
++        if (!isError) {
++            canvas.translate(x, y.toFloat())
++        }
++        draw(DirectDrawableSurface(canvas), text, x, y, paint)
++        canvas.restore()
++    }
++
++    fun draw(
++        drawableSurface: DrawableSurface,
++        text: CharSequence?,
++        x: Float,
++        y: Int,
++        paint: Paint
+     ) {
+         if (isError) {
+-            canvas.drawText("ERROR", x, y.toFloat(), paint)
++            drawableSurface.drawText("ERROR", x, y.toFloat(), paint)
+             return
+         }
+ 
+@@ -298,18 +359,14 @@ class MathExpressionSpan(val expr: String, val baseHeight: Float, val assetManag
+ 
+         // Log.d("kotlitex", "x=$x, y=$y, top=$top, ratio=$ratio, expr=$expr")
+ 
+-        canvas.save()
+-        canvas.translate(x, y.toFloat())
+-        b.drawAllRenderNodes(canvas)
+-
+-        canvas.restore()
++        b.drawAllRenderNodes(drawableSurface)
+     }
+ 
+     private fun getDrawable(): MathExpressionDrawable {
+         // TODO: drawBounds should be always false. Unlike baseSize, we don't have to expose the flag to end-users.
+         val drawable = MathExpressionDrawable(
+             expr, baseHeight,
+-            AndroidFontLoader(assetManager), isMathMode, drawBounds = false
++            AndroidFontLoader(assetManager), isMathMode, drawBounds = false, equationColor = equationColor
+         )
+         return drawable
+     }
+@@ -325,4 +382,24 @@ class MathExpressionSpan(val expr: String, val baseHeight: Float, val assetManag
+     }
+ 
+     private var drawableRef: WeakReference<MathExpressionDrawable>? = null
+-}
++}
++
++interface DrawableSurface {
++    fun save()
++    fun restore()
++    fun drawText(text: String, x: Float, y: Float, paint: Paint)
++    fun clipRect(rect: RectF)
++    fun drawRect(rect: RectF, paint: Paint)
++    fun drawLine(x0: Float, y0: Float, x1: Float, y1: Float, paint: Paint)
++    fun drawPath(path: Path, paint: Paint)
++}
++
++private class DirectDrawableSurface(private val canvas: Canvas): DrawableSurface {
++    override fun save() { canvas.save() }
++    override fun restore() { canvas.save() }
++    override fun drawText(text: String, x: Float, y: Float, paint: Paint) { canvas.drawText(text, x, y, paint) }
++    override fun clipRect(rect: RectF) { canvas.clipRect(rect) }
++    override fun drawRect(rect: RectF, paint: Paint) { canvas.drawRect(rect, paint) }
++    override fun drawLine(x0: Float, y0: Float, x1: Float, y1: Float, paint: Paint) { canvas.drawLine(x0, y0, x1, y1, paint) }
++    override fun drawPath(path: Path, paint: Paint) { canvas.drawPath(path, paint) }
++}

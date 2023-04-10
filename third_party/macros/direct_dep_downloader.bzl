@@ -4,7 +4,7 @@ Provides Starlark macros for importing direct dependencies needed to build Oppia
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load(":direct_dep_defs.bzl", "IMPORT_TYPE")
+load(":direct_dep_defs.bzl", "IMPORT_TYPE", "PATCH_ORIGIN")
 
 def download_direct_workspace_dependencies(dependencies, maven_repositories):
     """Loads the direct Bazel workspace dependencies needed to be able to build the project.
@@ -32,12 +32,21 @@ def download_direct_workspace_dependencies(dependencies, maven_repositories):
         _set_up_remote_dependency(import_details, maven_repositories)
 
 def _set_up_http_archive_dependency(import_details, maven_repositories):
-    _set_up_http_import(import_details, maven_repositories, http_archive)
+    _set_up_http_import(
+        import_details,
+        maven_repositories,
+        import_dep_without_patches = http_archive,
+        import_dep_with_patches = http_archive,
+    )
 
 def _set_up_http_jar_dependency(import_details, maven_repositories):
-    _set_up_http_import(import_details, maven_repositories, http_jar)
+    _set_up_http_import(import_details, maven_repositories, import_dep_without_patches = http_jar)
 
-def _set_up_http_import(import_details, maven_repositories, import_dep):
+def _set_up_http_import(
+        import_details,
+        maven_repositories,
+        import_dep_without_patches,
+        import_dep_with_patches = None):
     dependency_details = import_details["dependency_details"]
     version = dependency_details["version"]
     strip_prefix_template = dependency_details.get("strip_prefix_template")
@@ -51,23 +60,45 @@ def _set_up_http_import(import_details, maven_repositories, import_dep):
     for expanded_url in expanded_urls:
         if expanded_url not in unique_urls:
             unique_urls.append(expanded_url)
-    import_dep(
-        name = import_details.get("import_bind_name") or import_details["name"],
-        urls = unique_urls,
-        sha256 = dependency_details["sha"],
-        strip_prefix = (
-            strip_prefix_template.format(version) if strip_prefix_template != None else None
-        ),
-    )
+    local_patches = _extract_local_patches(import_details["patches_details"])
+    remote_patches = _extract_remote_patches(import_details["patches_details"])
+    if len(local_patches) != 0 or len(remote_patches) != 0:
+        if import_dep_with_patches == None:
+            fail("This method of importing an HTTP dependency does not support patching.")
+        import_dep_with_patches(
+            name = import_details.get("import_bind_name") or import_details["name"],
+            urls = unique_urls,
+            sha256 = dependency_details["sha"],
+            strip_prefix = (
+                strip_prefix_template.format(version) if strip_prefix_template != None else None
+            ),
+            patches = local_patches,
+            remote_patches = remote_patches,
+            remote_patch_strip = import_details.get("patch_path_start_removal_count"),
+        )
+    else:
+        import_dep_without_patches(
+            name = import_details.get("import_bind_name") or import_details["name"],
+            urls = unique_urls,
+            sha256 = dependency_details["sha"],
+            strip_prefix = (
+                strip_prefix_template.format(version) if strip_prefix_template != None else None
+            ),
+        )
 
 def _set_up_git_repository_dependency(import_details):
     dependency_details = import_details["dependency_details"]
+    local_patches = _extract_local_patches(import_details["patches_details"])
+    remote_patches = _extract_remote_patches(import_details["patches_details"])
+    if len(remote_patches) != 0:
+        fail("Git repository imports do not currently support remote patches.")
     git_repository(
         name = import_details.get("import_bind_name") or import_details["name"],
         commit = dependency_details["commit"],
         remote = dependency_details["remote"],
-        shallow_since = dependency_details["shallow_since"],
         repo_mapping = dependency_details.get("repo_mapping") or {},
+        build_file = dependency_details["build_file"],
+        patches = local_patches,
     )
 
 def _set_up_remote_dependency(import_details, maven_repositories):
@@ -79,3 +110,17 @@ def _set_up_remote_dependency(import_details, maven_repositories):
         _set_up_git_repository_dependency(import_details)
     else:
         fail("Unsupported import type: %s." % import_details["import_type"])
+
+def _extract_local_patches(patches_details):
+    return [
+        patch_details["file"]
+        for patch_details in patches_details
+        if patch_details["origin"] == PATCH_ORIGIN.LOCAL
+    ]
+
+def _extract_remote_patches(patches_details):
+    return {
+        patch_details["url"]: patch_details["sri"]
+        for patch_details in patches_details
+        if patch_details["origin"] == PATCH_ORIGIN.REMOTE
+    }

@@ -37,6 +37,15 @@ IMPORT_TYPE = struct(
     GIT_REPOSITORY = struct(import_type_enum_value = 2),
 )
 
+# Represents a type of patch to apply to an imported dependency.
+PATCH_ORIGIN = struct(
+    # Indicates a patch that is included within the local repository.
+    LOCAL = struct(patch_origin_enum_value = 0),
+
+    # Indicates a patch that is remotely available to download.
+    REMOTE = struct(patch_origin_enum_value = 1),
+)
+
 def create_http_archive_reference(
         name,
         sha,
@@ -47,6 +56,8 @@ def create_http_archive_reference(
         urls = None,
         maven_url_suffix = None,
         strip_prefix_template = None,
+        patches_details = [],
+        patch_path_start_removal_count = 0,
         export_details = None,
         exports_details = None):
     """Creates and returns a structure that will be imported using Bazel's http_archive.
@@ -72,6 +83,12 @@ def create_http_archive_reference(
         strip_prefix_template: str. An optional prefix to strip from the directory path imported
             from the archive with optional templating (in the same way as 'url': "{0}" will be
             replaced with the archive's version). See http_archive's 'strip_prefix' for more.
+        patches_details: list of dicts. An optional list of patch configurations to apply to the
+            imported dependency. Each dict is expected to have been created by one of the
+            create_*_patch_config functions. This defaults to an empty list.
+        patch_path_start_removal_count: int. An optional integer specifying the number of leading
+            path fragments to remove from remote patches before applying them. This defaults to 0,
+            but oftentimes '1' is required as it removes the normal "a/" and "b/" prefixes.
         export_details: dict. An optional dict created using one of create_export_library_details or
             create_export_binary_details. When provided, the system will ensure this archive is made
             accessible under a "third_party:<alias>" reference (where the alias is defined as part
@@ -90,6 +107,8 @@ def create_http_archive_reference(
         urls = urls,
         maven_url_suffix = maven_url_suffix,
         strip_prefix_template = strip_prefix_template,
+        patches_details = patches_details,
+        patch_path_start_removal_count = patch_path_start_removal_count,
         export_details = export_details,
         exports_details = exports_details,
     )
@@ -140,6 +159,8 @@ def create_http_jar_reference(
         urls = urls,
         maven_url_suffix = maven_url_suffix,
         strip_prefix_template = strip_prefix_template,
+        patches_details = [],
+        patch_path_start_removal_count = None,
         export_details = export_details,
         exports_details = exports_details,
     )
@@ -148,23 +169,22 @@ def create_git_repository_reference(
         name,
         commit,
         remote,
-        shallow_since,
         test_only,
         import_bind_name = None,
         repo_mapping = {},
+        build_file = None,
+        patches_details = [],
         export_details = None,
         exports_details = None):
     """Creates and returns a structure that will be imported using Bazel's git_repository.
 
-    The remote repository must be a Bazel-compatible repository.
+    The remote repository must be a Bazel-compatible repository, or build_file needs to be provided.
 
     Args:
         name: str. The name of the archive that will be used to reference it as an external
             workspace. See create_http_archive_reference for more specifics.
         commit: str. The SHA-1 commit hash that should be checked out.
         remote: str. The remote URL of the Git repository.
-        shallow_since: str. A timezone-aware timestamp denoting the earliest that the remote
-            repository can be shallow-cloned for improved download performance.
         test_only: boolean. Whether this archive should be made available only to test targets.
         import_bind_name: str. The name to bind the archive to. See create_http_archive_reference
             for more specifics.
@@ -173,6 +193,11 @@ def create_git_repository_reference(
             '{"@maven": "@maven_app"}' will instruct Bazel to treat all references to "@maven" as
             "@maven_app", instead, when building the imported workspace, giving more control to the
             main workspace to configure its imported dependencies.
+        build_file: str. The target label for the build file to use when building the remote
+            repository. This is None by default where None indicates to not create a custom build
+            file.
+        patches_details: list of dicts. An optional list of patch configurations See
+            create_http_archive_reference for more specifics.
         export_details: dict. An optional dict specifying how to export this library. See
             create_http_archive_reference for more specifics.
         exports_details: list of dicts. An optional list of export details. See
@@ -183,12 +208,13 @@ def create_git_repository_reference(
         import_type = IMPORT_TYPE.GIT_REPOSITORY,
         test_only = test_only,
         dependency_details = {
+            "build_file": build_file,
             "commit": commit,
             "remote": remote,
             "repo_mapping": repo_mapping,
-            "shallow_since": shallow_since,
         },
         import_bind_name = import_bind_name,
+        patches_details = patches_details,
         export_details = export_details,
         exports_details = exports_details,
     )
@@ -310,6 +336,38 @@ def create_dep_config(direct_deps, transitive_deps, exclusions = None):
         "transitive": transitive_deps,
     }
 
+def create_local_patch_config(patch_file):
+    """Returns a structure that specifies a local patch to apply to an imported dependency.
+
+    Args:
+        patch_file: str. The Bazel file target label corresponding to a local patch file to apply.
+    """
+    return {
+        "file": patch_file,
+        "origin": PATCH_ORIGIN.LOCAL,
+    }
+
+def create_remote_patch_config(patch_url, patch_sri):
+    """Returns a structure that specifies a remote patch to apply to an imported dependency.
+
+        Args:
+            patch_url: str. The URL to the patch to download.
+            patch_sri: str. The Subresource Integrity (SRI) of the patch. See
+                https://www.srihash.org/ and
+                https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity for more
+                context and instructions on how to generate a hash. Alternatively, you can use this
+                command via a terminal:
+                ```sh
+                echo "sha256-$(wget -q -O- <patch_url> | openssl dgst -sha256 -binary | openssl base64 -A)"
+                ```
+                and copy the result to use as the patch's SRI.
+    """
+    return {
+        "origin": PATCH_ORIGIN.REMOTE,
+        "sri": patch_sri,
+        "url": patch_url,
+    }
+
 def _create_http_import_reference(
         name,
         import_type,
@@ -321,6 +379,8 @@ def _create_http_import_reference(
         urls,
         maven_url_suffix,
         strip_prefix_template,
+        patches_details,
+        patch_path_start_removal_count,
         export_details,
         exports_details):
     # The '+' here is working around syntax issues when trying to use XOR.
@@ -341,6 +401,8 @@ def _create_http_import_reference(
             "version": version,
         },
         import_bind_name = import_bind_name,
+        patches_details = patches_details,
+        patch_path_start_removal_count = patch_path_start_removal_count,
         export_details = export_details,
         exports_details = exports_details,
     )
@@ -350,9 +412,11 @@ def _create_import_dependency_reference(
         import_type,
         test_only,
         dependency_details,
-        import_bind_name = None,
+        import_bind_name,
+        patches_details,
         export_details = None,
-        exports_details = None):
+        exports_details = None,
+        patch_path_start_removal_count = None):
     if export_details != None and exports_details != None:
         fail("Expected exactly one of export_details or exports_details to be defined.")
     if export_details != None:
@@ -363,5 +427,7 @@ def _create_import_dependency_reference(
         "import_bind_name": import_bind_name,
         "import_type": import_type,
         "name": name,
+        "patches_details": patches_details,
+        "patch_path_start_removal_count": patch_path_start_removal_count,
         "test_only": test_only,
     }

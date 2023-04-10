@@ -1,0 +1,32 @@
+# Main BUILD file for KotliTeX.
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
+genrule(
+    name = "generate_kotlitex_manifest",
+    srcs = [],
+    outs = ["AndroidManifest.xml"],
+    cmd = """
+    echo "<manifest xmlns:android=\\"http://schemas.android.com/apk/res/android\\" package=\\"io.github.karino2.kotlitex\\">" > \"$@\"
+    echo "    <application />" >> \"$@\"
+    echo "    <uses-sdk android:minSdkVersion=\\"19\\" android:targetSdkVersion=\\"28\\" />" >> \"$@\"
+    echo "</manifest>" >> \"$@\"
+    """,
+)
+
+kt_android_library(
+    name = "kotlitex",
+    custom_package = "io.github.karino2.kotlitex",
+    srcs = glob(["kotlitex/src/main/java/**/*.kt"]),
+    assets = glob(
+        ["kotlitex/src/main/assets/**"],
+    ),
+    assets_dir = "kotlitex/src/main/assets/",
+    manifest = ":AndroidManifest.xml",
+    exports_manifest = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+    ],
+)

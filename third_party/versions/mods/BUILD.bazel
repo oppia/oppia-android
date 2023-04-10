@@ -1,0 +1,4 @@
+"""
+This package contains BUILD files and/or patches needed to modify imported dependencies to make them
+compatible or fully functional within Oppia Android app & test builds.
+"""
