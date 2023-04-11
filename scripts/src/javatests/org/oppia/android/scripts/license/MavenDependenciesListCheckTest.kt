@@ -916,7 +916,7 @@ class MavenDependenciesListCheckTest {
       android_library(
           name = "$artifactName",
           visibility = ["//visibility:public"],
-          exports = [artifact("$coord")],
+          exports = [artifact("$coord", repository_name = "maven_app")],
       )
       """.trimIndent() + "\n"
     )
@@ -965,6 +965,7 @@ class MavenDependenciesListCheckTest {
             "version": "1.4.7"
           }
         },
+        "dependencies": {},
         "repositories": {
           "$GOOGLE_MAVEN_URL": [
             "androidx.databinding:databinding-adapters",

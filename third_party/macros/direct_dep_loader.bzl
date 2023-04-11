@@ -31,7 +31,7 @@ def download_maven_dependencies(name, maven_artifact_config, maven_repositories)
     """
 
     # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external. Note to
-    # developers: new dependencies should be added to third_party/versions.bzl, not here.
+    # developers: new dependencies should be added to a direct_maven_versions.bzl file, not here.
     maven_install(
         name = name,
         artifacts = _extract_maven_dependencies(maven_artifact_config),

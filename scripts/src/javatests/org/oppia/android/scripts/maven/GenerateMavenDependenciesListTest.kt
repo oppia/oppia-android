@@ -1310,7 +1310,7 @@ class GenerateMavenDependenciesListTest {
       android_library(
           name = "${omitVersionAndReplaceColonsHyphensPeriods(artifactName)}",
           visibility = ["//visibility:public"],
-          exports = [artifact("$artifactName")],
+          exports = [artifact("$artifactName", repository_name = "maven_app")],
       )
       """.trimIndent() + "\n"
     )
@@ -1367,6 +1367,7 @@ class GenerateMavenDependenciesListTest {
             "version": "1.4.7"
           }
         },
+        "dependencies": {},
         "repositories": {
           "$GOOGLE_MAVEN_URL": [
             "androidx.databinding:databinding-adapters",

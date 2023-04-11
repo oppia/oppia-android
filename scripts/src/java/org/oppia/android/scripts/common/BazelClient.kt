@@ -108,7 +108,7 @@ class BazelClient(
   fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> {
     return executeBazelCommand(
       "query",
-      "deps(deps($binaryTarget) intersect //third_party/...) intersect @maven//..."
+      "deps(deps($binaryTarget) intersect //third_party/...) intersect @maven_app//..."
     )
   }
 

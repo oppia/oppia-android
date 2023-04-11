@@ -347,7 +347,7 @@ class BazelClientTest {
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
-    assertThat(thirdPartyDependenciesList).contains("@maven//:androidx_annotation_annotation")
+    assertThat(thirdPartyDependenciesList).contains("@maven_app//:androidx_annotation_annotation")
   }
 
   @Test
@@ -376,7 +376,8 @@ class BazelClientTest {
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
-    assertThat(thirdPartyDependenciesList).doesNotContain("@maven//:androidx_annotation_annotation")
+    assertThat(thirdPartyDependenciesList)
+      .doesNotContain("@maven_app//:androidx_annotation_annotation")
   }
 
   private fun fakeCommandExecutorWithResult(singleLine: String) {
@@ -403,7 +404,7 @@ class BazelClientTest {
           name = "${omitVersionAndReplacePeriodsAndColons(artifactName)}",
           visibility = ["//visibility:public"],
           exports = [
-              artifact("$artifactName")
+              artifact("$artifactName", repository_name = "maven_app")
           ],
       )
       """.trimIndent() + "\n"

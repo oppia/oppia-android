@@ -131,8 +131,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.core:core-ktx:1.0.1"
-  artifact_version: "1.0.1"
+  artifact_name: "androidx.core:core-ktx:1.0.2"
+  artifact_version: "1.0.2"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1118,8 +1118,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.squareup.retrofit2:converter-moshi:2.5.0"
-  artifact_version: "2.5.0"
+  artifact_name: "com.squareup.retrofit2:converter-moshi:2.7.2"
+  artifact_version: "2.7.2"
   license {
     license_name: "The Apache Software License, Version 2.0"
     scrapable_link {
@@ -1157,25 +1157,6 @@ maven_dependency {
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-maven_dependency {
-  artifact_name: "io.fabric.sdk.android:fabric:1.4.7"
-  artifact_version: "1.4.7"
-  license {
-    license_name: "Terms of Service for Firebase Services"
-    original_link: "https://fabric.io/terms"
-    direct_link_only {
-      url: "https://firebase.google.com/terms"
-    }
-    is_original_link_invalid: true
-  }
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/master/LICENSE"
-    scrapable_link {
-      url: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/52e1cf89efd795d798ae5485b8503e04e4a936b8/LICENSE"
     }
   }
 }
@@ -1238,17 +1219,6 @@ maven_dependency {
     original_link: "https://opensource.org/licenses/MIT"
     extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/mit-license.txt"
-    }
-  }
-}
-maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.6.0"
-  artifact_version: "1.6.0"
-  license {
-    license_name: "The Apache License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     }
   }
 }

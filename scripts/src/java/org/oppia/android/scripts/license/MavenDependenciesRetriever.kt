@@ -22,7 +22,7 @@ import java.io.File
 import java.io.FileInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
-private const val MAVEN_PREFIX = "@maven//:"
+private const val MAVEN_PREFIX = "@maven_app//:"
 
 /** Helper to compile the third-party Maven dependencies list for Oppia Android. */
 class MavenDependenciesRetriever(

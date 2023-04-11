@@ -161,6 +161,7 @@ class TestBazelWorkspaceTest {
     assertThat(workspaceContent).contains(
       """
       maven_install(
+          name = "maven_app",
           artifacts = artifactsList,
           repositories = [
               "https://maven.google.com",

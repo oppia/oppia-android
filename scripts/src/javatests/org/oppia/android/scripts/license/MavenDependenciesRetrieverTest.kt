@@ -880,12 +880,13 @@ class MavenDependenciesRetrieverTest {
 
   @Test
   fun testGetDepListFromMavenInstall_emptyBazelQueryDepsList_returnsEmptyDepList() {
-    val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
+    tempFolder.newFolder("third_party", "versions")
+    val mavenInstallFile = tempFolder.newFile("third_party/versions/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
 
     val mavenListDependencies = runBlocking {
       mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
-        "${tempFolder.root}/third_party/maven_install.json",
+        "${tempFolder.root}/third_party/versions/maven_install.json",
         listOf()
       )
     }
@@ -895,12 +896,13 @@ class MavenDependenciesRetrieverTest {
 
   @Test
   fun testGetDepListFromMavenInstall_commonBazelQueryDepsList_returnsCorrectDepsList() {
-    val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
+    tempFolder.newFolder("third_party", "versions")
+    val mavenInstallFile = tempFolder.newFile("third_party/versions/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
 
     val mavenListDependencies = runBlocking {
       mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
-        "${tempFolder.root}/third_party/maven_install.json",
+        "${tempFolder.root}/third_party/versions/maven_install.json",
         listOf(DATA_BINDING_DEP, FIREBASE_DEP)
       )
     }
@@ -963,12 +965,13 @@ class MavenDependenciesRetrieverTest {
 
   @Test
   fun testGenerateDepsListFromMavenInstall_emptyBazelQueryDeps_returnsEmptyList() {
-    val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
+    tempFolder.newFolder("third_party", "versions")
+    val mavenInstallFile = tempFolder.newFile("third_party/versions/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
 
     val mavenListDependencies = runBlocking {
       mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
-        "${tempFolder.root}/third_party/maven_install.json",
+        "${tempFolder.root}/third_party/versions/maven_install.json",
         listOf()
       )
     }
@@ -978,12 +981,13 @@ class MavenDependenciesRetrieverTest {
 
   @Test
   fun testGenerateDepsListFromMavenInstall_nonEmptyBazelQueryDepNames_returnsCorrectList() {
-    val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
+    tempFolder.newFolder("third_party", "versions")
+    val mavenInstallFile = tempFolder.newFile("third_party/versions/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
 
     val mavenListDependencies = runBlocking {
       mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
-        "${tempFolder.root}/third_party/maven_install.json",
+        "${tempFolder.root}/third_party/versions/maven_install.json",
         listOf(DATA_BINDING_DEP, FIREBASE_DEP)
       )
     }
@@ -1460,7 +1464,7 @@ class MavenDependenciesRetrieverTest {
       android_library(
           name = "$artifactName",
           visibility = ["//visibility:public"],
-          exports = [artifact("$coord")],
+          exports = [artifact("$coord", repository_name = "maven_app")],
       )
       """.trimIndent() + "\n"
     )
@@ -1509,6 +1513,7 @@ class MavenDependenciesRetrieverTest {
             "version": "1.4.7"
           }
         },
+        "dependencies": {},
         "repositories": {
           "$GOOGLE_MAVEN_URL": [
             "androidx.databinding:databinding-adapters",

@@ -209,6 +209,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
         load("@rules_jvm_external//:defs.bzl", "maven_install")
         
         maven_install(
+            name = "maven_app",
             artifacts = artifactsList,
             repositories = [
                 "https://maven.google.com",
