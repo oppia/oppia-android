@@ -202,29 +202,4 @@
   <color name="color_palette_onboarding_4_status_bar_color">@color/color_def_onboarding_4_status_bar</color>
   <color name="color_palette_coming_soon_rect_background_end_color">@color/color_def_grape_violet</color>
   <color name="color_palette_coming_soon_rect_background_start_color">@color/color_def_bright_violet</color>
-  <!-- AVATAR BACKGROUND COLORS -->
-  <color name="color_palette__avatar_background_1_color">@color/color_def_avatar_background_1</color>
-  <color name="color_palette__avatar_background_2_color">@color/color_def_avatar_background_2</color>
-  <color name="color_palette__avatar_background_3_color">@color/color_def_avatar_background_3</color>
-  <color name="color_palette__avatar_background_4_color">@color/color_def_avatar_background_4</color>
-  <color name="color_palette__avatar_background_5_color">@color/color_def_avatar_background_5</color>
-  <color name="color_palette__avatar_background_6_color">@color/color_def_avatar_background_6</color>
-  <color name="color_palette__avatar_background_7_color">@color/color_def_avatar_background_7</color>
-  <color name="color_palette__avatar_background_8_color">@color/color_def_avatar_background_8</color>
-  <color name="color_palette__avatar_background_9_color">@color/color_def_avatar_background_9</color>
-  <color name="color_palette__avatar_background_10_color">@color/color_def_avatar_background_10</color>
-  <color name="color_palette__avatar_background_11_color">@color/color_def_avatar_background_11</color>
-  <color name="color_palette__avatar_background_12_color">@color/color_def_avatar_background_12</color>
-  <color name="color_palette__avatar_background_13_color">@color/color_def_avatar_background_13</color>
-  <color name="color_palette__avatar_background_14_color">@color/color_def_avatar_background_14</color>
-  <color name="color_palette__avatar_background_15_color">@color/color_def_avatar_background_15</color>
-  <color name="color_palette__avatar_background_16_color">@color/color_def_avatar_background_16</color>
-  <color name="color_palette__avatar_background_17_color">@color/color_def_avatar_background_17</color>
-  <color name="color_palette__avatar_background_18_color">@color/color_def_avatar_background_18</color>
-  <color name="color_palette__avatar_background_19_color">@color/color_def_avatar_background_19</color>
-  <color name="color_palette__avatar_background_20_color">@color/color_def_avatar_background_20</color>
-  <color name="color_palette__avatar_background_21_color">@color/color_def_avatar_background_21</color>
-  <color name="color_palette__avatar_background_22_color">@color/color_def_avatar_background_22</color>
-  <color name="color_palette__avatar_background_23_color">@color/color_def_avatar_background_23</color>
-  <color name="color_palette__avatar_background_24_color">@color/color_def_avatar_background_24</color>
 </resources>
