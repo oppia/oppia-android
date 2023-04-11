@@ -91,6 +91,7 @@ TEST_DEPENDENCY_VERSIONS = {
     "androidx.test.espresso:espresso-intents": "3.1.0",
     "androidx.test.ext:junit": "1.1.1",
     "androidx.test.ext:truth": "1.4.0",
+    "androidx.test.uiautomator:uiautomator": "2.2.0",
     "androidx.test:core": "1.4.0",
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
