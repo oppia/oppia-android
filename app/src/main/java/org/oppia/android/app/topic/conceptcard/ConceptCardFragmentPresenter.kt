@@ -107,6 +107,6 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
     ConceptCardFragment
-      .bringToFrontOrCreateIfNew(skillId, profileId, fragment.childFragmentManager)
+      .bringToFrontOrCreateIfNew(skillId, profileId, fragment.parentFragmentManager)
   }
 }

@@ -48,18 +48,18 @@ class ConceptCardFragment : InjectableDialogFragment() {
     ) {
       // The UI is recreated when changing profile ids, so no need to include it in the tag name.
       val tag = "$CONCEPT_CARD_DIALOG_FRAGMENT_TAG:$skillId"
-      val currentFragment =
-        fragmentManager.findFragmentByTag(tag)
-      if (currentFragment != null) {
-        currentFragment.view?.bringToFront() ?: run {
-          // Panic mode. I don't know how this could happen as at this point all added fragments
-          // should be in resumed state. Need to find out how to log this properly, as OppiaLogger
-          // is injected
-          fragmentManager.beginTransaction().remove(currentFragment).commitNow()
-          showNewInstance(skillId, profileId, fragmentManager, tag)
+      val currentFragment = fragmentManager.findFragmentByTag(tag)
+      if (currentFragment == null) {
+        val newFragment = showNewInstance(skillId, profileId, fragmentManager, tag)
+        val allConceptCards = fragmentManager.fragments.filterIsInstance<ConceptCardFragment>()
+          .filter { fragment -> fragment != newFragment }
+        if (allConceptCards.isNotEmpty()) {
+          val transaction = fragmentManager.beginTransaction()
+          for (toRemove in allConceptCards) {
+            transaction.remove(toRemove)
+          }
+          transaction.commitNow()
         }
-      } else {
-        showNewInstance(skillId, profileId, fragmentManager, tag)
       }
     }
 
@@ -79,9 +79,10 @@ class ConceptCardFragment : InjectableDialogFragment() {
       profileId: ProfileId,
       fragmentManager: FragmentManager,
       tag: String
-    ) {
+    ): ConceptCardFragment {
       val conceptCardFragment = newInstance(skillId, profileId)
       conceptCardFragment.showNow(fragmentManager, tag)
+      return conceptCardFragment
     }
   }
 
