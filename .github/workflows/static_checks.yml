@@ -198,6 +198,16 @@ jobs:
         with:
           version: 6.1.1
 
+      - name: App Maven dependencies validation
+        if: always()
+        run: |
+          bazel run //scripts:validate_maven_dependencies -- $(pwd) third_party/versions/direct_maven_versions.bzl third_party/versions/transitive_maven_versions.bzl third_party/versions/maven_install.json //third_party //...
+
+      - name: Scripts Maven dependencies validation
+        if: always()
+        run: |
+          bazel run //scripts:validate_maven_dependencies -- $(pwd) scripts/third_party/versions/direct_maven_versions.bzl scripts/third_party/versions/transitive_maven_versions.bzl scripts/third_party/versions/maven_install.json //scripts/third_party //scripts/...
+
       - name: Maven Repin Check
         if: always()
         run: |

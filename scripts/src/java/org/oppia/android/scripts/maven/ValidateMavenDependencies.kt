@@ -6,20 +6,34 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.license.MavenCoordinate
+import org.oppia.android.scripts.maven.ValidateMavenDependencies.MavenVersionsList.ReferenceScope
+import org.oppia.android.scripts.maven.ValidateMavenDependencies.MavenVersionsList.ReferenceType
 import org.oppia.android.scripts.maven.model.MavenInstallJson
 
 fun main(vararg args: String) {
-  check(args.size == 5) {
+  check(args.size == 6) {
     "Usage: bazel run //scripts:validate_maven_dependencies -- </absolute/path/to/repo/root:Path>" +
-      " <relative/path/to/versions.bzl:Path> <relative/path/to/maven_install.json:Path>" +
+      " <relative/path/to/direct_maven_versions.bzl:Path>" +
+      " <relative/path/to/transitive_maven_versions.bzl:Path>" +
+      " <relative/path/to/maven_install.json:Path>" +
       " <third_party_base_target:String> <bazel_universe_scope:String>"
   }
-  val (repoRootPath, versionsBazelPath, mavenInstallPath, baseTarget, universeScope) = args
+  val repoRootPath = args[0]
+  val directVersionsPath = args[1]
+  val transitiveVersionsPath = args[2]
+  val mavenInstallPath = args[3]
+  val baseTarget = args[4]
+  val universeScope = args[5]
   val repoRootFile = File(repoRootPath).absoluteFile.normalize().also {
     check(it.exists()) { "Repo root does not exist: $repoRootPath." }
   }
-  val versionsBazelFile = File(repoRootFile, versionsBazelPath).absoluteFile.normalize().also {
-    check(it.exists()) { "Versions Bazel file does not exist: $versionsBazelPath." }
+  val directVersionsFile = File(repoRootFile, directVersionsPath).absoluteFile.normalize().also {
+    check(it.exists()) { "Direct versions Bazel file does not exist: $directVersionsPath." }
+  }
+  val transitiveVersionsFile = File(
+    repoRootFile, transitiveVersionsPath
+  ).absoluteFile.normalize().also {
+    check(it.exists()) { "Transitive versions Bazel file does not exist: $transitiveVersionsPath." }
   }
   val mavenInstallFile = File(repoRootFile, mavenInstallPath).absoluteFile.normalize().also {
     check(it.exists()) { "Maven installation JSON file does not exist: $mavenInstallPath." }
@@ -28,7 +42,7 @@ fun main(vararg args: String) {
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
     val bazelClient = BazelClient(repoRootFile, commandExecutor, universeScope)
     val validator = ValidateMavenDependencies(repoRootFile, bazelClient, universeScope, baseTarget)
-    validator.validateDependencies(versionsBazelFile, mavenInstallFile)
+    validator.validateDependencies(directVersionsFile, transitiveVersionsFile, mavenInstallFile)
   }
 }
 
@@ -38,28 +52,27 @@ class ValidateMavenDependencies(
   private val universeScope: String,
   private val baseTarget: String
 ) {
-  fun validateDependencies(versionsBazelFile: File, mavenInstallFile: File) {
+  fun validateDependencies(
+    directVersions: File, transitiveVersions: File, mavenInstallFile: File
+  ) {
     println("Using repository: ${repoRoot.path}.")
-    println("Using versions file: ${versionsBazelFile.toRelativeString(repoRoot)}.")
+    println("Using direct Maven versions file: ${directVersions.toRelativeString(repoRoot)}.")
+    println("Using transitive versions file: ${transitiveVersions.toRelativeString(repoRoot)}.")
     println("Using maven_install.json file: ${mavenInstallFile.toRelativeString(repoRoot)}.")
     println("Using universe scope: $universeScope")
     println("Using base third-party target: $baseTarget")
     println()
 
     println("Parsing dependencies lists...")
-    val prodDirectDeps =
-      parseMavenVersionsList(versionsBazelFile, "_MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", MavenVersionsList.ReferenceType.DIRECT, MavenVersionsList.ReferenceScope.PRODUCTION)
-    val prodTransitiveDeps =
-      parseMavenVersionsList(versionsBazelFile, "_MAVEN_PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS", MavenVersionsList.ReferenceType.TRANSITIVE, MavenVersionsList.ReferenceScope.PRODUCTION)
-    val testDirectDeps =
-      parseMavenVersionsList(versionsBazelFile, "_MAVEN_TEST_DEPENDENCY_VERSIONS", MavenVersionsList.ReferenceType.DIRECT, MavenVersionsList.ReferenceScope.TEST)
-    val testTransitiveDeps =
-      parseMavenVersionsList(versionsBazelFile, "_MAVEN_TEST_TRANSITIVE_DEPENDENCY_VERSIONS", MavenVersionsList.ReferenceType.TRANSITIVE, MavenVersionsList.ReferenceScope.TEST)
+    val (prodDirectDeps, testDirectDeps) =
+      parseMavenVersionsLists(directVersions, ReferenceType.DIRECT)
+    val (prodTransitiveDeps, testTransitiveDeps) =
+      parseMavenVersionsLists(transitiveVersions, ReferenceType.TRANSITIVE)
     val mavenInstallJson = parseMavenInstallJson(mavenInstallFile)
 
     // First, ensure there are no version conflicts being resolved (since it means the versions file
     // is out-of-date with what's actually being used in the Maven installation manifest).
-    checkForConflictResolutions(mavenInstallJson, versionsBazelFile, mavenInstallFile)
+    checkForConflictResolutions(mavenInstallJson, directVersions, mavenInstallFile)
 
     // Second, verify that there are no duplications across any of the lists (they are all expected
     // to be mutually exclusive). Note that this includes cases when tests try to expose a reference
@@ -67,22 +80,20 @@ class ValidateMavenDependencies(
     // dependencies cannot depend on artifacts marked as test-only. Such artifacts should be exposed
     // as explicit production dependencies, instead.
     println("Checking for dependency list non-exclusivity...")
-    checkForCommonDeps(versionsBazelFile, prodDirectDeps, prodTransitiveDeps)
-    checkForCommonDeps(versionsBazelFile, prodDirectDeps, testDirectDeps)
-    checkForCommonDeps(versionsBazelFile, prodDirectDeps, testTransitiveDeps)
-    checkForCommonDeps(versionsBazelFile, prodTransitiveDeps, testDirectDeps)
-    checkForCommonDeps(versionsBazelFile, prodTransitiveDeps, testTransitiveDeps)
-    checkForCommonDeps(versionsBazelFile, testDirectDeps, testTransitiveDeps)
+    checkForCommonDeps(directVersions, transitiveVersions, prodDirectDeps, prodTransitiveDeps)
+    checkForCommonDeps(directVersions, transitiveVersions, prodDirectDeps, testDirectDeps)
+    checkForCommonDeps(directVersions, transitiveVersions, prodDirectDeps, testTransitiveDeps)
+    checkForCommonDeps(directVersions, transitiveVersions, prodTransitiveDeps, testDirectDeps)
+    checkForCommonDeps(directVersions, transitiveVersions, prodTransitiveDeps, testTransitiveDeps)
+    checkForCommonDeps(directVersions, transitiveVersions, testDirectDeps, testTransitiveDeps)
 
     // Third, check that direct dependencies have references within the universe scope. Note that
     // transitive dependencies do not need to be checked because they don't generate referenceable
     // third-party targets (so the build graph won't resolve).
     println("Check for unreferenced production dependencies...")
-    checkForUnreferencedDeps(
-      versionsBazelFile, prodDirectDeps, DIRECT_PRODUCTION_DEPENDENCY_EXEMPTIONS
-    )
+    checkForUnreferencedDeps(directVersions, prodDirectDeps, DIRECT_PRODUCTION_DEP_EXEMPTIONS)
     println("Check for unreferenced test dependencies...")
-    checkForUnreferencedDeps(versionsBazelFile, testDirectDeps, exemptions = emptySet())
+    checkForUnreferencedDeps(directVersions, testDirectDeps, exemptions = emptySet())
 
     // Fourth, compute expected transitive dependencies & verify that all are explicitly listed.
     println("Checking for extra and missing transitive dependencies...")
@@ -91,13 +102,13 @@ class ValidateMavenDependencies(
     val expectedTestTransitiveDeps =
       testDirectDeps.computeExpectedTransitiveDependencies(mavenInstallJson)
     checkForExactExplicitTransitiveDeps(
-      versionsBazelFile,
+      transitiveVersions,
       prodTransitiveDeps,
       extraTransitiveMavenVersionsLists = emptyList(),
       expectedProdTransitiveDeps
     )
     checkForExactExplicitTransitiveDeps(
-      versionsBazelFile,
+      transitiveVersions,
       testTransitiveDeps,
       // Test deps can depend on prod deps and shouldn't lead to re-listing the dep.
       extraTransitiveMavenVersionsLists = listOf(prodDirectDeps, prodTransitiveDeps),
@@ -107,7 +118,8 @@ class ValidateMavenDependencies(
     // Fifth, perform a sanity check to make sure that all dependencies reported by the Maven
     // installation manifest are explicitly defined.
     checkForComprehensiveVersionCoverage(
-      versionsBazelFile,
+      directVersions,
+      transitiveVersions,
       allExplicitDepCoords = listOf(
         prodDirectDeps, prodTransitiveDeps, testDirectDeps, testTransitiveDeps
       ).flatMapTo(mutableSetOf()) { it.dependencyCoords },
@@ -115,7 +127,8 @@ class ValidateMavenDependencies(
     )
 
     println(
-      "Everything seems correct in ${versionsBazelFile.toRelativeString(repoRoot)} and" +
+      "Everything seems correct in ${directVersions.toRelativeString(repoRoot)}," +
+        " ${transitiveVersions.toRelativeString(repoRoot)}, and" +
         " ${mavenInstallFile.toRelativeString(repoRoot)}!"
     )
   }
@@ -144,13 +157,13 @@ class ValidateMavenDependencies(
   }
 
   private fun checkForConflictResolutions(
-    mavenInstallJson: InterpretedMavenInstallJson, versionsBazelFile: File, mavenInstallFile: File
+    mavenInstallJson: InterpretedMavenInstallJson, directVersionsFile: File, mavenInstallFile: File
   ) {
     val resolutions = mavenInstallJson.conflictResolutions
     check(resolutions.isEmpty()) {
       "There are conflict resolutions in ${mavenInstallFile.toRelativeString(repoRoot)}. Please" +
         " resolve these by updating the versions in" +
-        " ${versionsBazelFile.toRelativeString(repoRoot)}. The following coordinates require" +
+        " ${directVersionsFile.toRelativeString(repoRoot)}. The following coordinates require" +
         " updating:\n" +
         resolutions.entries.joinToString(separator = "\n") { (key, value) ->
           "- ${key.reducedCoordinateStringWithoutVersion}: ${key.version} (old) =>" +
@@ -160,29 +173,34 @@ class ValidateMavenDependencies(
   }
 
   private fun checkForCommonDeps(
-    versionsBazelFile: File, list1: MavenVersionsList, list2: MavenVersionsList
+    directVersionsFile: File,
+    transitiveVersionsFile: File,
+    list1: MavenVersionsList,
+    list2: MavenVersionsList
   ) {
     val commonDeps = list1.dependencyCoords.intersect(list2.dependencyCoords)
     check(commonDeps.isEmpty()) {
-      "In ${versionsBazelFile.toRelativeString(repoRoot)}, some dependencies are common between" +
-        " ${list1.name} and ${list2.name} dependencies. All dependencies should be unique. Common" +
-        " dependencies:\n" + commonDeps.asPrintableList().joinToString(separator = "\n") { "- $it" }
+      "In ${directVersionsFile.toRelativeString(repoRoot)} and" +
+        " ${transitiveVersionsFile.toRelativeString(repoRoot)}, some dependencies are common" +
+        " between ${list1.name} and ${list2.name} dependencies. All dependencies should be" +
+        " unique. Common dependencies:\n" +
+        commonDeps.asPrintableList().joinToString(separator = "\n") { "- $it" }
     }
   }
 
   private fun checkForUnreferencedDeps(
-    versionsBazelFile: File, mavenVersionsList: MavenVersionsList, exemptions: Set<MavenCoordinate>
+    directVersionsFile: File, mavenVersionsList: MavenVersionsList, exemptions: Set<MavenCoordinate>
   ) {
     val unusedTargets = mavenVersionsList.filterUnusedTargets() - exemptions
     check(unusedTargets.isEmpty()) {
-      "In ${versionsBazelFile.toRelativeString(repoRoot)}, direct dependency list" +
+      "In ${directVersionsFile.toRelativeString(repoRoot)}, direct dependency list" +
         " ${mavenVersionsList.name} includes unused dependencies:\n" +
         unusedTargets.asPrintableList().joinToString(separator = "\n") { "- $it" }
     }
   }
 
   private fun checkForExactExplicitTransitiveDeps(
-    versionsBazelFile: File,
+    transitiveVersionsFile: File,
     transitiveMavenVersionsList: MavenVersionsList,
     extraTransitiveMavenVersionsLists: List<MavenVersionsList>,
     transitiveDeps: Set<MavenCoordinate>
@@ -194,13 +212,13 @@ class ValidateMavenDependencies(
         extraTransitiveMavenVersionsLists.flatMapTo(mutableSetOf()) { it.dependencyCoords }
     val missingDeps = transitiveDeps - allowedTransitiveDeps
     check(extraListedDeps.isEmpty()) {
-      "In ${versionsBazelFile.toRelativeString(repoRoot)}, transitive dependencies list" +
+      "In ${transitiveVersionsFile.toRelativeString(repoRoot)}, transitive dependencies list" +
         " ${transitiveMavenVersionsList.name} has extra transitive deps not used by any direct" +
         " targets. Please remove them:\n" +
         extraListedDeps.asPrintableList().joinToString(separator = "\n") { "- $it" }
     }
     check(missingDeps.isEmpty()) {
-      "In ${versionsBazelFile.toRelativeString(repoRoot)}, transitive dependencies list" +
+      "In ${transitiveVersionsFile.toRelativeString(repoRoot)}, transitive dependencies list" +
         " ${transitiveMavenVersionsList.name} is missing expected extra transitive deps. Please" +
         " add them:\n" +
         missingDeps.sorted().joinToString(separator = "\n") {
@@ -210,7 +228,8 @@ class ValidateMavenDependencies(
   }
 
   private fun checkForComprehensiveVersionCoverage(
-    versionsBazelFile: File,
+    directVersionsFile: File,
+    transitiveVersionsFile: File,
     allExplicitDepCoords: Set<MavenCoordinate>,
     mavenInstallJson: InterpretedMavenInstallJson
   ) {
@@ -220,22 +239,24 @@ class ValidateMavenDependencies(
     check(missingExplicitDepCoords.isEmpty()) {
       "Something went wrong when validating Maven dependencies. Maybe try repinning the" +
         " dependencies? The following dependencies are extra in" +
-        " ${versionsBazelFile.toRelativeString(repoRoot)}:\n" +
+        " ${directVersionsFile.toRelativeString(repoRoot)} or" +
+        " ${transitiveVersionsFile.toRelativeString(repoRoot)}:\n" +
         missingExplicitDepCoords.asPrintableList().joinToString(separator = "\n") { "- $it" }
     }
     check(missingExpectedDepCoords.isEmpty()) {
       "Something went wrong when validating Maven dependencies. Maybe try repinning the" +
         " dependencies? The following dependencies are missing from" +
-        " ${versionsBazelFile.toRelativeString(repoRoot)}:\n" +
+        " ${directVersionsFile.toRelativeString(repoRoot)} or" +
+        " ${transitiveVersionsFile.toRelativeString(repoRoot)}:\n" +
         missingExpectedDepCoords.asPrintableList().joinToString(separator = "\n") { "- $it" }
     }
   }
 
   private fun MavenVersionsList.filterUnusedTargets(): Set<MavenCoordinate> {
     return when (referenceScope) {
-      MavenVersionsList.ReferenceScope.PRODUCTION ->
+      ReferenceScope.PRODUCTION ->
         filterUnusedTargets(bazelClient::retrieveDependingProdTargets)
-      MavenVersionsList.ReferenceScope.TEST ->
+      ReferenceScope.TEST ->
         filterUnusedTargets(bazelClient::retrieveDependingTestTargets)
     }
   }
@@ -251,37 +272,62 @@ class ValidateMavenDependencies(
     return retrieveTargets(listOf(target)).filterNot { it == target }
   }
 
-  private fun parseMavenVersionsList(
+  private fun parseMavenVersionsLists(
     versionsList: File,
-    depsName: String,
-    referenceType: MavenVersionsList.ReferenceType,
-    referenceScope: MavenVersionsList.ReferenceScope
-  ): MavenVersionsList {
+    referenceType: ReferenceType
+  ): Pair<MavenVersionsList, MavenVersionsList> {
+    data class DependencyBucket(
+      val name: String, val scope: ReferenceScope, var wasInList: Boolean = false
+    )
+    val dependencyBuckets = ReferenceScope.values().map {
+      DependencyBucket(name = referenceType.computeDependencyBucketName(it), scope = it)
+    }
     return versionsList.inputStream().bufferedReader().use { reader ->
-      var isInList = false
-      var wasInList = false
+      var currentBucket: DependencyBucket? = null
       return@use reader.lineSequence().mapIndexedNotNull { index, line ->
         when {
-          isInList && line != "}" -> index to line
-          isInList && line == "}" -> null.also { isInList = false }
-          !wasInList && line == "$depsName = {" -> null.also { isInList = true; wasInList = true }
-          else -> null
+          currentBucket != null && line != "}" -> {
+            // Note the '!!' here is because Kotlin can't guarantee a smart-cast despite the
+            // surrounding code currently making it impossible for this to become non-null from the
+            // condition check to here.
+            BAZEL_VERSION_DECLARATION_REGEX.matchEntire(line)?.let { matchResult ->
+              val (artifactCoordinate, artifactVersion) = matchResult.destructured
+              val coordinate = MavenCoordinate.parseFrom("$artifactCoordinate:$artifactVersion")
+              return@let currentBucket!! to coordinate
+            } ?: error(
+              "${versionsList.toRelativeString(repoRoot)}:${index + 1}: Invalid artifact line."
+            )
+          }
+          currentBucket != null && line == "}" -> null.also { currentBucket = null }
+          else -> {
+            dependencyBuckets.find { bucket ->
+              !bucket.wasInList && line == "${bucket.name} = {"
+            }?.let { bucket ->
+              currentBucket = bucket
+              bucket.wasInList = true
+              return@let null // Always skip the starting line.
+            }
+          }
         }
-      }.map { (index, line) ->
-        BAZEL_VERSION_DECLARATION_REGEX.matchEntire(line)?.let { matchResult ->
-          val (artifactCoordinate, artifactVersion) = matchResult.destructured
-          return@let MavenCoordinate.parseFrom("$artifactCoordinate:$artifactVersion")
-        } ?: error(
-          "${versionsList.toRelativeString(repoRoot)}:${index + 1}: Invalid artifact line."
+      }.groupBy { (bucket, _) -> bucket.scope }.mapValues { (_, coordinatePairs) ->
+        coordinatePairs.map { (_, coordinate) -> coordinate }.toSet()
+      }.also {
+        val expectedScopes = ReferenceScope.values().toSet()
+        val foundScopes = it.keys
+        val missingScopes = expectedScopes - foundScopes
+        val extraScopes = foundScopes - expectedScopes
+        check(missingScopes.isEmpty() && extraScopes.isEmpty()) {
+          "${versionsList.toRelativeString(repoRoot)}: Missing or extra dependencies. Found:" +
+            " $foundScopes. Expected: $expectedScopes."
+        }
+      }.mapValues { (referenceScope, dependencyCoords) ->
+        MavenVersionsList(
+          name = referenceType.computeDependencyBucketName(referenceScope),
+          dependencyCoords,
+          referenceType,
+          referenceScope
         )
-      }.toSet().also {
-        check(wasInList) {
-          "${versionsList.toRelativeString(repoRoot)}: Could not find dependencies dict under" +
-            " name: $depsName."
-        }
-      }.let {
-        MavenVersionsList(name = depsName, dependencyCoords = it, referenceType, referenceScope)
-      }
+      }.let { it.getValue(ReferenceScope.PRODUCTION) to it.getValue(ReferenceScope.TEST) }
     }
   }
 
@@ -303,13 +349,17 @@ class ValidateMavenDependencies(
     val referenceType: ReferenceType,
     val referenceScope: ReferenceScope
   ) {
-    enum class ReferenceType {
-      DIRECT,
-      TRANSITIVE
+    enum class ReferenceType(private val depsBucketNameTemplate: String) {
+      DIRECT(depsBucketNameTemplate = "%s_DEPENDENCY_VERSIONS"),
+      TRANSITIVE(depsBucketNameTemplate = "%s_TRANSITIVE_DEPENDENCY_VERSIONS");
+
+      fun computeDependencyBucketName(referenceScope: ReferenceScope): String =
+        depsBucketNameTemplate.format(referenceScope.scopeName)
     }
-    enum class ReferenceScope {
-      PRODUCTION,
-      TEST
+
+    enum class ReferenceScope(val scopeName: String) {
+      PRODUCTION(scopeName = "PRODUCTION"),
+      TEST(scopeName = "TEST")
     }
   }
 
@@ -353,7 +403,7 @@ class ValidateMavenDependencies(
      * Special dependencies that may be listed as direct production dependencies due to external
      * toolchain usage, but may not be directly referenced.
      */
-    private val DIRECT_PRODUCTION_DEPENDENCY_EXEMPTIONS = setOf(
+    private val DIRECT_PRODUCTION_DEP_EXEMPTIONS = setOf(
       MavenCoordinate.parseFrom("com.google.dagger:dagger:2.41"),
       MavenCoordinate.parseFrom("com.google.dagger:dagger-compiler:2.41"),
       MavenCoordinate.parseFrom("com.google.dagger:dagger-producers:2.41"),
