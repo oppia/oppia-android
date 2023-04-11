@@ -25,6 +25,7 @@ import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
@@ -36,7 +37,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import javax.inject.Inject
-import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
