@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
@@ -22,7 +23,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   companion object {
     /** The fragment tag corresponding to the concept card dialog fragment. */
-    const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
+    private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
     /**
      * Creates a new fragment to show a concept card.
@@ -31,13 +32,56 @@ class ConceptCardFragment : InjectableDialogFragment() {
      * @param profileId the profile in which the concept card will be shown
      * @return a new [ConceptCardFragment] to display the specified concept card
      */
-    fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
+    private fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
       return ConceptCardFragment().apply {
         arguments = Bundle().apply {
           putString(SKILL_ID_ARGUMENT_KEY, skillId)
           putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
         }
       }
+    }
+
+    fun bringToFrontOrCreateIfNew(
+      skillId: String,
+      profileId: ProfileId,
+      fragmentManager: FragmentManager
+    ) {
+      // The UI is recreated when changing profile ids, so no need to include it in the tag name.
+      val tag = "$CONCEPT_CARD_DIALOG_FRAGMENT_TAG:$skillId"
+      val currentFragment =
+        fragmentManager.findFragmentByTag(tag)
+      if (currentFragment != null) {
+        currentFragment.view?.bringToFront() ?: run {
+          // Panic mode. I don't know how this could happen as at this point all added fragments
+          // should be in resumed state. Need to find out how to log this properly, as OppiaLogger
+          // is injected
+          fragmentManager.beginTransaction().remove(currentFragment).commitNow()
+          showNewInstance(skillId, profileId, fragmentManager, tag)
+        }
+      } else {
+        showNewInstance(skillId, profileId, fragmentManager, tag)
+      }
+    }
+
+    fun dismissAll(fragmentManager: FragmentManager) {
+      val toDismiss = fragmentManager.fragments.filterIsInstance<ConceptCardFragment>()
+      if (toDismiss.isNotEmpty()) {
+        val transaction = fragmentManager.beginTransaction()
+        for (fragment in toDismiss) {
+          transaction.remove(fragment)
+        }
+        transaction.commitNow()
+      }
+    }
+
+    private fun showNewInstance(
+      skillId: String,
+      profileId: ProfileId,
+      fragmentManager: FragmentManager,
+      tag: String
+    ) {
+      val conceptCardFragment = newInstance(skillId, profileId)
+      conceptCardFragment.showNow(fragmentManager, tag)
     }
   }
 

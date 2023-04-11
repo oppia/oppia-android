@@ -31,14 +31,14 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_CONCEPT_CARD_DIALOG) as ConceptCardFragment?
+    return supportFragmentManager.fragments.singleOrNull { fragment ->
+      fragment is ConceptCardFragment
+    } as ConceptCardFragment?
   }
 
   companion object {
     private const val TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
       "ConceptCardFragmentTestActivity.profile_id"
-
-    internal const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
 
     fun createIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, ConceptCardFragmentTestActivity::class.java).also {

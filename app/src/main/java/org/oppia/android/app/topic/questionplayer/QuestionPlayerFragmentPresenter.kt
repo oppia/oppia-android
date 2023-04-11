@@ -25,7 +25,6 @@ import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
-import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
@@ -37,6 +36,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import javax.inject.Inject
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -116,11 +116,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun dismissConceptCard() {
-    fragment.childFragmentManager.findFragmentByTag(
-      CONCEPT_CARD_DIALOG_FRAGMENT_TAG
-    )?.let { dialogFragment ->
-      fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
-    }
+    ConceptCardFragment.dismissAll(fragment.childFragmentManager)
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
