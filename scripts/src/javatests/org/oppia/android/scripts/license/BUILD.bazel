@@ -16,6 +16,15 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
+    name = "MavenCoordinateTest",
+    srcs = ["MavenCoordinateTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_coordinate",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
     name = "MavenDependenciesListCheckTest",
     size = "large",
     srcs = ["MavenDependenciesListCheckTest.kt"],

@@ -31,3 +31,12 @@ kt_jvm_test(
         "//testing:assertion_helpers",
     ],
 )
+
+kt_jvm_test(
+    name = "ValidateMavenDependenciesTest",
+    srcs = ["ValidateMavenDependenciesTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/maven:validate_maven_dependencies_lib",
+        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)

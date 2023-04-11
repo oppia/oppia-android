@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.maven
 
 import com.squareup.moshi.Moshi
-import java.io.File
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -9,7 +8,38 @@ import org.oppia.android.scripts.license.MavenCoordinate
 import org.oppia.android.scripts.maven.ValidateMavenDependencies.MavenVersionsList.ReferenceScope
 import org.oppia.android.scripts.maven.ValidateMavenDependencies.MavenVersionsList.ReferenceType
 import org.oppia.android.scripts.maven.model.MavenInstallJson
+import java.io.File
 
+/**
+ * Script for validating that Maven dependencies are unique, needed, and correctly represented in
+ * Bazel.
+ *
+ * Usage:
+ *   bazel run //scripts:validate_maven_dependencies -- <path_to_repo_root> \
+ *     <path_to_direct_maven_versions> <path_to_transitive_maven_versions> \
+ *     <path_to_direct_maven_install_manifest> <third_party_base_target> <bazel_universe_scope>
+ *
+ * Arguments:
+ * - path_to_repo_root: directory path to the root of the Oppia Android repository.
+ * - path_to_direct_maven_versions: relative path to the tree's direct_maven_versions.bzl file.
+ * - path_to_transitive_maven_versions: relative path to the tree's transitive_maven_versions.bzl.
+ * - path_to_direct_maven_install_manifest: relative path to the tree's maven_install.json file.
+ * - third_party_base_target: the base target of all generated third-party dependencies
+ *   (e.g. "//scripts/third_party" for scripts dependencies).
+ * - bazel_universe_scope: the Bazel target pattern from which all dependent targets should exist
+ *   (e.g. "//..." for app dependencies).
+ *
+ * Example:
+ *   bazel run //scripts:validate_maven_dependencies -- $(pwd) \
+ *   third_party/versions/direct_maven_versions.bzl \
+ *   third_party/versions/transitive_maven_versions.bzl third_party/versions/maven_install.json \
+ *   //third_party //...
+ *
+ * Note that all arguments must be relatively consistent for a particular dependency tree (since the
+ * repository has more than one, e.g. for app and scripts builds). Also, this script may not produce
+ * desired results if the provided Maven installation manifest file (maven_install.json) isn't
+ * up-to-date.
+ */
 fun main(vararg args: String) {
   check(args.size == 6) {
     "Usage: bazel run //scripts:validate_maven_dependencies -- </absolute/path/to/repo/root:Path>" +
@@ -46,14 +76,37 @@ fun main(vararg args: String) {
   }
 }
 
+/**
+ * Validator for Maven dependencies.
+ *
+ * This shouldn't be used directly. Instead, invoke the functionality of this script using a Kotlin
+ * binary via [main].
+ *
+ * @property repoRoot the root [File] of the repository
+ * @property [bazelClient] an interactive [BazelClient] initialized for the provided repository
+ * @property [universeScope] the Bazel target universe in which queries will be run
+ * @property [baseTarget] the base target where generated third-party dependency wrappers will be
+ */
 class ValidateMavenDependencies(
   private val repoRoot: File,
   private val bazelClient: BazelClient,
   private val universeScope: String,
   private val baseTarget: String
 ) {
+  /**
+   * Validates the provided dependency lists for consistency and necessity.
+   *
+   * @param directVersions the [File] corresponding to directly dependent production & test Maven
+   *     artifacts
+   * @param transitiveVersions the [File] corresponding to transitive (indirectly dependent)
+   *     production & test Maven artifacts
+   * @param mavenInstallFile the [File] corresponding to the generated Maven installation manifest
+   *     that contains the comprehensive list of required dependencies
+   */
   fun validateDependencies(
-    directVersions: File, transitiveVersions: File, mavenInstallFile: File
+    directVersions: File,
+    transitiveVersions: File,
+    mavenInstallFile: File
   ) {
     println("Using repository: ${repoRoot.path}.")
     println("Using direct Maven versions file: ${directVersions.toRelativeString(repoRoot)}.")
@@ -149,7 +202,8 @@ class ValidateMavenDependencies(
   }
 
   private fun computeTransitiveClosure(
-    allDeps: Map<MavenCoordinate, Set<MavenCoordinate>>, coord: MavenCoordinate
+    allDeps: Map<MavenCoordinate, Set<MavenCoordinate>>,
+    coord: MavenCoordinate
   ): Set<MavenCoordinate> {
     return allDeps.find(coord)?.flatMapTo(mutableSetOf()) {
       computeTransitiveClosure(allDeps, it) + it
@@ -157,7 +211,9 @@ class ValidateMavenDependencies(
   }
 
   private fun checkForConflictResolutions(
-    mavenInstallJson: InterpretedMavenInstallJson, directVersionsFile: File, mavenInstallFile: File
+    mavenInstallJson: InterpretedMavenInstallJson,
+    directVersionsFile: File,
+    mavenInstallFile: File
   ) {
     val resolutions = mavenInstallJson.conflictResolutions
     check(resolutions.isEmpty()) {
@@ -189,7 +245,9 @@ class ValidateMavenDependencies(
   }
 
   private fun checkForUnreferencedDeps(
-    directVersionsFile: File, mavenVersionsList: MavenVersionsList, exemptions: Set<MavenCoordinate>
+    directVersionsFile: File,
+    mavenVersionsList: MavenVersionsList,
+    exemptions: Set<MavenCoordinate>
   ) {
     val unusedTargets = mavenVersionsList.filterUnusedTargets() - exemptions
     check(unusedTargets.isEmpty()) {
@@ -266,7 +324,8 @@ class ValidateMavenDependencies(
   ) = dependencyCoords.filter { retrieveDependingTargets(it, retrieveTargets).isEmpty() }.toSet()
 
   private fun retrieveDependingTargets(
-    coord: MavenCoordinate, retrieveTargets: (Iterable<String>) -> List<String>
+    coord: MavenCoordinate,
+    retrieveTargets: (Iterable<String>) -> List<String>
   ): List<String> {
     val target = coord.toTarget()
     return retrieveTargets(listOf(target)).filterNot { it == target }
@@ -277,7 +336,9 @@ class ValidateMavenDependencies(
     referenceType: ReferenceType
   ): Pair<MavenVersionsList, MavenVersionsList> {
     data class DependencyBucket(
-      val name: String, val scope: ReferenceScope, var wasInList: Boolean = false
+      val name: String,
+      val scope: ReferenceScope,
+      var wasInList: Boolean = false
     )
     val dependencyBuckets = ReferenceScope.values().map {
       DependencyBucket(name = referenceType.computeDependencyBucketName(it), scope = it)
@@ -343,32 +404,68 @@ class ValidateMavenDependencies(
   private fun MavenCoordinate.toTarget() =
     "$baseTarget:${reducedCoordinateStringWithoutVersion.replace(":", "_").replace(".", "_")}"
 
+  /**
+   * Represents a list of Maven artifact versions within a specific build context.
+   *
+   * @property name the name of the versions list defined within a Bazel (.bzl) versions file
+   * @property dependencyCoords the unique [MavenCoordinate]s defined within the Bazel dict
+   * @property referenceType the [ReferenceType] that's partly defining this list's build context
+   * @property referenceScope the [ReferenceScope] that's partly defining this list's build context
+   */
   private data class MavenVersionsList(
     val name: String,
     val dependencyCoords: Set<MavenCoordinate>,
     val referenceType: ReferenceType,
     val referenceScope: ReferenceScope
   ) {
+    /** Represents _how_ a dependency may be referenced elsewhere in the build scope. */
     enum class ReferenceType(private val depsBucketNameTemplate: String) {
+      /** Corresponds to directly referenceable dependencies. */
       DIRECT(depsBucketNameTemplate = "%s_DEPENDENCY_VERSIONS"),
+
+      /**
+       * Corresponds to not-referenceable dependencies that are still required to build the end
+       * binary of the build context.
+       */
       TRANSITIVE(depsBucketNameTemplate = "%s_TRANSITIVE_DEPENDENCY_VERSIONS");
 
+      /**
+       * Returns the Bazel dict bucket name corresponding to this [ReferenceType] and the specified
+       * [ReferenceScope].
+       */
       fun computeDependencyBucketName(referenceScope: ReferenceScope): String =
         depsBucketNameTemplate.format(referenceScope.scopeName)
     }
 
+    /** Represents _where_ a dependency may be referenced elsewhere in the build scope. */
     enum class ReferenceScope(val scopeName: String) {
+      /** Corresponds to dependencies that may be referenced from both production & test targets. */
       PRODUCTION(scopeName = "PRODUCTION"),
+
+      /** Corresponds to dependencies that may only be referenced from tests and test libraries. */
       TEST(scopeName = "TEST")
     }
   }
 
+  /**
+   * Represents an interpreted version of [MavenInstallJson].
+   *
+   * @property conflictResolutions map of requested [MavenCoordinate]s to resolved
+   *     [MavenCoordinate]s which resolves potential incompatible version conflicts
+   * @property artifactCoords all unique [MavenCoordinate]s of depending artifacts
+   * @property dependencies map of artifact [MavenCoordinate]s to all dependent artifact
+   *     [MavenCoordinate]s
+   */
   private data class InterpretedMavenInstallJson(
     val conflictResolutions: Map<MavenCoordinate, MavenCoordinate>,
     val artifactCoords: Set<MavenCoordinate>,
     val dependencies: Map<MavenCoordinate, Set<MavenCoordinate>>
   ) {
     companion object {
+      /**
+       * Returns a new [InterpretedMavenInstallJson] interpretation of the provided
+       * [MavenInstallJson].
+       */
       fun createFrom(installJson: MavenInstallJson): InterpretedMavenInstallJson {
         val interpretedCoords =
           installJson.artifacts.mapTo(mutableSetOf()) { (partialCoord, artifact) ->

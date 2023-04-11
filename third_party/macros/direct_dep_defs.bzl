@@ -427,7 +427,7 @@ def _create_import_dependency_reference(
         "import_bind_name": import_bind_name,
         "import_type": import_type,
         "name": name,
-        "patches_details": patches_details,
         "patch_path_start_removal_count": patch_path_start_removal_count,
+        "patches_details": patches_details,
         "test_only": test_only,
     }
