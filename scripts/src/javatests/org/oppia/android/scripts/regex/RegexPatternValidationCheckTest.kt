@@ -174,6 +174,13 @@ class RegexPatternValidationCheckTest {
     "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one" +
       " using getInstance (as the latter may create a WorkManager if one isn't already present, " +
       "and the application may intend to disable it)."
+  private val doesNotUsePostOrPostDelayed =
+    "Prefer avoiding post() and postDelayed() methods as they can can lead to subtle and " +
+      "difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when " +
+      "an operation needs to run at a future time. For cases when state needs to be synchronized " +
+      "with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying " +
+      "issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your" +
+      "-android-views-9d1c8eeaadf2."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -2405,6 +2412,81 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $doesNotUseWorkManagerGetInstance
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_postDelayedUsed_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        binding.view.postDelayed({ binding.view.visibility = View.GONE }, 1000)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUsePostOrPostDelayed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_postUsed_withParenthesis_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        binding.view.post({ binding.view.visibility = View.GONE })
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUsePostOrPostDelayed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_postUsed_withCurlyBraces_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        binding.view.post { binding.view.visibility = View.GONE }
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUsePostOrPostDelayed
         $wikiReferenceNote
         """.trimIndent()
       )
