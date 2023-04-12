@@ -592,4 +592,5 @@
   <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
   <string name="state_fragment_item_selection_max_items_selected_hint_text">No more than %s choices may be selected.</string>
   <string name="survey_activity_title">Survey</string>
+  <string name="survey_previous_button">Previous</string>
 </resources>
