@@ -278,3 +278,11 @@ enum PolicyPage {
   // Corresponds to the Terms of Service page.
   TERMS_OF_SERVICE = 2;
 }
+
+message SurveyActivityParams {
+  // The ID of the profile for which the survey is too be shown.
+  ProfileId profile_id = 1;
+
+  // The ID of the topic to which the opening exploration belongs.
+  string topic_id = 2;
+}
