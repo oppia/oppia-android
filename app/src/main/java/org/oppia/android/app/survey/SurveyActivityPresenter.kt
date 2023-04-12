@@ -6,12 +6,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.databinding.SurveyActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
-import org.oppia.android.R
-import org.oppia.android.databinding.SurveyActivityBinding
 
 /** The Presenter for [SurveyActivity]. */
 @ActivityScope
