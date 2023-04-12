@@ -4,10 +4,10 @@ import androidx.annotation.ArrayRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import org.oppia.android.R
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -152,12 +152,13 @@ class AppLanguageResourceHandler @Inject constructor(
    */
   fun computeLocalizedDisplayName(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
-      AudioLanguage.HINDI_AUDIO_LANGUAGE -> getLocalizedDisplayName("hi")
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> getLocalizedDisplayName("fr")
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> getLocalizedDisplayName("zh")
-      AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> getLocalizedDisplayName("pt", "BR")
+      AudioLanguage.HINDI_AUDIO_LANGUAGE -> resources.getString(R.string.hindi)
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> resources.getString(R.string.french)
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> resources.getString(R.string.chinese)
+      AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE ->
+        resources.getString(R.string.brazilian_portuguese)
       AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED,
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> getLocalizedDisplayName("en")
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> resources.getString(R.string.english)
     }
   }
 
@@ -170,20 +171,14 @@ class AppLanguageResourceHandler @Inject constructor(
    */
   fun computeLocalizedDisplayName(oppiaLanguage: OppiaLanguage): String {
     return when (oppiaLanguage) {
-      OppiaLanguage.HINDI -> getLocalizedDisplayName("hi")
-      OppiaLanguage.PORTUGUESE -> getLocalizedDisplayName("pt")
-      OppiaLanguage.SWAHILI -> getLocalizedDisplayName("sw")
-      OppiaLanguage.BRAZILIAN_PORTUGUESE -> getLocalizedDisplayName("pt", "BR")
+      OppiaLanguage.HINDI -> resources.getString(R.string.hindi)
+      OppiaLanguage.PORTUGUESE -> resources.getString(R.string.portuguese)
+      OppiaLanguage.SWAHILI -> resources.getString(R.string.swahili)
+      OppiaLanguage.BRAZILIAN_PORTUGUESE -> resources.getString(R.string.brazilian_portuguese)
       OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED,
-      OppiaLanguage.ENGLISH -> getLocalizedDisplayName("en")
-      OppiaLanguage.ARABIC -> getLocalizedDisplayName("ar")
-      OppiaLanguage.HINGLISH -> getLocalizedDisplayName("hi", "en")
+      OppiaLanguage.ENGLISH -> resources.getString(R.string.english)
+      OppiaLanguage.ARABIC -> resources.getString(R.string.arabic)
+      OppiaLanguage.HINGLISH -> resources.getString(R.string.hinglish)
     }
-  }
-
-  private fun getLocalizedDisplayName(languageCode: String, regionCode: String = ""): String {
-    // TODO(#3791): Remove this dependency.
-    val locale = Locale(languageCode, regionCode)
-    return locale.getDisplayLanguage(locale).capitalize(locale)
   }
 }

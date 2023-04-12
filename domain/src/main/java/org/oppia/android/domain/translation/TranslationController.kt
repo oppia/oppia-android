@@ -164,22 +164,19 @@ class TranslationController @Inject constructor(
    *     result is ever provided). The payload of the data provider is the *previous* selection
    *     state.
    */
-  fun updateAppLanguage(profileId: ProfileId, selection: AppLanguageSelection): DataProvider<Any> {
-    val deferred = retrieveLanguageContentCacheStore(profileId).storeDataAsync(
-      updateInMemoryCache = true
-    ) {
+  fun updateAppLanguage(
+    profileId: ProfileId,
+    selection: AppLanguageSelection
+  ): DataProvider<AppLanguageSelection> {
+    val cacheStore = retrieveLanguageContentCacheStore(profileId)
+    cacheStore.storeDataAsync(updateInMemoryCache = true) {
       it.toBuilder().apply { selectedLanguage = selection.selectedLanguage }.build()
+    }.invokeOnCompletion { exception ->
+      oppiaLogger.e(
+        "TranslationController", "Failed updating language: $exception"
+      )
     }
-    return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID
-    ) {
-      updateAppLanguageSelection(profileId, selection)
-      try {
-        return@createInMemoryDataProviderAsync AsyncResult.Success(deferred.await())
-      } catch (e: Exception) {
-        return@createInMemoryDataProviderAsync AsyncResult.Failure(e)
-      }
-    }
+    return cacheStore
   }
 
   /**
@@ -451,8 +448,8 @@ class TranslationController @Inject constructor(
         profileId
       ).also<PersistentCacheStore<AppLanguageSelection>> {
         it.primeInMemoryAndDiskCacheAsync(
-          updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
-          publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+          updateMode = PersistentCacheStore.UpdateMode.UPDATE_ALWAYS,
+          publishMode = PersistentCacheStore.PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
         ).invokeOnCompletion { throwable ->
           throwable?.let { error ->
             oppiaLogger.e(

@@ -31,11 +31,7 @@ class AppLanguageSelectionViewModel @Inject constructor(
   }
 
   private val appLanguageListLiveData: LiveData<List<OppiaLanguage>> by lazy {
-    getAppLanguageData()
-  }
-
-  private fun getAppLanguageData(): LiveData<List<OppiaLanguage>> {
-    return Transformations.map(appLanguageResultLiveData, ::processAppLanguageResult)
+    Transformations.map(appLanguageResultLiveData, ::processAppLanguageResult)
   }
 
   private fun processAppLanguageResult(

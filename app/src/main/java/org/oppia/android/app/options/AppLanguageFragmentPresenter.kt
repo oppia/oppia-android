@@ -83,28 +83,24 @@ class AppLanguageFragmentPresenter @Inject constructor(
   private fun updateAppLanguageSelection(oppiaLanguage: OppiaLanguage) {
     val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
       selectedLanguage = oppiaLanguage
-      selectedLanguageValue = oppiaLanguage.number
     }.build()
 
     val userProfileId = ProfileId.newBuilder().apply { internalId = profileId!! }.build()
 
-    if (userProfileId != null) {
-      translationController.updateAppLanguage(
-        userProfileId,
-        appLanguageSelection
-      ).toLiveData().observe(
-        fragment,
-        {
-          when (it) {
-            is AsyncResult.Success -> {
-              appLanguage = oppiaLanguage
-            }
-            is AsyncResult.Failure ->
-              oppiaLogger.e("APP_LANGUAGE_TAG", it.error.toString())
-            is AsyncResult.Pending -> {} // Wait for a result.
+    translationController.updateAppLanguage(
+      userProfileId, appLanguageSelection
+    ).toLiveData().observe(
+      fragment,
+      {
+        when (it) {
+          is AsyncResult.Success -> {
+            appLanguage = oppiaLanguage
           }
+          is AsyncResult.Failure ->
+            oppiaLogger.e("APP_LANGUAGE_TAG", it.error.toString())
+          is AsyncResult.Pending -> {} // Wait for a result.
         }
-      )
-    }
+      }
+    )
   }
 }
