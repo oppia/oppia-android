@@ -133,6 +133,7 @@
           android:paddingEnd="12dp"
           android:paddingBottom="16dp"
           android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
+          android:textColorLink="@color/component_color_shared_link_text_color"
           android:textSize="16sp"
           android:visibility="@{isListExpanded? View.VISIBLE : View.GONE, default=gone}" />
       </LinearLayout>
