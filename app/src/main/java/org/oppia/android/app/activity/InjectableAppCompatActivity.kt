@@ -56,6 +56,10 @@ abstract class InjectableAppCompatActivity :
     activityComponent = componentFactory.createActivityComponent(this)
   }
 
+  /**
+   * The [onInitializeLocalization] allows child activities to get initialized with custom localization
+   * configuration.
+   */
   abstract fun onInitializeLocalization(
     applicationContext: Context,
     newBase: Context?
