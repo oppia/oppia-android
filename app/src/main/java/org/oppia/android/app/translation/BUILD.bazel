@@ -5,6 +5,17 @@ UI utilities for for managing languages & locales.
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
+# Resource shim needed so that AppLanguageResourceHandler can build in both Gradle & Bazel.
+genrule(
+    name = "update_DateTimeUtil",
+    srcs = ["AppLanguageResourceHandler.kt"],
+    outs = ["AppLanguageResourceHandler_updated.kt"],
+    cmd = """
+    cat $(SRCS) |
+    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' > $(OUTS)
+    """,
+)
+
 kt_android_library(
     name = "app_language_locale_handler",
     srcs = [
@@ -23,16 +34,16 @@ kt_android_library(
 kt_android_library(
     name = "app_language_resource_handler",
     srcs = [
-        "AppLanguageResourceHandler.kt",
+        "AppLanguageResourceHandler_updated.kt",
     ],
     visibility = ["//app:app_visibility"],
     deps = [
-        "//app:resources",
         ":app_language_locale_handler",
         ":dagger",
         "//model/src/main/proto:profile_java_proto_lite",
         "//third_party:androidx_appcompat_appcompat",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//app:resources",
     ],
 )
 

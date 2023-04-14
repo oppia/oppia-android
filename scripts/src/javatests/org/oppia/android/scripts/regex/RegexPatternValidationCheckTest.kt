@@ -99,8 +99,10 @@ class RegexPatternValidationCheckTest {
   private val subclassedActivityErrorMessage =
     "Activity should never be subclassed. Use AppCompatActivity, instead."
   private val subclassedAppCompatActivityErrorMessage =
-    "Never subclass AppCompatActivity directly. " +
-      "Instead, use InjectableAppCompatActivity."
+    "Never subclass AppCompatActivity directly. Instead, use InjectableAppCompatActivity."
+  private val subclassedInjectableAppCompatActivityErrorMessage =
+    "Never subclass InjectableAppCompatActivity directly. Instead, use " +
+      "InjectableSystemLocalizedAppCompatActivity or InjectableAutoLocalizedAppCompatActivity."
   private val subclassedDialogFragmentErrorMessage =
     "DialogFragment should never be subclassed. Use InjectableDialogFragment, instead."
   private val androidActivityConfigChangesErrorMessage =
@@ -1446,6 +1448,28 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $subclassedAppCompatActivityErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_subclassedInjectableAppCompatActivity_fileContentIsNotCorrect() {
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val prohibitedContent = "class SomeActivity: InjectableAppCompatActivity() {}"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/SomeActivity.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + requiredContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $subclassedInjectableAppCompatActivityErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )

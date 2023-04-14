@@ -2,6 +2,7 @@ package org.oppia.android.app.translation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -64,16 +65,31 @@ class AppLanguageWatcherMixin @Inject constructor(
       appLanguageLocaleHandler.initializeLocale(defaultDisplayLocale)
     }
 
-    var currentUserProfileId = profileManagementController.getCurrentProfileId()
+    val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
-    val appLanguageLocaleDataProvider: DataProvider<OppiaLocale.DisplayLocale>? =
-      if (shouldUseSystemLanguage) {
-        translationController.getSystemLanguageLocale()
-      } else if (currentUserProfileId == null) {
-        translationController.getSystemLanguageLocale()
-      } else {
-        currentUserProfileId?.let { translationController.getAppLanguageLocale(it) }
+    var appLanguageLocaleDataProvider: DataProvider<OppiaLocale.DisplayLocale>? = null
+
+    when {
+      shouldUseSystemLanguage -> {
+        appLanguageLocaleDataProvider = translationController.getSystemLanguageLocale()
       }
+      else -> {
+        when {
+          shouldUseSystemLanguage && currentUserProfileId == null -> {
+            appLanguageLocaleDataProvider = translationController.getSystemLanguageLocale()
+          }
+          !shouldUseSystemLanguage && currentUserProfileId != null -> {
+            appLanguageLocaleDataProvider =
+              translationController.getAppLanguageLocale(currentUserProfileId)
+          }
+          !shouldUseSystemLanguage && currentUserProfileId == null -> {
+            // Use default instance mostly in test scenarios where currentUserProfileId is always null.
+            appLanguageLocaleDataProvider =
+              translationController.getAppLanguageLocale(ProfileId.getDefaultInstance())
+          }
+        }
+      }
+    }
 
     val liveData = appLanguageLocaleDataProvider?.toLiveData()
     liveData?.observe(

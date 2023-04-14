@@ -77,7 +77,9 @@ class TranslationController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger,
 ) {
-  // TODO(#4627): per profile audio language slection part not covered in this PR but should be when this to do is updated.
+  // TODO(#4938): Finish this implementation. The implementation below now saves/restores
+  //  per profile user language selection as part of #4606, per profile audio language selection part not covered in
+  //  this PR but should be when this TODO is addressed.
 
   private val dataLock = ReentrantLock()
   private val writtenTranslationLanguageSettings =
@@ -87,7 +89,6 @@ class TranslationController @Inject constructor(
 
   private val cacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<AppLanguageSelection>>()
-  private val appLanguageSettings = mutableMapOf<ProfileId, AppLanguageSelection>()
 
   /**
    * Returns a data provider for an app string [OppiaLocale.DisplayLocale] corresponding to the
@@ -145,10 +146,14 @@ class TranslationController @Inject constructor(
    * the underlying configured selection.
    */
   fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> {
-    val providerId = APP_LANGUAGE_SELECTION_DATA_PROVIDER_ID
-    return dataProviders.createInMemoryDataProvider(providerId) {
-      retrieveAppLanguageSelection(profileId)
+    val languageSelectionStore = retrieveLanguageContentCacheStore(profileId)
+    languageSelectionStore.readDataAsync().invokeOnCompletion { exception ->
+      oppiaLogger.e(
+        "TranslationController", "Failed reading language: $exception"
+      )
     }
+
+    return languageSelectionStore
   }
 
   /**
@@ -422,22 +427,6 @@ class TranslationController @Inject constructor(
     }
   }
 
-  private fun retrieveAppLanguageSelection(profileId: ProfileId) =
-    dataLock.withLock {
-      appLanguageSettings[profileId] ?: AppLanguageSelection.getDefaultInstance()
-    }
-
-  private suspend fun updateAppLanguageSelection(
-    profileId: ProfileId,
-    selection: AppLanguageSelection
-  ): AppLanguageSelection {
-    return dataLock.withLock {
-      appLanguageSettings.put(profileId, selection)
-    }.also {
-      asyncDataSubscriptionManager.notifyChange(APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID)
-    } ?: AppLanguageSelection.getDefaultInstance()
-  }
-
   private fun retrieveLanguageContentCacheStore(
     profileId: ProfileId
   ): PersistentCacheStore<AppLanguageSelection> {
@@ -448,8 +437,8 @@ class TranslationController @Inject constructor(
         profileId
       ).also<PersistentCacheStore<AppLanguageSelection>> {
         it.primeInMemoryAndDiskCacheAsync(
-          updateMode = PersistentCacheStore.UpdateMode.UPDATE_ALWAYS,
-          publishMode = PersistentCacheStore.PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+          updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
+          publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
         ).invokeOnCompletion { throwable ->
           throwable?.let { error ->
             oppiaLogger.e(
