@@ -206,6 +206,8 @@ file_content_checks {
   file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "\\sInjectableAppCompatActivity\\("
   failure_message: "Never subclass InjectableAppCompatActivity directly. Instead, use InjectableSystemLocalizedAppCompatActivity or InjectableAutoLocalizedAppCompatActivity."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableSystemLocalizedAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
