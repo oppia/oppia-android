@@ -175,7 +175,7 @@ class TranslationController @Inject constructor(
   ): DataProvider<AppLanguageSelection> {
     val cacheStore = retrieveLanguageContentCacheStore(profileId)
     cacheStore.storeDataAsync(updateInMemoryCache = true) {
-      it.toBuilder().apply { selectedLanguage = selection.selectedLanguage }.build()
+      selection
     }.invokeOnCompletion { exception ->
       oppiaLogger.e(
         "TranslationController", "Failed updating language: $exception"

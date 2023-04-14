@@ -477,28 +477,33 @@ class TranslationControllerTest {
   fun testUpdateAppLanguage_uninitializedToSystem_returnsUninitializedSelection() {
     forceDefaultLocale(Locale.ROOT)
 
+    val languageSelection = AppLanguageSelection.newBuilder().apply {
+      useSystemLanguageOrAppDefault = true
+    }.build()
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
-      AppLanguageSelection.newBuilder().apply { useSystemLanguageOrAppDefault = true }.build()
+      languageSelection
     )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection).isEqualToDefaultInstance()
+    assertThat(selection).isEqualTo(languageSelection)
   }
 
   @Test
   fun testUpdateAppLanguage_uninitializedToEnglish_returnsUninitializedSelection() {
     forceDefaultLocale(Locale.ROOT)
-
+    val languageSelection = AppLanguageSelection.newBuilder().apply {
+      selectedLanguage = ENGLISH
+    }.build()
     val updateProvider = translationController.updateAppLanguage(
       PROFILE_ID_0,
-      AppLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
+      languageSelection
     )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection).isEqualToDefaultInstance()
+    assertThat(selection).isEqualTo(languageSelection)
   }
 
   @Test
@@ -513,7 +518,7 @@ class TranslationControllerTest {
 
     // The previous selection was system language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection.selectionTypeCase).isEqualTo(USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT)
+    assertThat(selection.selectionTypeCase).isEqualTo(SELECTED_APP_LANGUAGE)
   }
 
   @Test
