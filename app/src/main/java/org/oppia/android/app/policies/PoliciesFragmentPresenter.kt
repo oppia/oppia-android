@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import java.util.regex.Pattern
+import androidx.core.text.util.LinkifyCompat
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PoliciesFragmentArguments
@@ -78,6 +80,9 @@ class PoliciesFragmentPresenter @Inject constructor(
       supportsLinks = true,
       supportsConceptCards = false
     )
+
+    val websitePattern = Pattern.compile("https://www.oppia.org")
+    LinkifyCompat.addLinks(binding.policyDescriptionTextView, websitePattern, "https://")
   }
 
   override fun onPolicyPageLinkClicked(policyType: PolicyType) {
