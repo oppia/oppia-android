@@ -60,7 +60,7 @@
         android:maxLines="2"
         android:minLines="2"
         android:text="@string/onboarding_slide_3_description"
-        android:textColor="@color/color_palette_secondary_1_text_color"
+        android:textColor="@color/component_color_shared_secondary_1_text_color"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
