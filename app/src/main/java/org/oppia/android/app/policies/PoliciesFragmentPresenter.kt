@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.util.LinkifyCompat
 import java.util.regex.Pattern
 import javax.inject.Inject
+
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PoliciesFragmentArguments
