@@ -128,5 +128,5 @@ class ConceptCardFragment : InjectableDialogFragment() {
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
 
-  private fun skillId() : String? = arguments?.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)
+  private fun skillId(): String? = arguments?.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)
 }
