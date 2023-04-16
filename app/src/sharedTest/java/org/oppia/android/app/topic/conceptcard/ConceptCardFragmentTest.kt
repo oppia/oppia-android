@@ -2,11 +2,15 @@ package org.oppia.android.app.topic.conceptcard
 
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import android.text.Spannable
 import android.text.style.ClickableSpan
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -35,6 +39,7 @@ import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -89,6 +94,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.TEST_SKILL_ID_0
+import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
@@ -363,6 +370,112 @@ class ConceptCardFragmentTest {
     }
   }
 
+  @Test
+  fun testConceptCardFragment_launchSeveralConceptCardsWithSameSkill_onlyTheFirstOne() {
+    launchTestActivity().use { scenario ->
+      scenario.onActivity { activity ->
+        val fragment = ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_0,
+          ProfileId.getDefaultInstance(),
+          activity.supportFragmentManager
+        )
+        Assert.assertNotNull(fragment)
+        Assert.assertNull(
+          ConceptCardFragment.bringToFrontOrCreateIfNew(
+            TEST_SKILL_ID_0,
+            ProfileId.getDefaultInstance(),
+            activity.supportFragmentManager
+          )
+        )
+        Assert.assertEquals(1, activity.supportFragmentManager.fragments.size)
+        Assert.assertEquals(fragment, activity.supportFragmentManager.fragments[0])
+      }
+    }
+  }
+
+  @Test
+  fun testConceptCardFragment_twoConceptCards_secondOneReplacesFirstOne() {
+    launchTestActivity().use { scenario ->
+      scenario.onActivity { activity ->
+        val fragmentSkill0 = ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_0,
+          ProfileId.getDefaultInstance(),
+          activity.supportFragmentManager
+        )
+        Assert.assertNotNull(fragmentSkill0)
+        val fragmentSkill1 =
+          ConceptCardFragment.bringToFrontOrCreateIfNew(
+            TEST_SKILL_ID_1,
+            ProfileId.getDefaultInstance(),
+            activity.supportFragmentManager
+          )
+        Assert.assertNotNull(fragmentSkill1)
+        Assert.assertEquals(1, activity.supportFragmentManager.fragments.size)
+        Assert.assertEquals(fragmentSkill1, activity.supportFragmentManager.fragments[0])
+      }
+    }
+  }
+
+  @Test
+  fun testConceptCardFragment_mixedWithNonConceptCardFragments_onlyConceptCardsAreAffected() {
+    launchTestActivity().use { scenario ->
+      scenario.onActivity { activity ->
+        val fragmentSkill0 = ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_0,
+          ProfileId.getDefaultInstance(),
+          activity.supportFragmentManager
+        )
+        Assert.assertNotNull(fragmentSkill0)
+        val fragmentSkill1 =
+          ConceptCardFragment.bringToFrontOrCreateIfNew(
+            TEST_SKILL_ID_1,
+            ProfileId.getDefaultInstance(),
+            activity.supportFragmentManager
+          )
+        Assert.assertNotNull(fragmentSkill1)
+        fragmentSkill0!!.showNow(activity.supportFragmentManager, fragmentSkill0.tag)
+        Assert.assertEquals(2, activity.supportFragmentManager.fragments.size)
+        ConceptCardFragment.dismissAll(activity.supportFragmentManager)
+        Assert.assertEquals(0, activity.supportFragmentManager.fragments.size)
+      }
+    }
+  }
+
+  @Test
+  fun testConceptCardFragment_severalConceptCards_dismissAll() {
+    launchTestActivity().use { scenario ->
+      scenario.onActivity { activity ->
+        // Show a non-ConceptCard fragment
+        val randomFragment = TestFragment()
+        randomFragment.showNow(activity.supportFragmentManager, "test_tag")
+
+        // Show two ConceptCards
+        val fragmentSkill0 = ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_0,
+          ProfileId.getDefaultInstance(),
+          activity.supportFragmentManager
+        )
+        Assert.assertNotNull(fragmentSkill0)
+        val fragmentSkill1 = ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_1,
+          ProfileId.getDefaultInstance(),
+          activity.supportFragmentManager
+        )
+        Assert.assertNotNull(fragmentSkill1)
+
+        // Assert that the fragment manager only has two fragments: the first and the last
+        Assert.assertEquals(2, activity.supportFragmentManager.fragments.size)
+        Assert.assertEquals(randomFragment, activity.supportFragmentManager.fragments[0])
+        Assert.assertEquals(fragmentSkill1, activity.supportFragmentManager.fragments[1])
+
+        // Assert that DismissAll does not dismiss non ConceptCard fragments
+        ConceptCardFragment.dismissAll(activity.supportFragmentManager)
+        Assert.assertEquals(1, activity.supportFragmentManager.fragments.size)
+        Assert.assertEquals(randomFragment, activity.supportFragmentManager.fragments[0])
+      }
+    }
+  }
+
   private fun launchTestActivity(): ActivityScenario<ConceptCardFragmentTestActivity> {
     val scenario = ActivityScenario.launch<ConceptCardFragmentTestActivity>(
       ConceptCardFragmentTestActivity.createIntent(context, profileId)
@@ -492,5 +605,15 @@ class ConceptCardFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+}
+
+class TestFragment : DialogFragment() {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    return TextView(activity)
   }
 }

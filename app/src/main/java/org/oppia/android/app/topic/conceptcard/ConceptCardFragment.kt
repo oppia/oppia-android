@@ -25,13 +25,6 @@ class ConceptCardFragment : InjectableDialogFragment() {
     /** The fragment tag corresponding to the concept card dialog fragment. */
     private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
-    /**
-     * Creates a new fragment to show a concept card.
-     *
-     * @param skillId the skill ID for which a concept card should be loaded
-     * @param profileId the profile in which the concept card will be shown
-     * @return a new [ConceptCardFragment] to display the specified concept card
-     */
     private fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
       return ConceptCardFragment().apply {
         arguments = Bundle().apply {
@@ -41,28 +34,43 @@ class ConceptCardFragment : InjectableDialogFragment() {
       }
     }
 
+    /**
+     * Removes any [ConceptCardFragment] in the given FragmentManager that is not of the given
+     * skill Id. If no [ConceptCardFragment] remains, creates a new fragment to show a concept card
+     * for the given skill id.
+     *
+     * @param skillId the skill ID for which a concept card should be loaded.
+     * @param profileId the profile in which the concept card will be shown.
+     * @param fragmentManager the [FragmentManager] where to show the concept card.
+     * @return the fragment created or null if none.
+     */
     fun bringToFrontOrCreateIfNew(
       skillId: String,
       profileId: ProfileId,
       fragmentManager: FragmentManager
-    ) {
+    ): ConceptCardFragment? {
       // The UI is recreated when changing profile ids, so no need to include it in the tag name.
-      val tag = "$CONCEPT_CARD_DIALOG_FRAGMENT_TAG:$skillId"
-      val currentFragment = fragmentManager.findFragmentByTag(tag)
-      if (currentFragment == null) {
-        val newFragment = showNewInstance(skillId, profileId, fragmentManager, tag)
-        val allConceptCards = fragmentManager.fragments.filterIsInstance<ConceptCardFragment>()
-          .filter { fragment -> fragment != newFragment }
-        if (allConceptCards.isNotEmpty()) {
-          val transaction = fragmentManager.beginTransaction()
-          for (toRemove in allConceptCards) {
-            transaction.remove(toRemove)
-          }
-          transaction.commitNow()
+      val allConceptCards = fragmentManager.fragments.filterIsInstance<ConceptCardFragment>()
+      val conceptCardsWithDifferentSkillId = allConceptCards.filter { skillId != it.skillId() }
+      val found = allConceptCards.size > conceptCardsWithDifferentSkillId.size
+      if (conceptCardsWithDifferentSkillId.isNotEmpty()) {
+        val transaction = fragmentManager.beginTransaction()
+        for (toRemove in conceptCardsWithDifferentSkillId) {
+          transaction.remove(toRemove)
         }
+        transaction.commitNow()
       }
+      if (!found) {
+        return showNewInstance(skillId, profileId, fragmentManager)
+      }
+      return null
     }
 
+    /**
+     * Removes all [ConceptCardFragment] in the given FragmentManager.
+     *
+     * @param fragmentManager the [FragmentManager] from where to remove all concept cards.
+     */
     fun dismissAll(fragmentManager: FragmentManager) {
       val toDismiss = fragmentManager.fragments.filterIsInstance<ConceptCardFragment>()
       if (toDismiss.isNotEmpty()) {
@@ -78,10 +86,9 @@ class ConceptCardFragment : InjectableDialogFragment() {
       skillId: String,
       profileId: ProfileId,
       fragmentManager: FragmentManager,
-      tag: String
     ): ConceptCardFragment {
       val conceptCardFragment = newInstance(skillId, profileId)
-      conceptCardFragment.showNow(fragmentManager, tag)
+      conceptCardFragment.showNow(fragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
       return conceptCardFragment
     }
   }
@@ -120,4 +127,6 @@ class ConceptCardFragment : InjectableDialogFragment() {
     super.onStart()
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
+
+  private fun skillId() : String? = arguments?.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)
 }
