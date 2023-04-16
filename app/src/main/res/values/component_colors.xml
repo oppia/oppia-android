@@ -118,6 +118,31 @@
   <!-- Add Profile Activity -->
   <color name="component_color_add_profile_activity_info_icon_color">@color/color_palette_info_icon_color</color>
   <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
+  <!-- AVATAR BACKGROUND COLORS -->
+  <color name="component_color_avatar_background_1_color">@color/color_palette_avatar_background_1_color</color>
+  <color name="component_color_avatar_background_2_color">@color/color_palette_avatar_background_2_color</color>
+  <color name="component_color_avatar_background_3_color">@color/color_palette_avatar_background_3_color</color>
+  <color name="component_color_avatar_background_4_color">@color/color_palette_avatar_background_4_color</color>
+  <color name="component_color_avatar_background_5_color">@color/color_palette_avatar_background_5_color</color>
+  <color name="component_color_avatar_background_6_color">@color/color_palette_avatar_background_6_color</color>
+  <color name="component_color_avatar_background_7_color">@color/color_palette_avatar_background_7_color</color>
+  <color name="component_color_avatar_background_8_color">@color/color_palette_avatar_background_8_color</color>
+  <color name="component_color_avatar_background_9_color">@color/color_palette_avatar_background_9_color</color>
+  <color name="component_color_avatar_background_10_color">@color/color_palette_avatar_background_10_color</color>
+  <color name="component_color_avatar_background_11_color">@color/color_palette_avatar_background_11_color</color>
+  <color name="component_color_avatar_background_12_color">@color/color_palette_avatar_background_12_color</color>
+  <color name="component_color_avatar_background_13_color">@color/color_palette_avatar_background_13_color</color>
+  <color name="component_color_avatar_background_14_color">@color/color_palette_avatar_background_14_color</color>
+  <color name="component_color_avatar_background_15_color">@color/color_palette_avatar_background_15_color</color>
+  <color name="component_color_avatar_background_16_color">@color/color_palette_avatar_background_16_color</color>
+  <color name="component_color_avatar_background_17_color">@color/color_palette_avatar_background_17_color</color>
+  <color name="component_color_avatar_background_18_color">@color/color_palette_avatar_background_18_color</color>
+  <color name="component_color_avatar_background_19_color">@color/color_palette_avatar_background_19_color</color>
+  <color name="component_color_avatar_background_20_color">@color/color_palette_avatar_background_20_color</color>
+  <color name="component_color_avatar_background_21_color">@color/color_palette_avatar_background_21_color</color>
+  <color name="component_color_avatar_background_22_color">@color/color_palette_avatar_background_22_color</color>
+  <color name="component_color_avatar_background_23_color">@color/color_palette_avatar_background_23_color</color>
+  <color name="component_color_avatar_background_24_color">@color/color_palette_avatar_background_24_color</color>
   <!-- Pin Password Activity -->
   <color name="component_color_pin_password_activity_forgot_pin_color">@color/color_palette_forgot_pin_color</color>
   <color name="component_color_pin_password_activity_show_hide_color">@color/color_palette_show_hide_color</color>
@@ -127,6 +152,7 @@
   <color name="component_color_profile_and_device_id_activity_enabled_icon_button_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_profile_and_device_id_activity_disabled_icon_button_color">@color/color_palette_disabled_button_background_color</color>
   <!-- Hints And Solution Fragment -->
+  <color name="component_color_hints_and_solutions_fragment_toolbar_color">@color/color_palette_hints_and_solutions_fragment_toolbar_color</color>
   <color name="component_color_hints_and_solutions_fragment_background_color">@color/color_palette_secondary_background_color</color>
   <color name="component_color_hints_and_solutions_fragment_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_hints_and_solutions_fragment_description_color">@color/color_palette_highlighted_text_color</color>
@@ -214,6 +240,8 @@
   <color name="component_color_profile_progress_activity_story_count_card_stroke_color">@color/color_palette_profile_progress_activity_story_count_card_stroke_color</color>
   <!-- Topic Practice Fragment -->
   <color name="component_color_topic_practice_header_view_description_text_color">@color/color_palette_topic_practice_header_description_color</color>
+  <!-- Test Activity -->
+  <color name="component_color_test_margin_bindable_adapter_activity_background_color">@color/color_palette_test_margin_bindable_adapter_activity_background_color</color>
   <!-- Profile Edit Activity -->
   <color name="component_color_profile_edit_activity_delete_button_text_color">@color/color_palette_error_color</color>
   <color name="component_color_profile_edit_activity_profile_rename_button_background_color">@color/color_palette_item_background_solid_color</color>
