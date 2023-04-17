@@ -466,12 +466,12 @@ file_content_checks {
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
 }
 file_content_checks {
-  filename_regex: ".+.xml"
-  prohibited_content_regex: "^\\s*<meta-data\\s+android:name\\s*=\\s*"firebase_analytics_collection_deactivated"\\s*android:value\\s*=\\s*"false".+$"
-  failure_message: "Firebase analytics collection should always be deactivated in develop"
+  file_path_regex: "app/src/main/AndroidManifest.xml"
+  prohibited_content_regex: "^\\s*<meta-data\\Z\\s*android:name\\s*=\\s*\"firebase_analytics_collection_deactivated\"\\Z\\s*android:value\\s*=\\s*\"false\".+$"
+  failure_message: "Firebase analytics collection should always be deactivated in develop."
 }
 file_content_checks {
-  filename_regex: ".+.xml"
-  prohibited_content_regex: "^\\s*<meta-data\\s+android:name\\s*=\\s*"firebase_crashlytics_collection_enabled"\\s*android:value\\s*=\\s*"true".+$"
-  failure_message: "Firebase crashlytics collection should always be deactivated in develop"
+  file_path_regex: "app/src/main/AndroidManifest.xml"
+  prohibited_content_regex: "^\\s*<meta-data\\s*android:name\\s*=\\s*\"firebase_crashlytics_collection_enabled\"\\s*android:value\\s*=\\s*\"true\".+$"
+  failure_message: "Firebase crashlytics collection should always be deactivated in develop."
 }
