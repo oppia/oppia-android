@@ -5,7 +5,6 @@ import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.application.ExplorationProgressListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -99,8 +98,7 @@ import javax.inject.Singleton
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
     EventLoggingConfigurationModule::class, CpuPerformanceSnapshotterModule::class,
-    PerformanceMetricsAssessorModule::class, ExplorationProgressListenerModule::class,
-    ExplorationProgressModule::class,
+    PerformanceMetricsAssessorModule::class, ExplorationProgressModule::class,
   ]
 )
 interface AlphaApplicationComponent : ApplicationComponent {

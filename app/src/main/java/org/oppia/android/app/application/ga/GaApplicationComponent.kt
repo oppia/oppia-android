@@ -5,7 +5,6 @@ import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.application.ExplorationProgressListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -100,7 +99,7 @@ import javax.inject.Singleton
     PerformanceMetricsConfigurationsModule::class, GaBuildFlavorModule::class,
     EventLoggingConfigurationModule::class, ActivityRouterModule::class,
     CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorModule::class,
-    ExplorationProgressListenerModule::class, ExplorationProgressModule::class,
+    ExplorationProgressModule::class,
   ]
 )
 interface GaApplicationComponent : ApplicationComponent {

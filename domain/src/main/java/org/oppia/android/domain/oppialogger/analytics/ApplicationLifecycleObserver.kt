@@ -43,8 +43,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @EnablePerformanceMetricsCollection
-  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
-  private val applicationLifecycleListener: ApplicationLifecycleListener
+  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
 
   /**
@@ -100,7 +99,6 @@ class ApplicationLifecycleObserver @Inject constructor(
     if (enablePerformanceMetricsCollection.value) {
       cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     }
-    applicationLifecycleListener.onAppInForeground()
     performanceMetricsController.setAppInForeground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground)
   }
@@ -112,7 +110,6 @@ class ApplicationLifecycleObserver @Inject constructor(
     if (enablePerformanceMetricsCollection.value) {
       cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     }
-    applicationLifecycleListener.onAppInBackground()
     performanceMetricsController.setAppInBackground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
   }

@@ -11,7 +11,6 @@ import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
-import org.oppia.android.domain.exploration.ExplorationProgressListener
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** The root base [Application] of the Oppia app. */
@@ -53,12 +52,6 @@ abstract class AbstractOppiaApplication(
       component.getAnalyticsStartupListenerStartupListeners().forEach { it.onCreate(workManager) }
     }
     component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
-    component.getExplorationProgressListeners().forEach(
-      ExplorationProgressListener::onExplorationSessionStarted
-    )
-    component.getExplorationProgressListeners().forEach(
-      ExplorationProgressListener::onExplorationSessionPaused
-    )
   }
 
   override fun getWorkManagerConfiguration(): Configuration {

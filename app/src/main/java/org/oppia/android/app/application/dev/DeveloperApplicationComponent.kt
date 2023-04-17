@@ -5,7 +5,6 @@ import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.application.ExplorationProgressListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -101,8 +100,7 @@ import javax.inject.Singleton
     SyncStatusModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     DeveloperBuildFlavorModule::class, EventLoggingConfigurationModule::class,
-    CpuPerformanceSnapshotterModule::class, ExplorationProgressListenerModule::class,
-    ExplorationProgressModule::class,
+    CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {
