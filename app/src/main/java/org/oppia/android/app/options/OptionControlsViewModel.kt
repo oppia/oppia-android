@@ -8,12 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
@@ -27,9 +29,9 @@ class OptionControlsViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   @EnableLanguageSelectionUi private val enableLanguageSelectionUi: PlatformParameterValue<Boolean>,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : OptionsItemViewModel() {
-  private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
   private val routeToReadingTextSizeListener = activity as RouteToReadingTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
@@ -40,6 +42,11 @@ class OptionControlsViewModel @Inject constructor(
   private var isFirstOpen = true
   val uiLiveData = MutableLiveData<Boolean>()
   val selectedFragmentIndex = ObservableField<Int>()
+
+  private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
+  private val _optionList = MutableLiveData<List<OptionsItemViewModel>>()
+  private val optionList: LiveData<List<OptionsItemViewModel>>
+    get() = _optionList
 
   /**
    * Should be called with `false` when the UI starts to load, then with `true` after the UI
@@ -53,7 +60,17 @@ class OptionControlsViewModel @Inject constructor(
     profileManagementController.getProfile(profileId).toLiveData()
   }
 
+  private val appLanguageResultLiveData: LiveData<AsyncResult<AppLanguageSelection>> by lazy {
+    translationController.getAppLanguageSelection(profileId).toLiveData()
+  }
+
   private val profileLiveData: LiveData<Profile> by lazy { getProfileData() }
+
+  private val appLanguageLiveData: LiveData<AppLanguageSelection> by lazy { getAppLanguageData() }
+
+  private fun getAppLanguageData(): LiveData<AppLanguageSelection> {
+    return Transformations.map(appLanguageResultLiveData, ::processAppLanguageResult)
+  }
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(profileResultLiveData, ::processProfileResult)
@@ -63,12 +80,44 @@ class OptionControlsViewModel @Inject constructor(
     Transformations.map(profileLiveData, ::processProfileList)
   }
 
+  val languageListLiveData: LiveData<List<OptionsItemViewModel>> by lazy {
+    Transformations.map(appLanguageLiveData, ::processLanguageList)
+  }
+
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }
 
   fun getProfileId(): ProfileId {
     return this.profileId
+  }
+
+  fun computeOptionsItemList(
+    optionListData: LiveData<List<OptionsItemViewModel>>,
+    languageListData: LiveData<List<OptionsItemViewModel>>
+  ): LiveData<List<OptionsItemViewModel>> {
+    if (itemViewModelList.isEmpty()) {
+      optionListData.value?.let { itemViewModelList.addAll(it) }
+      languageListData.value?.let { itemViewModelList.add(1, it[0]) }
+      _optionList.postValue(itemViewModelList)
+    }
+
+    return optionList
+  }
+
+  private fun processAppLanguageResult(
+    appLanguageSelection:
+      AsyncResult<AppLanguageSelection>
+  ): AppLanguageSelection {
+    return when (appLanguageSelection) {
+      is AsyncResult.Failure -> {
+        AppLanguageSelection.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> AppLanguageSelection.getDefaultInstance()
+      is AsyncResult.Success -> {
+        appLanguageSelection.value
+      }
+    }
   }
 
   private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
@@ -83,17 +132,17 @@ class OptionControlsViewModel @Inject constructor(
   }
 
   private fun processProfileList(profile: Profile): List<OptionsItemViewModel> {
-    itemViewModelList.clear()
+    val itemsList = arrayListOf<OptionsItemViewModel>()
 
     val optionsReadingTextSizeViewModel =
       OptionsReadingTextSizeViewModel(
         routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
       )
-    val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel(
-        routeToAppLanguageListListener, loadAppLanguageListListener,
-        profile.oppiaLanguage, resourceHandler.computeLocalizedDisplayName(profile.oppiaLanguage)
-      )
+    // val optionsAppLanguageViewModel =
+    // OptionsAppLanguageViewModel(
+    // routeToAppLanguageListListener, loadAppLanguageListListener,
+    //  profile.oppiaLanguage, resourceHandler.computeLocalizedDisplayName(profile.oppiaLanguage)
+    // )
     val optionAudioViewViewModel =
       OptionsAudioLanguageViewModel(
         routeToAudioLanguageListListener,
@@ -104,13 +153,13 @@ class OptionControlsViewModel @Inject constructor(
 
     optionsReadingTextSizeViewModel.readingTextSize.set(profile.readingTextSize)
 
-    itemViewModelList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
+    itemsList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
 
-    if (enableLanguageSelectionUi.value) {
-      itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
-    }
+    // if (enableLanguageSelectionUi.value) {
+    // itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
+    // }
 
-    itemViewModelList.add(optionAudioViewViewModel as OptionsItemViewModel)
+    itemsList.add(optionAudioViewViewModel as OptionsItemViewModel)
 
     // Loading the initial options in the sub-options container
     if (isMultipane.get()!! && isFirstOpen) {
@@ -118,7 +167,26 @@ class OptionControlsViewModel @Inject constructor(
       isFirstOpen = false
     }
 
-    return itemViewModelList
+    return itemsList
+  }
+
+  private fun processLanguageList(
+    appLanguageSelection:
+      AppLanguageSelection
+  ): List<OptionsItemViewModel> {
+    val itemsList = arrayListOf<OptionsItemViewModel>()
+    val optionsAppLanguageViewModel =
+      OptionsAppLanguageViewModel(
+        routeToAppLanguageListListener,
+        loadAppLanguageListListener, appLanguageSelection.selectedLanguage,
+        resourceHandler.computeLocalizedDisplayName(appLanguageSelection.selectedLanguage)
+      )
+
+    if (enableLanguageSelectionUi.value) {
+      itemsList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
+    }
+
+    return itemsList
   }
 
   /**

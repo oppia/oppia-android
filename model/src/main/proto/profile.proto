@@ -82,9 +82,6 @@ message Profile {
 
   // Determines if the in-exploration continue button animation has been seen by the user or not.
   bool is_continue_button_animation_seen = 15;
-
-  // Represents user selected content-language.
-  OppiaLanguage oppia_language = 17;
 }
 
 // Represents a profile avatar image.

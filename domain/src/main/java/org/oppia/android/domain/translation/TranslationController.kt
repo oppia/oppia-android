@@ -152,7 +152,6 @@ class TranslationController @Inject constructor(
         "TranslationController", "Failed reading language: $exception"
       )
     }
-
     return languageSelectionStore
   }
 

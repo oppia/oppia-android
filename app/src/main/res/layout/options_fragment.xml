@@ -16,7 +16,7 @@
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:scrollbars="none"
-    app:data="@{viewModel.optionListLiveData}"
+    app:data="@{viewModel.computeOptionsItemList(viewModel.optionListLiveData,viewModel.languageListLiveData)}"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
