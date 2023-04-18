@@ -21,7 +21,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
@@ -123,7 +122,6 @@ class ProfileManagementControllerTest {
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.internalId).isEqualTo(0)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-    assertThat(profile.oppiaLanguage).isEqualTo(OppiaLanguage.ENGLISH)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     assertThat(profile.numberOfLogins).isEqualTo(0)
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
@@ -190,7 +188,6 @@ class ProfileManagementControllerTest {
     assertThat(profile.allowDownloadAccess).isEqualTo(false)
     assertThat(profile.id.internalId).isEqualTo(3)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-    assertThat(profile.oppiaLanguage).isEqualTo(OppiaLanguage.ENGLISH)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
   }
 
@@ -707,20 +704,6 @@ class ProfileManagementControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-  }
-
-  @Test
-  fun testUpdateAppLanguage_addProfiles_updateWithArabicLanguage_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
-    addTestProfiles()
-
-    val updateProvider =
-      profileManagementController.updateAppLanguage(PROFILE_ID_2, OppiaLanguage.ARABIC)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.oppiaLanguage).isEqualTo(OppiaLanguage.ARABIC)
   }
 
   @Test

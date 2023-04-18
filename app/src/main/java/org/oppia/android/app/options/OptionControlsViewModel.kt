@@ -66,10 +66,8 @@ class OptionControlsViewModel @Inject constructor(
 
   private val profileLiveData: LiveData<Profile> by lazy { getProfileData() }
 
-  private val appLanguageLiveData: LiveData<AppLanguageSelection> by lazy { getAppLanguageData() }
-
-  private fun getAppLanguageData(): LiveData<AppLanguageSelection> {
-    return Transformations.map(appLanguageResultLiveData, ::processAppLanguageResult)
+  private val appLanguageLiveData: LiveData<AppLanguageSelection> by lazy {
+    Transformations.map(appLanguageResultLiveData, ::processAppLanguageResult)
   }
 
   private fun getProfileData(): LiveData<Profile> {
@@ -96,10 +94,31 @@ class OptionControlsViewModel @Inject constructor(
     optionListData: LiveData<List<OptionsItemViewModel>>,
     languageListData: LiveData<List<OptionsItemViewModel>>
   ): LiveData<List<OptionsItemViewModel>> {
+
     if (itemViewModelList.isEmpty()) {
-      optionListData.value?.let { itemViewModelList.addAll(it) }
-      languageListData.value?.let { itemViewModelList.add(1, it[0]) }
-      _optionList.postValue(itemViewModelList)
+      optionListData.observe(
+        activity,
+        {
+          if (itemViewModelList.isEmpty()) {
+            itemViewModelList.addAll(0, it)
+          } else {
+            itemViewModelList.addAll(1, it)
+          }
+        }
+      )
+
+      languageListData.observe(
+        activity,
+        {
+          if (itemViewModelList.isEmpty()) {
+            itemViewModelList.addAll(0, it)
+          } else {
+            itemViewModelList.addAll(1, it)
+          }
+        }
+      )
+
+      _optionList.value = itemViewModelList
     }
 
     return optionList
@@ -138,11 +157,7 @@ class OptionControlsViewModel @Inject constructor(
       OptionsReadingTextSizeViewModel(
         routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
       )
-    // val optionsAppLanguageViewModel =
-    // OptionsAppLanguageViewModel(
-    // routeToAppLanguageListListener, loadAppLanguageListListener,
-    //  profile.oppiaLanguage, resourceHandler.computeLocalizedDisplayName(profile.oppiaLanguage)
-    // )
+
     val optionAudioViewViewModel =
       OptionsAudioLanguageViewModel(
         routeToAudioLanguageListListener,
@@ -154,11 +169,6 @@ class OptionControlsViewModel @Inject constructor(
     optionsReadingTextSizeViewModel.readingTextSize.set(profile.readingTextSize)
 
     itemsList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
-
-    // if (enableLanguageSelectionUi.value) {
-    // itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
-    // }
-
     itemsList.add(optionAudioViewViewModel as OptionsItemViewModel)
 
     // Loading the initial options in the sub-options container

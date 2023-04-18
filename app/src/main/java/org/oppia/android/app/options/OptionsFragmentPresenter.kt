@@ -208,8 +208,7 @@ class OptionsFragmentPresenter @Inject constructor(
     }.build()
 
     translationController.updateAppLanguage(
-      profileId,
-      appLanguageSelection
+      profileId, appLanguageSelection
     ).toLiveData().observe(
       fragment,
       {
