@@ -48,12 +48,15 @@ gradlew.bat @BenHenning
 /.github/workflows/ @BenHenning
 /.github/stale.yml @BenHenning
 
+# Wiki
+/wiki/ @BenHenning @seanlip
+
 # Devbots configurations.
 /.devbots/ @BenHenning
 
 # All resource files.
-/app/src/main/res/**/*.xml @rt4914
-/utility/src/main/res/**/*.xml @rt4914
+/app/src/main/res/**/*.xml @BenHenning
+/utility/src/main/res/**/*.xml @BenHenning
 
 # App UI strings.
 /app/src/main/res/values*/strings.xml @BenHenning

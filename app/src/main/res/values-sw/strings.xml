@@ -164,7 +164,6 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Sahihi!</string>
   <string name="topic_prefix">Mada: %s</string>
-  <string name="chapter_count_with_story_name">%1$s katika %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">Sura 1</item>
     <item quantity="other">Sura %s</item>
@@ -359,11 +358,10 @@
   <string name="show_hints_and_solution">Onyesha vidokezo na suluhisho</string>
   <string name="hints_andSolution_close_icon_description">Nenda juu</string>
   <string name="hints_toolbar_title">Vidokezo</string>
-  <string name="reveal_solution">Fichua Suluhisho</string>
+  <string name="reveal_solution" fuzzy="true">Fichua Suluhisho</string>
   <string name="reveal_hint" fuzzy="true">Fichua Kidokezo</string>
-  <string name="the_only_solution_is">Suluhisho pekee ni:</string>
-  <string name="this_will_reveal_the_solution">Hii itafichua suluhisho. Una uhakika?</string>
-  <string name="reveal">Fichua</string>
+  <string name="this_will_reveal_the_solution" fuzzy="true">Hii itafichua suluhisho. Una uhakika?</string>
+  <string name="reveal" fuzzy="true">Fichua</string>
   <string name="just_now">sasa hivi</string>
   <string name="last_logged_in_recently">hivi karibuni</string>
   <string name="time_ago">%s iliyopita</string>
