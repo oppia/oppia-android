@@ -30,17 +30,17 @@ message SurveyQuestion {
   // The type of question.
   oneof question_type {
     // Corresponds to a question with multiple choices.
-    SurveyQuestionOptionList multiple_choice = 4;
+    SurveyQuestionOptionList multiple_choice = 3;
 
     // Corresponds to a question with multiple choices and a free-text 'other' option.
-    SurveyQuestionOptionList multiple_choice_with_other = 5;
+    SurveyQuestionOptionList multiple_choice_with_other = 4;
 
     // Indicates whether this question takes a free-text response.
-    bool free_form_text = 6;
+    bool free_form_text = 5;
   }
 
   // The language to which this question is localized.
-  OppiaLanguage language = 7;
+  OppiaLanguage language = 6;
 }
 
 // Represents a list of answer options for a multiple choice question.
@@ -84,13 +84,13 @@ message SurveyQuestionOption {
   // The type of answer this option represents.
   oneof answer {
     // The enum representation of the type of user answer option.
-    UserTypeAnswer user_type = 4;
+    UserTypeAnswer user_type = 3;
 
     // The enum representation of the market fit answer option.
-    MarketFitAnswer market_fit = 5;
+    MarketFitAnswer market_fit = 4;
 
     // The integer value representing the nps score option.
-    int32 nps_score = 6;
+    int32 nps_score = 5;
   }
 }
 
