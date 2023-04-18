@@ -26,7 +26,7 @@
       android:id="@+id/mark_chapters_completed_chapter_check_box"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:buttonTint="@color/shared_checkbox_selector"
+      android:buttonTint="@color/component_color_shared_checkbox_selector"
       android:checked="@{isChapterChecked}"
       android:drawablePadding="20dp"
       android:enabled="@{isChapterCheckboxEnabled}"

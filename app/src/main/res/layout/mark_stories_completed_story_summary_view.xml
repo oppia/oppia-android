@@ -22,7 +22,7 @@
       android:id="@+id/mark_stories_completed_story_check_box"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:buttonTint="@color/shared_checkbox_selector"
+      android:buttonTint="@color/component_color_shared_checkbox_selector"
       android:checked="@{isStoryChecked}"
       android:drawablePadding="20dp"
       android:fontFamily="sans-serif"
