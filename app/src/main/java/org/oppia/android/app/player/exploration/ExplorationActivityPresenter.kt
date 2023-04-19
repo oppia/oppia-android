@@ -285,8 +285,6 @@ class ExplorationActivityPresenter @Inject constructor(
               if (isCompletion) {
                 shouldShowSurveyDialog(profileId, topicId)
               }
-              // backPressActivitySelector()
-              // (activity as ExplorationActivity).finish()
             }
           }
         }
@@ -311,11 +309,8 @@ class ExplorationActivityPresenter @Inject constructor(
             }
             is AsyncResult.Success -> {
               if (it.value) {
-                oppiaLogger.d("ExplorationActivity", "Survey gating returned true")
                 createSurveyDialog().show()
-                // when dialog is dismissed, return to topic. Otherwise exiting results into  IllegalStateException: Session isn't initialized yet.
               } else {
-                oppiaLogger.d("ExplorationActivity", "Survey gating returned false")
               }
             }
           }
