@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -60,8 +62,8 @@ class OptionControlsViewModel @Inject constructor(
     profileManagementController.getProfile(profileId).toLiveData()
   }
 
-  private val appLanguageResultLiveData: LiveData<AsyncResult<AppLanguageSelection>> by lazy {
-    translationController.getAppLanguageSelection(profileId).toLiveData()
+  private val appLanguageResultLiveData: LiveData<AsyncResult<OppiaLanguage>> by lazy {
+    translationController.getAppLanguage(profileId).toLiveData()
   }
 
   private val profileLiveData: LiveData<Profile> by lazy { getProfileData() }
@@ -86,55 +88,54 @@ class OptionControlsViewModel @Inject constructor(
     this.profileId = profileId
   }
 
-  fun getProfileId(): ProfileId {
-    return this.profileId
-  }
-
   fun computeOptionsItemList(
     optionListData: LiveData<List<OptionsItemViewModel>>,
     languageListData: LiveData<List<OptionsItemViewModel>>
   ): LiveData<List<OptionsItemViewModel>> {
-
     if (itemViewModelList.isEmpty()) {
-      optionListData.observe(
-        activity,
-        {
-          if (itemViewModelList.isEmpty()) {
-            itemViewModelList.addAll(0, it)
-          } else {
-            itemViewModelList.addAll(1, it)
-          }
-        }
-      )
-
-      languageListData.observe(
-        activity,
-        {
-          if (itemViewModelList.isEmpty()) {
-            itemViewModelList.addAll(0, it)
-          } else {
-            itemViewModelList.addAll(1, it)
-          }
-        }
-      )
-
+      val mergedDataList = combine(optionListData, languageListData)
+      mergedDataList.value?.first?.let { itemViewModelList.addAll(it) }
+      if (enableLanguageSelectionUi.value) {
+        mergedDataList.value?.second?.let { itemViewModelList.add(1, it[0]) }
+      }
       _optionList.value = itemViewModelList
     }
 
     return optionList
   }
 
+  /**
+   * This Combines the 2 LiveData objects into a Pair, emitting only when both sources are non-null.
+   */
+  private fun <A, B> combine(a: LiveData<A>, b: LiveData<B>): LiveData<Pair<A, B>> {
+    return MediatorLiveData<Pair<A, B>>().apply {
+      fun combine() {
+        val aValue = a.value
+        val bValue = b.value
+        if (aValue != null && bValue != null) {
+          this.value = (Pair(aValue, bValue))
+        }
+      }
+
+      addSource(a) { combine() }
+      addSource(b) { combine() }
+
+      combine()
+    }
+  }
+
   private fun processAppLanguageResult(
-    appLanguageSelection:
-      AsyncResult<AppLanguageSelection>
+    oppiaLanguage: AsyncResult<OppiaLanguage>
   ): AppLanguageSelection {
-    return when (appLanguageSelection) {
+    return when (oppiaLanguage) {
       is AsyncResult.Failure -> {
         AppLanguageSelection.getDefaultInstance()
       }
-      is AsyncResult.Pending -> AppLanguageSelection.getDefaultInstance()
+      is AsyncResult.Pending -> {
+        AppLanguageSelection.getDefaultInstance()
+      }
       is AsyncResult.Success -> {
-        appLanguageSelection.value
+        AppLanguageSelection.newBuilder().apply { selectedLanguage = oppiaLanguage.value }.build()
       }
     }
   }
