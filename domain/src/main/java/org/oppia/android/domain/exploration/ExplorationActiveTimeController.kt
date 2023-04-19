@@ -99,12 +99,11 @@ class ExplorationActiveTimeController @Inject constructor(
           .setLastUpdatedTimeMs(oppiaClock.getCurrentTimeMs())
       }
 
-      if (previousAggregateLearningTime != null &&
-        !isLastUpdatedTimestampStale(previousAggregateLearningTime.lastUpdatedTimeMs)
+      if (isLastUpdatedTimestampStale(topicLearningTimeBuilder.lastUpdatedTimeMs)
       ) {
-        topicLearningTimeBuilder.topicLearningTimeMs += sessionDuration
-      } else {
         topicLearningTimeBuilder.topicLearningTimeMs = sessionDuration
+      } else {
+        topicLearningTimeBuilder.topicLearningTimeMs += sessionDuration
       }
       topicLearningTimeBuilder.lastUpdatedTimeMs = oppiaClock.getCurrentTimeMs()
 
@@ -121,9 +120,11 @@ class ExplorationActiveTimeController @Inject constructor(
     }
   }
 
-  private fun isLastUpdatedTimestampStale(lastUpdatedTimestamp: Long) =
-    (oppiaClock.getCurrentTimeMs() - lastUpdatedTimestamp) >
-      LEARNING_TIME_STALENESS_THRESHOLD_MILLIS
+  private fun isLastUpdatedTimestampStale(lastUpdatedTimestamp: Long): Boolean {
+    val currentTime = oppiaClock.getCurrentTimeMs()
+    val differenceInMillis = currentTime - lastUpdatedTimestamp
+    return differenceInMillis > LEARNING_TIME_STALENESS_THRESHOLD_MILLIS
+  }
 
   /** Returns the [TopicLearningTime] [DataProvider] for a specific topicId, per-profile basis. */
   internal fun retrieveAggregateTopicLearningTimeDataProvider(

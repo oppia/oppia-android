@@ -80,15 +80,11 @@ class ExplorationActiveTimeControllerTest {
 
   @Test
   fun testSaveSessionLength_previousAggregateIsStale_overwritesOldAggregateWithCurrentLength() {
-    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     val currentTime = oppiaClock.getCurrentTimeMs()
 
-    // set aggregate learning time last updated timestamp to
-    // [LEARNING_TIME_STALENESS_THRESHOLD_MILLIS]+1 days ago.
-    val lastUpdatedTimeMs = currentTime.minus(LEARNING_TIME_STALENESS_THRESHOLD_MILLIS).minus(
-      TimeUnit.DAYS.toMillis(1)
-    )
-
+    val daysAgo = LEARNING_TIME_STALENESS_THRESHOLD_MILLIS.plus(TimeUnit.DAYS.toMillis(1))
+    val lastUpdatedTimeMs = currentTime.minus(daysAgo)
     createCacheStore(lastUpdatedTimeMs)
 
     val recordAggregateTimeProvider =
@@ -111,12 +107,10 @@ class ExplorationActiveTimeControllerTest {
 
   @Test
   fun testSaveSessionLength_previousAggregateIsNotStale_incrementsOldAggregateByCurrentLength() {
-    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     val currentTime = oppiaClock.getCurrentTimeMs()
 
-    // set aggregate learning time last updated timestamp to yesterday.
     val lastUpdatedTimeMs = currentTime.minus(TimeUnit.DAYS.toMillis(1))
-
     createCacheStore(lastUpdatedTimeMs)
 
     val recordAggregateTimeProvider =
@@ -133,7 +127,7 @@ class ExplorationActiveTimeControllerTest {
 
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
 
-    val expectedAggregate = SESSION_LENGTH + SESSION_LENGTH
+    val expectedAggregate = 10000L
     assertThat(aggregateTime.lastUpdatedTimeMs).isEqualTo(currentTime)
     assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(expectedAggregate)
   }
@@ -205,9 +199,9 @@ class ExplorationActiveTimeControllerTest {
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicLearningTimeControllerTest_TestApplicationComponent.builder()
+      DaggerExplorationActiveTimeControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
-        .build()
+        .build() as TestApplicationComponent
     }
 
     fun inject(explorationActiveTimeControllerTest: ExplorationActiveTimeControllerTest) {
