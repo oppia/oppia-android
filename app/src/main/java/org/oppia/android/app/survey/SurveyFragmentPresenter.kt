@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
+import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.SurveyFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
-
-const val SURVEY_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
-  "SurveyFragmentPresenter.survey_fragment_profile_id"
-const val SURVEY_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "SurveyFragmentPresenter.survey_fragment_topic_id"
+import javax.inject.Inject
 
 /** The presenter for [SurveyFragment]. */
 class SurveyFragmentPresenter @Inject constructor(
@@ -26,6 +27,11 @@ class SurveyFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var binding: SurveyFragmentBinding
+  private lateinit var surveyToolbar: Toolbar
+  private lateinit var surveyProgressText: TextView
+  private lateinit var surveyProgressBar: ProgressBar
+  private lateinit var questionTextView: TextView
+  private lateinit var questionRecycleView: RecyclerView
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -41,6 +47,18 @@ class SurveyFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
+    binding.lifecycleOwner = fragment
+    questionRecycleView = binding.root.findViewById(R.id.survey_question_recycler_view)
+    questionTextView = binding.root.findViewById(R.id.survey_question_text)
+    surveyToolbar = binding.surveyToolbar
+    surveyProgressText = binding.surveyProgressText
+    surveyProgressBar = binding.surveyProgressBar
+    activity.setSupportActionBar(surveyToolbar)
+
+    binding.surveyToolbar.setNavigationOnClickListener {
+      // Implementation of this will show a confirm exit dialog.
+      activity.onBackPressed()
+    }
     return binding.root
   }
 

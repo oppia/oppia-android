@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.util.extensions.getStringFromBundle
+import javax.inject.Inject
 
 /** Fragment that represents the current state of a survey. */
 class SurveyFragment : InjectableFragment() {
@@ -26,8 +26,8 @@ class SurveyFragment : InjectableFragment() {
     ): SurveyFragment {
       val surveyFragment = SurveyFragment()
       val args = Bundle()
-      args.putInt(SURVEY_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(SURVEY_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
       surveyFragment.arguments = args
       return surveyFragment
     }
@@ -46,8 +46,9 @@ class SurveyFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments!!.getInt(SURVEY_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
-    val topicId = arguments!!.getStringFromBundle(SURVEY_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
+    val internalProfileId = arguments!!.getInt(PROFILE_ID_ARGUMENT_KEY, -1)
+    val topicId = arguments!!.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)!!
+
     return surveyFragmentPresenter.handleCreateView(
       inflater,
       container,
@@ -58,7 +59,7 @@ class SurveyFragment : InjectableFragment() {
 
   fun handleKeyboardAction() = surveyFragmentPresenter.handleKeyboardAction()
 
-  //override fun onNextButtonClicked() = surveyFragmentPresenter.onNextButtonClicked()
+  // override fun onNextButtonClicked() = surveyFragmentPresenter.onNextButtonClicked()
 
-  //override fun onPreviousButtonClicked() = surveyFragmentPresenter.onPreviousButtonClicked()
+  // override fun onPreviousButtonClicked() = surveyFragmentPresenter.onPreviousButtonClicked()
 }
