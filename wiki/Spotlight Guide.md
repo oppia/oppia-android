@@ -6,21 +6,21 @@ Spotlighting is a visual tool that highlights and brings a user’s focus to an 
 # Creating a new spotlight
 
 The [SpotlightFragment](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/app/src/main/java/org/oppia/android/app/spotlight/SpotlightFragment.kt#L44) contains APIs to call spotlights for any in-app screen element. To create a spotlight, call one of these functions:
-[requestSpotlight](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/app/src/main/java/org/oppia/android/app/spotlight/SpotlightManager.kt#L26)
-[requestSpotlightWithDelayedLayout](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/app/src/main/java/org/oppia/android/app/spotlight/SpotlightManager.kt#L13)
+- [requestSpotlight](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/app/src/main/java/org/oppia/android/app/spotlight/SpotlightManager.kt#L26)
+- [requestSpotlightWithDelayedLayout](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/app/src/main/java/org/oppia/android/app/spotlight/SpotlightManager.kt#L13)
 
 Both these functions expect a parameter, [SpotlightTarget](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/app/src/main/java/org/oppia/android/app/spotlight/SpotlightTarget.kt#L14). The spotlight target is a holder for the necessary information to show a spotlight. 
 
 The spotlight target binds these fields together:
-anchor: The view that should be spotlit.
-hint: The helpful text that should appear along the spotlight to describe the element being spotlit.
-shape: The preferred shape of the spotlight highlight. Can be one of a circle or rounded rectangle, based on whichever shape best fits the area being highlighted
-feature: The specific app feature that the spotlight is tied to. It’s used to track whether this specific spotlight has been seen.
+- anchor: The view that should be spotlit.
+- hint: The helpful text that should appear along the spotlight to describe the element being spotlit.
+- shape: The preferred shape of the spotlight highlight. Can either a circle or a rounded rectangle, based on whichever shape best fits the area being highlighted.
+- feature: The specific app feature that the spotlight is tied to. It’s used to track whether this specific spotlight has been seen.
 
 In order to start spotlighting an element in the UI, three high-level things need to be done:
-The feature’s spotlight needs to be defined.
-The new spotlight needs to be hooked up for persistent storage.
-The spotlight needs to be hooked up to be shown in the UI.
+- The feature’s spotlight needs to be defined.
+- The new spotlight needs to be hooked up for persistent storage.
+- The spotlight needs to be hooked up to be shown in the UI.
 
 ## Registering a new feature
 
@@ -62,7 +62,7 @@ message SpotlightStateDatabase {
 }
 ```
 
-The new spotlight feature also needs to be added to the [SpotlightStateController](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/domain/src/main/java/org/oppia/android/domain/spotlight/SpotlightStateController.kt#L3). In the [retrieveSpotlightViewState](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/domain/src/main/java/org/oppia/android/domain/spotlight/SpotlightStateController.kt#L80) and the [recordSpotlightStateAsync](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/domain/src/main/java/org/oppia/android/domain/spotlight/SpotlightStateController.kt#L110) method, add the feature to the switch case as so:
+The new spotlight feature also needs to be added to the [SpotlightStateController](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/domain/src/main/java/org/oppia/android/domain/spotlight/SpotlightStateController.kt#L3). In the [retrieveSpotlightViewState](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/domain/src/main/java/org/oppia/android/domain/spotlight/SpotlightStateController.kt#L80) and the [recordSpotlightStateAsync](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/domain/src/main/java/org/oppia/android/domain/spotlight/SpotlightStateController.kt#L110) methods, add the feature to the switch case as so:
 ```kotlin
 fun retrieveSpotlightViewState(
     profileId: ProfileId,
