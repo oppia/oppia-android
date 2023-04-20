@@ -31,7 +31,7 @@
       android:clickable="false"
       android:focusable="false"
       android:labelFor="@id/multiple_choice_content_text_view"
-      app:buttonTint="@color/component_color_shared_shared_interaction_selector" />
+      app:buttonTint="@color/shared_interaction_selector" />
 
     <TextView
       android:id="@+id/multiple_choice_content_text_view"

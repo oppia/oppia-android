@@ -49,7 +49,7 @@ gradlew.bat @BenHenning
 /.github/stale.yml @BenHenning
 
 # Wiki
-/wiki/ @BenHenning @seanlip
+/wiki/ @BenHenning
 
 # Devbots configurations.
 /.devbots/ @BenHenning

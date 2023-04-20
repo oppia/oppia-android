@@ -55,7 +55,7 @@
         android:layout_width="0dp"
         android:layout_marginTop="12dp"
         android:text="@string/onboarding_slide_3_description"
-        android:textColor="@color/component_color_shared_secondary_1_text_color"
+        android:textColor="@color/color_palette_secondary_1_text_color"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
