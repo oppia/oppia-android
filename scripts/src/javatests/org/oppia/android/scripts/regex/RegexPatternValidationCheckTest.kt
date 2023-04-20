@@ -164,22 +164,10 @@ class RegexPatternValidationCheckTest {
     "Only colors from color_palette.xml may be used in component_colors.xml."
   private val doesNotReferenceColorFromColorDefs =
     "Only colors from color_defs.xml may be used in color_palette.xml."
-  private val doesNotReferenceColorFromComponentColorInLayouts =
-    "Only colors from component_colors.xml may be used in layouts."
-  private val doesNotReferenceColorFromComponentColorInKotlinFiles =
-    "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments, " +
-      "Views and Presenters)."
   private val doesNotUseWorkManagerGetInstance =
     "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one" +
       " using getInstance (as the latter may create a WorkManager if one isn't already present, " +
       "and the application may intend to disable it)."
-  private val doesNotUsePostOrPostDelayed =
-    "Prefer avoiding post() and postDelayed() methods as they can can lead to subtle and " +
-      "difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when " +
-      "an operation needs to run at a future time. For cases when state needs to be synchronized " +
-      "with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying " +
-      "issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your" +
-      "-android-views-9d1c8eeaadf2."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -2166,121 +2154,6 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_xmlLayouts_includesNonColorComponentReferences_fileContentIsNotCorrect() {
-    val prohibitedContent =
-      """
-        android:textColor="@color/component_color_shared_primary_text_color"
-        android:textColor="@color/color_defs_shared_primary_text_color"
-        android:textColor="@color/color_palette_primary_text_color"
-        android:background="@color/component_color_shared_primary_text_color"
-        android:background="@color/color_defs_shared_primary_text_color"
-        android:background="@color/color_palette_primary_text_color"
-        app:tint="@color/component_color_shared_primary_text_color"
-        app:tint="@color/color_defs_shared_primary_text_color"
-        app:tint="@color/color_palette_primary_text_color"
-        app:strokeColor="@color/component_color_shared_primary_text_color"
-        app:strokeColor="@color/color_defs_shared_primary_text_color"
-        app:strokeColor="@color/color_palette_primary_text_color"
-        app:cardBackgroundColor="@color/component_color_shared_primary_text_color"
-        app:cardBackgroundColor="@color/color_defs_shared_primary_text_color"
-        app:cardBackgroundColor="@color/color_palette_primary_text_color"
-        android:background="@color/component_color_shared_primary_text_color"
-        android:background="@color/color_defs_shared_primary_text_color"
-        android:background="@color/color_palette_primary_text_color"
-      """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "layout")
-    val stringFilePath = "app/src/main/res/layout/test_layout.xml"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
-
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
-
-    // Verify that all patterns are properly detected & prohibited.
-    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath:2: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:3: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:5: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:6: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:8: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:9: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:11: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:12: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:14: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:15: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:17: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:18: $doesNotReferenceColorFromComponentColorInLayouts
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-  }
-
-  @Test
-  fun testFileContent_kotlinFiles_includesNonColorComponentReferences_fileContentIsNotCorrect() {
-    val prohibitedContent =
-      """
-        decorateWithScreenName(HOME_ACTIVITY)
-        R.color.component_color_shared_activity_status_bar_color
-        R.color.color_def_avatar_background_1
-        R.color.color_palette_primary_color
-      """.trimIndent()
-
-    tempFolder.newFolder(
-      "testfiles",
-      "app",
-      "src",
-      "main",
-      "java",
-      "org",
-      "oppia",
-      "android",
-      "app"
-    )
-
-    val stringFilePath1 = "app/src/main/java/org/oppia/android/app/HomeActivity.kt"
-    val stringFilePath2 = "app/src/main/java/org/oppia/android/app/TestFileActivityPresenter.kt"
-    val stringFilePath3 = "app/src/main/java/org/oppia/android/app/TestFileFragment.kt"
-    val stringFilePath4 = "app/src/main/java/org/oppia/android/app/TestFileFragmentPresenter.kt"
-    val stringFilePath5 = "app/src/main/java/org/oppia/android/app/TestFileView.kt"
-    val stringFilePath6 = "app/src/main/java/org/oppia/android/app/TestFileViewPresenter.kt"
-
-    tempFolder.newFile("testfiles/$stringFilePath1").writeText(prohibitedContent)
-    tempFolder.newFile("testfiles/$stringFilePath2").writeText(prohibitedContent)
-    tempFolder.newFile("testfiles/$stringFilePath3").writeText(prohibitedContent)
-    tempFolder.newFile("testfiles/$stringFilePath4").writeText(prohibitedContent)
-    tempFolder.newFile("testfiles/$stringFilePath5").writeText(prohibitedContent)
-    tempFolder.newFile("testfiles/$stringFilePath6").writeText(prohibitedContent)
-
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
-
-    // Verify that all patterns are properly detected & prohibited.
-    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath1:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath1:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath2:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath2:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath3:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath3:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath4:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath4:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath5:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath5:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath6:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath6:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-  }
-
-  @Test
   fun testFileContent_colorPalette_referencesColorFromColorDefs_fileContentIsCorrect() {
     val prohibitedContent =
       """
@@ -2411,81 +2284,6 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $doesNotUseWorkManagerGetInstance
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-  }
-
-  @Test
-  fun testFileContent_postDelayedUsed_fileContentIsNotCorrect() {
-    val prohibitedContent =
-      """
-        binding.view.postDelayed({ binding.view.visibility = View.GONE }, 1000)
-      """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
-    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
-
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
-
-    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
-
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath:1: $doesNotUsePostOrPostDelayed
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-  }
-
-  @Test
-  fun testFileContent_postUsed_withParenthesis_fileContentIsNotCorrect() {
-    val prohibitedContent =
-      """
-        binding.view.post({ binding.view.visibility = View.GONE })
-      """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
-    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
-
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
-
-    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
-
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath:1: $doesNotUsePostOrPostDelayed
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-  }
-
-  @Test
-  fun testFileContent_postUsed_withCurlyBraces_fileContentIsNotCorrect() {
-    val prohibitedContent =
-      """
-        binding.view.post { binding.view.visibility = View.GONE }
-      """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
-    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
-
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
-
-    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
-
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath:1: $doesNotUsePostOrPostDelayed
         $wikiReferenceNote
         """.trimIndent()
       )

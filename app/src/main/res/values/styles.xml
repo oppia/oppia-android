@@ -143,13 +143,13 @@
     <item name="tabPaddingEnd">8dp</item>
     <item name="tabBackground">?attr/selectableItemBackground</item>
     <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
-    <item name="tabIconTint">@color/component_color_shared_tab_icon_color_selector</item>
+    <item name="tabIconTint">@color/tab_icon_color_selector</item>
     <item name="tabSelectedTextColor">@color/color_def_white</item>
   </style>
 
   <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
     <item name="android:textSize">14sp</item>
-    <item name="android:textColor">@color/component_color_shared_tab_icon_color_selector</item>
+    <item name="android:textColor">@color/tab_icon_color_selector</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="textAllCaps">true</item>
   </style>

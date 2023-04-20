@@ -38,8 +38,8 @@
           android:scrollbars="none"
           app:elevation="0dp"
           android:background="@color/component_color_shared_fragment_container_background_color"
-          app:itemIconTint="@color/component_color_shared_drawer_item"
-          app:itemTextColor="@color/component_color_shared_drawer_item"
+          app:itemIconTint="@color/drawer_item"
+          app:itemTextColor="@color/drawer_item"
           app:menu="@menu/navigation_drawer_menu" />
 
         <LinearLayout
