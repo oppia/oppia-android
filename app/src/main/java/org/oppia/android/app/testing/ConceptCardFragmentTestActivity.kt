@@ -31,9 +31,7 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {
-    return supportFragmentManager.fragments.singleOrNull { fragment ->
-      fragment is ConceptCardFragment
-    } as ConceptCardFragment?
+    return supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().singleOrNull()
   }
 
   companion object {

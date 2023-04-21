@@ -39,20 +39,22 @@ class ConceptCardFragment : InjectableDialogFragment() {
      * skill Id. If no [ConceptCardFragment] remains, creates a new fragment to show a concept card
      * for the given skill id.
      *
-     * @param skillId the skill ID for which a concept card should be loaded.
-     * @param profileId the profile in which the concept card will be shown.
-     * @param fragmentManager the [FragmentManager] where to show the concept card.
-     * @return the fragment created or null if none.
+     * @param skillId the skill ID for which a concept card should be loaded
+     * @param profileId the profile in which the concept card will be shown
+     * @param fragmentManager the [FragmentManager] where to show the concept card
+     * @return the fragment created or null if none
      */
     fun bringToFrontOrCreateIfNew(
       skillId: String,
       profileId: ProfileId,
       fragmentManager: FragmentManager
     ): ConceptCardFragment? {
-      // The UI is recreated when changing profile ids, so no need to include it in the tag name.
+      // Concept cards are keyed by profileId and skillId. However, in this method we are only
+      // using the skillId for equality checks. The reason is that when the user switches profiles
+      // the UI is recreated, so that it is not possible to have concept cards from different
+      // profiles in the same fragment manager.
       val allConceptCards = fragmentManager.fragments.filterIsInstance<ConceptCardFragment>()
-      val conceptCardsWithDifferentSkillId = allConceptCards.filter { skillId != it.skillId() }
-      val found = allConceptCards.size > conceptCardsWithDifferentSkillId.size
+      val conceptCardsWithDifferentSkillId = allConceptCards.filter { skillId != it.getSkillId() }
       if (conceptCardsWithDifferentSkillId.isNotEmpty()) {
         val transaction = fragmentManager.beginTransaction()
         for (toRemove in conceptCardsWithDifferentSkillId) {
@@ -60,10 +62,9 @@ class ConceptCardFragment : InjectableDialogFragment() {
         }
         transaction.commitNow()
       }
-      if (!found) {
-        return showNewInstance(skillId, profileId, fragmentManager)
-      }
-      return null
+      return if (allConceptCards.size <= conceptCardsWithDifferentSkillId.size) {
+        showNewInstance(skillId, profileId, fragmentManager)
+      } else null
     }
 
     /**
@@ -128,5 +129,5 @@ class ConceptCardFragment : InjectableDialogFragment() {
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
 
-  private fun skillId(): String? = arguments?.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)
+  private fun getSkillId(): String? = arguments?.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)
 }
