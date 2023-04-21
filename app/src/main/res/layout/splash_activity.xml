@@ -4,6 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools">
 
   <data>
+
     <import type="android.view.View" />
 
     <variable
@@ -22,31 +23,34 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#019489"
+    android:background="@color/component_color_splash_activity_background_color"
     tools:context=".app.splash.SplashActivity">
+
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/logo_top_margin"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       app:layout_constraintGuide_percent="0.354" />
+
     <ImageView
       android:id="@+id/splash_oppia_logo"
       android:layout_width="228dp"
       android:layout_height="88dp"
       android:importantForAccessibility="no"
-      app:srcCompat="@drawable/full_oppia_logo"
-      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/logo_top_margin" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/logo_top_margin"
+      app:srcCompat="@drawable/full_oppia_logo" />
+
     <TextView
       android:id="@+id/build_flavor_label"
+      style="@style/Heading2ViewStart"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@{isOnAlphaFlavor ? @string/splash_screen_alpha_label : isOnBetaFlavor ? @string/splash_screen_beta_label : @string/splash_screen_developer_label}"
-      style="@style/Heading2ViewStart"
-      android:textSize="24sp"
       android:textColor="@color/component_color_shared_secondary_4_text_color"
+      android:textSize="24sp"
       android:visibility="@{(isOnDeveloperFlavor || isOnAlphaFlavor || isOnBetaFlavor) ? View.VISIBLE : View.GONE}"
       app:layout_constraintEnd_toEndOf="@+id/splash_oppia_logo"
       app:layout_constraintTop_toBottomOf="@+id/splash_oppia_logo" />
