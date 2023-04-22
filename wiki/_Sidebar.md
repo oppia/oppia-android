@@ -35,6 +35,8 @@
     * [Ktlint Guide](https://github.com/oppia/oppia-android/wiki/Ktlint-Guide) 
     * [Static Analysis Checks](https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks)
     * [Accessibility Guide](https://github.com/oppia/oppia-android/wiki/Accessibility-A11y-Guide)
+    * [Debugging](https://github.com/oppia/oppia-android/wiki/Debugging)
+      * [How to approach bugs](https://github.com/oppia/oppia-android/wiki/Debugging#how-to-approach-bugs)
   * [Background Processing](https://github.com/oppia/oppia-android/wiki/Background-Processing)
     * [Kotlin Coroutines](https://github.com/oppia/oppia-android/wiki/Kotlin-Coroutines)
     * [DataProvider & LiveData](https://github.com/oppia/oppia-android/wiki/DataProvider-&-LiveData)
