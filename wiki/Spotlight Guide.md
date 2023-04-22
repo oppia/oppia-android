@@ -86,19 +86,19 @@ In order to request a spotlight in the UI, use [SpotlightManager](https://github
 
 ```kotlin
 checkNotNull(getSpotlightManager()).requestSpotlight(
-	SpotlightTarget(
-	binding.yourFeatureName,
-	R.string.your_feature_string_string_resource,
-	SpotlightShape.RoundedRectangle,
-	Spotlight.FeatureCase.YOUR_FEATURE_NAME
-)
+  SpotlightTarget(
+    binding.yourFeatureName,
+    R.string.your_feature_string_string_resource,
+    SpotlightShape.RoundedRectangle,
+    Spotlight.FeatureCase.YOUR_FEATURE_NAME
+  )
 )
 
-  private fun getSpotlightManager(): SpotlightManager? {
-    return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
-      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as? SpotlightManager
-  }
+private fun getSpotlightManager(): SpotlightManager? {
+  return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
+    SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+  ) as? SpotlightManager
+}
 ```
 
 For views that are laid out late in the lifecycle (such as recycler views loaded after a data provider call, view pagers, or elements that show up after an enter animation), use [requestSpotlightWithDelayedLayout](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/app/src/main/java/org/oppia/android/app/spotlight/SpotlightManager.kt#L13) instead.
