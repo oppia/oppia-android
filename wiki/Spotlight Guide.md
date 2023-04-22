@@ -16,7 +16,7 @@ Both these functions expect a parameter, [SpotlightTarget](https://github.com/op
 The spotlight target binds these fields together:
 - anchor: The view that should be spotlit.
 - hint: The helpful text that should appear along the spotlight to describe the element being spotlit.
-- shape: The preferred shape of the spotlight highlight. Can either a circle or a rounded rectangle, based on whichever shape best fits the area being highlighted.
+- shape: The preferred shape of the spotlight highlight. Can be either a circle or a rounded rectangle, based on whichever shape best fits the area being highlighted.
 - feature: The specific app feature that the spotlight is tied to. It’s used to track whether this specific spotlight has been seen.
 
 In order to start spotlighting an element in the UI, three high-level things need to be done:
@@ -134,11 +134,13 @@ In order to bypass a spotlight without any UI interaction, the ``SpotlightStateC
 ```
 
 ## Disabling the spotlights
-If the spotlights need to be disabled, the platform parameter value should be set.
+If the spotlights need to be disabled, the platform parameter value should be set:
+
+### In tests
 If the spotlights need to be disabled in the tests, use the ``TestPlatformParameterModule`` to turn off the [enableSpotlightUi](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterConstants.kt#L218) platform parameter.
 
 ```kotlin
 TestPlatformParameterModule.forceEnableSpotlightUi(false)
 ```
-
+###  In production
 In order to do it in production, turn the value of ``ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE`` to ``false``.
