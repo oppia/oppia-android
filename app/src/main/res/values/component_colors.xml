@@ -94,6 +94,8 @@
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
   <color name="component_color_shared_dialogs_primary_color">@color/color_palette_primary_color</color>
   <color name="component_color_shared_dialogs_secondary_color">@color/color_palette_primary_dark_color</color>
+  <color name="component_color_shared_dialogs_radio_button_unchecked_color">@color/color_palette_shared_dialogs_radio_button_unchecked_color</color>
+  <color name="component_color_shared_dialogs_radio_button_checked_color">@color/color_palette_shared_dialogs_radio_button_checked_color</color>
   <!-- Styles.xml -->
   <color name="component_color_shared_primary_dark_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_shared_primary_text_color">@color/color_palette_primary_text_color</color>
