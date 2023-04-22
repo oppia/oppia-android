@@ -1,7 +1,9 @@
 Feature Spotlights
 # Introduction
 
-Spotlighting is a visual tool that highlights and brings a user’s focus to an element on the screen. We use them to communicate the purpose of a specific screen element to the user, which they might otherwise miss. Spotlighting involves dimming the other areas on the screen and lighting the element to bring the user’s focus onto it, and explaining what/how that feature should be used. 
+Spotlight is a visual tool that highlights and brings a user’s focus to an element on the screen. We use them to communicate the purpose of a specific screen element to the user, which they might otherwise miss. Spotlighting involves dimming the other areas on the screen and lighting the element to bring the user’s focus onto it, and explaining what/how that feature should be used. For example, this is what the spotlight looks on the home screen spotlighting a story:
+![image](https://user-images.githubusercontent.com/64526117/233807103-0bb76f92-8821-47cc-a8ac-8222e71214b4.png)
+
 
 # Creating a new spotlight
 
