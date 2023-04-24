@@ -74,7 +74,8 @@ def _set_up_http_import(
             ),
             patches = local_patches,
             remote_patches = remote_patches,
-            remote_patch_strip = import_details.get("patch_path_start_removal_count"),
+            remote_patch_strip = import_details.get("remote_patch_path_start_removal_count"),
+            workspace_file = import_details.get("workspace_file"),
         )
     else:
         import_dep_without_patches(

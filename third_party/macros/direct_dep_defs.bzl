@@ -57,7 +57,8 @@ def create_http_archive_reference(
         maven_url_suffix = None,
         strip_prefix_template = None,
         patches_details = [],
-        patch_path_start_removal_count = 0,
+        remote_patch_path_start_removal_count = 0,
+        workspace_file = None,  # TODO: Document.
         export_details = None,
         exports_details = None):
     """Creates and returns a structure that will be imported using Bazel's http_archive.
@@ -86,9 +87,9 @@ def create_http_archive_reference(
         patches_details: list of dicts. An optional list of patch configurations to apply to the
             imported dependency. Each dict is expected to have been created by one of the
             create_*_patch_config functions. This defaults to an empty list.
-        patch_path_start_removal_count: int. An optional integer specifying the number of leading
-            path fragments to remove from remote patches before applying them. This defaults to 0,
-            but oftentimes '1' is required as it removes the normal "a/" and "b/" prefixes.
+        remote_patch_path_start_removal_count: int. An optional integer specifying the number of
+            leading path fragments to remove from remote patches before applying them. This defaults
+            to 0, but oftentimes '1' is required as it removes the normal "a/" and "b/" prefixes.
         export_details: dict. An optional dict created using one of create_export_library_details or
             create_export_binary_details. When provided, the system will ensure this archive is made
             accessible under a "third_party:<alias>" reference (where the alias is defined as part
@@ -108,7 +109,8 @@ def create_http_archive_reference(
         maven_url_suffix = maven_url_suffix,
         strip_prefix_template = strip_prefix_template,
         patches_details = patches_details,
-        patch_path_start_removal_count = patch_path_start_removal_count,
+        remote_patch_path_start_removal_count = remote_patch_path_start_removal_count,
+        workspace_file = workspace_file,
         export_details = export_details,
         exports_details = exports_details,
     )
@@ -160,7 +162,8 @@ def create_http_jar_reference(
         maven_url_suffix = maven_url_suffix,
         strip_prefix_template = strip_prefix_template,
         patches_details = [],
-        patch_path_start_removal_count = None,
+        remote_patch_path_start_removal_count = None,
+        workspace_file = None,
         export_details = export_details,
         exports_details = exports_details,
     )
@@ -224,7 +227,7 @@ def create_export_library_details(
         exportable_target,
         export_toolchain,
         should_be_visible_to_maven_targets = False,
-        additional_exports = []):
+        runtime_deps = []):
     """Returns a structure that specifies how a dependency should be made available as a library.
 
     Note that this does not actually create a wrapper library, only the instructions for creating
@@ -241,11 +244,12 @@ def create_export_library_details(
         should_be_visible_to_maven_targets: boolean. Whether the exported library should be made
             specially available to local internal Maven dependencies. This defaults to False and is
             generally only needed for Maven dependency overrides.
-        additional_exports: list of str. Additional targets to automatically export with the wrapper
-            library. This defaults to an empty list and is only needed in advanced cases.
+        runtime_deps: list of str. Additional targets to automatically depend on, at runtime, when
+            using the wrapper library. This defaults to an empty list and is only needed in advanced
+            cases.
     """
     return {
-        "additional_exports": additional_exports,
+        "runtime_deps": runtime_deps,
         "export_toolchain": export_toolchain,
         "export_type": EXPORT_TYPE.LIBRARY,
         "exportable_target": exportable_target,
@@ -257,7 +261,7 @@ def create_export_binary_details(
         exposed_artifact_name,
         main_class,
         exportable_runtime_target,
-        additional_exports = []):
+        runtime_deps = []):
     """Returns a structure that specifies how a dependency should be made available as a binary.
 
     Note that this has the same limitations and restrictions as create_export_library_details.
@@ -271,11 +275,12 @@ def create_export_binary_details(
         exportable_runtime_target: str. The relative target within the imported archive that can be
             exposed for execution. This is often "jar" for imported Jar files, or a specific build
             target for repositories.
-        additional_exports: list of str. Additional targets to automatically export with the wrapper
-            binary. This defaults to an empty list and is only needed in advanced cases.
+        runtime_deps: list of str. Additional targets to automatically depend on, at runtime, when
+            using the wrapper binary. This defaults to an empty list and is only needed in advanced
+            cases.
     """
     return {
-        "additional_exports": additional_exports,
+        "runtime_deps": runtime_deps,
         "export_toolchain": EXPORT_TOOLCHAIN.JAVA,
         "export_type": EXPORT_TYPE.BINARY,
         "exportable_runtime_target": exportable_runtime_target,
@@ -380,7 +385,8 @@ def _create_http_import_reference(
         maven_url_suffix,
         strip_prefix_template,
         patches_details,
-        patch_path_start_removal_count,
+        remote_patch_path_start_removal_count,
+        workspace_file,
         export_details,
         exports_details):
     # The '+' here is working around syntax issues when trying to use XOR.
@@ -402,7 +408,8 @@ def _create_http_import_reference(
         },
         import_bind_name = import_bind_name,
         patches_details = patches_details,
-        patch_path_start_removal_count = patch_path_start_removal_count,
+        remote_patch_path_start_removal_count = remote_patch_path_start_removal_count,
+        workspace_file = workspace_file,
         export_details = export_details,
         exports_details = exports_details,
     )
@@ -416,7 +423,8 @@ def _create_import_dependency_reference(
         patches_details,
         export_details = None,
         exports_details = None,
-        patch_path_start_removal_count = None):
+        remote_patch_path_start_removal_count = None,
+        workspace_file = None):
     if export_details != None and exports_details != None:
         fail("Expected exactly one of export_details or exports_details to be defined.")
     if export_details != None:
@@ -427,7 +435,8 @@ def _create_import_dependency_reference(
         "import_bind_name": import_bind_name,
         "import_type": import_type,
         "name": name,
-        "patch_path_start_removal_count": patch_path_start_removal_count,
+        "remote_patch_path_start_removal_count": remote_patch_path_start_removal_count,
+        "workspace_file": workspace_file,
         "patches_details": patches_details,
         "test_only": test_only,
     }

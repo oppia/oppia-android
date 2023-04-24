@@ -166,12 +166,23 @@ def _wrap_dependency(
             fail("Unsupported export type: %s." % export_details["export_toolchain"])
         should_be_visible_to_maven_targets = export_details["should_be_visible_to_maven_targets"]
         maven_visibility = maven_artifact_visibility if should_be_visible_to_maven_targets else []
-        create_lib(
-            name = export_details["exposed_artifact_name"],
-            visibility = base_visibility + maven_visibility,
-            exports = explicit_exports + export_details["additional_exports"],
-            testonly = is_test_only,
-        )
+        if export_details["export_toolchain"] == EXPORT_TOOLCHAIN.ANDROID:
+            if len(export_details["runtime_deps"]) != 0:
+                fail("runtime_deps are not supported for android_library exports.")
+            create_lib(
+                name = export_details["exposed_artifact_name"],
+                visibility = base_visibility + maven_visibility,
+                exports = explicit_exports,
+                testonly = is_test_only,
+            )
+        else:
+            create_lib(
+                name = export_details["exposed_artifact_name"],
+                visibility = base_visibility + maven_visibility,
+                exports = explicit_exports,
+                runtime_deps = export_details["runtime_deps"],
+                testonly = is_test_only,
+            )
     elif export_details["export_type"] == EXPORT_TYPE.BINARY:
         if export_details["export_toolchain"] != EXPORT_TOOLCHAIN.JAVA:
             fail(
@@ -181,11 +192,10 @@ def _wrap_dependency(
             )
         java_binary(
             name = export_details["exposed_artifact_name"],
-            deps = export_details["additional_exports"],
             visibility = base_visibility,
             runtime_deps = [
                 "@%s//%s" % (name, export_details["exportable_runtime_target"]),
-            ],
+            ] + export_details["runtime_deps"],
             main_class = export_details["main_class"],
         )
     else:

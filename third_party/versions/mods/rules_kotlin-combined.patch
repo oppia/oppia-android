@@ -1,0 +1,678 @@
+index 7e0793b..9945eda 100644
+--- kotlin/internal/jvm/android.bzl
++++ kotlin/internal/jvm/android.bzl
+@@ -30,32 +30,70 @@ def _kt_android_artifact(
+         enable_data_binding = False,
+         tags = [],
+         exec_properties = None,
++        manifest = None,
++        manifest_values = None,
++        assets = None,
++        resource_files = None,
++        android_merge_deps = None,
+         **kwargs):
+     """Delegates Android related build attributes to the native rules but uses the Kotlin builder to compile Java and
+     Kotlin srcs. Returns a sequence of labels that a wrapping macro should export.
+     """
+-    base_name = name + "_base"
+     kt_name = name + "_kt"
++    base_name = None
++    base_deps = [_ANDROID_SDK_JAR] + deps
+ 
+     # TODO(bazelbuild/rules_kotlin/issues/273): This should be retrieved from a provider.
+-    base_deps = [_ANDROID_SDK_JAR] + deps
++    # Only create a base android_library if it's actually needed. The logic here mimic's that of the
++    # native android_library rule for deciding when there's additional resource processing needed.
++    if enable_data_binding or manifest != None or (assets != None and len(assets) != 0) or (resource_files != None and len(resource_files) != 0):
++        base_name = name + "_base"
++
++        # 'android_merge_deps' is a hacky workaround to an issue that would require much broader
++        # changes in order to fix: due to how android_library handles resource & asset merging, it's
++        # possible for some dependencies to be required during build-time without having any
++        # compile-time references in Kotlin or Java. This means there won't be symbols in the file's
++        # jdeps which leads to a successful compile but a failing runtime. These do not work as
++        # runtime deps both since android_library itself doesn't support runtime-only deps, and the
++        # android_library reosurce processing needs to process these values when building. Ideally,
++        # Android resource merging would generate a deps file similar to jdeps, but it's not quite
++        # that simple: in the case of Crashlytics (which generates resource code during build time)
++        # the resource reference is actually in already compiled code. Fixing this would be complex,
++        # so a more viable workaround may be to add some sort of mechanism to allow certain deps to
++        # be marked as guaranteed explicit dependencies in such cases (though it unfortunately needs
++        # to extend to that dependency's transitive deps in order to work correctly). This mechanism
++        # is a lightweight version of that last option but it's only needed at select places in the
++        # dependency graph (but such dependencies will need to be duplicated in
++        # additional_android_dep declarations for each library that depends on them in the graph,
++        # regardless of transitive inclusion).
++
++        # TODO(bazelbuild/rules_kotlin/issues/556): replace with starlark
++        # buildifier: disable=native-android
++        native.android_library(
++            name = base_name,
++            visibility = ["//visibility:private"],
++            deps = deps + android_merge_deps if android_merge_deps != None else [],
++            enable_data_binding = enable_data_binding,
++            tags = tags,
++            exec_properties = exec_properties,
++            manifest = manifest,
++            manifest_values = manifest_values,
++            assets = assets,
++            resource_files = resource_files,
++            **kwargs
++        )
++    elif android_merge_deps != None and len(android_merge_deps) != 0:
++        fail(
++            "Specifying Android-only dependencies without manifest merging enabled won't have an" +
++            " effect. Either move these dependencies to 'deps' or enable resource processing" +
++            " (e.g. by adding resources, assets, a manifest, or enabling databinding).",
++            attr = "android_merge_deps",
++        )
+ 
+-    # TODO(bazelbuild/rules_kotlin/issues/556): replace with starlark
+-    # buildifier: disable=native-android
+-    native.android_library(
+-        name = base_name,
+-        visibility = ["//visibility:private"],
+-        exports = base_deps,
+-        deps = deps if enable_data_binding else [],
+-        enable_data_binding = enable_data_binding,
+-        tags = tags,
+-        exec_properties = exec_properties,
+-        **kwargs
+-    )
+     _kt_jvm_library(
+         name = kt_name,
+         srcs = srcs,
+-        deps = [base_name] + base_deps,
++        deps = base_deps + ([base_name] if base_name else []),
+         resources = resources,
+         plugins = plugins,
+         associates = associates,
+@@ -66,9 +104,18 @@ def _kt_android_artifact(
+         tags = tags,
+         exec_properties = exec_properties,
+     )
+-    return [base_name, kt_name]
++    return [kt_name] + ([base_name] if base_name else [])
+ 
+-def kt_android_library(name, exports = [], visibility = None, exec_properties = None, **kwargs):
++def kt_android_library(
++        name,
++        exports = [],
++        visibility = None,
++        exec_properties = None,
++        manifest = None,
++        assets = None,
++        resource_files = None,
++        android_merge_deps = None,
++        **kwargs):
+     """Creates an Android sandwich library.
+ 
+     `srcs`, `deps`, `plugins` are routed to `kt_jvm_library` the other android
+@@ -79,7 +126,15 @@ def kt_android_library(name, exports = [], visibility = None, exec_properties =
+     # buildifier: disable=native-android
+     native.android_library(
+         name = name,
+-        exports = exports + _kt_android_artifact(name, exec_properties = exec_properties, **kwargs),
++        exports = exports + _kt_android_artifact(
++            name,
++            exec_properties = exec_properties,
++            manifest = manifest,
++            assets = assets,
++            resource_files = resource_files,
++            android_merge_deps = android_merge_deps,
++            **kwargs
++        ),
+         visibility = visibility,
+         tags = kwargs.get("tags", default = None),
+         testonly = kwargs.get("testonly", default = 0),
+@@ -91,6 +146,8 @@ def kt_android_local_test(
+         jvm_flags = None,
+         manifest = None,
+         manifest_values = None,
++        assets = None,
++        resource_files = None,
+         test_class = None,
+         size = None,
+         timeout = None,
+@@ -112,7 +169,16 @@ def kt_android_local_test(
+     # buildifier: disable=native-android
+     native.android_local_test(
+         name = name,
+-        deps = kwargs.get("deps", []) + _kt_android_artifact(name = name, testonly = testonly, exec_properties = exec_properties, **kwargs),
++        deps = _kt_android_artifact(
++            name = name,
++            testonly = testonly,
++            exec_properties = exec_properties,
++            manifest = manifest,
++            manifest_values = manifest_values,
++            assets = assets,
++            resource_files = resource_files,
++            **kwargs
++        ) + kwargs.get("deps", []),
+         jvm_flags = jvm_flags,
+         test_class = test_class,
+         visibility = visibility,
+index 42f4b60..00c6944 100644
+--- kotlin/internal/jvm/compile.bzl
++++ kotlin/internal/jvm/compile.bzl
+@@ -357,6 +357,9 @@ def _run_kt_builder_action(
+     args.add_all("--deps_artifacts", deps_artifacts, omit_if_empty = True)
+     args.add_all("--kotlin_friend_paths", associates.jars, map_each = _associate_utils.flatten_jars)
+     args.add("--instrument_coverage", ctx.coverage_instrumented())
++    # TODO(https://github.com/bazelbuild/rules_kotlin/issues/634): Revert once a proper fix is checked into rules_kotlin.
++    # Reference: https://github.com/bazelbuild/rules_kotlin/pull/858/.
++    args.add("--kapt_correct_error_types", "true")
+ 
+     # Collect and prepare plugin descriptor for the worker.
+     args.add_all(
+index 510d72b..7b8b96f 100644
+--- src/main/kotlin/io/bazel/kotlin/builder/tasks/jvm/JdepsMerger.kt
++++ src/main/kotlin/io/bazel/kotlin/builder/tasks/jvm/JdepsMerger.kt
+@@ -62,35 +62,58 @@ class JdepsMerger {
+       output: String,
+       reportUnusedDeps: String,
+     ): Int {
+-      val rootBuilder = Deps.Dependencies.newBuilder()
+-      rootBuilder.success = false
+-      rootBuilder.ruleLabel = label
+-
+-      val dependencyMap = sortedMapOf<String, Deps.Dependency>()
+-      inputs.forEach { input ->
+-        BufferedInputStream(Paths.get(input).toFile().inputStream()).use {
+-          val deps: Deps.Dependencies = Deps.Dependencies.parseFrom(it)
+-          deps.getDependencyList().forEach {
+-            val dependency = dependencyMap.get(it.path)
+-            // Replace dependency if it has a stronger kind than one we encountered before.
+-            if (dependency == null || dependency.kind > it.kind) {
+-              dependencyMap.put(it.path, it)
+-            }
+-          }
++      val dependencyMap = inputs.flatMap { input ->
++        Paths.get(input).toFile().inputStream().buffered().use {
++          Deps.Dependencies.parseFrom(it).dependencyList
+         }
++      }.groupBy { it.path }.mapValues { (_, deps) ->
++        deps.minBy { it.kind } // Pick the dependency with the strongest kind.
+       }
+ 
+-      rootBuilder.addAllDependency(dependencyMap.values)
++      // See doWriteJdeps in JdepsGenExtension for an explanation on this logic. Note that it's
++      // needed here as well since non-Kotlin jdeps may include explicit references that justify the
++      // presence of those dependencies in a build unit's deps list (such as in the case of
++      // annotation processor generated Java code). Similar to the comment in doWriteJdeps, it would
++      // be best to solve this by leveraging common Target-Label declarations in dependency Jar
++      // manifests (so that cases other than AAR can be handled correctly, too, and so that the AAR
++      // case doesn't have to be special-cased in a way that could be fragile for future
++      // rules_android changes).
++      val explicitDeps = dependencyMap.values.filter { it.kind == Deps.Dependency.Kind.EXPLICIT }
++      val impliedAndroidExplicitDeps = explicitDeps.mapNotNull { dep ->
++        val jarPath = dep.path
++        val jarFile = File(jarPath)
++        val jarParentFolder = jarFile.parentFile
++        val aarParentFolder = jarParentFolder.parentFile
++        val mavenParentFolder = aarParentFolder.parentFile
++        if ("_aar" in jarPath && mavenParentFolder.exists() && aarParentFolder.name == "_aar") {
++          // This Jar file matches an aar_import from rules_jvm_external. Since it's an explicit
++          // dependency, also add its corresponding resources Jar (if one exists) as an explicit dep.
++          val resourcesJar = File(mavenParentFolder, "${jarParentFolder.name}_resources.jar")
++          if (resourcesJar.exists() && resourcesJar.isFile()) {
++            return@mapNotNull resourcesJar.path
++          } else null
++        } else null
++      }.toSet()
++
++      val adjustedDependencyMap = dependencyMap.mapValues { (jarPath, dep) ->
++        val adjustedKind = if (jarPath in impliedAndroidExplicitDeps) {
++          Deps.Dependency.Kind.EXPLICIT
++        } else dep.kind
++        return@mapValues if (adjustedKind != dep.kind) {
++          dep.toBuilder().setKind(adjustedKind).build()
++        } else dep
++      }
+ 
+-      rootBuilder.success = true
+-      rootBuilder.build().toByteArray()
++      val mergedDeps = Deps.Dependencies.newBuilder().apply {
++        this.success = true
++        this.ruleLabel = label
++        addAllDependency(adjustedDependencyMap.values)
++      }.build()
+ 
+-      BufferedOutputStream(File(output).outputStream()).use {
+-        it.write(rootBuilder.build().toByteArray())
+-      }
++      File(output).outputStream().buffered().use(mergedDeps::writeTo)
+ 
+       if (reportUnusedDeps != "off") {
+-        val unusedLabels = dependencyMap.values
++        val unusedLabels = adjustedDependencyMap.values
+           .filter { it.kind == Deps.Dependency.Kind.UNUSED }
+           .mapNotNull { readJarOwnerFromManifest(Paths.get(it.path)).label }
+           .filter { it != label }
+@@ -100,9 +123,8 @@ class JdepsMerger {
+             val open = "\u001b[35m\u001b[1m"
+             val close = "\u001b[0m"
+             return@info """
+-            |$open ** Please remove the following dependencies:$close ${unusedLabels.joinToString(
+-              " ",
+-            )} from $label 
++            |$open ** Please remove the following dependencies$close from $label:
++            |${unusedLabels.joinToString(separator = "\n") { "  - $it" } }
+             |$open ** You can use the following buildozer command:$close buildozer 'remove deps ${
+               unusedLabels.joinToString(" ")
+             }' $label
+index 6c5b680..85ba468 100644
+--- src/main/kotlin/io/bazel/kotlin/plugin/jdeps/JdepsGenExtension.kt
++++ src/main/kotlin/io/bazel/kotlin/plugin/jdeps/JdepsGenExtension.kt
+@@ -17,13 +17,16 @@ import org.jetbrains.kotlin.descriptors.ModuleDescriptor
+ import org.jetbrains.kotlin.descriptors.ParameterDescriptor
+ import org.jetbrains.kotlin.descriptors.PropertyDescriptor
+ import org.jetbrains.kotlin.descriptors.SourceElement
++import org.jetbrains.kotlin.descriptors.annotations.AnnotationDescriptor
+ import org.jetbrains.kotlin.descriptors.impl.LocalVariableDescriptor
+ import org.jetbrains.kotlin.extensions.StorageComponentContainerContributor
++import org.jetbrains.kotlin.load.java.descriptors.JavaClassConstructorDescriptor
+ import org.jetbrains.kotlin.load.java.descriptors.JavaMethodDescriptor
+ import org.jetbrains.kotlin.load.java.descriptors.JavaPropertyDescriptor
+ import org.jetbrains.kotlin.load.java.sources.JavaSourceElement
+ import org.jetbrains.kotlin.load.java.structure.impl.classFiles.BinaryJavaClass
+ import org.jetbrains.kotlin.load.java.structure.impl.classFiles.BinaryJavaField
++import org.jetbrains.kotlin.load.kotlin.KotlinJvmBinaryPackageSourceElement
+ import org.jetbrains.kotlin.load.kotlin.KotlinJvmBinarySourceElement
+ import org.jetbrains.kotlin.load.kotlin.VirtualFileKotlinClass
+ import org.jetbrains.kotlin.load.kotlin.getContainingKotlinJvmBinaryClass
+@@ -39,7 +42,11 @@ import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+ import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
+ import org.jetbrains.kotlin.resolve.checkers.DeclarationChecker
+ import org.jetbrains.kotlin.resolve.checkers.DeclarationCheckerContext
++import org.jetbrains.kotlin.resolve.constants.ArrayValue
++import org.jetbrains.kotlin.resolve.constants.ConstantValue
+ import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
++import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedClassConstructorDescriptor
++import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedMemberDescriptor
+ import org.jetbrains.kotlin.types.KotlinType
+ import org.jetbrains.kotlin.types.TypeConstructor
+ import org.jetbrains.kotlin.types.typeUtil.supertypes
+@@ -71,6 +78,7 @@ class JdepsGenExtension(
+   AnalysisHandlerExtension, StorageComponentContainerContributor {
+ 
+   companion object {
++    private const val ANDROID_SDK_LABEL = "//third_party:android_sdk"
+ 
+     /**
+      * Returns the path of the jar archive file corresponding to the provided descriptor.
+@@ -118,13 +126,15 @@ class JdepsGenExtension(
+     moduleDescriptor: ModuleDescriptor,
+   ) {
+     container.useInstance(
+-      ClasspathCollectingChecker(explicitClassesCanonicalPaths, implicitClassesCanonicalPaths),
++      ClasspathCollectingChecker(explicitClassesCanonicalPaths, implicitClassesCanonicalPaths, moduleDescriptor, configuration),
+     )
+   }
+ 
+   class ClasspathCollectingChecker(
+     private val explicitClassesCanonicalPaths: MutableSet<String>,
+     private val implicitClassesCanonicalPaths: MutableSet<String>,
++    private val moduleDescriptor: ModuleDescriptor,
++    val configuration: CompilerConfiguration,
+   ) : CallChecker, DeclarationChecker {
+ 
+     override fun check(
+@@ -145,14 +155,38 @@ class JdepsGenExtension(
+           )?.let { explicitClassesCanonicalPaths.add(it) }
+         }
+         is FunctionDescriptor -> {
+-          resultingDescriptor.returnType?.let { addImplicitDep(it) }
++          resultingDescriptor.returnType?.let {
++            if (resultingDescriptor is JavaClassConstructorDescriptor ||
++              resultingDescriptor is DeserializedClassConstructorDescriptor) {
++              // Constructors' return types are the class themselves and are thus explicit. This
++              // seems to cover most "::class" references, as well as some uses of Java annotations.
++              addExplicitDep(it)
++            } else addImplicitDep(it)
++          }
+           resultingDescriptor.valueParameters.forEach { valueParameter ->
+             collectTypeReferences(valueParameter.type, isExplicit = false)
+           }
+-          val virtualFileClass =
++          // Extension receivers are implicit types in the same way as return types.
++          resultingDescriptor.extensionReceiverParameter?.value?.type?.let { addImplicitDep(it) }
++          // Originally, this used just getContainingKotlinJvmBinaryClass(), but per
++          // https://github.com/JetBrains/kotlin/blob/d423782f/compiler/frontend.java/src/org/jetbrains/kotlin/load/kotlin/kotlinJvmBinaryClassUtil.kt#L29
++          // the utility only uses getRepresentativeBinaryClass for
++          // KotlinJvmBinaryPackageSourceElement which just picks the first candidate. Instead, make
++          // sure the correct containing class is selected.
++          // NOTE: This still doesn't quite work as it seems that even getContainingBinaryClass
++          // mixes up the origin of same-package same-name extension functions. I kind of feel like
++          // we should just use reflection to get all of the possible classes and marking them all
++          // as explicit. This will result in false negatives, though.
++          val declarationWithSource =
++            resultingDescriptor.containingDeclaration as? DeclarationDescriptorWithSource
++          val source = declarationWithSource?.source as? KotlinJvmBinaryPackageSourceElement
++          val deserializedDescriptor = resultingDescriptor as? DeserializedMemberDescriptor
++          val containingClass = deserializedDescriptor?.let { source?.getContainingBinaryClass(it) }
++          val virtualFileClassPaths = listOfNotNull(
++            containingClass as? VirtualFileKotlinClass,
+             resultingDescriptor.getContainingKotlinJvmBinaryClass() as? VirtualFileKotlinClass
+-              ?: return
+-          explicitClassesCanonicalPaths.add(virtualFileClass.file.path)
++          ).map { it.file.path }.distinct()
++          virtualFileClassPaths.forEach(explicitClassesCanonicalPaths::add)
+         }
+         is ParameterDescriptor -> {
+           getClassCanonicalPath(resultingDescriptor)?.let { explicitClassesCanonicalPaths.add(it) }
+@@ -169,10 +203,16 @@ class JdepsGenExtension(
+               (resultingDescriptor.containingDeclaration as ClassDescriptor).defaultType,
+             )
+             else -> {
+-              val virtualFileClass =
+-                (resultingDescriptor).getContainingKotlinJvmBinaryClass() as? VirtualFileKotlinClass
+-                  ?: return
+-              explicitClassesCanonicalPaths.add(virtualFileClass.file.path)
++              val declarationWithSource =
++                resultingDescriptor.containingDeclaration as? DeclarationDescriptorWithSource
++              val source = declarationWithSource?.source as? KotlinJvmBinaryPackageSourceElement
++              val deserializedDescriptor = resultingDescriptor as? DeserializedMemberDescriptor
++              val containingClass = deserializedDescriptor?.let { source?.getContainingBinaryClass(it) }
++              val virtualFileClassPaths = listOfNotNull(
++                containingClass as? VirtualFileKotlinClass,
++                resultingDescriptor.getContainingKotlinJvmBinaryClass() as? VirtualFileKotlinClass
++              ).map { it.file.path }.distinct()
++              virtualFileClassPaths.forEach(explicitClassesCanonicalPaths::add)
+             }
+           }
+           addImplicitDep(resultingDescriptor.type)
+@@ -191,6 +231,11 @@ class JdepsGenExtension(
+           descriptor.typeConstructor.supertypes.forEach {
+             collectTypeReferences(it)
+           }
++          // Track all annotations and their constnat values as explicit dependencies. In some cases
++          // of class references, the references may not show up via CallChecker. This happened in
++          // Oppia's PersistentCacheStoreTest for its TestLogReportingModule::class reference, and
++          // it's unclear why. This approach is a more robust way of ensuring type inclusion.
++          descriptor.annotations.forEach { collectTypeReferences(it) }
+         }
+         is FunctionDescriptor -> {
+           descriptor.returnType?.let { collectTypeReferences(it) }
+@@ -227,6 +272,36 @@ class JdepsGenExtension(
+       getClassCanonicalPath(it.constructor)?.let { explicitClassesCanonicalPaths.add(it) }
+     }
+ 
++    private fun addExplicitDeps(types: List<KotlinType>) {
++      types.forEach { addExplicitDep(it) }
++    }
++
++    private fun collectTypeReferences(annotationDescriptor: AnnotationDescriptor) {
++      addExplicitDep(annotationDescriptor.type)
++      for (constantValue in annotationDescriptor.allValueArguments.values) {
++        collectTypeReferences(constantValue)
++      }
++    }
++
++    private fun collectTypeReferences(annotationConstant: ConstantValue<*>) {
++      if (annotationConstant is ArrayValue) {
++        annotationConstant.value.forEach { collectTypeReferences(it) }
++      } else addExplicitDeps(annotationConstant.getType(moduleDescriptor).computeArgumentClosure())
++    }
++
++    private fun KotlinType.computeArgumentClosure(): List<KotlinType> {
++      return mutableSetOf<KotlinType>().also {
++        fillArgumentClosure(this@computeArgumentClosure, it)
++      }.toList()
++    }
++
++    private fun fillArgumentClosure(rootType: KotlinType, checkedTypes: MutableSet<KotlinType>) {
++      if (rootType !in checkedTypes) {
++        checkedTypes += rootType
++        rootType.arguments.forEach { fillArgumentClosure(it.type, checkedTypes) }
++      }
++    }
++
+     /**
+      * Records direct and indirect references for a given type. Direct references are explicitly
+      * used in the code, e.g: a type declaration or a generic type declaration. Indirect references
+@@ -316,7 +391,110 @@ class JdepsGenExtension(
+     rootBuilder.success = true
+     rootBuilder.ruleLabel = targetLabel
+ 
+-    val unusedDeps = directDeps.subtract(explicitDeps.keys)
++    // Add hack for AAR resource exports. These jars cannot be easily consolidated with the
++    // classes_and_libs_merged.jar for which this extension is able to verify usage. A better
++    // long-term solution would be:
++    // 1. Ensuring that either aar_import (within Bazel or Starlark when rules_android is finished)
++    //    or rules_jvm_external ensure that all exported files from aar_import correctly has the
++    //    Target-Label line in their manifests corresponding to the target that needs to be used.
++    //    Currently, only the resources library has Target-Label so there's no general way to use
++    //    the knowledge that an AAR's classes_and_libs_merged.jar being used means that AAR's
++    //    resources library can be ignored (since the main target is still being used).
++    // 2. Updating the unused detection to be based on labels rather than Jar paths (artifacts which
++    //    don't have a Target-Label wouldn't be compatible with unused_deps and should be ignored).
++    // (2) will probably also help with strict_deps providing better buildozer commands when
++    // suggesting to fix missing strict dependencies.
++    val impliedAndroidExplicitDeps = explicitDeps.keys.mapNotNull { jarPath ->
++      val jarFile = File(jarPath)
++      val jarParentFolder = jarFile.parentFile
++      val aarParentFolder = jarParentFolder.parentFile
++      val mavenParentFolder = aarParentFolder.parentFile
++      if ("_aar" in jarPath && mavenParentFolder.exists() && aarParentFolder.name == "_aar") {
++        // This Jar file matches an aar_import from rules_jvm_external. Since it's an explicit
++        // dependency, also add its corresponding resources Jar (if one exists) as an explicit dep.
++        val resourcesJar = File(mavenParentFolder, "${jarParentFolder.name}_resources.jar")
++        if (resourcesJar.exists() && resourcesJar.isFile()) {
++          return@mapNotNull resourcesJar.path
++        } else null
++      } else null
++    }.toSet()
++
++    val directDepsLabelsAndPaths = directDeps.mapNotNull { jarPath ->
++      val jarOwner = JarOwner.readJarOwnerFromManifest(File(jarPath).toPath())
++      val jarRuleContext = jarOwner.label?.let { it.canonicalizeLabel() to jarOwner.aspect }
++      return@mapNotNull jarRuleContext?.let { jarPath to it }
++    }
++    val directDepsByLabel = directDepsLabelsAndPaths.groupBy { (_, jarRuleContext) ->
++      val (label, _) = jarRuleContext
++      return@groupBy label
++    }.mapValues { (_, labelJarPathPairs) ->
++      labelJarPathPairs.map { (jarPath, _) -> jarPath }
++    }
++    val directDepLabelsByJarPath = directDepsLabelsAndPaths.groupBy { (jarPath, _) ->
++      jarPath
++    }.mapValues { (_, labelJarPathPairs) ->
++      val (label, _) = labelJarPathPairs.single().second
++      return@mapValues label
++    }
++    val depAspectsByLabel = directDepsLabelsAndPaths.associate { (_, jarRuleContext) ->
++      val (label, aspect) = jarRuleContext
++      return@associate label to aspect
++    }
++
++    // Ensure that both Kotlin standard libraries & the Android SDK are ignored as possible
++    // dependencies to remove (since rules_kotlin itself forces these libraries to be present even
++    // if none of their classes are used). Bazel's Java strict deps achieves this by leveraging a
++    // bootstrap classpath property which may be a cleaner way to solve this long-term.
++    val impliedBootstrapExplicitDeps = directDeps.filterTo(mutableSetOf()) { jarPath ->
++      jarPath.startsWith("external/com_github_jetbrains_kotlin")
++    } + listOfNotNull(
++      directDepsByLabel.entries.find { (label, _) ->
++        label.endsWith(ANDROID_SDK_LABEL)
++      }?.value?.singleOrNull()
++    )
++
++    // Similar to AAR exemptions above, rules_kotlin's kt_android_library causes an issue since it
++    // produces two different libraries: a base one that contains assets, and a kt one that contains
++    // compiled Kotlin. If a dependency is a kt_android_library, its _base can be assumed as
++    // explicit if the Kotlin library is an explicit dependency. This could be done better either by
++    // consolidating kt_android_library into a single rule, or by leveraging the labels solution
++    // mentioned above for AARs (except it needs some refining since current target labels don't
++    // reference the common parent dependency). Alternatively, this could also look at the rule type
++    // generating the artifact (however this isn't defined for both _base and _kt Jars--perhaps
++    // kt_android_library could update both artifacts to include a more accurate rule type & target
++    // label?).
++    //
++    // This also accounts for multiple artifacts emitted by a single rule that DO share a label
++    // (since all of these should be considered as explicit dependencies if any are individually
++    // explicit).
++    val verifiedKotlinAndroidLabels = directDepsByLabel.keys.flatMap { label ->
++      if (label.endsWith("_kt") && depAspectsByLabel[label] == "kt_jvm_library") {
++        val androidLabel = "${label.removeSuffix("_kt")}_base"
++        if (androidLabel in directDepsByLabel) {
++          listOf(androidLabel to label, label to androidLabel)
++        } else emptyList() // The dependency is Kotlin-only so no automatic explicit dependencies.
++      } else emptyList()
++    }.toMap()
++
++    // If the current target is a kt_android_library, it will have a _base that will always be an
++    // explicit dependency for the target.
++    val impliedTargetLibraryExplicitAndroidDeps =
++      directDepsByLabel["${targetLabel.removeSuffix("_kt")}_base"]
++
++    val impliedKotlinAndroidExplicitDeps = explicitDeps.keys.flatMapTo(mutableSetOf()) { jarPath ->
++      directDepLabelsByJarPath[jarPath]?.let { label ->
++        verifiedKotlinAndroidLabels[label]?.let { pairedLabel ->
++          // This Jar path corresponds to a kt_android_library, so make sure its paired Jar artifact
++          // is included as an implied explicit dependency.
++          listOf(jarPath) + directDepsByLabel.getValue(pairedLabel)
++        } ?: directDepsByLabel.getValue(label) // All artifacts for this label are now explicit.
++      } ?: emptyList()
++    } + (impliedTargetLibraryExplicitAndroidDeps?.toSet() ?: emptySet())
++
++    val impliedExplicitDeps =
++      impliedAndroidExplicitDeps + impliedBootstrapExplicitDeps + impliedKotlinAndroidExplicitDeps
++
++    val unusedDeps = directDeps - (explicitDeps.keys + impliedExplicitDeps)
+     unusedDeps.forEach { jarPath ->
+       val dependency = Deps.Dependency.newBuilder()
+       dependency.kind = Deps.Dependency.Kind.UNUSED
+@@ -324,14 +502,14 @@ class JdepsGenExtension(
+       rootBuilder.addDependency(dependency)
+     }
+ 
+-    explicitDeps.forEach { (jarPath, _) ->
++    (explicitDeps.keys + impliedExplicitDeps).forEach { jarPath ->
+       val dependency = Deps.Dependency.newBuilder()
+       dependency.kind = Deps.Dependency.Kind.EXPLICIT
+       dependency.path = jarPath
+       rootBuilder.addDependency(dependency)
+     }
+ 
+-    implicitDeps.keys.subtract(explicitDeps.keys).forEach {
++    implicitDeps.keys.subtract(explicitDeps.keys + impliedExplicitDeps).forEach {
+       val dependency = Deps.Dependency.newBuilder()
+       dependency.kind = Deps.Dependency.Kind.IMPLICIT
+       dependency.path = it
+@@ -343,6 +521,11 @@ class JdepsGenExtension(
+     }
+   }
+ 
++  private fun String.canonicalizeLabel() = replacePrefix(oldPrefix = "@//", newPrefix = "//")
++
++  private fun String.replacePrefix(oldPrefix: String, newPrefix: String) =
++    if (startsWith(oldPrefix)) "$newPrefix${removePrefix(oldPrefix)}" else this
++
+   private fun doStrictDeps(
+     compilerConfiguration: CompilerConfiguration,
+     targetLabel: String,
+@@ -369,9 +552,13 @@ class JdepsGenExtension(
+     directDeps: List<String>,
+     targetLabel: String,
+   ): Boolean {
+-    val missingStrictDeps = result.keys
+-      .filter { !directDeps.contains(it) }
+-      .map { JarOwner.readJarOwnerFromManifest(Paths.get(it)) }
++    // In case path relativity changes between finding the Jars corresponding to system classes and
++    // the deps passed in from Bazel, use absolute paths to avoid potential inconsistencies.
++    val explicitDepsPaths = result.keys.mapTo(mutableSetOf()) { File(it).absolutePath }
++    val directDepsPaths = directDeps.mapTo(mutableSetOf()) { File(it).absolutePath }
++    val missingStrictDeps = (explicitDepsPaths - directDepsPaths).map { depPath ->
++      JarOwner.readJarOwnerFromManifest(Paths.get(depPath))
++    }
+ 
+     if (missingStrictDeps.isNotEmpty()) {
+       val missingStrictLabels = missingStrictDeps.mapNotNull { it.label }
+@@ -381,21 +568,21 @@ class JdepsGenExtension(
+ 
+       var command =
+         """
+-        $open ** Please add the following dependencies:$close
+-        ${
+-          missingStrictDeps.map { it.label ?: it.jar }.joinToString(" ")
+-        } to $targetLabel
+-        """
++        $open ** Please add the following dependencies$close to $targetLabel:
++        """.trimIndent()
++      command += "\n" + missingStrictDeps.map { it.label ?: it.jar }.joinToString(separator = "\n") { "  - $it" }
+ 
+       if (missingStrictLabels.isNotEmpty()) {
+-        command += """$open ** You can use the following buildozer command:$close
++        command += "\n\n" +
++        """
++        $open ** You can use the following buildozer command:$close
+         buildozer 'add deps ${
+           missingStrictLabels.joinToString(" ")
+         }' $targetLabel
+-        """
++        """.trimIndent() + "\n"
+       }
+ 
+-      println(command.trimIndent())
++      println(command)
+       return true
+     }
+     return false
+index cba3568..4b55688 100644
+--- src/main/starlark/release_archive/repository.bzl
++++ src/main/starlark/release_archive/repository.bzl
+@@ -42,8 +42,6 @@ def archive_repository_implementation(repository_ctx):
+             stripPrefix = attr._remote_prefix,
+         )
+     else:
+-        print("build %s" % repository_ctx.execute(["date"]).stdout)
+-
+         # not OS safe. Presuming linux-likes until complaints.
+         release_archive = attr.local_release_archive_target
+ 
+@@ -53,25 +51,9 @@ def archive_repository_implementation(repository_ctx):
+         if not workspace.exists:
+             fail("local workspace %s does not exist" % workspace)
+ 
++        # Assume the WORKSPACE is correctly defined at the http_archive level.
+         target = "//%s:%s" % (release_archive.package, release_archive.name)
+ 
+-        workspace_file = workspace.get_child("WORKSPACE")
+-
+-        # if kt_download_local_dev_dependencies isn't there, the WORKSPACE file is invalid
+-        # probably generated by http_archive.
+-        if not ("kt_download_local_dev_dependencies" in repository_ctx.read(workspace_file)):
+-            repository_ctx.report_progress(
+-                "Symlinking WORKSPACE to WORKSPACE.dev.bazel in %s" % (workspace.basename),
+-            )
+-
+-            # Remove existing WORKSPACE, as it might be created by http_archive
+-            repository_ctx.delete(workspace_file)
+-
+-            # Symlink the WORKSPACE
+-            repository_ctx.symlink(
+-                workspace.get_child("WORKSPACE.dev.bazel"),
+-                workspace_file,
+-            )
+         repository_ctx.report_progress(
+             "Building %s in %s... (may take a while.)" % (target, workspace.basename),
+         )
+@@ -97,17 +79,6 @@ def archive_repository_implementation(repository_ctx):
+             archive = release_artifact,
+         )
+ 
+-        # Update the timestamp on the repository rule source to ensure it's always re-evaluated.
+-        # This appears to cause issues on windows with permissions -- so don't do it.
+-        if not "win" in repository_ctx.os.name:
+-            self = workspace
+-            for segment in "src/main/starlark/release_archive/repository.bzl".split("/"):
+-                self = self.get_child(segment)
+-            repository_ctx.execute([
+-                "touch",
+-                str(self),
+-            ])
+-
+ # not windows compatible.
+ # buildifier: disable=unused-variable
+ def _find_workspace(attr, environ, path):

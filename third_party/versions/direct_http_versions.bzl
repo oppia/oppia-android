@@ -17,7 +17,7 @@ load(":direct_maven_versions.bzl", "PRODUCTION_DEPENDENCY_VERSIONS")
 
 # External dependencies that are directly imported rather than made accessible through Maven. See
 # the individual create*reference() functions for more details on available properties and
-# configurations. Note that the order of the references in this list mostly matter (that is, they
+# configurations. Note that the order of the references in this list mostly matters (that is, they
 # can be configured to reference earlier references, and references are evaluated in-order.
 DIRECT_REMOTE_DEPENDENCIES = [
     create_http_archive_reference(
@@ -45,6 +45,11 @@ DIRECT_REMOTE_DEPENDENCIES = [
         test_only = False,
         url = "https://github.com/google/dagger/archive/dagger-{0}.zip",
         strip_prefix_template = "dagger-dagger-{0}",
+        patches_details = [
+            create_local_patch_config(
+                patch_file = "//third_party/versions/mods:dagger-dep-reduction.patch",
+            ),
+        ],
     ),
     create_http_archive_reference(
         name = "protobuf_tools",
@@ -84,19 +89,33 @@ DIRECT_REMOTE_DEPENDENCIES = [
         strip_prefix_template = "rules_jvm_external-{0}",
     ),
     create_http_archive_reference(
-        name = "rules_kotlin",
-        sha = "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
-        version = "v1.7.1",
+        name = "io_bazel_stardoc",
+        sha = "3fd8fec4ddec3c670bd810904e2e33170bedfe12f90adf943508184be458c8bb",
+        version = "0.5.3",
         test_only = False,
-        url = "https://github.com/bazelbuild/rules_kotlin/releases/download/{0}/rules_kotlin_release.tgz",
-        import_bind_name = "io_bazel_rules_kotlin",
+        urls = [
+            "https://mirror.bazel.build/github.com/bazelbuild/stardoc/releases/download/{0}/stardoc-{0}.tar.gz",
+            "https://github.com/bazelbuild/stardoc/releases/download/{0}/stardoc-{0}.tar.gz",
+        ],
+    ),
+    create_http_archive_reference(
+        name = "rules_kotlin",
+        sha = "1c1e6fad6d28b8b62461a336b88bf7e03126ae27a2a88066da5f2b3a431a8fde",
+        version = "1.7.1",
+        test_only = False,
+        url = "https://github.com/bazelbuild/rules_kotlin/archive/v{0}.tar.gz",
         patches_details = [
             create_remote_patch_config(
                 patch_url = "https://github.com/bazelbuild/rules_kotlin/commit/0b75e942.patch",
                 patch_sri = "sha256-cP0YqxMiQSye3T7E1w6c8HY6XDtd3CaYnGtnlmqRnKg=",
             ),
+            create_local_patch_config(
+                patch_file = "//third_party/versions/mods:rules_kotlin-combined.patch",
+            ),
         ],
-        patch_path_start_removal_count = 1,
+        remote_patch_path_start_removal_count = 1,
+        workspace_file = "//third_party/versions/mods:WORKSPACE.rules_kotlin",
+        strip_prefix_template = "rules_kotlin-{0}",
     ),
     create_http_archive_reference(
         name = "rules_proto",
@@ -118,9 +137,9 @@ DIRECT_REMOTE_DEPENDENCIES = [
         export_details = create_export_library_details(
             exposed_artifact_name = "com_google_guava_guava",
             exportable_target = "jar",
-            export_toolchain = EXPORT_TOOLCHAIN.ANDROID,
+            export_toolchain = EXPORT_TOOLCHAIN.JAVA,
             should_be_visible_to_maven_targets = True,
-            additional_exports = [
+            runtime_deps = [
                 "//third_party:com_google_errorprone_error_prone_annotations",
                 "//third_party:com_google_guava_failureaccess",
                 "//third_party:com_google_j2objc_j2objc-annotations",
@@ -140,7 +159,7 @@ DIRECT_REMOTE_DEPENDENCIES = [
             exportable_target = "jar",
             export_toolchain = EXPORT_TOOLCHAIN.KOTLIN,
             should_be_visible_to_maven_targets = True,
-            additional_exports = [
+            runtime_deps = [
                 "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8",
             ],
         ),

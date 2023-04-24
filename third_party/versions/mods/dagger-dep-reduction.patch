@@ -1,0 +1,11 @@
+index 922978201..551312161 100644
+--- workspace_defs.bzl
++++ workspace_defs.bzl
+@@ -75,7 +75,6 @@ def dagger_rules(repo_name = "@maven"):
+         visibility = ["//visibility:public"],
+         exports = [
+             "%s//:com_google_dagger_dagger" % repo_name,
+-            "%s//:javax_inject_javax_inject" % repo_name,
+         ],
+     )
+
