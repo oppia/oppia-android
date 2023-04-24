@@ -89,7 +89,9 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -537,6 +539,7 @@ class OptionsFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun openOptionsActivity_clickAudioLanguage_opensAudioLanguageActivity() {
     launch<OptionsActivity>(

@@ -97,13 +97,15 @@
   <string name="temporary_translate_to_english" translatable="false">Switch lesson to English</string>
   <!-- General test activity strings. -->
   <string name="test_activity_label" translatable="false">Test-only activity</string>
-  <string name="hinglish" translatable="false">हिन्दी</string>
-  <string name="arabic" translatable="false">العربية</string>
-  <string name="english" translatable="false">English</string>
-  <string name="hindi" translatable="false">हिन्दी</string>
-  <string name="portuguese" translatable="false">Português</string>
-  <string name="brazilian_portuguese" translatable="false">Português</string>
-  <string name="swahili" translatable="false">Kiswahili</string>
-  <string name="chinese" translatable="false">中文</string>
-  <string name="french" translatable="false">Français</string>
+  <!--These are names of languages localized to that particular language. -->
+  <string name="hinglish_localized_language_name" translatable="false">हिन्दी</string>
+  <string name="arabic_localized_language_name" translatable="false">العربية</string>
+  <string name="english_localized_language_name" translatable="false">English</string>
+  <string name="hindi_localized_language_name" translatable="false">हिन्दी</string>
+  <string name="portuguese_localized_language_name" translatable="false">Português</string>
+  <string name="brazilian_portuguese_localized_language_name" translatable="false">Português</string>
+  <string name="swahili_localized_language_name" translatable="false">Kiswahili</string>
+  <!--These are names of languages localized to that particular audio language. -->
+  <string name="chinese_localized_language_name" translatable="false">中文</string>
+  <string name="french_localized_language_name" translatable="false">Français</string>
 </resources>

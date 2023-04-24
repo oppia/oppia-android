@@ -152,33 +152,38 @@ class AppLanguageResourceHandler @Inject constructor(
    */
   fun computeLocalizedDisplayName(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
-      AudioLanguage.HINDI_AUDIO_LANGUAGE -> resources.getString(R.string.hindi)
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> resources.getString(R.string.french)
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> resources.getString(R.string.chinese)
+      AudioLanguage.HINDI_AUDIO_LANGUAGE ->
+        resources.getString(R.string.hindi_localized_language_name)
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE ->
+        resources.getString(R.string.french_localized_language_name)
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE ->
+        resources.getString(R.string.chinese_localized_language_name)
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE ->
-        resources.getString(R.string.brazilian_portuguese)
+        resources.getString(R.string.brazilian_portuguese_localized_language_name)
       AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED,
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> resources.getString(R.string.english)
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      -> resources.getString(R.string.english_localized_language_name)
     }
   }
 
   /**
    * Returns a human-readable, localized representation of the specified [OppiaLanguage].
-   *
    * Note that the returned string is not expected to be localized to the user's current locale.
    * Instead, it will be localized for that specific language (i.e. each language will be
    * represented within that language to make it easier to identify when choosing a language).
    */
   fun computeLocalizedDisplayName(oppiaLanguage: OppiaLanguage): String {
     return when (oppiaLanguage) {
-      OppiaLanguage.HINDI -> resources.getString(R.string.hindi)
-      OppiaLanguage.PORTUGUESE -> resources.getString(R.string.portuguese)
-      OppiaLanguage.SWAHILI -> resources.getString(R.string.swahili)
-      OppiaLanguage.BRAZILIAN_PORTUGUESE -> resources.getString(R.string.brazilian_portuguese)
+      OppiaLanguage.HINDI -> resources.getString(R.string.hindi_localized_language_name)
+      OppiaLanguage.PORTUGUESE ->
+        resources.getString(R.string.portuguese_localized_language_name)
+      OppiaLanguage.SWAHILI -> resources.getString(R.string.swahili_localized_language_name)
+      OppiaLanguage.BRAZILIAN_PORTUGUESE
+      -> resources.getString(R.string.brazilian_portuguese_localized_language_name)
       OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED,
-      OppiaLanguage.ENGLISH -> resources.getString(R.string.english)
-      OppiaLanguage.ARABIC -> resources.getString(R.string.arabic)
-      OppiaLanguage.HINGLISH -> resources.getString(R.string.hinglish)
+      OppiaLanguage.ENGLISH -> resources.getString(R.string.english_localized_language_name)
+      OppiaLanguage.ARABIC -> resources.getString(R.string.arabic_localized_language_name)
+      OppiaLanguage.HINGLISH -> resources.getString(R.string.hinglish_localized_language_name)
     }
   }
 }

@@ -58,30 +58,16 @@ class OptionControlsViewModel @Inject constructor(
     uiLiveData.value = isInitialized
   }
 
-  private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
-    profileManagementController.getProfile(profileId).toLiveData()
-  }
-
-  private val appLanguageResultLiveData: LiveData<AsyncResult<OppiaLanguage>> by lazy {
-    translationController.getAppLanguage(profileId).toLiveData()
-  }
-
-  private val profileLiveData: LiveData<Profile> by lazy { getProfileData() }
-
-  private val appLanguageLiveData: LiveData<AppLanguageSelection> by lazy {
-    Transformations.map(appLanguageResultLiveData, ::processAppLanguageResult)
-  }
-
-  private fun getProfileData(): LiveData<Profile> {
-    return Transformations.map(profileResultLiveData, ::processProfileResult)
-  }
-
   val optionListLiveData: LiveData<List<OptionsItemViewModel>> by lazy {
-    Transformations.map(profileLiveData, ::processProfileList)
+    Transformations.map(
+      profileManagementController.getProfile(profileId).toLiveData(), ::processProfileResult
+    )
   }
 
   val languageListLiveData: LiveData<List<OptionsItemViewModel>> by lazy {
-    Transformations.map(appLanguageLiveData, ::processLanguageList)
+    Transformations.map(
+      translationController.getAppLanguage(profileId).toLiveData(), ::processAppLanguageResult
+    )
   }
 
   fun setProfileId(profileId: ProfileId) {
@@ -126,78 +112,72 @@ class OptionControlsViewModel @Inject constructor(
 
   private fun processAppLanguageResult(
     oppiaLanguage: AsyncResult<OppiaLanguage>
-  ): AppLanguageSelection {
+  ): List<OptionsItemViewModel> {
     return when (oppiaLanguage) {
       is AsyncResult.Failure -> {
-        AppLanguageSelection.getDefaultInstance()
+        emptyList()
       }
       is AsyncResult.Pending -> {
-        AppLanguageSelection.getDefaultInstance()
+        emptyList()
       }
       is AsyncResult.Success -> {
-        AppLanguageSelection.newBuilder().apply { selectedLanguage = oppiaLanguage.value }.build()
+        val appLanguageSelection =
+          AppLanguageSelection.newBuilder().apply { selectedLanguage = oppiaLanguage.value }.build()
+
+        val itemsList = arrayListOf<OptionsItemViewModel>()
+        val optionsAppLanguageViewModel =
+          OptionsAppLanguageViewModel(
+            routeToAppLanguageListListener,
+            loadAppLanguageListListener, appLanguageSelection.selectedLanguage,
+            resourceHandler.computeLocalizedDisplayName(appLanguageSelection.selectedLanguage)
+          )
+
+        if (enableLanguageSelectionUi.value) {
+          itemsList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
+        }
+
+        itemsList
       }
     }
   }
 
-  private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
+  private fun processProfileResult(profile: AsyncResult<Profile>): List<OptionsItemViewModel> {
     return when (profile) {
       is AsyncResult.Failure -> {
         oppiaLogger.e("OptionsFragment", "Failed to retrieve profile", profile.error)
-        Profile.getDefaultInstance()
+        emptyList()
       }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> profile.value
+      is AsyncResult.Pending -> emptyList()
+      is AsyncResult.Success -> {
+        val itemsList = arrayListOf<OptionsItemViewModel>()
+
+        val optionsReadingTextSizeViewModel =
+          OptionsReadingTextSizeViewModel(
+            routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
+          )
+
+        val optionAudioViewViewModel =
+          OptionsAudioLanguageViewModel(
+            routeToAudioLanguageListListener,
+            loadAudioLanguageListListener,
+            profile.value.audioLanguage,
+            resourceHandler.computeLocalizedDisplayName(profile.value.audioLanguage)
+          )
+
+        optionsReadingTextSizeViewModel.readingTextSize.set(profile.value.readingTextSize)
+
+        itemsList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
+        itemsList.add(optionAudioViewViewModel as OptionsItemViewModel)
+
+        // Loading the initial options in the sub-options container
+        if (isMultipane.get()!! && isFirstOpen) {
+          optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
+          isFirstOpen = false
+        }
+
+        return itemsList
+      }
     }
-  }
-
-  private fun processProfileList(profile: Profile): List<OptionsItemViewModel> {
-    val itemsList = arrayListOf<OptionsItemViewModel>()
-
-    val optionsReadingTextSizeViewModel =
-      OptionsReadingTextSizeViewModel(
-        routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
-      )
-
-    val optionAudioViewViewModel =
-      OptionsAudioLanguageViewModel(
-        routeToAudioLanguageListListener,
-        loadAudioLanguageListListener,
-        profile.audioLanguage,
-        resourceHandler.computeLocalizedDisplayName(profile.audioLanguage)
-      )
-
-    optionsReadingTextSizeViewModel.readingTextSize.set(profile.readingTextSize)
-
-    itemsList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
-    itemsList.add(optionAudioViewViewModel as OptionsItemViewModel)
-
-    // Loading the initial options in the sub-options container
-    if (isMultipane.get()!! && isFirstOpen) {
-      optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
-      isFirstOpen = false
-    }
-
-    return itemsList
-  }
-
-  private fun processLanguageList(
-    appLanguageSelection:
-      AppLanguageSelection
-  ): List<OptionsItemViewModel> {
-    val itemsList = arrayListOf<OptionsItemViewModel>()
-    val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel(
-        routeToAppLanguageListListener,
-        loadAppLanguageListListener, appLanguageSelection.selectedLanguage,
-        resourceHandler.computeLocalizedDisplayName(appLanguageSelection.selectedLanguage)
-      )
-
-    if (enableLanguageSelectionUi.value) {
-      itemsList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
-    }
-
-    return itemsList
   }
 
   /**

@@ -77,9 +77,8 @@ class TranslationController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger,
 ) {
-  // TODO(#4938): Finish this implementation. The implementation below now saves/restores
-  //  per profile user language selection as part of #4606, per profile audio language selection part not covered in
-  //  this PR but should be when this TODO is addressed.
+  // TODO(#4938): Finish this implementation. The implementation below saves/restores per-profile app
+  //  language, but not audio language.
 
   private val dataLock = ReentrantLock()
   private val writtenTranslationLanguageSettings =
@@ -164,8 +163,8 @@ class TranslationController @Inject constructor(
    * best-effort basis for translating strings for system languages (generally if the system
    * language matches a supported language, otherwise the app defaults to English).
    *
-   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
-   *     result is ever provided). The payload of the data provider is the *previous* selection
+   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails
+   * . The payload of the data provider is the *current* selection
    *     state.
    */
   fun updateAppLanguage(

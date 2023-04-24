@@ -7,7 +7,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 # Resource shim needed so that AppLanguageResourceHandler can build in both Gradle & Bazel.
 genrule(
-    name = "update_DateTimeUtil",
+    name = "update_AppLanguageResourceHandler",
     srcs = ["AppLanguageResourceHandler.kt"],
     outs = ["AppLanguageResourceHandler_updated.kt"],
     cmd = """

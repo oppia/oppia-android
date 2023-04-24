@@ -2,13 +2,11 @@ package org.oppia.android.app.translation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
@@ -67,28 +65,10 @@ class AppLanguageWatcherMixin @Inject constructor(
 
     val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
-    var appLanguageLocaleDataProvider: DataProvider<OppiaLocale.DisplayLocale>? = null
-
-    when {
-      shouldUseSystemLanguage -> {
-        appLanguageLocaleDataProvider = translationController.getSystemLanguageLocale()
-      }
-      else -> {
-        when {
-          shouldUseSystemLanguage && currentUserProfileId == null -> {
-            appLanguageLocaleDataProvider = translationController.getSystemLanguageLocale()
-          }
-          !shouldUseSystemLanguage && currentUserProfileId != null -> {
-            appLanguageLocaleDataProvider =
-              translationController.getAppLanguageLocale(currentUserProfileId)
-          }
-          !shouldUseSystemLanguage && currentUserProfileId == null -> {
-            // Use default instance mostly in test scenarios where currentUserProfileId is always null.
-            appLanguageLocaleDataProvider =
-              translationController.getAppLanguageLocale(ProfileId.getDefaultInstance())
-          }
-        }
-      }
+    val appLanguageLocaleDataProvider = when {
+      shouldUseSystemLanguage -> translationController.getSystemLanguageLocale()
+      currentUserProfileId == null -> translationController.getSystemLanguageLocale()
+      else -> translationController.getAppLanguageLocale(currentUserProfileId)
     }
 
     val liveData = appLanguageLocaleDataProvider?.toLiveData()

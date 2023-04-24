@@ -26,20 +26,26 @@ class AppLanguageSelectionViewModel @Inject constructor(
   val selectedLanguage = MutableLiveData<OppiaLanguage>()
   private val appLanguageRadioButtonListener = fragment as AppLanguageRadioButtonListener
 
-  private val appLanguageResultLiveData: LiveData<AsyncResult<List<OppiaLanguage>>> by lazy {
-    translationController.getSupportedAppLanguages().toLiveData()
-  }
-
-  private val appLanguageListLiveData: LiveData<List<OppiaLanguage>> by lazy {
-    Transformations.map(appLanguageResultLiveData, ::processAppLanguageResult)
+  /** The list of [AppLanguageItemViewModel]s which can be bound to a recycler view. */
+  val recyclerViewAppLanguageList: LiveData<List<AppLanguageItemViewModel>> by lazy {
+    Transformations.map(
+      translationController.getSupportedAppLanguages().toLiveData(), ::processAppLanguageResult
+    )
   }
 
   private fun processAppLanguageResult(
     asyncResultAppLanguageListData: AsyncResult<List<OppiaLanguage>>
-  ): List<OppiaLanguage> {
+  ): List<AppLanguageItemViewModel> {
     return when (asyncResultAppLanguageListData) {
       is AsyncResult.Success -> {
-        asyncResultAppLanguageListData.value
+        asyncResultAppLanguageListData.value.map {
+          AppLanguageItemViewModel(
+            it,
+            appLanguageResourceHandler.computeLocalizedDisplayName(it),
+            selectedLanguage,
+            appLanguageRadioButtonListener
+          )
+        }
       }
       is AsyncResult.Failure -> {
         oppiaLogger.e(
@@ -48,26 +54,10 @@ class AppLanguageSelectionViewModel @Inject constructor(
         )
         emptyList()
       }
-      is AsyncResult.Pending -> {
-        emptyList()
-      }
+      is AsyncResult.Pending ->
+        {
+          emptyList()
+        }
     }
   }
-
-  /** The list of [AppLanguageItemViewModel]s which can be bound to a recycler view. */
-  val recyclerViewAppLanguageList: LiveData<List<AppLanguageItemViewModel>> by lazy {
-    Transformations.map(appLanguageListLiveData, ::processAppLanguageList)
-  }
-
-  private fun processAppLanguageList(appLanguageList: List<OppiaLanguage>):
-    List<AppLanguageItemViewModel> {
-      return appLanguageList.map {
-        AppLanguageItemViewModel(
-          it,
-          appLanguageResourceHandler.computeLocalizedDisplayName(it),
-          selectedLanguage,
-          appLanguageRadioButtonListener
-        )
-      }
-    }
 }

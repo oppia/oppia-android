@@ -474,7 +474,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testUpdateAppLanguage_uninitializedToSystem_returnsDeafultSelection() {
+  fun testUpdateAppLanguage_uninitializedToSystem_returnsDefaultSelection() {
     forceDefaultLocale(Locale.ROOT)
 
     val languageSelection = AppLanguageSelection.newBuilder().apply {
