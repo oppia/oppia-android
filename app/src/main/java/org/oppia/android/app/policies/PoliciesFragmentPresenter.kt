@@ -81,7 +81,10 @@ class PoliciesFragmentPresenter @Inject constructor(
       supportsConceptCards = false
     )
 
-    val websitePattern = Pattern.compile("(http|ftp|https)://([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])")
+    val websitePattern = Pattern.compile(
+      "(http|ftp|https)://([\\w_-]+(?:(?:\\." +
+        "[\\w_-]+)+))([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])"
+    )
     LinkifyCompat.addLinks(binding.policyDescriptionTextView, websitePattern, "https://")
   }
 
