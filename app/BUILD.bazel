@@ -922,6 +922,7 @@ android_library(
     name = "crashlytics_deps",
     visibility = [
         "//:oppia_binary_visibility",
+        "//:oppia_testing_visibility",
         "//instrumentation:__pkg__",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:__pkg__",
     ],

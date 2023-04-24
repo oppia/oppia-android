@@ -9,3 +9,7 @@ build --javacopt="-Werror"
 
 # Show all test output by default (for better debugging).
 test --test_output=all
+
+# Enable strict dependency checking for Java and protobuf.
+build --strict_proto_deps=error \
+    --experimental_strict_java_deps=error

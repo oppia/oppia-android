@@ -7,6 +7,7 @@ load("//defs:oppia_android_test.bzl", "oppia_android_test")
 oppia_android_test(
     name = "LogReportingModuleTest",
     srcs = ["LogReportingModuleTest.kt"],
+    android_merge_deps = ["//app:crashlytics_deps"],
     deps = [
         "//:dagger",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -23,7 +24,6 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
-        "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_impl",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",

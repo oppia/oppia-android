@@ -22,6 +22,7 @@ define_kt_toolchain(
     api_version = "1.6",
     experimental_report_unused_deps = "error",
     experimental_strict_kotlin_deps = "error",
+    experimental_use_abi_jars = True,
     javac_options = ":oppia_javac_options",
     jvm_target = "9",
     kotlinc_options = ":oppia_kotlinc_options",
