@@ -15,10 +15,23 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "suggest_build_fixes_lib",
+    srcs = ["SuggestBuildFixes.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+    ],
+)
+
+kt_jvm_library(
     name = "transform_android_manifest_lib",
     srcs = ["TransformAndroidManifest.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common:git_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
     ],
 )

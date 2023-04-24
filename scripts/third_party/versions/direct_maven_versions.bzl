@@ -19,7 +19,7 @@ PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.android.tools.build:aapt2-proto": "7.3.1-8691043",
     "com.google.guava:guava": "31.0.1-jre",
     "com.google.protobuf:protobuf-java": "3.17.3",
-    "com.squareup.moshi:moshi-kotlin": "1.13.0",
+    "com.squareup.moshi:moshi": "1.13.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.13.0",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.21",
@@ -33,7 +33,6 @@ TEST_DEPENDENCY_VERSIONS = {
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
     "com.google.truth:truth": "1.1.3",
     "junit:junit": "4.13.2",
-    "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "3.9.0",
 }

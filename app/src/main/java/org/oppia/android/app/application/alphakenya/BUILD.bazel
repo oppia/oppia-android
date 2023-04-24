@@ -3,9 +3,9 @@ This package contains the root application definitions for a Kenya user study sp
 of the app.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "alpha_kenya_application",
     srcs = [
         "AlphaKenyaApplicationComponent.kt",
@@ -19,6 +19,10 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_build_flavor_module",
+        "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
+        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:kenya_alpha_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:prod_module",

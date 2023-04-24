@@ -81,7 +81,7 @@ A rule specifies the relationship between inputs and outputs, and the steps to b
 In Android, rules are defined using `android_binary`. Android rules for testing are `android_instrumentation_test` and `android_local_test`.
 
 **[BUILD files](https://github.com/oppia/oppia-android/blob/develop/app/BUILD.bazel)**<br>
-Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for module-level, we generally define `android_library`, `kt_android_library` to build our package files as per the requirement. 
+Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for module-level, we generally define `oppia_android_library`s to build our package files as per the requirement. 
 
 **[Dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/BUILD.bazel#L16)**<br>
 A target A depends upon a target B if B is needed by A at build. `A -> B`<br>

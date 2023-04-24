@@ -2,9 +2,9 @@
 Domain services & definitions corresponding to user feedback reporting.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "prod_module",
     srcs = [
         "FeedbackReportingModule.kt",
@@ -16,7 +16,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "report_schema_version",
     srcs = [
         "ReportSchemaVersion.kt",

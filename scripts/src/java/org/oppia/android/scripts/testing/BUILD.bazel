@@ -14,6 +14,7 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [
         "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
     ],
 )
 
@@ -27,5 +28,6 @@ kt_jvm_library(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
     ],
 )

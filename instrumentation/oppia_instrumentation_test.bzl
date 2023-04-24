@@ -26,7 +26,6 @@ def oppia_instrumentation_test(
     native.android_binary(
         name = "%sBinary" % name,
         testonly = True,
-        custom_package = "org.oppia.android",
         instruments = "//instrumentation:oppia_test",
         manifest = "//instrumentation:src/javatests/AndroidManifest.xml",
         deps = [":%s_lib" % name],

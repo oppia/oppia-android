@@ -3,15 +3,18 @@ Domain services & definitions corresponding to managing the system clipboard whe
 text.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "clipboard_controller",
     srcs = [
         "ClipboardController.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],

@@ -2,9 +2,9 @@
 Utilities corresponding to system utilities such as the system clock.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "oppia_clock",
     srcs = [
         "OppiaClock.kt",
@@ -12,7 +12,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "oppia_clock_impl",
     srcs = [
         "OppiaClockImpl.kt",
@@ -23,19 +23,20 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "prod_module",
     srcs = [
         "OppiaClockModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        ":oppia_clock",
         ":oppia_clock_impl",
         "//:dagger",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "oppia_clock_injector",
     srcs = [
         "OppiaClockInjector.kt",
@@ -46,7 +47,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "oppia_clock_injector_provider",
     srcs = [
         "OppiaClockInjectorProvider.kt",

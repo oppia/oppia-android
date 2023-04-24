@@ -2,27 +2,30 @@
 Classifiers for the 'NumberWithUnits' interaction.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "number_with_units_providers",
     srcs = [
         "NumberWithUnitsIsEqualToRuleClassifierProvider.kt",
         "NumberWithUnitsIsEquivalentToRuleClassifierProvider.kt",
     ],
+    visibility = ["//domain:domain_testing_visibility"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/classify:classification_context",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
-        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//model/src/main/proto:interaction_object_java_proto_lite",
-        "//model/src/main/proto:translation_java_proto_lite",
+        "//model/src/main/proto:math_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/math:comparable_operation_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:float_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:fraction_extensions",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "number_with_units_rule_module",
     srcs = [
         "NumberWithUnitsRuleModule.kt",

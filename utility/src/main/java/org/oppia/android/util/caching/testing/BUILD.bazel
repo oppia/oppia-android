@@ -2,9 +2,9 @@
 Testing utilities corresponding asset caching utilities.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "caching_test_module",
     testonly = True,
     srcs = [
@@ -18,7 +18,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "asset_test_no_op_module",
     testonly = True,
     srcs = [
@@ -28,10 +28,11 @@ kt_android_library(
     deps = [
         ":test_asset_repository",
         "//:dagger",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "fake_asset_repository",
     testonly = True,
     srcs = [
@@ -40,12 +41,13 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
         "//utility/src/main/java/org/oppia/android/util/caching:impl",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "test_asset_repository",
     testonly = True,
     srcs = [

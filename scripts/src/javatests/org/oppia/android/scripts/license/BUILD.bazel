@@ -10,7 +10,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/license:license_texts_check_lib",
         "//scripts/third_party:com_google_truth_truth",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )
@@ -20,7 +20,7 @@ kt_jvm_test(
     srcs = ["MavenCoordinateTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/license:maven_coordinate",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
     ],
 )
 
@@ -29,11 +29,16 @@ kt_jvm_test(
     size = "large",
     srcs = ["MavenDependenciesListCheckTest.kt"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_artifact_property_fetcher",
         "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_list_check_lib",
+        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//scripts/third_party:com_google_truth_truth",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
         "//scripts/third_party:org_mockito_kotlin_mockito-kotlin",
+        "//scripts/third_party:org_mockito_mockito-core",
         "//testing:assertion_helpers",
     ],
 )
@@ -43,11 +48,19 @@ kt_jvm_test(
     size = "large",
     srcs = ["MavenDependenciesRetrieverTest.kt"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_artifact_property_fetcher",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_coordinate",
         "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
+        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//scripts/third_party:com_google_protobuf_protobuf-java",
         "//scripts/third_party:com_google_truth_truth",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//scripts/third_party:org_mockito_kotlin_mockito-kotlin",
+        "//scripts/third_party:org_mockito_mockito-core",
         "//testing:assertion_helpers",
     ],
 )

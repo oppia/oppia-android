@@ -2,9 +2,9 @@
 Classifiers for the 'NumericInput' interaction.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "numeric_input_providers",
     srcs = [
         "NumericInputEqualsRuleClassifierProvider.kt",
@@ -15,19 +15,20 @@ kt_android_library(
         "NumericInputIsLessThanRuleClassifierProvider.kt",
         "NumericInputIsWithinToleranceRuleClassifierProvider.kt",
     ],
+    visibility = ["//domain:domain_testing_visibility"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/classify:classification_context",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
-        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//model/src/main/proto:interaction_object_java_proto_lite",
-        "//model/src/main/proto:translation_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/math:comparable_operation_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:float_extensions",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "numeric_input_rule_module",
     srcs = [
         "NumericInputRuleModule.kt",

@@ -3,46 +3,17 @@ Temporary shims for providing indirection in the Bazel build graph to unblock mo
 parts of the app layer.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-IMPL_FILES = [
-    "IntentFactoryShimImpl.kt",
-    "ViewBindingShimImpl.kt",
-]
-
-# TODO(#1617): Remove genrules post-gradle
-[
-    genrule(
-        name = "update_" + file[0:-3],
-        srcs = [file],
-        outs = [file[0:-3] + "_updated.kt"],
-        cmd = """
-     cat $(SRCS) |
-     sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
-     sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' > $(OUTS)
-     """,
-    )
-    for file in IMPL_FILES
-]
-
-# Files to be built by the app library.
-UPDATED_IMPL_FILES = [
-    "update_" + file_with_resource_imports[0:-3]
-    for file_with_resource_imports in IMPL_FILES
-]
-
-kt_android_library(
+oppia_android_library(
     name = "intent_factory_shim",
     srcs = [
         "IntentFactoryShim.kt",
     ],
     visibility = ["//app:app_visibility"],
-    deps = [
-        "//third_party:androidx_appcompat_appcompat",
-    ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "view_binding_shim",
     srcs = [
         "ViewBindingShim.kt",
@@ -50,22 +21,36 @@ kt_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         "//app:view_models",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_recyclerview_recyclerview",
         "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "impl",
-    srcs = UPDATED_IMPL_FILES,
+    srcs = [
+        "IntentFactoryShimImpl.kt",
+        "ViewBindingShimImpl.kt",
+    ],
     deps = [
         ":intent_factory_shim",
         ":view_binding_shim",
-        "//app:databinding_resources",
+        "//app:view_models",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "prod_modules",
     srcs = [
         "IntentFactoryShimModule.kt",
@@ -76,5 +61,6 @@ kt_android_library(
         ":impl",
         ":intent_factory_shim",
         ":view_binding_shim",
+        "//:dagger",
     ],
 )

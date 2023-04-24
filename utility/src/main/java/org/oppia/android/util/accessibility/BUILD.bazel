@@ -2,9 +2,9 @@
 General purposes utilities for Android accessibility checking.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "accessibility",
     srcs = [
         "AccessibilityService.kt",
@@ -12,7 +12,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "impl",
     srcs = [
         "AccessibilityServiceImpl.kt",
@@ -23,7 +23,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "testing",
     testonly = True,
     srcs = [
@@ -36,19 +36,20 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "prod_module",
     srcs = [
         "AccessibilityProdModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        ":accessibility",
         ":impl",
         "//:dagger",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "test_module",
     testonly = True,
     srcs = [
@@ -56,6 +57,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
+        ":accessibility",
         ":testing",
         "//:dagger",
     ],

@@ -2,7 +2,7 @@
 Constructs for setting up fragments for injection in the Dagger graph.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 # TODO(#59): Define these exported files as separate libraries from top-level targets.
 exports_files([
@@ -11,7 +11,7 @@ exports_files([
     "FragmentModule.kt",
 ])
 
-kt_android_library(
+oppia_android_library(
     name = "fragment_scope",
     srcs = [
         "FragmentScope.kt",
@@ -22,20 +22,21 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "fragment_component",
     srcs = [
         "FragmentComponent.kt",
     ],
     visibility = [
+        "//app:__pkg__",
         "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
     ],
     deps = [
-        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "fragment_component_factory",
     srcs = [
         "FragmentComponentFactory.kt",
@@ -43,17 +44,17 @@ kt_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         ":fragment_component",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:javax_inject_javax_inject",
+        "//third_party:androidx_fragment_fragment",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "fragment_component_builder_injector",
     srcs = [
         "FragmentComponentBuilderInjector.kt",
     ],
     visibility = [
+        "//app:__pkg__",
         "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
     ],
     deps = [
@@ -62,48 +63,53 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "injectable_fragment",
     srcs = [
         "InjectableFragment.kt",
     ],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":fragment_component",
         ":fragment_component_factory",
         "//app/src/main/java/org/oppia/android/app/view:view_component",
         "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
-        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "injectable_dialog_fragment",
     srcs = [
         "InjectableDialogFragment.kt",
     ],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":fragment_component",
         ":fragment_component_factory",
         "//app/src/main/java/org/oppia/android/app/view:view_component",
         "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
-        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "injectable_bottom_sheet_dialog_fragment",
     srcs = [
         "InjectableBottomSheetDialogFragment.kt",
     ],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":fragment_component",
         ":fragment_component_factory",
         "//app/src/main/java/org/oppia/android/app/view:view_component",
         "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
-        "//third_party:androidx_appcompat_appcompat",
         "//third_party:com_google_android_material_material",
+        "//third_party:javax_inject_javax_inject",
     ],
 )

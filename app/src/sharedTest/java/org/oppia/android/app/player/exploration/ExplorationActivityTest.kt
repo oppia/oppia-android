@@ -1221,7 +1221,7 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0
       )
       testCoroutineDispatchers.runCurrent()
-      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withContentDescription(androidx.navigation.ui.R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(withText(R.string.unsaved_exploration_dialog_description)).inRoot(isDialog())
@@ -1409,7 +1409,7 @@ class ExplorationActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    onView(withContentDescription(androidx.navigation.ui.R.string.nav_app_bar_navigate_up_description)).perform(click())
     onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
       .check(matches(isDisplayed()))
 
@@ -1518,7 +1518,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withContentDescription(androidx.navigation.ui.R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1555,7 +1555,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withContentDescription(androidx.navigation.ui.R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(withText(R.string.progress_database_full_dialog_back_to_lesson_button))

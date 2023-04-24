@@ -2,9 +2,9 @@
 Utilities corresponding to data.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "async_data_subscription_manager",
     srcs = [
         "AsyncDataSubscriptionManager.kt",
@@ -12,12 +12,12 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party:kotlinx-coroutines-core-jvm",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "async_result",
     srcs = [
         "AsyncResult.kt",
@@ -25,7 +25,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "data_provider",
     srcs = [
         "DataProvider.kt",
@@ -36,7 +36,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "data_providers",
     srcs = [
         "DataProviders.kt",
@@ -51,13 +51,13 @@ kt_android_library(
         "//:dagger",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
         "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party:kotlinx-coroutines-core-jvm",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "in_memory_blocking_cache",
     srcs = [
         "InMemoryBlockingCache.kt",
@@ -65,7 +65,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party:kotlinx-coroutines-core-jvm",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )

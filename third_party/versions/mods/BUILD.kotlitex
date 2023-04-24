@@ -26,7 +26,7 @@ kt_android_library(
     exports_manifest = True,
     visibility = ["//visibility:public"],
     deps = [
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+        artifact("org.jetbrains.kotlin:kotlin-stdlib-jdk8"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm"),
     ],
 )

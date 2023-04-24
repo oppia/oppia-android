@@ -3,9 +3,9 @@
 Library for providing model definitions for Oppia's App Engine backend endpoints.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "model",
     srcs = [
         "GaeAnswerGroup.kt",
@@ -47,7 +47,6 @@ kt_android_library(
         "GaeWrittenTranslation.kt",
         "GaeWrittenTranslations.kt",
     ],
-    custom_package = "org.oppia.android.data.backends.gae.model",
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:moshi",

@@ -4,7 +4,7 @@ generic operations.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
-load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
+load("//defs:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
 
 kt_jvm_library(
     name = "android_build_sdk_properties",

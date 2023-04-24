@@ -23,7 +23,9 @@ kt_android_library(
     exports_manifest = True,
     visibility = ["//visibility:public"],
     deps = [
+        artifact("androidx.annotation:annotation"),
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.constraintlayout:constraintlayout"),
+        artifact("androidx.core:core"),
     ],
 )

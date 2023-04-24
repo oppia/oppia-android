@@ -12,7 +12,7 @@ kt_jvm_test(
         "//scripts:regex_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib",
         "//scripts/third_party:com_google_truth_truth",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )

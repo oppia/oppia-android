@@ -97,6 +97,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.R
 
 /**
  * Tests for [AppLanguageResourceHandler].

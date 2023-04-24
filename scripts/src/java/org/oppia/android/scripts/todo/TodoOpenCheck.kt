@@ -4,7 +4,6 @@ import com.google.protobuf.TextFormat
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.proto.TodoOpenExemption
 import org.oppia.android.scripts.proto.TodoOpenExemptions
 import org.oppia.android.scripts.todo.model.Issue
@@ -264,7 +263,7 @@ private fun retrieveOpenIssueList(openIssuesJsonFile: File): List<Issue> {
     .inputStream()
     .bufferedReader()
     .use { it.readText() }
-  val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+  val moshi = Moshi.Builder().build()
   val listType = Types.newParameterizedType(List::class.java, Issue::class.java)
   val adapter: JsonAdapter<List<Issue>> = moshi.adapter(listType)
   return adapter.fromJson(openIssuesJsonText)

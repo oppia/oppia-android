@@ -2,58 +2,45 @@
 Macros & definitions corresponding to Oppia binary build flavors.
 """
 
-load("//:oppia_android_application.bzl", "declare_deployable_application", "oppia_android_application")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KENYA_VERSION_CODE", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
-
-# Defines the list of flavors available to build the Oppia app in. Note to developers: this list
-# should be ordered by the development pipeline (i.e. features go through dev first, then other
-# flavors as they mature).
-AVAILABLE_FLAVORS = [
-    "dev",
-    "dev_kitkat",
-    "alpha",
-    "alpha_kitkat",
-    "alpha_kenya",
-    "beta",
-    "ga",
-]
+load(":oppia_android_application.bzl", "declare_deployable_application", "oppia_android_application")
+load(":version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KENYA_VERSION_CODE", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
 
 # This file contains the list of classes that must be in the main dex list for the legacy multidex
 # build used on KitKat devices. Generally, this is the main application class is needed so that it
 # can load multidex support, plus any dependencies needed by that pipeline.
-_MAIN_DEX_LIST_TARGET_KITKAT = "//:config/kitkat_main_dex_class_list.txt"
+_MAIN_DEX_LIST_TARGET_KITKAT = "//config:kitkat_main_dex_class_list.txt"
 
+# Common dependencies needed at runtime which won't otherwise be detected when compiling and won't
+# be automatically propagated from app dependencies. Note that, generally, Android resources and
+# assets must be manually included here in order to ensure that they're available in the final
+# binary.
 # keep sorted
-_PRODUCTION_PROGUARD_SPECS = [
-    "config/proguard/android-proguard-rules.pro",
-    "config/proguard/androidx-proguard-rules.pro",
-    "config/proguard/firebase-components-proguard-rules.pro",
-    "config/proguard/glide-proguard-rules.pro",
-    "config/proguard/google-play-services-proguard-rules.pro",
-    "config/proguard/guava-proguard-rules.pro",
-    "config/proguard/kotlin-proguard-rules.pro",
-    "config/proguard/kotlinpoet-javapoet-proguard-rules.pro",
-    "config/proguard/material-proguard-rules.pro",
-    "config/proguard/moshi-proguard-rules.pro",
-    "config/proguard/okhttp-proguard-rules.pro",
-    "config/proguard/oppia-prod-proguard-rules.pro",
-    "config/proguard/protobuf-proguard-rules.pro",
+COMMON_RUNTIME_DEPS = [
+    "//app:crashlytics_deps",
+    "//app:resources",
+    "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+    "//domain:assets",
+    "//third_party:androidx_databinding_databinding-common",
+    "//third_party:androidx_databinding_databinding-runtime",
+    "//third_party:androidx_work_work-runtime",
+    "//third_party:javax_annotation_javax_annotation-api",
+    "//utility:resources",
+    "//utility/src/main/java/org/oppia/android/util/parser/image:repository_glide_module",
 ]
 
-# Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.
 # TODO(#4419): Remove the Kenya-specific alpha flavor.
-_FLAVOR_METADATA = {
+FLAVOR_METADATA = {
     "alpha": {
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
             "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//app:manifest",
         "min_sdk_version": 21,
         "multidex": "native",
         "production_release": True,
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "proguard_specs": ["//config/proguard:proguard_specs"],
         "target_sdk_version": 31,
         "version_code": OPPIA_ALPHA_VERSION_CODE,
     },
@@ -63,11 +50,11 @@ _FLAVOR_METADATA = {
             "//app/src/main/java/org/oppia/android/app/application/alphakenya:alpha_kenya_application",
             "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//app:manifest",
         "min_sdk_version": 21,
         "multidex": "native",
         "production_release": True,
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "proguard_specs": ["//config/proguard:proguard_specs"],
         "target_sdk_version": 31,
         "version_code": OPPIA_ALPHA_KENYA_VERSION_CODE,
     },
@@ -78,7 +65,7 @@ _FLAVOR_METADATA = {
             "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//app:manifest",
         "min_sdk_version": 19,
         "multidex": "manual_main_dex",
         "production_release": True,
@@ -92,11 +79,11 @@ _FLAVOR_METADATA = {
             "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//app:manifest",
         "min_sdk_version": 21,
         "multidex": "native",
         "production_release": True,
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "proguard_specs": ["//config/proguard:proguard_specs"],
         "target_sdk_version": 31,
         "version_code": OPPIA_BETA_VERSION_CODE,
     },
@@ -106,7 +93,7 @@ _FLAVOR_METADATA = {
             "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
             "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//app:manifest",
         "min_sdk_version": 21,
         "multidex": "native",
         "production_release": False,
@@ -121,7 +108,7 @@ _FLAVOR_METADATA = {
             "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//app:manifest",
         "min_sdk_version": 19,
         "multidex": "manual_main_dex",
         "production_release": False,
@@ -135,15 +122,18 @@ _FLAVOR_METADATA = {
             "//app/src/main/java/org/oppia/android/app/application/ga:general_availability_application",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//app:manifest",
         "min_sdk_version": 21,
         "multidex": "native",
         "production_release": True,
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "proguard_specs": ["//config/proguard:proguard_specs"],
         "target_sdk_version": 31,
         "version_code": OPPIA_GA_VERSION_CODE,
     },
 }
+
+# Defines the list of flavors available to build the Oppia app in.
+AVAILABLE_FLAVORS = [flavor for flavor in FLAVOR_METADATA.keys()]
 
 def _transform_android_manifest_impl(ctx):
     input_file = ctx.attr.input_file.files.to_list()[0]
@@ -254,7 +244,7 @@ def define_oppia_aab_binary_flavor(name):
     """
     Defines a new flavor of the Oppia Android app.
 
-    Flavors are defined through properties defined within _FLAVOR_METADATA.
+    Flavors are defined through properties defined within FLAVOR_METADATA.
 
     This will define two targets:
     - //:oppia_<flavor> (the AAB)
@@ -268,32 +258,30 @@ def define_oppia_aab_binary_flavor(name):
     flavor = name
     transform_android_manifest(
         name = "oppia_%s_transformed_manifest" % flavor,
-        application_relative_qualified_class = _FLAVOR_METADATA[flavor]["application_class"],
-        input_file = _FLAVOR_METADATA[flavor]["manifest"],
+        application_relative_qualified_class = FLAVOR_METADATA[flavor]["application_class"],
+        input_file = FLAVOR_METADATA[flavor]["manifest"],
         output_file = "AndroidManifest_transformed_%s.xml" % flavor,
         build_flavor = flavor,
         major_version = MAJOR_VERSION,
         minor_version = MINOR_VERSION,
-        version_code = _FLAVOR_METADATA[flavor]["version_code"],
+        version_code = FLAVOR_METADATA[flavor]["version_code"],
     )
     oppia_android_application(
         name = "oppia_%s" % flavor,
-        custom_package = "org.oppia.android",
-        testonly = not _FLAVOR_METADATA[flavor]["production_release"],
-        enable_data_binding = True,
-        config_file = "//:bundle_config.pb.json",
+        testonly = not FLAVOR_METADATA[flavor]["production_release"],
+        config_file = "//config:bundle_config.pb.json",
         manifest = ":AndroidManifest_transformed_%s.xml" % flavor,
         manifest_values = {
             "applicationId": "org.oppia.android",
-            "minSdkVersion": "%d" % _FLAVOR_METADATA[flavor]["min_sdk_version"],
-            "targetSdkVersion": "%d" % _FLAVOR_METADATA[flavor]["target_sdk_version"],
+            "minSdkVersion": "%d" % FLAVOR_METADATA[flavor]["min_sdk_version"],
+            "targetSdkVersion": "%d" % FLAVOR_METADATA[flavor]["target_sdk_version"],
         },
-        multidex = _FLAVOR_METADATA[flavor]["multidex"],
-        main_dex_list = _FLAVOR_METADATA[flavor].get("main_dex_list"),
-        proguard_generate_mapping = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
-        proguard_specs = _FLAVOR_METADATA[flavor]["proguard_specs"],
-        shrink_resources = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
-        deps = _FLAVOR_METADATA[flavor]["deps"],
+        multidex = FLAVOR_METADATA[flavor]["multidex"],
+        main_dex_list = FLAVOR_METADATA[flavor].get("main_dex_list"),
+        proguard_generate_mapping = True if len(FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
+        proguard_specs = FLAVOR_METADATA[flavor]["proguard_specs"],
+        shrink_resources = True if len(FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
+        deps = FLAVOR_METADATA[flavor]["deps"] + COMMON_RUNTIME_DEPS,
     )
     declare_deployable_application(
         name = "install_oppia_%s" % flavor,

@@ -3,9 +3,9 @@
 Package for common test utilities corresponding to data processing & data providers.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "async_result_subject",
     testonly = True,
     srcs = [
@@ -20,7 +20,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "data_provider_test_monitor",
     testonly = True,
     srcs = [
@@ -31,8 +31,11 @@ kt_android_library(
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/mockito",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
-        "//third_party:androidx_test_runner",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_test_monitor",
+        "//third_party:javax_inject_javax_inject",
         "//third_party:org_mockito_mockito-core",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],

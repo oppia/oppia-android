@@ -21,5 +21,4 @@ def set_up(name, visibility, glide_compiler_dep):
         name = name,
         exported_plugins = [":%s_plugin" % name],
         visibility = visibility,
-        exports = [glide_compiler_dep],
     )

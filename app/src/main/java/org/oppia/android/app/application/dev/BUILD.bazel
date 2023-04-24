@@ -6,9 +6,9 @@ there are specially defined top-level build flavors which will select their corr
 application configuration.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "developer_application",
     srcs = [
         "DeveloperApplicationComponent.kt",
@@ -25,6 +25,11 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/application:abstract_application",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
+        "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
+        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//model/src/main/proto:version_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",

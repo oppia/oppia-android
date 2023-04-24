@@ -2,9 +2,9 @@
 General purposes utilities to manage directories.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "directory_management_util",
     srcs = [
         "DirectoryManagementUtil.kt",
@@ -15,7 +15,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "profile_name_validator",
     srcs = [
         "ProfileNameValidator.kt",

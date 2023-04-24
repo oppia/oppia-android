@@ -13,7 +13,6 @@ android_binary(
     name = "oppia_test",
     testonly = True,
     custom_package = "org.oppia.android",
-    enable_data_binding = True,
     manifest = "//instrumentation:src/java/AndroidManifest.xml",
     manifest_values = {
         "applicationId": "org.oppia.android",
@@ -25,7 +24,17 @@ android_binary(
     multidex = "native",
     visibility = ["//:oppia_e2e_testing_visibility"],
     deps = [
-        "//app",
+        "//app:crashlytics_deps",
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//config/src/java/org/oppia/android/config:all_languages_config",
+        "//domain:assets",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:javax_annotation_javax_annotation-api",
+        "//utility:resources",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:repository_glide_module",
     ],
 )

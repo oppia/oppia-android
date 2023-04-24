@@ -3,12 +3,13 @@
 Library for providing test-only HTTP mocks for the app's networking layer.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "network",
     testonly = True,
     srcs = [
+        "ApiMockLoader.kt",
         "MockClassroomService.kt",
         "MockConceptCardService.kt",
         "MockExplorationService.kt",
@@ -21,28 +22,19 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":impl",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_interceptors",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/backends/gae/model",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
+        "//third_party:androidx_test_core",
+        "//third_party:com_squareup_moshi_moshi",
+        "//third_party:com_squareup_retrofit2_retrofit",
         "//third_party:com_squareup_retrofit2_retrofit-mock",
         "//utility/src/main/java/org/oppia/android/util/platformparameter",
     ],
 )
 
-kt_android_library(
-    name = "impl",
-    testonly = True,
-    srcs = [
-        "ApiMockLoader.kt",
-    ],
-    deps = [
-        "//third_party:androidx_test_core",
-    ],
-)
-
-kt_android_library(
+oppia_android_library(
     name = "test_module",
     testonly = True,
     srcs = [
@@ -52,7 +44,9 @@ kt_android_library(
     deps = [
         "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae:oppia_retrofit",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//third_party:com_google_guava_guava",
+        "//third_party:com_squareup_retrofit2_retrofit",
         "//third_party:com_squareup_retrofit2_retrofit-mock",
+        "//third_party:javax_inject_javax_inject",
     ],
 )

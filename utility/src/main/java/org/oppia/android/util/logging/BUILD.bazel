@@ -2,9 +2,9 @@
 General purpose utilities for logging.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "annotations",
     srcs = [
         "LoggingAnnotations.kt",
@@ -15,7 +15,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "console_logger",
     srcs = [
         "ConsoleLogger.kt",
@@ -25,13 +25,13 @@ kt_android_library(
         ":annotations",
         ":log_level",
         "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party:kotlinx-coroutines-core-jvm",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "console_logger_injector",
     srcs = [
         "ConsoleLoggerInjector.kt",
@@ -42,7 +42,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "console_logger_injector_provider",
     srcs = [
         "ConsoleLoggerInjectorProvider.kt",
@@ -53,7 +53,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "current_app_screen_name_intent_decorator",
     srcs = [
         "CurrentAppScreenNameIntentDecorator.kt",
@@ -65,7 +65,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "event_bundle_creator",
     srcs = [
         "EventBundleCreator.kt",
@@ -74,14 +74,16 @@ kt_android_library(
     deps = [
         ":event_type_to_human_readable_name_converter",
         "//model/src/main/proto:event_logger_java_proto_lite",
+        "//model/src/main/proto:languages_java_proto_lite",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//model/src/main/proto:screens_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
         "//utility/src/main/java/org/oppia/android/util/platformparameter",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "event_logger",
     srcs = [
         "AnalyticsEventLogger.kt",
@@ -92,7 +94,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "exception_logger",
     srcs = [
         "ExceptionLogger.kt",
@@ -100,7 +102,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "log_level",
     srcs = [
         "LogLevel.kt",
@@ -108,17 +110,18 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "event_type_to_human_readable_name_converter",
     srcs = [
         "EventTypeToHumanReadableNameConverter.kt",
     ],
+    visibility = ["//utility:utility_testing_visibility"],
     deps = [
         "//model/src/main/proto:event_logger_java_proto_lite",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "prod_module",
     srcs = [
         "LoggerModule.kt",
@@ -128,13 +131,14 @@ kt_android_library(
     deps = [
         ":annotations",
         ":log_level",
+        ":sync_status_manager",
         ":sync_status_manager_impl",
         "//:dagger",
         "//third_party:javax_inject_javax_inject",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "standard_event_logging_configuration_module",
     srcs = [
         "EventLoggingConfigurationModule.kt",
@@ -144,10 +148,12 @@ kt_android_library(
     deps = [
         ":event_type_to_human_readable_name_converter",
         "//:dagger",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "kenya_alpha_event_logging_configuration_module",
     srcs = [
         "KenyaAlphaEventLoggingConfigurationModule.kt",
@@ -157,10 +163,12 @@ kt_android_library(
     deps = [
         ":event_type_to_human_readable_name_converter",
         "//:dagger",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "log_uploader",
     srcs = [
         "LogUploader.kt",
@@ -168,11 +176,10 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:androidx_work_work-runtime",
-        "//third_party:androidx_work_work-runtime-ktx",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "metric_log_scheduler",
     srcs = [
         "MetricLogScheduler.kt",
@@ -180,11 +187,10 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:androidx_work_work-runtime",
-        "//third_party:androidx_work_work-runtime-ktx",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "sync_status_manager",
     srcs = [
         "SyncStatusManager.kt",
@@ -196,7 +202,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "sync_status_manager_impl",
     srcs = [
         "SyncStatusManagerImpl.kt",
@@ -205,8 +211,12 @@ kt_android_library(
     deps = [
         ":sync_status_manager",
         "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/networking:connection_status",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
     ],
 )

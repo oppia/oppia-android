@@ -2,9 +2,9 @@
 Testing utilities for languages & locales.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "test_activity_recreator",
     testonly = True,
     srcs = [
@@ -15,11 +15,12 @@ kt_android_library(
     ],
     deps = [
         "//app/src/main/java/org/oppia/android/app/translation:activity_recreator",
+        "//third_party:androidx_appcompat_appcompat",
         "//third_party:javax_inject_javax_inject",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "test_module",
     testonly = True,
     srcs = [

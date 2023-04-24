@@ -11,7 +11,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:string_language_translation_check_lib",
         "//scripts/third_party:com_google_truth_truth",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )
@@ -22,7 +22,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:string_resource_parser",
         "//scripts/third_party:com_google_truth_truth",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )
@@ -33,7 +33,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:string_resource_validation_check_lib",
         "//scripts/third_party:com_google_truth_truth",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )
@@ -44,7 +44,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_check_lib",
         "//scripts/third_party:com_google_truth_truth",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )
@@ -55,6 +55,6 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_error_handler",
         "//scripts/third_party:com_google_truth_truth",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//scripts/third_party:junit_junit",
     ],
 )

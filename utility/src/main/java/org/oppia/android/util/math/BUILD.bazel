@@ -2,46 +2,26 @@
 General-purpose mathematics utilities, especially for supporting math-based interactions.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-android_library(
-    name = "extensions",
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
-    exports = [
-        ":comparable_operation_extensions",
-        ":comparator_extensions",
-        ":float_extensions",
-        ":fraction_extensions",
-        ":math_expression_extensions",
-        ":polynomial_extensions",
-        ":ratio_extensions",
-        ":real_extensions",
-    ],
-)
-
-kt_android_library(
+oppia_android_library(
     name = "fraction_parser",
     srcs = ["FractionParser.kt"],
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/extensions:string_extensions",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "math_expression_parser",
     srcs = [
         "MathExpressionParser.kt",
     ],
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":float_extensions",
         ":math_parsing_error",
         ":peekable_iterator",
         ":real_extensions",
@@ -50,20 +30,18 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "math_parsing_error",
     srcs = [
         "MathParsingError.kt",
     ],
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "tokenizer",
     srcs = [
         "MathTokenizer.kt",
@@ -77,99 +55,103 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "peekable_iterator",
     srcs = [
         "PeekableIterator.kt",
     ],
-    visibility = [
-        "//:oppia_testing_visibility",
-    ],
+    visibility = ["//:oppia_testing_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "comparable_operation_extensions",
     srcs = [
         "ComparableOperationExtensions.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "comparator_extensions",
     srcs = [
         "ComparatorExtensions.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:com_google_protobuf_protobuf-javalite",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "float_extensions",
     srcs = [
         "FloatExtensions.kt",
     ],
-    deps = [
-        "//model/src/main/proto:math_java_proto_lite",
-    ],
+    visibility = ["//:oppia_api_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "fraction_extensions",
     srcs = [
         "FractionExtensions.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "math_expression_extensions",
     srcs = [
         "MathExpressionExtensions.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":expression_to_comparable_operation_converter",
         ":expression_to_latex_converter",
         ":expression_to_polynomial_converter",
         ":numeric_expression_evaluator",
-        "//model/src/main/proto:math_java_proto_lite",
-    ],
-)
-
-kt_android_library(
-    name = "polynomial_extensions",
-    srcs = [
-        "PolynomialExtensions.kt",
-    ],
-    deps = [
-        ":comparator_extensions",
         ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",
     ],
 )
 
-kt_android_library(
-    name = "ratio_extensions",
+oppia_android_library(
+    name = "polynomial_extensions",
     srcs = [
-        "RatioExtensions.kt",
+        "PolynomialExtensions.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":comparator_extensions",
         ":fraction_extensions",
+        ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
+    name = "ratio_extensions",
+    srcs = [
+        "RatioExtensions.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+oppia_android_library(
     name = "real_extensions",
     srcs = [
         "RealExtensions.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":float_extensions",
         ":fraction_extensions",
@@ -177,11 +159,12 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "expression_to_comparable_operation_converter",
     srcs = [
         "ExpressionToComparableOperationConverter.kt",
     ],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":comparator_extensions",
         ":real_extensions",
@@ -189,25 +172,24 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "expression_to_latex_converter",
     srcs = [
         "ExpressionToLatexConverter.kt",
     ],
-    visibility = [
-        "//:oppia_testing_visibility",
-    ],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "expression_to_polynomial_converter",
     srcs = [
         "ExpressionToPolynomialConverter.kt",
     ],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":polynomial_extensions",
         ":real_extensions",
@@ -215,11 +197,12 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "numeric_expression_evaluator",
     srcs = [
         "NumericExpressionEvaluator.kt",
     ],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",

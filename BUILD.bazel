@@ -1,11 +1,8 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("//:build_flavors.bzl", "AVAILABLE_FLAVORS", "define_oppia_aab_binary_flavor", "transform_android_manifest")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
-
-# This is exported here since config/ isn't a Bazel package.
-exports_files(["config/kitkat_main_dex_class_list.txt"])
+load("//defs:build_flavors.bzl", "AVAILABLE_FLAVORS", "COMMON_RUNTIME_DEPS", "FLAVOR_METADATA", "define_oppia_aab_binary_flavor", "transform_android_manifest")
+load("//defs:version.bzl", "MAJOR_VERSION", "MINOR_VERSION")
 
 # Corresponds to being accessible to all Oppia targets. This should be used for production APIs &
 # modules that may be used both in production targets and in tests.
@@ -37,8 +34,10 @@ package_group(
     name = "oppia_testing_visibility",
     includes = [
         "//app:app_testing_visibility",
+        "//data:data_testing_visibility",
         "//domain:domain_testing_visibility",
         "//scripts:oppia_script_test_visibility",
+        "//testing:testing_testing_visibility",
         "//utility:utility_testing_visibility",
     ],
     packages = [
@@ -80,62 +79,41 @@ package_group(
     ],
 )
 
+_APK_METADATA = {
+    "oppia": FLAVOR_METADATA["dev"],
+    "oppia_kitkat": FLAVOR_METADATA["dev_kitkat"],
+}
+
 # TODO(#1640): Move binary manifest to top-level package post-Gradle.
 [
     transform_android_manifest(
-        name = "oppia_apk_%s_transformed_manifest" % apk_flavor_metadata["flavor"],
+        name = "oppia_apk_%s_transformed_manifest" % flavor,
         application_relative_qualified_class = ".app.application.dev.DeveloperOppiaApplication",
-        build_flavor = apk_flavor_metadata["flavor"],
-        input_file = "//app:src/main/AndroidManifest.xml",
+        build_flavor = flavor,
+        input_file = "//app:manifest",
         major_version = MAJOR_VERSION,
         minor_version = MINOR_VERSION,
-        output_file = "AndroidManifest_transformed_%s.xml" % apk_flavor_metadata["flavor"],
+        output_file = "AndroidManifest_transformed_%s.xml" % flavor,
         version_code = apk_flavor_metadata["version_code"],
     )
-    for apk_flavor_metadata in [
-        {
-            "flavor": "oppia",
-            "version_code": OPPIA_DEV_VERSION_CODE,
-        },
-        {
-            "flavor": "oppia_kitkat",
-            "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
-        },
-    ]
+    for (flavor, apk_flavor_metadata) in _APK_METADATA.items()
 ]
 
 [
     android_binary(
-        name = apk_flavor_metadata["flavor"],
+        name = flavor,
         custom_package = "org.oppia.android",
-        enable_data_binding = True,
         main_dex_list = apk_flavor_metadata.get("main_dex_list"),
-        manifest = "oppia_apk_%s_transformed_manifest" % apk_flavor_metadata["flavor"],
+        manifest = "oppia_apk_%s_transformed_manifest" % flavor,
         manifest_values = {
             "applicationId": "org.oppia.android",
             "minSdkVersion": "%d" % apk_flavor_metadata["min_sdk_version"],
             "targetSdkVersion": "%d" % apk_flavor_metadata["target_sdk_version"],
         },
         multidex = apk_flavor_metadata["multidex"],
-        deps = [
-            "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
-        ],
+        deps = apk_flavor_metadata["deps"] + COMMON_RUNTIME_DEPS,
     )
-    for apk_flavor_metadata in [
-        {
-            "flavor": "oppia",
-            "min_sdk_version": 21,
-            "multidex": "native",
-            "target_sdk_version": 31,
-        },
-        {
-            "flavor": "oppia_kitkat",
-            "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
-            "min_sdk_version": 19,
-            "multidex": "manual_main_dex",
-            "target_sdk_version": 31,
-        },
-    ]
+    for (flavor, apk_flavor_metadata) in _APK_METADATA.items()
 ]
 
 # Define all binary flavors that can be built. Note that these are AABs, not APKs, and can be

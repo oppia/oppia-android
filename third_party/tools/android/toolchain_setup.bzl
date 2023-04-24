@@ -2,7 +2,7 @@
 Provides a macro for setting up support building Android app & library targets.
 """
 
-load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
+load("//defs:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
 
 def set_up(name):
     """Adds support for building Android targets to the workspace.

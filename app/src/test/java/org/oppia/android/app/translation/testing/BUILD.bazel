@@ -2,25 +2,24 @@
 Tests for language & locale UI testing utilities.
 """
 
-load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//defs:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
     name = "TestActivityRecreatorTest",
     srcs = ["TestActivityRecreatorTest.kt"],
-    custom_package = "org.oppia.android.app.translation.testing",
-    test_class = "org.oppia.android.app.translation.testing.TestActivityRecreatorTest",
-    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_activity_recreator",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_test_core",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
+        "//third_party:org_robolectric_annotations",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],
 )

@@ -4,9 +4,9 @@ Package for test-only utilities for coordinating time, particularly in simulated
 environments (i.e. Robolectric).
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "fake_oppia_clock",
     testonly = True,
     srcs = [
@@ -19,7 +19,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "fake_system_clock",
     testonly = True,
     srcs = [
@@ -32,7 +32,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "test_module",
     testonly = True,
     srcs = [
@@ -42,5 +42,6 @@ kt_android_library(
     deps = [
         ":fake_oppia_clock",
         "//:dagger",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )

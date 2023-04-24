@@ -5,9 +5,9 @@ Dagger graph.
 Specific application implementations can be found in subpackages.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "abstract_application",
     srcs = [
         "AbstractOppiaApplication.kt",
@@ -20,13 +20,20 @@ kt_android_library(
         ":application_component",
         ":application_injector",
         ":application_injector_provider",
+        "//app",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//third_party:androidx_work_work-runtime-ktx",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_startup_listener",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_multidex_multidex",
+        "//third_party:androidx_work_work-runtime",
         "//third_party:com_google_firebase_firebase-common",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "application_component",
     srcs = [
         "ApplicationComponent.kt",
@@ -39,11 +46,14 @@ kt_android_library(
         ":application_injector",
         "//app",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//third_party:androidx_work_work-runtime-ktx",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_startup_listener",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:com_google_dagger_dagger",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "application_injector",
     srcs = [
         "ApplicationInjector.kt",
@@ -52,13 +62,14 @@ kt_android_library(
     deps = [
         "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector",
         "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "application_injector_provider",
     srcs = [
         "ApplicationInjectorProvider.kt",
@@ -66,21 +77,33 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":application_injector",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector_provider",
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector",
         "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector_provider",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "modules",
     srcs = [
         "ApplicationModule.kt",
         "ApplicationStartupListenerModule.kt",
     ],
+    visibility = [
+        "//app:app_testing_visibility",
+        "//instrumentation:__subpackages__",
+        "//testing:testing_testing_visibility",
+    ],
     deps = [
+        "//:dagger",
         "//app",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
@@ -89,10 +112,7 @@ kt_android_library(
 # TODO(#1720): Remove this once the list can be automatically determined from the build graph.
 android_library(
     name = "common_application_modules",
-    visibility = [
-        "//:oppia_testing_visibility",
-        "//app/src/main/java/org/oppia/android/app/application:__subpackages__",
-    ],
+    visibility = ["//app/src/main/java/org/oppia/android/app/application:__subpackages__"],
     exports = [
         ":modules",
         "//app/src/main/java/org/oppia/android/app/translation:prod_module",
@@ -131,7 +151,6 @@ android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser_entity_type_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:repository_glide_module",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
         "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
     ],

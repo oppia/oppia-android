@@ -2,23 +2,12 @@
 General purposes utilities to manage date and time in user-facing strings.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-# Resource shim needed so that DateTimeUtil can build in both Gradle & Bazel.
-genrule(
-    name = "update_DateTimeUtil",
-    srcs = ["DateTimeUtil.kt"],
-    outs = ["DateTimeUtil_updated.kt"],
-    cmd = """
-    cat $(SRCS) |
-    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' > $(OUTS)
-    """,
-)
-
-kt_android_library(
+oppia_android_library(
     name = "date_time_util",
     srcs = [
-        "DateTimeUtil_updated.kt",
+        "DateTimeUtil.kt",
     ],
     visibility = ["//app:__subpackages__"],
     deps = [
@@ -26,6 +15,5 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
-        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )

@@ -3,6 +3,7 @@
 This package contains configuration libraries for defining & tweaking app-wide behavior.
 """
 
+load("//defs:oppia_android_library.bzl", "oppia_android_assets_library")
 load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")
 
 # Language support levels:
@@ -44,12 +45,11 @@ _SUPPORTED_REGIONS_CONFIG_ASSETS = {
 }
 
 [
-    android_library(
+    oppia_android_assets_library(
         name = "%s_languages_config" % support_level,
         assets = _SUPPORTED_LANGUAGES_CONFIG_ASSETS[support_level] +
                  _SUPPORTED_REGIONS_CONFIG_ASSETS[support_level],
         assets_dir = "%slanguages/" % support_level,
-        manifest = "AndroidManifest.xml",
         visibility = [
             "//:oppia_binary_visibility",
             "//:oppia_testing_visibility",

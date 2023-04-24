@@ -2,9 +2,9 @@
 Classifiers for the 'MathEquationInput' interaction.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "math_equation_input_providers",
     srcs = [
         "MathEquationInputIsEquivalentToRuleClassifierProvider.kt",
@@ -19,16 +19,17 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
         "//model/src/main/proto:exploration_java_proto_lite",
         "//model/src/main/proto:interaction_object_java_proto_lite",
-        "//model/src/main/proto:translation_java_proto_lite",
+        "//model/src/main/proto:math_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-        "//utility/src/main/java/org/oppia/android/util/math:extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:comparable_operation_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_extensions",
         "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
+        "//utility/src/main/java/org/oppia/android/util/math:polynomial_extensions",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "math_equation_input_rule_module",
     srcs = [
         "MathEquationInputModule.kt",

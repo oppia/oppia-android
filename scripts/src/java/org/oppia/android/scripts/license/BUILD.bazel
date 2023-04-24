@@ -29,10 +29,12 @@ kt_jvm_library(
         ":maven_artifact_property_fetcher",
         ":maven_coordinate",
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/src/java/org/oppia/android/scripts/maven/model",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
         "//scripts/third_party:com_google_protobuf_protobuf-java",
+        "//scripts/third_party:moshi",
         "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
@@ -42,8 +44,13 @@ kt_jvm_library(
     srcs = ["MavenDependenciesListCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_artifact_property_fetcher",
         "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
+        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
+        "//scripts/third_party:com_google_protobuf_protobuf-java",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 

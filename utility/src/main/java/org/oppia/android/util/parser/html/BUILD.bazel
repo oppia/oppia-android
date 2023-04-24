@@ -2,9 +2,9 @@
 General-purpose utilities for parsing & rendering HTML within the app.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "html_parser",
     srcs = [
         "HtmlParser.kt",
@@ -12,9 +12,9 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":custom_html_content_handler",
-        ":list_item_leading_margin_span",
+        ":policy_type",
         ":tag_handlers",
-        "//third_party:androidx_core_core-ktx",
+        "//third_party:androidx_core_core",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
@@ -23,7 +23,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "tag_handlers",
     srcs = [
         "ConceptCardTagHandler.kt",
@@ -37,19 +37,22 @@ kt_android_library(
         ":custom_html_content_handler",
         ":list_item_leading_margin_span",
         ":policy_type",
+        "//third_party:androidx_core_core",
         "//third_party:io_github_karino2_kotlitex",
+        "//utility:resources",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "list_item_leading_margin_span",
     srcs = [
         "ListItemLeadingMarginSpan.kt",
     ],
     visibility = [
         "//app:__subpackages__",
+        "//utility:utility_testing_visibility",
     ],
     deps = [
         "//third_party:androidx_core_core",
@@ -58,30 +61,26 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "policy_type",
     srcs = [
         "PolicyType.kt",
     ],
-    visibility = [
-        "//app:__subpackages__",
-    ],
+    visibility = ["//:oppia_api_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "custom_html_content_handler",
     srcs = [
         "CustomHtmlContentHandler.kt",
     ],
-    visibility = [
-        "//utility/src/main/java/org/oppia/android/util/parser/image:__subpackages__",
-    ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:androidx_core_core-ktx",
+        "//third_party:androidx_core_core",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "exploration_html_parser_entity_type",
     srcs = [
         "ExplorationHtmlParserEntityType.kt",
@@ -94,7 +93,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "html_parser_entity_type_module",
     srcs = [
         "HtmlParserEntityTypeModule.kt",
@@ -103,9 +102,7 @@ kt_android_library(
         "//:oppia_prod_module_visibility",
     ],
     deps = [
-        ":custom_html_content_handler",
         ":exploration_html_parser_entity_type",
-        ":tag_handlers",
         "//:dagger",
     ],
 )

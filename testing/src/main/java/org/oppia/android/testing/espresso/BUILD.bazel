@@ -3,9 +3,9 @@
 Package for common Espresso matchers & other test utilities.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "edit_text_input_action",
     testonly = True,
     srcs = [
@@ -15,10 +15,12 @@ kt_android_library(
     deps = [
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_hamcrest_hamcrest-core",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "generic_view_matchers",
     testonly = True,
     srcs = [
@@ -26,11 +28,11 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:org_hamcrest_hamcrest-core",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "konfetti_view_matcher",
     testonly = True,
     srcs = [
@@ -38,12 +40,12 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:androidx_test_espresso_espresso-core",
         "//third_party:nl_dionsegijn_konfetti",
+        "//third_party:org_hamcrest_hamcrest-core",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "image_view_matcher",
     testonly = True,
     srcs = [
@@ -51,11 +53,11 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:org_hamcrest_hamcrest-core",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "text_input_action",
     testonly = True,
     srcs = [
@@ -65,5 +67,6 @@ kt_android_library(
     deps = [
         "//third_party:androidx_test_espresso_espresso-core",
         "//third_party:com_google_android_material_material",
+        "//third_party:org_hamcrest_hamcrest-core",
     ],
 )

@@ -36,7 +36,6 @@ PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "com.google.guava:listenablefuture": "9999.0-empty-to-avoid-conflict-with-guava",
     "com.google.j2objc:j2objc-annotations": "1.3",
     "com.google.jimfs:jimfs": "1.1",
-    "com.squareup.moshi:moshi": "1.13.0",
     "com.squareup.okio:okio": "2.10.0",
     "com.squareup:kotlinpoet": "1.10.2",
     "com.sun.activation:javax.activation": "1.2.0",
@@ -84,8 +83,5 @@ TEST_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "net.bytebuddy:byte-buddy": "1.10.20",
     "net.bytebuddy:byte-buddy-agent": "1.10.20",
     "org.hamcrest:hamcrest-core": "1.3",
-    "org.jetbrains.kotlin:kotlin-test": "1.3.72",
-    "org.jetbrains.kotlin:kotlin-test-annotations-common": "1.3.72",
-    "org.jetbrains.kotlin:kotlin-test-common": "1.3.72",
     "org.objenesis:objenesis": "3.2",
 }

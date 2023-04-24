@@ -11,8 +11,7 @@ oppia_instrumentation_test(
     ],
     deps = [
         "//instrumentation/src/java/org/oppia/android/instrumentation/testing:e2e_test_helper",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:androidx_test_runner",
+        "//third_party:androidx_test_monitor",
         "//third_party:androidx_test_uiautomator_uiautomator",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",

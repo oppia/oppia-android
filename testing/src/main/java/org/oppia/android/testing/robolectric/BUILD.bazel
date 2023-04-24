@@ -3,9 +3,9 @@
 Package for Robolectric-specific utilities and configurations.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "is_on_robolectric",
     testonly = True,
     srcs = [
@@ -17,7 +17,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "test_module",
     testonly = True,
     srcs = [
@@ -27,12 +27,13 @@ kt_android_library(
     deps = [
         ":is_on_robolectric",
         "//:dagger",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
 # Note that this library is visibility restricted to avoid wide use of custom shadows in the
 # codebase.
-kt_android_library(
+oppia_android_library(
     name = "shadow_bidi_formatter",
     testonly = True,
     srcs = [
@@ -45,11 +46,12 @@ kt_android_library(
     ],
     deps = [
         "//third_party:androidx_core_core",
-        "//third_party:org_robolectric_robolectric",
+        "//third_party:org_robolectric_annotations",
+        "//third_party:org_robolectric_shadowapi",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "oppia_shadow_activity_manager",
     testonly = True,
     srcs = [
@@ -57,11 +59,12 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:org_robolectric_robolectric",
+        "//third_party:org_robolectric_annotations",
+        "//third_party:org_robolectric_shadows-framework",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "oppia_shadow_traffic_stats",
     testonly = True,
     srcs = [
@@ -69,6 +72,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:org_robolectric_robolectric",
+        "//third_party:org_robolectric_annotations",
     ],
 )

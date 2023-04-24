@@ -2,8 +2,6 @@ package org.oppia.android.util.logging.performancemetrics
 
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.app.model.OppiaMetricLog.MemoryTier
-import org.oppia.android.app.model.OppiaMetricLog.StorageTier
 import javax.inject.Qualifier
 
 private const val ONE_GIGABYTE = 1024L * 1024L * 1024L
@@ -12,19 +10,31 @@ private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
 private const val THIRTY_TWO_GIGABYTES = ONE_GIGABYTE * 32L
 private const val SIXTY_FOUR_GIGABYTES = ONE_GIGABYTE * 64L
 
-/** Corresponds to a long value that denotes the non-inclusive upper bound of [StorageTier.LOW_STORAGE]. */
+/**
+ * Corresponds to a long value that denotes the non-inclusive upper bound of
+ * [org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE].
+ */
 @Qualifier
 annotation class LowStorageTierUpperBound
 
-/** Corresponds to a long value that denotes the inclusive upper bound of [StorageTier.MEDIUM_STORAGE]. */
+/**
+ * Corresponds to a long value that denotes the inclusive upper bound of
+ * [org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE].
+ */
 @Qualifier
 annotation class MediumStorageTierUpperBound
 
-/** Corresponds to a long value that denotes the non-inclusive upper bound of [MemoryTier.LOW_MEMORY_TIER]. */
+/**
+ * Corresponds to a long value that denotes the non-inclusive upper bound of
+ * [org.oppia.android.app.model.OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER].
+ */
 @Qualifier
 annotation class LowMemoryTierUpperBound
 
-/** Corresponds to a long value that denotes the inclusive upper bound of [MemoryTier.MEDIUM_MEMORY_TIER]. */
+/**
+ * Corresponds to a long value that denotes the inclusive upper bound of
+ * [org.oppia.android.app.model.OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER].
+ */
 @Qualifier
 annotation class MediumMemoryTierUpperBound
 

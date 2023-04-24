@@ -2,9 +2,9 @@
 Test-only utilities for exploration management & loading domain components.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "fake_exploration_retriever",
     testonly = True,
     srcs = [
@@ -13,10 +13,12 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//domain",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "test_module",
     testonly = True,
     srcs = [
@@ -26,5 +28,6 @@ kt_android_library(
     deps = [
         ":fake_exploration_retriever",
         "//:dagger",
+        "//domain",
     ],
 )

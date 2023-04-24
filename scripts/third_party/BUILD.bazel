@@ -51,6 +51,6 @@ create_direct_import_dependency_wrappers(
 set_up_moshi_plugin(
     name = "moshi",
     moshi_compiler_dep = "//scripts/third_party:com_squareup_moshi_moshi-kotlin-codegen",
-    moshi_exported_library = "//scripts/third_party:com_squareup_moshi_moshi-kotlin",
+    moshi_exported_library = "//scripts/third_party:com_squareup_moshi_moshi",
     visibility = [":script_all_artifact_visibility"],
 )

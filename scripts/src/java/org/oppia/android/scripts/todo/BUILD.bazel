@@ -24,6 +24,8 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/todo/model:issue",
         "//scripts/src/java/org/oppia/android/scripts/todo/model:todo",
+        "//scripts/third_party:com_google_protobuf_protobuf-java",
+        "//scripts/third_party:moshi",
     ],
 )
 
@@ -33,7 +35,6 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":todo_collector",
-        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//scripts/src/java/org/oppia/android/scripts/todo/model:todo",
     ],
 )

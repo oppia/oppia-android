@@ -13,5 +13,6 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//scripts/src/java/org/oppia/android/scripts/proto:file_content_validation_checks_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/proto:filename_pattern_validation_checks_java_proto",
+        "//scripts/third_party:com_google_protobuf_protobuf-java",
     ],
 )

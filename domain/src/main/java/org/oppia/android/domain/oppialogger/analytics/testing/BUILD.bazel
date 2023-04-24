@@ -2,9 +2,9 @@
 Package for testing utilities for log uploading functionality.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "fake_log_scheduler",
     testonly = True,
     srcs = [
@@ -12,8 +12,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
+        "//third_party:androidx_work_work-runtime",
         "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/logging:metric_log_scheduler",
     ],
 )

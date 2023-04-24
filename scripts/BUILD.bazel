@@ -276,3 +276,14 @@ java_binary(
         "//scripts/src/java/org/oppia/android/scripts/build:filter_per_language_resources_lib",
     ],
 )
+
+java_binary(
+    name = "suggest_build_fixes",
+    main_class = "org.oppia.android.scripts.build.SuggestBuildFixesKt",
+    visibility = [
+        "//:oppia_binary_visibility",
+    ],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:suggest_build_fixes_lib",
+    ],
+)

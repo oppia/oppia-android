@@ -2,9 +2,9 @@
 Test-only utilities for onboarding domain components.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "retriever_test_module",
     testonly = True,
     srcs = [
@@ -18,7 +18,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "fake_exploration_meta_data_retriever",
     testonly = True,
     srcs = [

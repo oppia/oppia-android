@@ -2,9 +2,9 @@
 General purposes utilities to manage platform parameters.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "platformparameter",
     srcs = [
         "PlatformParameterConstants.kt",

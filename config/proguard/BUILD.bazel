@@ -1,0 +1,19 @@
+filegroup(
+    name = "proguard_specs",
+    srcs = [
+        "android-proguard-rules.pro",
+        "androidx-proguard-rules.pro",
+        "firebase-components-proguard-rules.pro",
+        "glide-proguard-rules.pro",
+        "google-play-services-proguard-rules.pro",
+        "guava-proguard-rules.pro",
+        "kotlin-proguard-rules.pro",
+        "kotlinpoet-javapoet-proguard-rules.pro",
+        "material-proguard-rules.pro",
+        "moshi-proguard-rules.pro",
+        "okhttp-proguard-rules.pro",
+        "oppia-prod-proguard-rules.pro",
+        "protobuf-proguard-rules.pro",
+    ],
+    visibility = ["//:oppia_binary_visibility"],
+)

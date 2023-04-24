@@ -1,0 +1,5 @@
+# TODO: Document.
+
+exports_files(["bundle_config.pb.json"])
+
+exports_files(["kitkat_main_dex_class_list.txt"])

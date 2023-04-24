@@ -3,17 +3,10 @@
 This library contains utilities that all other modules, minus model, depend on.
 """
 
-load("//utility:utility_test.bzl", "utility_test")
+load("//defs:oppia_android_library.bzl", "oppia_android_library", "oppia_android_resource_library")
+load("//defs:oppia_android_test.bzl", "oppia_android_test")
 
-android_library(
-    name = "resources",
-    custom_package = "org.oppia.android.util",
-    manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/**/*.xml"]),
-    visibility = ["//visibility:public"],
-)
-
-# Visibility for migrated utility tests.
+# Visibility for utility tests.
 package_group(
     name = "utility_testing_visibility",
     packages = [
@@ -22,81 +15,74 @@ package_group(
     ],
 )
 
-android_library(
-    name = "test_resources",
-    testonly = True,
-    custom_package = "org.oppia.android.util",
-    manifest = ":test_manifest",
-    resource_files = glob(["src/test/res/**"]),
-    visibility = [
-        ":utility_testing_visibility",
-        "//app/src/test/java/org/oppia/android/app/translation:__pkg__",
-    ],
+oppia_android_resource_library(
+    name = "resources",
+    package = "org.oppia.android.util",
+    resource_files = glob(["src/main/res/**/*.xml"]),
+    visibility = ["//:oppia_api_visibility"],
 )
 
-filegroup(
-    name = "test_manifest",
-    srcs = ["src/test/AndroidManifest.xml"],
+oppia_android_resource_library(
+    name = "test_resources",
+    testonly = True,
+    package = "org.oppia.android.util",
+    resource_files = glob(["src/test/res/**"]),
     visibility = ["//:oppia_testing_visibility"],
 )
 
-# keep sorted
-TEST_DEPS = [
-    ":test_resources",
-    "//:dagger",
-    "//app:crashlytics",
-    "//app:crashlytics_deps",
-    "//model/src/main/proto:test_models",
-    "//testing",
-    "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
-    "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
-    "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
-    "//testing/src/main/java/org/oppia/android/testing/mockito",
-    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
-    "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_activity_manager",
-    "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_traffic_stats",
-    "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
-    "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
-    "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-    "//third_party:androidx_arch_core_core-testing",
-    "//third_party:androidx_test_ext_junit",
-    "//third_party:androidx_test_ext_truth",
-    "//third_party:androidx_work_work-testing",
-    "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-    "//third_party:com_google_truth_truth",
-    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
-    "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
-    "//third_party:org_mockito_mockito-core",
-    "//third_party:robolectric_android-all",
-    "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
-    "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
-    "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
-    "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
-    "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
-    "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
-    "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
-    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
-    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
-    "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
-    "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handlers",
-    "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader",
-    "//utility/src/main/java/org/oppia/android/util/parser/image:url_image_parser",
-    "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
-]
+# TODO(#1602): Remove this shared library once everything is modularized.
+oppia_android_library(
+    name = "_combined_test_lib_do_not_depend",
+    testonly = True,
+    srcs = glob(["src/test/java/org/oppia/android/util/**/*Test.kt"]),
+    android_merge_deps = [
+        ":resources",
+        "//third_party:com_google_android_material_material",
+    ],
+    deps = [
+        "//:dagger",
+        "//model/src/main/proto:languages_java_proto_lite",
+        "//model/src/main/proto:test_models",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/mockito",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//third_party:io_github_karino2_kotlitex",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        "//utility/src/main/java/org/oppia/android/util/locale:android_locale_factory",
+        "//utility/src/main/java/org/oppia/android/util/locale:impl",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_bidi_formatter",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:custom_html_content_handler",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:list_item_leading_margin_span",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:policy_type",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handlers",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:url_image_parser",
+        "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
+    ],
+)
 
-# Qualified file paths for test classes that have been migrated over to their own packages &
-# shouldn't be defined as module-level tests.
-# keep sorted
-MIGRATED_TESTS = [
-    "src/test/java/org/oppia/android/util/locale/DisplayLocaleImplTest.kt",
-    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugImplTest.kt",
-    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugModuleTest.kt",
-    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdImplTest.kt",
-    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModuleTest.kt",
-]
-
-[utility_test(
-    name = test_file_path,
-    filtered_tests = MIGRATED_TESTS,
-    deps = TEST_DEPS,
+[oppia_android_test(
+    name = test_file_path[:test_file_path.find(".kt")] if "/" in test_file_path else test_file_path,
+    srcs = [],
+    temp_test_class_migration = test_file_path[test_file_path.find("src/test/java/") + len("src/test/java/"):test_file_path.find(".kt")].replace("/", "."),
+    deps = [":_combined_test_lib_do_not_depend"],
 ) for test_file_path in glob(["src/test/java/org/oppia/android/util/**/*Test.kt"])]

@@ -3,17 +3,21 @@
 Tests for threading-specific test utilities.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
-load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+load("//defs:oppia_android_test.bzl", "oppia_android_test")
 
-kt_android_library(
+oppia_android_library(
     name = "test_coroutine_dispatcher_test_base",
     testonly = True,
     srcs = ["TestCoroutineDispatcherTestBase.kt"],
     deps = [
         "//testing/src/main/java/org/oppia/android/testing/threading:annotations",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
+        "//third_party:com_google_guava_guava",
         "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:kotlinx-coroutines-core-jvm",
         "//third_party:org_mockito_mockito-core",
     ],
 )
@@ -21,60 +25,101 @@ kt_android_library(
 oppia_android_test(
     name = "CoroutineExecutorServiceTest",
     srcs = ["CoroutineExecutorServiceTest.kt"],
-    custom_package = "org.oppia.android.data.testing",
-    test_class = "org.oppia.android.testing.threading.CoroutineExecutorServiceTest",
-    test_manifest = "//testing:test_manifest",
     deps = [
         "//:dagger",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_system_clock",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-        "//third_party:robolectric_android-all",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_annotations",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 
 oppia_android_test(
     name = "TestCoroutineDispatcherEspressoImplTest",
     srcs = ["TestCoroutineDispatcherEspressoImplTest.kt"],
-    custom_package = "org.oppia.android.data.testing",
-    test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherEspressoImplTest",
-    test_manifest = "//testing:test_manifest",
     deps = [
         ":test_coroutine_dispatcher_test_base",
         "//:dagger",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
-        "//third_party:robolectric_android-all",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_annotations",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_level",
     ],
 )
 
 oppia_android_test(
     name = "TestCoroutineDispatcherRobolectricImplTest",
     srcs = ["TestCoroutineDispatcherRobolectricImplTest.kt"],
-    custom_package = "org.oppia.android.data.testing",
-    test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherRobolectricImplTest",
-    test_manifest = "//testing:test_manifest",
     deps = [
         ":test_coroutine_dispatcher_test_base",
         "//:dagger",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
-        "//third_party:robolectric_android-all",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_system_clock",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_annotations",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_level",
     ],
 )
 
 oppia_android_test(
     name = "TestCoroutineDispatcherTest",
     srcs = ["TestCoroutineDispatcherTest.kt"],
-    custom_package = "org.oppia.android.data.testing",
-    test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherTest",
-    test_manifest = "//testing:test_manifest",
     deps = [
         "//:dagger",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
+        "//testing/src/main/java/org/oppia/android/testing/threading:annotations",
+        "//testing/src/main/java/org/oppia/android/testing/threading:espresso_impl",
+        "//testing/src/main/java/org/oppia/android/testing/threading:robolectric_impl",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
-        "//third_party:robolectric_android-all",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//third_party:org_robolectric_annotations",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_level",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )

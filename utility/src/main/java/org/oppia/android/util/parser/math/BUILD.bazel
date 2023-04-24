@@ -2,9 +2,9 @@
 Components required to render LaTeX math expressions through Glide.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "math_latex_model",
     srcs = [
         "MathModel.kt",
@@ -18,7 +18,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "math_bitmap_model_loader",
     srcs = [
         "MathBitmapModelLoader.kt",
@@ -26,10 +26,15 @@ kt_android_library(
     visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
     deps = [
         ":math_latex_model",
+        "//third_party:androidx_core_core",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:io_github_karino2_kotlitex",
+        "//third_party:kotlinx-coroutines-core-jvm",
         "//utility:resources",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector",
         "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector_provider",
     ],
 )

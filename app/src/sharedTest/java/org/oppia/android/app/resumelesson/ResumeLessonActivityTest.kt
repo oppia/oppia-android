@@ -195,7 +195,7 @@ class ResumeLessonActivityTest {
   @Test
   fun testResumeLessonActivity_onToolbarClosePressed_closesResumeExplorationActivity() {
     resumeLessonActivityTestRule.launchActivity(createResumeLessonActivityIntent())
-    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    onView(withContentDescription(androidx.navigation.ui.R.string.nav_app_bar_navigate_up_description)).perform(click())
     assertThat(resumeLessonActivityTestRule.activity.isFinishing).isTrue()
   }
 

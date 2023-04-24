@@ -11,7 +11,10 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/apkstats:aapt2_client",
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )
@@ -20,9 +23,13 @@ kt_jvm_test(
     name = "ApkAnalyzerClientTest",
     srcs = ["ApkAnalyzerClientTest.kt"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:aapt2_client",
         "//scripts/src/java/org/oppia/android/scripts/apkstats:apk_analyzer_client",
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )
@@ -32,7 +39,10 @@ kt_jvm_test(
     srcs = ["BundleToolClientTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/apkstats:bundle_tool_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )
@@ -45,12 +55,11 @@ kt_jvm_test(
         "//scripts/third_party:android_bundletool",
     ],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/apkstats:aapt2_client",
-        "//scripts/src/java/org/oppia/android/scripts/apkstats:apk_analyzer_client",
-        "//scripts/src/java/org/oppia/android/scripts/apkstats:bundle_tool_client",
         "//scripts/src/java/org/oppia/android/scripts/apkstats:compute_aab_differences_lib",
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
         "//testing:assertion_helpers",
     ],
 )

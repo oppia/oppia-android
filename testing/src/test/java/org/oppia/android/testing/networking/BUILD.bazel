@@ -2,14 +2,11 @@
 Tests for networking-specific test utilities.
 """
 
-load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//defs:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
     name = "NetworkConnectionTestUtilTest",
     srcs = ["NetworkConnectionTestUtilTest.kt"],
-    custom_package = "org.oppia.android.testing.networking",
-    test_class = "org.oppia.android.testing.networking.NetworkConnectionTestUtilTest",
-    test_manifest = "//testing:test_manifest",
     deps = [
         "//:dagger",
         "//testing/src/main/java/org/oppia/android/testing/networking:network_connection_test_util",
@@ -18,10 +15,10 @@ oppia_android_test(
         "//third_party:androidx_test_core",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
         "//third_party:junit_junit",
-        "//third_party:robolectric_android-all",
+        "//third_party:org_robolectric_annotations",
         "//utility/src/main/java/org/oppia/android/util/logging:annotations",
         "//utility/src/main/java/org/oppia/android/util/logging:log_level",
-        "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
     ],
 )

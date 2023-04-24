@@ -246,6 +246,7 @@ oppia_proto_library(
 
 java_lite_proto_library(
     name = "voiceover_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":voiceover_proto"],
 )
 

@@ -2,7 +2,7 @@
 Constructs for setting up views for injection in the Dagger graph.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 # TODO(#59): Define ViewComponentImpl as a library separate from views.
 exports_files([
@@ -10,7 +10,7 @@ exports_files([
     "ViewComponentImpl.kt",
 ])
 
-kt_android_library(
+oppia_android_library(
     name = "view_scope",
     srcs = [
         "ViewScope.kt",
@@ -21,17 +21,15 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "view_component",
     srcs = [
         "ViewComponent.kt",
     ],
-    visibility = [
-        "//app/src/main/java/org/oppia/android/app/fragment:__pkg__",
-    ],
+    visibility = ["//app:app_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "view_component_factory",
     srcs = [
         "ViewComponentFactory.kt",
@@ -42,12 +40,13 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "view_component_builder_injector",
     srcs = [
         "ViewComponentBuilderInjector.kt",
     ],
     visibility = [
+        "//app:__pkg__",
         "//app/src/main/java/org/oppia/android/app/fragment:__pkg__",
     ],
     deps = [

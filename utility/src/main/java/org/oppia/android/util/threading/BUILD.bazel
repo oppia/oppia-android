@@ -2,9 +2,9 @@
 General purpose utilities for multi-threading and concurrency.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "annotations",
     srcs = [
         "BackgroundDispatcher.kt",
@@ -16,7 +16,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "dispatcher_injector",
     srcs = [
         "DispatcherInjector.kt",
@@ -26,11 +26,11 @@ kt_android_library(
     ],
     deps = [
         ":annotations",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party:kotlinx-coroutines-core-jvm",
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "dispatcher_injector_provider",
     srcs = [
         "DispatcherInjectorProvider.kt",
@@ -43,7 +43,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "prod_module",
     srcs = [
         "DispatcherModule.kt",
@@ -53,6 +53,6 @@ kt_android_library(
         ":annotations",
         "//:dagger",
         "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-android",
+        "//third_party:kotlinx-coroutines-core-jvm",
     ],
 )
