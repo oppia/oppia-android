@@ -481,6 +481,7 @@ class OptionsFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun openOptionsActivity_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
@@ -539,7 +540,6 @@ class OptionsFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun openOptionsActivity_clickAudioLanguage_opensAudioLanguageActivity() {
     launch<OptionsActivity>(
