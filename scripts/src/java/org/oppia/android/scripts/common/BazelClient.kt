@@ -13,12 +13,33 @@ class BazelClient(
   private val commandExecutor: CommandExecutor,
   private val universeScope: String = "//..."
 ) {
-  /** Returns all Bazel test targets in the workspace. */
-  fun retrieveAllTestTargets(): List<String> {
-    return correctPotentiallyBrokenTargetNames(
-      executeBazelCommand("query", "--noshow_progress", "kind(test, //...)")
+  fun build(
+    pattern: String, keepGoing: Boolean = false, allowFailures: Boolean = false
+  ): List<String> {
+    return executeBazelCommand(
+      *listOfNotNull(
+        "build",
+        "--noshow_progress",
+        "--keep_going".takeIf { keepGoing },
+        pattern,
+      ).toTypedArray(),
+      allowAllFailures = allowFailures
     )
   }
+
+  fun query(pattern: String, withSkyQuery: Boolean = false): List<String> {
+    val args = listOfNotNull(
+      "query",
+      "--noshow_progress",
+      "--order_output=no".takeIf { withSkyQuery },
+      "--universe_scope=$universeScope".takeIf { withSkyQuery },
+      pattern
+    )
+    return correctPotentiallyBrokenTargetNames(executeBazelCommand(*args.toTypedArray()))
+  }
+
+  /** Returns all Bazel test targets in the workspace. */
+  fun retrieveAllTestTargets(): List<String> = query("kind(test, //...)")
 
   /** Returns all Bazel file targets that correspond to each of the relative file paths provided. */
   fun retrieveBazelTargets(changedFileRelativePaths: Iterable<String>): List<String> {
@@ -105,12 +126,8 @@ class BazelClient(
    * Returns the list of direct and indirect production Maven third-party dependencies on which the
    * specified binary depends.
    */
-  fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> {
-    return executeBazelCommand(
-      "query",
-      "deps(deps($binaryTarget) intersect //third_party/...) intersect @maven_app//..."
-    )
-  }
+  fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> =
+    query("deps(deps($binaryTarget) intersect //third_party/...) intersect @maven_app//...")
 
   private fun retrieveFilteredSiblings(
     filterRuleType: String,
@@ -131,9 +148,13 @@ class BazelClient(
       when {
         line.isEmpty() -> correctedTargets += line
         else -> {
-          val indexes = line.findOccurrencesOf("//")
+          val indexes = ABSOLUTE_TARGET_PATH_PREFIX_PATTERN.findAll(line).map {
+            it.range.first
+          }.toList()
           if (indexes.isEmpty() || indexes.first() != 0) {
-            throw IllegalArgumentException("Invalid line: $line (expected to start with '//')")
+            throw IllegalArgumentException(
+              "Invalid line: $line (expected to start with '//' or '@<name>//')"
+            )
           }
 
           val targetBounds: List<Pair<Int, Int>> = indexes.mapIndexed { arrayIndex, lineIndex ->
@@ -189,37 +210,31 @@ class BazelClient(
   @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
   private fun executeBazelCommand(
     vararg arguments: String,
+    allowAllFailures: Boolean = false,
     allowPartialFailures: Boolean = false
   ): List<String> {
     val result =
       commandExecutor.executeCommand(
-        rootDirectory, command = "bazel", *arguments, includeErrorOutput = false
+        rootDirectory, command = "bazel", *arguments, includeErrorOutput = allowAllFailures
       )
     // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
     // 3 is expected for queries since it indicates that some of the arguments don't correspond to
     // valid targets. Note that this COULD result in legitimate issues being ignored, but it's
     // unlikely.
-    val expectedExitCodes = if (allowPartialFailures) listOf(0, 3) else listOf(0)
-    check(result.exitCode in expectedExitCodes) {
-      "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +
-        "\nStandard output:\n${result.output.joinToString("\n")}" +
-        "\nError output:\n${result.errorOutput.joinToString("\n")}"
+    if (!allowAllFailures) {
+      val expectedExitCodes = if (allowPartialFailures) listOf(0, 3) else listOf(0)
+      check(result.exitCode in expectedExitCodes) {
+        "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +
+          "\nStandard output:\n${result.output.joinToString("\n")}" +
+          "\nError output:\n${result.errorOutput.joinToString("\n")}"
+      }
     }
     return result.output
   }
 
   private companion object {
     private const val MAX_ALLOWED_ARG_STR_LENGTH = 50_000
-  }
-}
 
-/** Returns a list of indexes where the specified [needle] occurs in this string. */
-private fun String.findOccurrencesOf(needle: String): List<Int> {
-  val indexes = mutableListOf<Int>()
-  var needleIndex = indexOf(needle)
-  while (needleIndex >= 0) {
-    indexes += needleIndex
-    needleIndex = indexOf(needle, startIndex = needleIndex + needle.length)
+    private val ABSOLUTE_TARGET_PATH_PREFIX_PATTERN = "(?:@\\w+?)?//".toRegex()
   }
-  return indexes
 }
