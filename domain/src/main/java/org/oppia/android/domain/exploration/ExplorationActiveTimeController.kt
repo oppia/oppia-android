@@ -19,7 +19,7 @@ private const val RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
   "record_aggregate_learning_time_provider_id"
 private const val RETRIEVE_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
   "retrieve_aggregate_learning_time_provider_id"
-val LEARNING_TIME_STALENESS_THRESHOLD_MILLIS = TimeUnit.DAYS.toMillis(10)
+private val LEARNING_TIME_EXPIRATION_MILLIS = TimeUnit.DAYS.toMillis(10)
 
 /** Controller for tracking the amount of active time a user has spent in a topic. */
 class ExplorationActiveTimeController @Inject constructor(
@@ -40,7 +40,7 @@ class ExplorationActiveTimeController @Inject constructor(
   private val cacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<TopicLearningTimeDatabase>>()
 
-  var startExplorationTimestampMs = 0L
+  private var startExplorationTimestampMs: Long = 0L
 
   /**
    * Begin tracking the active learning time in an exploration.
@@ -78,7 +78,7 @@ class ExplorationActiveTimeController @Inject constructor(
    * @param sessionDuration the tracked exploration duration between start and pause
    * @return a [DataProvider] that indicates the success/failure of this record operation
    */
-  internal fun recordAggregateTopicLearningTime(
+  private fun recordAggregateTopicLearningTime(
     profileId: ProfileId,
     topicId: String,
     sessionDuration: Long
@@ -95,7 +95,6 @@ class ExplorationActiveTimeController @Inject constructor(
       } else {
         TopicLearningTime.newBuilder()
           .setTopicId(topicId)
-          .setTopicLearningTimeMs(sessionDuration)
           .setLastUpdatedTimeMs(oppiaClock.getCurrentTimeMs())
       }
 
@@ -123,11 +122,11 @@ class ExplorationActiveTimeController @Inject constructor(
   private fun isLastUpdatedTimestampStale(lastUpdatedTimestamp: Long): Boolean {
     val currentTime = oppiaClock.getCurrentTimeMs()
     val differenceInMillis = currentTime - lastUpdatedTimestamp
-    return differenceInMillis > LEARNING_TIME_STALENESS_THRESHOLD_MILLIS
+    return differenceInMillis > LEARNING_TIME_EXPIRATION_MILLIS
   }
 
   /** Returns the [TopicLearningTime] [DataProvider] for a specific topicId, per-profile basis. */
-  internal fun retrieveAggregateTopicLearningTimeDataProvider(
+  fun retrieveAggregateTopicLearningTimeDataProvider(
     profileId: ProfileId,
     topicId: String
   ): DataProvider<TopicLearningTime> {
