@@ -131,8 +131,8 @@ DIRECT_REMOTE_DEPENDENCIES = [
     ),
     create_http_jar_reference(
         name = "kotlinx-coroutines-core-jvm",
-        sha = "acc8c74b1fb88121c51221bfa7b6f5e920201bc20183ebf74165dcf5d45a8003",
-        version = "1.6.0",
+        sha = "c24c8bb27bb320c4a93871501a7e5e0c61607638907b197aef675513d4c820be",
+        version = "1.6.4",
         maven_url_suffix = "org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{0}/kotlinx-coroutines-core-jvm-{0}.jar",
         test_only = False,
         export_details = create_export_library_details(
