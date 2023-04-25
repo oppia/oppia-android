@@ -94,6 +94,7 @@ import org.robolectric.annotation.LooperMode
 import java.lang.reflect.Field
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 
 /** Tests for ``CircularProgressIndicator`` data-binding adapters. */
 // Function name: test names are conventionally named with underscores.
@@ -299,7 +300,7 @@ class CircularProgressIndicatorAdaptersTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
