@@ -15,11 +15,14 @@ class ProfileListActivity :
   RouteToProfileEditListener {
   @Inject
   lateinit var profileListActivityPresenter: ProfileListActivityPresenter
+  @Inject
+  lateinit var snackbarManager: SnackbarManager
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     profileListActivityPresenter.handleOnCreate()
+    snackbarManager.enableShowingSnackbars(this)
   }
 
   override fun onSupportNavigateUp(): Boolean {

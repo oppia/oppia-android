@@ -1,27 +1,31 @@
 package org.oppia.android.app.settings.profile
 
 import androidx.annotation.StringRes
-import org.oppia.android.util.data.DataProvider
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
 
 @Singleton
-abstract class SnackbarController @Inject constructor() {
-  // The class should have a queue of snackbars.
+class SnackbarController @Inject constructor(private val dataProviders: DataProviders) {
+
+  private val snackbarRequestQueue: Queue<SnackbarRequest.ShowSnackbar> = LinkedList()
 
   fun getCurrentSnackbar(): DataProvider<SnackbarRequest> {
-    // Return a data provider that will provide the current snackbar request.
-    // not getting how to return a data provider
+    val currentRequest = snackbarRequestQueue.peek()
+    return dataProviders.createInMemoryDataProvider(SnackbarRequest::class.java) {
+      return@createInMemoryDataProvider currentRequest
+        ?: SnackbarRequest.ShowNothing
+    }
   }
 
   fun enqueueSnackbar(request: SnackbarRequest.ShowSnackbar) {
-    // Enqueue the snackbar request.
-    val list = mutableListOf<SnackbarRequest>()
-    list.add(request)
+    snackbarRequestQueue.add(request)
   }
 
-  fun dismissCurrentSnackbar() {
-    // dismiss the current snackbar
+  fun dismissCurrentSnackbar(){
+    snackbarRequestQueue.remove()
   }
 
   sealed class SnackbarRequest {
@@ -31,7 +35,6 @@ abstract class SnackbarController @Inject constructor() {
     object ShowNothing : SnackbarRequest()
   }
 
-  // Abstraction for Snackbar's length constants.
   enum class SnackbarDuration {
     SHORT,
     LONG

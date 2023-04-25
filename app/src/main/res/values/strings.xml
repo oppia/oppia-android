@@ -592,5 +592,5 @@
   <string name="state_fragment_item_selection_no_items_selected_hint_text">Please select all correct choices.</string>
   <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
   <string name="state_fragment_item_selection_max_items_selected_hint_text">No more than %s choices may be selected.</string>
-  <string name="profile_edit_delete_success">Profile Has Been Successfully Deleted.</string>
+  <string name="profile_edit_delete_success">Profile has been successfully deleted.</string>
 </resources>

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.google.android.material.snackbar.Snackbar
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
@@ -30,7 +29,8 @@ class ProfileEditFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val snackbarManager: SnackbarManager
 ) {
 
   @Inject
@@ -152,30 +152,21 @@ class ProfileEditFragmentPresenter @Inject constructor(
         fragment,
         Observer {
           if (it is AsyncResult.Success) {
-            val profileDeletionSnackbar = Snackbar
-              .make(
-                fragment.requireView(),
+              snackbarManager.showSnackbar(
                 R.string.profile_edit_delete_success,
-                Snackbar.LENGTH_SHORT
+                SnackbarController.SnackbarDuration.LONG
               )
-              .setAction(R.string.log_out_dialog_okay_button) { }
-              .addCallback(object : Snackbar.Callback() {
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                  if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    val intent =
-                      Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    fragment.startActivity(intent)
-                  } else {
-                    val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    fragment.startActivity(intent)
-                  }
-                }
-              })
-              .setActionTextColor(fragment.resources.getColor(R.color.color_def_bright_turquoise))
-            profileDeletionSnackbar.show()
-          }
+              if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
+                val intent =
+                  Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                fragment.startActivity(intent)
+              } else {
+                val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                fragment.startActivity(intent)
+              }
+            }
         }
       )
   }
