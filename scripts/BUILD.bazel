@@ -280,10 +280,15 @@ java_binary(
 java_binary(
     name = "suggest_build_fixes",
     main_class = "org.oppia.android.scripts.build.SuggestBuildFixesKt",
-    visibility = [
-        "//:oppia_binary_visibility",
-    ],
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/build:suggest_build_fixes_lib",
+    ],
+)
+
+java_binary(
+    name = "verify_file_targets",
+    main_class = "org.oppia.android.scripts.build.VerifyFileTargetsKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:verify_file_targets_lib",
     ],
 )

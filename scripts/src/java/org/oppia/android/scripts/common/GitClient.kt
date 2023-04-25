@@ -27,6 +27,9 @@ class GitClient(
    */
   val changedFiles: Set<String> by lazy { retrieveChangedFilesWithPotentialDuplicates().toSet() }
 
+  fun computeAllTrackedFiles(): List<String> =
+    executeGitCommand("ls-tree --full-tree --name-only -r HEAD")
+
   private fun retrieveCurrentCommit(): String {
     return executeGitCommandWithOneLineOutput("rev-parse HEAD")
   }

@@ -27,7 +27,9 @@ class BazelClient(
     )
   }
 
-  fun query(pattern: String, withSkyQuery: Boolean = false): List<String> {
+  fun query(
+    pattern: String, withSkyQuery: Boolean = false, allowFailures: Boolean = false
+  ): List<String> {
     val args = listOfNotNull(
       "query",
       "--noshow_progress",
@@ -35,7 +37,12 @@ class BazelClient(
       "--universe_scope=$universeScope".takeIf { withSkyQuery },
       pattern
     )
-    return correctPotentiallyBrokenTargetNames(executeBazelCommand(*args.toTypedArray()))
+    // Ignore queries which result in an error if allowFailures is enabled.
+    val queryResults =
+      executeBazelCommand(
+        *args.toTypedArray(), allowAllFailures = allowFailures, includeErrorOutput = false
+      )
+    return correctPotentiallyBrokenTargetNames(queryResults)
   }
 
   /** Returns all Bazel test targets in the workspace. */
@@ -211,11 +218,12 @@ class BazelClient(
   private fun executeBazelCommand(
     vararg arguments: String,
     allowAllFailures: Boolean = false,
-    allowPartialFailures: Boolean = false
+    allowPartialFailures: Boolean = false,
+    includeErrorOutput: Boolean = allowAllFailures
   ): List<String> {
     val result =
       commandExecutor.executeCommand(
-        rootDirectory, command = "bazel", *arguments, includeErrorOutput = allowAllFailures
+        rootDirectory, command = "bazel", *arguments, includeErrorOutput = includeErrorOutput
       )
     // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
     // 3 is expected for queries since it indicates that some of the arguments don't correspond to

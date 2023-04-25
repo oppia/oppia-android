@@ -161,6 +161,11 @@ jobs:
         run: |
           bazel run //scripts:test_file_check -- $(pwd)
 
+      - name: File Binary/Test Dependency Check
+        if: always()
+        run: |
+          bazel run //scripts:verify_file_targets -- $(pwd)
+
       - name: Accessibility label Check
         if: always()
         run: |
