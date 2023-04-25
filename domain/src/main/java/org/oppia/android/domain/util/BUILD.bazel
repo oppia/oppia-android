@@ -9,7 +9,7 @@ oppia_android_library(
     srcs = [
         "JsonAssetRetriever.kt",
     ],
-    visibility = ["//domain:__subpackages__"],
+    visibility = ["//domain:domain_prod_visibility"],
     deps = [
         ":extensions",
         "//third_party:javax_inject_javax_inject",
@@ -24,7 +24,7 @@ oppia_android_library(
         "JsonExtensions.kt",
         "WorkDataExtensions.kt",
     ],
-    visibility = ["//domain:__subpackages__"],
+    visibility = ["//domain:domain_prod_visibility"],
     deps = [
         "//model/src/main/proto:interaction_object_java_proto_lite",
         "//third_party:androidx_work_work-runtime",
@@ -39,7 +39,7 @@ oppia_android_library(
     srcs = [
         "StateRetriever.kt",
     ],
-    visibility = ["//domain:__subpackages__"],
+    visibility = ["//domain:domain_prod_visibility"],
     deps = [
         ":extensions",
         "//model/src/main/proto:exploration_java_proto_lite",

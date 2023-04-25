@@ -15,7 +15,7 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
     ],
 )
 
@@ -30,7 +30,7 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
     ],
 )
 
@@ -43,7 +43,7 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
     ],
 )
 
@@ -60,6 +60,6 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
     ],
 )

@@ -21,7 +21,7 @@ kt_jvm_test(
         "//scripts/third_party:junit_junit",
         "//scripts/third_party:org_mockito_kotlin_mockito-kotlin",
         "//scripts/third_party:org_mockito_mockito-core",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
     ],
 )
 
@@ -35,7 +35,7 @@ kt_jvm_test(
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
         "//scripts/third_party:org_mockito_kotlin_mockito-kotlin",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
     ],
 )
 

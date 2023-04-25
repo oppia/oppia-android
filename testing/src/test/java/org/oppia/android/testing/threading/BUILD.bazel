@@ -27,7 +27,8 @@ oppia_android_test(
     srcs = ["CoroutineExecutorServiceTest.kt"],
     deps = [
         "//:dagger",
-        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
@@ -55,7 +56,7 @@ oppia_android_test(
     deps = [
         ":test_coroutine_dispatcher_test_base",
         "//:dagger",
-        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -79,7 +80,7 @@ oppia_android_test(
     deps = [
         ":test_coroutine_dispatcher_test_base",
         "//:dagger",
-        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -103,7 +104,7 @@ oppia_android_test(
     srcs = ["TestCoroutineDispatcherTest.kt"],
     deps = [
         "//:dagger",
-        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
         "//testing/src/main/java/org/oppia/android/testing/threading:annotations",
         "//testing/src/main/java/org/oppia/android/testing/threading:espresso_impl",

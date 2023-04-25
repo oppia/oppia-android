@@ -37,7 +37,7 @@ oppia_android_library(
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/backends/gae/model",
-        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing",
         "//testing/src/main/java/org/oppia/android/testing/network",
         "//testing/src/main/java/org/oppia/android/testing/network:test_module",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",

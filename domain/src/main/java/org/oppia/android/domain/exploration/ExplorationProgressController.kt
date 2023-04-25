@@ -145,7 +145,7 @@ class ExplorationProgressController @Inject constructor(
    * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
    * [submitAnswer].
    */
-  internal fun beginExplorationAsync(
+  fun beginExplorationAsync(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
@@ -193,7 +193,7 @@ class ExplorationProgressController @Inject constructor(
    * @param isCompletion whether this finish action indicates that the exploration was finished by
    *     the user
    */
-  internal fun finishExplorationAsync(isCompletion: Boolean): DataProvider<Any?> {
+  fun finishExplorationAsync(isCompletion: Boolean): DataProvider<Any?> {
     val finishExplorationResultFlow = createAsyncResultStateFlow<Any?>()
     val message =
       ControllerMessage.FinishExploration(

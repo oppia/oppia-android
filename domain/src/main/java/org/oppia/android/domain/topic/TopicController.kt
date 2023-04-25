@@ -460,7 +460,7 @@ class TopicController @Inject constructor(
     }
   }
 
-  internal fun retrieveTopic(topicId: String): Topic? {
+  fun retrieveTopic(topicId: String): Topic? {
     return if (loadLessonProtosFromAssets) {
       assetRepository.maybeLoadProtoFromLocalAssets(
         assetName = topicId,
@@ -496,7 +496,7 @@ class TopicController @Inject constructor(
     }
   }
 
-  internal fun retrieveStory(topicId: String, storyId: String): StorySummary {
+  fun retrieveStory(topicId: String, storyId: String): StorySummary {
     return if (loadLessonProtosFromAssets) {
       loadStorySummary(storyId)
     } else createStorySummaryFromJson(topicId, storyId)
@@ -640,7 +640,7 @@ class TopicController @Inject constructor(
     } + topicRecord.subtopicIdsList.map { "${topicId}_$it" } + listOf("skills", topicId)
   }
 
-  internal fun getJsonAssetFileNameList(topicId: String): List<String> {
+  fun getJsonAssetFileNameList(topicId: String): List<String> {
     val topicJsonObject = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")
     val storyFileNames = topicJsonObject?.optJSONArray("canonical_story_dicts")?.let { storyArray ->
       (0 until storyArray.length()).mapNotNull(storyArray::optJSONObject)

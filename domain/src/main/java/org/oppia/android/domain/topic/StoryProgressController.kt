@@ -318,7 +318,7 @@ class StoryProgressController @Inject constructor(
   }
 
   /** Returns list of [TopicProgress] [DataProvider] for a particular profile. */
-  internal fun retrieveTopicProgressListDataProvider(
+  fun retrieveTopicProgressListDataProvider(
     profileId: ProfileId
   ): DataProvider<List<TopicProgress>> {
     return retrieveCacheStore(profileId)
@@ -344,7 +344,7 @@ class StoryProgressController @Inject constructor(
    *
    * The provider defaults the progress for any IDs that don't have progress corresponding to them.
    */
-  internal fun retrieveTopicsProgressDataProvider(
+  fun retrieveTopicsProgressDataProvider(
     profileId: ProfileId,
     topicIds: List<String>
   ): DataProvider<List<TopicProgress>> {
@@ -357,7 +357,7 @@ class StoryProgressController @Inject constructor(
   }
 
   /** Returns a [StoryProgress] [DataProvider] for a specific storyId, per-profile basis. */
-  internal fun retrieveStoryProgressDataProvider(
+  fun retrieveStoryProgressDataProvider(
     profileId: ProfileId,
     topicId: String,
     storyId: String

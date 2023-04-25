@@ -1,0 +1,104 @@
+"""
+Domain services & definitions corresponding to retrieving and playing question practice sessions.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+# TODO: Split this up more?
+oppia_android_library(
+    name = "question_controllers",
+    srcs = [
+        "QuestionAssessmentCalculation.kt",
+        "QuestionAssessmentProgress.kt",
+        "QuestionAssessmentProgressController.kt",
+        "QuestionSessionMetrics.kt",
+        "QuestionTrainingController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":constants_provider",
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/classify:answer_classification_controller",
+        "//domain/src/main/java/org/oppia/android/domain/classify:classification_result",
+        "//domain/src/main/java/org/oppia/android/domain/hintsandsolution:hint_handler",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//domain/src/main/java/org/oppia/android/domain/state:state_deck",
+        "//domain/src/main/java/org/oppia/android/domain/state:state_list",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:question_java_proto_lite",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+oppia_android_library(
+    name = "constants_provider",
+    srcs = [
+        "QuestionConstantsProvider.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "question_module",
+    srcs = [
+        "QuestionModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":constants_provider",
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+oppia_android_library(
+    name = "question_retriever",
+    srcs = [
+        "QuestionRetriever.kt",
+    ],
+    visibility = ["//domain:domain_prod_visibility"],
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/util:asset",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//domain/src/main/java/org/oppia/android/domain/util:retriever",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:question_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+    ],
+)
+
+oppia_android_library(
+    name = "training_constants_provider",
+    srcs = [
+        "QuestionTrainingConstantsProvider.kt",
+    ],
+    deps = [
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

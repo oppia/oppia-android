@@ -68,3 +68,9 @@ class HintHandlerDebugImpl private constructor() : HintHandler {
     }
   }
 }
+
+/** Returns whether this state has a solution to show. */
+private fun State.hasSolution(): Boolean = interaction.hasSolution()
+
+/** Returns whether this state has help that the user can see. */
+private fun State.offersHelp(): Boolean = interaction.hintList.isNotEmpty() || hasSolution()

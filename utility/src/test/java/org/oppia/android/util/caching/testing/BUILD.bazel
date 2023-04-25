@@ -27,7 +27,7 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//model/src/main/proto:test_models",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//third_party:androidx_test_core",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_extensions_truth-liteproto-extension",

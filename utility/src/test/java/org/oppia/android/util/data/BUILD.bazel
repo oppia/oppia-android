@@ -9,7 +9,7 @@ oppia_android_test(
     srcs = ["AsyncDataSubscriptionManagerTest.kt"],
     deps = [
         "//:dagger",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -54,7 +54,7 @@ oppia_android_test(
     srcs = ["DataProvidersTest.kt"],
     deps = [
         "//:dagger",
-        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing",
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -84,7 +84,7 @@ oppia_android_test(
     srcs = ["InMemoryBlockingCacheTest.kt"],
     deps = [
         "//:dagger",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",

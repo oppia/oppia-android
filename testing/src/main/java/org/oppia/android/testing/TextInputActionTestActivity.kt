@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 
 /** Test Activity for TextInputActionTest. */
 class TextInputActionTestActivity : AppCompatActivity() {

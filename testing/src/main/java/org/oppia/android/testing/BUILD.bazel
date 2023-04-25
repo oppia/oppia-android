@@ -1,0 +1,61 @@
+"""
+Package for common test utilities corresponding to stories and story progress.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "assertion_helpers",
+    testonly = True,
+    srcs = ["AssertionHelpers.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:junit_junit",
+        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
+    ],
+)
+
+# TODO: Split this up.
+oppia_android_library(
+    name = "testing",
+    testonly = True,
+    srcs = [
+        "DisableAccessibilityChecks.kt",
+        "FakeAnalyticsEventLogger.kt",
+        "FakeExceptionLogger.kt",
+        "FakePerformanceMetricAssessor.kt",
+        "FakePerformanceMetricsEventLogger.kt",
+        "OppiaTestAnnotations.kt",
+        "OppiaTestRule.kt",
+        "OppiaTestRunner.kt",
+        "RichTextViewMatcher.kt",
+        "TestImageLoaderModule.kt",
+        "TestLogReportingModule.kt",
+        "TextInputActionTestActivity.kt",
+    ],
+    android_merge_deps = ["//third_party:com_google_android_material_material"],
+    exports_manifest = True,
+    manifest = "AndroidManifest.xml",
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//:dagger",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_core_core-ktx",
+        "//third_party:androidx_test_espresso_espresso-accessibility",
+        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:androidx_test_runner",
+        "//third_party:com_google_android_apps_common_testing_accessibility_framework_accessibility-test-framework",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:org_hamcrest_hamcrest-core",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
+    ],
+)

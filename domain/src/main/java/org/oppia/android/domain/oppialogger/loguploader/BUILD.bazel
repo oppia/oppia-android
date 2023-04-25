@@ -60,8 +60,8 @@ oppia_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
-        "//domain:__pkg__",
         "//domain:domain_testing_visibility",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:__pkg__",
     ],
     deps = [
         ":worker",

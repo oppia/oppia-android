@@ -5,61 +5,12 @@ This library contains fake objects used for testing as well as tests for these o
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 package_group(
     name = "testing_testing_visibility",
     packages = [
-        "//testing",
+        "//testing",  # TODO: Remove.
         "//testing/src/test/...",
-    ],
-)
-
-# Library for general-purpose testing fakes.
-oppia_android_library(
-    name = "testing",
-    testonly = True,
-    srcs = glob(["src/main/java/org/oppia/android/testing/**/*.kt"]),
-    android_merge_deps = ["//third_party:com_google_android_material_material"],
-    exports_manifest = True,
-    manifest = "src/main/AndroidManifest.xml",
-    visibility = ["//:oppia_testing_visibility"],
-    deps = [
-        "//:dagger",
-        "//domain",
-        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
-        "//model/src/main/proto:event_logger_java_proto_lite",
-        "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
-        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
-        "//model/src/main/proto:profile_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
-        "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
-        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
-        "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:androidx_core_core-ktx",
-        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
-        "//third_party:androidx_test_espresso_espresso-accessibility",
-        "//third_party:androidx_test_espresso_espresso-core",
-        "//third_party:androidx_test_monitor",
-        "//third_party:androidx_test_runner",
-        "//third_party:com_google_android_apps_common_testing_accessibility_framework_accessibility-test-framework",
-        "//third_party:com_google_truth_truth",
-        "//third_party:javax_inject_javax_inject",
-        "//third_party:junit_junit",
-        "//third_party:org_hamcrest_hamcrest-core",
-        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
-        "//third_party:org_mockito_mockito-core",
-        "//utility/src/main/java/org/oppia/android/util/data:async_result",
-        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
-        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
-        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
-        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
-        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
     ],
 )
 
@@ -70,14 +21,11 @@ oppia_android_library(
     srcs = glob(["src/test/java/org/oppia/android/testing/**/*Test.kt"]),
     android_merge_deps = ["//domain:assets"],
     deps = [
-        ":assertion_helpers",
-        ":testing",
         "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
-        "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
@@ -92,21 +40,34 @@ oppia_android_library(
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/exploration:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:exploration_checkpoint_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_config_module",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/topic:story_progress_controller",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+        "//testing/src/main/java/org/oppia/android/testing/environment:test_environment_config",
         "//testing/src/main/java/org/oppia/android/testing/espresso:text_input_action",
+        "//testing/src/main/java/org/oppia/android/testing/lightweightcheckpointing:exploration_checkpoint_test_helper",
         "//testing/src/main/java/org/oppia/android/testing/network",
         "//testing/src/main/java/org/oppia/android/testing/network:test_module",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
+        "//testing/src/main/java/org/oppia/android/testing/profile:profile_test_helper",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/story:story_progress_test_helper",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
@@ -151,14 +112,3 @@ oppia_android_library(
     temp_test_class_migration = test_file_path[test_file_path.find("src/test/java/") + len("src/test/java/"):test_file_path.find(".kt")].replace("/", "."),
     deps = [":_combined_test_lib_do_not_depend"],
 ) for test_file_path in glob(["src/test/java/org/oppia/android/testing/**/*Test.kt"])]
-
-kt_jvm_library(
-    name = "assertion_helpers",
-    testonly = True,
-    srcs = ["src/main/java/org/oppia/android/testing/AssertionHelpers.kt"],
-    visibility = ["//:oppia_testing_visibility"],
-    deps = [
-        "//third_party:junit_junit",
-        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
-    ],
-)

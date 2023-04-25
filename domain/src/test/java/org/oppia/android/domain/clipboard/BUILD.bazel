@@ -9,10 +9,11 @@ oppia_android_test(
     srcs = ["ClipboardControllerTest.kt"],
     deps = [
         "//:dagger",
-        "//domain",
         "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
-        "//testing",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_config_module",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
+        "//testing/src/main/java/org/oppia/android/testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

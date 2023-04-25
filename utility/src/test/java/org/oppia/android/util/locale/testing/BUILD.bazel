@@ -29,7 +29,7 @@ oppia_android_test(
     srcs = ["TestOppiaBidiFormatterTest.kt"],
     deps = [
         "//:dagger",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:shadow_bidi_formatter",
         "//third_party:androidx_test_core",
         "//third_party:androidx_test_ext_junit",

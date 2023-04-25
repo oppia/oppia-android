@@ -9,7 +9,7 @@ oppia_android_library(
     srcs = [
         "ExceptionsController.kt",
     ],
-    visibility = ["//domain:__subpackages__"],
+    visibility = ["//domain:domain_prod_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",

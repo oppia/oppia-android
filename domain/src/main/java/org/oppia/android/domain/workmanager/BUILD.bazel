@@ -1,0 +1,23 @@
+"""
+Domain modules corresponding to setting up and maintaining the app-wide WorkManager integration.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+oppia_android_library(
+    name = "prod_module",
+    srcs = [
+        "WorkManagerConfigurationModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker_factory",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/syncup:platform_parameter_sync_up_worker_factory",
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

@@ -358,4 +358,4 @@ class HintHandlerProdImpl private constructor(
 private fun State.hasSolution(): Boolean = interaction.hasSolution()
 
 /** Returns whether this state has help that the user can see. */
-internal fun State.offersHelp(): Boolean = interaction.hintList.isNotEmpty() || hasSolution()
+private fun State.offersHelp(): Boolean = interaction.hintList.isNotEmpty() || hasSolution()

@@ -131,7 +131,7 @@ oppia_android_test(
     srcs = ["FractionExtensionsTest.kt"],
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/math:fraction_subject",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -147,7 +147,7 @@ oppia_android_test(
     srcs = ["FractionParserTest.kt"],
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
@@ -243,7 +243,7 @@ oppia_android_test(
     name = "PeekableIteratorTest",
     srcs = ["PeekableIteratorTest.kt"],
     deps = [
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
@@ -291,7 +291,7 @@ oppia_android_test(
     srcs = ["RealExtensionsTest.kt"],
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_junit_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/math:fraction_subject",

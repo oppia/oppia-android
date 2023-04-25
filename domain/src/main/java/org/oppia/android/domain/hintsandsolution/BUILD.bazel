@@ -1,0 +1,148 @@
+"""
+Domain services & definitions corresponding to managing hints & solutions in lesson and question
+sessions.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+oppia_android_library(
+    name = "hint_handler",
+    srcs = [
+        "HintHandler.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "qualifiers",
+    srcs = [
+        "DelayShowAdditionalHintsFromWrongAnswerMillis.kt",
+        "DelayShowAdditionalHintsMillis.kt",
+        "DelayShowInitialHintMillis.kt",
+    ],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "extensions",
+    srcs = [
+        "HelpIndexExtensions.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "alpha_kenya_prod_config_module",
+    srcs = [
+        "HintsAndSolutionConfigAlphaKenyaModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":qualifiers",
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "fast_show_test_config_module",
+    testonly = True,
+    srcs = [
+        "HintsAndSolutionConfigFastShowTestModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":qualifiers",
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "standard_prod_config_module",
+    srcs = [
+        "HintsAndSolutionConfigModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":qualifiers",
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "debug_impl",
+    srcs = [
+        "HintHandlerDebugImpl.kt",
+    ],
+    visibility = ["//domain:domain_testing_visibility"],
+    deps = [
+        ":hint_handler",
+        ":prod_impl",
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/devoptions:show_all_hints_and_solution_controller",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "prod_impl",
+    srcs = [
+        "HintHandlerProdImpl.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":hint_handler",
+        ":qualifiers",
+        "//:dagger",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+oppia_android_library(
+    name = "debug_module",
+    srcs = [
+        "HintsAndSolutionDebugModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":debug_impl",
+        ":hint_handler",
+        "//:dagger",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "prod_module",
+    srcs = [
+        "HintsAndSolutionProdModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":prod_impl",
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/hintsandsolution:hint_handler",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

@@ -43,7 +43,7 @@ oppia_android_library(
         "//:dagger",
         "//model/src/main/proto:languages_java_proto_lite",
         "//model/src/main/proto:test_models",
-        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing",
         "//testing/src/main/java/org/oppia/android/testing/mockito",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

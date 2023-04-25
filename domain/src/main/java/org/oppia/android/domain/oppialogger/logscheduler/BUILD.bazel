@@ -45,8 +45,8 @@ oppia_android_library(
         "MetricLogSchedulingWorkerFactory.kt",
     ],
     visibility = [
-        "//domain:__pkg__",
         "//domain:domain_testing_visibility",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:__pkg__",
     ],
     deps = [
         ":metric_log_scheduling_worker",

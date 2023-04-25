@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
 import androidx.work.Data
+import androidx.work.ListenableWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
@@ -27,7 +28,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -56,15 +56,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FakeLogSchedulerTest.TestApplication::class)
 class FakeLogSchedulerTest {
-
-  @Inject
-  lateinit var fakeLogScheduler: FakeLogScheduler
-
-  @Inject
-  lateinit var workerFactory: MetricLogSchedulingWorkerFactory
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var fakeLogScheduler: FakeLogScheduler
+  @Inject lateinit var workerFactory: MetricLogSchedulingWorkerFactory
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -85,7 +79,7 @@ class FakeLogSchedulerTest {
       MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
     ).build()
 
-    val request = PeriodicWorkRequestBuilder<LogUploadWorker>(10, TimeUnit.SECONDS)
+    val request = PeriodicWorkRequestBuilder<ListenableWorker>(10, TimeUnit.SECONDS)
       .setInputData(inputData)
       .build()
 
@@ -107,7 +101,7 @@ class FakeLogSchedulerTest {
       MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
     ).build()
 
-    val request = PeriodicWorkRequestBuilder<LogUploadWorker>(10, TimeUnit.SECONDS)
+    val request = PeriodicWorkRequestBuilder<ListenableWorker>(10, TimeUnit.SECONDS)
       .setInputData(inputData)
       .build()
 
@@ -129,7 +123,7 @@ class FakeLogSchedulerTest {
       MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
     ).build()
 
-    val request = PeriodicWorkRequestBuilder<LogUploadWorker>(10, TimeUnit.SECONDS)
+    val request = PeriodicWorkRequestBuilder<ListenableWorker>(10, TimeUnit.SECONDS)
       .setInputData(inputData)
       .build()
 

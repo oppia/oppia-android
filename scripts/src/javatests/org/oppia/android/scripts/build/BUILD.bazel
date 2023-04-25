@@ -13,7 +13,7 @@ kt_jvm_test(
         "//scripts/third_party:com_android_tools_build_aapt2-proto",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
     ],
 )
 
@@ -27,6 +27,6 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
     ],
 )

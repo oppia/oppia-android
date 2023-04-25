@@ -1,0 +1,85 @@
+"""
+Domain services & definitions corresponding to platform parameters & runtime feature gating.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+oppia_android_library(
+    name = "platform_parameter_controller",
+    srcs = [
+        "PlatformParameterController.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//app:__pkg__",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/syncup:__pkg__",
+    ],
+    deps = [
+        "//:dagger",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//model/src/main/proto:platform_parameter_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
+    ],
+)
+
+oppia_android_library(
+    name = "alpha_kenya_prod_config_module",
+    srcs = [
+        "PlatformParameterAlphaKenyaModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
+    ],
+)
+
+oppia_android_library(
+    name = "prod_config_module",
+    srcs = [
+        "PlatformParameterModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
+    ],
+)
+
+oppia_android_library(
+    name = "prod_module",
+    srcs = [
+        "PlatformParameterSingletonModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":platform_parameter_singleton_impl",
+        "//:dagger",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
+    ],
+)
+
+oppia_android_library(
+    name = "platform_parameter_singleton_impl",
+    srcs = [
+        "PlatformParameterSingletonImpl.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//:dagger",
+        "//model/src/main/proto:platform_parameter_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
+    ],
+)
