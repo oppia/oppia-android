@@ -5,6 +5,38 @@ Tests for Robolectric-specific utilities and configurations.
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
+    name = "OppiaShadowActivityManagerTest",
+    srcs = ["OppiaShadowActivityManagerTest.kt"],
+    deps = [
+        "//:dagger",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_activity_manager",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_annotations",
+        "//third_party:org_robolectric_shadows-framework",
+    ],
+)
+
+oppia_android_test(
+    name = "OppiaShadowTrafficStatsTest",
+    srcs = ["OppiaShadowTrafficStatsTest.kt"],
+    deps = [
+        "//:dagger",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_traffic_stats",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_annotations",
+        "//third_party:org_robolectric_shadowapi",
+    ],
+)
+
+oppia_android_test(
     name = "ShadowBidiFormatterTest",
     srcs = ["ShadowBidiFormatterTest.kt"],
     deps = [
