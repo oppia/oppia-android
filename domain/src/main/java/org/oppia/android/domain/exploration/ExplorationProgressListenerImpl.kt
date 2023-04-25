@@ -23,6 +23,6 @@ class ExplorationProgressListenerImpl @Inject constructor(
   }
 
   override fun onAppInBackground() {
-    print("app is backgrounded")
+
   }
 }
