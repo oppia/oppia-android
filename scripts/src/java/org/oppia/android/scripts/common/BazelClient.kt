@@ -243,6 +243,6 @@ class BazelClient(
   private companion object {
     private const val MAX_ALLOWED_ARG_STR_LENGTH = 50_000
 
-    private val ABSOLUTE_TARGET_PATH_PREFIX_PATTERN = "(?:@\\w+?)?//".toRegex()
+    private val ABSOLUTE_TARGET_PATH_PREFIX_PATTERN = "(?:@[\\w\\-_]+?)?//".toRegex()
   }
 }
