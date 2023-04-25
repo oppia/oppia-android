@@ -13,6 +13,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val CACHE_NAME = "topic_learning_time_database"
 private const val RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
@@ -22,13 +23,13 @@ private const val RETRIEVE_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
 private val LEARNING_TIME_EXPIRATION_MILLIS = TimeUnit.DAYS.toMillis(10)
 
 /** Controller for tracking the amount of active time a user has spent in a topic. */
+@Singleton
 class ExplorationActiveTimeController @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger
 ) {
-
   /**
    * Statuses correspond to the exceptions such that if the deferred contains an error state,
    * a corresponding exception will be passed to a failed AsyncResult.
@@ -56,6 +57,7 @@ class ExplorationActiveTimeController @Inject constructor(
    */
   fun setExplorationSessionStarted() {
     this.startExplorationTimestampMs = oppiaClock.getCurrentTimeMs()
+    println("Start session timer $startExplorationTimestampMs")
   }
 
   /**
@@ -65,6 +67,7 @@ class ExplorationActiveTimeController @Inject constructor(
    * executing, or the app goes to the background.
    */
   fun setExplorationSessionPaused(profileId: ProfileId, topicId: String) {
+    println("Pause session timer")
     recordAggregateTopicLearningTime(
       profileId = profileId,
       topicId = topicId,
