@@ -32,6 +32,7 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -89,9 +90,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -481,8 +480,8 @@ class OptionsFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
+  @Ignore("Languages loading not supported while using gradle")
   fun openOptionsActivity_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -512,6 +511,7 @@ class OptionsFragmentTest {
   }
 
   @Test
+  @Ignore("Languages loading not supported while using gradle")
   fun openOptionsActivity_configChange_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
