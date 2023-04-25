@@ -32,6 +32,8 @@ class ExplorationActiveTimeController @Inject constructor(
   /**
    * Statuses correspond to the exceptions such that if the deferred contains an error state,
    * a corresponding exception will be passed to a failed AsyncResult.
+   *
+   * SUCCESS corresponds to a successful AsyncResult.
    */
   private enum class TopicLearningTimeActionStatus {
     SUCCESS
