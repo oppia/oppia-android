@@ -1,11 +1,11 @@
 package org.oppia.android.app.settings.profile
 
 import androidx.annotation.StringRes
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
 
 @Singleton
 class SnackbarController @Inject constructor(private val dataProviders: DataProviders) {
@@ -24,7 +24,7 @@ class SnackbarController @Inject constructor(private val dataProviders: DataProv
     snackbarRequestQueue.add(request)
   }
 
-  fun dismissCurrentSnackbar(){
+  fun dismissCurrentSnackbar() {
     snackbarRequestQueue.remove()
   }
 

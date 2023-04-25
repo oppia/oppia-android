@@ -5,9 +5,9 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import javax.inject.Inject
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 class SnackbarManager @Inject constructor(private val snackbarController: SnackbarController) {
 
@@ -27,7 +27,8 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
           is SnackbarController.SnackbarRequest.ShowSnackbar -> showSnackbar(
             activity.findViewById(
               android.R.id.content
-            ), request
+            ),
+            request
           )
           SnackbarController.SnackbarRequest.ShowNothing -> {}
         }
@@ -48,8 +49,7 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
 
     if (activityView == null) {
       Log.e("SnackbarManager", "can't be shown--no activity UI")
-    }
-    else {
+    } else {
       Snackbar.make(activityView, showRequest.messageStringId, duration)
         .addCallback(object : Snackbar.Callback() {
           override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {

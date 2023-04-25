@@ -152,21 +152,21 @@ class ProfileEditFragmentPresenter @Inject constructor(
         fragment,
         Observer {
           if (it is AsyncResult.Success) {
-              snackbarManager.showSnackbar(
-                R.string.profile_edit_delete_success,
-                SnackbarController.SnackbarDuration.LONG
-              )
-              if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
-                val intent =
-                  Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                fragment.startActivity(intent)
-              } else {
-                val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                fragment.startActivity(intent)
-              }
+            snackbarManager.showSnackbar(
+              R.string.profile_edit_delete_success,
+              SnackbarController.SnackbarDuration.LONG
+            )
+            if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
+              val intent =
+                Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
+              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+              fragment.startActivity(intent)
+            } else {
+              val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
+              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+              fragment.startActivity(intent)
             }
+          }
         }
       )
   }
