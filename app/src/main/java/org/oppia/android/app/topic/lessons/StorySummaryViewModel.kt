@@ -77,6 +77,14 @@ class StorySummaryViewModel(
           ephemeralChapterSummary.chapterSummary.title,
           ephemeralChapterSummary.writtenTranslationContext
         ),
+        previousChapterTitle = if (index > 0) {
+          translationController.extractString(
+            ephemeralStorySummary.chaptersList[index - 1].chapterSummary.title,
+            ephemeralStorySummary.chaptersList[index - 1].writtenTranslationContext
+          )
+        } else {
+          ""
+        },
         storyId = storySummary.storyId,
         index = index,
         chapterSummarySelector = chapterSummarySelector,

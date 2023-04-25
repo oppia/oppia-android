@@ -11,6 +11,7 @@ class ChapterSummaryViewModel(
   val chapterPlayState: ChapterPlayState,
   val explorationId: String,
   val chapterTitle: String,
+  val previousChapterTitle: String,
   val storyId: String,
   private val index: Int,
   private val chapterSummarySelector: ChapterSummarySelector,
@@ -23,14 +24,22 @@ class ChapterSummaryViewModel(
   }
 
   fun computeChapterPlayStateIconContentDescription(): String {
-    return if (chapterPlayState == ChapterPlayState.COMPLETED) {
-      resourceHandler.getStringInLocaleWithWrapping(
-        R.string.chapter_completed, (index + 1).toString(), chapterTitle
-      )
-    } else {
-      resourceHandler.getStringInLocaleWithWrapping(
-        R.string.chapter_in_progress, (index + 1).toString(), chapterTitle
-      )
+    return when (chapterPlayState) {
+      ChapterPlayState.COMPLETED -> {
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.chapter_completed, (index + 1).toString(), chapterTitle
+        )
+      }
+      ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> {
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.chapter_prerequisite_title_label, (index).toString(), previousChapterTitle
+        )
+      }
+      else -> {
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.chapter_in_progress, (index + 1).toString(), chapterTitle
+        )
+      }
     }
   }
 
