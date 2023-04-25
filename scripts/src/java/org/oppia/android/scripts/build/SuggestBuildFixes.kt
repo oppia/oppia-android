@@ -26,7 +26,7 @@ fun main(vararg args: String) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor =
       CommandExecutorImpl(
-        scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+        scriptBgDispatcher, processTimeout = 30, processTimeoutUnit = TimeUnit.MINUTES
       )
     val bazelClient = BazelClient(repoRoot, commandExecutor)
     SuggestBuildFixes(repoRoot, bazelClient).suggestBuildFixes(args.drop(2).toList(), mode)
@@ -150,7 +150,10 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     DetectedFailure.detectFailures(bazelClient, target)
 
   private fun String.targetToBuildFile(): File {
-    val basePath = normalizeTarget().removePrefix("//").replace(":", "/").substringBeforeLast('/')
+    val baseRelativePath = normalizeTarget().removePrefix("//")
+    val basePath = if (':' in baseRelativePath) {
+      baseRelativePath.replace(":", "/").substringBeforeLast('/')
+    } else baseRelativePath
     return File(File(repoRoot, basePath), "BUILD.bazel").also {
       check(it.exists() && it.isFile) {
         "Could not find BUILD.bazel file for target: ${this@targetToBuildFile}."
@@ -352,7 +355,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       ): InterpretedTarget {
         return resolveTarget(target) {
           val queryResult =
-            query("somepath($expectedThirdPartyPrefix/..., $target)", withSkyQuery = true)
+            query("somepath($expectedThirdPartyPrefix/..., $target)", withSkyQuery = false)
           checkNotNull(queryResult.firstOrNull()) {
             "Failed to find third-party wrapper for Maven target: $target."
           }.also {
@@ -464,6 +467,16 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       }
     }
 
-    private fun String.normalizeTarget() = replace("Test_lib", "Test").removeSuffix("_kt")
+    private fun String.normalizeTarget(): String {
+      val baseNormalized = replace("Test_lib", "Test").removeSuffix("_kt")
+      val endingPackage = baseNormalized.substringAfterLast('/')
+      if (':' in endingPackage) {
+        // If the target looks like: //path/to/target:target, then it can be simplified to just
+        // path/to/target.
+        val (lastPackage, target) = endingPackage.split(':', limit = 2)
+        if (lastPackage == target) return "${baseNormalized.substringBeforeLast('/')}/$lastPackage"
+      }
+      return baseNormalized
+    }
   }
 }
