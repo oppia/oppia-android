@@ -1,13 +1,15 @@
 package org.oppia.android.domain.exploration
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
+import dagger.multibindings.IntoSet
 
 /** Module to provide dependencies corresponding to exploration progress. */
 @Module
-class ExplorationProgressModule {
-  @Provides
+interface ExplorationProgressModule {
+  @Binds
+  @IntoSet
   fun provideExplorationProgressListener(
     explorationProgressListenerImpl: ExplorationProgressListenerImpl
-  ): ExplorationProgressListener = explorationProgressListenerImpl
+  ): ExplorationProgressListener
 }

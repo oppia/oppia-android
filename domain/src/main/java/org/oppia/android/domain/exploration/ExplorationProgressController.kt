@@ -112,7 +112,7 @@ class ExplorationProgressController @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val explorationProgressListener: ExplorationProgressListener
+  private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -573,7 +573,7 @@ class ExplorationProgressController @Inject constructor(
         recomputeCurrentStateAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
-      explorationProgressListener.onExplorationSessionStarted()
+      explorationProgressListeners.forEach(ExplorationProgressListener::onExplorationSessionStarted)
     }
   }
 
@@ -584,10 +584,12 @@ class ExplorationProgressController @Inject constructor(
     checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
-      explorationProgressListener.onExplorationSessionPaused(
-        profileId = profileId,
-        topicId = explorationProgress.currentTopicId
-      )
+      explorationProgressListeners.forEach {
+        it.onExplorationSessionPaused(
+          profileId = profileId,
+          topicId = explorationProgress.currentTopicId
+        )
+      }
     }
 
     // The only way to be sure of an exploration completion is if the user clicks the 'Return to
