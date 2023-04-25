@@ -23,6 +23,5 @@ class ExplorationProgressListenerImpl @Inject constructor(
   }
 
   override fun onAppInBackground() {
-
   }
 }
