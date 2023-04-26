@@ -1,0 +1,22 @@
+"""
+Tests for common Espresso matchers & other test utilities.
+"""
+
+load("//defs:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "TextInputActionTest",
+    srcs = ["TextInputActionTest.kt"],
+    deps = [
+        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing/espresso:text_input_action",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_android_material_material",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_hamcrest_hamcrest-core",
+        "//third_party:org_robolectric_annotations",
+    ],
+)

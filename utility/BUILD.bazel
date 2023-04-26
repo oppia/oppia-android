@@ -3,8 +3,7 @@
 This library contains utilities that all other modules, minus model, depend on.
 """
 
-load("//defs:oppia_android_library.bzl", "oppia_android_library", "oppia_android_resource_library")
-load("//defs:oppia_android_test.bzl", "oppia_android_test")
+load("//defs:oppia_android_library.bzl", "oppia_android_resource_library")
 
 # Visibility for utility tests.
 package_group(
@@ -29,60 +28,3 @@ oppia_android_resource_library(
     resource_files = glob(["src/test/res/**"]),
     visibility = ["//:oppia_testing_visibility"],
 )
-
-# TODO(#1602): Remove this shared library once everything is modularized.
-oppia_android_library(
-    name = "_combined_test_lib_do_not_depend",
-    testonly = True,
-    srcs = glob(["src/test/java/org/oppia/android/util/**/*Test.kt"]),
-    android_merge_deps = [
-        ":resources",
-        "//third_party:com_google_android_material_material",
-    ],
-    deps = [
-        "//:dagger",
-        "//model/src/main/proto:languages_java_proto_lite",
-        "//model/src/main/proto:test_models",
-        "//testing/src/main/java/org/oppia/android/testing",
-        "//testing/src/main/java/org/oppia/android/testing/mockito",
-        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
-        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
-        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-        "//third_party:androidx_test_core",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:androidx_test_ext_truth",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
-        "//third_party:io_github_karino2_kotlitex",
-        "//third_party:javax_inject_javax_inject",
-        "//third_party:junit_junit",
-        "//third_party:org_mockito_mockito-core",
-        "//third_party:org_robolectric_annotations",
-        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
-        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
-        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
-        "//utility/src/main/java/org/oppia/android/util/locale:android_locale_factory",
-        "//utility/src/main/java/org/oppia/android/util/locale:impl",
-        "//utility/src/main/java/org/oppia/android/util/locale:oppia_bidi_formatter",
-        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
-        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:custom_html_content_handler",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:list_item_leading_margin_span",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:policy_type",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handlers",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:url_image_parser",
-        "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
-    ],
-)
-
-[oppia_android_test(
-    name = test_file_path[:test_file_path.find(".kt")] if "/" in test_file_path else test_file_path,
-    srcs = [],
-    temp_test_class_migration = test_file_path[test_file_path.find("src/test/java/") + len("src/test/java/"):test_file_path.find(".kt")].replace("/", "."),
-    deps = [":_combined_test_lib_do_not_depend"],
-) for test_file_path in glob(["src/test/java/org/oppia/android/util/**/*Test.kt"])]

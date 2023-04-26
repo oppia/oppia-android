@@ -1,5 +1,5 @@
 """
-Package for providing logging support.
+Domain services & definitions for providing high-level logging support.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")

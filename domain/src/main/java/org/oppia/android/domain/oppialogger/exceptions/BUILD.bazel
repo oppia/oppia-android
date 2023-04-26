@@ -1,5 +1,5 @@
 """
-Package for providing logging support for exceptions.
+Domain services & definitions for providing logging support for exceptions.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")

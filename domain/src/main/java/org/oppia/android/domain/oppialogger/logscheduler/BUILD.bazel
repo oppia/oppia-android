@@ -1,5 +1,5 @@
 """
-Library for providing log scheduling functionality to the Oppia android app.
+Domain services & definitions for providing log scheduling functionality to the Oppia android app.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")

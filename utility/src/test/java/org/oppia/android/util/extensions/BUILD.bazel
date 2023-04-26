@@ -1,0 +1,20 @@
+"""
+Tests for general purposes utilities to manage extensions
+"""
+
+load("//defs:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "BundleExtensionsTest",
+    srcs = ["BundleExtensionsTest.kt"],
+    deps = [
+        "//model/src/main/proto:test_models",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_annotations",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)

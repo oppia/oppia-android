@@ -1,0 +1,32 @@
+"""
+Tests for domain services & definitions corresponding to user feedback reporting.
+"""
+
+load("//defs:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "ReportSchemaVersionTest",
+    srcs = ["ReportSchemaVersionTest.kt"],
+    deps = [
+        "//:dagger",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/model",
+        "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_config_module",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
+        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
+        "//third_party:org_robolectric_annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)

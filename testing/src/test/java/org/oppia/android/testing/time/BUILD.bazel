@@ -1,0 +1,34 @@
+"""
+Tests for test-only utilities for coordinating time, particularly in simulated Android environments
+(i.e. Robolectric).
+"""
+
+load("//defs:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "FakeOppiaClockTest",
+    srcs = ["FakeOppiaClockTest.kt"],
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_guava_guava",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
+    ],
+)

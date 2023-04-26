@@ -29,7 +29,8 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KCallable
+import kotlin.reflect.KClass
+import kotlin.reflect.full.declaredMemberProperties
 
 /**
  * Test for [ReportSchemaVersion] that validates the proper schema version is sent in feedback
@@ -38,17 +39,14 @@ import kotlin.reflect.KCallable
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ReportSchemaVersionTest {
-
-  @JvmField
-  @field:[Inject ReportSchemaVersion]
-  var reportSchemaVersion: Int = 0
+  @field:[JvmField Inject ReportSchemaVersion] var reportSchemaVersion: Int = Int.MIN_VALUE
 
   // The latest schema version of the feedback report used. This should be updated each time the
   // feedback report format is changed.
   private val latestSchemaVersion = 1
 
   // The expected data that can be included in V1 of the report.
-  private val gaeFeedbackReportParameterNamesV1 = listOf(
+  private val feedbackReportParamNamesV1 = listOf(
     "schemaVersion",
     "reportSubmissionTimestampSec",
     "userSuppliedFeedback",
@@ -57,19 +55,19 @@ class ReportSchemaVersionTest {
     "appContext"
   )
 
-  private val gaeUserSuppliedFeedbackParameterNamesV1 = listOf(
+  private val userSuppliedFeedbackParamNamesV1 = listOf(
     "reportType", "category", "feedbackList", "openTextUserInput"
   )
 
-  private val gaeFeedbackReportingSystemContextParameterNamesV1 = listOf(
+  private val feedbackReportingSystemContextParamNamesV1 = listOf(
     "packageVersionName", "packageVersionCode", "countryLocaleCode", "languageLocaleCode"
   )
 
-  private val gaeFeedbackReportingDeviceContextParameterNamesV1 = listOf(
+  private val feedbackReportingDeviceContextParamNamesV1 = listOf(
     "deviceModel", "sdkVersion", "buildFingerprint", "networkType"
   )
 
-  private val gaeFeedbackReportingAppContextParameterNamesV1 = listOf(
+  private val feedbackReportingAppContextParamNamesV1 = listOf(
     "entryPoint",
     "textSize",
     "textLanguageCode",
@@ -81,7 +79,7 @@ class ReportSchemaVersionTest {
     "logcatLogs"
   )
 
-  private val gaeFeedbackReportingEntryPointParameterNamesV1 = listOf(
+  private val feedbackReportingEntryPointParamNamesV1 = listOf(
     "entryPointName", "topicId", "storyId", "explorationId", "subtopicId"
   )
 
@@ -97,59 +95,43 @@ class ReportSchemaVersionTest {
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedFeedbackReportMembers() {
-    verifyDataFields(
-      dataClassMembers = GaeFeedbackReport::class.members,
-      expectedFields = gaeFeedbackReportParameterNamesV1
-    )
+    val dataClassFields = GaeFeedbackReport::class.extractFieldNames()
+    assertThat(dataClassFields).containsExactlyElementsIn(feedbackReportParamNamesV1)
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedUserSuppliedFeedbackMembers() {
-    verifyDataFields(
-      dataClassMembers = GaeUserSuppliedFeedback::class.members,
-      expectedFields = gaeUserSuppliedFeedbackParameterNamesV1
-    )
+    val dataClassFields = GaeUserSuppliedFeedback::class.extractFieldNames()
+    assertThat(dataClassFields).containsExactlyElementsIn(userSuppliedFeedbackParamNamesV1)
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedSystemContextMembers() {
-    verifyDataFields(
-      dataClassMembers = GaeFeedbackReportingSystemContext::class.members,
-      expectedFields = gaeFeedbackReportingSystemContextParameterNamesV1
-    )
+    val dataClassFields = GaeFeedbackReportingSystemContext::class.extractFieldNames()
+    assertThat(dataClassFields)
+      .containsExactlyElementsIn(feedbackReportingSystemContextParamNamesV1)
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedDeviceContextMembers() {
-    verifyDataFields(
-      dataClassMembers = GaeFeedbackReportingDeviceContext::class.members,
-      expectedFields = gaeFeedbackReportingDeviceContextParameterNamesV1
-    )
+    val dataClassFields = GaeFeedbackReportingDeviceContext::class.extractFieldNames()
+    assertThat(dataClassFields)
+      .containsExactlyElementsIn(feedbackReportingDeviceContextParamNamesV1)
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedAppContextMembers() {
-    verifyDataFields(
-      dataClassMembers = GaeFeedbackReportingAppContext::class.members,
-      expectedFields = gaeFeedbackReportingAppContextParameterNamesV1
-    )
+    val dataClassFields = GaeFeedbackReportingAppContext::class.extractFieldNames()
+    assertThat(dataClassFields).containsExactlyElementsIn(feedbackReportingAppContextParamNamesV1)
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedEntryPointMembers() {
-    verifyDataFields(
-      dataClassMembers = GaeFeedbackReportingEntryPoint::class.members,
-      expectedFields = gaeFeedbackReportingEntryPointParameterNamesV1
-    )
+    val dataClassFields = GaeFeedbackReportingEntryPoint::class.extractFieldNames()
+    assertThat(dataClassFields).containsExactlyElementsIn(feedbackReportingEntryPointParamNamesV1)
   }
 
-  private fun verifyDataFields(
-    dataClassMembers: Collection<KCallable<*>>,
-    expectedFields: List<String>
-  ) {
-    val dataClassFields = dataClassMembers.map { it.name }
-    expectedFields.forEach { assertThat(dataClassFields.contains(it)).isTrue() }
-  }
+  private fun KClass<*>.extractFieldNames(): List<String> = declaredMemberProperties.map { it.name }
 
   private fun setUpTestApplicationComponent() {
     DaggerReportSchemaVersionTest_TestApplicationComponent.builder()
