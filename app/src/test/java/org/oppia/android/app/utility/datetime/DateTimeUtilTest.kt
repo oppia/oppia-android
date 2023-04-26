@@ -46,6 +46,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -102,8 +103,10 @@ class DateTimeUtilTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @get:Rule
   var activityRule =
@@ -198,7 +201,8 @@ class DateTimeUtilTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class
+      CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class,
+      ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
