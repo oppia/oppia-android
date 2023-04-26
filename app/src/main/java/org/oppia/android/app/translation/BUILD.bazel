@@ -32,6 +32,22 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "activity_language_locale_handler",
+    srcs = [
+        "ActivityLanguageLocaleHandler.kt",
+    ],
+    visibility = [
+        "//app:app_testing_visibility",
+        "//testing/src/test/java/org/oppia/android/testing/junit:__pkg__",
+    ],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
+        ":app_language_locale_handler",
+    ],
+)
+
+kt_android_library(
     name = "app_language_resource_handler",
     srcs = [
         "AppLanguageResourceHandler_updated.kt",
@@ -59,6 +75,7 @@ kt_android_library(
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        ":activity_language_locale_handler"
     ],
 )
 
@@ -110,6 +127,7 @@ kt_android_library(
     deps = [
         ":app_language_resource_handler",
         ":app_language_watcher_mixin",
+        ":activity_language_locale_handler"
     ],
 )
 
@@ -124,6 +142,7 @@ kt_android_library(
     ],
     deps = [
         ":app_language_activity_injector",
+        ":activity_language_locale_handler"
     ],
 )
 

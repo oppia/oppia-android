@@ -8,7 +8,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AppLanguageActivityResultBundle
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
@@ -114,8 +113,6 @@ class OptionsActivity :
         ).oppiaLanguage
         optionActivityPresenter.updateAppLanguage(oppiaLanguage)
         OptionControlsViewModel.isResuming = true
-        HomeActivity.shouldRecreateActivity = true
-        recreate()
       }
       REQUEST_CODE_AUDIO_LANGUAGE -> {
         val audioLanguage = data.getProtoExtra(

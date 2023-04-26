@@ -1,5 +1,6 @@
 package org.oppia.android.app.translation
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import org.oppia.android.domain.locale.LocaleController
@@ -24,7 +25,8 @@ class AppLanguageWatcherMixin @Inject constructor(
   private val localeController: LocaleController,
   private val oppiaLogger: OppiaLogger,
   private val activityRecreator: ActivityRecreator,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val activityLanguageLocaleHandler: ActivityLanguageLocaleHandler
 ) {
 
   /**
@@ -65,13 +67,13 @@ class AppLanguageWatcherMixin @Inject constructor(
 
     val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
-    val appLanguageLocaleDataProvider = when {
+    val activityLanguageLocaleDataProvider = when {
       shouldUseSystemLanguage -> translationController.getSystemLanguageLocale()
       currentUserProfileId == null -> translationController.getSystemLanguageLocale()
       else -> translationController.getAppLanguageLocale(currentUserProfileId)
     }
 
-    val liveData = appLanguageLocaleDataProvider?.toLiveData()
+    val liveData = activityLanguageLocaleDataProvider?.toLiveData()
     liveData?.observe(
       activity,
       object : Observer<AsyncResult<OppiaLocale.DisplayLocale>> {
@@ -80,7 +82,7 @@ class AppLanguageWatcherMixin @Inject constructor(
             is AsyncResult.Success -> {
               // Only recreate the activity if the locale actually changed (to avoid an infinite
               // recreation loop).
-              if (appLanguageLocaleHandler.updateLocale(localeResult.value)) {
+              if (activityLanguageLocaleHandler.updateLocale(localeResult.value)) {
                 // Recreate the activity to apply the latest locale state. Note that in some cases
                 // this may result in 2 recreations for the user: one to notify that there's a new
                 // system locale, and a second to actually apply that locale. This is due to a
@@ -93,6 +95,10 @@ class AppLanguageWatcherMixin @Inject constructor(
                 // and doesn't need a DataProvider past the splash screen). Finally, if the decision
                 // is made to recreate the activity then ensure it can never happen again in this
                 // activity by removing this observer.
+                Log.e(
+                  "locale changing",
+                  localeResult.value.localeContext.languageDefinition.language.name
+                )
                 liveData.removeObserver(this)
                 activityRecreator.recreate(activity)
               }
