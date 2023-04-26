@@ -2197,21 +2197,27 @@ class RegexPatternValidationCheckTest {
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textColor="@color/color_defs_shared_primary_text_color"
         android:textColor="@color/color_palette_primary_text_color"
+        android:textColor="#003933"
         android:background="@color/component_color_shared_primary_text_color"
         android:background="@color/color_defs_shared_primary_text_color"
         android:background="@color/color_palette_primary_text_color"
+        android:background="#003933"
         app:tint="@color/component_color_shared_primary_text_color"
         app:tint="@color/color_defs_shared_primary_text_color"
         app:tint="@color/color_palette_primary_text_color"
+        app:tint="#003933"
         app:strokeColor="@color/component_color_shared_primary_text_color"
         app:strokeColor="@color/color_defs_shared_primary_text_color"
         app:strokeColor="@color/color_palette_primary_text_color"
+        app:strokeColor="#003933"
         app:cardBackgroundColor="@color/component_color_shared_primary_text_color"
         app:cardBackgroundColor="@color/color_defs_shared_primary_text_color"
         app:cardBackgroundColor="@color/color_palette_primary_text_color"
+        app:cardBackgroundColor="#003933"
         android:background="@color/component_color_shared_primary_text_color"
         android:background="@color/color_defs_shared_primary_text_color"
         android:background="@color/color_palette_primary_text_color"
+        android:background="#003933"
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "layout")
     val stringFilePath = "app/src/main/res/layout/test_layout.xml"
@@ -2228,16 +2234,22 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:2: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:3: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:5: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:4: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:6: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:7: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:8: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:9: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:10: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:11: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:12: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:14: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:15: $doesNotReferenceColorFromComponentColorInLayouts
-        $stringFilePath:17: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:16: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:18: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:19: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:20: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:22: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:23: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:24: $doesNotReferenceColorFromComponentColorInLayouts
         $wikiReferenceNote
         """.trimIndent()
       )

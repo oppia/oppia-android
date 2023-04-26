@@ -349,7 +349,7 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/layout.*?/.+?\\.xml"
-  prohibited_content_regex: "@color/(?!component_color_).+"
+  prohibited_content_regex: "@color/(?!component_color_).+|\"#\\p{XDigit}+\""
   failure_message: "Only colors from component_colors.xml may be used in layouts."
 }
 file_content_checks {
