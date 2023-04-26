@@ -88,11 +88,15 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// Time: Tue Apr 23 2019 23:22:00
-private const val EVENING_TIMESTAMP = 1556061720000
-// Time: Wed Apr 24 2019 08:22:00
-private const val MORNING_TIMESTAMP = 1556094120000
-// Time: Tue Apr 23 2019 14:22:00
+// Time Tue, 23 April 2019 21:26:12
+private const val EVENING_TIMESTAMP = 1556054772000
+// Time: Tue, Apr 23 2019 23:22:00
+private const val NIGHT_TIMESTAMP = 1556061720000
+// Time: Wed, Apr 24 2019 08:22:00
+private const val EARLY_MORNING_TIMESTAMP = 1556094120000
+// Time: Wed, 24 April 2019 10:30:12
+private const val MORNING_TIMESTAMP = 1556101812000
+// Time: Tue, Apr 23 2019 14:22:00
 private const val AFTERNOON_TIMESTAMP = 1556029320000
 
 /** Tests for [DateTimeUtil]. */
@@ -121,7 +125,7 @@ class DateTimeUtilTest {
   }
 
   @Test
-  fun testGreetingMessageBasedOnTime_goodEveningMessageSucceeded() {
+  fun testGreetingMessageBasedOnEveningTime_goodEveningMessageSucceeded() {
     activityRule.scenario.onActivity { activity ->
       val dateTimeUtil = activity.dateTimeUtil
       fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
@@ -130,7 +134,16 @@ class DateTimeUtilTest {
   }
 
   @Test
-  fun testGreetingMessageBasedOnTime_goodMorningMessageSucceeded() {
+  fun testGreetingMessageBasedOnNightTime_goodEveningMessageSucceeded() {
+    activityRule.scenario.onActivity { activity ->
+      val dateTimeUtil = activity.dateTimeUtil
+      fakeOppiaClock.setCurrentTimeToSameDateTime(NIGHT_TIMESTAMP)
+      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+    }
+  }
+
+  @Test
+  fun testGreetingMessageBasedOnMorningTime_goodMorningMessageSucceeded() {
     activityRule.scenario.onActivity { activity ->
       val dateTimeUtil = activity.dateTimeUtil
       fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -139,7 +152,16 @@ class DateTimeUtilTest {
   }
 
   @Test
-  fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceeded() {
+  fun testGreetingMessageBasedOnEarlyMorningTime_goodMorningMessageSucceeded() {
+    activityRule.scenario.onActivity { activity ->
+      val dateTimeUtil = activity.dateTimeUtil
+      fakeOppiaClock.setCurrentTimeToSameDateTime(EARLY_MORNING_TIMESTAMP)
+      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+    }
+  }
+
+  @Test
+  fun testGreetingMessageBasedOnAfternoonTime_goodAfternoonMessageSucceeded() {
     activityRule.scenario.onActivity { activity ->
       val dateTimeUtil = activity.dateTimeUtil
       fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)

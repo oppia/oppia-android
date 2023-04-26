@@ -155,6 +155,9 @@ sealed class OppiaLocale {
 
     /** Represents different times of day. */
     enum class TimeOfDay {
+      /** Corresponds to the user's very early morning time. */
+      EARLY_MORNING,
+
       /** Corresponds to the user's morning time. */
       MORNING,
 
@@ -163,6 +166,9 @@ sealed class OppiaLocale {
 
       /** Corresponds to the user's evening time. */
       EVENING,
+
+      /** Corresponds to the user's late night time. */
+      NIGHT,
 
       /**
        * Corresponds to an unknown time of day (implying that something might have gone wrong during
