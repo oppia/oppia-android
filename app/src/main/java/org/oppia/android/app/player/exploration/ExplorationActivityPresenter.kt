@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.doOnPreDraw
@@ -34,7 +33,6 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -56,8 +54,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val surveyGatingController: SurveyGatingController
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -282,47 +279,12 @@ class ExplorationActivityPresenter @Inject constructor(
               oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
             is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              if (isCompletion) {
-                shouldShowSurveyDialog(profileId, topicId)
-              }
+              backPressActivitySelector()
+              (activity as ExplorationActivity).finish()
             }
           }
         }
       )
-  }
-
-  private fun shouldShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    surveyGatingController.shouldShowSurvey(profileId, topicId).toLiveData()
-      .observe(
-        activity,
-        {
-          when (it) {
-            is AsyncResult.Pending -> {
-              oppiaLogger.d("ExplorationActivity", "Checking survey gating")
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "ExplorationActivity",
-                "Failed to retrieve gating decision",
-                it.error
-              )
-            }
-            is AsyncResult.Success -> {
-              if (it.value) {
-                createSurveyDialog().show()
-              } else {
-              }
-            }
-          }
-        }
-      )
-  }
-
-  private fun createSurveyDialog(): AlertDialog {
-    val builder = AlertDialog.Builder(activity)
-    return builder.setTitle("NPS Survey")
-      .setMessage("Survey Intro message")
-      .create()
   }
 
   fun onKeyboardAction(actionCode: Int) {
