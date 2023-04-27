@@ -46,11 +46,16 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestPlatform
 
 /** Tests for [ActivityLanguageLocaleHandler]. */
+// FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
 @Config(application = ActivityLanguageLocaleHandlerTest.TestApplication::class)
 class ActivityLanguageLocaleHandlerTest {
   @Inject
