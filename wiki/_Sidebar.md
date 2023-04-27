@@ -48,6 +48,7 @@
   * [Work Manager](https://github.com/oppia/oppia-android/wiki/Work-Manager)
   * [Dependency Injection](https://github.com/oppia/oppia-android/wiki/Dependency-Injection) with [Dagger](https://github.com/oppia/oppia-android/wiki/Dagger)
   * [Revert & regression policy](https://github.com/oppia/oppia-android/wiki/Revert-&-regression-policy)
+  * [Spotlight Guide](https://github.com/oppia/oppia-android/wiki/Spotlight-Guide)
   * Bazel
     * [Gradle Bazel Migration Best Practices and FAQ](https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ)    
     * [Updating Maven Dependencies](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies)
