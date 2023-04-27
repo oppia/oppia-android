@@ -1,0 +1,39 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "AddProfileActivity.kt",
+    "AddProfileActivityPresenter.kt",
+    "AddProfileViewModel.kt",
+    "AdminAuthActivity.kt",
+    "AdminAuthActivityPresenter.kt",
+    "AdminAuthViewModel.kt",
+    "AdminPinActivity.kt",
+    "AdminPinActivityPresenter.kt",
+    "AdminPinViewModel.kt",
+    "AdminSettingsDialogFragment.kt",
+    "AdminSettingsDialogFragmentPresenter.kt",
+    "AdminSettingsViewModel.kt",
+    "PinPasswordActivity.kt",
+    "PinPasswordActivityPresenter.kt",
+    "PinPasswordViewModel.kt",
+    "ProfileChooserActivity.kt",
+    "ProfileChooserActivityPresenter.kt",
+    "ProfileChooserFragment.kt",
+    "ProfileChooserFragmentPresenter.kt",
+    "ProfileChooserViewModel.kt",
+    "ProfileRouteDialogInterface.kt",
+    "ResetPinDialogFragment.kt",
+    "ResetPinDialogFragmentPresenter.kt",
+    "ResetPinViewModel.kt",
+    "RouteToAdminPinListener.kt",
+])
+
+oppia_android_library(
+    name = "admin_auth_enum",
+    srcs = ["AdminAuthEnum.kt"],
+    visibility = ["//app:app_visibility"],
+)

@@ -1,0 +1,15 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "AdministratorControlsAccountActionsViewModel.kt",
+    "AdministratorControlsAppInformationViewModel.kt",
+    "AdministratorControlsDownloadPermissionsViewModel.kt",
+    "AdministratorControlsGeneralViewModel.kt",
+    "AdministratorControlsItemViewModel.kt",
+    "AdministratorControlsProfileAndDeviceIdViewModel.kt",
+    "AdministratorControlsProfileViewModel.kt",
+])

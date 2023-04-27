@@ -34,7 +34,7 @@ oppia_android_library(
         ":fragment_scope",
         "//:dagger",
         "//app:fragments",
-        "//app:interaction_view_model_module",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:interaction_view_model_module",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
         "//app/src/main/java/org/oppia/android/app/spotlight:spotlight_fragment",
         "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",

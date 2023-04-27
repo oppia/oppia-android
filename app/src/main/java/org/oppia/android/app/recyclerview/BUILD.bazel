@@ -1,0 +1,48 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "OnDragEndedListener.kt",
+    "OnItemDragListener.kt",
+])
+
+oppia_android_library(
+    name = "bindable_adapter",
+    srcs = ["BindableAdapter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "divider_item_decorator",
+    srcs = ["DividerItemDecorator.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//third_party:androidx_recyclerview_recyclerview"],
+)
+
+oppia_android_library(
+    name = "drag_and_drop_item_facilitator",
+    srcs = ["DragAndDropItemFacilitator.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:listeners",
+        "//third_party:androidx_recyclerview_recyclerview",
+    ],
+)
+
+oppia_android_library(
+    name = "snap_helper",
+    srcs = ["StartSnapHelper.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//third_party:androidx_recyclerview_recyclerview"],
+)

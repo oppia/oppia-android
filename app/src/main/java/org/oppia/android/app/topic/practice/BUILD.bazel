@@ -1,0 +1,12 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "SubtopicSelector.kt",
+    "TopicPracticeFragment.kt",
+    "TopicPracticeFragmentPresenter.kt",
+    "TopicPracticeViewModel.kt",
+])

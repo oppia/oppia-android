@@ -1,0 +1,13 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "PoliciesActivity.kt",
+    "PoliciesActivityPresenter.kt",
+    "PoliciesFragment.kt",
+    "PoliciesFragmentPresenter.kt",
+    "RouteToPoliciesListener.kt",
+])

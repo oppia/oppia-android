@@ -1,0 +1,18 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "ChapterSummarySelectionListener.kt",
+    "ChapterSummaryViewModel.kt",
+    "ExpandedChapterListIndexListener.kt",
+    "StorySummarySelectionListener.kt",
+    "StorySummaryViewModel.kt",
+    "TopicLessonViewModel.kt",
+    "TopicLessonsFragment.kt",
+    "TopicLessonsFragmentPresenter.kt",
+    "TopicLessonsItemViewModel.kt",
+    "TopicLessonsTitleViewModel.kt",
+])

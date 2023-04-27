@@ -1,0 +1,13 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "AppVersionActivity.kt",
+    "AppVersionActivityPresenter.kt",
+    "AppVersionFragment.kt",
+    "AppVersionFragmentPresenter.kt",
+    "AppVersionViewModel.kt",
+])

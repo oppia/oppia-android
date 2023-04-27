@@ -1,0 +1,17 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "AutomaticAppDeprecationNoticeDialogFragment.kt",
+    "AutomaticAppDeprecationNoticeDialogFragmentPresenter.kt",
+    "BetaNoticeClosedListener.kt",
+    "BetaNoticeDialogFragment.kt",
+    "BetaNoticeDialogFragmentPresenter.kt",
+    "DeprecationNoticeExitAppListener.kt",
+    "GeneralAvailabilityUpgradeNoticeClosedListener.kt",
+    "GeneralAvailabilityUpgradeNoticeDialogFragment.kt",
+    "GeneralAvailabilityUpgradeNoticeDialogFragmentPresenter.kt",
+])

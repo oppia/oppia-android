@@ -1,0 +1,17 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "PromotedStoryClickListener.kt",
+    "PromotedStoryViewModel.kt",
+    "RecentlyPlayedActivity.kt",
+    "RecentlyPlayedActivityPresenter.kt",
+    "RecentlyPlayedFragment.kt",
+    "RecentlyPlayedFragmentPresenter.kt",
+    "RecentlyPlayedItemViewModel.kt",
+    "RecentlyPlayedViewModel.kt",
+    "SectionTitleViewModel.kt",
+])

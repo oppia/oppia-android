@@ -1,0 +1,23 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "AdministratorControlsActivity.kt",
+    "AdministratorControlsActivityPresenter.kt",
+    "AdministratorControlsFragment.kt",
+    "AdministratorControlsFragmentPresenter.kt",
+    "AdministratorControlsViewModel.kt",
+    "LoadAppVersionListener.kt",
+    "LoadLearnerAnalyticsListener.kt",
+    "LoadProfileEditListener.kt",
+    "LoadProfileListListener.kt",
+    "LogoutDialogFragment.kt",
+    "ProfileEditDeletionDialogListener.kt",
+    "RouteToAppVersionListener.kt",
+    "RouteToLearnerAnalyticsListener.kt",
+    "RouteToProfileListListener.kt",
+    "ShowLogoutDialogListener.kt",
+])

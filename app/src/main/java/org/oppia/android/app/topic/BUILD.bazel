@@ -1,0 +1,40 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "RouteToConceptCardListener.kt",
+    "RouteToQuestionPlayerListener.kt",
+    "RouteToResumeLessonListener.kt",
+    "RouteToRevisionCardListener.kt",
+    "RouteToStoryListener.kt",
+    "TopicActivity.kt",
+    "TopicActivityPresenter.kt",
+    "TopicFragment.kt",
+    "TopicFragmentPresenter.kt",
+    "TopicViewModel.kt",
+])
+
+oppia_android_library(
+    name = "topic_tab",
+    srcs = ["TopicTab.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//third_party:androidx_annotation_annotation",
+    ],
+)
+
+oppia_android_library(
+    name = "view_pager_adapter",
+    srcs = ["ViewPagerAdapter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        ":topic_tab",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_viewpager2_viewpager2",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

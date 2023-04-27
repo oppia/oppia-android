@@ -1,0 +1,18 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "ContinueNavigationButtonListener.kt",
+    "NextNavigationButtonListener.kt",
+    "PreviousNavigationButtonListener.kt",
+    "PreviousResponsesHeaderClickListener.kt",
+    "ReplayButtonListener.kt",
+    "ReturnToTopicNavigationButtonListener.kt",
+    "RouteToHintsAndSolutionListener.kt",
+    "ShowHintAvailabilityListener.kt",
+    "StateKeyboardButtonListener.kt",
+    "SubmitNavigationButtonListener.kt",
+])

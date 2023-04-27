@@ -1,0 +1,24 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "DeveloperOptionsActivity.kt",
+    "DeveloperOptionsActivityPresenter.kt",
+    "DeveloperOptionsFragment.kt",
+    "DeveloperOptionsFragmentPresenter.kt",
+    "DeveloperOptionsModule.kt",
+    "DeveloperOptionsStarter.kt",
+    "DeveloperOptionsStarterImpl.kt",
+    "DeveloperOptionsStarterModule.kt",
+    "DeveloperOptionsViewModel.kt",
+    "ForceCrashButtonClickListener.kt",
+    "RouteToForceNetworkTypeListener.kt",
+    "RouteToMarkChaptersCompletedListener.kt",
+    "RouteToMarkStoriesCompletedListener.kt",
+    "RouteToMarkTopicsCompletedListener.kt",
+    "RouteToMathExpressionParserTestListener.kt",
+    "RouteToViewEventLogsListener.kt",
+])

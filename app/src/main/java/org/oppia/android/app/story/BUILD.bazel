@@ -1,0 +1,20 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "ExplorationSelectionListener.kt",
+    "StoryActivity.kt",
+    "StoryActivityPresenter.kt",
+    "StoryFragment.kt",
+    "StoryFragmentPresenter.kt",
+    "StoryViewModel.kt",
+])
+
+oppia_android_library(
+    name = "story_fragment_scroller",
+    srcs = ["StoryFragmentScroller.kt"],
+    visibility = ["//app:app_visibility"],
+)

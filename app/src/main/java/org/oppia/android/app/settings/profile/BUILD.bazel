@@ -1,0 +1,32 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "LoadProfileEditDeletionDialogListener.kt",
+    "ProfileEditActivity.kt",
+    "ProfileEditActivityPresenter.kt",
+    "ProfileEditDeletionDialogFragment.kt",
+    "ProfileEditDialogInterface.kt",
+    "ProfileEditFragment.kt",
+    "ProfileEditFragmentPresenter.kt",
+    "ProfileEditViewModel.kt",
+    "ProfileListActivity.kt",
+    "ProfileListActivityPresenter.kt",
+    "ProfileListFragment.kt",
+    "ProfileListFragmentPresenter.kt",
+    "ProfileListViewModel.kt",
+    "ProfileRenameActivity.kt",
+    "ProfileRenameActivityPresenter.kt",
+    "ProfileRenameFragment.kt",
+    "ProfileRenameFragmentPresenter.kt",
+    "ProfileRenameViewModel.kt",
+    "ProfileResetPinActivity.kt",
+    "ProfileResetPinActivityPresenter.kt",
+    "ProfileResetPinFragment.kt",
+    "ProfileResetPinFragmentPresenter.kt",
+    "ProfileResetPinViewModel.kt",
+    "RouteToProfileEditListener.kt",
+])

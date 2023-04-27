@@ -1,0 +1,22 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "ExitProfileDialogFragment.kt",
+    "ExitProfileDialogInterface.kt",
+    "NavigationDrawerFooterViewModel.kt",
+    "NavigationDrawerFragment.kt",
+    "NavigationDrawerFragmentPresenter.kt",
+    "NavigationDrawerHeaderViewModel.kt",
+    "RouteToProfileProgressListener.kt",
+])
+
+oppia_android_library(
+    name = "navigation_drawer_item",
+    srcs = ["NavigationDrawerItem.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//app:resources"],
+)

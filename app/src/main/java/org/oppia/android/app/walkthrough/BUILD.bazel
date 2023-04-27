@@ -1,0 +1,20 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "WalkthroughActivity.kt",
+    "WalkthroughActivityListener.kt",
+    "WalkthroughActivityPresenter.kt",
+    "WalkthroughFragmentChangeListener.kt",
+    "WalkthroughNextPageNavigationListener.kt",
+    "WalkthroughViewModel.kt",
+])
+
+oppia_android_library(
+    name = "walkthrough_pages",
+    srcs = ["WalkthroughPages.kt"],
+    visibility = ["//app:app_visibility"],
+)

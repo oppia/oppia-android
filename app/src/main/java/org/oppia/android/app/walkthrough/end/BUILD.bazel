@@ -1,0 +1,13 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "WalkthroughBackNavigationListener.kt",
+    "WalkthroughFinalFragment.kt",
+    "WalkthroughFinalFragmentPresenter.kt",
+    "WalkthroughFinalListener.kt",
+    "WalkthroughFinalViewModel.kt",
+])

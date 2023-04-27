@@ -1,0 +1,22 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "BottomSheetOptionsMenuDialogFragment.kt",
+    "BottomSheetOptionsMenuItemClickListener.kt",
+    "DefaultFontSizeStateListener.kt",
+    "ExplorationActivity.kt",
+    "ExplorationActivityPresenter.kt",
+    "ExplorationFragment.kt",
+    "ExplorationFragmentPresenter.kt",
+    "ExplorationManagerFragment.kt",
+    "ExplorationManagerFragmentPresenter.kt",
+    "ExplorationViewModel.kt",
+    "HintsAndSolutionExplorationManagerFragment.kt",
+    "HintsAndSolutionExplorationManagerFragmentPresenter.kt",
+    "HintsAndSolutionExplorationManagerListener.kt",
+    "RequestVoiceOverIconSpotlightListener.kt",
+])

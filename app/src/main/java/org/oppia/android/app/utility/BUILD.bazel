@@ -1,0 +1,74 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "KeyboardHelper.kt",
+    "OnClickableAreaClickedListener.kt",
+])
+
+oppia_android_library(
+    name = "clickable_areas_image",
+    srcs = ["ClickableAreasImage.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:listeners",
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
+        "//app/src/main/java/org/oppia/android/app/utility:region_click_event",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_core_core",
+        "//third_party:androidx_core_core-ktx",
+    ],
+)
+
+oppia_android_library(
+    name = "font_scale_configuration_util",
+    srcs = ["FontScaleConfigurationUtil.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//:dagger",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "ratio_extensions",
+    srcs = ["RatioExtensions.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//model/src/main/proto:math_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+oppia_android_library(
+    name = "region_click_event",
+    srcs = ["RegionClickEvent.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "split_screen_manager",
+    srcs = ["SplitScreenManager.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//:dagger",
+        "//app:annotations",
+        "//app:resources",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "text_input_edit_text_helper",
+    srcs = ["TextInputEditTextHelper.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//third_party:com_google_android_material_material"],
+)

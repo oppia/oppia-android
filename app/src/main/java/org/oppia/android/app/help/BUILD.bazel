@@ -1,0 +1,28 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "HelpActivity.kt",
+    "HelpActivityPresenter.kt",
+    "HelpFragment.kt",
+    "HelpFragmentPresenter.kt",
+    "HelpItemViewModel.kt",
+    "HelpListViewModel.kt",
+    "HelpViewModel.kt",
+    "LoadFaqListFragmentListener.kt",
+    "LoadLicenseListFragmentListener.kt",
+    "LoadLicenseTextViewerFragmentListener.kt",
+    "LoadPoliciesFragmentListener.kt",
+    "LoadThirdPartyDependencyListFragmentListener.kt",
+    "RouteToFAQListListener.kt",
+    "RouteToThirdPartyDependencyListListener.kt",
+])
+
+oppia_android_library(
+    name = "help_items",
+    srcs = ["HelpItems.kt"],
+    visibility = ["//app:app_visibility"],
+)

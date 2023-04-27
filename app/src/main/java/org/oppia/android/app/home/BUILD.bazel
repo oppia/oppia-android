@@ -1,0 +1,20 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "HomeActivity.kt",
+    "HomeActivityPresenter.kt",
+    "HomeFragment.kt",
+    "HomeFragmentPresenter.kt",
+    "HomeItemViewModel.kt",
+    "HomeViewModel.kt",
+    "RouteToExplorationListener.kt",
+    "RouteToRecentlyPlayedListener.kt",
+    "RouteToTopicListener.kt",
+    "RouteToTopicPlayStoryListener.kt",
+    "UserAppHistoryViewModel.kt",
+    "WelcomeViewModel.kt",
+])

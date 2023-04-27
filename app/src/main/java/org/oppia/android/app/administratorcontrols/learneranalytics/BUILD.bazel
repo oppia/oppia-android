@@ -1,0 +1,18 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "ControlButtonsViewModel.kt",
+    "CopyIdMaterialButtonView.kt",
+    "DeviceIdItemViewModel.kt",
+    "ProfileAndDeviceIdActivity.kt",
+    "ProfileAndDeviceIdActivityPresenter.kt",
+    "ProfileAndDeviceIdFragment.kt",
+    "ProfileAndDeviceIdFragmentPresenter.kt",
+    "ProfileLearnerIdItemViewModel.kt",
+    "ProfileListViewModel.kt",
+    "SyncStatusItemViewModel.kt",
+])

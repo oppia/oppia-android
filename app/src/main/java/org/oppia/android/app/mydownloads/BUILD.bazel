@@ -1,0 +1,34 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "DownloadsTabFragment.kt",
+    "DownloadsTabFragmentPresenter.kt",
+    "MyDownloadsActivity.kt",
+    "MyDownloadsActivityPresenter.kt",
+    "MyDownloadsFragment.kt",
+    "MyDownloadsFragmentPresenter.kt",
+    "UpdatesTabFragment.kt",
+    "UpdatesTabFragmentPresenter.kt",
+])
+
+oppia_android_library(
+    name = "my_downloads_tab",
+    srcs = ["MyDownloadsTab.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "my_downloads_view_pager_adapter",
+    srcs = ["MyDownloadsViewPagerAdapter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        ":my_downloads_tab",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_viewpager2_viewpager2",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

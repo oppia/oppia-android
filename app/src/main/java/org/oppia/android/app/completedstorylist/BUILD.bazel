@@ -1,0 +1,14 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "CompletedStoryItemViewModel.kt",
+    "CompletedStoryListActivity.kt",
+    "CompletedStoryListActivityPresenter.kt",
+    "CompletedStoryListFragment.kt",
+    "CompletedStoryListFragmentPresenter.kt",
+    "CompletedStoryListViewModel.kt",
+])

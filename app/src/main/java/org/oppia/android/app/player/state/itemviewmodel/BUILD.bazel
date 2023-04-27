@@ -1,0 +1,48 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "ContentViewModel.kt",
+    "ContinueInteractionViewModel.kt",
+    "ContinueNavigationButtonViewModel.kt",
+    "DragAndDropSortInteractionViewModel.kt",
+    "DragDropInteractionContentViewModel.kt",
+    "FeedbackViewModel.kt",
+    "FractionInteractionViewModel.kt",
+    "ImageRegionSelectionInteractionViewModel.kt",
+    "MathExpressionInteractionsViewModel.kt",
+    "NextButtonViewModel.kt",
+    "NumericInputViewModel.kt",
+    "PreviousButtonViewModel.kt",
+    "PreviousResponsesHeaderViewModel.kt",
+    "RatioExpressionInputInteractionViewModel.kt",
+    "ReplayButtonViewModel.kt",
+    "ReturnToTopicButtonViewModel.kt",
+    "SelectionInteractionContentViewModel.kt",
+    "SelectionInteractionViewModel.kt",
+    "SplitScreenInteractionIds.kt",
+    "SplitScreenInteractionModule.kt",
+    "StateItemViewModel.kt",
+    "SubmitButtonViewModel.kt",
+    "SubmittedAnswerViewModel.kt",
+    "TextInputViewModel.kt",
+])
+
+oppia_android_library(
+    name = "interaction_view_model_module",
+    srcs = ["InteractionViewModelModule.kt"],
+    visibility = [
+        "//:oppia_prod_module_visibility",
+        "//app:app_visibility",  # TODO: Remove.
+    ],
+    deps = [
+        "//:dagger",
+        "//app:view_models",
+        "//third_party:javax_annotation_javax_annotation-api",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

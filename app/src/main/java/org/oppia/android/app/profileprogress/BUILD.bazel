@@ -1,0 +1,24 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "ProfilePictureActivity.kt",
+    "ProfilePictureActivityPresenter.kt",
+    "ProfilePictureActivityViewModel.kt",
+    "ProfilePictureClickListener.kt",
+    "ProfilePictureDialogInterface.kt",
+    "ProfilePictureEditDialogFragment.kt",
+    "ProfileProgressActivity.kt",
+    "ProfileProgressActivityPresenter.kt",
+    "ProfileProgressFragment.kt",
+    "ProfileProgressFragmentPresenter.kt",
+    "ProfileProgressHeaderViewModel.kt",
+    "ProfileProgressItemViewModel.kt",
+    "ProfileProgressViewModel.kt",
+    "RecentlyPlayedStorySummaryViewModel.kt",
+    "RouteToCompletedStoryListListener.kt",
+    "RouteToOngoingTopicListListener.kt",
+])

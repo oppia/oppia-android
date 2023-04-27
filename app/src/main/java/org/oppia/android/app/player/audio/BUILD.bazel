@@ -1,0 +1,17 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "AudioButtonListener.kt",
+    "AudioFragment.kt",
+    "AudioFragmentPresenter.kt",
+    "AudioLanguageInteractionListener.kt",
+    "AudioUiManager.kt",
+    "AudioViewModel.kt",
+    "CellularAudioDialogFragment.kt",
+    "CellularDataInterface.kt",
+    "LanguageDialogFragment.kt",
+])

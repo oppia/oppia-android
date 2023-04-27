@@ -1,0 +1,47 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "AppLanguageActivity.kt",
+    "AppLanguageActivityPresenter.kt",
+    "AppLanguageFragment.kt",
+    "AppLanguageFragmentPresenter.kt",
+    "AppLanguageItemViewModel.kt",
+    "AppLanguageRadioButtonListener.kt",
+    "AppLanguageSelectionListener.kt",
+    "AppLanguageSelectionViewModel.kt",
+    "AudioLanguageActivity.kt",
+    "AudioLanguageActivityPresenter.kt",
+    "AudioLanguageFragment.kt",
+    "AudioLanguageFragmentPresenter.kt",
+    "AudioLanguageItemViewModel.kt",
+    "AudioLanguageRadioButtonListener.kt",
+    "AudioLanguageSelectedListener.kt",
+    "AudioLanguageSelectionViewModel.kt",
+    "LoadAppLanguageListListener.kt",
+    "LoadAudioLanguageListListener.kt",
+    "LoadReadingTextSizeListener.kt",
+    "OptionControlsViewModel.kt",
+    "OptionsActivity.kt",
+    "OptionsActivityPresenter.kt",
+    "OptionsAppLanguageViewModel.kt",
+    "OptionsAudioLanguageViewModel.kt",
+    "OptionsFragment.kt",
+    "OptionsFragmentPresenter.kt",
+    "OptionsItemViewModel.kt",
+    "OptionsReadingTextSizeViewModel.kt",
+    "ReadingTextSizeActivity.kt",
+    "ReadingTextSizeActivityPresenter.kt",
+    "ReadingTextSizeFragment.kt",
+    "ReadingTextSizeFragmentPresenter.kt",
+    "ReadingTextSizeSelectionViewModel.kt",
+    "RouteToAppLanguageListListener.kt",
+    "RouteToAudioLanguageListListener.kt",
+    "RouteToReadingTextSizeListener.kt",
+    "TextSizeItemViewModel.kt",
+    "TextSizeRadioButtonListener.kt",
+    "TextSizeSelectedListener.kt",
+])

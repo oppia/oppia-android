@@ -1,0 +1,25 @@
+"""
+TODO: finish build file doc.
+"""
+
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
+
+exports_files([
+    "DragDropSortInteractionView.kt",
+    "ImageRegionSelectionInteractionView.kt",
+    "SelectionInteractionView.kt",
+    "StateFragment.kt",
+    "StateFragmentPresenter.kt",
+    "StatePlayerRecyclerViewAssembler.kt",
+    "StateViewModel.kt",
+])
+
+oppia_android_library(
+    name = "confetti_config",
+    srcs = ["ConfettiConfig.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//third_party:nl_dionsegijn_konfetti",
+    ],
+)
