@@ -1,7 +1,7 @@
-index 7e0793b..9945eda 100644
+index 7e0793b..02c1fb1 100644
 --- kotlin/internal/jvm/android.bzl
 +++ kotlin/internal/jvm/android.bzl
-@@ -30,32 +30,70 @@ def _kt_android_artifact(
+@@ -30,32 +30,73 @@ def _kt_android_artifact(
          enable_data_binding = False,
          tags = [],
          exec_properties = None,
@@ -25,7 +25,19 @@ index 7e0793b..9945eda 100644
 +    # native android_library rule for deciding when there's additional resource processing needed.
 +    if enable_data_binding or manifest != None or (assets != None and len(assets) != 0) or (resource_files != None and len(resource_files) != 0):
 +        base_name = name + "_base"
-+
+ 
+-    # TODO(bazelbuild/rules_kotlin/issues/556): replace with starlark
+-    # buildifier: disable=native-android
+-    native.android_library(
+-        name = base_name,
+-        visibility = ["//visibility:private"],
+-        exports = base_deps,
+-        deps = deps if enable_data_binding else [],
+-        enable_data_binding = enable_data_binding,
+-        tags = tags,
+-        exec_properties = exec_properties,
+-        **kwargs
+-    )
 +        # 'android_merge_deps' is a hacky workaround to an issue that would require much broader
 +        # changes in order to fix: due to how android_library handles resource & asset merging, it's
 +        # possible for some dependencies to be required during build-time without having any
@@ -66,28 +78,19 @@ index 7e0793b..9945eda 100644
 +            " (e.g. by adding resources, assets, a manifest, or enabling databinding).",
 +            attr = "android_merge_deps",
 +        )
- 
--    # TODO(bazelbuild/rules_kotlin/issues/556): replace with starlark
--    # buildifier: disable=native-android
--    native.android_library(
--        name = base_name,
--        visibility = ["//visibility:private"],
--        exports = base_deps,
--        deps = deps if enable_data_binding else [],
--        enable_data_binding = enable_data_binding,
--        tags = tags,
--        exec_properties = exec_properties,
--        **kwargs
--    )
++
++    # Note that the order of deps actually matters below. 'base_name' should always be included
++    # first, when present, to give priority to locally merged resources for this library (in case
++    # there is more than one R file with the same package in the classpath).
      _kt_jvm_library(
          name = kt_name,
          srcs = srcs,
 -        deps = [base_name] + base_deps,
-+        deps = base_deps + ([base_name] if base_name else []),
++        deps = ([base_name] if base_name else []) + base_deps,
          resources = resources,
          plugins = plugins,
          associates = associates,
-@@ -66,9 +104,18 @@ def _kt_android_artifact(
+@@ -66,9 +107,18 @@ def _kt_android_artifact(
          tags = tags,
          exec_properties = exec_properties,
      )
@@ -108,7 +111,7 @@ index 7e0793b..9945eda 100644
      """Creates an Android sandwich library.
  
      `srcs`, `deps`, `plugins` are routed to `kt_jvm_library` the other android
-@@ -79,7 +126,15 @@ def kt_android_library(name, exports = [], visibility = None, exec_properties =
+@@ -79,7 +129,15 @@ def kt_android_library(name, exports = [], visibility = None, exec_properties =
      # buildifier: disable=native-android
      native.android_library(
          name = name,
@@ -125,7 +128,7 @@ index 7e0793b..9945eda 100644
          visibility = visibility,
          tags = kwargs.get("tags", default = None),
          testonly = kwargs.get("testonly", default = 0),
-@@ -91,6 +146,8 @@ def kt_android_local_test(
+@@ -91,6 +149,8 @@ def kt_android_local_test(
          jvm_flags = None,
          manifest = None,
          manifest_values = None,
@@ -134,7 +137,7 @@ index 7e0793b..9945eda 100644
          test_class = None,
          size = None,
          timeout = None,
-@@ -112,7 +169,16 @@ def kt_android_local_test(
+@@ -112,7 +172,16 @@ def kt_android_local_test(
      # buildifier: disable=native-android
      native.android_local_test(
          name = name,
@@ -261,7 +264,7 @@ index 510d72b..7b8b96f 100644
              |$open ** You can use the following buildozer command:$close buildozer 'remove deps ${
                unusedLabels.joinToString(" ")
              }' $label
-index 6c5b680..85ba468 100644
+index 6c5b680..38c9fab 100644
 --- src/main/kotlin/io/bazel/kotlin/plugin/jdeps/JdepsGenExtension.kt
 +++ src/main/kotlin/io/bazel/kotlin/plugin/jdeps/JdepsGenExtension.kt
 @@ -17,13 +17,16 @@ import org.jetbrains.kotlin.descriptors.ModuleDescriptor
@@ -318,7 +321,7 @@ index 6c5b680..85ba468 100644
    ) : CallChecker, DeclarationChecker {
  
      override fun check(
-@@ -145,14 +155,38 @@ class JdepsGenExtension(
+@@ -145,14 +155,44 @@ class JdepsGenExtension(
            )?.let { explicitClassesCanonicalPaths.add(it) }
          }
          is FunctionDescriptor -> {
@@ -335,8 +338,14 @@ index 6c5b680..85ba468 100644
              collectTypeReferences(valueParameter.type, isExplicit = false)
            }
 -          val virtualFileClass =
++
++          // Upper bounds of generic type parameters are explicit dependencies (since otherwise the
++          // compiler can't correctly resolve using those generic types).
++          addExplicitDeps(resultingDescriptor.typeParameters.flatMap { it.upperBounds })
++
 +          // Extension receivers are implicit types in the same way as return types.
 +          resultingDescriptor.extensionReceiverParameter?.value?.type?.let { addImplicitDep(it) }
++
 +          // Originally, this used just getContainingKotlinJvmBinaryClass(), but per
 +          // https://github.com/JetBrains/kotlin/blob/d423782f/compiler/frontend.java/src/org/jetbrains/kotlin/load/kotlin/kotlinJvmBinaryClassUtil.kt#L29
 +          // the utility only uses getRepresentativeBinaryClass for
@@ -361,7 +370,7 @@ index 6c5b680..85ba468 100644
          }
          is ParameterDescriptor -> {
            getClassCanonicalPath(resultingDescriptor)?.let { explicitClassesCanonicalPaths.add(it) }
-@@ -169,10 +203,16 @@ class JdepsGenExtension(
+@@ -169,10 +209,16 @@ class JdepsGenExtension(
                (resultingDescriptor.containingDeclaration as ClassDescriptor).defaultType,
              )
              else -> {
@@ -382,7 +391,7 @@ index 6c5b680..85ba468 100644
              }
            }
            addImplicitDep(resultingDescriptor.type)
-@@ -191,6 +231,11 @@ class JdepsGenExtension(
+@@ -191,6 +237,11 @@ class JdepsGenExtension(
            descriptor.typeConstructor.supertypes.forEach {
              collectTypeReferences(it)
            }
@@ -394,7 +403,7 @@ index 6c5b680..85ba468 100644
          }
          is FunctionDescriptor -> {
            descriptor.returnType?.let { collectTypeReferences(it) }
-@@ -227,6 +272,36 @@ class JdepsGenExtension(
+@@ -227,6 +278,36 @@ class JdepsGenExtension(
        getClassCanonicalPath(it.constructor)?.let { explicitClassesCanonicalPaths.add(it) }
      }
  
@@ -431,7 +440,7 @@ index 6c5b680..85ba468 100644
      /**
       * Records direct and indirect references for a given type. Direct references are explicitly
       * used in the code, e.g: a type declaration or a generic type declaration. Indirect references
-@@ -316,7 +391,110 @@ class JdepsGenExtension(
+@@ -316,7 +397,110 @@ class JdepsGenExtension(
      rootBuilder.success = true
      rootBuilder.ruleLabel = targetLabel
  
@@ -543,7 +552,7 @@ index 6c5b680..85ba468 100644
      unusedDeps.forEach { jarPath ->
        val dependency = Deps.Dependency.newBuilder()
        dependency.kind = Deps.Dependency.Kind.UNUSED
-@@ -324,14 +502,14 @@ class JdepsGenExtension(
+@@ -324,14 +508,14 @@ class JdepsGenExtension(
        rootBuilder.addDependency(dependency)
      }
  
@@ -560,7 +569,7 @@ index 6c5b680..85ba468 100644
        val dependency = Deps.Dependency.newBuilder()
        dependency.kind = Deps.Dependency.Kind.IMPLICIT
        dependency.path = it
-@@ -343,6 +521,11 @@ class JdepsGenExtension(
+@@ -343,6 +527,11 @@ class JdepsGenExtension(
      }
    }
  
@@ -572,7 +581,7 @@ index 6c5b680..85ba468 100644
    private fun doStrictDeps(
      compilerConfiguration: CompilerConfiguration,
      targetLabel: String,
-@@ -369,9 +552,13 @@ class JdepsGenExtension(
+@@ -369,9 +558,13 @@ class JdepsGenExtension(
      directDeps: List<String>,
      targetLabel: String,
    ): Boolean {
@@ -589,7 +598,7 @@ index 6c5b680..85ba468 100644
  
      if (missingStrictDeps.isNotEmpty()) {
        val missingStrictLabels = missingStrictDeps.mapNotNull { it.label }
-@@ -381,21 +568,21 @@ class JdepsGenExtension(
+@@ -381,21 +574,21 @@ class JdepsGenExtension(
  
        var command =
          """

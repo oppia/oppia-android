@@ -13,16 +13,23 @@ def oppia_android_library(
         visibility = ["//visibility:private"],
         deps = [],
         android_merge_deps = [],
+        requires_android_resources_support = False,
         testonly = False,
         manifest = None,
         exports_manifest = False):
-    requires_manifest = len(android_merge_deps) != 0
+    if requires_android_resources_support and len(android_merge_deps) != 0:
+        fail(
+            "requires_android_resources_support doesn't need to be set when android_merge_deps" +
+            " are provided.",
+        )
+    requires_manifest = requires_android_resources_support or len(android_merge_deps) != 0
 
     # Only use kt_android_library if there are sources to build.
     kt_android_library(
         name = name,
         srcs = srcs,
         deps = deps,
+        custom_package = "org.oppia.android" if requires_manifest else None,
         android_merge_deps = android_merge_deps,
         manifest = manifest or (
             _generate_prod_android_manifest(name) if requires_manifest else None
