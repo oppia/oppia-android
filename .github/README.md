@@ -6,7 +6,7 @@
 
 Oppia is an online learning tool that enables anyone to easily create and share interactive activities (called 'explorations'). These activities simulate a one-on-one conversation with a tutor, making it possible for students to learn by doing while getting feedback.
 
-The Android app is frontend for Oppia that provides access to Oppia's curated numeracy lessons for users who may not have regular access to internet connectivity, and in a way that can be easily shared across multiple members of the same household. The app is now available in beta and can be installed from the [Play Store](https://play.google.com/store/apps/details?id=org.oppia.android).
+The Android app is a frontend for Oppia that provides access to Oppia's curated numeracy lessons for users who may not have regular access to internet connectivity, and in a way that can be easily shared across multiple members of the same household. The app is now available in beta and can be installed from the [Play Store](https://play.google.com/store/apps/details?id=org.oppia.android).
 
 Oppia Android is written using Kotlin and Java, and leverages Bazel, databinding, Dagger 2, and AndroidX. See also:
 
