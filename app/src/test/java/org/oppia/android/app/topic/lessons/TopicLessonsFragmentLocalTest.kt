@@ -125,7 +125,7 @@ class TopicLessonsFragmentLocalTest {
     storyId: String
   ): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicPlayStoryActivityIntent(
+      TopicActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         topicId,

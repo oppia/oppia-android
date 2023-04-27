@@ -83,7 +83,7 @@ import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.android.app.testing.TextViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
-import org.oppia.android.app.testing.TopicTestActivityForStory
+import org.oppia.android.app.testing.TopicForStoryTestActivity
 import org.oppia.android.app.testing.ViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.TopicActivity
@@ -102,7 +102,44 @@ import org.oppia.android.app.walkthrough.WalkthroughActivity
 )
 @ActivityScope
 interface ActivityComponentImpl :
-  ActivityComponent, FragmentComponentBuilderInjector, TestActivity.Injector {
+  ActivityComponent, FragmentComponentBuilderInjector, TestActivity.Injector,
+  AddProfileActivity.Injector, AdminAuthActivity.Injector, AdministratorControlsActivity.Injector,
+  AdministratorControlsFragmentTestActivity.Injector, AdminPinActivity.Injector,
+  AppCompatCheckBoxBindingAdaptersTestActivity.Injector, AppLanguageActivity.Injector,
+  AppVersionActivity.Injector, AudioFragmentTestActivity.Injector, AudioLanguageActivity.Injector,
+  CircularProgressIndicatorAdaptersTestActivity.Injector, CompletedStoryListActivity.Injector,
+  ConceptCardFragmentTestActivity.Injector, DeveloperOptionsActivity.Injector,
+  DeveloperOptionsTestActivity.Injector, DragDropTestActivity.Injector,
+  DrawableBindingAdaptersTestActivity.Injector, ExplorationActivity.Injector,
+  ExplorationInjectionActivity.Injector, ExplorationTestActivity.Injector, FAQListActivity.Injector,
+  FAQSingleActivity.Injector, ForceNetworkTypeActivity.Injector,
+  ForceNetworkTypeTestActivity.Injector, HelpActivity.Injector, HomeActivity.Injector,
+  HomeFragmentTestActivity.Injector, HomeTestActivity.Injector, HtmlParserTestActivity.Injector,
+  ImageRegionSelectionTestActivity.Injector, ImageViewBindingAdaptersTestActivity.Injector,
+  InputInteractionViewTestActivity.Injector, LicenseListActivity.Injector,
+  LicenseTextViewerActivity.Injector, ListItemLeadingMarginSpanTestActivity.Injector,
+  MarkChaptersCompletedActivity.Injector, MarkChaptersCompletedTestActivity.Injector,
+  MarkStoriesCompletedActivity.Injector, MarkStoriesCompletedTestActivity.Injector,
+  MarkTopicsCompletedActivity.Injector, MarginBindingAdaptersTestActivity.Injector,
+  MarkTopicsCompletedTestActivity.Injector, MathExpressionParserActivity.Injector,
+  MyDownloadsActivity.Injector, NavigationDrawerTestActivity.Injector, OnboardingActivity.Injector,
+  OngoingTopicListActivity.Injector, OptionsActivity.Injector, PinPasswordActivity.Injector,
+  PoliciesActivity.Injector, PoliciesFragmentTestActivity.Injector,
+  ProfileAndDeviceIdActivity.Injector, ProfileChooserActivity.Injector,
+  ProfileChooserFragmentTestActivity.Injector, ProfileEditActivity.Injector,
+  ProfileEditFragmentTestActivity.Injector, ProfileListActivity.Injector,
+  ProfilePictureActivity.Injector, ProfileProgressActivity.Injector, ProfileRenameActivity.Injector,
+  ProfileResetPinActivity.Injector, QuestionPlayerActivity.Injector,
+  ReadingTextSizeActivity.Injector, RecentlyPlayedActivity.Injector, ResumeLessonActivity.Injector,
+  RevisionCardActivity.Injector, SplashActivity.Injector, SplashTestActivity.Injector,
+  StateAssemblerMarginBindingAdaptersTestActivity.Injector,
+  StateAssemblerPaddingBindingAdaptersTestActivity.Injector, SpotlightFragmentTestActivity.Injector,
+  StateFragmentTestActivity.Injector, StoryActivity.Injector,
+  TestFontScaleConfigurationUtilActivity.Injector, TextViewBindingAdaptersTestActivity.Injector,
+  ThirdPartyDependencyListActivity.Injector, TopicActivity.Injector,
+  TopicRevisionTestActivity.Injector, TopicTestActivity.Injector,
+  TopicForStoryTestActivity.Injector, ViewBindingAdaptersTestActivity.Injector,
+  ViewEventLogsActivity.Injector, ViewEventLogsTestActivity.Injector, WalkthroughActivity.Injector {
   @Subcomponent.Builder
   interface Builder {
     @BindsInstance
@@ -110,100 +147,4 @@ interface ActivityComponentImpl :
 
     fun build(): ActivityComponentImpl
   }
-
-  fun inject(addProfileActivity: AddProfileActivity)
-  fun inject(adminAuthActivity: AdminAuthActivity)
-  fun inject(administratorControlsActivity: AdministratorControlsActivity)
-  fun inject(administratorControlsFragmentTestActivity: AdministratorControlsFragmentTestActivity)
-  fun inject(adminPinActivity: AdminPinActivity)
-  fun inject(
-    appCompatCheckBoxBindingAdaptersTestActivity:
-      AppCompatCheckBoxBindingAdaptersTestActivity
-  )
-  fun inject(appLanguageActivity: AppLanguageActivity)
-  fun inject(appVersionActivity: AppVersionActivity)
-  fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
-  fun inject(audioLanguageActivity: AudioLanguageActivity)
-  fun inject(circularProgressAdaptersTestActivity: CircularProgressIndicatorAdaptersTestActivity)
-  fun inject(completedStoryListActivity: CompletedStoryListActivity)
-  fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
-  fun inject(developerOptionsActivity: DeveloperOptionsActivity)
-  fun inject(developerOptionsTestActivity: DeveloperOptionsTestActivity)
-  fun inject(dragDropTestActivity: DragDropTestActivity)
-  fun inject(drawableBindingAdaptersTestActivity: DrawableBindingAdaptersTestActivity)
-  fun inject(explorationActivity: ExplorationActivity)
-  fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
-  fun inject(explorationTestActivity: ExplorationTestActivity)
-  fun inject(faqListActivity: FAQListActivity)
-  fun inject(faqSingleActivity: FAQSingleActivity)
-  fun inject(forceNetworkTypeActivity: ForceNetworkTypeActivity)
-  fun inject(forceNetworkTypeTestActivity: ForceNetworkTypeTestActivity)
-  fun inject(helpActivity: HelpActivity)
-  fun inject(homeActivity: HomeActivity)
-  fun inject(homeFragmentTestActivity: HomeFragmentTestActivity)
-  fun inject(homeTestActivity: HomeTestActivity)
-  fun inject(htmlParserTestActivity: HtmlParserTestActivity)
-  fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
-  fun inject(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity)
-  fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
-  fun inject(licenseListActivity: LicenseListActivity)
-  fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
-  fun inject(listItemLeadingMarginSpanTestActivity: ListItemLeadingMarginSpanTestActivity)
-  fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
-  fun inject(markChaptersCompletedTestActivity: MarkChaptersCompletedTestActivity)
-  fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
-  fun inject(markStoriesCompletedTestActivity: MarkStoriesCompletedTestActivity)
-  fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
-  fun inject(marginBindableAdaptersTestActivity: MarginBindingAdaptersTestActivity)
-  fun inject(markTopicsCompletedTestActivity: MarkTopicsCompletedTestActivity)
-  fun inject(mathExpressionParserActivity: MathExpressionParserActivity)
-  fun inject(myDownloadsActivity: MyDownloadsActivity)
-  fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
-  fun inject(onboardingActivity: OnboardingActivity)
-  fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
-  fun inject(optionActivity: OptionsActivity)
-  fun inject(pinPasswordActivity: PinPasswordActivity)
-  fun inject(policiesActivity: PoliciesActivity)
-  fun inject(policiesFragmentTestActivity: PoliciesFragmentTestActivity)
-  fun inject(profileAndDeviceIdActivity: ProfileAndDeviceIdActivity)
-  fun inject(profileChooserActivity: ProfileChooserActivity)
-  fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
-  fun inject(profileEditActivity: ProfileEditActivity)
-  fun inject(profileEditFragmentTestActivity: ProfileEditFragmentTestActivity)
-  fun inject(profileListActivity: ProfileListActivity)
-  fun inject(profilePictureActivity: ProfilePictureActivity)
-  fun inject(profileProgressActivity: ProfileProgressActivity)
-  fun inject(profileRenameActivity: ProfileRenameActivity)
-  fun inject(profileResetPinActivity: ProfileResetPinActivity)
-  fun inject(questionPlayerActivity: QuestionPlayerActivity)
-  fun inject(readingTextSizeActivity: ReadingTextSizeActivity)
-  fun inject(recentlyPlayedActivity: RecentlyPlayedActivity)
-  fun inject(resumeLessonActivity: ResumeLessonActivity)
-  fun inject(revisionCardActivity: RevisionCardActivity)
-  fun inject(splashActivity: SplashActivity)
-  fun inject(splashTestActivity: SplashTestActivity)
-  fun inject(
-    stateAssemblerMarginBindingAdaptersTestActivity:
-      StateAssemblerMarginBindingAdaptersTestActivity
-  )
-
-  fun inject(
-    stateAssemblerPaddingBindingAdaptersTestActivity:
-      StateAssemblerPaddingBindingAdaptersTestActivity
-  )
-
-  fun inject(spotlightFragmentTestActivity: SpotlightFragmentTestActivity)
-  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
-  fun inject(storyActivity: StoryActivity)
-  fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
-  fun inject(textViewBindingAdaptersTestActivity: TextViewBindingAdaptersTestActivity)
-  fun inject(thirdPartyDependencyListActivity: ThirdPartyDependencyListActivity)
-  fun inject(topicActivity: TopicActivity)
-  fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
-  fun inject(topicTestActivity: TopicTestActivity)
-  fun inject(topicTestActivityForStory: TopicTestActivityForStory)
-  fun inject(viewBindingAdaptersTestActivity: ViewBindingAdaptersTestActivity)
-  fun inject(viewEventLogsActivity: ViewEventLogsActivity)
-  fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
-  fun inject(walkthroughActivity: WalkthroughActivity)
 }

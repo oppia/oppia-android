@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
@@ -42,7 +41,7 @@ class TopicActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
@@ -53,7 +52,7 @@ class TopicActivity :
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
-      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+      QuestionPlayerActivity.createIntent(
         this,
         skillIdList,
         ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -63,7 +62,7 @@ class TopicActivity :
 
   override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
     startActivity(
-      StoryActivity.createStoryActivityIntent(
+      StoryActivity.createIntent(
         this,
         internalProfileId,
         topicId,
@@ -79,7 +78,7 @@ class TopicActivity :
     subtopicListSize: Int
   ) {
     startActivity(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         this,
         internalProfileId,
         topicId,
@@ -98,7 +97,7 @@ class TopicActivity :
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
-      ExplorationActivity.createExplorationActivityIntent(
+      ExplorationActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -119,7 +118,7 @@ class TopicActivity :
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     startActivity(
-      ResumeLessonActivity.createResumeLessonActivityIntent(
+      ResumeLessonActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -139,10 +138,14 @@ class TopicActivity :
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.TopicActivityIntentFactory {
     override fun createIntent(profileId: ProfileId, topicId: String): Intent =
-      createTopicActivityIntent(activity, profileId.internalId, topicId)
+      Companion.createIntent(activity, profileId.internalId, topicId)
 
     override fun createIntent(profileId: ProfileId, topicId: String, storyId: String): Intent =
-      createTopicPlayStoryActivityIntent(activity, profileId.internalId, topicId, storyId)
+      Companion.createIntent(activity, profileId.internalId, topicId, storyId)
+  }
+
+  interface Injector {
+    fun inject(activity: TopicActivity)
   }
 
   companion object {
@@ -160,7 +163,7 @@ class TopicActivity :
     }
 
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
-    fun createTopicActivityIntent(
+    fun createIntent(
       context: Context,
       internalProfileId: Int,
       topicId: String
@@ -173,13 +176,13 @@ class TopicActivity :
     }
 
     /** Returns a new [Intent] to route to [TopicLessonsFragment] for a specified story ID. */
-    fun createTopicPlayStoryActivityIntent(
+    fun createIntent(
       context: Context,
       internalProfileId: Int,
       topicId: String,
       storyId: String
     ): Intent {
-      return createTopicActivityIntent(context, internalProfileId, topicId).apply {
+      return createIntent(context, internalProfileId, topicId).apply {
         putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       }
     }

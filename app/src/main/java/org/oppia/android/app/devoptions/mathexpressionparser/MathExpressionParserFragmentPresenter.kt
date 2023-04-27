@@ -25,9 +25,7 @@ class MathExpressionParserFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    binding.mathExpressionParserToolbar.setNavigationOnClickListener {
-      (activity as MathExpressionParserActivity).finish()
-    }
+    binding.mathExpressionParserToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.apply {
       lifecycleOwner = fragment

@@ -5,23 +5,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
-private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
+private const val KEY_TOPIC_ID_ARGUMENT = "WalkthroughFinalFragment.topic_id"
+private const val KEY_INTERNAL_PROFILE_ID_ARGUMENT = "WalkthroughFinalFragment.internal_profile_id"
 
 /** The final slide for [WalkthroughActivity]. */
 class WalkthroughFinalFragment : InjectableFragment() {
   companion object {
-    /** Returns a new [WalkthroughFinalFragment] to display the selected topic corresponding to the specified topic ID. */
-    fun newInstance(topicId: String): WalkthroughFinalFragment {
-      val storyFragment = WalkthroughFinalFragment()
-      val args = Bundle()
-      args.putString(KEY_TOPIC_ID_ARGUMENT, topicId)
-      storyFragment.arguments = args
-      return storyFragment
+    /**
+     * Returns a new [WalkthroughFinalFragment] to display the selected topic corresponding to the
+     * specified topic ID and profile ID.
+     */
+    fun newInstance(topicId: String, internalProfileId: Int): WalkthroughFinalFragment {
+      return WalkthroughFinalFragment().apply {
+        arguments = Bundle().apply {
+          putString(KEY_TOPIC_ID_ARGUMENT, topicId)
+          putInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, internalProfileId)
+        }
+      }
     }
   }
 
@@ -30,7 +34,7 @@ class WalkthroughFinalFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -40,12 +44,19 @@ class WalkthroughFinalFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) {
-        "Expected arguments to be passed to WalkthroughFinalFragment"
+        "Expected arguments to be passed to WalkthroughFinalFragment."
       }
     val topicId =
       checkNotNull(args.getStringFromBundle(KEY_TOPIC_ID_ARGUMENT)) {
-        "Expected topicId to be passed to WalkthroughFinalFragment"
+        "Expected topicId to be passed to WalkthroughFinalFragment."
       }
-    return walkthroughFinalFragmentPresenter.handleCreateView(inflater, container, topicId)
+    val internalProfileId = args.getInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, /* defaultValue = */ -1)
+    return walkthroughFinalFragmentPresenter.handleCreateView(
+      inflater, container, topicId, internalProfileId
+    )
+  }
+
+  interface Injector {
+    fun inject(fragment: WalkthroughFinalFragment)
   }
 }

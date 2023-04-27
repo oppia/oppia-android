@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.APP_VERSION_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -17,7 +16,7 @@ class AppVersionActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     appVersionActivityPresenter.handleOnCreate()
   }
 
@@ -28,8 +27,12 @@ class AppVersionActivity : InjectableAppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
+  interface Injector {
+    fun inject(activity: AppVersionActivity)
+  }
+
   companion object {
-    fun createAppVersionActivityIntent(context: Context): Intent {
+    fun createIntent(context: Context): Intent {
       return Intent(context, AppVersionActivity::class.java).apply {
         decorateWithScreenName(APP_VERSION_ACTIVITY)
       }

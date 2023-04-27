@@ -148,11 +148,8 @@ class AppVersionActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
   }
 
-  private fun createAppVersionActivityIntent(): Intent {
-    return AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
-  }
+  private fun createAppVersionActivityIntent(): Intent =
+    AppVersionActivity.createIntent(ApplicationProvider.getApplicationContext())
 
   @After
   fun tearDown() {
@@ -264,14 +261,12 @@ class AppVersionActivityTest {
   }
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
-    val intent = AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
+    val intent = AppVersionActivity.createIntent(ApplicationProvider.getApplicationContext())
     return ActivityScenario.launch(intent)
   }
 
   private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
-    return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+    return AdministratorControlsActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId
     )

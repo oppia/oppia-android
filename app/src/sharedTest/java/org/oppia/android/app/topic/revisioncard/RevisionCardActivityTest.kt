@@ -147,7 +147,7 @@ class RevisionCardActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
+    val currentScreenName = RevisionCardActivity.createIntent(
       context, 1, FRACTIONS_TOPIC_ID, 1, FRACTIONS_SUBTOPIC_LIST_SIZE
     ).extractCurrentAppScreenName()
 
@@ -367,7 +367,7 @@ class RevisionCardActivityTest {
     internalProfileId: Int,
     topicId: String,
     subtopicId: Int,
-  ) = RevisionCardActivity.createRevisionCardActivityIntent(
+  ) = RevisionCardActivity.createIntent(
     context, internalProfileId, topicId, subtopicId, FRACTIONS_SUBTOPIC_LIST_SIZE
   )
 

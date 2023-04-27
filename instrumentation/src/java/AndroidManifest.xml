@@ -178,7 +178,7 @@
       android:name=".app.testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".app.testing.TopicTestActivityForStory"
+      android:name=".app.testing.TopicForStoryTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.TopicRevisionTestActivity" />
     <activity

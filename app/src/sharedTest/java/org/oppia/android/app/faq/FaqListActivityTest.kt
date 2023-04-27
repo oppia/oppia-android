@@ -132,11 +132,8 @@ class FaqListActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createFaqListActivityIntent(): Intent {
-    return FAQListActivity.createFAQListActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
-  }
+  private fun createFaqListActivityIntent(): Intent =
+    FAQListActivity.createIntent(ApplicationProvider.getApplicationContext())
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

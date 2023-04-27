@@ -3,7 +3,6 @@ package org.oppia.android.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
@@ -21,14 +20,14 @@ private const val ACTIVITY_PARAMS_KEY = "ReadingTextSizeActivity.params"
 private const val ACTIVITY_SAVED_STATE_KEY = "ReadingTextSizeActivity.saved_state"
 
 /** The activity to change the text size of the reading content in the app. */
-class ReadingTextSizeActivity : InjectableAppCompatActivity() {
+class ReadingTextSizeActivity : InjectableAppCompatActivity(), TextSizeSelectedListener {
 
   @Inject
   lateinit var readingTextSizeActivityPresenter: ReadingTextSizeActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
 
     val readingTextSize =
       savedInstanceState?.retrieveStateBundle()?.selectedReadingTextSize
@@ -38,10 +37,7 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
 
   companion object {
     /** Returns a new [Intent] to route to [ReadingTextSizeActivity]. */
-    fun createReadingTextSizeActivityIntent(
-      context: Context,
-      initialReadingTextSize: ReadingTextSize
-    ): Intent {
+    fun createIntent(context: Context, initialReadingTextSize: ReadingTextSize): Intent {
       val params = ReadingTextSizeActivityParams.newBuilder().apply {
         readingTextSize = initialReadingTextSize
       }.build()
@@ -78,5 +74,13 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
     return getProto(
       ACTIVITY_SAVED_STATE_KEY, ReadingTextSizeActivityStateBundle.getDefaultInstance()
     )
+  }
+
+  override fun onTextSizeSelected(selectedTextSize: ReadingTextSize) {
+    readingTextSizeActivityPresenter.setSelectedReadingTextSize(selectedTextSize)
+  }
+
+  interface Injector {
+    fun inject(activity: ReadingTextSizeActivity)
   }
 }

@@ -13,7 +13,6 @@ import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.view.ViewComponentFactory
-import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
@@ -43,7 +42,7 @@ class SelectionInteractionView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    val viewComponent = viewComponentFactory.createViewComponent(this) as Injector
     viewComponent.inject(this)
     maybeInitializeAdapter()
   }
@@ -142,5 +141,9 @@ class SelectionInteractionView @JvmOverloads constructor(
           )
           .build()
     }
+  }
+
+  interface Injector {
+    fun inject(view: SelectionInteractionView)
   }
 }

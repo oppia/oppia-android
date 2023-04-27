@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.VIEW_EVENT_LOGS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -21,13 +20,17 @@ class ViewEventLogsActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     viewEventLogsActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.view_event_logs_activity_title)
   }
 
+  interface Injector {
+    fun inject(activity: ViewEventLogsActivity)
+  }
+
   companion object {
-    fun createViewEventLogsActivityIntent(context: Context): Intent {
+    fun createIntent(context: Context): Intent {
       return Intent(context, ViewEventLogsActivity::class.java).apply {
         decorateWithScreenName(VIEW_EVENT_LOGS_ACTIVITY)
       }

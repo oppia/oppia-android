@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
+
 
 /** Fragment that contains Profile Edit Screen. */
 class ProfileEditFragment :
@@ -18,8 +18,10 @@ class ProfileEditFragment :
   lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
 
   companion object {
-    /** Argument key for the Multipane in tablet mode for [ProfileEditFragment]. */
-    const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"
+    private const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"
+    // TODO: Consolidate with ones in ProfileEditActivity & clean up.
+    private const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY =
+      "ProfileEditActivity.profile_edit_profile_id"
 
     /** This creates the new instance of [ProfileEditFragment]. */
     fun newInstance(
@@ -37,7 +39,7 @@ class ProfileEditFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -64,5 +66,9 @@ class ProfileEditFragment :
 
   override fun loadProfileEditDeletionDialog(internalProfileId: Int) {
     profileEditFragmentPresenter.handleLoadProfileDeletionDialog(internalProfileId)
+  }
+
+  interface Injector {
+    fun inject(fragment: ProfileEditFragment)
   }
 }

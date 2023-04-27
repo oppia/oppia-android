@@ -188,12 +188,8 @@ class NavigationDrawerActivityProdTest {
     Intents.release()
   }
 
-  private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent {
-    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
-      context,
-      internalProfileId
-    )
-  }
+  private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent =
+    NavigationDrawerTestActivity.createIntent(context, internalProfileId)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

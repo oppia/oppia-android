@@ -948,7 +948,7 @@ class TopicLessonsFragmentTest {
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
-    return TopicActivity.createTopicActivityIntent(
+    return TopicActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       topicId
@@ -960,7 +960,7 @@ class TopicLessonsFragmentTest {
     topicId: String,
     storyId: String
   ): Intent {
-    return TopicActivity.createTopicPlayStoryActivityIntent(
+    return TopicActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       topicId,

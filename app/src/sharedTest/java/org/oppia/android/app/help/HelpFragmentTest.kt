@@ -148,7 +148,7 @@ class HelpFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
-    return HelpActivity.createHelpActivityIntent(
+    return HelpActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       isFromNavigationDrawer

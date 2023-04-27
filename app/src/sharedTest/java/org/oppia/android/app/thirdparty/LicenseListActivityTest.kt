@@ -143,12 +143,8 @@ class LicenseListActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createLicenseListActivityIntent(dependencyIndex: Int): Intent {
-    return LicenseListActivity.createLicenseListActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      dependencyIndex
-    )
-  }
+  private fun createLicenseListActivityIntent(dependencyIndex: Int): Intent =
+    LicenseListActivity.createIntent(ApplicationProvider.getApplicationContext(), dependencyIndex)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

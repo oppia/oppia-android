@@ -12,8 +12,8 @@ private const val DEFAULT_STORY_PERCENTAGE = 0
 /** [ViewModel] for displaying a story summary. */
 class StorySummaryViewModel(
   private val ephemeralStorySummary: EphemeralStorySummary,
-  private val storySummarySelector: StorySummarySelector,
-  private val chapterSummarySelector: ChapterSummarySelector,
+  private val storySummarySelectionListener: StorySummarySelectionListener,
+  private val chapterSummarySelectionListener: ChapterSummarySelectionListener,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
   private val storyIndex: Int
@@ -33,7 +33,7 @@ class StorySummaryViewModel(
   }
 
   fun clickOnStorySummaryTitle() {
-    storySummarySelector.selectStorySummary(storySummary)
+    storySummarySelectionListener.selectStorySummary(storySummary)
   }
 
   fun setStoryPercentage(storyPercentage: Int) {
@@ -90,7 +90,7 @@ class StorySummaryViewModel(
         ),
         storyId = storySummary.storyId,
         index = index,
-        chapterSummarySelector = chapterSummarySelector,
+        chapterSummarySelectionListener = chapterSummarySelectionListener,
         resourceHandler = resourceHandler,
         storyIndex = storyIndex
       )

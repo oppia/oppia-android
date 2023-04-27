@@ -5,16 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.Subtopic
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
+// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
+private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
+private const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
+
 /** Fragment that card for topic revision. */
-class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
+class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelectionListener {
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
@@ -34,7 +35,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -56,5 +57,9 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
     topicReviewFragmentPresenter.onTopicRevisionSummaryClicked(subtopic)
+  }
+
+  interface Injector {
+    fun inject(fragment: TopicRevisionFragment)
   }
 }

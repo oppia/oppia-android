@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
@@ -31,7 +30,7 @@ class DeveloperOptionsTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     setContentView(R.layout.developer_options_activity)
     internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     if (getDeveloperOptionsFragment() == null) {
@@ -50,7 +49,7 @@ class DeveloperOptionsTestActivity :
 
   override fun routeToMarkChaptersCompleted() {
     startActivity(
-      MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
+      MarkChaptersCompletedActivity.createIntent(
         context = this, internalProfileId, showConfirmationNotice = false
       )
     )
@@ -59,30 +58,34 @@ class DeveloperOptionsTestActivity :
   override fun routeToMarkStoriesCompleted() {
     startActivity(
       MarkStoriesCompletedActivity
-        .createMarkStoriesCompletedIntent(this, internalProfileId)
+        .createIntent(this, internalProfileId)
     )
   }
 
   override fun routeToMarkTopicsCompleted() {
     startActivity(
       MarkTopicsCompletedActivity
-        .createMarkTopicsCompletedIntent(this, internalProfileId)
+        .createIntent(this, internalProfileId)
     )
   }
 
   override fun routeToViewEventLogs() {
-    startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
+    startActivity(ViewEventLogsActivity.createIntent(this))
   }
 
   override fun forceCrash() {
     throw RuntimeException("Force crash occurred")
   }
 
+  interface Injector {
+    fun inject(activity: DeveloperOptionsTestActivity)
+  }
+
   companion object {
     const val PROFILE_ID_EXTRA_KEY = "DeveloperOptionsTestActivity.profile_id"
 
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
-    fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
+    fun createIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
       intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent

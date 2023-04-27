@@ -48,7 +48,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
-import org.oppia.android.app.testing.ProfileEditFragmentTestActivity.Companion.createProfileEditFragmentTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -456,7 +455,7 @@ class ProfileEditFragmentTest {
 
   private fun launchFragmentTestActivity(internalProfileId: Int) =
     launch<ProfileEditFragmentTestActivity>(
-      createProfileEditFragmentTestActivity(context, internalProfileId)
+      ProfileEditFragmentTestActivity.createIntent(context, internalProfileId)
     ).also { testCoroutineDispatchers.runCurrent() }
 
   @Singleton

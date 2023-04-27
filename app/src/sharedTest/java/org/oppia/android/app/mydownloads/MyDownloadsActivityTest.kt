@@ -124,7 +124,7 @@ class MyDownloadsActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = MyDownloadsActivity.createMyDownloadsActivityIntent(
+    val screenName = MyDownloadsActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       1
     ).extractCurrentAppScreenName()

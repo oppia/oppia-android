@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
@@ -40,7 +39,7 @@ class HomeActivity :
   private var internalProfileId: Int = -1
 
   companion object {
-    fun createHomeActivity(context: Context, profileId: Int?): Intent {
+    fun createIntent(context: Context, profileId: Int?): Intent {
       return Intent(context, HomeActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
         decorateWithScreenName(HOME_ACTIVITY)
@@ -50,7 +49,7 @@ class HomeActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     homeActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
@@ -62,7 +61,7 @@ class HomeActivity :
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+    startActivity(TopicActivity.createIntent(this, internalProfileId, topicId))
   }
 
   override fun onBackPressed() {
@@ -83,7 +82,7 @@ class HomeActivity :
 
   override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
     startActivity(
-      TopicActivity.createTopicPlayStoryActivityIntent(
+      TopicActivity.createIntent(
         this,
         internalProfileId,
         topicId,
@@ -105,5 +104,9 @@ class HomeActivity :
         .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
         .build()
     )
+  }
+
+  interface Injector {
+    fun inject(activity: HomeActivity)
   }
 }

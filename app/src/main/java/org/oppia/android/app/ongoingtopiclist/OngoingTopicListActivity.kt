@@ -3,7 +3,6 @@ package org.oppia.android.app.ongoingtopiclist
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.ONGOING_TOPIC_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -16,11 +15,15 @@ class OngoingTopicListActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     val internalProfileId: Int = intent.getIntExtra(
       ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY, -1
     )
     ongoingTopicListActivityPresenter.handleOnCreate(internalProfileId)
+  }
+
+  interface Injector {
+    fun inject(activity: OngoingTopicListActivity)
   }
 
   companion object {
@@ -29,7 +32,7 @@ class OngoingTopicListActivity : InjectableAppCompatActivity() {
       "OngoingTopicListActivity.profile_id"
 
     /** Returns a new [Intent] to route to [OngoingTopicListActivity] for a specified profile ID. */
-    fun createOngoingTopicListActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, OngoingTopicListActivity::class.java).apply {
         putExtra(ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
         decorateWithScreenName(ONGOING_TOPIC_LIST_ACTIVITY)

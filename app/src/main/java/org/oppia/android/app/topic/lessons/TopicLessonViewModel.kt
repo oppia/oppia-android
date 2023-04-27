@@ -68,8 +68,8 @@ class TopicLessonViewModel @Inject constructor(
         itemList.add(
           StorySummaryViewModel(
             ephemeralStorySummary,
-            fragment as StorySummarySelector,
-            fragment as ChapterSummarySelector,
+            fragment as StorySummarySelectionListener,
+            fragment as ChapterSummarySelectionListener,
             resourceHandler,
             translationController,
             index

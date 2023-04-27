@@ -3,9 +3,12 @@ package org.oppia.android.app.testing
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.settings.profile.PROFILE_EDIT_PROFILE_ID_EXTRA_KEY
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import javax.inject.Inject
+
+// TODO: Consolidate with ones in ProfileEditActivity & clean up.
+private const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY =
+  "ProfileEditActivity.profile_edit_profile_id"
 
 /** The presenter for [ProfileEditFragmentTestActivity]. */
 @ActivityScope

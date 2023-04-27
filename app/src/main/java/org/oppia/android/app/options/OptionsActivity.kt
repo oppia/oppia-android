@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.AudioLanguage
@@ -21,9 +20,9 @@ import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
 private const val SELECTED_FRAGMENT_SAVED_KEY = "OptionsActivity.selected_fragment"
-const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
-const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
-const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
+private const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
+private const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
+private const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
 
 /** The activity for setting user preferences. */
 class OptionsActivity :
@@ -33,7 +32,10 @@ class OptionsActivity :
   RouteToReadingTextSizeListener,
   LoadReadingTextSizeListener,
   LoadAppLanguageListListener,
-  LoadAudioLanguageListListener {
+  LoadAudioLanguageListListener,
+  AppLanguageSelectionListener,
+  AudioLanguageSelectedListener,
+  TextSizeSelectedListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
@@ -49,7 +51,7 @@ class OptionsActivity :
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
       "OptionsActivity.bool_is_from_navigation_drawer_extra_key"
 
-    fun createOptionsActivity(
+    fun createIntent(
       context: Context,
       profileId: Int?,
       isFromNavigationDrawer: Boolean
@@ -64,7 +66,7 @@ class OptionsActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     val isFromNavigationDrawer = intent.getBooleanExtra(
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
@@ -116,21 +118,21 @@ class OptionsActivity :
 
   override fun routeAppLanguageList(appLanguage: String?) {
     startActivityForResult(
-      AppLanguageActivity.createAppLanguageActivityIntent(this, appLanguage),
+      AppLanguageActivity.createIntent(this, appLanguage),
       REQUEST_CODE_APP_LANGUAGE
     )
   }
 
   override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
     startActivityForResult(
-      AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage),
+      AudioLanguageActivity.createIntent(this, audioLanguage),
       REQUEST_CODE_AUDIO_LANGUAGE
     )
   }
 
   override fun routeReadingTextSize(readingTextSize: ReadingTextSize) {
     startActivityForResult(
-      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(this, readingTextSize),
+      ReadingTextSizeActivity.createIntent(this, readingTextSize),
       REQUEST_CODE_TEXT_SIZE
     )
   }
@@ -166,5 +168,21 @@ class OptionsActivity :
       outState.putString(SELECTED_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
     outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragment)
+  }
+
+  override fun onLanguageSelected(appLanguage: String) {
+    optionActivityPresenter.updateAppLanguage(appLanguage)
+  }
+
+  override fun onLanguageSelected(audioLanguage: AudioLanguage) {
+    optionActivityPresenter.updateAudioLanguage(audioLanguage)
+  }
+
+  override fun onTextSizeSelected(selectedTextSize: ReadingTextSize) {
+    optionActivityPresenter.updateReadingTextSize(selectedTextSize)
+  }
+
+  interface Injector {
+    fun inject(activity: OptionsActivity)
   }
 }

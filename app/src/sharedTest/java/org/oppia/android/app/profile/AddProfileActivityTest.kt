@@ -1772,7 +1772,7 @@ class AddProfileActivityTest {
   }
 
   private fun createAddProfileActivityIntent(): Intent {
-    return AddProfileActivity.createAddProfileActivityIntent(
+    return AddProfileActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       colorRgb = -10710042
     )

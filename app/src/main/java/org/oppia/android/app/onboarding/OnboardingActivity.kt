@@ -3,7 +3,6 @@ package org.oppia.android.app.onboarding
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName.ONBOARDING_ACTIVITY
@@ -22,7 +21,7 @@ class OnboardingActivity :
   lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
 
   companion object {
-    fun createOnboardingActivity(context: Context): Intent {
+    fun createIntent(context: Context): Intent {
       return Intent(context, OnboardingActivity::class.java).apply {
         decorateWithScreenName(ONBOARDING_ACTIVITY)
       }
@@ -31,16 +30,20 @@ class OnboardingActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     onboardingActivityPresenter.handleOnCreate()
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileChooserActivity.createProfileChooserActivity(this))
+    startActivity(ProfileChooserActivity.createIntent(this))
     finish()
   }
 
   override fun onRouteToPolicies(policyPage: PolicyPage) {
-    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policyPage))
+    startActivity(PoliciesActivity.createIntent(this, policyPage))
+  }
+
+  interface Injector {
+    fun inject(activity: OnboardingActivity)
   }
 }

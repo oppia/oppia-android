@@ -3,7 +3,6 @@ package org.oppia.android.app.topic.questionplayer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
@@ -48,7 +47,7 @@ class QuestionPlayerActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     checkNotNull(intent.extras) { "Expected extras to be defined for QuestionPlayerActivity" }
     val profileId =
       intent.getProtoExtra(
@@ -82,7 +81,7 @@ class QuestionPlayerActivity :
      * Returns a new [Intent] to route to [QuestionPlayerActivity] for a specified skill ID list and
      * profile.
      */
-    fun createQuestionPlayerActivityIntent(
+    fun createIntent(
       context: Context,
       skillIdList: ArrayList<String>,
       profileId: ProfileId
@@ -123,5 +122,9 @@ class QuestionPlayerActivity :
 
   override fun stopSession() {
     questionPlayerActivityPresenter.stopTrainingSession()
+  }
+
+  interface Injector {
+    fun inject(activity: QuestionPlayerActivity)
   }
 }

@@ -11,7 +11,6 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.ViewComponentFactory
-import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
 
 /** [MaterialCardView] that represents stories promoted to the learner. */
@@ -54,7 +53,11 @@ class PromotedStoryCardView @JvmOverloads constructor(
     super.onAttachedToWindow()
     val viewComponentFactory =
       FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    val viewComponent = viewComponentFactory.createViewComponent(this) as Injector
     viewComponent.inject(this)
+  }
+
+  interface Injector {
+    fun inject(view: PromotedStoryCardView)
   }
 }

@@ -59,7 +59,6 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -185,7 +184,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_initialise_openBottomSheet_showsBottomSheet() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -206,7 +205,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCard_openSubtopicWithOnlyOneSubtopicInList_checkContinueStudyingTextNotShown() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         TEST_TOPIC_ID_0,
@@ -222,7 +221,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCard_openSubtopicWithMultipleSubtopicsInList_checkContinueStudyingTextIsShown() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -239,7 +238,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_openBottomSheet_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -266,7 +265,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_openBottomSheet_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -294,7 +293,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_openBottomSheet_selectCloseOption_bottomSheetCloses() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -317,7 +316,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -335,7 +334,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -355,7 +354,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId0_checkOnlyPreviousNavCardIsNotDisplayed() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -375,7 +374,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId1_checkPreviousAndNextNavCardsDisplayed() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -395,7 +394,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId3_checkOnlyNextNavCardIsNotDisplayed() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -416,7 +415,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_fracSubtopicId1_clickPrevNavCard_opensRevisionCardActivity() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -437,7 +436,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_fracSubtopicId1_clickNextNavCard_opensRevisionCardActivity() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -457,7 +456,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -478,7 +477,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -499,7 +498,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCard_showsLinkTextForConceptCard() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -518,7 +517,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCard_landscape_showsLinkTextForConceptCard() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -540,7 +539,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCard_clickConceptCardLinkText_opensConceptCard() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -565,7 +564,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCard_landscape_clickConceptCardLinkText_opensConceptCard() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
@@ -594,7 +593,7 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_englishContentLang_pageContentsAreInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         "test_topic_id_0",
@@ -615,7 +614,7 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_englishContentLang_switchToArabic_pageContentsAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         "test_topic_id_0",
@@ -640,7 +639,7 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_withArabicContentLang_pageContentsAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         context,
         profileId.internalId,
         "test_topic_id_0",

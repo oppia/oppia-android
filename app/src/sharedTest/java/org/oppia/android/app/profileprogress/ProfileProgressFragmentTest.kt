@@ -194,7 +194,7 @@ class ProfileProgressFragmentTest {
   }
 
   private fun createProfileProgressActivityIntent(profileId: Int): Intent {
-    return ProfileProgressActivity.createProfileProgressActivityIntent(
+    return ProfileProgressActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       profileId
     )

@@ -227,9 +227,8 @@ class DeveloperOptionsActivityTest {
     }
   }
 
-  private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, internalProfileId)
-  }
+  private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent =
+    DeveloperOptionsActivity.createIntent(context, internalProfileId)
 
   private fun ActivityScenario<DeveloperOptionsActivity>.openNavigationDrawer() {
     onView(withContentDescription(R.string.drawer_open_content_description))

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
@@ -39,7 +38,7 @@ class DeveloperOptionsActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     internalProfileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
     developerOptionsActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.developer_options_activity_title)
@@ -47,7 +46,7 @@ class DeveloperOptionsActivity :
 
   override fun routeToMarkChaptersCompleted() {
     startActivity(
-      MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
+      MarkChaptersCompletedActivity.createIntent(
         context = this, internalProfileId, showConfirmationNotice = false
       )
     )
@@ -56,23 +55,23 @@ class DeveloperOptionsActivity :
   override fun routeToMarkStoriesCompleted() {
     startActivity(
       MarkStoriesCompletedActivity
-        .createMarkStoriesCompletedIntent(this, internalProfileId)
+        .createIntent(this, internalProfileId)
     )
   }
 
   override fun routeToMarkTopicsCompleted() {
     startActivity(
       MarkTopicsCompletedActivity
-        .createMarkTopicsCompletedIntent(this, internalProfileId)
+        .createIntent(this, internalProfileId)
     )
   }
 
   override fun routeToViewEventLogs() {
-    startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
+    startActivity(ViewEventLogsActivity.createIntent(this))
   }
 
   override fun routeToForceNetworkType() {
-    startActivity(ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(this))
+    startActivity(ForceNetworkTypeActivity.createIntent(this))
   }
 
   override fun routeToMathExpressionParserTest() {
@@ -81,7 +80,7 @@ class DeveloperOptionsActivity :
 
   companion object {
     /** Function to create intent for DeveloperOptionsActivity */
-    fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
@@ -91,5 +90,9 @@ class DeveloperOptionsActivity :
 
   override fun forceCrash() {
     developerOptionsActivityPresenter.forceCrash()
+  }
+
+  interface Injector {
+    fun inject(activity: DeveloperOptionsActivity)
   }
 }

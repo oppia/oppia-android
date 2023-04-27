@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
@@ -27,7 +26,7 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -51,5 +50,9 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
     dragDropTestFragmentPresenter.onItemDragged(indexFrom, indexTo, adapter)
+  }
+
+  interface Injector {
+    fun inject(fragment: DragDropTestFragment)
   }
 }

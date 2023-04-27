@@ -106,8 +106,8 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.actionBottomSheetOptionsMenu.setOnClickListener {
-      val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
-      bottomSheetOptionsMenu.showNow(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
+      val bottomSheetOptionsMenuDialogFragment = BottomSheetOptionsMenuDialogFragment()
+      bottomSheetOptionsMenuDialogFragment.showNow(activity.supportFragmentManager, bottomSheetOptionsMenuDialogFragment.tag)
     }
 
     this.profileId = profileId
@@ -191,7 +191,7 @@ class ExplorationActivityPresenter @Inject constructor(
   fun handleOnOptionsItemSelected(itemId: Int): Boolean {
     return when (itemId) {
       R.id.action_options -> {
-        val intent = OptionsActivity.createOptionsActivity(
+        val intent = OptionsActivity.createIntent(
           activity,
           profileId.internalId,
           /* isFromNavigationDrawer= */ false
@@ -201,7 +201,7 @@ class ExplorationActivityPresenter @Inject constructor(
         true
       }
       R.id.action_help -> {
-        val intent = HelpActivity.createHelpActivityIntent(
+        val intent = HelpActivity.createIntent(
           activity, profileId.internalId,
           /* isFromNavigationDrawer= */false
         )
@@ -364,7 +364,7 @@ class ExplorationActivityPresenter @Inject constructor(
       ExplorationActivityParams.ParentScreen.UNRECOGNIZED -> {
         // Default to the topic activity.
         activity.startActivity(
-          TopicActivity.createTopicActivityIntent(context, profileId.internalId, topicId)
+          TopicActivity.createIntent(context, profileId.internalId, topicId)
         )
       }
     }

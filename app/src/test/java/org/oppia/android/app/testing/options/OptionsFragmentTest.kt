@@ -219,7 +219,7 @@ class OptionsFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
-    return OptionsActivity.createOptionsActivity(
+    return OptionsActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       isFromNavigationDrawer

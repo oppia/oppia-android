@@ -98,14 +98,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [TopicTestActivityForStory]. */
+/** Tests for [TopicForStoryTestActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = TopicTestActivityForStoryTest.TestApplication::class,
+  application = TopicForStoryTestActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class TopicTestActivityForStoryTest {
+class TopicForStoryTestActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -136,8 +136,8 @@ class TopicTestActivityForStoryTest {
   }
 
   @Test
-  fun testTopicTestActivityForStory_defaultTabIsPlay_isSuccessful() {
-    launch(TopicTestActivityForStory::class.java).use {
+  fun testTopicForStoryTestActivity_defaultTabIsPlay_isSuccessful() {
+    launch(TopicForStoryTestActivity::class.java).use {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
@@ -152,8 +152,8 @@ class TopicTestActivityForStoryTest {
   }
 
   @Test
-  fun testTopicTestActivityForStory_showsTopicPlay() {
-    launch(TopicTestActivityForStory::class.java).use {
+  fun testTopicForStoryTestActivity_showsTopicPlay() {
+    launch(TopicForStoryTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_summary_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -170,8 +170,8 @@ class TopicTestActivityForStoryTest {
   }
 
   @Test
-  fun testTopicTestActivityForStory_playTopicTab_storyItemIsExpanded() {
-    launch(TopicTestActivityForStory::class.java).use {
+  fun testTopicForStoryTestActivity_playTopicTab_storyItemIsExpanded() {
+    launch(TopicForStoryTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       // Story 0 of the topic should be expanded.
       onView(
@@ -221,18 +221,18 @@ class TopicTestActivityForStoryTest {
       override fun build(): TestApplicationComponent
     }
 
-    fun inject(topicTestActivityForStoryTest: TopicTestActivityForStoryTest)
+    fun inject(TopicForStoryTestActivityTest: TopicForStoryTestActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicTestActivityForStoryTest_TestApplicationComponent.builder()
+      DaggerTopicForStoryTestActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(topicTestActivityForStoryTest: TopicTestActivityForStoryTest) {
-      component.inject(topicTestActivityForStoryTest)
+    fun inject(TopicForStoryTestActivityTest: TopicForStoryTestActivityTest) {
+      component.inject(TopicForStoryTestActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

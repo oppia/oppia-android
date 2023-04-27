@@ -132,7 +132,7 @@ class HelpActivityTest {
   }
 
   private fun createHelpActivityIntent(): Intent {
-    return HelpActivity.createHelpActivityIntent(
+    return HelpActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       isFromNavigationDrawer = false,
       profileId = 0

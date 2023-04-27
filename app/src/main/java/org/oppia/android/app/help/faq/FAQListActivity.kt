@@ -3,7 +3,6 @@ package org.oppia.android.app.help.faq
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.model.ScreenName.FAQ_LIST_ACTIVITY
@@ -18,12 +17,12 @@ class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener 
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     faqListActivityPresenter.handleOnCreate()
   }
 
   companion object {
-    fun createFAQListActivityIntent(context: Context): Intent {
+    fun createIntent(context: Context): Intent {
       return Intent(context, FAQListActivity::class.java).apply {
         decorateWithScreenName(FAQ_LIST_ACTIVITY)
       }
@@ -31,6 +30,10 @@ class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener 
   }
 
   override fun onRouteToFAQSingle(question: String, answer: String) {
-    startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
+    startActivity(FAQSingleActivity.createIntent(this, question, answer))
+  }
+
+  interface Injector {
+    fun inject(activity: FAQListActivity)
   }
 }

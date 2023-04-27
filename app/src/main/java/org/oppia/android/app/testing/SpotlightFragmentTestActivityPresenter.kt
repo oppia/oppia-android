@@ -6,9 +6,11 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.databinding.SpotlightFragmentTestActivityBinding
 import javax.inject.Inject
+
+// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
+private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 
 /** The presenter for [SpotlightFragmentTestActivity] */
 @ActivityScope

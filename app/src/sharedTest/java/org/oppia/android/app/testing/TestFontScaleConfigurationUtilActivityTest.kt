@@ -116,12 +116,8 @@ class TestFontScaleConfigurationUtilActivityTest {
     Intents.release()
   }
 
-  private fun createFontScaleTestActivityIntent(readingTextSize: ReadingTextSize): Intent {
-    return TestFontScaleConfigurationUtilActivity.createFontScaleTestActivity(
-      context,
-      readingTextSize
-    )
-  }
+  private fun createFontScaleTestActivityIntent(readingTextSize: ReadingTextSize): Intent =
+    TestFontScaleConfigurationUtilActivity.createIntent(context, readingTextSize)
 
   @Test
   fun testFontScaleConfigurationUtil_smallTextSize_hasCorrectDimension() {

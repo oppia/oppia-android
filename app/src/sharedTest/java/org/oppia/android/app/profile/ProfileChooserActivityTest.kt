@@ -131,7 +131,7 @@ class ProfileChooserActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName =
-      ProfileChooserActivity.createProfileChooserActivity(context).extractCurrentAppScreenName()
+      ProfileChooserActivity.createIntent(context).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_CHOOSER_ACTIVITY)
   }

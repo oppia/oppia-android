@@ -85,7 +85,7 @@ class PinPasswordActivityPresenter @Inject constructor(
                 activity,
                 {
                   if (it is AsyncResult.Success) {
-                    activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
+                    activity.startActivity((HomeActivity.createIntent(activity, profileId)))
                   }
                 }
               )

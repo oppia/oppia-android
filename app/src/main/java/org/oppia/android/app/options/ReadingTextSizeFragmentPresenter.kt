@@ -49,12 +49,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
   }
 
   private fun updateTextSize(textSize: ReadingTextSize) {
-    // The first branch of (when) will be used in the case of multipane
-    when (val parentActivity = fragment.activity) {
-      is OptionsActivity -> parentActivity.optionActivityPresenter.updateReadingTextSize(textSize)
-      is ReadingTextSizeActivity ->
-        parentActivity.readingTextSizeActivityPresenter.setSelectedReadingTextSize(textSize)
-    }
+    (fragment.activity as TextSizeSelectedListener).onTextSizeSelected(textSize)
   }
 
   fun onTextSizeSelected(selectedTextSize: ReadingTextSize) {

@@ -200,7 +200,7 @@ class FAQSingleActivityTest {
   }
 
   private fun createFAQSingleActivity(): Intent {
-    return FAQSingleActivity.createFAQSingleActivityIntent(
+    return FAQSingleActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       getResources().getString(R.string.faq_question_1),
       getResources().getString(R.string.faq_answer_1)

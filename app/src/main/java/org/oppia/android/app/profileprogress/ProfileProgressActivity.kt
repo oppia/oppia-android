@@ -3,7 +3,6 @@ package org.oppia.android.app.profileprogress
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
@@ -38,7 +37,7 @@ class ProfileProgressActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
   }
@@ -61,7 +60,7 @@ class ProfileProgressActivity :
 
   override fun routeToCompletedStory() {
     startActivity(
-      CompletedStoryListActivity.createCompletedStoryListActivityIntent(
+      CompletedStoryListActivity.createIntent(
         this,
         internalProfileId
       )
@@ -70,7 +69,7 @@ class ProfileProgressActivity :
 
   override fun routeToOngoingTopic() {
     startActivity(
-      OngoingTopicListActivity.createOngoingTopicListActivityIntent(
+      OngoingTopicListActivity.createIntent(
         this,
         internalProfileId
       )
@@ -81,7 +80,7 @@ class ProfileProgressActivity :
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val PROFILE_ID_EXTRA_KEY = "ProfileProgressActivity.profile_id"
 
-    fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, ProfileProgressActivity::class.java).apply {
         putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
         decorateWithScreenName(PROFILE_PROGRESS_ACTIVITY)
@@ -91,7 +90,7 @@ class ProfileProgressActivity :
 
   override fun showProfilePicture() {
     startActivity(
-      ProfilePictureActivity.createProfilePictureActivityIntent(
+      ProfilePictureActivity.createIntent(
         this,
         internalProfileId
       )
@@ -105,5 +104,9 @@ class ProfileProgressActivity :
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     profileProgressActivityPresenter.handleOnActivityResult(data)
+  }
+
+  interface Injector {
+    fun inject(activity: ProfileProgressActivity)
   }
 }

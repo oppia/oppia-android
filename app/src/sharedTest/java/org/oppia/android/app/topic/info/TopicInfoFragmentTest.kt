@@ -50,7 +50,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
-import org.oppia.android.app.topic.TopicActivity.Companion.createTopicActivityIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -209,7 +208,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescriptionInRtl_isCorrect() {
     activityTestRule.launchActivity(
-      createTopicActivityIntent(
+      TopicActivity.createIntent(
         context = context,
         internalProfileId = internalProfileId,
         topicId = TEST_TOPIC_ID
@@ -228,7 +227,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescriptionInLtr_isCorrect() {
     activityTestRule.launchActivity(
-      createTopicActivityIntent(
+      TopicActivity.createIntent(
         context = context,
         internalProfileId = internalProfileId,
         topicId = TEST_TOPIC_ID
@@ -427,7 +426,7 @@ class TopicInfoFragmentTest {
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicActivityIntent(
+      TopicActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         topicId

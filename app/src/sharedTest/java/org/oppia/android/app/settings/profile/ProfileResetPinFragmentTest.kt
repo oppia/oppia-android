@@ -162,7 +162,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_inputBothPin_save_opensprofileResetPinFragment() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -196,7 +196,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_inputBothPin_imeAction_opensprofileResetPinFragment() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -229,7 +229,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_configChange_inputBothPin_save_opensprofileResetPinFragment() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -268,7 +268,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withUser_inputBothPin_save_opensprofileResetPinFragment() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -301,7 +301,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_pinLengthErrorIsShown() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -341,7 +341,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_configChange_pinLengthErrorIsShown() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -382,7 +382,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_inputPin_errorIsCleared() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -415,7 +415,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_inputPin_configChange_errorIsCleared() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -448,7 +448,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_inputWrongConfirmPin_save_confirmWrongErrorIsShown() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -488,7 +488,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_inputWrongConfirmPin_configChange_confirmWrongErrorIsShown() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -530,7 +530,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_inputPin_configChange_inputFieldsExist_saveButtonIsClickable() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -579,7 +579,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withAdmin_wrongConfirmPin_save_inputConfirmPin_errorIsCleared() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 0,
         isAdmin = true
@@ -620,7 +620,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withUser_inputShortPin_save_pinLengthErrorIsShown() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -660,7 +660,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withUser_inputShortPin_save_inputPin_errorIsCleared() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -692,7 +692,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_save_confirmWrongErrorIsShown() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -732,7 +732,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_save_inputConfirmPin_errorIsCleared() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -773,7 +773,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_default_saveButtonIsNotClickable() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -786,7 +786,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_default_configChange_saveButtonIsNotClickable() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -801,7 +801,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_inputPin_saveButtonIsNotClickable() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -823,7 +823,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_inputPin_configChange_saveButtonIsNotClickable() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -847,7 +847,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_inputPin_inputConfirmPin_saveButtonIsClickable() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -879,7 +879,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_inputPin_clickableSaveButton_clearPin_saveButtonIsNotClickable() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -922,7 +922,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_saveButtonIsNotClickable() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false
@@ -964,7 +964,7 @@ class ProfileResetPinFragmentTest {
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_configChange_saveButtonIsNotClickable() {
     ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
+      ProfileResetPinActivity.createIntent(
         context = context,
         profileId = 1,
         isAdmin = false

@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.databinding.CircularProgressIndicatorAdaptersTestActivityBinding
 
@@ -20,13 +19,17 @@ class CircularProgressIndicatorAdaptersTestActivity : InjectableAppCompatActivit
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     binding = DataBindingUtil.setContentView<CircularProgressIndicatorAdaptersTestActivityBinding>(
       this, R.layout.circular_progress_indicator_adapters_test_activity
     ).apply {
       this.viewModel = this@CircularProgressIndicatorAdaptersTestActivity.viewModel
       this.lifecycleOwner = this@CircularProgressIndicatorAdaptersTestActivity
     }
+  }
+
+  interface Injector {
+    fun inject(activity: CircularProgressIndicatorAdaptersTestActivity)
   }
 
   companion object {

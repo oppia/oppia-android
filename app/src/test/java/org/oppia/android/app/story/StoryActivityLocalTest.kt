@@ -135,7 +135,7 @@ class StoryActivityLocalTest {
     topicId: String,
     storyId: String
   ): Intent {
-    return StoryActivity.createStoryActivityIntent(
+    return StoryActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       topicId,

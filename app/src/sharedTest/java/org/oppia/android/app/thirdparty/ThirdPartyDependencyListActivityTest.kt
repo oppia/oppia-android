@@ -141,11 +141,8 @@ class ThirdPartyDependencyListActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createThirdPartyDependencyListActivityIntent(): Intent {
-    return ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
-  }
+  private fun createThirdPartyDependencyListActivityIntent(): Intent =
+    ThirdPartyDependencyListActivity.createIntent(ApplicationProvider.getApplicationContext())
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

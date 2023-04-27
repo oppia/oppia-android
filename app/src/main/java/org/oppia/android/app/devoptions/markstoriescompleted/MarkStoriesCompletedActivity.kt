@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.MARK_STORIES_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -25,7 +24,7 @@ class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_stories_completed_activity_title)
@@ -38,10 +37,14 @@ class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
+  interface Injector {
+    fun inject(activity: MarkStoriesCompletedActivity)
+  }
+
   companion object {
     const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedActivity.profile_id"
 
-    fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {
+    fun createIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, MarkStoriesCompletedActivity::class.java).apply {
         putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
         decorateWithScreenName(MARK_STORIES_COMPLETED_ACTIVITY)

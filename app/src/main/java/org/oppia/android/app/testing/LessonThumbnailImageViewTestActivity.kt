@@ -1,5 +1,7 @@
 package org.oppia.android.app.testing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
@@ -16,5 +18,10 @@ class LessonThumbnailImageViewTestActivity : InjectableAppCompatActivity() {
       R.id.lesson_thumbnail_image_view_test_fragment_placeholder,
       LessonThumbnailImageViewTestFragment()
     ).commitNow()
+  }
+
+  companion object {
+    fun createIntent(context: Context): Intent =
+      Intent(context, LessonThumbnailImageViewTestActivity::class.java)
   }
 }

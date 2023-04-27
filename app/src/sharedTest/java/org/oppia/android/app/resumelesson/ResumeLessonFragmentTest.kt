@@ -268,7 +268,7 @@ class ResumeLessonFragmentTest {
   }
 
   private fun createResumeLessonActivityIntent(): Intent {
-    return ResumeLessonActivity.createResumeLessonActivityIntent(
+    return ResumeLessonActivity.createIntent(
       context,
       ProfileId.newBuilder().apply { internalId = 1 }.build(),
       FRACTIONS_TOPIC_ID,
@@ -280,7 +280,7 @@ class ResumeLessonFragmentTest {
   }
 
   private fun createResumeRatiosLessonActivityIntent(): Intent {
-    return ResumeLessonActivity.createResumeLessonActivityIntent(
+    return ResumeLessonActivity.createIntent(
       context,
       ProfileId.newBuilder().apply { internalId = 1 }.build(),
       RATIOS_TOPIC_ID,

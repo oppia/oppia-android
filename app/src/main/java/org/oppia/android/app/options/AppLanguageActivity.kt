@@ -3,21 +3,20 @@ package org.oppia.android.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.APP_LANGUAGE_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** The activity to change the language of the app. */
-class AppLanguageActivity : InjectableAppCompatActivity() {
+class AppLanguageActivity : InjectableAppCompatActivity(), AppLanguageSelectionListener {
   @Inject
   lateinit var appLanguageActivityPresenter: AppLanguageActivityPresenter
   private lateinit var prefSummaryValue: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     prefSummaryValue = if (savedInstanceState == null) {
       checkNotNull(intent.getStringExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY)) {
         "Expected $APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY to be in intent extras."
@@ -34,7 +33,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     internal const val SELECTED_LANGUAGE_EXTRA_KEY = "AppLanguageActivity.selected_language"
 
     /** Returns a new [Intent] to route to [AppLanguageActivity]. */
-    fun createAppLanguageActivityIntent(context: Context, summaryValue: String?): Intent {
+    fun createIntent(context: Context, summaryValue: String?): Intent {
       return Intent(context, AppLanguageActivity::class.java).apply {
         putExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY, summaryValue)
         decorateWithScreenName(APP_LANGUAGE_ACTIVITY)
@@ -60,5 +59,13 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
       SELECTED_LANGUAGE_EXTRA_KEY,
       appLanguageActivityPresenter.getLanguageSelected()
     )
+  }
+
+  override fun onLanguageSelected(appLanguage: String) {
+    appLanguageActivityPresenter.setLanguageSelected(appLanguage)
+  }
+
+  interface Injector {
+    fun inject(activity: AppLanguageActivity)
   }
 }

@@ -3,7 +3,6 @@ package org.oppia.android.app.topic.revisioncard
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.REVISION_CARD_ACTIVITY
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
@@ -25,7 +24,7 @@ class RevisionCardActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     intent?.let { intent ->
       val internalProfileId = intent.getIntExtra(INTERNAL_PROFILE_ID_EXTRA_KEY, -1)
       val topicId = checkNotNull(intent.getStringExtra(TOPIC_ID_EXTRA_KEY)) {
@@ -53,7 +52,7 @@ class RevisionCardActivity :
     internal const val SUBTOPIC_LIST_SIZE_EXTRA_KEY = "RevisionCardActivity.subtopic_list_size"
 
     /** Returns a new [Intent] to route to [RevisionCardActivity]. */
-    fun createRevisionCardActivityIntent(
+    fun createIntent(
       context: Context,
       internalProfileId: Int,
       topicId: String,
@@ -77,7 +76,7 @@ class RevisionCardActivity :
     subtopicListSize: Int
   ) {
     startActivity(
-      createRevisionCardActivityIntent(
+      createIntent(
         this,
         internalProfileId,
         topicId,
@@ -99,5 +98,9 @@ class RevisionCardActivity :
 
   override fun onBackPressed() {
     onReturnToTopicRequested()
+  }
+
+  interface Injector {
+    fun inject(activity: RevisionCardActivity)
   }
 }

@@ -2232,7 +2232,7 @@ class StateFragmentLocalTest {
     explorationId: String
   ): ActivityScenario<StateFragmentTestActivity> {
     return ActivityScenario.launch(
-      StateFragmentTestActivity.createTestActivityIntent(
+      StateFragmentTestActivity.createIntent(
         context,
         profileId.internalId,
         TEST_TOPIC_ID_0,

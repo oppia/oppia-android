@@ -131,11 +131,8 @@ class OnboardingActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createOnboardingActivity(): Intent {
-    return OnboardingActivity.createOnboardingActivity(
-      ApplicationProvider.getApplicationContext()
-    )
-  }
+  private fun createOnboardingActivity(): Intent =
+    OnboardingActivity.createIntent(ApplicationProvider.getApplicationContext())
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

@@ -3,7 +3,6 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PIN_PASSWORD_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -18,7 +17,7 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
   lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
 
   companion object {
-    fun createPinPasswordActivityIntent(
+    fun createIntent(
       context: Context,
       adminPin: String,
       profileId: Int
@@ -33,7 +32,7 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     pinPasswordActivityPresenter.handleOnCreate()
   }
 
@@ -48,5 +47,9 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
   override fun onDestroy() {
     super.onDestroy()
     pinPasswordActivityPresenter.handleOnDestroy()
+  }
+
+  interface Injector {
+    fun inject(activity: PinPasswordActivity)
   }
 }

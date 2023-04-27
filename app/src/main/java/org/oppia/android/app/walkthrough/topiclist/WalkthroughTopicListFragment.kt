@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.model.TopicSummary
@@ -18,7 +17,7 @@ class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickList
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -26,10 +25,32 @@ class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickList
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return walkthroughTopicListFragmentPresenter.handleCreateView(inflater, container)
+    val args =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to WalkthroughTopicListFragment."
+      }
+    val internalProfileId = args.getInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, /* defaultValue = */ -1)
+    return walkthroughTopicListFragmentPresenter.handleCreateView(
+      inflater, container, internalProfileId
+    )
   }
 
   override fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     walkthroughTopicListFragmentPresenter.changePage(topicSummary)
+  }
+
+  interface Injector {
+    fun inject(fragment: WalkthroughTopicListFragment)
+  }
+
+  companion object {
+    private const val KEY_INTERNAL_PROFILE_ID_ARGUMENT =
+      "WalkthroughTopicListFragment.internal_profile_id"
+
+    fun createFragment(internalProfileId: Int): WalkthroughTopicListFragment {
+      return WalkthroughTopicListFragment().apply {
+        arguments = Bundle().apply { putInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, internalProfileId) }
+      }
+    }
   }
 }

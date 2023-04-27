@@ -4,47 +4,58 @@ Constructs for setting up views for injection in the Dagger graph.
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-# TODO(#59): Define ViewComponentImpl as a library separate from views.
-exports_files([
-    "ViewComponentBuilderModule.kt",
-    "ViewComponentImpl.kt",
-])
-
 oppia_android_library(
     name = "view_scope",
-    srcs = [
-        "ViewScope.kt",
-    ],
+    srcs = ["ViewScope.kt"],
     visibility = ["//app:app_visibility"],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-    ],
+    deps = ["//third_party:javax_inject_javax_inject"],
 )
 
 oppia_android_library(
     name = "view_component",
-    srcs = [
-        "ViewComponent.kt",
-    ],
+    srcs = ["ViewComponent.kt"],
     visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "view_component_impl",
+    srcs = ["ViewComponentImpl.kt"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//app/src/main/java/org/oppia/android/app/fragment:__pkg__",
+    ],
+    deps = [
+        ":view_component",
+        ":view_scope",
+        "//:dagger",
+        "//app:views",
+    ],
+)
+
+oppia_android_library(
+    name = "view_component_builder_module",
+    srcs = ["ViewComponentBuilderModule.kt"],
+    visibility = [
+        "//app:app_testing_visibility",
+        "//app/src/main/java/org/oppia/android/app/fragment:__pkg__",
+    ],
+    deps = [
+        ":view_component",
+        ":view_component_impl",
+        "//:dagger",
+    ],
 )
 
 oppia_android_library(
     name = "view_component_factory",
-    srcs = [
-        "ViewComponentFactory.kt",
-    ],
+    srcs = ["ViewComponentFactory.kt"],
     visibility = ["//app:app_visibility"],
-    deps = [
-        ":view_component",
-    ],
+    deps = [":view_component"],
 )
 
 oppia_android_library(
     name = "view_component_builder_injector",
-    srcs = [
-        "ViewComponentBuilderInjector.kt",
-    ],
+    srcs = ["ViewComponentBuilderInjector.kt"],
     visibility = [
         "//app:__pkg__",
         "//app/src/main/java/org/oppia/android/app/fragment:__pkg__",

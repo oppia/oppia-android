@@ -1,7 +1,8 @@
 package org.oppia.android.app.testing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -13,7 +14,15 @@ class HomeTestActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     homeTestActivityPresenter.handleOnCreate()
+  }
+
+  interface Injector {
+    fun inject(activity: HomeTestActivity)
+  }
+
+  companion object {
+    fun createIntent(context: Context): Intent = Intent(context, HomeTestActivity::class.java)
   }
 }

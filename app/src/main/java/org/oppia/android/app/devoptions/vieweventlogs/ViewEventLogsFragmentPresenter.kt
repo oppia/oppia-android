@@ -35,9 +35,7 @@ class ViewEventLogsFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    binding.viewEventLogsToolbar.setNavigationOnClickListener {
-      (activity as ViewEventLogsActivity).finish()
-    }
+    binding.viewEventLogsToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.apply {
       this.lifecycleOwner = fragment

@@ -140,7 +140,7 @@ class AppLanguageActivityTest {
   }
 
   private fun createAppLanguageActivityIntent(summaryValue: String): Intent =
-    AppLanguageActivity.createAppLanguageActivityIntent(context, summaryValue)
+    AppLanguageActivity.createIntent(context, summaryValue)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

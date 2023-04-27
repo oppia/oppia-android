@@ -10,7 +10,7 @@
 
     <variable
       name="audioFragment"
-      type="org.oppia.android.app.player.audio.LanguageInterface" />
+      type="org.oppia.android.app.player.audio.AudioLanguageInteractionListener" />
 
     <variable
       name="viewModel"

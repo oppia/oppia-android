@@ -137,7 +137,7 @@ class PromotedStoryListViewModelTest {
   @Test
   fun testPromotedStoryListViewModelEquals_reflexiveStoryListOf2_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
@@ -153,7 +153,7 @@ class PromotedStoryListViewModelTest {
   @Test
   fun testPromotedStoryListViewModelEquals_symmetricStoryListOf2_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
@@ -177,7 +177,7 @@ class PromotedStoryListViewModelTest {
   @Test
   fun testPromotedStoryListViewModelEquals_transitiveStoryListOf2_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModelCopy1 = createPromotedStoryListViewModel(
@@ -207,7 +207,7 @@ class PromotedStoryListViewModelTest {
   @Test
   fun testPromotedStoryListViewModelEquals_consistentStoryListOf2_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
@@ -232,7 +232,7 @@ class PromotedStoryListViewModelTest {
   @Test
   fun testPromotedStoryListViewModelEquals_storyListOf2AndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
@@ -250,7 +250,7 @@ class PromotedStoryListViewModelTest {
   @Test
   fun testPromotedStoryListViewModelEquals_storyListOf2AndStoryListOf3_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModelOf2 = createPromotedStoryListViewModel(
@@ -272,7 +272,7 @@ class PromotedStoryListViewModelTest {
   @Test
   fun testPromotedStoryListViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
@@ -297,7 +297,7 @@ class PromotedStoryListViewModelTest {
   @Test
   fun testPromotedStoryListViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(

@@ -9,10 +9,11 @@ import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import javax.inject.Inject
 
-const val TOPIC_FRAGMENT_TAG = "TopicFragment"
-const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
-const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
-const val STORY_ID_ARGUMENT_KEY = "story_id"
+private const val TOPIC_FRAGMENT_TAG = "TopicFragment"
+
+private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
+private const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
+private const val STORY_ID_ARGUMENT_KEY = "story_id"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope

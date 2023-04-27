@@ -175,7 +175,7 @@ class StateFragmentAccessibilityTest {
     explorationId: String
   ): ActivityScenario<StateFragmentTestActivity> {
     return ActivityScenario.launch(
-      StateFragmentTestActivity.createTestActivityIntent(
+      StateFragmentTestActivity.createIntent(
         context,
         internalProfileId,
         TEST_TOPIC_ID_0,

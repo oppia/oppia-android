@@ -135,7 +135,7 @@ class ProfileProgressActivityTest {
   }
 
   private fun createProfileProgressActivityIntent(): Intent {
-    return ProfileProgressActivity.createProfileProgressActivityIntent(
+    return ProfileProgressActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId = 0
     )

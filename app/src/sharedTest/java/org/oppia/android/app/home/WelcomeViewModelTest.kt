@@ -28,7 +28,6 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeFragmentTestActivity
-import org.oppia.android.app.testing.HomeFragmentTestActivity.Companion.createHomeFragmentTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -126,7 +125,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_reflexiveBasicWelcomeViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -141,7 +140,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_symmetricBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -158,7 +157,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_transitiveBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -183,7 +182,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_consistentBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -201,7 +200,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_basicWelcomeViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -216,7 +215,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_profile1MorningAndProfile2Morning_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -240,7 +239,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_profile1MorningAndProfile1Evening_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -265,7 +264,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -292,7 +291,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)

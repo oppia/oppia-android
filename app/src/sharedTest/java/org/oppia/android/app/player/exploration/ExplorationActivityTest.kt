@@ -2202,7 +2202,7 @@ class ExplorationActivityTest {
     explorationId: String,
     shouldSavePartialProgress: Boolean
   ): Intent {
-    return ExplorationActivity.createExplorationActivityIntent(
+    return ExplorationActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       topicId,

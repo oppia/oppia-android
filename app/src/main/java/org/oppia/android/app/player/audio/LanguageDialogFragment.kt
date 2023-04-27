@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import org.oppia.android.R
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import java.util.Locale
 import kotlin.collections.ArrayList
@@ -42,7 +41,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -67,7 +66,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
 
     val options = languageNameArrayList.toTypedArray<CharSequence>()
 
-    val languageInterface: LanguageInterface = parentFragment as AudioFragment
+    val audioLanguageInteractionListener: AudioLanguageInteractionListener = parentFragment as AudioFragment
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
@@ -77,7 +76,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
       }
       .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { _, _ ->
         if (selectedIndex != -1) {
-          languageInterface.onLanguageSelected(languageCodeArrayList[selectedIndex])
+          audioLanguageInteractionListener.onLanguageSelected(languageCodeArrayList[selectedIndex])
         }
         dismiss()
       }
@@ -85,5 +84,9 @@ class LanguageDialogFragment : InjectableDialogFragment() {
         dismiss()
       }
       .create()
+  }
+
+  interface Injector {
+    fun inject(fragment: LanguageDialogFragment)
   }
 }

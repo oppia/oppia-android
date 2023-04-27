@@ -164,9 +164,8 @@ class HomeSpanTest {
     }
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
-    return HomeActivity.createHomeActivity(context, profileId)
-  }
+  private fun createHomeActivityIntent(profileId: Int): Intent =
+    HomeActivity.createIntent(context, profileId)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

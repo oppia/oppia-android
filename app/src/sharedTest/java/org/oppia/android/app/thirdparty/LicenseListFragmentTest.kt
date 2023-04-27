@@ -339,12 +339,8 @@ class LicenseListFragmentTest {
     }
   }
 
-  private fun createLicenseListActivity(dependencyIndex: Int): Intent {
-    return LicenseListActivity.createLicenseListActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      dependencyIndex
-    )
-  }
+  private fun createLicenseListActivity(dependencyIndex: Int): Intent =
+    LicenseListActivity.createIntent(ApplicationProvider.getApplicationContext(), dependencyIndex)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

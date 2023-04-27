@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
+import org.oppia.android.app.player.audio.CellularAudioDialogFragment
 
 /** Fragment for displaying completed stories. */
 class CompletedStoryListFragment : InjectableFragment() {
@@ -32,7 +32,7 @@ class CompletedStoryListFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -51,5 +51,9 @@ class CompletedStoryListFragment : InjectableFragment() {
       container,
       internalProfileId
     )
+  }
+
+  interface Injector {
+    fun inject(fragment: CompletedStoryListFragment)
   }
 }

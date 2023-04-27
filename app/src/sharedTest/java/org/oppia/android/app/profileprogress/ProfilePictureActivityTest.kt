@@ -134,7 +134,7 @@ class ProfilePictureActivityTest {
   }
 
   private fun createProfilePictureActivityIntent(profileId: Int): Intent {
-    return ProfilePictureActivity.createProfilePictureActivityIntent(
+    return ProfilePictureActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       profileId
     )

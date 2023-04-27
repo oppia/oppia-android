@@ -5,11 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
+import org.oppia.android.app.topic.info.TopicInfoFragment
+
+// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
+private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
+private const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
+private const val STORY_ID_ARGUMENT_KEY = "story_id"
 
 /** Fragment that contains tabs for Topic. */
 class TopicFragment : InjectableFragment() {
@@ -18,7 +23,7 @@ class TopicFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -43,5 +48,9 @@ class TopicFragment : InjectableFragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     topicFragmentPresenter.startSpotlight()
+  }
+
+  interface Injector {
+    fun inject(fragment: TopicFragment)
   }
 }

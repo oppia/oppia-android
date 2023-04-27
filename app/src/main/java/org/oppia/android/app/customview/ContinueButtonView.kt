@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData
 import org.oppia.android.R
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.view.ViewComponentFactory
-import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -54,7 +53,7 @@ class ContinueButtonView @JvmOverloads constructor(
     super.onAttachedToWindow()
     val viewComponentFactory =
       FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    val viewComponent = viewComponentFactory.createViewComponent(this) as Injector
     viewComponent.inject(this)
     maybeInitializeAnimation()
   }
@@ -127,5 +126,9 @@ class ContinueButtonView @JvmOverloads constructor(
           startAnimating()
         }
     }
+  }
+
+  interface Injector {
+    fun inject(view: ContinueButtonView)
   }
 }

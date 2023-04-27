@@ -3,7 +3,6 @@ package org.oppia.android.app.settings.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_RENAME_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -20,7 +19,7 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
   companion object {
 
     /** Returns an [Intent] for opening [ProfileRenameActivity]. */
-    fun createProfileRenameActivity(context: Context, profileId: Int): Intent {
+    fun createIntent(context: Context, profileId: Int): Intent {
       return Intent(context, ProfileRenameActivity::class.java).apply {
         putExtra(PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, profileId)
         decorateWithScreenName(PROFILE_RENAME_ACTIVITY)
@@ -30,7 +29,7 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     profileRenameActivityPresenter.handleOnCreate(
       intent.getIntExtra(
         PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, 0
@@ -41,5 +40,9 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
   override fun onSupportNavigateUp(): Boolean {
     finish()
     return false
+  }
+
+  interface Injector {
+    fun inject(activity: ProfileRenameActivity)
   }
 }

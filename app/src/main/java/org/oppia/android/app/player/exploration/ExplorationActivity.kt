@@ -3,7 +3,6 @@ package org.oppia.android.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
@@ -50,7 +49,7 @@ class ExplorationActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
 
     val params = intent.extractParams()
     explorationActivityPresenter.handleOnCreate(
@@ -72,7 +71,7 @@ class ExplorationActivity :
      * A convenience function for creating a new [ExplorationActivity] intent by prefilling common
      * params needed by the activity.
      */
-    fun createExplorationActivityIntent(
+    fun createIntent(
       context: Context,
       profileId: ProfileId,
       topicId: String,
@@ -89,14 +88,11 @@ class ExplorationActivity :
         this.parentScreen = parentScreen
         this.isCheckpointingEnabled = isCheckpointingEnabled
       }.build()
-      return createExplorationActivityIntent(context, params)
+      return createIntent(context, params)
     }
 
     /** Returns a new [Intent] open an [ExplorationActivity] with the specified [params]. */
-    fun createExplorationActivityIntent(
-      context: Context,
-      params: ExplorationActivityParams
-    ): Intent {
+    fun createIntent(context: Context, params: ExplorationActivityParams): Intent {
       return Intent(context, ExplorationActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, params)
         decorateWithScreenName(EXPLORATION_ACTIVITY)
@@ -188,5 +184,9 @@ class ExplorationActivity :
 
   override fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
     explorationActivityPresenter.requestVoiceOverIconSpotlight(numberOfLogins)
+  }
+
+  interface Injector {
+    fun inject(activity: ExplorationActivity)
   }
 }

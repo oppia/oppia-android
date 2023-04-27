@@ -158,7 +158,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputNewName_clickSave_checkProfileEditActivityIsOpen() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -179,7 +179,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputNewName_clickImeActionButton_checkProfileEditActivityIsOpen() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -201,7 +201,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputNewName_configurationChange_checkSaveIsEnabled() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -222,7 +222,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputNewName_configurationChange_inputTextExists() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -252,7 +252,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputOldName_clickSave_checkNameNotUniqueError() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -280,7 +280,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputOldName_clickSave_inputName_checkErrorIsCleared() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -306,7 +306,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -334,7 +334,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -362,7 +362,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputName_changeConfiguration_checkNameIsDisplayed() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -395,7 +395,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_inputOldName_clickSave_changeConfiguration_errorIsVisible() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )
@@ -428,7 +428,7 @@ class ProfileRenameFragmentTest {
   @Test
   fun testProfileRenameFragment_clickSave_changeConfiguration_saveButtonIsNotClickable() {
     ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = context,
         profileId = 1
       )

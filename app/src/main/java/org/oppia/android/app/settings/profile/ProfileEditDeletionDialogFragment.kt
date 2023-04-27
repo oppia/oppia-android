@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 
 /** [DialogFragment] that gives option to delete profile. */
@@ -33,7 +32,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -58,5 +57,9 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
       }
       .create()
     return alertDialog
+  }
+
+  interface Injector {
+    fun inject(fragment: ProfileEditDeletionDialogFragment)
   }
 }

@@ -3,7 +3,6 @@ package org.oppia.android.app.settings.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -18,7 +17,7 @@ class ProfileListActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     profileListActivityPresenter.handleOnCreate()
   }
 
@@ -29,7 +28,7 @@ class ProfileListActivity :
 
   override fun routeToProfileEditActivity(profileId: Int) {
     startActivity(
-      ProfileEditActivity.createProfileEditActivity(
+      ProfileEditActivity.createIntent(
         context = this,
         profileId = profileId,
         isMultipane = false
@@ -37,10 +36,15 @@ class ProfileListActivity :
     )
   }
 
+  interface Injector {
+    fun inject(activity: ProfileListActivity)
+  }
+
   companion object {
     /** Returns a new [Intent] to route to [ProfileListActivity]. */
-    fun createProfileListActivityIntent(context: Context): Intent {
+    fun createIntent(context: Context, clearTop: Boolean = false): Intent {
       return Intent(context, ProfileListActivity::class.java).apply {
+        if (clearTop) addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         decorateWithScreenName(PROFILE_LIST_ACTIVITY)
       }
     }

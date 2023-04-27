@@ -9,7 +9,6 @@ import org.oppia.android.R
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.view.ViewComponentFactory
-import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
@@ -135,7 +134,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 
       val viewComponentFactory =
         FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      val viewComponent = viewComponentFactory.createViewComponent(this) as Injector
       viewComponent.inject(this)
 
       checkIfLoadingIsPossible()
@@ -192,5 +191,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
       else ->
         R.drawable.topic_fractions_01
     }
+  }
+
+  interface Injector {
+    fun inject(view: LessonThumbnailImageView)
   }
 }

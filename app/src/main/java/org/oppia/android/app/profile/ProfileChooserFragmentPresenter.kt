@@ -13,9 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
-import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -29,6 +27,14 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.AdminAuthActivityParams
+import org.oppia.android.app.model.AdminAuthActivityParams.AdminAuth
+import org.oppia.android.app.model.AdminPinActivityParams
+import org.oppia.android.app.model.AdministratorControlsActivityParams
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.HomeActivityParams
+import org.oppia.android.app.model.PinPasswordActivityParams
 
 private val COLORS_LIST = listOf(
   R.color.color_def_avatar_background_1,
@@ -67,7 +73,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val activityRouter: ActivityRouter
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
@@ -174,24 +181,25 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           fragment,
           Observer {
             if (it is AsyncResult.Success) {
-              activity.startActivity(
-                (
-                  HomeActivity.createHomeActivity(
-                    activity,
-                    model.profile.id.internalId
-                  )
-                  )
+              activityRouter.routeToScreen(
+                DestinationScreen.newBuilder().apply {
+                  homeActivityParams = HomeActivityParams.newBuilder().apply {
+                    this.internalProfileId = model.profile.id.internalId
+                  }.build()
+                }.build()
               )
             }
           }
         )
       } else {
-        val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
-          activity,
-          chooserViewModel.adminPin,
-          model.profile.id.internalId
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            pinPasswordActivityParams = PinPasswordActivityParams.newBuilder().apply {
+              this.adminPin = chooserViewModel.adminPin
+              this.internalProfileId = model.profile.id.internalId
+            }.build()
+          }.build()
         )
-        activity.startActivity(pinPasswordIntent)
       }
     }
   }
@@ -203,23 +211,25 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.addProfileItem.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
-        activity.startActivity(
-          AdminPinActivity.createAdminPinActivityIntent(
-            activity,
-            chooserViewModel.adminProfileId.internalId,
-            selectUniqueRandomColor(),
-            AdminAuthEnum.PROFILE_ADD_PROFILE.value
-          )
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            adminPinActivityParams = AdminPinActivityParams.newBuilder().apply {
+              this.internalProfileId = chooserViewModel.adminProfileId.internalId
+              this.colorRgb = selectUniqueRandomColor()
+              this.adminAuth = AdminAuth.PROFILE_ADD_PROFILE
+            }.build()
+          }.build()
         )
       } else {
-        activity.startActivity(
-          AdminAuthActivity.createAdminAuthActivityIntent(
-            activity,
-            chooserViewModel.adminPin,
-            -1,
-            selectUniqueRandomColor(),
-            AdminAuthEnum.PROFILE_ADD_PROFILE.value
-          )
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            adminAuthActivityParams = AdminAuthActivityParams.newBuilder().apply {
+              this.adminPin = chooserViewModel.adminPin
+              this.internalProfileId = -1
+              this.colorRgb = selectUniqueRandomColor()
+              this.adminAuth = AdminAuth.PROFILE_ADD_PROFILE
+            }.build()
+          }.build()
         )
       }
     }
@@ -227,21 +237,24 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
-      activity.startActivity(
-        AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-          activity,
-          chooserViewModel.adminProfileId.internalId
-        )
+      activityRouter.routeToScreen(
+        DestinationScreen.newBuilder().apply {
+          administratorControlsActivityParams =
+            AdministratorControlsActivityParams.newBuilder().apply {
+              this.internalProfileId = chooserViewModel.adminProfileId.internalId
+            }.build()
+        }.build()
       )
     } else {
-      activity.startActivity(
-        AdminAuthActivity.createAdminAuthActivityIntent(
-          activity,
-          chooserViewModel.adminPin,
-          chooserViewModel.adminProfileId.internalId,
-          selectUniqueRandomColor(),
-          AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-        )
+      activityRouter.routeToScreen(
+        DestinationScreen.newBuilder().apply {
+          adminAuthActivityParams = AdminAuthActivityParams.newBuilder().apply {
+            this.adminPin = chooserViewModel.adminPin
+            this.internalProfileId = chooserViewModel.adminProfileId.internalId
+            this.colorRgb = selectUniqueRandomColor()
+            this.adminAuth = AdminAuth.PROFILE_ADMIN_CONTROLS
+          }.build()
+        }.build()
       )
     }
   }

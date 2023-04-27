@@ -28,8 +28,8 @@ class TopicRevisionViewModel @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private val subtopicList: MutableList<TopicRevisionItemViewModel> = ArrayList()
-  private val revisionSubtopicSelector: RevisionSubtopicSelector =
-    fragment as RevisionSubtopicSelector
+  private val revisionSubtopicSelectionListener: RevisionSubtopicSelectionListener =
+    fragment as RevisionSubtopicSelectionListener
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(profileId, topicId).toLiveData()
@@ -46,7 +46,7 @@ class TopicRevisionViewModel @Inject constructor(
     subtopicList.addAll(
       ephemeralTopic.subtopicsList.map {
         TopicRevisionItemViewModel(
-          topicId, it, entityType, revisionSubtopicSelector, translationController
+          topicId, it, entityType, revisionSubtopicSelectionListener, translationController
         )
       }
     )

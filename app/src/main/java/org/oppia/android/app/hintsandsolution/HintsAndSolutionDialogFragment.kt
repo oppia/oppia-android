@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.R
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
@@ -84,7 +83,7 @@ class HintsAndSolutionDialogFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -182,5 +181,9 @@ class HintsAndSolutionDialogFragment :
       solutionIndex,
       isSolutionRevealed
     )
+  }
+
+  interface Injector {
+    fun inject(fragment: HintsAndSolutionDialogFragment)
   }
 }

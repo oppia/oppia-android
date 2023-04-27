@@ -1,7 +1,6 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
@@ -23,7 +22,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** The test activity for [TopicFragment] to test displaying story by storyId. */
-class TopicTestActivityForStory :
+class TopicForStoryTestActivity :
   InjectableAppCompatActivity(),
   RouteToQuestionPlayerListener,
   RouteToStoryListener,
@@ -36,7 +35,7 @@ class TopicTestActivityForStory :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     topicActivityPresenter.handleOnCreate(
       internalProfileId = 0,
       topicId = TEST_TOPIC_ID_0,
@@ -46,7 +45,7 @@ class TopicTestActivityForStory :
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
-      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+      QuestionPlayerActivity.createIntent(
         this, skillIdList, ProfileId.getDefaultInstance()
       )
     )
@@ -54,7 +53,7 @@ class TopicTestActivityForStory :
 
   override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
     startActivity(
-      StoryActivity.createStoryActivityIntent(
+      StoryActivity.createIntent(
         this,
         internalProfileId,
         topicId,
@@ -72,7 +71,7 @@ class TopicTestActivityForStory :
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     startActivity(
-      ResumeLessonActivity.createResumeLessonActivityIntent(
+      ResumeLessonActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -93,7 +92,7 @@ class TopicTestActivityForStory :
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
-      ExplorationActivity.createExplorationActivityIntent(
+      ExplorationActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -112,9 +111,13 @@ class TopicTestActivityForStory :
     subtopicListSize: Int
   ) {
     startActivity(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         this, internalProfileId, topicId, subtopicId, subtopicListSize
       )
     )
+  }
+
+  interface Injector {
+    fun inject(activity: TopicForStoryTestActivity)
   }
 }

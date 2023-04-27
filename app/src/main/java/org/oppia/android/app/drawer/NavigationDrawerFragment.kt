@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
@@ -22,7 +21,7 @@ class NavigationDrawerFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -55,5 +54,9 @@ class NavigationDrawerFragment :
 
   override fun unhighlightSwitchProfileMenuItem() {
     navigationDrawerFragmentPresenter.unhighlightSwitchProfileMenuItem()
+  }
+
+  interface Injector {
+    fun inject(fragment: NavigationDrawerFragment)
   }
 }

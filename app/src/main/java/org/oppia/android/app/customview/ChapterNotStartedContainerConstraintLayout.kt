@@ -11,7 +11,6 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.ViewComponentFactory
-import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
 
 /** Custom view that represents an incomplete chapter. */
@@ -49,7 +48,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
 
     val viewComponentFactory =
       FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    val viewComponent = viewComponentFactory.createViewComponent(this) as Injector
     viewComponent.inject(this)
 
     if (!isSpotlit) {
@@ -63,5 +62,9 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
         checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
       }
     }
+  }
+
+  interface Injector {
+    fun inject(view: ChapterNotStartedContainerConstraintLayout)
   }
 }

@@ -13,7 +13,7 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
+import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuDialogFragment
 import org.oppia.android.databinding.RevisionCardActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -72,8 +72,8 @@ class RevisionCardActivityPresenter @Inject constructor(
     subscribeToSubtopicTitle()
 
     binding.actionBottomSheetOptionsMenu.setOnClickListener {
-      val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
-      bottomSheetOptionsMenu.showNow(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
+      val bottomSheetOptionsMenuDialogFragment = BottomSheetOptionsMenuDialogFragment()
+      bottomSheetOptionsMenuDialogFragment.showNow(activity.supportFragmentManager, bottomSheetOptionsMenuDialogFragment.tag)
     }
 
     if (getReviewCardFragment() == null) {
@@ -88,14 +88,14 @@ class RevisionCardActivityPresenter @Inject constructor(
   fun handleOnOptionsItemSelected(itemId: Int): Boolean {
     return when (itemId) {
       R.id.action_options -> {
-        val intent = OptionsActivity.createOptionsActivity(
+        val intent = OptionsActivity.createIntent(
           activity, profileId.internalId, isFromNavigationDrawer = false
         )
         activity.startActivity(intent)
         true
       }
       R.id.action_help -> {
-        val intent = HelpActivity.createHelpActivityIntent(
+        val intent = HelpActivity.createIntent(
           activity, profileId.internalId, isFromNavigationDrawer = false
         )
         activity.startActivity(intent)

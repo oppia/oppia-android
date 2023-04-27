@@ -160,8 +160,7 @@ class ViewEventLogsActivityTest {
     }
   }
 
-  private fun createViewEventLogsActivityIntent(): Intent =
-    ViewEventLogsActivity.createViewEventLogsActivityIntent(context)
+  private fun createViewEventLogsActivityIntent() = ViewEventLogsActivity.createIntent(context)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

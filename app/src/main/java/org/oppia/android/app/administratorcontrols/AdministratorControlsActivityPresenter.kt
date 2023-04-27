@@ -16,6 +16,21 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
 import javax.inject.Inject
 
+// TODO: Consolidate these with AdministratorControlsActivity & clean it up.
+private const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
+  "AdministratorControlsActivity.selected_controls_title"
+private const val SELECTED_PROFILE_ID_SAVED_KEY =
+  "AdministratorControlsActivity.selected_profile_id"
+private const val LAST_LOADED_FRAGMENT_EXTRA_KEY =
+  "AdministratorControlsActivity.last_loaded_fragment"
+private const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
+private const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
+private const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
+  "ProfileEditActivity.is_profile_deletion_dialog_visible"
+private const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
+private const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
+
+
 /** The presenter for [AdministratorControlsActivity]. */
 @ActivityScope
 class AdministratorControlsActivityPresenter @Inject constructor(

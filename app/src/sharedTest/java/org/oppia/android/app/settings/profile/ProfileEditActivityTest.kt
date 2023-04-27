@@ -152,8 +152,7 @@ class ProfileEditActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName =
-      ProfileEditActivity.createProfileEditActivity(context, 1)
-        .extractCurrentAppScreenName()
+      ProfileEditActivity.createIntent(context, 1).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_EDIT_ACTIVITY)
   }
@@ -161,10 +160,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEditActivity_hasCorrectActivityLabel() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 1)
     ).use { activityScenario ->
       activityScenario.onActivity {
         val titleToolbar = it.findViewById<Toolbar>(R.id.profile_edit_toolbar)
@@ -180,10 +176,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_startWithUserProfile_clickRenameButton_checkOpensProfileRename() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 1)
     ).use {
       onView(withId(R.id.profile_rename_button)).perform(click())
       intended(hasComponent(ProfileRenameActivity::class.java.name))
@@ -193,10 +186,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_configChange_startWithUserProfile_clickRename_checkOpensProfileRename() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 1)
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_rename_button)).perform(click())
@@ -207,10 +197,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 1)
     ).use {
       onView(withId(R.id.profile_reset_button)).perform(click())
       intended(hasComponent(ProfileResetPinActivity::class.java.name))
@@ -220,10 +207,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_configChange_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 1)
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_button)).perform(scrollTo()).perform(click())
@@ -234,10 +218,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 1)
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_positive))
@@ -255,10 +236,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_landscape_deleteProfile_checkReturnsProfileListOnTabletAdminControlOnPhone() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 1)
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
@@ -277,10 +255,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 1)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
@@ -294,10 +269,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_configChange_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 0
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 0)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -312,10 +284,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_configChange_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 1)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -329,10 +298,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 0
-      )
+      ProfileEditActivity.createIntent(context = context, profileId = 0)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))

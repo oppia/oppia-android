@@ -24,10 +24,4 @@ class DateTimeUtil @Inject constructor(
         resourceHandler.getStringInLocale(R.string.home_screen_good_evening_greeting_fragment)
     }
   }
-
-  /** Injector to retrieve instances of [DateTimeUtil] from Dagger. */
-  interface Injector {
-    /** Returns [DateTimeUtil] for the current Dagger graph. */
-    fun getDateTimeUtil(): DateTimeUtil
-  }
 }

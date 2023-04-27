@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 
@@ -12,7 +11,7 @@ import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersComple
 class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_chapters_completed_activity)
@@ -34,13 +33,17 @@ class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
       .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment?
   }
 
+  interface Injector {
+    fun inject(activity: MarkChaptersCompletedTestActivity)
+  }
+
   companion object {
     private const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedTestActivity.profile_id"
     private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
       "MarkChaptersCompletedTestActivity.show_confirmation_notice"
 
     /** Returns an [Intent] for [MarkChaptersCompletedTestActivity]. */
-    fun createMarkChaptersCompletedTestIntent(
+    fun createIntent(
       context: Context,
       internalProfileId: Int,
       showConfirmationNotice: Boolean

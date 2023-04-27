@@ -131,11 +131,8 @@ class ProfileListActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createProfileListActivityIntent(): Intent {
-    return ProfileListActivity.createProfileListActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
-  }
+  private fun createProfileListActivityIntent(): Intent =
+    ProfileListActivity.createIntent(ApplicationProvider.getApplicationContext())
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

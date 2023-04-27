@@ -350,9 +350,7 @@ class QuestionPlayerActivityLocalTest {
     skillIdList: ArrayList<String>
   ): ActivityScenario<QuestionPlayerActivity> {
     return ActivityScenario.launch(
-      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, skillIdList, ProfileId.getDefaultInstance()
-      )
+      QuestionPlayerActivity.createIntent(context, skillIdList, ProfileId.getDefaultInstance())
     )
   }
 

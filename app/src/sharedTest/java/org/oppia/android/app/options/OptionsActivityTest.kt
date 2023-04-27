@@ -132,7 +132,7 @@ class OptionsActivityTest {
   }
 
   private fun createOptionsActivityIntent(): Intent {
-    return OptionsActivity.createOptionsActivity(
+    return OptionsActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       profileId = 0,
       isFromNavigationDrawer = false

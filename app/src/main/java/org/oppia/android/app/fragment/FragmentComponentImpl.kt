@@ -66,7 +66,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.story.StoryFragment
 import org.oppia.android.app.testing.DragDropTestFragment
-import org.oppia.android.app.testing.ExplorationTestActivityPresenter
+import org.oppia.android.app.testing.ExplorationTestActivityFragment
 import org.oppia.android.app.testing.ImageRegionSelectionTestFragment
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -93,7 +93,39 @@ import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
   ]
 )
 @FragmentScope
-interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjector {
+interface FragmentComponentImpl :
+  FragmentComponent, ViewComponentBuilderInjector, AdministratorControlsFragment.Injector,
+  AdminSettingsDialogFragment.Injector, AppLanguageFragment.Injector, AppVersionFragment.Injector,
+  AudioFragment.Injector, AudioLanguageFragment.Injector,
+  AutomaticAppDeprecationNoticeDialogFragment.Injector, BetaNoticeDialogFragment.Injector,
+  CellularAudioDialogFragment.Injector, CompletedStoryListFragment.Injector,
+  ConceptCardFragment.Injector, DeveloperOptionsFragment.Injector, DownloadsTabFragment.Injector,
+  DragDropTestFragment.Injector, ExitProfileDialogFragment.Injector, ExplorationFragment.Injector,
+  ExplorationManagerFragment.Injector, ExplorationTestActivityFragment.Injector,
+  FAQListFragment.Injector, ForceNetworkTypeFragment.Injector,
+  GeneralAvailabilityUpgradeNoticeDialogFragment.Injector, HelpFragment.Injector,
+  HintsAndSolutionDialogFragment.Injector, HintsAndSolutionExplorationManagerFragment.Injector,
+  HintsAndSolutionQuestionManagerFragment.Injector, HomeFragment.Injector,
+  ImageRegionSelectionTestFragment.Injector, LanguageDialogFragment.Injector,
+  LicenseListFragment.Injector, LicenseTextViewerFragment.Injector, LogoutDialogFragment.Injector,
+  MarkChaptersCompletedFragment.Injector, MarkStoriesCompletedFragment.Injector,
+  MarkTopicsCompletedFragment.Injector, MathExpressionParserFragment.Injector,
+  MyDownloadsFragment.Injector, NavigationDrawerFragment.Injector, OnboardingFragment.Injector,
+  OngoingTopicListFragment.Injector, OptionsFragment.Injector, PoliciesFragment.Injector,
+  ProfileAndDeviceIdFragment.Injector, ProfileChooserFragment.Injector,
+  ProfileEditDeletionDialogFragment.Injector, ProfileEditFragment.Injector,
+  ProfileListFragment.Injector, ProfileRenameFragment.Injector,
+  ProfilePictureEditDialogFragment.Injector, ProfileProgressFragment.Injector,
+  ProfileResetPinFragment.Injector, ProgressDatabaseFullDialogFragment.Injector,
+  QuestionPlayerFragment.Injector, ReadingTextSizeFragment.Injector,
+  RecentlyPlayedFragment.Injector, ResetPinDialogFragment.Injector, ResumeLessonFragment.Injector,
+  RevealSolutionDialogFragment.Injector, RevisionCardFragment.Injector, SpotlightFragment.Injector,
+  StateFragment.Injector, StopExplorationDialogFragment.Injector, StoryFragment.Injector,
+  ThirdPartyDependencyListFragment.Injector, TopicFragment.Injector, TopicInfoFragment.Injector,
+  TopicLessonsFragment.Injector, TopicPracticeFragment.Injector, TopicRevisionFragment.Injector,
+  UnsavedExplorationDialogFragment.Injector, UpdatesTabFragment.Injector,
+  ViewEventLogsFragment.Injector, WalkthroughFinalFragment.Injector,
+  WalkthroughTopicListFragment.Injector, WalkthroughWelcomeFragment.Injector {
   /** Implementation of [FragmentComponent.Builder]. */
   @Subcomponent.Builder
   interface Builder : FragmentComponent.Builder {
@@ -102,79 +134,4 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
 
     override fun build(): FragmentComponentImpl
   }
-
-  fun inject(administratorControlsFragment: AdministratorControlsFragment)
-  fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
-  fun inject(appLanguageFragment: AppLanguageFragment)
-  fun inject(appVersionFragment: AppVersionFragment)
-  fun inject(audioFragment: AudioFragment)
-  fun inject(audioLanguageFragment: AudioLanguageFragment)
-  fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
-  fun inject(betaNoticeDialogFragment: BetaNoticeDialogFragment)
-  fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
-  fun inject(completedStoryListFragment: CompletedStoryListFragment)
-  fun inject(conceptCardFragment: ConceptCardFragment)
-  fun inject(developerOptionsFragment: DeveloperOptionsFragment)
-  fun inject(downloadsTabFragment: DownloadsTabFragment)
-  fun inject(dragDropTestFragment: DragDropTestFragment)
-  fun inject(exitProfileDialogFragment: ExitProfileDialogFragment)
-  fun inject(explorationFragment: ExplorationFragment)
-  fun inject(explorationManagerFragment: ExplorationManagerFragment)
-  fun inject(explorationTestActivityTestFragment: ExplorationTestActivityPresenter.TestFragment)
-  fun inject(faqListFragment: FAQListFragment)
-  fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
-  fun inject(fragment: GeneralAvailabilityUpgradeNoticeDialogFragment)
-  fun inject(helpFragment: HelpFragment)
-  fun inject(hintsAndSolutionDialogFragment: HintsAndSolutionDialogFragment)
-  fun inject(hintsAndSolutionExplorationManagerFragment: HintsAndSolutionExplorationManagerFragment)
-  fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
-  fun inject(homeFragment: HomeFragment)
-  fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
-  fun inject(languageDialogFragment: LanguageDialogFragment)
-  fun inject(licenseListFragment: LicenseListFragment)
-  fun inject(licenseTextViewerFragment: LicenseTextViewerFragment)
-  fun inject(logoutDialogFragment: LogoutDialogFragment)
-  fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
-  fun inject(markStoriesCompletedFragment: MarkStoriesCompletedFragment)
-  fun inject(markTopicsCompletedFragment: MarkTopicsCompletedFragment)
-  fun inject(mathExpressionParserFragment: MathExpressionParserFragment)
-  fun inject(myDownloadsFragment: MyDownloadsFragment)
-  fun inject(navigationDrawerFragment: NavigationDrawerFragment)
-  fun inject(onboardingFragment: OnboardingFragment)
-  fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
-  fun inject(optionFragment: OptionsFragment)
-  fun inject(policiesFragment: PoliciesFragment)
-  fun inject(profileAndDeviceIdFragment: ProfileAndDeviceIdFragment)
-  fun inject(profileChooserFragment: ProfileChooserFragment)
-  fun inject(profileEditDeletionDialogFragment: ProfileEditDeletionDialogFragment)
-  fun inject(profileEditFragment: ProfileEditFragment)
-  fun inject(profileListFragment: ProfileListFragment)
-  fun inject(profileRenameFragment: ProfileRenameFragment)
-  fun inject(profilePictureEditDialogFragment: ProfilePictureEditDialogFragment)
-  fun inject(profileProgressFragment: ProfileProgressFragment)
-  fun inject(profileResetPinFragment: ProfileResetPinFragment)
-  fun inject(progressDatabaseFullDialogFragment: ProgressDatabaseFullDialogFragment)
-  fun inject(questionPlayerFragment: QuestionPlayerFragment)
-  fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
-  fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
-  fun inject(resetPinDialogFragment: ResetPinDialogFragment)
-  fun inject(resumeLessonFragment: ResumeLessonFragment)
-  fun inject(revealSolutionDialogFragment: RevealSolutionDialogFragment)
-  fun inject(revisionCardFragment: RevisionCardFragment)
-  fun inject(spotlightFragment: SpotlightFragment)
-  fun inject(stateFragment: StateFragment)
-  fun inject(stopExplorationDialogFragment: StopExplorationDialogFragment)
-  fun inject(storyFragment: StoryFragment)
-  fun inject(thirdPartyDependencyListFragment: ThirdPartyDependencyListFragment)
-  fun inject(topicFragment: TopicFragment)
-  fun inject(topicInfoFragment: TopicInfoFragment)
-  fun inject(topicLessonsFragment: TopicLessonsFragment)
-  fun inject(topicPracticeFragment: TopicPracticeFragment)
-  fun inject(topicReviewFragment: TopicRevisionFragment)
-  fun inject(unsavedExplorationDialogFragment: UnsavedExplorationDialogFragment)
-  fun inject(updatesTabFragment: UpdatesTabFragment)
-  fun inject(viewEventLogsFragment: ViewEventLogsFragment)
-  fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)
-  fun inject(walkthroughTopicListFragment: WalkthroughTopicListFragment)
-  fun inject(walkthroughWelcomeFragment: WalkthroughWelcomeFragment)
 }

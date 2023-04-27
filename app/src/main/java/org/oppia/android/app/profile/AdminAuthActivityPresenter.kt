@@ -75,7 +75,7 @@ class AdminAuthActivityPresenter @Inject constructor(
         when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
             activity.startActivity(
-              AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+              AdministratorControlsActivity.createIntent(
                 context, activity.intent.getIntExtra(ADMIN_AUTH_PROFILE_ID_EXTRA_KEY, -1)
               )
             )
@@ -83,7 +83,7 @@ class AdminAuthActivityPresenter @Inject constructor(
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
             activity.startActivity(
-              AddProfileActivity.createAddProfileActivityIntent(
+              AddProfileActivity.createIntent(
                 context, activity.intent.getIntExtra(ADMIN_AUTH_COLOR_RGB_EXTRA_KEY, -10710042)
               )
             )

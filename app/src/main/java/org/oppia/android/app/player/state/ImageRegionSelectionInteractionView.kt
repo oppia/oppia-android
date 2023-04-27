@@ -13,7 +13,6 @@ import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.view.ViewComponentFactory
-import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
@@ -86,7 +85,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     super.onAttachedToWindow()
 
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    val viewComponent = viewComponentFactory.createViewComponent(this) as Injector
     viewComponent.inject(this)
     maybeInitializeClickableAreas()
   }
@@ -153,5 +152,9 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         areasImage.addRegionViews()
       }
     }
+  }
+
+  interface Injector {
+    fun inject(view: ImageRegionSelectionInteractionView)
   }
 }

@@ -41,9 +41,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    binding.markStoriesCompletedToolbar.setNavigationOnClickListener {
-      (activity as MarkStoriesCompletedActivity).finish()
-    }
+    binding.markStoriesCompletedToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.apply {
       this.lifecycleOwner = fragment

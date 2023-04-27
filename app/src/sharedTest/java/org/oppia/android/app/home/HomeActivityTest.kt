@@ -1787,9 +1787,8 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
-    return HomeActivity.createHomeActivity(context, profileId)
-  }
+  private fun createHomeActivityIntent(profileId: Int): Intent =
+    HomeActivity.createIntent(context, profileId)
 
   // Reference - https://stackoverflow.com/a/61455336/12215015
   private fun isEllipsized() = object : TypeSafeMatcher<View>() {

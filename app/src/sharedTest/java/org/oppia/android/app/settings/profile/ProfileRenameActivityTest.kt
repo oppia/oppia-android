@@ -141,7 +141,7 @@ class ProfileRenameActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = ProfileRenameActivity.createProfileRenameActivity(
+    val currentScreenName = ProfileRenameActivity.createIntent(
       context = this.context.applicationContext,
       profileId = 1
     ).extractCurrentAppScreenName()
@@ -152,7 +152,7 @@ class ProfileRenameActivityTest {
   @Test
   fun testProfileRenameActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
-      ProfileRenameActivity.createProfileRenameActivity(
+      ProfileRenameActivity.createIntent(
         context = this.context.applicationContext,
         profileId = 1
       )

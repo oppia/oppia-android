@@ -18,11 +18,9 @@ import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
 import org.oppia.android.R
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.BottomLeftOverlayBinding
 import org.oppia.android.databinding.BottomRightOverlayBinding
@@ -35,6 +33,9 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+
+// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
+private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 
 /**
  * Fragment to hold spotlights on elements. This fragment provides a single place for all the
@@ -71,7 +72,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   // Since this fragment does not have any view to inflate yet, all the tasks should be done here.
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
     internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
     calculateScreenSize()
   }
@@ -376,6 +377,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     object BottomLeft : AnchorPosition()
     /** The position corresponding to the anchor when it is on the bottom right of the screen. */
     object BottomRight : AnchorPosition()
+  }
+
+  interface Injector {
+    fun inject(fragment: SpotlightFragment)
   }
 
   companion object {

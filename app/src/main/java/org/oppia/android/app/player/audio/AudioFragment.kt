@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.State
 import javax.inject.Inject
@@ -13,7 +12,7 @@ import javax.inject.Inject
 /** Fragment that controls audio for a content-card. */
 class AudioFragment :
   InjectableFragment(),
-  LanguageInterface,
+  AudioLanguageInteractionListener,
   AudioUiManager,
   CellularDataInterface {
   @Inject
@@ -36,7 +35,7 @@ class AudioFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -104,4 +103,8 @@ class AudioFragment :
 
   /** Used in data binding to know position of user's touch */
   override fun getUserPosition() = audioFragmentPresenter.userProgress
+
+  interface Injector {
+    fun inject(fragment: AudioFragment)
+  }
 }

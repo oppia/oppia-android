@@ -56,7 +56,6 @@ import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
-import org.oppia.android.app.testing.PoliciesFragmentTestActivity.Companion.createPoliciesFragmentTestActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -183,17 +182,13 @@ class PoliciesFragmentTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-  private fun createPoliciesFragmentTestIntent(context: Context, policyPage: PolicyPage): Intent {
-    return createPoliciesFragmentTestActivity(context, policyPage)
-  }
+  private fun createPoliciesFragmentTestIntent(context: Context, policyPage: PolicyPage): Intent =
+    PoliciesFragmentTestActivity.createIntent(context, policyPage)
 
   @Test
   fun testPoliciesFragment_forPrivacyPolicy_privacyPolicyPageIsDisplayed() {
     launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
+      createPoliciesFragmentTestIntent(getApplicationContext(), PolicyPage.PRIVACY_POLICY)
     ).use {
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
@@ -249,10 +244,7 @@ class PoliciesFragmentTest {
   @Test
   fun testPoliciesFragment_forTermsOfService_termsOfServicePageIsDisplayed() {
     launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
+      createPoliciesFragmentTestIntent(getApplicationContext(), PolicyPage.TERMS_OF_SERVICE)
     ).use {
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
@@ -261,10 +253,7 @@ class PoliciesFragmentTest {
   @Test
   fun testPoliciesFragment_inTermsOfServicePage_clickOnPrivacyLink_callsRouteToPrivacyPolicy() {
     launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
+      createPoliciesFragmentTestIntent(getApplicationContext(), PolicyPage.TERMS_OF_SERVICE)
     ).use { scenario ->
       scenario.onActivity {
         it.mockCallbackListener = mockRouteToPoliciesListener

@@ -209,7 +209,7 @@ class AudioLanguageFragmentTest {
   }
 
   private fun createDefaultAudioActivityIntent(audioLanguage: AudioLanguage) =
-    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
+    AudioLanguageActivity.createIntent(context, audioLanguage)
 
   private fun rotateToLandscape() {
     onView(isRoot()).perform(orientationLandscape())

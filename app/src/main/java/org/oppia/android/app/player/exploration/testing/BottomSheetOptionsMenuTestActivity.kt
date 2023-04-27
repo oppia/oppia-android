@@ -1,11 +1,14 @@
 package org.oppia.android.app.player.exploration.testing
 
 import android.os.Bundle
-import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
+import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuDialogFragment
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
 import org.oppia.android.app.testing.activity.TestActivity
 
-/** [TestActivity] for setting up a test environment for testing the BottomSheetOptionsMenu. */
+/**
+ * [TestActivity] for setting up a test environment for testing
+ * ``BottomSheetOptionsMenuDialogFragment``.
+ */
 class BottomSheetOptionsMenuTestActivity : TestActivity(), BottomSheetOptionsMenuItemClickListener {
   /**
    * [BottomSheetOptionsMenuItemClickListener] that must be initialized by the test,
@@ -17,7 +20,7 @@ class BottomSheetOptionsMenuTestActivity : TestActivity(), BottomSheetOptionsMen
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    BottomSheetOptionsMenu().showNow(supportFragmentManager, "bottom_sheet_options_menu")
+    BottomSheetOptionsMenuDialogFragment().showNow(supportFragmentManager, "bottom_sheet_options_menu")
   }
 
   override fun handleOnOptionsItemSelected(itemId: Int) {

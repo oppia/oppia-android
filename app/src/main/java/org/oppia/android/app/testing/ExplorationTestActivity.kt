@@ -1,7 +1,8 @@
 package org.oppia.android.app.testing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
@@ -25,7 +26,7 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     presenter.handleOnCreate()
   }
 
@@ -38,7 +39,7 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
-      ExplorationActivity.createExplorationActivityIntent(
+      ExplorationActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -53,5 +54,14 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
   private fun getTestFragment() = checkNotNull(presenter.getTestFragment()) {
     "Expected TestFragment to be present in inflated test activity. Did you try to retrieve the" +
       " screen manager too early in the test?"
+  }
+
+  interface Injector {
+    fun inject(activity: ExplorationTestActivity)
+  }
+
+  companion object {
+    fun createIntent(context: Context): Intent =
+      Intent(context, ExplorationTestActivity::class.java)
   }
 }

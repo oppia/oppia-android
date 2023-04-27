@@ -8,9 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
-import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
-import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditFragmentBinding
@@ -19,6 +17,13 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.AdministratorControlsActivityParams
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
+import org.oppia.android.app.model.ProfileListActivityParams
+import org.oppia.android.app.model.ProfileRenameActivityParams
+import org.oppia.android.app.model.ProfileResetPinActivityParams
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
@@ -29,7 +34,8 @@ class ProfileEditFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val activityRouter: ActivityRouter
 ) {
 
   @Inject
@@ -57,29 +63,35 @@ class ProfileEditFragmentPresenter @Inject constructor(
     profileEditViewModel.setProfileId(internalProfileId)
 
     binding.profileRenameButton.setOnClickListener {
-      activity.startActivity(
-        ProfileRenameActivity.createProfileRenameActivity(
-          fragment.requireContext(),
-          internalProfileId
-        )
+      activityRouter.routeToScreen(
+        DestinationScreen.newBuilder().apply {
+          profileRenameActivityParams = ProfileRenameActivityParams.newBuilder().apply {
+            this.internalProfileId = internalProfileId
+          }.build()
+        }.build()
       )
     }
 
     binding.profileResetButton.setOnClickListener {
-      activity.startActivity(
-        ProfileResetPinActivity.createProfileResetPinActivity(
-          activity,
-          internalProfileId,
-          profileEditViewModel.isAdmin
-        )
+      activityRouter.routeToScreen(
+        DestinationScreen.newBuilder().apply {
+          profileResetPinActivityParams = ProfileResetPinActivityParams.newBuilder().apply {
+            this.internalProfileId = internalProfileId
+            this.isAdmin = profileEditViewModel.isAdmin
+          }.build()
+        }.build()
       )
     }
 
     binding.profileMarkChaptersForCompletionButton.setOnClickListener {
-      activity.startActivity(
-        MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-          activity, internalProfileId, showConfirmationNotice = true
-        )
+      activityRouter.routeToScreen(
+        DestinationScreen.newBuilder().apply {
+          markChaptersCompletedActivityParams =
+            MarkChaptersCompletedActivityParams.newBuilder().apply {
+              this.internalProfileId = internalProfileId
+              this.showConfirmationNotice = true
+            }.build()
+        }.build()
       )
     }
 
@@ -88,9 +100,10 @@ class ProfileEditFragmentPresenter @Inject constructor(
     }
 
     profileEditViewModel.profile.observe(fragment) { profile ->
-      if (activity is ProfileEditActivity) {
+      // TODO: Verify that the commented out code is correct (or find an alternative).
+//      if (activity is ProfileEditActivity) {
         activity.title = profile.name
-      }
+//      }
 
       binding.profileEditAllowDownloadSwitch.isChecked = profile.allowDownloadAccess
       binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked =
@@ -151,22 +164,28 @@ class ProfileEditFragmentPresenter @Inject constructor(
         fragment,
         Observer {
           if (it is AsyncResult.Success) {
-            if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
-              val intent =
-                Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              fragment.startActivity(intent)
-            } else {
-              val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              fragment.startActivity(intent)
-            }
+            activityRouter.routeToScreen(
+              DestinationScreen.newBuilder().apply {
+                if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
+                  administratorControlsActivityParams =
+                    AdministratorControlsActivityParams.newBuilder().apply {
+                      this.internalProfileId = internalProfileId
+                      this.clearTop = true
+                    }.build()
+                } else {
+                  profileListActivityParams =
+                    ProfileListActivityParams.newBuilder().setClearTop(true).build()
+                }
+              }.build()
+            )
           }
         }
       )
   }
 
-  /** This loads the dialog whenever requested by the listener in [AdministratorControlsActivity]. */
+  /**
+   * This loads the dialog whenever requested by the listener in ``AdministratorControlsActivity``.
+   */
   fun handleLoadProfileDeletionDialog(internalProfileId: Int) {
     showDeletionDialog(internalProfileId)
   }

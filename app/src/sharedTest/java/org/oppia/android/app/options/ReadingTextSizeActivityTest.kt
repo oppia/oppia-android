@@ -134,7 +134,7 @@ class ReadingTextSizeActivityTest {
   }
 
   private fun createReadingTextSizeActivityIntent() =
-    ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, MEDIUM_TEXT_SIZE)
+    ReadingTextSizeActivity.createIntent(context, MEDIUM_TEXT_SIZE)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

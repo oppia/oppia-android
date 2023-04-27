@@ -1,7 +1,7 @@
 package org.oppia.android.app.player.audio
 
 /** Interface to receive selected language from [LanguageDialogFragment]. */
-interface LanguageInterface {
+interface AudioLanguageInteractionListener {
   /** Play the audio corresponding to the language-selected. */
   fun onLanguageSelected(currentLanguageCode: String)
 

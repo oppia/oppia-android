@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentManager
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.ViewComponentFactory
-import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
 
 private const val STROKE_DASH_GAP_IN_DEGREE = 12
@@ -105,7 +104,7 @@ class SegmentedCircularProgressView : View {
     super.onAttachedToWindow()
 
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    val viewComponent = viewComponentFactory.createViewComponent(this) as Injector
     viewComponent.inject(this)
   }
 
@@ -205,5 +204,9 @@ class SegmentedCircularProgressView : View {
       strokeWidth = this@SegmentedCircularProgressView.strokeWidth
       this.color = ContextCompat.getColor(context, color)
     }
+  }
+
+  interface Injector {
+    fun inject(view: SegmentedCircularProgressView)
   }
 }

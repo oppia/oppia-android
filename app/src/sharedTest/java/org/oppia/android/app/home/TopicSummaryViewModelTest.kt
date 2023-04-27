@@ -130,7 +130,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_reflexiveBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -145,7 +145,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_symmetricBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -162,7 +162,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_transitiveBasicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -181,7 +181,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_consistentBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -199,7 +199,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_basicTopicSummaryViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -214,7 +214,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_topicSummary1AndTopicSummary2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -246,7 +246,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_entity1AndEntity2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -277,7 +277,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_position4AndPosition5_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -308,7 +308,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -325,7 +325,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createIntent(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)

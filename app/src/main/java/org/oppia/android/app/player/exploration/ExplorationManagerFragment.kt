@@ -2,7 +2,6 @@ package org.oppia.android.app.player.exploration
 
 import android.content.Context
 import android.os.Bundle
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProto
@@ -19,7 +18,7 @@ class ExplorationManagerFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,5 +43,9 @@ class ExplorationManagerFragment : InjectableFragment() {
         }
       }
     }
+  }
+
+  interface Injector {
+    fun inject(fragment: ExplorationManagerFragment)
   }
 }

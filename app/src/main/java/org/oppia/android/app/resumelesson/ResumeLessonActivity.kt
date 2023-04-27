@@ -3,7 +3,6 @@ package org.oppia.android.app.resumelesson
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
@@ -23,7 +22,7 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
 
     val params = intent.getProtoExtra(PARAMS_KEY, ResumeLessonActivityParams.getDefaultInstance())
     resumeLessonActivityPresenter.handleOnCreate(
@@ -44,7 +43,7 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
      * A convenience function for creating a new [ResumeLessonActivity] intent by prefilling common
      * params needed by the activity.
      */
-    fun createResumeLessonActivityIntent(
+    fun createIntent(
       context: Context,
       profileId: ProfileId,
       topicId: String,
@@ -61,14 +60,11 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
         this.parentScreen = parentScreen
         this.checkpoint = checkpoint
       }.build()
-      return createResumeLessonActivityIntent(context, params)
+      return createIntent(context, params)
     }
 
     /** Returns a new [Intent] open an [ResumeLessonActivity] with the specified [params]. */
-    fun createResumeLessonActivityIntent(
-      context: Context,
-      params: ResumeLessonActivityParams
-    ): Intent {
+    fun createIntent(context: Context, params: ResumeLessonActivityParams): Intent {
       return Intent(context, ResumeLessonActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, params)
         decorateWithScreenName(RESUME_LESSON_ACTIVITY)
@@ -85,7 +81,7 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
-      ExplorationActivity.createExplorationActivityIntent(
+      ExplorationActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -96,5 +92,9 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
       )
     )
     finish()
+  }
+
+  interface Injector {
+    fun inject(activity: ResumeLessonActivity)
   }
 }

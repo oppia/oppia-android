@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
@@ -31,7 +30,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -61,5 +60,9 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
       TOPIC_ID_LIST_ARGUMENT_KEY,
       markTopicsCompletedFragmentPresenter.selectedTopicIdList
     )
+  }
+
+  interface Injector {
+    fun inject(fragment: MarkTopicsCompletedFragment)
   }
 }

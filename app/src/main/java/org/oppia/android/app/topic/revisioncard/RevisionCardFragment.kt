@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProto
@@ -43,7 +42,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -69,4 +68,8 @@ class RevisionCardFragment : InjectableDialogFragment() {
 
   /** Dismisses the concept card fragment if it's currently active in this fragment. */
   fun dismissConceptCard() = revisionCardFragmentPresenter.dismissConceptCard()
+
+  interface Injector {
+    fun inject(fragment: RevisionCardFragment)
+  }
 }

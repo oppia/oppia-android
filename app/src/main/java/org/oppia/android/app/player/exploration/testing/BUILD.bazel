@@ -1,5 +1,5 @@
 """
-Test-only utilities corresponding to BottomSheetOptionsMenu.
+Test-only utilities corresponding to BottomSheetOptionsMenuDialogFragment.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
@@ -12,7 +12,7 @@ oppia_android_library(
     ],
     visibility = ["//app:app_testing_visibility"],
     deps = [
-        "//app",
+        "//app:fragments",
         "//app:listeners",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     ],

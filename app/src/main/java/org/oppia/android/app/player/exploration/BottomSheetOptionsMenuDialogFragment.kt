@@ -9,7 +9,7 @@ import org.oppia.android.app.fragment.InjectableBottomSheetDialogFragment
 import org.oppia.android.databinding.BottomSheetOptionsMenuFragmentBinding
 
 /** Bottom sheet fragment for displaying options menu. */
-class BottomSheetOptionsMenu : InjectableBottomSheetDialogFragment() {
+class BottomSheetOptionsMenuDialogFragment : InjectableBottomSheetDialogFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,

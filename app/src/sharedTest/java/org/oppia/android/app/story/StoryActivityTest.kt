@@ -228,7 +228,7 @@ class StoryActivityTest {
     topicId: String,
     storyId: String
   ): Intent {
-    return StoryActivity.createStoryActivityIntent(
+    return StoryActivity.createIntent(
       context = ApplicationProvider.getApplicationContext(),
       internalProfileId = internalProfileId,
       topicId = topicId,

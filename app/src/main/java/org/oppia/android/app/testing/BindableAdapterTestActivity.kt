@@ -1,5 +1,7 @@
 package org.oppia.android.app.testing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
@@ -23,5 +25,10 @@ class BindableAdapterTestActivity : InjectableAppCompatActivity() {
   /** Test-only injector for the activity that needs to be set up in the test. */
   interface TestInjector {
     fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
+  }
+
+  companion object {
+    fun createIntent(context: Context): Intent =
+      Intent(context, BindableAdapterTestActivity::class.java)
   }
 }

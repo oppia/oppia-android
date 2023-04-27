@@ -56,9 +56,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    binding.markChaptersCompletedToolbar.setNavigationOnClickListener {
-      (activity as MarkChaptersCompletedActivity).finish()
-    }
+    binding.markChaptersCompletedToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.apply {
       this.lifecycleOwner = fragment

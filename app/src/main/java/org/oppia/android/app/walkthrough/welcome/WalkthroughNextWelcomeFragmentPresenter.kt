@@ -13,9 +13,8 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
-import org.oppia.android.app.walkthrough.WalkthroughPageChanger
+import org.oppia.android.app.walkthrough.WalkthroughNextPageNavigationListener
 import org.oppia.android.app.walkthrough.WalkthroughPages
 import org.oppia.android.databinding.WalkthroughWelcomeFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -26,13 +25,13 @@ import javax.inject.Inject
 
 /** The presenter for [WalkthroughWelcomeFragment]. */
 @FragmentScope
-class WalkthroughWelcomeFragmentPresenter @Inject constructor(
+class WalkthroughNextWelcomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   private val resourceHandler: AppLanguageResourceHandler
-) : WalkthroughPageChanger {
+) : WalkthroughNextPageNavigationListener {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private lateinit var walkthroughWelcomeViewModel: WalkthroughWelcomeViewModel
@@ -40,7 +39,9 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int
+  ): View? {
     binding =
       WalkthroughWelcomeFragmentBinding.inflate(
         inflater,
@@ -48,10 +49,6 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
 
-    internalProfileId = activity.intent.getIntExtra(
-      WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
-      -1
-    )
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     walkthroughWelcomeViewModel = WalkthroughWelcomeViewModel()
 

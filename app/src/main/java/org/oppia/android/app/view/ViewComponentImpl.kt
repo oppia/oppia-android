@@ -19,7 +19,12 @@ import org.oppia.android.app.player.state.SelectionInteractionView
 /** Implementation of [ViewComponent]. */
 @Subcomponent
 @ViewScope
-interface ViewComponentImpl : ViewComponent {
+interface ViewComponentImpl
+  : ViewComponent, ChapterNotStartedContainerConstraintLayout.Injector,
+  ComingSoonTopicsListView.Injector, ContinueButtonView.Injector, SelectionInteractionView.Injector,
+  DragDropSortInteractionView.Injector, ImageRegionSelectionInteractionView.Injector,
+  LessonThumbnailImageView.Injector, PromotedStoryCardView.Injector, PromotedStoryListView.Injector,
+  SegmentedCircularProgressView.Injector {
   /** Implementation of [ViewComponent.Builder]. */
   @Subcomponent.Builder
   interface Builder : ViewComponent.Builder {
@@ -28,15 +33,4 @@ interface ViewComponentImpl : ViewComponent {
 
     override fun build(): ViewComponentImpl
   }
-
-  fun inject(chapterNotStartedContainerConstraintLayout: ChapterNotStartedContainerConstraintLayout)
-  fun inject(comingSoonTopicsListView: ComingSoonTopicsListView)
-  fun inject(continueButtonView: ContinueButtonView)
-  fun inject(selectionInteractionView: SelectionInteractionView)
-  fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
-  fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
-  fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
-  fun inject(promotedStoryCardView: PromotedStoryCardView)
-  fun inject(promotedStoryListView: PromotedStoryListView)
-  fun inject(segmentedCircularProgressView: SegmentedCircularProgressView)
 }

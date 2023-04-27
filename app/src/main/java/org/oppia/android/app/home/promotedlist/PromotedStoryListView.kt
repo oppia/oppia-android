@@ -10,7 +10,6 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.view.ViewComponentFactory
-import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 
@@ -40,7 +39,7 @@ class PromotedStoryListView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    val viewComponent = viewComponentFactory.createViewComponent(this) as Injector
     viewComponent.inject(this)
 
     // The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
@@ -106,5 +105,9 @@ class PromotedStoryListView @JvmOverloads constructor(
           )
         }
       ).build()
+  }
+
+  interface Injector {
+    fun inject(view: PromotedStoryListView)
   }
 }

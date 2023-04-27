@@ -286,10 +286,7 @@ class RecentlyPlayedSpanTest {
         .newBuilder()
         .setProfileId(ProfileId.newBuilder().setInternalId(profileId).build())
         .build()
-    return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-      context,
-      recentlyPlayedActivityParams
-    )
+    return RecentlyPlayedActivity.createIntent(context, recentlyPlayedActivityParams)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

@@ -3,7 +3,6 @@ package org.oppia.android.app.help.thirdparty
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -17,10 +16,14 @@ class LicenseTextViewerActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     val dependencyIndex = intent.getIntExtra(LICENSE_TEXT_VIEWER_ACTIVITY_DEP_INDEX, 0)
     val licenseIndex = intent.getIntExtra(LICENSE_TEXT_VIEWER_ACTIVITY_LICENSE_INDEX, 0)
     licenseTextViewerActivityPresenter.handleOnCreate(dependencyIndex, licenseIndex)
+  }
+
+  interface Injector {
+    fun inject(activity: LicenseTextViewerActivity)
   }
 
   companion object {
@@ -30,11 +33,7 @@ class LicenseTextViewerActivity : InjectableAppCompatActivity() {
       "LicenseTextViewerActivity.license_index"
 
     /** Returns [Intent] for [LicenseTextViewerActivity]. */
-    fun createLicenseTextViewerActivityIntent(
-      context: Context,
-      dependencyIndex: Int,
-      licenseIndex: Int
-    ): Intent {
+    fun createIntent(context: Context, dependencyIndex: Int, licenseIndex: Int): Intent {
       val intent = Intent(context, LicenseTextViewerActivity::class.java)
       intent.putExtra(LICENSE_TEXT_VIEWER_ACTIVITY_DEP_INDEX, dependencyIndex)
       intent.putExtra(LICENSE_TEXT_VIEWER_ACTIVITY_LICENSE_INDEX, licenseIndex)

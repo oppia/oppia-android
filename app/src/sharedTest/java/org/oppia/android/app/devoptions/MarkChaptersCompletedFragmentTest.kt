@@ -905,7 +905,7 @@ class MarkChaptersCompletedFragmentTest {
     showConfirmationNotice: Boolean = false
   ): ActivityScenario<MarkChaptersCompletedTestActivity> {
     return launch(
-      MarkChaptersCompletedTestActivity.createMarkChaptersCompletedTestIntent(
+      MarkChaptersCompletedTestActivity.createIntent(
         context, internalProfileId, showConfirmationNotice
       )
     )

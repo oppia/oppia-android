@@ -171,12 +171,8 @@ class AudioFragmentTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-  private fun createAudioFragmentTestIntent(profileId: Int): Intent {
-    return AudioFragmentTestActivity.createAudioFragmentTestActivity(
-      context,
-      profileId
-    )
-  }
+  private fun createAudioFragmentTestIntent(profileId: Int): Intent =
+    AudioFragmentTestActivity.createIntent(context, profileId)
 
   @Test
   fun testAudioFragment_seekbar_hasContentDescription() {

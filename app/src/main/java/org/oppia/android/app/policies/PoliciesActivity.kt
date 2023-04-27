@@ -3,7 +3,6 @@ package org.oppia.android.app.policies
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
@@ -23,7 +22,7 @@ class PoliciesActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
 
     policiesActivityPresenter.handleOnCreate(
       intent.getProtoExtra(
@@ -38,7 +37,7 @@ class PoliciesActivity :
     const val POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO = "PoliciesActivity.policy_page"
 
     /** Returns the [Intent] for opening [PoliciesActivity] for the specified [policyPage]. */
-    fun createPoliciesActivityIntent(context: Context, policyPage: PolicyPage): Intent {
+    fun createIntent(context: Context, policyPage: PolicyPage): Intent {
       val policiesActivityParams =
         PoliciesActivityParams
           .newBuilder()
@@ -52,6 +51,10 @@ class PoliciesActivity :
   }
 
   override fun onRouteToPolicies(policyPage: PolicyPage) {
-    startActivity(createPoliciesActivityIntent(this, policyPage))
+    startActivity(createIntent(this, policyPage))
+  }
+
+  interface Injector {
+    fun inject(activity: PoliciesActivity)
   }
 }

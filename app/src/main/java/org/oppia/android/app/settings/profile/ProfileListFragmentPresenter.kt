@@ -37,9 +37,7 @@ class ProfileListFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    binding.profileListToolbar?.setNavigationOnClickListener {
-      (activity as ProfileListActivity).finish()
-    }
+    binding.profileListToolbar?.setNavigationOnClickListener { activity.finish() }
     binding.apply {
       viewModel = profileListViewModel
       lifecycleOwner = fragment

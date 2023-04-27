@@ -495,7 +495,7 @@ class CompletedStoryListActivityTest {
   }
 
   private fun createCompletedStoryListActivityIntent(internalProfileId: Int): Intent {
-    return CompletedStoryListActivity.createCompletedStoryListActivityIntent(
+    return CompletedStoryListActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId
     )

@@ -3,7 +3,6 @@ package org.oppia.android.app.profile
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
@@ -27,7 +26,7 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -37,5 +36,9 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
       activity as ProfileRouteDialogInterface,
       adminPin
     )
+  }
+
+  interface Injector {
+    fun inject(fragment: AdminSettingsDialogFragment)
   }
 }

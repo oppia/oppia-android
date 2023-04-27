@@ -5,19 +5,19 @@ import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
-import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
 import kotlin.math.roundToInt
 
 /** Helper class to handle clicks on an image along with highlighting the selected region. */
 class ClickableAreasImage(
-  private val imageView: ImageRegionSelectionInteractionView,
+  private val imageView: AppCompatImageView,
   private val parentView: FrameLayout,
   private val listener: OnClickableAreaClickedListener,
   bindingInterface: ViewBindingShim,

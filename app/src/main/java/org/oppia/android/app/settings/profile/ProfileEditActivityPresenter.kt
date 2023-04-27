@@ -8,6 +8,11 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 
+// TODO: Consolidate with ones in ProfileEditActivity & clean up.
+private const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"
+private const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY =
+  "ProfileEditActivity.profile_edit_profile_id"
+
 /** The presenter for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditActivityPresenter @Inject constructor(

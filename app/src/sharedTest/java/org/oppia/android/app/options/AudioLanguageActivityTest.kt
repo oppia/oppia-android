@@ -134,7 +134,7 @@ class AudioLanguageActivityTest {
 
   @Suppress("SameParameterValue")
   private fun createDefaultAudioActivityIntent(audioLanguage: AudioLanguage) =
-    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
+    AudioLanguageActivity.createIntent(context, audioLanguage)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

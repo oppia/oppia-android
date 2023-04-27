@@ -1,7 +1,7 @@
 package org.oppia.android.app.topic.revision.revisionitemviewmodel
 
 import org.oppia.android.app.model.EphemeralSubtopic
-import org.oppia.android.app.topic.revision.RevisionSubtopicSelector
+import org.oppia.android.app.topic.revision.RevisionSubtopicSelectionListener
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.translation.TranslationController
 
@@ -10,7 +10,7 @@ class TopicRevisionItemViewModel(
   val topicId: String,
   ephemeralSubtopic: EphemeralSubtopic,
   val entityType: String,
-  val onRevisionItemPressed: RevisionSubtopicSelector,
+  val onRevisionItemPressed: RevisionSubtopicSelectionListener,
   translationController: TranslationController
 ) : ObservableViewModel() {
   /** The subtopic being displayed. */

@@ -5,8 +5,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 /** Adapter to bind fragments to [FragmentStateAdapter] inside [MyDownloadsFragment]. */
 @Suppress("DEPRECATION")
-class MyDownloadsViewPagerAdapter(fragment: Fragment) :
-  FragmentStateAdapter(fragment) {
+class MyDownloadsViewPagerAdapter(
+  fragment: Fragment,
+  private val createDownloadFragment: () -> Fragment,
+  private val createUpdatesFragment: () -> Fragment
+) : FragmentStateAdapter(fragment) {
 
   override fun getItemCount(): Int {
     return MyDownloadsTab.values().size
@@ -14,12 +17,8 @@ class MyDownloadsViewPagerAdapter(fragment: Fragment) :
 
   override fun createFragment(position: Int): Fragment {
     return when (MyDownloadsTab.getTabForPosition(position)) {
-      MyDownloadsTab.DOWNLOADS -> {
-        DownloadsTabFragment()
-      }
-      MyDownloadsTab.UPDATES -> {
-        UpdatesTabFragment()
-      }
+      MyDownloadsTab.DOWNLOADS -> createDownloadFragment()
+      MyDownloadsTab.UPDATES -> createUpdatesFragment()
     }
   }
 }

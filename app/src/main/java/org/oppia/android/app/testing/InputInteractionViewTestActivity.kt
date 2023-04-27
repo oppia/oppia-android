@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.customview.interaction.FractionInputInteractionView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
@@ -85,7 +84,7 @@ class InputInteractionViewTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
       this, R.layout.activity_input_interaction_view_test
     )
@@ -164,6 +163,10 @@ class InputInteractionViewTestActivity :
       writtenTranslationContext,
       timeToStartNoticeAnimationMs = null
     ) as T
+  }
+
+  interface Injector {
+    fun inject(activity: InputInteractionViewTestActivity)
   }
 
   companion object {

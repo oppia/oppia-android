@@ -15,21 +15,14 @@ import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import com.google.common.base.Optional
 import org.oppia.android.R
-import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsStarter
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.help.HelpActivity
-import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.mydownloads.MyDownloadsActivity
-import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.profileprogress.ProfileProgressActivity
-import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.databinding.DrawerFragmentBinding
 import org.oppia.android.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -39,6 +32,14 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.AdministratorControlsActivityParams
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.HelpActivityParams
+import org.oppia.android.app.model.HomeActivityParams
+import org.oppia.android.app.model.MyDownloadsActivityParams
+import org.oppia.android.app.model.OptionsActivityParams
+import org.oppia.android.app.model.ProfileProgressActivityParams
 
 const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
   "NavigationDrawerFragmentPresenter.navigation_profile_id"
@@ -54,7 +55,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val headerViewModel: NavigationDrawerHeaderViewModel,
   private val footerViewModel: NavigationDrawerFooterViewModel,
-  private val developerOptionsStarter: Optional<DeveloperOptionsStarter>
+  private val developerOptionsStarter: Optional<DeveloperOptionsStarter>,
+  private val activityRouter: ActivityRouter
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
@@ -140,12 +142,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
         drawerLayout.closeDrawers()
         footerViewModel.isAdministratorControlsSelected.set(true)
-        val intent =
-          AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-            activity,
-            internalProfileId
-          )
-        fragment.activity!!.startActivity(intent)
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            administratorControlsActivityParams =
+              AdministratorControlsActivityParams.newBuilder().apply {
+                this.internalProfileId = internalProfileId
+              }.build()
+          }.build()
+        )
         if (previousMenuItemId == -1) fragment.activity!!.finish()
         else if (previousMenuItemId != null &&
           NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
@@ -233,36 +237,51 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
-          val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
-          fragment.activity!!.startActivity(intent)
+          activityRouter.routeToScreen(
+            DestinationScreen.newBuilder().apply {
+              homeActivityParams = HomeActivityParams.newBuilder().apply {
+                this.internalProfileId = internalProfileId
+              }.build()
+            }.build()
+          )
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.OPTIONS -> {
-          val intent = OptionsActivity.createOptionsActivity(
-            activity, internalProfileId,
-            /* isFromNavigationDrawer= */ true
+          activityRouter.routeToScreen(
+            DestinationScreen.newBuilder().apply {
+              optionsActivityParams = OptionsActivityParams.newBuilder().apply {
+                this.internalProfileId = internalProfileId
+                this.isFromNavigationDrawer = true
+              }.build()
+            }.build()
           )
-          fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
           }
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.HELP -> {
-          val intent = HelpActivity.createHelpActivityIntent(
-            activity, internalProfileId,
-            /* isFromNavigationDrawer= */ true
+          activityRouter.routeToScreen(
+            DestinationScreen.newBuilder().apply {
+              helpActivityParams = HelpActivityParams.newBuilder().apply {
+                this.internalProfileId = internalProfileId
+                this.isFromNavigationDrawer = true
+              }.build()
+            }.build()
           )
-          fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
           }
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.DOWNLOADS -> {
-          val intent =
-            MyDownloadsActivity.createMyDownloadsActivityIntent(activity, internalProfileId)
-          fragment.activity!!.startActivity(intent)
+          activityRouter.routeToScreen(
+            DestinationScreen.newBuilder().apply {
+              myDownloadsActivityParams = MyDownloadsActivityParams.newBuilder().apply {
+                this.internalProfileId = internalProfileId
+              }.build()
+            }.build()
+          )
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
           }
@@ -308,11 +327,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   fun openProfileProgress(profileId: Int) {
-    activity.startActivity(
-      ProfileProgressActivity.createProfileProgressActivityIntent(
-        activity,
-        profileId
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        profileProgressActivityParams = ProfileProgressActivityParams.newBuilder().apply {
+          this.internalProfileId = profileId
+        }.build()
+      }.build()
     )
   }
 
@@ -360,7 +380,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
    * expected to provide. The [menuItemId] corresponds to the menu ID of the current activity, for navigation purposes.
    */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
-    previousMenuItemId = if (activity is TopicActivity) null else menuItemId
+    // TODO: Figure out why the commented out code was needed. Dependence on activities like this should be avoided.
+//    previousMenuItemId = if (activity is TopicActivity) null else menuItemId
+    previousMenuItemId = menuItemId
     if (menuItemId != 0 && menuItemId != -1) {
       footerViewModel.isAdministratorControlsSelected.set(false)
       footerViewModel.isDeveloperOptionsSelected.set(false)

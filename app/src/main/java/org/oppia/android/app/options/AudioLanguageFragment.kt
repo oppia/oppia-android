@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageFragmentArguments
@@ -20,7 +19,7 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -78,5 +77,9 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
         FRAGMENT_SAVED_STATE_KEY, AudioLanguageFragmentStateBundle.getDefaultInstance()
       ).audioLanguage
     }
+  }
+
+  interface Injector {
+    fun inject(fragment: AudioLanguageFragment)
   }
 }

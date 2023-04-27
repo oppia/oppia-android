@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.FORCE_NETWORK_TYPE_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -21,14 +20,18 @@ class ForceNetworkTypeActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     forceNetworkTypeActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.force_network_type_activity_title)
   }
 
+  interface Injector {
+    fun inject(activity: ForceNetworkTypeActivity)
+  }
+
   companion object {
     /** Returns [Intent] for [ForceNetworkTypeActivity]. */
-    fun createForceNetworkTypeActivityIntent(context: Context): Intent {
+    fun createIntent(context: Context): Intent {
       return Intent(context, ForceNetworkTypeActivity::class.java).apply {
         decorateWithScreenName(FORCE_NETWORK_TYPE_ACTIVITY)
       }

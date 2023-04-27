@@ -158,7 +158,7 @@ class ProfileResetPinActivityTest {
     internalProfileId: Int,
     isAdmin: Boolean
   ): Intent {
-    return ProfileResetPinActivity.createProfileResetPinActivity(
+    return ProfileResetPinActivity.createIntent(
       ApplicationProvider.getApplicationContext(), internalProfileId, isAdmin
     )
   }

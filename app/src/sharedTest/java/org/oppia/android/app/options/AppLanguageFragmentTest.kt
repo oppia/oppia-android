@@ -215,7 +215,7 @@ class AppLanguageFragmentTest {
   }
 
   private fun createAppLanguageActivityIntent(summaryValue: String): Intent =
-    AppLanguageActivity.createAppLanguageActivityIntent(context, summaryValue)
+    AppLanguageActivity.createIntent(context, summaryValue)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

@@ -4216,7 +4216,7 @@ class StateFragmentTest {
     shouldSavePartialProgress: Boolean
   ): ActivityScenario<StateFragmentTestActivity> {
     return launch(
-      StateFragmentTestActivity.createTestActivityIntent(
+      StateFragmentTestActivity.createIntent(
         context,
         profileId.internalId,
         TEST_TOPIC_ID_0,

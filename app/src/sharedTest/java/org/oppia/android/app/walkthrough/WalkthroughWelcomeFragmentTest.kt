@@ -141,12 +141,8 @@ class WalkthroughWelcomeFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createWalkthroughActivityIntent(profileId: Int): Intent {
-    return WalkthroughActivity.createWalkthroughActivityIntent(
-      context,
-      profileId
-    )
-  }
+  private fun createWalkthroughActivityIntent(profileId: Int): Intent =
+    WalkthroughActivity.createIntent(context, profileId)
 
   @Test
   fun testWalkthroughWelcomeFragment_descriptionIsCorrect() {

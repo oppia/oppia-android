@@ -165,7 +165,7 @@ class SplashActivityPresenter @Inject constructor(
   private fun processStartupMode() {
     when (startupMode) {
       StartupMode.USER_IS_ONBOARDED -> {
-        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+        activity.startActivity(ProfileChooserActivity.createIntent(activity))
         activity.finish()
       }
       StartupMode.APP_IS_DEPRECATED -> {
@@ -177,7 +177,7 @@ class SplashActivityPresenter @Inject constructor(
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
-        activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+        activity.startActivity(OnboardingActivity.createIntent(activity))
         activity.finish()
       }
     }

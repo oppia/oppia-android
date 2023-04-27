@@ -35,44 +35,219 @@ enum HighlightItem {
   DEVELOPER_OPTIONS_ITEM = 4;
 }
 
-// TODO(#59): Isolate this to a test-only proto once possible.
-// Represents the parameters needed to open InputInteractionViewTestActivity.
-message InputInteractionViewTestActivityParams {
-  // Corresponds to the interaction used to initialize the interaction's view in the test
-  // environment.
-  Interaction interaction = 1;
-
-  // Corresponds to the translation context which may affect the interaction's classifiers during
-  // tests.
-  WrittenTranslationContext written_translation_context = 2;
-
-  // Indicates that a math interaction should be displayed for this activity, and indicates which
-  // one is being used in tests.
-  MathInteractionType math_interaction_type = 3;
-
-  // The type of math interaction to initialize for testing.
-  enum MathInteractionType {
-    // Indicates that no math interaction should  be loaded for testing.
-    MATH_INTERACTION_TYPE_UNSPECIFIED = 0;
-
-    // Indicates that the numeric expression input interaction will be used for testing.
-    NUMERIC_EXPRESSION = 1;
-
-    // Indicates that the algebraic expression input interaction will be used for testing.
-    ALGEBRAIC_EXPRESSION = 2;
-
-    // Indicates that the math equation input interaction will be used for testing.
-    MATH_EQUATION = 3;
-  }
-}
-
 // Corresponds to intent extras of destination activity.
 message DestinationScreen {
   // Indicates destination screen which we send in intent extras with RecentlyPlayedActivityParams.
   oneof destination_screen {
+    AppVersionActivityParams app_version_activity_params = 3;
+    ProfileAndDeviceIdActivityParams profile_and_device_id_activity_params = 4;
+    CompletedStoryListActivityParams completed_story_list_activity_params = 5;
+    DeveloperOptionsActivityParams developer_options_activity_params = 6;
+    ForceNetworkTypeActivityParams force_network_type_activity_params = 7;
+    ForceNetworkTypeTestActivityParams force_network_type_test_activity_params = 8;
+    MarkChaptersCompletedActivityParams mark_chapters_completed_activity_params = 9;
+    MarkChaptersCompletedTestActivityParams mark_chapters_completed_test_activity_params = 10;
+    MarkStoriesCompletedActivityParams mark_stories_completed_activity_params = 11;
+    MarkStoriesCompletedTestActivityParams mark_stories_completed_test_activity_params = 12;
+    MarkTopicsCompletedActivityParams mark_topics_completed_activity_params = 13;
+    MarkTopicsCompletedTestActivityParams mark_topics_completed_test_activity_params = 14;
+    MathExpressionParserActivityParams math_expression_parser_activity_params = 15;
+    DeveloperOptionsTestActivityParams developer_options_test_activity_params = 16;
+    ViewEventLogsActivityParams view_event_logs_activity_params = 17;
+    ViewEventLogsTestActivityParams view_event_logs_test_activity_params = 18;
+    HelpActivityParams help_activity_params = 19;
+    FaqListActivityParams faq_list_activity_params = 20;
+    FaqSingleActivityParams faq_single_activity_params = 21;
+    LicenseListActivityParams license_list_activity_params = 22;
+    LicenseTextViewerActivityParams license_text_viewer_activity_params = 23;
+    ThirdPartyDependencyListActivityParams third_party_dependency_list_activity_params = 24;
+    HomeActivityParams home_activity_params = 25;
     // Indicates information about the RecentlyPlayedActivity.
     RecentlyPlayedActivityParams recently_played_activity_params = 1;
+    MyDownloadsActivityParams my_downloads_activity_params = 26;
+    OnboardingActivityParams onboarding_activity_params = 27;
+    OngoingTopicListActivityParams ongoing_topic_list_activity_params = 28;
+    AppLanguageActivityParams app_language_activity_params = 29;
+    AudioLanguageActivityParams audio_language_activity_params = 30;
+    OptionsActivityParams options_activity_params = 31;
+    ReadingTextSizeActivityParams reading_text_size_activity_params = 32;
+    ExplorationActivityParams exploration_activity_params = 33;
+    StateFragmentTestActivityParams state_fragment_test_activity_params = 34;
+    PoliciesActivityParams policies_activity_params = 35;
+    AddProfileActivityParams add_profile_activity_params = 36;
+    AdminAuthActivityParams admin_auth_activity_params = 37;
+    AdminPinActivityParams admin_pin_activity_params = 38;
+    PinPasswordActivityParams pin_password_activity_params = 39;
+    ProfileChooserActivityParams profile_chooser_activity_params = 40;
+    ProfilePictureActivityParams profile_picture_activity_params = 41;
+    ProfileProgressActivityParams profile_progress_activity_params = 42;
+    ResumeLessonActivityParams resume_lesson_activity_params = 43;
+    ProfileEditActivityParams profile_edit_activity_params = 44;
+    ProfileListActivityParams profile_list_activity_params = 45;
+    ProfileRenameActivityParams profile_rename_activity_params = 46;
+    ProfileResetPinActivityParams profile_reset_pin_activity_params = 47;
+    SplashActivityParams splash_activity_params = 48;
+    StoryActivityParams story_activity_params = 49;
+    AdministratorControlsActivityParams administrator_controls_activity_params = 50;
+    AdministratorControlsFragmentTestActivityParams administrator_controls_fragment_test_activity_params = 51;
+    AppCompatCheckBoxBindingAdaptersTestActivityParams app_compat_check_box_binding_adapters_test_activity_params = 52;
+    AudioFragmentTestActivityParams audio_fragment_test_activity_params = 53;
+    BindableAdapterTestActivityParams bindable_adapter_test_activity_params = 54;
+    CircularProgressIndicatorAdaptersTestActivityParams circular_progress_indicator_adapters_test_activity_params = 55;
+    ConceptCardFragmentTestActivityParams concept_card_fragment_test_activity_params = 56;
+    DragDropTestActivityParams drag_drop_test_activity_params = 57;
+    DrawableBindingAdaptersTestActivityParams drawable_binding_adapters_test_activity_params = 58;
+    ExplorationInjectionActivityParams exploration_injection_activity_params = 59;
+    ExplorationTestActivityParams exploration_test_activity_params = 60;
+    HomeFragmentTestActivityParams home_fragment_test_activity_params = 61;
+    HomeTestActivityParams home_test_activity_params = 62;
+    HtmlParserTestActivityParams html_parser_test_activity_params = 63;
+    ImageRegionSelectionTestActivityParams image_region_selection_test_activity_params = 64;
+    ImageViewBindingAdaptersTestActivityParams image_view_binding_adapters_test_activity_params = 65;
+    InputInteractionViewTestActivityParams input_interaction_view_test_activity_params = 66;
+    LessonThumbnailImageViewTestActivityParams lesson_thumbnail_image_view_test_activity_params = 67;
+    ListItemLeadingMarginSpanTestActivityParams list_item_leading_margin_span_test_activity_params = 68;
+    MarginBindingAdaptersTestActivityParams margin_binding_adapters_test_activity_params = 69;
+    NavigationDrawerTestActivityParams navigation_drawer_test_activity_params = 70;
+    PoliciesFragmentTestActivityParams policies_fragment_test_activity_params = 71;
+    ProfileChooserFragmentTestActivityParams profile_chooser_fragment_test_activity_params = 72;
+    ProfileEditFragmentTestActivityParams profile_edit_fragment_test_activity_params = 73;
+    SplashTestActivityParams splash_test_activity_params = 74;
+    SpotlightFragmentTestActivityParams spotlight_fragment_test_activity_params = 75;
+    StateAssemblerMarginBindingAdaptersTestActivityParams state_assembler_margin_binding_adapters_test_activity_params = 76;
+    StateAssemblerPaddingBindingAdaptersTestActivityParams state_assembler_padding_binding_adapters_test_activity_params = 77;
+    TestFontScaleConfigurationUtilActivityParams test_font_scale_configuration_util_activity_params = 78;
+    TextViewBindingAdaptersTestActivityParams text_view_binding_adapters_test_activity_params = 79;
+    TopicRevisionTestActivityParams topic_revision_test_activity_params = 80;
+    TopicTestActivityParams topic_test_activity_params = 81;
+    ViewBindingAdaptersTestActivityParams view_binding_adapters_test_activity_params = 82;
+    TopicActivityParams topic_activity_params = 83;
+    QuestionPlayerActivityParams question_player_activity_params = 84;
+    RevisionCardActivityParams revision_card_activity_params = 85;
+    WalkthroughActivityParams walkthrough_activity_params = 86;
   }
+}
+
+// TODO: Document fields and add TODOs for internal profile IDs.
+
+// Intent extras for AppVersionActivity.
+message AppVersionActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ProfileAndDeviceIdActivity.
+message ProfileAndDeviceIdActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for CompletedStoryListActivity.
+message CompletedStoryListActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for DeveloperOptionsActivity.
+message DeveloperOptionsActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for ForceNetworkTypeActivity.
+message ForceNetworkTypeActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ForceNetworkTypeTestActivity.
+message ForceNetworkTypeTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for MarkChaptersCompletedActivity.
+message MarkChaptersCompletedActivityParams {
+  int32 internal_profile_id = 1;
+  bool show_confirmation_notice = 2;
+}
+
+// Intent extras for MarkChaptersCompletedTestActivity.
+message MarkChaptersCompletedTestActivityParams {
+  int32 internal_profile_id = 1;
+  bool show_confirmation_notice = 2;
+}
+
+// Intent extras for MarkStoriesCompletedActivity.
+message MarkStoriesCompletedActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for MarkStoriesCompletedTestActivity.
+message MarkStoriesCompletedTestActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for MarkTopicsCompletedActivity.
+message MarkTopicsCompletedActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for MarkTopicsCompletedTestActivity.
+message MarkTopicsCompletedTestActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for MathExpressionParserActivity.
+message MathExpressionParserActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for DeveloperOptionsTestActivity.
+message DeveloperOptionsTestActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for ViewEventLogsActivity.
+message ViewEventLogsActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ViewEventLogsTestActivity.
+message ViewEventLogsTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for HelpActivity.
+message HelpActivityParams {
+  int32 internal_profile_id = 1;
+  bool is_from_navigation_drawer = 2;
+}
+
+// Intent extras for FAQListActivity.
+message FaqListActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for FAQSingleActivity.
+message FaqSingleActivityParams {
+  string question_text = 1;
+  string answer_text = 2;
+}
+
+// Intent extras for LicenseListActivity.
+message LicenseListActivityParams {
+  int32 dependency_index = 1;
+}
+
+// Intent extras for LicenseTextViewerActivity.
+message LicenseTextViewerActivityParams {
+  int32 dependency_index = 1;
+  int32 license_index = 2;
+}
+
+// Intent extras for ThirdPartyDependencyListActivity.
+message ThirdPartyDependencyListActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for HomeActivity.
+message HomeActivityParams {
+  int32 internal_profile_id = 1;
 }
 
 // Intent extras for RecentlyPlayedActivity.
@@ -84,22 +259,42 @@ message RecentlyPlayedActivityParams {
   RecentlyPlayedActivityTitle activity_title = 2;
 }
 
-// Corresponds to activity title of RecentlyPlayedActivity.
-enum RecentlyPlayedActivityTitle {
-  // Activity title is not specified.
-  TITLE_UNSPECIFIED = 0;
+// Intent extras for MyDownloadsActivity.
+message MyDownloadsActivityParams {
+  int32 internal_profile_id = 1;
+}
 
-  // Corresponds to activity title as "Recently played stories".
-  RECENTLY_PLAYED_STORIES = 1;
+// Intent extras for OnboardingActivity.
+message OnboardingActivityParams {
+  // The activity has no parameters.
+}
 
-  // Corresponds to activity title as "Stories for you".
-  STORIES_FOR_YOU = 2;
+// Intent extras for OngoingTopicListActivity.
+message OngoingTopicListActivityParams {
+  int32 internal_profile_id = 1;
+}
 
-  // Corresponds to activity title as "Recommended Stories".
-  RECOMMENDED_STORIES = 3;
+// Intent extras for AppLanguageActivity.
+message AppLanguageActivityParams {
+  string summary_value = 1;
+}
 
-  // Corresponds to activity title as "Last-Played Stories".
-  LAST_PLAYED_STORIES = 4;
+// Params required when creating a new AudioLanguageActivity.
+message AudioLanguageActivityParams {
+  // The default audio language previously selected by the user (upon opening the activity).
+  AudioLanguage audio_language = 1;
+}
+
+// Intent extras for OptionsActivity.
+message OptionsActivityParams {
+  int32 internal_profile_id = 1;
+  bool is_from_navigation_drawer = 2;
+}
+
+// Params required when creating a new ReadingTextSizeActivity.
+message ReadingTextSizeActivityParams {
+  // The ReadingTextSize previously selected by the user (upon opening the activity).
+  ReadingTextSize reading_text_size = 1;
 }
 
 // Params required when creating a new ExplorationActivity.
@@ -135,22 +330,66 @@ message ExplorationActivityParams {
   }
 }
 
-// Arguments that must be passed to a new ExplorationFragment.
-message ExplorationFragmentArguments {
-  // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
-
-  // The ID of the topic to which the opening exploration belongs.
+// Intent extras for StateFragmentTestActivity.
+message StateFragmentTestActivityParams {
+  int32 internal_profile_id = 1;
   string topic_id = 2;
-
-  // The ID of the story to which the opening exploration belongs.
   string story_id = 3;
-
-  // The exploration being opened for a new play session.
   string exploration_id = 4;
+  bool should_save_partial_progress = 5;
+}
 
-  // The text size at which content in the exploration should be rendered.
-  ReadingTextSize reading_text_size = 5;
+// Activity Parameters needed to open the policy page.
+message PoliciesActivityParams {
+  // The specific policy page that should be displayed.
+  PolicyPage policy_page = 1;
+}
+
+// Intent extras for AddProfileActivity.
+message AddProfileActivityParams {
+  int32 color_rgb = 1;
+}
+
+// Intent extras for AdminAuthActivity.
+message AdminAuthActivityParams {
+  string admin_pin = 1;
+  int32 internal_profile_id = 2;
+  int32 color_rgb = 3;
+  AdminAuth admin_auth = 4;
+
+  enum AdminAuth {
+    ADMIN_AUTH_UNSPECIFIED = 0;
+    PROFILE_ADMIN_CONTROLS = 1;
+    PROFILE_ADD_PROFILE = 2;
+  }
+}
+
+// Intent extras for AdminPinActivity.
+message AdminPinActivityParams {
+  int32 internal_profile_id = 1;
+  int32 color_rgb = 2;
+  AdminAuthActivityParams.AdminAuth admin_auth = 3;
+}
+
+// Intent extras for PinPasswordActivity.
+message PinPasswordActivityParams {
+  string admin_pin = 1;
+  int32 internal_profile_id = 2;
+}
+
+// Intent extras for ProfileChooserActivity.
+message ProfileChooserActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ProfilePictureActivity.
+message ProfilePictureActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for ProfileProgressActivity.
+message ProfileProgressActivityParams {
+  int32 internal_profile_id = 1;
 }
 
 // Params required when creating a new ResumeLessonActivity.
@@ -174,6 +413,301 @@ message ResumeLessonActivityParams {
   ExplorationCheckpoint checkpoint = 6;
 }
 
+// Intent extras for ProfileEditActivity.
+message ProfileEditActivityParams {
+  int32 internal_profile_id = 1;
+  bool is_multipane = 2;
+  bool clear_top = 3;
+}
+
+// Intent extras for ProfileListActivity.
+message ProfileListActivityParams {
+  bool clear_top = 1;
+}
+
+// Intent extras for ProfileRenameActivity.
+message ProfileRenameActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for ProfileResetPinActivity.
+message ProfileResetPinActivityParams {
+  int32 internal_profile_id = 1;
+  bool is_admin = 2;
+}
+
+// Intent extras for SplashActivity.
+message SplashActivityParams {
+  // The activity has no parameters (and can't since it's created by the system app launcher).
+}
+
+// Intent extras for StoryActivity.
+message StoryActivityParams {
+  int32 internal_profile_id = 1;
+  string topic_id = 2;
+  string story_id = 3;
+}
+
+// Intent extras for AdministratorControlsActivity.
+message AdministratorControlsActivityParams {
+  int32 internal_profile_id = 1;
+  bool clear_top = 2;
+}
+
+// Intent extras for AdministratorControlsFragmentTestActivity.
+message AdministratorControlsFragmentTestActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for AppCompatCheckBoxBindingAdaptersTestActivity.
+message AppCompatCheckBoxBindingAdaptersTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for AudioFragmentTestActivity.
+message AudioFragmentTestActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for BindableAdapterTestActivity.
+message BindableAdapterTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for CircularProgressIndicatorAdaptersTestActivity.
+message CircularProgressIndicatorAdaptersTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ConceptCardFragmentTestActivity.
+message ConceptCardFragmentTestActivityParams {
+  ProfileId profile_id = 1;
+}
+
+// Intent extras for DragDropTestActivity.
+message DragDropTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for DrawableBindingAdaptersTestActivity.
+message DrawableBindingAdaptersTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ExplorationInjectionActivity.
+message ExplorationInjectionActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ExplorationTestActivity.
+message ExplorationTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for HomeFragmentTestActivity.
+message HomeFragmentTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for HomeTestActivity.
+message HomeTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for HtmlParserTestActivity.
+message HtmlParserTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ImageRegionSelectionTestActivity.
+message ImageRegionSelectionTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ImageViewBindingAdaptersTestActivity.
+message ImageViewBindingAdaptersTestActivityParams {
+  // The activity has no parameters.
+}
+
+// TODO(#59): Isolate this to a test-only proto once possible.
+// Represents the parameters needed to open InputInteractionViewTestActivity.
+message InputInteractionViewTestActivityParams {
+  // Corresponds to the interaction used to initialize the interaction's view in the test
+  // environment.
+  Interaction interaction = 1;
+
+  // Corresponds to the translation context which may affect the interaction's classifiers during
+  // tests.
+  WrittenTranslationContext written_translation_context = 2;
+
+  // Indicates that a math interaction should be displayed for this activity, and indicates which
+  // one is being used in tests.
+  MathInteractionType math_interaction_type = 3;
+
+  // The type of math interaction to initialize for testing.
+  enum MathInteractionType {
+    // Indicates that no math interaction should  be loaded for testing.
+    MATH_INTERACTION_TYPE_UNSPECIFIED = 0;
+
+    // Indicates that the numeric expression input interaction will be used for testing.
+    NUMERIC_EXPRESSION = 1;
+
+    // Indicates that the algebraic expression input interaction will be used for testing.
+    ALGEBRAIC_EXPRESSION = 2;
+
+    // Indicates that the math equation input interaction will be used for testing.
+    MATH_EQUATION = 3;
+  }
+}
+
+// Intent extras for LessonThumbnailImageViewTestActivity.
+message LessonThumbnailImageViewTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ListItemLeadingMarginSpanTestActivity.
+message ListItemLeadingMarginSpanTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for MarginBindingAdaptersTestActivity.
+message MarginBindingAdaptersTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for NavigationDrawerTestActivity.
+message NavigationDrawerTestActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for PoliciesFragmentTestActivity.
+message PoliciesFragmentTestActivityParams {
+  PolicyPage policy_page = 1;
+}
+
+// Intent extras for ProfileChooserFragmentTestActivity.
+message ProfileChooserFragmentTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ProfileEditFragmentTestActivity.
+message ProfileEditFragmentTestActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for SplashTestActivity.
+message SplashTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for SpotlightFragmentTestActivity.
+message SpotlightFragmentTestActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Intent extras for StateAssemblerMarginBindingAdaptersTestActivity.
+message StateAssemblerMarginBindingAdaptersTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for StateAssemblerPaddingBindingAdaptersTestActivity.
+message StateAssemblerPaddingBindingAdaptersTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for TestFontScaleConfigurationUtilActivity.
+message TestFontScaleConfigurationUtilActivityParams {
+  ReadingTextSize reading_text_size = 1;
+}
+
+// Intent extras for TextViewBindingAdaptersTestActivity.
+message TextViewBindingAdaptersTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for TopicRevisionTestActivity.
+message TopicRevisionTestActivityParams {
+  int32 internal_profile_id = 1;
+  string topic_id = 2;
+  int32 subtopic_index = 3;
+  int32 subtopic_list_size = 4;
+}
+
+// Intent extras for TopicTestActivity.
+message TopicTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for ViewBindingAdaptersTestActivity.
+message ViewBindingAdaptersTestActivityParams {
+  // The activity has no parameters.
+}
+
+// Intent extras for TopicActivity.
+message TopicActivityParams {
+  int32 internal_profile_id = 1;
+  string topic_id = 2;
+  oneof route_mode {
+    bool story_list = 3;
+    string specific_story_id = 4;
+  }
+}
+
+// Intent extras for QuestionPlayerActivity.
+message QuestionPlayerActivityParams {
+  ProfileId profile_id = 1;
+  repeated string skill_ids = 2;
+}
+
+// Intent extras for RevisionCardActivity.
+message RevisionCardActivityParams {
+  int32 internal_profile_id = 1;
+  string topic_id = 2;
+  int32 subtopic_index = 3;
+  int32 subtopic_list_size = 4;
+}
+
+// Intent extras for WalkthroughActivity.
+message WalkthroughActivityParams {
+  int32 internal_profile_id = 1;
+}
+
+// Corresponds to activity title of RecentlyPlayedActivity.
+enum RecentlyPlayedActivityTitle {
+  // Activity title is not specified.
+  TITLE_UNSPECIFIED = 0;
+
+  // Corresponds to activity title as "Recently played stories".
+  RECENTLY_PLAYED_STORIES = 1;
+
+  // Corresponds to activity title as "Stories for you".
+  STORIES_FOR_YOU = 2;
+
+  // Corresponds to activity title as "Recommended Stories".
+  RECOMMENDED_STORIES = 3;
+
+  // Corresponds to activity title as "Last-Played Stories".
+  LAST_PLAYED_STORIES = 4;
+}
+
+// Arguments that must be passed to a new ExplorationFragment.
+message ExplorationFragmentArguments {
+  // The ID of the profile that wants to start an exploration play session.
+  ProfileId profile_id = 1;
+
+  // The ID of the topic to which the opening exploration belongs.
+  string topic_id = 2;
+
+  // The ID of the story to which the opening exploration belongs.
+  string story_id = 3;
+
+  // The exploration being opened for a new play session.
+  string exploration_id = 4;
+
+  // The text size at which content in the exploration should be rendered.
+  ReadingTextSize reading_text_size = 5;
+}
+
 // Arguments that must be passed to a new ResumeLessonFragment.
 message ResumeLessonFragmentArguments {
   // The ID of the profile that wants to start an exploration play session.
@@ -193,12 +727,6 @@ message ResumeLessonFragmentArguments {
 
   // The checkpoint that may be used to resume the exploration play session.
   ExplorationCheckpoint checkpoint = 6;
-}
-
-// Params required when creating a new ReadingTextSizeActivity.
-message ReadingTextSizeActivityParams {
-  // The ReadingTextSize previously selected by the user (upon opening the activity).
-  ReadingTextSize reading_text_size = 1;
 }
 
 // The bundle of properties that are saved upon configuration changes in ReadingTextSizeActivity.
@@ -225,12 +753,6 @@ message ReadingTextSizeFragmentStateBundle {
   ReadingTextSize selected_reading_text_size = 1;
 }
 
-// Params required when creating a new AudioLanguageActivity.
-message AudioLanguageActivityParams {
-  // The default audio language previously selected by the user (upon opening the activity).
-  AudioLanguage audio_language = 1;
-}
-
 // The bundle of properties that are saved upon configuration changes in AudioLanguageActivity.
 message AudioLanguageActivityStateBundle {
   // The default audio language selected by the user.
@@ -253,12 +775,6 @@ message AudioLanguageFragmentArguments {
 message AudioLanguageFragmentStateBundle {
   // The default audio language selected by the user.
   AudioLanguage audio_language = 1;
-}
-
-// Activity Parameters needed to open the policy page.
-message PoliciesActivityParams {
-  // The specific policy page that should be displayed.
-  PolicyPage policy_page = 1;
 }
 
 // Fragment arguments needed to open the policy page.

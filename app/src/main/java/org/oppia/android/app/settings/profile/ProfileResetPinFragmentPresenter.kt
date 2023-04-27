@@ -18,6 +18,9 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileEditActivityParams
 
 /** The presenter for [ProfileResetPinFragment]. */
 class ProfileResetPinFragmentPresenter @Inject constructor(
@@ -25,7 +28,8 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileResetPinViewModel: ProfileResetPinViewModel,
   private val profileManagementController: ProfileManagementController,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val activityRouter: ActivityRouter
 ) {
   private lateinit var binding: ProfileResetPinFragmentBinding
   private var inputtedPin = false
@@ -131,9 +135,14 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
           activity,
           Observer {
             if (it is AsyncResult.Success) {
-              val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              activity.startActivity(intent)
+              activityRouter.routeToScreen(
+                DestinationScreen.newBuilder().apply {
+                  profileEditActivityParams = ProfileEditActivityParams.newBuilder().apply {
+                    this.internalProfileId = profileId
+                    this.clearTop = true
+                  }.build()
+                }.build()
+              )
             }
           }
         )

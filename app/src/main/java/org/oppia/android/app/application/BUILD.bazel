@@ -9,9 +9,7 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 oppia_android_library(
     name = "abstract_application",
-    srcs = [
-        "AbstractOppiaApplication.kt",
-    ],
+    srcs = ["AbstractOppiaApplication.kt"],
     visibility = [
         "//app/src/main/java/org/oppia/android/app/application:__subpackages__",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:__pkg__",
@@ -20,9 +18,9 @@ oppia_android_library(
         ":application_component",
         ":application_injector",
         ":application_injector_provider",
-        "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_startup_listener",
         "//third_party:androidx_appcompat_appcompat",
@@ -35,16 +33,14 @@ oppia_android_library(
 
 oppia_android_library(
     name = "application_component",
-    srcs = [
-        "ApplicationComponent.kt",
-    ],
+    srcs = ["ApplicationComponent.kt"],
     visibility = [
         "//:oppia_testing_visibility",
         "//app/src/main/java/org/oppia/android/app/application:__subpackages__",
     ],
     deps = [
         ":application_injector",
-        "//app",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_startup_listener",
         "//third_party:androidx_work_work-runtime",
@@ -55,9 +51,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "application_injector",
-    srcs = [
-        "ApplicationInjector.kt",
-    ],
+    srcs = ["ApplicationInjector.kt"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector",
@@ -71,9 +65,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "application_injector_provider",
-    srcs = [
-        "ApplicationInjectorProvider.kt",
-    ],
+    srcs = ["ApplicationInjectorProvider.kt"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":application_injector",
@@ -104,7 +96,7 @@ oppia_android_library(
     ],
     deps = [
         "//:dagger",
-        "//app",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
 )
@@ -115,6 +107,7 @@ android_library(
     visibility = ["//app/src/main/java/org/oppia/android/app/application:__subpackages__"],
     exports = [
         ":modules",
+        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router_module",
         "//app/src/main/java/org/oppia/android/app/translation:prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",

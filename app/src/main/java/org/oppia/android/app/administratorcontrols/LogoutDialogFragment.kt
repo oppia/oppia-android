@@ -5,10 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import javax.inject.Inject
 import org.oppia.android.R
-import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileChooserActivityParams
 
 /** [DialogFragment] that gives option to either cancel or log out from current profile. */
 class LogoutDialogFragment : InjectableDialogFragment() {
@@ -21,9 +23,11 @@ class LogoutDialogFragment : InjectableDialogFragment() {
     }
   }
 
+  @Inject lateinit var activityRouter: ActivityRouter
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -33,8 +37,15 @@ class LogoutDialogFragment : InjectableDialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
-        val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
-        startActivity(intent)
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder()
+            .setProfileChooserActivityParams(ProfileChooserActivityParams.getDefaultInstance())
+            .build()
+        )
       }.create()
+  }
+
+  interface Injector {
+    fun inject(fragment: LogoutDialogFragment)
   }
 }

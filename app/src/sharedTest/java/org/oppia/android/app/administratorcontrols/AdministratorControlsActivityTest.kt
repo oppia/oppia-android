@@ -817,12 +817,8 @@ class AdministratorControlsActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
-    return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      context = context,
-      profileId = profileId
-    )
-  }
+  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent =
+    AdministratorControlsActivity.createIntent(context, profileId)
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
   private fun nestedScrollTo(): ViewAction {

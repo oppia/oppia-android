@@ -4,32 +4,17 @@ Constructs for setting up activities for injection in the Dagger graph.
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-# TODO(#59): Define these exported files as separate libraries from top-level targets.
-exports_files([
-    "ActivityComponentImpl.kt",
-    "ActivityIntentFactoriesModule.kt",
-    "ActivityModule.kt",
-])
-
 oppia_android_library(
     name = "activity_scope",
-    srcs = [
-        "ActivityScope.kt",
-    ],
+    srcs = ["ActivityScope.kt"],
     visibility = ["//app:app_visibility"],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-    ],
+    deps = ["//third_party:javax_inject_javax_inject"],
 )
 
 oppia_android_library(
     name = "injectable_app_compat_activity",
-    srcs = [
-        "InjectableAppCompatActivity.kt",
-    ],
-    visibility = [
-        "//app:app_visibility",
-    ],
+    srcs = ["InjectableAppCompatActivity.kt"],
+    visibility = ["//app:app_visibility"],
     deps = [
         ":activity_component",
         ":activity_component_factory",
@@ -50,24 +35,58 @@ oppia_android_library(
 
 oppia_android_library(
     name = "activity_component",
-    srcs = [
-        "ActivityComponent.kt",
-    ],
+    srcs = ["ActivityComponent.kt"],
     visibility = [
         "//app:app_visibility",
         "//testing:testing_testing_visibility",
     ],
+    deps = ["//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector"],
+)
+
+oppia_android_library(
+    name = "activity_component_impl",
+    srcs = ["ActivityComponentImpl.kt"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//app/src/main/java/org/oppia/android/app/application:__pkg__",
+    ],
     deps = [
-        "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector",
-        "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
+        ":activity_component",
+        ":activity_intent_factories_module",
+        ":activity_module",
+        ":activity_scope",
+        "//:dagger",
+        "//app:activities",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_builder_injector",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_builder_module",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
+        "//third_party:androidx_appcompat_appcompat",
+    ],
+)
+
+oppia_android_library(
+    name = "activity_intent_factories_module",
+    srcs = ["ActivityIntentFactoriesModule.kt"],
+    visibility = ["//app:app_testing_visibility"],
+    deps = [
+        ":activity_intent_factories_shim",
+        "//:dagger",
+        "//app:activities",
+    ],
+)
+
+oppia_android_library(
+    name = "activity_module",
+    srcs = ["ActivityModule.kt"],
+    deps = [
+        "//:dagger",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_impl",
     ],
 )
 
 oppia_android_library(
     name = "activity_component_factory",
-    srcs = [
-        "ActivityComponentFactory.kt",
-    ],
+    srcs = ["ActivityComponentFactory.kt"],
     visibility = [
         "//app:__pkg__",
         "//app:app_testing_visibility",
@@ -82,12 +101,8 @@ oppia_android_library(
 
 oppia_android_library(
     name = "activity_intent_factories_shim",
-    srcs = [
-        "ActivityIntentFactories.kt",
-    ],
-    visibility = [
-        "//app:app_visibility",
-    ],
+    srcs = ["ActivityIntentFactories.kt"],
+    visibility = ["//app:app_visibility"],
     deps = [
         "//model/src/main/proto:arguments_java_proto_lite",
         "//model/src/main/proto:profile_java_proto_lite",

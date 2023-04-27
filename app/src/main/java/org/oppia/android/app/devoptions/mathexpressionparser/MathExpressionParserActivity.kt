@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.MATH_EXPRESSION_PARSER_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -21,9 +20,13 @@ class MathExpressionParserActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     mathExpressionParserActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.math_expression_parser_activity_title)
+  }
+
+  interface Injector {
+    fun inject(activity: MathExpressionParserActivity)
   }
 
   companion object {

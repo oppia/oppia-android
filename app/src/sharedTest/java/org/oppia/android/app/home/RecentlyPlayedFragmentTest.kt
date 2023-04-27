@@ -205,10 +205,7 @@ class RecentlyPlayedFragmentTest {
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
-    return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-      context = context,
-      recentlyPlayedActivityParams = recentlyPlayedActivityParams
-    )
+    return RecentlyPlayedActivity.createIntent(context, recentlyPlayedActivityParams)
   }
 
   @Test

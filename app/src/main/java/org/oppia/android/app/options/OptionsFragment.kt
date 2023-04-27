@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.ReadingTextSize
@@ -46,7 +45,7 @@ class OptionsFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -90,5 +89,9 @@ class OptionsFragment : InjectableFragment() {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.setSelectedFragment(selectedLanguage)
     }
+  }
+
+  interface Injector {
+    fun inject(fragment: OptionsFragment)
   }
 }

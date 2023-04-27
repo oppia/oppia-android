@@ -3,7 +3,6 @@ package org.oppia.android.app.player.state.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
@@ -51,7 +50,7 @@ class StateFragmentTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     profileId = ProfileId.newBuilder().apply {
       internalId = intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1)
     }.build()
@@ -67,7 +66,7 @@ class StateFragmentTestActivity :
   override fun onEditorAction(actionCode: Int) {}
 
   companion object {
-    fun createTestActivityIntent(
+    fun createIntent(
       context: Context,
       profileId: Int,
       topicId: String,
@@ -142,5 +141,9 @@ class StateFragmentTestActivity :
     return supportFragmentManager.findFragmentByTag(
       TAG_HINTS_AND_SOLUTION_DIALOG
     ) as HintsAndSolutionDialogFragment?
+  }
+
+  interface Injector {
+    fun inject(activity: StateFragmentTestActivity)
   }
 }

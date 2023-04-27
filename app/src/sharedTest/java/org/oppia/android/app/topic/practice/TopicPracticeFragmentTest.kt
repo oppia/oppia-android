@@ -384,7 +384,7 @@ class TopicPracticeFragmentTest {
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicActivityIntent(
+      TopicActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         topicId

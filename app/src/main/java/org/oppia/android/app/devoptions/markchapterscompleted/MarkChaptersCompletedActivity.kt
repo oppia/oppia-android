@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -23,7 +22,7 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     val internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, /* defaultValue= */ -1)
     val showConfirmationNotice =
       intent.getBooleanExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, /* defaultValue= */ false)
@@ -38,15 +37,17 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
+  interface Injector {
+    fun inject(activity: MarkChaptersCompletedActivity)
+  }
+
   companion object {
     private const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedActivity.profile_id"
     private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
       "MarkChaptersCompletedActivity.show_confirmation_notice"
 
-    fun createMarkChaptersCompletedIntent(
-      context: Context,
-      internalProfileId: Int,
-      showConfirmationNotice: Boolean
+    fun createIntent(
+      context: Context, internalProfileId: Int, showConfirmationNotice: Boolean
     ): Intent {
       return Intent(context, MarkChaptersCompletedActivity::class.java).apply {
         putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)

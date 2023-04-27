@@ -5,7 +5,7 @@ import dagger.Module
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.topic.TopicActivity
 
-// TODO(#59): Split this to be per-activity.
+// TODO(#59): Move uses to ActivityRouter and remove this intent factory pattern.
 
 /** Module for providing [ActivityIntentFactories] factories. */
 @Module

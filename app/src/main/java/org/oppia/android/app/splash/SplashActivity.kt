@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
@@ -40,7 +39,7 @@ class SplashActivity :
     super.onCreate(savedInstanceState)
     val componentFactory = applicationContext as ActivityComponentFactory
     activityComponent = componentFactory.createActivityComponent(this)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     splashActivityPresenter.handleOnCreate()
     intent.decorateWithScreenName(SPLASH_ACTIVITY)
   }
@@ -57,4 +56,8 @@ class SplashActivity :
 
   override fun onGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss)
+
+  interface Injector {
+    fun inject(activity: SplashActivity)
+  }
 }

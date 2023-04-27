@@ -163,7 +163,7 @@ class ForceNetworkTypeActivityTest {
   }
 
   private fun createForceNetworkTypeActivityIntent(): Intent =
-    ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(context)
+    ForceNetworkTypeActivity.createIntent(context)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

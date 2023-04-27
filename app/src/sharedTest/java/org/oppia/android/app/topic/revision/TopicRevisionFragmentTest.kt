@@ -289,7 +289,7 @@ class TopicRevisionFragmentTest {
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
-    return TopicActivity.createTopicActivityIntent(
+    return TopicActivity.createIntent(
       context = ApplicationProvider.getApplicationContext(),
       internalProfileId = internalProfileId,
       topicId = topicId

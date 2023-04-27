@@ -3,7 +3,6 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.ADMIN_PIN_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -19,7 +18,7 @@ class AdminPinActivity : InjectableAppCompatActivity() {
   lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
 
   companion object {
-    fun createAdminPinActivityIntent(
+    fun createIntent(
       context: Context,
       profileId: Int,
       colorRgb: Int,
@@ -36,12 +35,16 @@ class AdminPinActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     adminPinActivityPresenter.handleOnCreate()
   }
 
   override fun onSupportNavigateUp(): Boolean {
     finish()
     return false
+  }
+
+  interface Injector {
+    fun inject(activity: AdminPinActivity)
   }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
@@ -58,7 +57,7 @@ class HelpActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     val isFromNavigationDrawer = intent.getBooleanExtra(
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
@@ -90,7 +89,7 @@ class HelpActivity :
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
       "HelpActivity.bool_is_from_navigation_drawer"
 
-    fun createHelpActivityIntent(
+    fun createIntent(
       context: Context,
       profileId: Int?,
       isFromNavigationDrawer: Boolean
@@ -104,12 +103,12 @@ class HelpActivity :
   }
 
   override fun onRouteToFAQList() {
-    val intent = FAQListActivity.createFAQListActivityIntent(this)
+    val intent = FAQListActivity.createIntent(this)
     startActivity(intent)
   }
 
   override fun onRouteToThirdPartyDependencyList() {
-    val intent = ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(this)
+    val intent = ThirdPartyDependencyListActivity.createIntent(this)
     startActivity(intent)
   }
 
@@ -136,14 +135,18 @@ class HelpActivity :
 
   // TODO(#3681): Add support to display Single FAQ in split mode on tablet devices.
   override fun onRouteToFAQSingle(question: String, answer: String) {
-    startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
+    startActivity(FAQSingleActivity.createIntent(this, question, answer))
   }
 
   override fun onRouteToPolicies(policyPage: PolicyPage) {
-    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policyPage))
+    startActivity(PoliciesActivity.createIntent(this, policyPage))
   }
 
   override fun loadPoliciesFragment(policyPage: PolicyPage) {
     helpActivityPresenter.handleLoadPoliciesFragment(policyPage)
+  }
+
+  interface Injector {
+    fun inject(activity: HelpActivity)
   }
 }

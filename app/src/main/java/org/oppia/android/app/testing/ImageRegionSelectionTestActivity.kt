@@ -1,8 +1,9 @@
 package org.oppia.android.app.testing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
@@ -12,7 +13,7 @@ class ImageRegionSelectionTestActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     setContentView(R.layout.test_activity)
     supportFragmentManager.beginTransaction()
       .add(
@@ -33,5 +34,14 @@ class ImageRegionSelectionTestActivity : InjectableAppCompatActivity() {
         as? ImageRegionSelectionTestFragment
         ?: throw AssertionError("Expected fragment to be present.")
     fragment.mockOnClickableAreaClickedListener = listener
+  }
+
+  interface Injector {
+    fun inject(activity: ImageRegionSelectionTestActivity)
+  }
+
+  companion object {
+    fun createIntent(context: Context): Intent =
+      Intent(context, ImageRegionSelectionTestActivity::class.java)
   }
 }

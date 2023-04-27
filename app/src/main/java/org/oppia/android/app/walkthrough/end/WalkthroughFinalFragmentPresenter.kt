@@ -12,7 +12,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.databinding.WalkthroughFinalFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
@@ -30,14 +29,16 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private val topicController: TopicController,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
-) : WalkthroughEndPageChanger {
+) : WalkthroughBackNavigationListener {
   private lateinit var binding: WalkthroughFinalFragmentBinding
   private lateinit var walkthroughFinalViewModel: WalkthroughFinalViewModel
   private lateinit var topicId: String
   private lateinit var profileId: ProfileId
   private lateinit var topicName: String
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, topicId: String): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater, container: ViewGroup?, topicId: String, internalProfileId: Int
+  ): View? {
     binding =
       WalkthroughFinalFragmentBinding.inflate(
         inflater,
@@ -45,10 +46,6 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
     this.topicId = topicId
-    val internalProfileId = activity.intent.getIntExtra(
-      WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
-      -1
-    )
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     walkthroughFinalViewModel = WalkthroughFinalViewModel()

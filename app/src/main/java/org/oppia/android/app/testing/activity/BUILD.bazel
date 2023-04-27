@@ -14,7 +14,10 @@ oppia_android_library(
     srcs = [
         "TestActivity.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+    ],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",

@@ -3,7 +3,6 @@ package org.oppia.android.app.mydownloads
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivity
@@ -19,13 +18,13 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     myDownloadsActivityPresenter.handleOnCreate()
     internalProfileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
   }
 
   companion object {
-    fun createMyDownloadsActivityIntent(context: Context, profileId: Int?): Intent {
+    fun createIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, MyDownloadsActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.decorateWithScreenName(MY_DOWNLOADS_ACTIVITY)
@@ -38,8 +37,12 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val intent = HomeActivity.createHomeActivity(this, internalProfileId)
+    val intent = HomeActivity.createIntent(this, internalProfileId)
     startActivity(intent)
     finish()
+  }
+
+  interface Injector {
+    fun inject(activity: MyDownloadsActivity)
   }
 }

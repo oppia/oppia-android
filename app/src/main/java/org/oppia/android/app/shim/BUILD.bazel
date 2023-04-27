@@ -56,7 +56,10 @@ oppia_android_library(
         "IntentFactoryShimModule.kt",
         "ViewBindingShimModule.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = [
+        "//:oppia_prod_module_visibility",
+        "//app/src/main/java/org/oppia/android/app/fragment:__pkg__",
+    ],
     deps = [
         ":impl",
         ":intent_factory_shim",

@@ -41,7 +41,12 @@ class MyDownloadsFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager(tabLayout: TabLayout, viewPager2: ViewPager2) {
-    val adapter = MyDownloadsViewPagerAdapter(fragment)
+    val adapter =
+      MyDownloadsViewPagerAdapter(
+        fragment,
+        createDownloadFragment = ::DownloadsTabFragment,
+        createUpdatesFragment = ::UpdatesTabFragment
+      )
     viewPager2.adapter = adapter
 
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->

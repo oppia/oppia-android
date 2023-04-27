@@ -450,9 +450,7 @@ class MarkTopicsCompletedFragmentTest {
   }
 
   private fun createMarkTopicsCompletedTestActivityIntent(internalProfileId: Int): Intent {
-    return MarkTopicsCompletedTestActivity.createMarkTopicsCompletedTestIntent(
-      context, internalProfileId
-    )
+    return MarkTopicsCompletedTestActivity.createIntent(context, internalProfileId)
   }
 
   private fun verifyTopicNameOnTopicSummaryListItemAtPosition(

@@ -168,11 +168,8 @@ class MarkTopicsCompletedActivityTest {
     }
   }
 
-  private fun createMarkTopicsCompletedActivityIntent(internalProfileId: Int): Intent {
-    return MarkTopicsCompletedActivity.createMarkTopicsCompletedIntent(
-      context, internalProfileId
-    )
-  }
+  private fun createMarkTopicsCompletedActivityIntent(internalProfileId: Int): Intent =
+    MarkTopicsCompletedActivity.createIntent(context, internalProfileId)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

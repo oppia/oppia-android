@@ -39,9 +39,7 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    binding.forceNetworkTypeToolbar.setNavigationOnClickListener {
-      (activity as ForceNetworkTypeActivity).finish()
-    }
+    binding.forceNetworkTypeToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.apply {
       this.lifecycleOwner = fragment

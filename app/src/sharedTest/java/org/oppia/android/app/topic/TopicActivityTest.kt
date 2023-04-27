@@ -152,11 +152,10 @@ class TopicActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenNameWithIntentOne = TopicActivity.createTopicActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID
-    ).extractCurrentAppScreenName()
+    val currentScreenNameWithIntentOne =
+      TopicActivity.createIntent(context, 1, FRACTIONS_TOPIC_ID).extractCurrentAppScreenName()
 
-    val currentScreenNameWithIntentTwo = TopicActivity.createTopicPlayStoryActivityIntent(
+    val currentScreenNameWithIntentTwo = TopicActivity.createIntent(
       context, 1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ).extractCurrentAppScreenName()
 
@@ -207,7 +206,7 @@ class TopicActivityTest {
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val scenario = ActivityScenario.launch<TopicActivity>(
-      TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId)
+      TopicActivity.createIntent(context, internalProfileId, topicId)
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))

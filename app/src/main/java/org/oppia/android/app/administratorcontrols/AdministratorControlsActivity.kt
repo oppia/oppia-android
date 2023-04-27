@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
@@ -19,31 +18,34 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
-const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
+private const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
   "AdministratorControlsActivity.selected_controls_title"
 
-/** Argument key for of selected profile for selected controls in [AdministratorControlsActivity]. */
-const val SELECTED_PROFILE_ID_SAVED_KEY =
+/**
+ * Argument key for of selected profile for selected controls in [AdministratorControlsActivity].
+ */
+private const val SELECTED_PROFILE_ID_SAVED_KEY =
   "AdministratorControlsActivity.selected_profile_id"
 
 /** Argument key for last loaded fragment in [AdministratorControlsActivity]. */
-const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
+private const val LAST_LOADED_FRAGMENT_EXTRA_KEY =
+  "AdministratorControlsActivity.last_loaded_fragment"
 
 /** Argument key used to identify [ProfileListFragment] in the backstack. */
-const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
+private const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 
 /** Argument key used to identify [ProfileEditFragment] in the backstack. */
-const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
+private const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
 
 /** Argument key for the Profile deletion confirmation in [ProfileEditActivity]. */
-const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
+private const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
   "ProfileEditActivity.is_profile_deletion_dialog_visible"
 
 /** Argument key used to identify [AppVersionFragment] in the backstack. */
-const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
+private const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
 /** Argument key used to identify [ProfileAndDeviceIdFragment] in the backstack. */
-const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
+private const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
 class AdministratorControlsActivity :
@@ -67,7 +69,7 @@ class AdministratorControlsActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     val extraControlsTitle =
       savedInstanceState?.getStringFromBundle(SELECTED_CONTROLS_TITLE_SAVED_KEY)
     isProfileDeletionDialogVisible =
@@ -89,11 +91,11 @@ class AdministratorControlsActivity :
   }
 
   override fun routeToAppVersion() {
-    startActivity(AppVersionActivity.createAppVersionActivityIntent(this))
+    startActivity(AppVersionActivity.createIntent(this))
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileListActivity.createProfileListActivityIntent(this))
+    startActivity(ProfileListActivity.createIntent(this))
   }
 
   override fun routeToLearnerAnalytics() {
@@ -112,9 +114,10 @@ class AdministratorControlsActivity :
 
   companion object {
     /** Returns an [Intent] to start this activity. */
-    fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
+    fun createIntent(context: Context, profileId: Int?, clearTop: Boolean = false): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
+      if (clearTop) intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
       return intent
     }
@@ -177,5 +180,9 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
     super.onSaveInstanceState(outState)
     administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
+  }
+
+  interface Injector {
+    fun inject(activity: AdministratorControlsActivity)
   }
 }

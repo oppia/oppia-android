@@ -169,12 +169,8 @@ class AdministratorControlsFragmentTest {
     }
   }
 
-  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
-    return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      context,
-      profileId
-    )
-  }
+  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent =
+    AdministratorControlsActivity.createIntent(context, profileId)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

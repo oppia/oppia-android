@@ -119,11 +119,7 @@ class PinPasswordActivityTest {
   @Test
   fun testPinPasswordActivityWithAdmin_inputCorrectPin_checkOpensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
-      PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
-      )
+      PinPasswordActivity.createIntent(context, adminPin, adminId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText("12345"))

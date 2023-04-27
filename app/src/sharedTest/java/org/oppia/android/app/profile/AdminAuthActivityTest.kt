@@ -157,7 +157,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = AdminAuthActivity.createAdminAuthActivityIntent(
+    val screenName = AdminAuthActivity.createIntent(
       context = context,
       adminPin = "12345",
       profileId = internalProfileId,
@@ -171,7 +171,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_closeButton_checkContentDescription() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -186,7 +186,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -211,7 +211,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_imeAction_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -235,7 +235,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_opensAddAdminControlsActivity() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -260,7 +260,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_imeAction_opensAdminControlsActivity() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -284,7 +284,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -316,7 +316,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_imeAction_errorIsDisplayed() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -347,7 +347,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_defaultButtonState_isDisabled() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -362,7 +362,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputPin_buttonStateIsEnabled() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -386,7 +386,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_buttonState_configChange_buttonStateIsPreserved() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -411,7 +411,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_fromAdminControls_configChange_headingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -462,7 +462,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_fromProfile_configChange_headingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -515,7 +515,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputText_configChange_inputTextIsPreserved() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -549,7 +549,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputIncorrectPasswordLandscape_checkError() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -590,7 +590,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_imeAction_configChange_errorIsDisplayed() {
     launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -630,7 +630,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_forProfileAdminControls_hasAuthorizeAccessControlsTitle() {
     activityTestRule.launchActivity(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,
@@ -650,7 +650,7 @@ class AdminAuthActivityTest {
   @Test
   fun testAdminAuthActivity_forAddProfile_hasAuthorizeAddProfileTitle() {
     activityTestRule.launchActivity(
-      AdminAuthActivity.createAdminAuthActivityIntent(
+      AdminAuthActivity.createIntent(
         context = context,
         adminPin = "12345",
         profileId = internalProfileId,

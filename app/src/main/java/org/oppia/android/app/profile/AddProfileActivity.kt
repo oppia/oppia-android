@@ -3,7 +3,6 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -17,7 +16,7 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
 
   companion object {
-    fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
+    fun createIntent(context: Context, colorRgb: Int): Intent {
       return Intent(context, AddProfileActivity::class.java).apply {
         putExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, colorRgb)
         decorateWithScreenName(ADD_PROFILE_ACTIVITY)
@@ -27,7 +26,7 @@ class AddProfileActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     addProfileFragmentPresenter.handleOnCreate()
   }
 
@@ -47,5 +46,9 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   override fun onDestroy() {
     super.onDestroy()
     addProfileFragmentPresenter.dismissAlertDialog()
+  }
+
+  interface Injector {
+    fun inject(activity: AddProfileActivity)
   }
 }

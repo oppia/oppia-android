@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
 
@@ -15,7 +14,7 @@ class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_topics_completed_activity)
@@ -34,11 +33,15 @@ class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
       .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment?
   }
 
+  interface Injector {
+    fun inject(activity: MarkTopicsCompletedTestActivity)
+  }
+
   companion object {
     const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedTestActivity.profile_id"
 
     /** Returns an [Intent] for [MarkTopicsCompletedTestActivity]. */
-    fun createMarkTopicsCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
+    fun createIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, MarkTopicsCompletedTestActivity::class.java)
       intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent

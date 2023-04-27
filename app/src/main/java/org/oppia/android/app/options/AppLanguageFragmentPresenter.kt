@@ -49,13 +49,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun updateAppLanguage(appLanguage: String) {
-    // The first branch of (when) will be used in the case of multipane
-    when (val parentActivity = fragment.activity) {
-      is OptionsActivity -> parentActivity.optionActivityPresenter.updateAppLanguage(appLanguage)
-      is AppLanguageActivity -> parentActivity.appLanguageActivityPresenter.setLanguageSelected(
-        appLanguage
-      )
-    }
+    (fragment.activity as AppLanguageSelectionListener).onLanguageSelected(appLanguage)
   }
 
   fun onLanguageSelected(selectedLanguage: String) {

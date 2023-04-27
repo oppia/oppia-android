@@ -3,7 +3,6 @@ package org.oppia.android.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
@@ -17,12 +16,12 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** The activity to change the Default Audio language of the app. */
-class AudioLanguageActivity : InjectableAppCompatActivity() {
+class AudioLanguageActivity : InjectableAppCompatActivity(), AudioLanguageSelectedListener {
   @Inject lateinit var audioLanguageActivityPresenter: AudioLanguageActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     audioLanguageActivityPresenter.handleOnCreate(
       savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams()
     )
@@ -43,10 +42,7 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
     private const val ACTIVITY_SAVED_STATE_KEY = "AudioLanguageActivity.saved_state"
 
     /** Returns a new [Intent] to route to [AudioLanguageActivity]. */
-    fun createAudioLanguageActivityIntent(
-      context: Context,
-      audioLanguage: AudioLanguage
-    ): Intent {
+    fun createIntent(context: Context, audioLanguage: AudioLanguage): Intent {
       return Intent(context, AudioLanguageActivity::class.java).apply {
         val arguments = AudioLanguageActivityParams.newBuilder().apply {
           this.audioLanguage = audioLanguage
@@ -67,5 +63,13 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
         ACTIVITY_SAVED_STATE_KEY, AudioLanguageActivityStateBundle.getDefaultInstance()
       ).audioLanguage
     }
+  }
+
+  override fun onLanguageSelected(audioLanguage: AudioLanguage) {
+    audioLanguageActivityPresenter.setLanguageSelected(audioLanguage)
+  }
+
+  interface Injector {
+    fun inject(activity: AudioLanguageActivity)
   }
 }

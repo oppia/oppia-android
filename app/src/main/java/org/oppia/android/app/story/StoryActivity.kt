@@ -3,7 +3,6 @@ package org.oppia.android.app.story
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
@@ -29,7 +28,7 @@ class StoryActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     internalProfileId = intent.getIntExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, -1)
     topicId = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID)) {
       "Expected extra topic ID to be included for StoryActivity."
@@ -49,7 +48,7 @@ class StoryActivity :
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
-      ExplorationActivity.createExplorationActivityIntent(
+      ExplorationActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -70,7 +69,7 @@ class StoryActivity :
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     startActivity(
-      ResumeLessonActivity.createResumeLessonActivityIntent(
+      ResumeLessonActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -86,13 +85,17 @@ class StoryActivity :
     finish()
   }
 
+  interface Injector {
+    fun inject(activity: StoryActivity)
+  }
+
   companion object {
     const val STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID = "StoryActivity.internal_profile_id"
     const val STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID = "StoryActivity.topic_id"
     const val STORY_ACTIVITY_INTENT_EXTRA_STORY_ID = "StoryActivity.story_id"
 
     /** Returns a new [Intent] to route to [StoryActivity] for a specified story. */
-    fun createStoryActivityIntent(
+    fun createIntent(
       context: Context,
       internalProfileId: Int,
       topicId: String,

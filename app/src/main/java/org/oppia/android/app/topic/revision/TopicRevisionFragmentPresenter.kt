@@ -23,7 +23,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModel: TopicRevisionViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-) : RevisionSubtopicSelector {
+) : RevisionSubtopicSelectionListener {
   private lateinit var binding: TopicRevisionFragmentBinding
   private var internalProfileId: Int = -1
   private lateinit var topicId: String

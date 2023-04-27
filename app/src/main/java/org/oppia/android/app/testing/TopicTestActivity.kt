@@ -1,7 +1,8 @@
 package org.oppia.android.app.testing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
@@ -31,7 +32,7 @@ class TopicTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     topicActivityPresenter.handleOnCreate(
       internalProfileId = 0,
       topicId = TEST_TOPIC_ID_0,
@@ -41,7 +42,7 @@ class TopicTestActivity :
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
-      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+      QuestionPlayerActivity.createIntent(
         this, skillIdList, ProfileId.getDefaultInstance()
       )
     )
@@ -49,7 +50,7 @@ class TopicTestActivity :
 
   override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
     startActivity(
-      StoryActivity.createStoryActivityIntent(
+      StoryActivity.createIntent(
         this,
         internalProfileId,
         topicId,
@@ -67,7 +68,7 @@ class TopicTestActivity :
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
-      ExplorationActivity.createExplorationActivityIntent(
+      ExplorationActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -86,9 +87,17 @@ class TopicTestActivity :
     subtopicListSize: Int
   ) {
     startActivity(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         this, internalProfileId, topicId, subtopicId, subtopicListSize
       )
     )
+  }
+
+  interface Injector {
+    fun inject(activity: TopicTestActivity)
+  }
+
+  companion object {
+    fun createIntent(context: Context): Intent = Intent(context, TopicTestActivity::class.java)
   }
 }

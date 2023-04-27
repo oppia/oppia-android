@@ -3,7 +3,6 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.RouteToPoliciesListener
@@ -27,7 +26,7 @@ class PoliciesFragmentTestActivity : TestActivity(), RouteToPoliciesListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
 
     policiesFragmentTestActivityPresenter.handleOnCreate(
       intent.getProtoExtra(
@@ -43,19 +42,27 @@ class PoliciesFragmentTestActivity : TestActivity(), RouteToPoliciesListener {
       "PoliciesFragmentTestActivity.policy_page"
 
     /** Returns the [Intent] for opening [PoliciesFragmentTestActivity] for the specified [policyPage]. */
-    fun createPoliciesFragmentTestActivity(context: Context, policyPage: PolicyPage): Intent {
+    fun createIntent(context: Context, policyPage: PolicyPage): Intent {
       val policiesActivityParams =
         PoliciesActivityParams
           .newBuilder()
           .setPolicyPage(policyPage)
           .build()
+      return createIntent(context, policiesActivityParams)
+    }
+
+    fun createIntent(context: Context, params: PoliciesActivityParams): Intent {
       return Intent(context, PoliciesFragmentTestActivity::class.java).also {
-        it.putProtoExtra(POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO, policiesActivityParams)
+        it.putProtoExtra(POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO, params)
       }
     }
   }
 
   override fun onRouteToPolicies(policyPage: PolicyPage) {
     mockCallbackListener.onRouteToPolicies(PolicyPage.PRIVACY_POLICY)
+  }
+
+  interface Injector {
+    fun inject(activity: PoliciesFragmentTestActivity)
   }
 }

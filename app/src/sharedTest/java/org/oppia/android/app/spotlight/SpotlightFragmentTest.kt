@@ -38,7 +38,6 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.SpotlightFragmentTestActivity
-import org.oppia.android.app.testing.SpotlightFragmentTestActivity.Companion.createSpotlightFragmentTestActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -141,7 +140,7 @@ class SpotlightFragmentTest {
   fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
     TestPlatformParameterModule.forceEnableSpotlightUi(false)
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      SpotlightFragmentTestActivity.createIntent(context)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -163,7 +162,7 @@ class SpotlightFragmentTest {
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      SpotlightFragmentTestActivity.createIntent(context)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -184,7 +183,7 @@ class SpotlightFragmentTest {
   @Test
   fun testSpotlightFragment_requestDelayedSpotlight_shouldShowSpotlight() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
-    launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
+    launch<SpotlightFragmentTestActivity>(SpotlightFragmentTestActivity.createIntent(context)).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -206,7 +205,7 @@ class SpotlightFragmentTest {
   @Test
   fun testSpotlightFragment_markSpotlightSeen_checkSpotlightIsNotShowAgain() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
-    launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
+    launch<SpotlightFragmentTestActivity>(SpotlightFragmentTestActivity.createIntent(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
           activity.getSampleSpotlightTarget(),
@@ -222,7 +221,7 @@ class SpotlightFragmentTest {
     }
 
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      SpotlightFragmentTestActivity.createIntent(context)
     ).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -242,7 +241,7 @@ class SpotlightFragmentTest {
   @Test
   fun testSpotlightFragment_exitSpotlightWithoutClickingDone_checkSpotlightIsShowAgain() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
-    launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
+    launch<SpotlightFragmentTestActivity>(SpotlightFragmentTestActivity.createIntent(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
           activity.getSampleSpotlightTarget(),
@@ -257,7 +256,7 @@ class SpotlightFragmentTest {
     }
 
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      SpotlightFragmentTestActivity.createIntent(context)
     ).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -278,7 +277,7 @@ class SpotlightFragmentTest {
   fun testSpotlightQueuing_requestTwoSpotlights_checkFirstSpotlightShown() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      SpotlightFragmentTestActivity.createIntent(context)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -309,7 +308,7 @@ class SpotlightFragmentTest {
   fun testSpotlightQueuing_requestTwoSpotlights_pressDone_checkSecondSpotlightShown() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      SpotlightFragmentTestActivity.createIntent(context)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->

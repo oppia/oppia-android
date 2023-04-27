@@ -23,6 +23,10 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.topic.info.TopicInfoFragment
+import org.oppia.android.app.topic.lessons.TopicLessonsFragment
+import org.oppia.android.app.topic.practice.TopicPracticeFragment
+import org.oppia.android.app.topic.revision.TopicRevisionFragment
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
@@ -61,9 +65,7 @@ class TopicFragmentPresenter @Inject constructor(
     this.internalProfileId = internalProfileId
     this.topicId = topicId
 
-    binding.topicToolbar.setNavigationOnClickListener {
-      (activity as TopicActivity).finish()
-    }
+    binding.topicToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.topicToolbar.setOnClickListener {
       binding.topicToolbarTitle.isSelected = true
@@ -122,7 +124,17 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
     val adapter =
-      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enableExtraTopicTabsUi.value)
+      ViewPagerAdapter(
+        fragment,
+        internalProfileId,
+        topicId,
+        storyId,
+        enableExtraTopicTabsUi.value,
+        createTopicInfoFragment = TopicInfoFragment::newInstance,
+        createTopicLessonsFragment = TopicLessonsFragment::newInstance,
+        createTopicPracticeFragment = TopicPracticeFragment::newInstance,
+        createTopicRevisionFragment = TopicRevisionFragment::newInstance
+      )
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)

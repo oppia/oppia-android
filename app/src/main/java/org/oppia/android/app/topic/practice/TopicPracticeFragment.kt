@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
+
+// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
+private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
+private const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
@@ -34,7 +35,7 @@ class TopicPracticeFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateView(
@@ -75,5 +76,9 @@ class TopicPracticeFragment : InjectableFragment() {
       SKILL_ID_LIST_ARGUMENT_KEY,
       topicPracticeFragmentPresenter.skillIdHashMap
     )
+  }
+
+  interface Injector {
+    fun inject(fragment: TopicPracticeFragment)
   }
 }

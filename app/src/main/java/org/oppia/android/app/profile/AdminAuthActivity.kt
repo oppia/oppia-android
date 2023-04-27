@@ -3,7 +3,6 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.ADMIN_AUTH_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -20,7 +19,7 @@ class AdminAuthActivity : InjectableAppCompatActivity() {
   lateinit var adminAuthFragmentPresenter: AdminAuthActivityPresenter
 
   companion object {
-    fun createAdminAuthActivityIntent(
+    fun createIntent(
       context: Context,
       adminPin: String,
       profileId: Int,
@@ -43,12 +42,16 @@ class AdminAuthActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     adminAuthFragmentPresenter.handleOnCreate()
   }
 
   override fun onSupportNavigateUp(): Boolean {
     finish()
     return false
+  }
+
+  interface Injector {
+    fun inject(activity: AdminAuthActivity)
   }
 }

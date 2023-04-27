@@ -469,9 +469,7 @@ class MarkStoriesCompletedFragmentTest {
   }
 
   private fun createMarkStoriesCompletedTestActivityIntent(internalProfileId: Int): Intent {
-    return MarkStoriesCompletedTestActivity.createMarkStoriesCompletedTestIntent(
-      context, internalProfileId
-    )
+    return MarkStoriesCompletedTestActivity.createIntent(context, internalProfileId)
   }
 
   private fun verifyStoryNameOnStorySummaryListItemAtPosition(

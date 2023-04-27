@@ -35,9 +35,7 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
       )
     ongoingTopicListViewModel.setProfileId(internalProfileId)
 
-    binding.ongoingTopicListToolbar.setNavigationOnClickListener {
-      (activity as OngoingTopicListActivity).finish()
-    }
+    binding.ongoingTopicListToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.ongoingTopicList.apply {
       adapter = createRecyclerViewAdapter()

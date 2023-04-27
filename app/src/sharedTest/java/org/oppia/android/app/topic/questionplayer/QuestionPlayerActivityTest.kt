@@ -234,7 +234,7 @@ class QuestionPlayerActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+    val currentScreenName = QuestionPlayerActivity.createIntent(
       context, ArrayList(SKILL_ID_LIST), profileId
     ).extractCurrentAppScreenName()
 
@@ -563,9 +563,7 @@ class QuestionPlayerActivityTest {
     skillIdList: List<String>
   ): ActivityScenario<QuestionPlayerActivity> {
     val scenario = ActivityScenario.launch<QuestionPlayerActivity>(
-      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, ArrayList(skillIdList), profileId
-      )
+      QuestionPlayerActivity.createIntent(context, ArrayList(skillIdList), profileId)
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))

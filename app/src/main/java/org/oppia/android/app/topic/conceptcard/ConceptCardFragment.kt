@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.R
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProto
@@ -46,7 +45,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,5 +73,9 @@ class ConceptCardFragment : InjectableDialogFragment() {
   override fun onStart() {
     super.onStart()
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
+  }
+
+  interface Injector {
+    fun inject(fragment: ConceptCardFragment)
   }
 }

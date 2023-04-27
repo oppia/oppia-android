@@ -152,7 +152,7 @@ class LicenseTextViewerActivityTest {
     dependencyIndex: Int,
     licenseIndex: Int
   ): Intent {
-    return LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
+    return LicenseTextViewerActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       dependencyIndex,
       licenseIndex

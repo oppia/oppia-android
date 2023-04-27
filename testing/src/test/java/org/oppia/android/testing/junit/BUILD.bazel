@@ -7,11 +7,14 @@ load("//defs:oppia_android_test.bzl", "oppia_android_test")
 oppia_android_test(
     name = "InitializeDefaultLocaleRuleCustomContextTest",
     srcs = ["InitializeDefaultLocaleRuleCustomContextTest.kt"],
+    android_merge_deps = ["//app:resources"],
     deps = [
         "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
+        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router_module",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
         "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
@@ -94,11 +97,14 @@ oppia_android_test(
 oppia_android_test(
     name = "InitializeDefaultLocaleRuleOmissionTest",
     srcs = ["InitializeDefaultLocaleRuleOmissionTest.kt"],
+    android_merge_deps = ["//app:resources"],
     deps = [
         "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
+        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router_module",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
         "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
@@ -178,11 +184,14 @@ oppia_android_test(
 oppia_android_test(
     name = "InitializeDefaultLocaleRuleTest",
     srcs = ["InitializeDefaultLocaleRuleTest.kt"],
+    android_merge_deps = ["//app:resources"],
     deps = [
         "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
+        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router_module",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
         "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",

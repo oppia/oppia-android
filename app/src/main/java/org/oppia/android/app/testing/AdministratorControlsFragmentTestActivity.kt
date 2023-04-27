@@ -3,7 +3,6 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.administratorcontrols.LoadAppVersionListener
 import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
 import org.oppia.android.app.administratorcontrols.LoadProfileListListener
@@ -35,16 +34,16 @@ class AdministratorControlsFragmentTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     administratorControlsFragmentTestActivityPresenter.handleOnCreate()
   }
 
   override fun routeToAppVersion() {
-    startActivity(AppVersionActivity.createAppVersionActivityIntent(this))
+    startActivity(AppVersionActivity.createIntent(this))
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileListActivity.createProfileListActivityIntent(this))
+    startActivity(ProfileListActivity.createIntent(this))
   }
 
   override fun loadProfileList() {}
@@ -55,12 +54,13 @@ class AdministratorControlsFragmentTestActivity :
 
   override fun showLogoutDialog() {}
 
+  interface Injector {
+    fun inject(activity: AdministratorControlsFragmentTestActivity)
+  }
+
   companion object {
     /** Returns an [Intent] to start this activity. */
-    fun createAdministratorControlsFragmentTestActivityIntent(
-      context: Context,
-      profileId: Int?
-    ): Intent {
+    fun createIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, AdministratorControlsFragmentTestActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent

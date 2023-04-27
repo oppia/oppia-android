@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
@@ -37,7 +36,7 @@ class NavigationDrawerTestActivity :
   private var internalProfileId: Int = -1
 
   companion object {
-    fun createNavigationDrawerTestActivity(context: Context, profileId: Int?): Intent {
+    fun createIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent
@@ -46,7 +45,7 @@ class NavigationDrawerTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     homeActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
@@ -58,12 +57,12 @@ class NavigationDrawerTestActivity :
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+    startActivity(TopicActivity.createIntent(this, internalProfileId, topicId))
   }
 
   override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
     startActivity(
-      TopicActivity.createTopicPlayStoryActivityIntent(
+      TopicActivity.createIntent(
         this,
         internalProfileId,
         topicId,
@@ -86,5 +85,9 @@ class NavigationDrawerTestActivity :
         .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
         .build()
     )
+  }
+
+  interface Injector {
+    fun inject(activity: NavigationDrawerTestActivity)
   }
 }

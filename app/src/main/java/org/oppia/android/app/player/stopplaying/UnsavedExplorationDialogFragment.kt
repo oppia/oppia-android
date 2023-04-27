@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import org.oppia.android.R
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 
 /**
@@ -27,7 +26,7 @@ class UnsavedExplorationDialogFragment : InjectableDialogFragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (fragmentComponent as FragmentComponentImpl).inject(this)
+    (fragmentComponent as Injector).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -48,5 +47,9 @@ class UnsavedExplorationDialogFragment : InjectableDialogFragment() {
         dismiss()
       }
       .create()
+  }
+
+  interface Injector {
+    fun inject(fragment: UnsavedExplorationDialogFragment)
   }
 }

@@ -166,7 +166,7 @@ class AdminPinActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = AdminPinActivity.createAdminPinActivityIntent(
+    val currentScreenName = AdminPinActivity.createIntent(
       context = context,
       profileId = 0,
       colorRgb = -10710042,
@@ -179,7 +179,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -196,7 +196,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputPin_submit_opensAddProfileActivity() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -232,7 +232,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputPin_imeAction_opensAddProfileActivity() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -266,7 +266,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminAuthActivity_inputPin_submit_opensAdminControlsActivity() {
     launch<AdminAuthActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -305,7 +305,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminAuthActivity_inputPin_imeAction_opensAdminControlsActivity() {
     launch<AdminAuthActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -340,7 +340,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputShortPin_clickIsDisabled() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -364,7 +364,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputShortPin_submit_inputPin_errorIsCleared() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -398,7 +398,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_submit_confirmWrongError() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -443,7 +443,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputPinAndWrongConfirmPin_imeAction_confirmWrongError() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -483,7 +483,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputPinAndWrongConfirmPin_submit_inputConfirmPin_errorIsCleared() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -526,7 +526,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputPinAndWrongConfirmPin_inputConfirmPin_errorIsCleared() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -568,7 +568,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_closeButton_checkContentDescription() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -582,7 +582,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputPin_submit_opensAddProfileActivity() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -621,7 +621,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputPin_imeAction_opensAddProfileActivity() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -657,7 +657,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputPin_submit_opensAdminControlsActivity() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -696,7 +696,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputPin_imeAction_opensAdminControlsActivity() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -732,7 +732,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputShortPin_submit_clickIsDisabled() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -757,7 +757,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputShortPin_submit_inputPin_errorIsCleared() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -792,7 +792,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputPinAndWrongConfirmPin_submit_confirmWrongError() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -835,7 +835,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputPinAndWrongConfirmPin_confirmWrongError() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -878,7 +878,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputPinAndWrongConfirmPin_inputConfirmPinErrorIsCleared() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -925,7 +925,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_configChange_inputWrongConfirmPin_imeAction_correct_errorIsCleared() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -971,7 +971,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputPinAndWrongConfirmPin_submit_configChange_confirmWrongError() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -1014,7 +1014,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputPinAndWrongConfirmPin_imeAction_configChange_confirmWrongError() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,
@@ -1055,7 +1055,7 @@ class AdminPinActivityTest {
   @Test
   fun testAdminPinActivity_inputShortPin_configChange_clickIsDisabled() {
     launch<AdminPinActivity>(
-      AdminPinActivity.createAdminPinActivityIntent(
+      AdminPinActivity.createIntent(
         context = context,
         profileId = 0,
         colorRgb = -10710042,

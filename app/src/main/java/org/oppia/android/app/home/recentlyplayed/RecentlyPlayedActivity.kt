@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
@@ -32,7 +31,7 @@ class RecentlyPlayedActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     val recentlyPlayedActivityParams = intent.getProtoExtra(
       RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
       RecentlyPlayedActivityParams.getDefaultInstance()
@@ -46,7 +45,7 @@ class RecentlyPlayedActivity :
       "RecentlyPlayedActivity.intent_extras"
 
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
-    fun createRecentlyPlayedActivityIntent(
+    fun createIntent(
       context: Context,
       recentlyPlayedActivityParams: RecentlyPlayedActivityParams
     ): Intent {
@@ -69,7 +68,7 @@ class RecentlyPlayedActivity :
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
-      ExplorationActivity.createExplorationActivityIntent(
+      ExplorationActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -90,7 +89,7 @@ class RecentlyPlayedActivity :
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     startActivity(
-      ResumeLessonActivity.createResumeLessonActivityIntent(
+      ResumeLessonActivity.createIntent(
         this,
         profileId,
         topicId,
@@ -102,12 +101,15 @@ class RecentlyPlayedActivity :
     )
   }
 
+  interface Injector {
+    fun inject(activity: RecentlyPlayedActivity)
+  }
+
   class RecentlyPlayedActivityIntentFactoryImpl @Inject constructor(
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.RecentlyPlayedActivityIntentFactory {
     override fun createIntent(
       recentlyPlayedActivityParams: RecentlyPlayedActivityParams
-    ): Intent =
-      createRecentlyPlayedActivityIntent(activity, recentlyPlayedActivityParams)
+    ): Intent = Companion.createIntent(activity, recentlyPlayedActivityParams)
   }
 }

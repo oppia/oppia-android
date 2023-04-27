@@ -3,7 +3,6 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -20,7 +19,7 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (activityComponent as ActivityComponentImpl).inject(this)
+    (activityComponent as Injector).inject(this)
     conceptCardFragmentTestActivityController.handleOnCreate(
       intent.getProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
     )
@@ -32,6 +31,10 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
 
   private fun getConceptCardFragment(): ConceptCardFragment? {
     return supportFragmentManager.findFragmentByTag(TAG_CONCEPT_CARD_DIALOG) as ConceptCardFragment?
+  }
+
+  interface Injector {
+    fun inject(activity: ConceptCardFragmentTestActivity)
   }
 
   companion object {

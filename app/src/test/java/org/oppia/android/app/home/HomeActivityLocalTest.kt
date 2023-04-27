@@ -124,9 +124,8 @@ class HomeActivityLocalTest {
     }
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
-    return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
-  }
+  private fun createHomeActivityIntent(profileId: Int): Intent =
+    HomeActivity.createIntent(ApplicationProvider.getApplicationContext(), profileId)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

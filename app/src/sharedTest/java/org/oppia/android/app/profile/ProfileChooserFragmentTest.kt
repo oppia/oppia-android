@@ -479,10 +479,8 @@ class ProfileChooserFragmentTest {
     }
   }
 
-  private fun createProfileChooserActivityIntent(): Intent {
-    return ProfileChooserActivity
-      .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
-  }
+  private fun createProfileChooserActivityIntent(): Intent =
+    ProfileChooserActivity.createIntent(ApplicationProvider.getApplicationContext())
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.profile_recycler_view)).perform(

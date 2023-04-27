@@ -149,7 +149,7 @@ class PoliciesActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = PoliciesActivity.createPoliciesActivityIntent(
+    val screenName = PoliciesActivity.createIntent(
       ApplicationProvider.getApplicationContext(),
       PolicyPage.PRIVACY_POLICY
     ).extractCurrentAppScreenName()
@@ -160,7 +160,7 @@ class PoliciesActivityTest {
   @Test
   fun testActivity_forPrivacyPolicy_hasCorrectActivityLabel() {
     launch<PoliciesActivity>(
-      PoliciesActivity.createPoliciesActivityIntent(
+      PoliciesActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
@@ -178,7 +178,7 @@ class PoliciesActivityTest {
   @Test
   fun testPoliciesActivity_inTermsOfServicePage_clickOnPrivacyLink_routesToPrivacyPolicy() {
     launch<PoliciesActivity>(
-      PoliciesActivity.createPoliciesActivityIntent(
+      PoliciesActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
@@ -211,7 +211,7 @@ class PoliciesActivityTest {
   @Test
   fun testActivity_forTermsOfService_hasCorrectActivityLabel() {
     launch<PoliciesActivity>(
-      PoliciesActivity.createPoliciesActivityIntent(
+      PoliciesActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
@@ -229,7 +229,7 @@ class PoliciesActivityTest {
   @Test
   fun testPoliciesFragment_forUnspecified_policyPageIsUnspecified() {
     launch<PoliciesActivity>(
-      PoliciesActivity.createPoliciesActivityIntent(
+      PoliciesActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.POLICY_PAGE_UNSPECIFIED
       )

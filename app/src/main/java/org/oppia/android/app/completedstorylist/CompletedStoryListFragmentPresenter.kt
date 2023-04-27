@@ -35,9 +35,7 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
         container,
         /* attachToRoot= */ false
       )
-    binding.completedStoryListToolbar.setNavigationOnClickListener {
-      (activity as CompletedStoryListActivity).finish()
-    }
+    binding.completedStoryListToolbar.setNavigationOnClickListener { activity.finish() }
     binding.completedStoryList.apply {
       val spanCount = activity.resources.getInteger(R.integer.completed_story_span_count)
       layoutManager = GridLayoutManager(context, spanCount)

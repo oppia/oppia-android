@@ -3,11 +3,7 @@ package org.oppia.android.app.utility
 import android.content.Context
 import android.content.res.Resources
 import org.oppia.android.R
-import org.oppia.android.app.model.EphemeralQuestion
-import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionIds
-import org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment
 import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -15,8 +11,9 @@ import kotlin.math.sqrt
 private const val MINIMUM_DIAGONAL_WIDTH = 7.0
 
 /**
- * A helper class that is used to detect whether to split the screen in [QuestionPlayerFragment]
- * and [StateFragment] or not based on multiple factors.
+ * A helper class that is used to detect whether to split the screen in
+ * [org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment] and
+ * [org.oppia.android.app.player.state.StateFragment] or not based on multiple factors.
  */
 class SplitScreenManager @Inject constructor(
   private val context: Context,
@@ -26,9 +23,10 @@ class SplitScreenManager @Inject constructor(
   /**
    * The actual function that decides whether to split or not.
    *
-   * @param[interactionId] the id of the interaction of the state inside the [EphemeralState] or
-   * [EphemeralQuestion].
-   * @return `true` if the screen should be split, `false` otherwise.
+   * @param interactionId the id of the interaction of the state inside the
+   *     [org.oppia.android.app.model.EphemeralState] or
+   *     [org.oppia.android.app.model.EphemeralQuestion]
+   * @return whether the screen should be split
    */
   fun shouldSplitScreen(interactionId: String): Boolean {
     return isDeviceLargeEnoughForSplitScreen() && isInteractionSplittable(interactionId)
@@ -50,8 +48,10 @@ class SplitScreenManager @Inject constructor(
   }
 
   /**
-   * Checks the device efficiency for splitting based on the **density** and **diagonal physical size**.
-   * @return `true` if the device is splittable, `false` otherwise.
+   * Checks the device efficiency for splitting based on the **density** and **diagonal physical
+   * size**.
+   *
+   * @return whether the device is splittable
    */
   private fun isDeviceLargeEnoughForSplitScreen(): Boolean {
     val shouldSplit = context.resources.getBoolean(R.bool.shouldCheckForSplittingInteraction)
@@ -60,9 +60,11 @@ class SplitScreenManager @Inject constructor(
 
   /**
    * Checks whether the given interaction is suitable for splitting the screen or not.
-   * @param[interactionId] the id of the interaction of the state inside the [EphemeralState] or
-   * [EphemeralQuestion].
-   * @return `true` if the interaction is suitable for splitting, `false` otherwise.
+   *
+   * @param interactionId the id of the interaction of the state inside the
+   *     [org.oppia.android.app.model.EphemeralState] or
+   *     [org.oppia.android.app.model.EphemeralQuestion]
+   * @return whether if the interaction is suitable for splitting
    */
   private fun isInteractionSplittable(interactionId: String): Boolean {
     return splitInteractionIds.find {

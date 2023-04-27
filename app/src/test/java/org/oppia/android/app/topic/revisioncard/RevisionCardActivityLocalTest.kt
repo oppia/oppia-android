@@ -109,7 +109,7 @@ class RevisionCardActivityLocalTest {
   @Test
   fun testRevisionCard_onLaunch_logsEvent() {
     ActivityScenario.launch<RevisionCardActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      RevisionCardActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
