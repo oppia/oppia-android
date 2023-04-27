@@ -1,6 +1,5 @@
 package org.oppia.android.app.translation
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import org.oppia.android.domain.locale.LocaleController
@@ -95,10 +94,6 @@ class AppLanguageWatcherMixin @Inject constructor(
                 // and doesn't need a DataProvider past the splash screen). Finally, if the decision
                 // is made to recreate the activity then ensure it can never happen again in this
                 // activity by removing this observer.
-                Log.e(
-                  "locale changing",
-                  localeResult.value.localeContext.languageDefinition.language.name
-                )
                 liveData.removeObserver(this)
                 activityRecreator.recreate(activity)
               }
