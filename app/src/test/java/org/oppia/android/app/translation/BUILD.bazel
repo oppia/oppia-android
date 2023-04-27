@@ -50,8 +50,8 @@ oppia_android_test(
     test_manifest = "//app:test_manifest",
     deps = [
         ":dagger",
-        "//app/src/main/java/org/oppia/android/app/translation:app_language_locale_handler",
         "//app/src/main/java/org/oppia/android/app/translation:activity_language_locale_handler",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_locale_handler",
         "//config/src/java/org/oppia/android/config:all_languages_config",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",

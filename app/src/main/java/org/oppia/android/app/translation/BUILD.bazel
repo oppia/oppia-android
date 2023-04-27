@@ -41,9 +41,9 @@ kt_android_library(
         "//testing/src/test/java/org/oppia/android/testing/junit:__pkg__",
     ],
     deps = [
+        ":app_language_locale_handler",
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
-        ":app_language_locale_handler",
     ],
 )
 
@@ -70,12 +70,12 @@ kt_android_library(
     ],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":activity_language_locale_handler",
         ":activity_recreator",
         ":app_language_locale_handler",
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
-        ":activity_language_locale_handler"
     ],
 )
 
@@ -125,9 +125,9 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
     ],
     deps = [
+        ":activity_language_locale_handler",
         ":app_language_resource_handler",
         ":app_language_watcher_mixin",
-        ":activity_language_locale_handler"
     ],
 )
 
@@ -141,8 +141,8 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
     ],
     deps = [
+        ":activity_language_locale_handler",
         ":app_language_activity_injector",
-        ":activity_language_locale_handler"
     ],
 )
 

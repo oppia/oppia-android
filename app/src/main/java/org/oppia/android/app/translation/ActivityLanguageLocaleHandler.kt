@@ -19,6 +19,11 @@ class ActivityLanguageLocaleHandler @Inject constructor(
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler
 ) {
 
+  /**
+   * Holds an Activity localized state of [OppiaLocale.DisplayLocale] which is loaded
+   * lazily from [AppLanguageLocaleHandler.getDisplayLocale] and updated when language
+   * preference changes via [ActivityLanguageLocaleHandler.updateLocale].
+   */
   val displayLocale: OppiaLocale.DisplayLocale by lazy {
     appLanguageLocaleHandler.getDisplayLocale()
   }
