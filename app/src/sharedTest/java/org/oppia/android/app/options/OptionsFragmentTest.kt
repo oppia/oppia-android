@@ -32,7 +32,6 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -481,7 +480,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  @Ignore("Languages loading not supported while using gradle")
+  @Suppress
   fun openOptionsActivity_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -511,7 +510,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  @Ignore("Languages loading not supported while using gradle")
+  @Suppress
   fun openOptionsActivity_configChange_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
