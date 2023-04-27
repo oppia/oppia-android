@@ -19,6 +19,7 @@ oppia_android_library(
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/networking:network_connection_test_util",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//third_party:com_google_protobuf_protobuf-javalite",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//third_party:kotlinx-coroutines-core-jvm",

@@ -55,6 +55,7 @@ oppia_android_test(
     deps = [
         "//model/src/main/proto:test_models",
         "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_protobuf_protobuf-javalite",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//third_party:org_robolectric_annotations",

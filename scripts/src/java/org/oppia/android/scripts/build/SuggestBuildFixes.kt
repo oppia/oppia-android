@@ -33,8 +33,24 @@ fun main(vararg args: String) {
   }
 }
 
+// TODO: Update to assemble an actual dependency graph to traverse. This has major benefits:
+//  - It should significantly speed up rebuilding (since building should always start at the bottom
+//    of the graph).
+//  - It theoretically allows for batch building by asking Bazel to build unrelated targets (care
+//    needs to be taken during output parsing) which also means utilizing parallelization for faster
+//    builds.
+//  - It allows for correct target specification when mentioning import failures (since the exact
+//    target will be known).
 class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: BazelClient) {
   fun suggestBuildFixes(targetPatterns: List<String>, outputMode: OutputMode) {
+    suggestBuildFixesAux(targetPatterns, outputMode)
+  }
+
+  private fun suggestBuildFixesAux(
+    targetPatterns: List<String>,
+    outputMode: OutputMode,
+    previousFailures: Set<DetectedFailure> = emptySet()
+  ) {
     val allTargets = targetPatterns.flatMap {
       // Ignore 'manual' tagged builds as they aren't meant to be included in broad patterns.
       bazelClient.query("set($it) - attr(tags, 'manual', $it)", withSkyQuery = true)
@@ -70,7 +86,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     for (failure in noteworthyFailures) {
       when (failure) {
         is DetectedFailure.UnresolvedReferences -> {
-          printTargetLine("Add deps to ", failure.target, " for missing imports:")
+          printTargetLine("Add deps to ", failure.target, " (or a dep) for missing imports:")
           failure.unresolvableImports.forEach { println(" - $it") }
           println()
         }
@@ -141,7 +157,15 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
 
     when {
       noteworthyFailures.isEmpty() -> println("No issues found in provided target patterns.")
-      outputMode == OutputMode.FIX -> println("Please verify the issues described above are fixed.")
+      previousFailures == noteworthyFailures.toSet() && outputMode == OutputMode.FIX ->
+        println("All remaining issues cannot be auto-resolved. Please fix them manually.")
+      outputMode == OutputMode.FIX -> {
+        println("Issues were fixed, re-running check to ensure everything has been fixed.")
+        println()
+        suggestBuildFixesAux(
+          targetPatterns, outputMode, previousFailures = noteworthyFailures.toSet()
+        )
+      }
       else -> println("Please fix the issues described above and try again.")
     }
   }
@@ -185,7 +209,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
   private fun File.replaceDeps(deps: ParsedDeps) {
     val updatedLines = readLines().asSequence().replaceRange(deps.lineRange) { oldLines ->
       val indent = oldLines.first().substringBefore('"')
-      return@replaceRange deps.deps.map { "$indent\"$it\"," }
+      return@replaceRange deps.deps.sorted().map { "$indent\"$it\"," }
     }
     outputStream().bufferedWriter().use { writer -> updatedLines.forEach(writer::appendLine) }
   }
@@ -201,7 +225,28 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
 
   private data class ParsedDeps(val deps: Set<String>, val lineRange: IntRange) {
     fun addDeps(deps: Set<String>) = copy(deps = this.deps + deps)
-    fun removeDeps(deps: Set<String>) = copy(deps = this.deps - deps)
+
+    fun removeDeps(deps: Set<String>): ParsedDeps {
+      // Dagger is a bit hacky in how it's referenced (since the top-level //:dagger target exports
+      // a Dagger target similar to //third_party:com_google_dagger_dagger). This requires special
+      // handling to ensure the auto-fixer doesn't get stuck when trying to clean up such deps.
+      val oldDeps = this.deps
+      val baseDaggerReference = setOf("//third_party:com_google_dagger_dagger")
+      val depsToRemove = deps - baseDaggerReference
+      val firstPassUpdatedDeps = oldDeps - depsToRemove
+      val removingDagger = depsToRemove.size < deps.size
+      val secondPassUpdatedDeps = if (removingDagger) {
+        // Dagger is also being removed. First, try to remove it using the //third_party reference.
+        firstPassUpdatedDeps - baseDaggerReference
+      } else firstPassUpdatedDeps
+      val daggerWasNotRemoved = secondPassUpdatedDeps.size == firstPassUpdatedDeps.size
+      val thirdPassUpdatedDeps = if (removingDagger && daggerWasNotRemoved) {
+        // If the target doesn't contain the third-party reference, try removing the generated
+        // :dagger target, instead.
+        secondPassUpdatedDeps - "//:dagger"
+      } else secondPassUpdatedDeps
+      return copy(deps = thirdPassUpdatedDeps)
+    }
   }
 
   private sealed class DetectedFailure {
@@ -237,9 +282,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
           it.trim().startsWith("** Please add the following dependencies to")
         }.takeUntil { !it.startsWith("- ") }.map { it.removePrefix("- ") }.map {
           if ("Target //" in it) it.substringBefore("Target //") else it
-        }.mapToSet {
-          InterpretedTarget.interpretTarget(bazelClient, it)
-        }
+        }.mapToSet { InterpretedTarget.interpretTarget(bazelClient, it, target) }
 
         val targetForDepRemoval = failureLines.asSequence().map {
           it.removePrefix("INFO:").trim()
@@ -252,7 +295,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         }.dropUntil {
           it.trim().startsWith("** Please remove the following dependencies from")
         }.takeUntil { !it.startsWith("- ") }.map { it.removePrefix("- ") }.mapToSet {
-          InterpretedTarget.interpretTarget(bazelClient, it)
+          InterpretedTarget.interpretTarget(bazelClient, it, target)
         }
 
         val targetForJavaDepAdding = failureLines.asSequence().dropUntil {
@@ -262,7 +305,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         val depsToAddForJava = failureLines.asSequence().map { it.trim() }.dropUntil {
           it.trim().startsWith("** Please add the following dependencies:")
         }.firstOrNull()?.substringBefore(" to ")?.trim()?.split(" ")?.mapToSet {
-          InterpretedTarget.interpretTarget(bazelClient, it)
+          InterpretedTarget.interpretTarget(bazelClient, it, target)
         } ?: emptySet()
 
         val unresolvedReferences = failureLines.mapIndexedNotNull { index, line ->
@@ -301,14 +344,16 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         "maven_scripts" to "//scripts:third_party"
       )
 
-      fun interpretTarget(bazelClient: BazelClient, target: String): InterpretedTarget {
+      fun interpretTarget(
+        bazelClient: BazelClient, target: String, referencingTarget: String
+      ): InterpretedTarget {
         return when {
-          target.endsWith("_proto") -> bazelClient.interpretProtoTarget(target)
+          target.endsWith("_proto") -> bazelClient.interpretProtoTarget(target, referencingTarget)
           target.startsWith("//") || target.startsWith("@//") ->
-            Resolved(target.removePrefix("@").normalizeTarget())
+            Resolved(target.removePrefix("@").normalizeTarget(referencingTarget))
           mavenThirdPartyPrefixMapping.keys.any { target.startsWith("@$it//") } ->
-            bazelClient.interpretMavenTarget(target)
-          "/_aar/" in target -> bazelClient.interpretAarTarget(target)
+            bazelClient.interpretMavenTarget(target, referencingTarget)
+          "/_aar/" in target -> bazelClient.interpretAarTarget(target, referencingTarget)
           // Special case re-interpretation since deps use a different target.
           target.startsWith("@com_google_protobuf_protobuf_javalite") ->
             Resolved("//third_party:com_google_protobuf_protobuf-javalite")
@@ -323,7 +368,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
             Resolved("//third_party:com_github_takusemba_spotlight")
           else -> {
             bazelClient.interpretThirdPartyWrappedDependency(
-              target, expectedThirdPartyPrefix = "//third_party"
+              target, referencingTarget, expectedThirdPartyPrefix = "//third_party"
             )
           }
         }
@@ -331,29 +376,37 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
 
       // The first wrapper library which depends on the proto should be the one exporting it (and
       // there should be just one).
-      private fun BazelClient.interpretProtoTarget(target: String): InterpretedTarget {
-        return resolveTarget(target) {
+      private fun BazelClient.interpretProtoTarget(
+        target: String, referencingTarget: String
+      ): InterpretedTarget {
+        return resolveTarget(target, referencingTarget) {
           query("kind(java_lite_proto_library,allrdeps($target,1))", withSkyQuery = true).single()
         }
       }
 
-      private fun BazelClient.interpretAarTarget(target: String): InterpretedTarget {
+      private fun BazelClient.interpretAarTarget(
+        target: String, referencingTarget: String
+      ): InterpretedTarget {
         val mavenType = target.substringBefore("/_aar/").substringAfterLast('/')
         val targetName = target.substringAfter("/_aar/").substringBefore('/')
-        return interpretMavenTarget(target = "@$mavenType//:$targetName")
+        return interpretMavenTarget(target = "@$mavenType//:$targetName", referencingTarget)
       }
 
-      private fun BazelClient.interpretMavenTarget(target: String): InterpretedTarget {
+      private fun BazelClient.interpretMavenTarget(
+        target: String, referencingTarget: String
+      ): InterpretedTarget {
         val mavenType = target.removePrefix("@").substringBefore("//")
         return interpretThirdPartyWrappedDependency(
-          target, expectedThirdPartyPrefix = mavenThirdPartyPrefixMapping.getValue(mavenType)
+          target,
+          referencingTarget,
+          expectedThirdPartyPrefix = mavenThirdPartyPrefixMapping.getValue(mavenType)
         )
       }
 
       private fun BazelClient.interpretThirdPartyWrappedDependency(
-        target: String, expectedThirdPartyPrefix: String
+        target: String, referencingTarget: String, expectedThirdPartyPrefix: String
       ): InterpretedTarget {
-        return resolveTarget(target) {
+        return resolveTarget(target, referencingTarget) {
           val queryResult =
             query("somepath($expectedThirdPartyPrefix/..., $target)", withSkyQuery = false)
           checkNotNull(queryResult.firstOrNull()) {
@@ -366,9 +419,11 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         }
       }
 
-      private fun resolveTarget(originalTarget: String, query: () -> String?): InterpretedTarget {
+      private fun resolveTarget(
+        originalTarget: String, referencingTarget: String, query: () -> String?
+      ): InterpretedTarget {
         return cachedTargetMapping.getOrPut(originalTarget) {
-          query()?.normalizeTarget()?.let(::Resolved) ?: Unknown(originalTarget)
+          query()?.normalizeTarget(referencingTarget)?.let(::Resolved) ?: Unknown(originalTarget)
         }
       }
     }
@@ -477,6 +532,17 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         if (lastPackage == target) return "${baseNormalized.substringBeforeLast('/')}/$lastPackage"
       }
       return baseNormalized
+    }
+
+    private fun String.normalizeTarget(referencingTarget: String): String {
+      val reference = normalizeTarget()
+      val referencing = referencingTarget.normalizeTarget()
+      val containingPackageForReference = reference.substringBeforeLast(':')
+      val containingPackageForReferencing = referencing.substringBeforeLast(':')
+      return if (containingPackageForReference == containingPackageForReferencing) {
+        // The packages are co-located so use ':<target>', instead.
+        reference.substringAfter(containingPackageForReference)
+      } else reference
     }
   }
 }
