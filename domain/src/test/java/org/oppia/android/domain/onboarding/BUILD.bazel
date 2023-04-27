@@ -26,6 +26,7 @@ oppia_android_test(
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//third_party:androidx_test_core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
         "//third_party:com_google_truth_truth",
         "//third_party:javax_inject_javax_inject",
         "//third_party:junit_junit",
