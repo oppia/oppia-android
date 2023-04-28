@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
+
 /**
  * Activity-scoped handler for the current locale configured for all app layer components.
  *
@@ -16,7 +17,7 @@ import javax.inject.Inject
  */
 class ActivityLanguageLocaleHandler @Inject constructor(
   private val localeController: LocaleController,
-  private val appLanguageLocaleHandler: AppLanguageLocaleHandler
+  val appLanguageLocaleHandler: AppLanguageLocaleHandler
 ) {
 
   /**

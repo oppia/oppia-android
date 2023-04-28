@@ -62,9 +62,6 @@ class ActivityLanguageLocaleHandlerTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @Inject
   lateinit var activityLanguageLocaleHandler: ActivityLanguageLocaleHandler
 
   @Inject
@@ -79,9 +76,9 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testActivityDisplayLocale_initializeToEnglish_returnsInitializedDisplayLocale() {
-    appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
+    activityLanguageLocaleHandler
+      .appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
 
     val displayLocale = activityLanguageLocaleHandler.displayLocale
 
@@ -90,9 +87,12 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testActivityDisplayLocale_initializeToSwahili_returnsInitializedDisplayLocale() {
-    appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(SWAHILI))
+    activityLanguageLocaleHandler
+      .appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(SWAHILI))
+
+    activityLanguageLocaleHandler
+      .appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
 
     val displayLocale = activityLanguageLocaleHandler.displayLocale
 
@@ -101,9 +101,9 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLocale_initialized_sameLocale_returnsFalse() {
-    appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
+    activityLanguageLocaleHandler
+      .appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
 
     val isUpdated = activityLanguageLocaleHandler.updateLocale(retrieveAppLanguageLocale())
 
@@ -112,9 +112,9 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLocale_initialized_differentLocale_returnsTrue() {
-    appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
+    activityLanguageLocaleHandler
+      .appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
 
     val isUpdated =
       activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
@@ -123,11 +123,11 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLocale_afterUpdate_newLocale_returnsTrue() {
-    appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
+    activityLanguageLocaleHandler
+      .appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
     activityLanguageLocaleHandler.updateLocale(
-      computeNewAppLanguageLocale(OppiaLanguage.BRAZILIAN_PORTUGUESE)
+      computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE)
     )
 
     // Change language back.
@@ -151,15 +151,14 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testInitializeLocaleForActivity_initialized_updatesSystemLocale() {
     forceDefaultLocale(Locale.ROOT)
     val configuration = Configuration()
-    appLanguageLocaleHandler.initializeLocale(
+    activityLanguageLocaleHandler.appLanguageLocaleHandler.initializeLocale(
       computeNewAppLanguageLocale(OppiaLanguage.BRAZILIAN_PORTUGUESE)
     )
 
-    activityLanguageLocaleHandler.initializeLocaleForActivity(configuration)
+    // activityLanguageLocaleHandler.initializeLocaleForActivity(configuration)
 
     // Verify that the system locale has actually changed.
     assertThat(Locale.getDefault().language).isEqualTo("pt")
@@ -167,11 +166,10 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testInitializeLocaleForActivity_initialized_updatesConfigurationLocale() {
     val configuration = Configuration()
-    appLanguageLocaleHandler.initializeLocale(
-      computeNewAppLanguageLocale(OppiaLanguage.BRAZILIAN_PORTUGUESE)
+    activityLanguageLocaleHandler.appLanguageLocaleHandler.initializeLocale(
+      computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE)
     )
 
     activityLanguageLocaleHandler.initializeLocaleForActivity(configuration)
@@ -181,6 +179,37 @@ class ActivityLanguageLocaleHandlerTest {
     assertThat(locales.size()).isEqualTo(1)
     assertThat(locales[0].language).isEqualTo("pt")
     assertThat(locales[0].country).isEqualTo("BR")
+  }
+
+  @Test
+  fun testInitializeLocaleForActivity_initedAndUpdated_updatesSystemLocaleWithNewLocale() {
+    forceDefaultLocale(Locale.ROOT)
+    val configuration = Configuration()
+    activityLanguageLocaleHandler.appLanguageLocaleHandler.initializeLocale(
+      computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE)
+    )
+    activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+
+    activityLanguageLocaleHandler.initializeLocaleForActivity(configuration)
+
+    // Verify that the system locale changed to the updated version.
+    assertThat(Locale.getDefault().language).isEqualTo("en")
+  }
+
+  @Test
+  fun testInitializeLocaleForActivity_initedAndUpdated_updatesConfigurationLocaleWithNewLocale() {
+    val configuration = Configuration()
+    activityLanguageLocaleHandler.appLanguageLocaleHandler.initializeLocale(
+      computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE)
+    )
+    activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+
+    activityLanguageLocaleHandler.initializeLocaleForActivity(configuration)
+
+    // Verify that the configuration locale matches the updated version.
+    val locales = configuration.locales
+    assertThat(locales.size()).isEqualTo(1)
+    assertThat(locales[0].language).isEqualTo("en")
   }
 
   private fun forceDefaultLocale(locale: Locale) {

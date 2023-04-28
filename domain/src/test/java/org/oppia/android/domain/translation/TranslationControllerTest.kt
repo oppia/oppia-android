@@ -504,11 +504,11 @@ class TranslationControllerTest {
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection).isEqualTo(expectedLanguageSelection)
+    assertThat(selection).isEqualToDefaultInstance()
   }
 
   @Test
-  fun testUpdateAppLanguage_systemToEnglish_returnsUpdatedSystemSelection() {
+  fun testUpdateAppLanguage_systemToEnglish_returnsSelectedSelection() {
     forceDefaultLocale(Locale.ROOT)
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
 
@@ -519,11 +519,12 @@ class TranslationControllerTest {
 
     // The previous selection was system language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection.selectionTypeCase).isEqualTo(SELECTED_APP_LANGUAGE)
+    assertThat(selection.selectionTypeCase)
+      .isEqualTo(AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE)
   }
 
   @Test
-  fun testUpdateAppLanguage_englishToPortuguese_returnsBrazilianSelection() {
+  fun testUpdateAppLanguage_englishToPortuguese_returnsSelectedSelection() {
     forceDefaultLocale(Locale.ROOT)
     ensureAppLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
 
