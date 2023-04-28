@@ -6,9 +6,24 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files([
     "ProgressDatabaseFullDialogFragment.kt",
-    "RestartPlayingSessionListener.kt",
     "StopExplorationDialogFragment.kt",
-    "StopStatePlayingSessionListener.kt",
-    "StopStatePlayingSessionWithSavedProgressListener.kt",
     "UnsavedExplorationDialogFragment.kt",
 ])
+
+oppia_android_library(
+    name = "restart_playing_session_listener",
+    srcs = ["RestartPlayingSessionListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "stop_state_playing_session_listener",
+    srcs = ["StopStatePlayingSessionListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "stop_state_playing_session_with_saved_progress_listener",
+    srcs = ["StopStatePlayingSessionWithSavedProgressListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

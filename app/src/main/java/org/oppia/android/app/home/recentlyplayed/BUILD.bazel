@@ -5,7 +5,6 @@ TODO: finish build file doc.
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files([
-    "PromotedStoryClickListener.kt",
     "PromotedStoryViewModel.kt",
     "RecentlyPlayedActivity.kt",
     "RecentlyPlayedActivityPresenter.kt",
@@ -15,3 +14,10 @@ exports_files([
     "RecentlyPlayedViewModel.kt",
     "SectionTitleViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "promoted_story_click_listener",
+    srcs = ["PromotedStoryClickListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:topic_java_proto_lite"],
+)

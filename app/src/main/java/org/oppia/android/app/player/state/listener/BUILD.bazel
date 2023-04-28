@@ -4,15 +4,64 @@ TODO: finish build file doc.
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-exports_files([
-    "ContinueNavigationButtonListener.kt",
-    "NextNavigationButtonListener.kt",
-    "PreviousNavigationButtonListener.kt",
-    "PreviousResponsesHeaderClickListener.kt",
-    "ReplayButtonListener.kt",
-    "ReturnToTopicNavigationButtonListener.kt",
-    "RouteToHintsAndSolutionListener.kt",
-    "ShowHintAvailabilityListener.kt",
-    "StateKeyboardButtonListener.kt",
-    "SubmitNavigationButtonListener.kt",
-])
+oppia_android_library(
+    name = "continue_navigation_button_listener",
+    srcs = ["ContinueNavigationButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "next_navigation_button_listener",
+    srcs = ["NextNavigationButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "previous_navigation_button_listener",
+    srcs = ["PreviousNavigationButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "previous_responses_header_click_listener",
+    srcs = ["PreviousResponsesHeaderClickListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "replay_button_listener",
+    srcs = ["ReplayButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "return_to_topic_navigation_button_listener",
+    srcs = ["ReturnToTopicNavigationButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_hints_and_solution_listener",
+    srcs = ["RouteToHintsAndSolutionListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:exploration_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "show_hint_availability_listener",
+    srcs = ["ShowHintAvailabilityListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:exploration_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "state_keyboard_button_listener",
+    srcs = ["StateKeyboardButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "submit_navigation_button_listener",
+    srcs = ["SubmitNavigationButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

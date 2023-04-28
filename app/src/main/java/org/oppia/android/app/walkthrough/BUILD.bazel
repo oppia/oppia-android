@@ -6,15 +6,30 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files([
     "WalkthroughActivity.kt",
-    "WalkthroughActivityListener.kt",
     "WalkthroughActivityPresenter.kt",
-    "WalkthroughFragmentChangeListener.kt",
-    "WalkthroughNextPageNavigationListener.kt",
     "WalkthroughViewModel.kt",
 ])
 
 oppia_android_library(
     name = "walkthrough_pages",
     srcs = ["WalkthroughPages.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "walkthrough_activity_listener",
+    srcs = ["WalkthroughActivityListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "walkthrough_fragment_change_listener",
+    srcs = ["WalkthroughFragmentChangeListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "walkthrough_next_page_navigation_listener",
+    srcs = ["WalkthroughNextPageNavigationListener.kt"],
     visibility = ["//app:app_visibility"],
 )

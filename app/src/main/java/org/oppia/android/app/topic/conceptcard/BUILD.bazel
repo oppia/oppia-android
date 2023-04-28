@@ -7,6 +7,11 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 exports_files([
     "ConceptCardFragment.kt",
     "ConceptCardFragmentPresenter.kt",
-    "ConceptCardListener.kt",
     "ConceptCardViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "concept_card_listener",
+    srcs = ["ConceptCardListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

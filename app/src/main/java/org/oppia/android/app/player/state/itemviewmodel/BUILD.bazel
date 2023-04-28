@@ -23,7 +23,6 @@ exports_files([
     "ReturnToTopicButtonViewModel.kt",
     "SelectionInteractionContentViewModel.kt",
     "SelectionInteractionViewModel.kt",
-    "SplitScreenInteractionIds.kt",
     "SplitScreenInteractionModule.kt",
     "StateItemViewModel.kt",
     "SubmitButtonViewModel.kt",
@@ -45,4 +44,11 @@ oppia_android_library(
         "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
     ],
+)
+
+oppia_android_library(
+    name = "split_screen_interaction_ids",
+    srcs = ["SplitScreenInteractionIds.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//third_party:javax_inject_javax_inject"],
 )

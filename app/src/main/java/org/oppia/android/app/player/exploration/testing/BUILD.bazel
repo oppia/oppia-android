@@ -13,7 +13,7 @@ oppia_android_library(
     visibility = ["//app:app_testing_visibility"],
     deps = [
         "//app:fragments",
-        "//app:listeners",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:bottom_sheet_options_menu_item_click_listener",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     ],
 )

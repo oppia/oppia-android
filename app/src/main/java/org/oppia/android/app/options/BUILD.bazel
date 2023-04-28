@@ -10,20 +10,13 @@ exports_files([
     "AppLanguageFragment.kt",
     "AppLanguageFragmentPresenter.kt",
     "AppLanguageItemViewModel.kt",
-    "AppLanguageRadioButtonListener.kt",
-    "AppLanguageSelectionListener.kt",
     "AppLanguageSelectionViewModel.kt",
     "AudioLanguageActivity.kt",
     "AudioLanguageActivityPresenter.kt",
     "AudioLanguageFragment.kt",
     "AudioLanguageFragmentPresenter.kt",
     "AudioLanguageItemViewModel.kt",
-    "AudioLanguageRadioButtonListener.kt",
-    "AudioLanguageSelectedListener.kt",
     "AudioLanguageSelectionViewModel.kt",
-    "LoadAppLanguageListListener.kt",
-    "LoadAudioLanguageListListener.kt",
-    "LoadReadingTextSizeListener.kt",
     "OptionControlsViewModel.kt",
     "OptionsActivity.kt",
     "OptionsActivityPresenter.kt",
@@ -38,10 +31,85 @@ exports_files([
     "ReadingTextSizeFragment.kt",
     "ReadingTextSizeFragmentPresenter.kt",
     "ReadingTextSizeSelectionViewModel.kt",
-    "RouteToAppLanguageListListener.kt",
-    "RouteToAudioLanguageListListener.kt",
-    "RouteToReadingTextSizeListener.kt",
     "TextSizeItemViewModel.kt",
-    "TextSizeRadioButtonListener.kt",
-    "TextSizeSelectedListener.kt",
 ])
+
+oppia_android_library(
+    name = "app_language_radio_button_listener",
+    srcs = ["AppLanguageRadioButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "app_language_selection_listener",
+    srcs = ["AppLanguageSelectionListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "audio_language_radio_button_listener",
+    srcs = ["AudioLanguageRadioButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:profile_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "audio_language_selected_listener",
+    srcs = ["AudioLanguageSelectedListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:profile_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "load_app_language_list_listener",
+    srcs = ["LoadAppLanguageListListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "load_audio_language_list_listener",
+    srcs = ["LoadAudioLanguageListListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:profile_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "load_reading_text_size_listener",
+    srcs = ["LoadReadingTextSizeListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:profile_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "route_to_app_language_list_listener",
+    srcs = ["RouteToAppLanguageListListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_audio_language_list_listener",
+    srcs = ["RouteToAudioLanguageListListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:profile_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "route_to_reading_text_size_listener",
+    srcs = ["RouteToReadingTextSizeListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:profile_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "text_size_radio_button_listener",
+    srcs = ["TextSizeRadioButtonListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:profile_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "text_size_selected_listener",
+    srcs = ["TextSizeSelectedListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:profile_java_proto_lite"],
+)

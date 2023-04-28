@@ -10,15 +10,25 @@ exports_files([
     "OnboardingActivityPresenter.kt",
     "OnboardingFragment.kt",
     "OnboardingFragmentPresenter.kt",
-    "OnboardingNavigationListener.kt",
     "OnboardingSlideFinalViewModel.kt",
     "OnboardingViewModel.kt",
     "OnboardingViewPagerViewModel.kt",
-    "RouteToProfileListListener.kt",
 ])
 
 oppia_android_library(
     name = "view_pager_slide",
     srcs = ["ViewPagerSlide.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "onboarding_navigation_listener",
+    srcs = ["OnboardingNavigationListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_profile_list_listener",
+    srcs = ["RouteToProfileListListener.kt"],
     visibility = ["//app:app_visibility"],
 )

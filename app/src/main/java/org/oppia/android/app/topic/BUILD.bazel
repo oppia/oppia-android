@@ -5,11 +5,6 @@ TODO: finish build file doc.
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files([
-    "RouteToConceptCardListener.kt",
-    "RouteToQuestionPlayerListener.kt",
-    "RouteToResumeLessonListener.kt",
-    "RouteToRevisionCardListener.kt",
-    "RouteToStoryListener.kt",
     "TopicActivity.kt",
     "TopicActivityPresenter.kt",
     "TopicFragment.kt",
@@ -37,4 +32,39 @@ oppia_android_library(
         "//third_party:androidx_viewpager2_viewpager2",
         "//third_party:kotlinx-coroutines-core-jvm",
     ],
+)
+
+oppia_android_library(
+    name = "route_to_concept_card_listener",
+    srcs = ["RouteToConceptCardListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_question_player_listener",
+    srcs = ["RouteToQuestionPlayerListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_resume_lesson_listener",
+    srcs = ["RouteToResumeLessonListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+    ],
+)
+
+oppia_android_library(
+    name = "route_to_revision_card_listener",
+    srcs = ["RouteToRevisionCardListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_story_listener",
+    srcs = ["RouteToStoryListener.kt"],
+    visibility = ["//app:app_visibility"],
 )

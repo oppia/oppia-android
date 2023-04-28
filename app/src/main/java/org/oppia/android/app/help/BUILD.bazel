@@ -12,17 +12,53 @@ exports_files([
     "HelpItemViewModel.kt",
     "HelpListViewModel.kt",
     "HelpViewModel.kt",
-    "LoadFaqListFragmentListener.kt",
-    "LoadLicenseListFragmentListener.kt",
-    "LoadLicenseTextViewerFragmentListener.kt",
-    "LoadPoliciesFragmentListener.kt",
-    "LoadThirdPartyDependencyListFragmentListener.kt",
-    "RouteToFAQListListener.kt",
-    "RouteToThirdPartyDependencyListListener.kt",
 ])
 
 oppia_android_library(
     name = "help_items",
     srcs = ["HelpItems.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "load_faq_list_fragment_listener",
+    srcs = ["LoadFaqListFragmentListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "load_license_list_fragment_listener",
+    srcs = ["LoadLicenseListFragmentListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "load_license_text_viewer_fragment_listener",
+    srcs = ["LoadLicenseTextViewerFragmentListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "load_policies_fragment_listener",
+    srcs = ["LoadPoliciesFragmentListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:arguments_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "load_third_party_dependency_list_fragment_listener",
+    srcs = ["LoadThirdPartyDependencyListFragmentListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_faq_list_listener",
+    srcs = ["RouteToFAQListListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_third_party_dependency_list_listener",
+    srcs = ["RouteToThirdPartyDependencyListListener.kt"],
     visibility = ["//app:app_visibility"],
 )

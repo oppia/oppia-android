@@ -11,10 +11,35 @@ exports_files([
     "HomeFragmentPresenter.kt",
     "HomeItemViewModel.kt",
     "HomeViewModel.kt",
-    "RouteToExplorationListener.kt",
-    "RouteToRecentlyPlayedListener.kt",
-    "RouteToTopicListener.kt",
-    "RouteToTopicPlayStoryListener.kt",
     "UserAppHistoryViewModel.kt",
     "WelcomeViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "route_to_exploration_listener",
+    srcs = ["RouteToExplorationListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+    ],
+)
+
+oppia_android_library(
+    name = "route_to_recently_played_listener",
+    srcs = ["RouteToRecentlyPlayedListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:arguments_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "route_to_topic_listener",
+    srcs = ["RouteToTopicListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_topic_play_story_listener",
+    srcs = ["RouteToTopicPlayStoryListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

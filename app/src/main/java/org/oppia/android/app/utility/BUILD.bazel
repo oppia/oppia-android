@@ -4,20 +4,15 @@ TODO: finish build file doc.
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-exports_files([
-    "KeyboardHelper.kt",
-    "OnClickableAreaClickedListener.kt",
-])
-
 oppia_android_library(
     name = "clickable_areas_image",
     srcs = ["ClickableAreasImage.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
-        "//app:listeners",
+        ":region_click_event",
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
-        "//app/src/main/java/org/oppia/android/app/utility:region_click_event",
+        "//app/src/main/java/org/oppia/android/app/utility:on_clickable_area_clicked_listener",
         "//model/src/main/proto:interaction_object_java_proto_lite",
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_core_core",
@@ -34,6 +29,12 @@ oppia_android_library(
         "//model/src/main/proto:profile_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
     ],
+)
+
+oppia_android_library(
+    name = "keyboard_helper",
+    srcs = ["KeyboardHelper.kt"],
+    visibility = ["//app:app_visibility"],
 )
 
 oppia_android_library(
@@ -60,8 +61,8 @@ oppia_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         "//:dagger",
-        "//app:annotations",
         "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:split_screen_interaction_ids",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -71,4 +72,11 @@ oppia_android_library(
     srcs = ["TextInputEditTextHelper.kt"],
     visibility = ["//app:app_visibility"],
     deps = ["//third_party:com_google_android_material_material"],
+)
+
+oppia_android_library(
+    name = "on_clickable_area_clicked_listener",
+    srcs = ["OnClickableAreaClickedListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [":region_click_event"],
 )

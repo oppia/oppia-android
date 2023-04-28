@@ -8,7 +8,6 @@ exports_files([
     "ProfilePictureActivity.kt",
     "ProfilePictureActivityPresenter.kt",
     "ProfilePictureActivityViewModel.kt",
-    "ProfilePictureClickListener.kt",
     "ProfilePictureDialogInterface.kt",
     "ProfilePictureEditDialogFragment.kt",
     "ProfileProgressActivity.kt",
@@ -19,6 +18,22 @@ exports_files([
     "ProfileProgressItemViewModel.kt",
     "ProfileProgressViewModel.kt",
     "RecentlyPlayedStorySummaryViewModel.kt",
-    "RouteToCompletedStoryListListener.kt",
-    "RouteToOngoingTopicListListener.kt",
 ])
+
+oppia_android_library(
+    name = "profile_picture_click_listener",
+    srcs = ["ProfilePictureClickListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_completed_story_list_listener",
+    srcs = ["RouteToCompletedStoryListListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_ongoing_topic_list_listener",
+    srcs = ["RouteToOngoingTopicListListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

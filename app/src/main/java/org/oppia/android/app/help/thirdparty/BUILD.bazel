@@ -16,8 +16,6 @@ exports_files([
     "LicenseTextViewerActivityPresenter.kt",
     "LicenseTextViewerFragment.kt",
     "LicenseTextViewerFragmentPresenter.kt",
-    "RouteToLicenseListListener.kt",
-    "RouteToLicenseTextListener.kt",
     "ThirdPartyDependencyItemViewModel.kt",
     "ThirdPartyDependencyListActivity.kt",
     "ThirdPartyDependencyListActivityPresenter.kt",
@@ -25,3 +23,15 @@ exports_files([
     "ThirdPartyDependencyListFragmentPresenter.kt",
     "ThirdPartyDependencyListViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "route_to_license_list_listener",
+    srcs = ["RouteToLicenseListListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_license_text_listener",
+    srcs = ["RouteToLicenseTextListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

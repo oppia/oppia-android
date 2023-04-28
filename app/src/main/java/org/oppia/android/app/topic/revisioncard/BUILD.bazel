@@ -5,10 +5,15 @@ TODO: finish build file doc.
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files([
-    "ReturnToTopicClickListener.kt",
     "RevisionCardActivity.kt",
     "RevisionCardActivityPresenter.kt",
     "RevisionCardFragment.kt",
     "RevisionCardFragmentPresenter.kt",
     "RevisionCardViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "return_to_topic_click_listener",
+    srcs = ["ReturnToTopicClickListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

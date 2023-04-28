@@ -11,7 +11,6 @@ exports_files([
     "NavigationDrawerFragment.kt",
     "NavigationDrawerFragmentPresenter.kt",
     "NavigationDrawerHeaderViewModel.kt",
-    "RouteToProfileProgressListener.kt",
 ])
 
 oppia_android_library(
@@ -19,4 +18,10 @@ oppia_android_library(
     srcs = ["NavigationDrawerItem.kt"],
     visibility = ["//app:app_visibility"],
     deps = ["//app:resources"],
+)
+
+oppia_android_library(
+    name = "route_to_profile_progress_listener",
+    srcs = ["RouteToProfileProgressListener.kt"],
+    visibility = ["//app:app_visibility"],
 )

@@ -10,5 +10,10 @@ exports_files([
     "FAQListFragment.kt",
     "FAQListFragmentPresenter.kt",
     "FAQListViewModel.kt",
-    "RouteToFAQSingleListener.kt",
 ])
+
+oppia_android_library(
+    name = "route_to_faq_single_listener",
+    srcs = ["RouteToFAQSingleListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

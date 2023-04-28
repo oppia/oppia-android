@@ -14,11 +14,46 @@ exports_files([
     "DeveloperOptionsStarterImpl.kt",
     "DeveloperOptionsStarterModule.kt",
     "DeveloperOptionsViewModel.kt",
-    "ForceCrashButtonClickListener.kt",
-    "RouteToForceNetworkTypeListener.kt",
-    "RouteToMarkChaptersCompletedListener.kt",
-    "RouteToMarkStoriesCompletedListener.kt",
-    "RouteToMarkTopicsCompletedListener.kt",
-    "RouteToMathExpressionParserTestListener.kt",
-    "RouteToViewEventLogsListener.kt",
 ])
+
+oppia_android_library(
+    name = "force_crash_button_click_listener",
+    srcs = ["ForceCrashButtonClickListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_force_network_type_listener",
+    srcs = ["RouteToForceNetworkTypeListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_mark_chapters_completed_listener",
+    srcs = ["RouteToMarkChaptersCompletedListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_mark_stories_completed_listener",
+    srcs = ["RouteToMarkStoriesCompletedListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_mark_topics_completed_listener",
+    srcs = ["RouteToMarkTopicsCompletedListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_math_expression_parser_test_listener",
+    srcs = ["RouteToMathExpressionParserTestListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_view_event_logs_listener",
+    srcs = ["RouteToViewEventLogsListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

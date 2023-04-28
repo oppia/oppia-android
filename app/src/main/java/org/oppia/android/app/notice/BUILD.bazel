@@ -7,11 +7,26 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 exports_files([
     "AutomaticAppDeprecationNoticeDialogFragment.kt",
     "AutomaticAppDeprecationNoticeDialogFragmentPresenter.kt",
-    "BetaNoticeClosedListener.kt",
     "BetaNoticeDialogFragment.kt",
     "BetaNoticeDialogFragmentPresenter.kt",
-    "DeprecationNoticeExitAppListener.kt",
-    "GeneralAvailabilityUpgradeNoticeClosedListener.kt",
     "GeneralAvailabilityUpgradeNoticeDialogFragment.kt",
     "GeneralAvailabilityUpgradeNoticeDialogFragmentPresenter.kt",
 ])
+
+oppia_android_library(
+    name = "beta_notice_closed_listener",
+    srcs = ["BetaNoticeClosedListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "deprecation_notice_exit_app_listener",
+    srcs = ["DeprecationNoticeExitAppListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "general_availability_upgrade_notice_closed_listener",
+    srcs = ["GeneralAvailabilityUpgradeNoticeClosedListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

@@ -5,10 +5,7 @@ TODO: finish build file doc.
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files([
-    "ChapterSummarySelectionListener.kt",
     "ChapterSummaryViewModel.kt",
-    "ExpandedChapterListIndexListener.kt",
-    "StorySummarySelectionListener.kt",
     "StorySummaryViewModel.kt",
     "TopicLessonViewModel.kt",
     "TopicLessonsFragment.kt",
@@ -16,3 +13,23 @@ exports_files([
     "TopicLessonsItemViewModel.kt",
     "TopicLessonsTitleViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "chapter_summary_selection_listener",
+    srcs = ["ChapterSummarySelectionListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:topic_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "expanded_chapter_list_index_listener",
+    srcs = ["ExpandedChapterListIndexListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "story_summary_selection_listener",
+    srcs = ["StorySummarySelectionListener.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:topic_java_proto_lite"],
+)

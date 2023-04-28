@@ -29,11 +29,16 @@ exports_files([
     "ResetPinDialogFragment.kt",
     "ResetPinDialogFragmentPresenter.kt",
     "ResetPinViewModel.kt",
-    "RouteToAdminPinListener.kt",
 ])
 
 oppia_android_library(
     name = "admin_auth_enum",
     srcs = ["AdminAuthEnum.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_admin_pin_listener",
+    srcs = ["RouteToAdminPinListener.kt"],
     visibility = ["//app:app_visibility"],
 )

@@ -5,16 +5,31 @@ TODO: finish build file doc.
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files([
-    "ExpandedHintListIndexListener.kt",
     "HintViewModel.kt",
     "HintsAndSolutionDialogFragment.kt",
     "HintsAndSolutionDialogFragmentPresenter.kt",
     "HintsAndSolutionItemViewModel.kt",
-    "HintsAndSolutionListener.kt",
     "HintsAndSolutionViewModel.kt",
     "ReturnToLessonViewModel.kt",
-    "RevealHintListener.kt",
     "RevealSolutionDialogFragment.kt",
     "RevealSolutionInterface.kt",
     "SolutionViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "expanded_hint_list_index_listener",
+    srcs = ["ExpandedHintListIndexListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "hints_and_solution_listener",
+    srcs = ["HintsAndSolutionListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "reveal_hint_listener",
+    srcs = ["RevealHintListener.kt"],
+    visibility = ["//app:app_visibility"],
+)

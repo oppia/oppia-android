@@ -10,14 +10,59 @@ exports_files([
     "AdministratorControlsFragment.kt",
     "AdministratorControlsFragmentPresenter.kt",
     "AdministratorControlsViewModel.kt",
-    "LoadAppVersionListener.kt",
-    "LoadLearnerAnalyticsListener.kt",
-    "LoadProfileEditListener.kt",
-    "LoadProfileListListener.kt",
     "LogoutDialogFragment.kt",
-    "ProfileEditDeletionDialogListener.kt",
-    "RouteToAppVersionListener.kt",
-    "RouteToLearnerAnalyticsListener.kt",
-    "RouteToProfileListListener.kt",
-    "ShowLogoutDialogListener.kt",
 ])
+
+oppia_android_library(
+    name = "load_app_version_listener",
+    srcs = ["LoadAppVersionListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "load_learner_analytics_listener",
+    srcs = ["LoadLearnerAnalyticsListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "load_profile_edit_listener",
+    srcs = ["LoadProfileEditListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "load_profile_list_listener",
+    srcs = ["LoadProfileListListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "profile_edit_deletion_dialog_listener",
+    srcs = ["ProfileEditDeletionDialogListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_app_version_listener",
+    srcs = ["RouteToAppVersionListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_learner_analytics_listener",
+    srcs = ["RouteToLearnerAnalyticsListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "route_to_profile_list_listener",
+    srcs = ["RouteToProfileListListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "show_logout_dialog_listener",
+    srcs = ["ShowLogoutDialogListener.kt"],
+    visibility = ["//app:app_visibility"],
+)
