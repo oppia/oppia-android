@@ -3,7 +3,7 @@ package org.oppia.android.app.administratorcontrols.administratorcontrolsitemvie
 import org.oppia.android.app.administratorcontrols.LoadProfileListListener
 import org.oppia.android.app.administratorcontrols.RouteToProfileListListener
 
-/** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
+/** View model for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsProfileViewModel(
   private val routeToProfileListListener: RouteToProfileListListener,
   private val loadProfileListListener: LoadProfileListListener

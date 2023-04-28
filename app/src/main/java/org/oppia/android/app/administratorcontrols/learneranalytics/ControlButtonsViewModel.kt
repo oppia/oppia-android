@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.google.protobuf.MessageLite
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -32,7 +31,7 @@ class ControlButtonsViewModel private constructor(
   private val analyticsController: AnalyticsController,
   private val syncStatusManager: SyncStatusManager,
   private val viewModels: List<ProfileListItemViewModel>
-) : ProfileListItemViewModel(ProfileListViewModel.ProfileListItemViewType.SHARE_IDS) {
+) : ProfileListItemViewModel(ProfileListItemViewType.SHARE_IDS) {
   private var monitoredUploadProgress: LiveData<ForceSyncProgress> =
     MutableLiveData(ForceSyncProgress())
 

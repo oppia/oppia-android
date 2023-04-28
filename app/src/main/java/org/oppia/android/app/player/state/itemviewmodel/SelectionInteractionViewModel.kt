@@ -250,7 +250,7 @@ class SelectionInteractionViewModel private constructor(
           htmlContent = subtitledHtml,
           hasConversationView = hasConversationView,
           itemIndex = index,
-          selectionInteractionViewModel = selectionInteractionViewModel,
+          updateSelection = selectionInteractionViewModel::updateSelection,
           isEnabled = enabledItemsList[index]
         )
       }

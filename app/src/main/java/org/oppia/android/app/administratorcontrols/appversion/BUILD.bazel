@@ -11,3 +11,19 @@ exports_files([
     "AppVersionFragmentPresenter.kt",
     "AppVersionViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "app_version_view_model",
+    srcs = ["AppVersionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/utility:ratio_extensions",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+    ],
+)

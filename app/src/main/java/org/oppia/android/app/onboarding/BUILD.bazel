@@ -5,7 +5,7 @@ TODO: finish build file doc.
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files([
-    "OnboadingSlideViewModel.kt",
+    "OnboardingSlideViewModel.kt",
     "OnboardingActivity.kt",
     "OnboardingActivityPresenter.kt",
     "OnboardingFragment.kt",
@@ -31,4 +31,60 @@ oppia_android_library(
     name = "route_to_profile_list_listener",
     srcs = ["RouteToProfileListListener.kt"],
     visibility = ["//app:app_visibility"],
+)
+
+oppia_android_library(
+    name = "onboarding_slide_view_model",
+    srcs = ["OnboardingSlideViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_view_pager_view_model",
+        "//app/src/main/java/org/oppia/android/app/onboarding:view_pager_slide",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+    ],
+)
+
+oppia_android_library(
+    name = "onboarding_slide_final_view_model",
+    srcs = ["OnboardingSlideFinalViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_view_pager_view_model",
+        "//app/src/main/java/org/oppia/android/app/onboarding:route_to_profile_list_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "onboarding_view_model",
+    srcs = ["OnboardingViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_slide_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "onboarding_view_pager_view_model",
+    srcs = ["OnboardingViewPagerViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
 )

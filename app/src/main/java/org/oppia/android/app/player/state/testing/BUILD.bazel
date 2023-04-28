@@ -9,3 +9,16 @@ exports_files([
     "StateFragmentTestActivityPresenter.kt",
     "StateFragmentTestViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "state_fragment_test_view_model",
+    srcs = ["StateFragmentTestViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)

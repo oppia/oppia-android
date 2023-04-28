@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
@@ -38,7 +37,7 @@ private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
 private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList+topicListProvider"
 
-/** [ViewModel] for layouts in home fragment. */
+/** View model for layouts in home fragment. */
 class HomeViewModel(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,

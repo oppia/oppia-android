@@ -6,7 +6,6 @@ import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.Profile
@@ -21,7 +20,7 @@ import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
-/** [ViewModel] for [OptionsFragment]. */
+/** View model for [OptionsFragment]. */
 @FragmentScope
 class OptionControlsViewModel @Inject constructor(
   activity: AppCompatActivity,

@@ -5,7 +5,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
 
-/** [ViewModel] for displaying a event log. */
+/** View model for displaying a event log. */
 class EventLogItemViewModel(
   val eventLog: EventLog,
   private val machineLocale: OppiaLocale.MachineLocale,

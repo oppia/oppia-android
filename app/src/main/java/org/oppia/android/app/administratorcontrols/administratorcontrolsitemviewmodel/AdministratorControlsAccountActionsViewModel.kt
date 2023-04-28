@@ -2,7 +2,7 @@ package org.oppia.android.app.administratorcontrols.administratorcontrolsitemvie
 
 import org.oppia.android.app.administratorcontrols.ShowLogoutDialogListener
 
-/** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
+/** View model for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsAccountActionsViewModel(
   private val showLogoutDialogListener: ShowLogoutDialogListener
 ) : AdministratorControlsItemViewModel() {

@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.Profile
@@ -31,7 +30,7 @@ class ProfileLearnerIdItemViewModel private constructor(
   private val analyticsController: AnalyticsController,
   private val oppiaLogger: OppiaLogger,
   private val fragment: Fragment
-) : ProfileListItemViewModel(ProfileListViewModel.ProfileListItemViewType.LEARNER_ID) {
+) : ProfileListItemViewModel(ProfileListItemViewType.LEARNER_ID) {
   /** The current ID copied to the user's clipboard, or ``null`` if there isn't one. */
   val currentCopiedId: LiveData<String?> by lazy {
     Transformations.map(clipboardController.getCurrentClip().toLiveData(), this::processCurrentClip)

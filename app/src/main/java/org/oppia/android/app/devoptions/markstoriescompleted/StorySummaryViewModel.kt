@@ -1,11 +1,10 @@
 package org.oppia.android.app.devoptions.markstoriescompleted
 
-import androidx.lifecycle.ViewModel
 import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.translation.TranslationController
 
-/** [ViewModel] for displaying a story summary for the recyclerView in [MarkStoriesCompletedFragment]. */
+/** View model for displaying a story summary for the recyclerView in [MarkStoriesCompletedFragment]. */
 class StorySummaryViewModel(
   ephemeralStorySummary: EphemeralStorySummary,
   val isCompleted: Boolean,

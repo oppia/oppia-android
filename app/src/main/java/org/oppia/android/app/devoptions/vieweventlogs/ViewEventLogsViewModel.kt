@@ -8,7 +8,7 @@ import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
 import javax.inject.Inject
 
 /**
- * [ViewModel] for [ViewEventLogsFragment]. It populates the recyclerview with a list of
+ * View model for [ViewEventLogsFragment]. It populates the recyclerview with a list of
  * [EventLogItemViewModel] which in turn display the event log.
  */
 @FragmentScope

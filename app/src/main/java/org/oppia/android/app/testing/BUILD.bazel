@@ -69,3 +69,28 @@ oppia_android_library(
     visibility = ["//app:app_visibility"],
     deps = ["//third_party:androidx_lifecycle_lifecycle-livedata-core"],
 )
+
+oppia_android_library(
+    name = "bindable_adapter_test_view_model",
+    srcs = ["BindableAdapterTestViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/testing:bindable_adapter_test_data_model",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "circular_progress_indicator_adapters_test_view_model",
+    srcs = ["CircularProgressIndicatorAdaptersTestViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+    ],
+)

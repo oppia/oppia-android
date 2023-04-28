@@ -113,3 +113,201 @@ oppia_android_library(
     visibility = ["//app:app_visibility"],
     deps = ["//model/src/main/proto:profile_java_proto_lite"],
 )
+
+oppia_android_library(
+    name = "app_language_item_view_model",
+    srcs = ["AppLanguageItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/options:app_language_radio_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+    ],
+)
+
+oppia_android_library(
+    name = "app_language_selection_view_model",
+    srcs = ["AppLanguageSelectionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/options:app_language_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:app_language_radio_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "audio_language_item_view_model",
+    srcs = ["AudioLanguageItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/options:audio_language_radio_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+oppia_android_library(
+    name = "audio_language_selection_view_model",
+    srcs = ["AudioLanguageSelectionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/options:audio_language_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:audio_language_radio_button_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "option_controls_view_model",
+    srcs = ["OptionControlsViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/options:load_app_language_list_listener",
+        "//app/src/main/java/org/oppia/android/app/options:load_audio_language_list_listener",
+        "//app/src/main/java/org/oppia/android/app/options:load_reading_text_size_listener",
+        "//app/src/main/java/org/oppia/android/app/options:options_app_language_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:options_audio_language_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:options_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:options_reading_text_size_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:route_to_app_language_list_listener",
+        "//app/src/main/java/org/oppia/android/app/options:route_to_audio_language_list_listener",
+        "//app/src/main/java/org/oppia/android/app/options:route_to_reading_text_size_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
+    ],
+)
+
+oppia_android_library(
+    name = "options_app_language_view_model",
+    srcs = ["OptionsAppLanguageViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/options:load_app_language_list_listener",
+        "//app/src/main/java/org/oppia/android/app/options:options_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:route_to_app_language_list_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+    ],
+)
+
+oppia_android_library(
+    name = "options_audio_language_view_model",
+    srcs = ["OptionsAudioLanguageViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/options:load_audio_language_list_listener",
+        "//app/src/main/java/org/oppia/android/app/options:options_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:route_to_audio_language_list_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+oppia_android_library(
+    name = "options_item_view_model",
+    srcs = ["OptionsItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+    ],
+)
+
+oppia_android_library(
+    name = "options_reading_text_size_view_model",
+    srcs = ["OptionsReadingTextSizeViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/options:load_reading_text_size_listener",
+        "//app/src/main/java/org/oppia/android/app/options:options_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:route_to_reading_text_size_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+oppia_android_library(
+    name = "reading_text_size_selection_view_model",
+    srcs = ["ReadingTextSizeSelectionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/options:text_size_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:text_size_radio_button_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "text_size_item_view_model",
+    srcs = ["TextSizeItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/options:text_size_radio_button_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)

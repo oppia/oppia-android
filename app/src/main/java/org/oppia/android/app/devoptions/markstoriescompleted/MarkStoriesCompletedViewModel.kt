@@ -14,7 +14,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /**
- * [ViewModel] for [MarkStoriesCompletedFragment]. It populates the recyclerview with a list of
+ * View model for [MarkStoriesCompletedFragment]. It populates the recyclerview with a list of
  * [StorySummaryViewModel] which in turn display the story.
  */
 @FragmentScope

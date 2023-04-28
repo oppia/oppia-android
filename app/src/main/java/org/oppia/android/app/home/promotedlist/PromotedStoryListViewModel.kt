@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
@@ -13,7 +12,7 @@ import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import java.util.Objects
 
-/** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
+/** View model for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
   val promotedStoryList: List<PromotedStoryViewModel>,

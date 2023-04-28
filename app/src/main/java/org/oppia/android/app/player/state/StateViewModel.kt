@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.OppiaLanguage
@@ -30,7 +29,7 @@ import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
-/** [ViewModel] for state-fragment. */
+/** View model for state-fragment. */
 @FragmentScope
 class StateViewModel @Inject constructor(
   private val explorationProgressController: ExplorationProgressController,

@@ -9,7 +9,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
 /**
- * [ViewModel] for [ForceNetworkTypeFragment]. It populates the recycler view with a list of
+ * View model for [ForceNetworkTypeFragment]. It populates the recycler view with a list of
  * [NetworkTypeItemViewModel] which in turn display the available network types.
  */
 @FragmentScope

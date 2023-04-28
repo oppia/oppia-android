@@ -5,7 +5,6 @@ import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
@@ -26,7 +25,7 @@ import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
-/** [ViewModel] for [AdministratorControlsFragment]. */
+/** View model for [AdministratorControlsFragment]. */
 @FragmentScope
 class AdministratorControlsViewModel @Inject constructor(
   private val activity: AppCompatActivity,

@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.administratorcontrols.LoadAppVersionListener
 import org.oppia.android.app.administratorcontrols.RouteToAppVersionListener
 
-/** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
+/** View model for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsAppInformationViewModel(
   activity: AppCompatActivity
 ) : AdministratorControlsItemViewModel() {

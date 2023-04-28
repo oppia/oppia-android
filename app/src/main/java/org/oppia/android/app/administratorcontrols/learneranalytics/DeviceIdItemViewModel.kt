@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.clipboard.ClipboardController
 import org.oppia.android.domain.clipboard.ClipboardController.CurrentClip
@@ -24,7 +23,7 @@ class DeviceIdItemViewModel private constructor(
   private val loggingIdentifierController: LoggingIdentifierController,
   private val oppiaLogger: OppiaLogger,
   private val fragment: Fragment
-) : ProfileListItemViewModel(ProfileListViewModel.ProfileListItemViewType.DEVICE_ID) {
+) : ProfileListItemViewModel(ProfileListItemViewType.DEVICE_ID) {
   /** The device installation ID associated with analytics. */
   val deviceId: LiveData<String?> by lazy {
     Transformations.map(

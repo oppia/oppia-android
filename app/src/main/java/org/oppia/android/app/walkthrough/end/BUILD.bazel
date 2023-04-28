@@ -21,3 +21,14 @@ oppia_android_library(
     srcs = ["WalkthroughFinalListener.kt"],
     visibility = ["//app:app_visibility"],
 )
+
+oppia_android_library(
+    name = "walkthrough_final_view_model",
+    srcs = ["WalkthroughFinalViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+    ],
+)

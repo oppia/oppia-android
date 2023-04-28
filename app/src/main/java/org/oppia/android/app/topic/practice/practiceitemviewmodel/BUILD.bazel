@@ -10,3 +10,51 @@ exports_files([
     "TopicPracticeItemViewModel.kt",
     "TopicPracticeSubtopicViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "topic_practice_footer_view_model",
+    srcs = ["TopicPracticeFooterViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/topic/practice/practiceitemviewmodel:topic_practice_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "topic_practice_header_view_model",
+    srcs = ["TopicPracticeHeaderViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/topic/practice/practiceitemviewmodel:topic_practice_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "topic_practice_item_view_model",
+    srcs = ["TopicPracticeItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "topic_practice_subtopic_view_model",
+    srcs = ["TopicPracticeSubtopicViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/topic/practice/practiceitemviewmodel:topic_practice_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//model/src/main/proto:topic_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)

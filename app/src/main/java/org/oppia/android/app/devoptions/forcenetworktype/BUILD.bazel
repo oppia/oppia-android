@@ -12,3 +12,33 @@ exports_files([
     "ForceNetworkTypeViewModel.kt",
     "NetworkTypeItemViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "force_network_type_view_model",
+    srcs = ["ForceNetworkTypeViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/devoptions/forcenetworktype:network_type_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/networking:connection_status",
+        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_debug_util",
+        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+    ],
+)
+
+oppia_android_library(
+    name = "network_type_item_view_model",
+    srcs = ["NetworkTypeItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/networking:connection_status",
+    ],
+)

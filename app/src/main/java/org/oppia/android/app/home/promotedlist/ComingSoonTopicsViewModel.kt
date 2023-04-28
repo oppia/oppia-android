@@ -1,14 +1,13 @@
 package org.oppia.android.app.home.promotedlist
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.translation.TranslationController
 
-/** [ViewModel] for displaying a coming soon topic summaries. */
+/** View model for displaying a coming soon topic summaries. */
 class ComingSoonTopicsViewModel(
   private val activity: AppCompatActivity,
   val topicSummary: UpcomingTopic,

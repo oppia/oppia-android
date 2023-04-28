@@ -68,3 +68,30 @@ oppia_android_library(
     srcs = ["RouteToStoryListener.kt"],
     visibility = ["//app:app_visibility"],
 )
+
+oppia_android_library(
+    name = "topic_view_model",
+    srcs = ["TopicViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//model/src/main/proto:topic_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)

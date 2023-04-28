@@ -17,3 +17,21 @@ oppia_android_library(
     srcs = ["RouteToFAQSingleListener.kt"],
     visibility = ["//app:app_visibility"],
 )
+
+oppia_android_library(
+    name = "faq_list_view_model",
+    srcs = ["FAQListViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/help/faq/faqItemViewModel:faq_content_view_model",
+        "//app/src/main/java/org/oppia/android/app/help/faq/faqItemViewModel:faq_header_view_model",
+        "//app/src/main/java/org/oppia/android/app/help/faq/faqItemViewModel:faq_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)

@@ -1,7 +1,6 @@
 package org.oppia.android.app.ongoingtopiclist
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.model.EphemeralTopic
@@ -10,7 +9,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.translation.TranslationController
 
-/** [ViewModel] for displaying topic item in [OngoingTopicListActivity]. */
+/** View model for displaying topic item in [OngoingTopicListActivity]. */
 class OngoingTopicItemViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,

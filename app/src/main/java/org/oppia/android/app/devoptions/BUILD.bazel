@@ -57,3 +57,30 @@ oppia_android_library(
     srcs = ["RouteToViewEventLogsListener.kt"],
     visibility = ["//app:app_visibility"],
 )
+
+oppia_android_library(
+    name = "developer_options_view_model",
+    srcs = ["DeveloperOptionsViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/devoptions:force_crash_button_click_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_force_network_type_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_chapters_completed_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_stories_completed_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_topics_completed_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_math_expression_parser_test_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_view_event_logs_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_modify_lesson_progress_view_model",
+        "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_override_app_behaviors_view_model",
+        "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_test_parsers_view_model",
+        "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_view_logs_view_model",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/devoptions:show_all_hints_and_solution_controller",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)

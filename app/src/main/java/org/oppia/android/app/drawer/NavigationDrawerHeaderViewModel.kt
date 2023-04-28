@@ -2,7 +2,6 @@ package org.oppia.android.app.drawer
 
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -12,7 +11,7 @@ import javax.inject.Inject
 private const val DEFAULT_ONGOING_TOPIC_COUNT = 0
 private const val DEFAULT_COMPLETED_STORY_COUNT = 0
 
-/** [ViewModel] for displaying User profile details in navigation header. */
+/** View model for displaying User profile details in navigation header. */
 class NavigationDrawerHeaderViewModel @Inject constructor(
   fragment: Fragment,
   private val resourceHandler: AppLanguageResourceHandler

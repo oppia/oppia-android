@@ -35,3 +35,80 @@ oppia_android_library(
     srcs = ["RouteToLicenseTextListener.kt"],
     visibility = ["//app:app_visibility"],
 )
+
+oppia_android_library(
+    name = "license_item_view_model",
+    srcs = ["LicenseItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/help:load_license_text_viewer_fragment_listener",
+        "//app/src/main/java/org/oppia/android/app/help/thirdparty:route_to_license_text_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+    ],
+)
+
+oppia_android_library(
+    name = "license_list_view_model",
+    srcs = ["LicenseListViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/help:help_view_model",
+        "//app/src/main/java/org/oppia/android/app/help/thirdparty:license_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+    ],
+)
+
+oppia_android_library(
+    name = "license_text_view_model",
+    srcs = ["LicenseTextViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+    ],
+)
+
+oppia_android_library(
+    name = "third_party_dependency_item_view_model",
+    srcs = ["ThirdPartyDependencyItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/help:load_license_list_fragment_listener",
+        "//app/src/main/java/org/oppia/android/app/help/thirdparty:route_to_license_list_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+    ],
+)
+
+oppia_android_library(
+    name = "third_party_dependency_list_view_model",
+    srcs = ["ThirdPartyDependencyListViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/help:help_view_model",
+        "//app/src/main/java/org/oppia/android/app/help/thirdparty:third_party_dependency_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)

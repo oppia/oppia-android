@@ -1,7 +1,6 @@
 package org.oppia.android.app.onboarding
 
 import androidx.databinding.ObservableField
-import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -9,7 +8,7 @@ import javax.inject.Inject
 
 private const val INITIAL_SLIDE_NUMBER = 0
 
-/** [ViewModel] for [OnboardingFragment]. */
+/** View model for [OnboardingFragment]. */
 class OnboardingViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {

@@ -33,3 +33,92 @@ oppia_android_library(
     srcs = ["RevealHintListener.kt"],
     visibility = ["//app:app_visibility"],
 )
+
+oppia_android_library(
+    name = "hint_view_model",
+    srcs = ["HintViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/hintsandsolution:hints_and_solution_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:custom_html_content_handler",
+    ],
+)
+
+oppia_android_library(
+    name = "hints_and_solution_item_view_model",
+    srcs = ["HintsAndSolutionItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "hints_and_solution_view_model",
+    srcs = ["HintsAndSolutionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/hintsandsolution:hint_view_model",
+        "//app/src/main/java/org/oppia/android/app/hintsandsolution:hints_and_solution_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/hintsandsolution:return_to_lesson_view_model",
+        "//app/src/main/java/org/oppia/android/app/hintsandsolution:solution_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/hintsandsolution:extensions",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "return_to_lesson_view_model",
+    srcs = ["ReturnToLessonViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/hintsandsolution:hints_and_solution_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "solution_view_model",
+    srcs = ["SolutionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/hintsandsolution:hints_and_solution_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/utility:ratio_extensions",
+        "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:languages_java_proto_lite",
+        "//model/src/main/proto:math_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/math:float_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:fraction_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
+        "//utility/src/main/java/org/oppia/android/util/math:math_parsing_error",
+        "//utility/src/main/java/org/oppia/android/util/math:ratio_extensions",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:custom_html_content_handler",
+    ],
+)

@@ -176,7 +176,9 @@ class DragAndDropSortInteractionViewModel private constructor(
           }.build(),
           itemIndex = 0,
           listSize = 0,
-          dragAndDropSortInteractionViewModel = this,
+          updateList = ::updateList,
+          unlinkElement = ::unlinkElement,
+          onItemMoved = ::onItemMoved,
           resourceHandler = resourceHandler
         )
       )
@@ -238,7 +240,9 @@ class DragAndDropSortInteractionViewModel private constructor(
           }.build(),
           itemIndex = index,
           listSize = choiceStrings.size,
-          dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+          updateList = dragAndDropSortInteractionViewModel::updateList,
+          unlinkElement = dragAndDropSortInteractionViewModel::unlinkElement,
+          onItemMoved = dragAndDropSortInteractionViewModel::onItemMoved,
           resourceHandler = resourceHandler
         )
       }.toMutableList()

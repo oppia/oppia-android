@@ -8,7 +8,7 @@ import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 
-/** Recently played item [ViewModel] for the recycler view in [ProfileProgressFragment]. */
+/** Recently played item View model for the recycler view in [ProfileProgressFragment]. */
 class RecentlyPlayedStorySummaryViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,

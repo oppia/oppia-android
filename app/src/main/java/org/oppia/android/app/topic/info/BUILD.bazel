@@ -9,3 +9,24 @@ exports_files([
     "TopicInfoFragmentPresenter.kt",
     "TopicInfoViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "topic_info_view_model",
+    srcs = ["TopicInfoViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//model/src/main/proto:topic_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:exploration_html_parser_entity_type",
+    ],
+)

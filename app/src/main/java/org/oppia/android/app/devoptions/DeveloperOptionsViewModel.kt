@@ -1,7 +1,6 @@
 package org.oppia.android.app.devoptions
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsItemViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsModifyLessonProgressViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel
@@ -12,7 +11,7 @@ import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import javax.inject.Inject
 
 /**
- * [ViewModel] for [DeveloperOptionsFragment]. It populates the recyclerview with a list of
+ * View model for [DeveloperOptionsFragment]. It populates the recyclerview with a list of
  * [DeveloperOptionsItemViewModel] which in turn implement corresponding functionalities.
  */
 @FragmentScope

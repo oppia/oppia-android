@@ -8,8 +8,9 @@ oppia_android_test(
     name = "DeveloperOptionsTestParsersViewModelTest",
     srcs = ["DeveloperOptionsTestParsersViewModelTest.kt"],
     deps = [
-        "//app:view_models",
         "//app/src/main/java/org/oppia/android/app/devoptions:route_to_math_expression_parser_test_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_test_parsers_view_model",
         "//third_party:junit_junit",
         "//third_party:org_mockito_mockito-core",
     ],

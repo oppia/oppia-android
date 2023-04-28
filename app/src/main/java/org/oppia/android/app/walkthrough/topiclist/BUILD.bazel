@@ -10,3 +10,43 @@ exports_files([
     "WalkthroughTopicListFragmentPresenter.kt",
     "WalkthroughTopicViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "walkthrough_topic_item_view_model",
+    srcs = ["WalkthroughTopicItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "walkthrough_topic_view_model",
+    srcs = ["WalkthroughTopicViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/home/topiclist:topic_summary_click_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//app/src/main/java/org/oppia/android/app/walkthrough/topiclist:walkthrough_topic_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel:walkthrough_topic_header_view_model",
+        "//app/src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel:walkthrough_topic_summary_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:topic_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:exploration_html_parser_entity_type",
+    ],
+)

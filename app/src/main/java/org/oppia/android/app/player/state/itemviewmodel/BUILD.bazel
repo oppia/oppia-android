@@ -38,8 +38,17 @@ oppia_android_library(
         "//app:app_visibility",  # TODO: Remove.
     ],
     deps = [
+        ":continue_interaction_view_model",
+        ":drag_and_drop_sort_interaction_view_model",
+        ":fraction_interaction_view_model",
+        ":image_region_selection_interaction_view_model",
+        ":math_expression_interactions_view_model",
+        ":numeric_input_view_model",
+        ":ratio_expression_input_interaction_view_model",
+        ":selection_interaction_view_model",
+        ":state_item_view_model",
+        ":text_input_view_model",
         "//:dagger",
-        "//app:view_models",
         "//third_party:javax_annotation_javax_annotation-api",
         "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
@@ -51,4 +60,393 @@ oppia_android_library(
     srcs = ["SplitScreenInteractionIds.kt"],
     visibility = ["//app:app_visibility"],
     deps = ["//third_party:javax_inject_javax_inject"],
+)
+
+oppia_android_library(
+    name = "content_view_model",
+    srcs = ["ContentViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "continue_interaction_view_model",
+    srcs = ["ContinueInteractionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "continue_navigation_button_view_model",
+    srcs = ["ContinueNavigationButtonViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:continue_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "drag_and_drop_sort_interaction_view_model",
+    srcs = ["DragAndDropSortInteractionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:drag_drop_interaction_content_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:on_drag_ended_listener",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:on_item_drag_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "drag_drop_interaction_content_view_model",
+    srcs = ["DragDropInteractionContentViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+oppia_android_library(
+    name = "feedback_view_model",
+    srcs = ["FeedbackViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "fraction_interaction_view_model",
+    srcs = ["FractionInteractionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/parser:fraction_parsing_ui_error",
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:math_java_proto_lite",
+        "//model/src/main/proto:subtitled_unicode_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/math:fraction_parser",
+    ],
+)
+
+oppia_android_library(
+    name = "image_region_selection_interaction_view_model",
+    srcs = ["ImageRegionSelectionInteractionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/utility:on_clickable_area_clicked_listener",
+        "//app/src/main/java/org/oppia/android/app/utility:region_click_event",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "math_expression_interactions_view_model",
+    srcs = ["MathExpressionInteractionsViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:languages_java_proto_lite",
+        "//model/src/main/proto:math_java_proto_lite",
+        "//model/src/main/proto:subtitled_unicode_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/math:float_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
+        "//utility/src/main/java/org/oppia/android/util/math:math_parsing_error",
+        "//utility/src/main/java/org/oppia/android/util/math:real_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "next_button_view_model",
+    srcs = ["NextButtonViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:next_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "numeric_input_view_model",
+    srcs = ["NumericInputViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/parser:string_to_number_parser",
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "previous_button_view_model",
+    srcs = ["PreviousButtonViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "previous_responses_header_view_model",
+    srcs = ["PreviousResponsesHeaderViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_responses_header_click_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+    ],
+)
+
+oppia_android_library(
+    name = "ratio_expression_input_interaction_view_model",
+    srcs = ["RatioExpressionInputInteractionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/parser:string_to_ratio_parser",
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/utility:ratio_extensions",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:math_java_proto_lite",
+        "//model/src/main/proto:subtitled_unicode_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/math:float_extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:ratio_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "replay_button_view_model",
+    srcs = ["ReplayButtonViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:replay_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "return_to_topic_button_view_model",
+    srcs = ["ReturnToTopicButtonViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:return_to_topic_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "selection_interaction_content_view_model",
+    srcs = ["SelectionInteractionContentViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+oppia_android_library(
+    name = "selection_interaction_view_model",
+    srcs = ["SelectionInteractionViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:selection_interaction_content_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "state_item_view_model",
+    srcs = ["StateItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+oppia_android_library(
+    name = "submit_button_view_model",
+    srcs = ["SubmitButtonViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:submit_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+    ],
+)
+
+oppia_android_library(
+    name = "submitted_answer_view_model",
+    srcs = ["SubmittedAnswerViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+oppia_android_library(
+    name = "text_input_view_model",
+    srcs = ["TextInputViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:subtitled_unicode_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+    ],
 )

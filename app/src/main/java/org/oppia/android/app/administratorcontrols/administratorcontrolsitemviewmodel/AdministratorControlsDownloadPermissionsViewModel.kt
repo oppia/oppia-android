@@ -10,7 +10,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
-/** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
+/** View model for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsDownloadPermissionsViewModel(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,

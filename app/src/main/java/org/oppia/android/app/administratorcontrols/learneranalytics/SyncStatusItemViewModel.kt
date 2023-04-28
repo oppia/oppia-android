@@ -3,7 +3,6 @@ package org.oppia.android.app.administratorcontrols.learneranalytics
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
@@ -19,7 +18,7 @@ class SyncStatusItemViewModel private constructor(
   private val syncStatusManager: SyncStatusManager,
   private val oppiaLogger: OppiaLogger,
   private val resourceHandler: AppLanguageResourceHandler
-) : ProfileListItemViewModel(ProfileListViewModel.ProfileListItemViewType.SYNC_STATUS) {
+) : ProfileListItemViewModel(ProfileListItemViewType.SYNC_STATUS) {
   /** The current analytics event synchronization status, as a human-readable string. */
   val syncStatus: LiveData<String> by lazy {
     Transformations.map(

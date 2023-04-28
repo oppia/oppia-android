@@ -58,33 +58,6 @@ class ProfileListViewModel private constructor(
     return displayViewModels + controlButtonsViewModel
   }
 
-  /**
-   * [ObservableViewModel] that represents an element in the profile list shown by
-   * [ProfileListViewModel].
-   *
-   * See this class's subclasses for the specific view models that may show content the list.
-   *
-   * @property viewType the [ProfileListItemViewType] corresponding to this model.
-   */
-  abstract class ProfileListItemViewModel(
-    val viewType: ProfileListItemViewType
-  ) : ObservableViewModel()
-
-  /** Represents the different types of views that may be shown by [ProfileListViewModel]. */
-  enum class ProfileListItemViewType {
-    /** Corresponds to [DeviceIdItemViewModel]. */
-    DEVICE_ID,
-
-    /** Corresponds to [ProfileLearnerIdItemViewModel]. */
-    LEARNER_ID,
-
-    /** Corresponds to [SyncStatusItemViewModel]. */
-    SYNC_STATUS,
-
-    /** Corresponds to [ControlButtonsViewModel]. */
-    SHARE_IDS
-  }
-
   /** Factory to create new [ProfileListViewModel]s. */
   class Factory @Inject constructor(
     private val profileManagementController: ProfileManagementController,

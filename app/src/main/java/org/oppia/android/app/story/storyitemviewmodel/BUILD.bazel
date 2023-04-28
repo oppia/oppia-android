@@ -9,3 +9,56 @@ exports_files([
     "StoryHeaderViewModel.kt",
     "StoryItemViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "story_chapter_summary_view_model",
+    srcs = ["StoryChapterSummaryViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/story:exploration_selection_listener",
+        "//app/src/main/java/org/oppia/android/app/story/storyitemviewmodel:story_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:exploration_checkpoint_controller",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//model/src/main/proto:thumbnail_java_proto_lite",
+        "//model/src/main/proto:topic_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-common",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+oppia_android_library(
+    name = "story_header_view_model",
+    srcs = ["StoryHeaderViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/story/storyitemviewmodel:story_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)
+
+oppia_android_library(
+    name = "story_item_view_model",
+    srcs = ["StoryItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+    ],
+)

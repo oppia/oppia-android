@@ -4,8 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewType
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListItemViewModel.ProfileListItemViewType
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ProfileAndDeviceIdFragmentBinding
 import org.oppia.android.databinding.ProfileListControlButtonsBinding

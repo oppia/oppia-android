@@ -12,3 +12,35 @@ exports_files([
     "ViewEventLogsFragmentPresenter.kt",
     "ViewEventLogsViewModel.kt",
 ])
+
+oppia_android_library(
+    name = "event_log_item_view_model",
+    srcs = ["EventLogItemViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+    ],
+)
+
+oppia_android_library(
+    name = "view_event_logs_view_model",
+    srcs = ["ViewEventLogsViewModel.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs:event_log_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
+    ],
+)

@@ -4,13 +4,12 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import androidx.databinding.ObservableField
-import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 const val TOTAL_NUMBER_OF_SLIDES = 4
 
-/** [ViewModel] for slide in onboarding flow. */
+/** View model for slide in onboarding flow. */
 class OnboardingSlideViewModel(
   val context: Context,
   viewPagerSlide: ViewPagerSlide,

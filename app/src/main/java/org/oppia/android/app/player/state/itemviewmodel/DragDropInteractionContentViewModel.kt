@@ -13,24 +13,26 @@ class DragDropInteractionContentViewModel(
   var htmlContent: SetOfTranslatableHtmlContentIds,
   var itemIndex: Int,
   var listSize: Int,
-  val dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
+  val updateList: (Int, RecyclerView.Adapter<RecyclerView.ViewHolder>) -> Unit,
+  val unlinkElement: (Int, RecyclerView.Adapter<RecyclerView.ViewHolder>) -> Unit,
+  val onItemMoved: (Int, Int, RecyclerView.Adapter<RecyclerView.ViewHolder>) -> Unit,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   fun handleGrouping(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
-    dragAndDropSortInteractionViewModel.updateList(itemIndex, adapter)
+    updateList(itemIndex, adapter)
   }
 
   fun handleUnlinking(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
-    dragAndDropSortInteractionViewModel.unlinkElement(itemIndex, adapter)
+    unlinkElement(itemIndex, adapter)
   }
 
   fun handleUpMovement(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
-    dragAndDropSortInteractionViewModel.onItemMoved(itemIndex, itemIndex - 1, adapter)
+    onItemMoved(itemIndex, itemIndex - 1, adapter)
   }
 
   fun handleDownMovement(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
-    dragAndDropSortInteractionViewModel.onItemMoved(itemIndex, itemIndex + 1, adapter)
+    onItemMoved(itemIndex, itemIndex + 1, adapter)
   }
 
   /**
