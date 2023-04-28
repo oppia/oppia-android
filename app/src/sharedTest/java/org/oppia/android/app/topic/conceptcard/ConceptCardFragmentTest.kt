@@ -374,20 +374,19 @@ class ConceptCardFragmentTest {
   fun testConceptCardFragment_launchSeveralConceptCardsWithSameSkill_onlyTheFirstShows() {
     launchTestActivity().use { scenario ->
       scenario.onActivity { activity ->
-        val fragment = ConceptCardFragment.bringToFrontOrCreateIfNew(
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           ProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
-        assertThat(fragment).isNotNull()
-        assertThat(
-          ConceptCardFragment.bringToFrontOrCreateIfNew(
-            TEST_SKILL_ID_0,
-            ProfileId.getDefaultInstance(),
-            activity.supportFragmentManager
-          )
-        ).isNull()
-        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(1)
+        val fragment =
+          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_0,
+          ProfileId.getDefaultInstance(),
+          activity.supportFragmentManager
+        )
+        assertThat(activity.supportFragmentManager.fragments).hasSize(1)
         assertThat(activity.supportFragmentManager.fragments[0]).isEqualTo(fragment)
       }
     }
@@ -397,21 +396,24 @@ class ConceptCardFragmentTest {
   fun testConceptCardFragment_twoConceptCards_secondOneReplacesFirstOne() {
     launchTestActivity().use { scenario ->
       scenario.onActivity { activity ->
-        val fragmentSkill0 = ConceptCardFragment.bringToFrontOrCreateIfNew(
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           ProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
-        assertThat(fragmentSkill0).isNotNull()
+        val fragmentSkill0 =
+          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_1,
+          ProfileId.getDefaultInstance(),
+          activity.supportFragmentManager
+        )
         val fragmentSkill1 =
-          ConceptCardFragment.bringToFrontOrCreateIfNew(
-            TEST_SKILL_ID_1,
-            ProfileId.getDefaultInstance(),
-            activity.supportFragmentManager
-          )
+          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
         assertThat(fragmentSkill1).isNotNull()
-        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(1)
+        assertThat(activity.supportFragmentManager.fragments).hasSize(1)
         assertThat(activity.supportFragmentManager.fragments[0]).isEqualTo(fragmentSkill1)
+        assertThat(fragmentSkill1).isNotEqualTo(fragmentSkill0)
       }
     }
   }
@@ -420,23 +422,25 @@ class ConceptCardFragmentTest {
   fun testConceptCardFragment_severalConceptCards_dismissAll() {
     launchTestActivity().use { scenario ->
       scenario.onActivity { activity ->
-        val fragmentSkill0 = ConceptCardFragment.bringToFrontOrCreateIfNew(
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           ProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
-        assertThat(fragmentSkill0).isNotNull()
+        val fragmentSkill0 =
+          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_1,
+          ProfileId.getDefaultInstance(),
+          activity.supportFragmentManager
+        )
         val fragmentSkill1 =
-          ConceptCardFragment.bringToFrontOrCreateIfNew(
-            TEST_SKILL_ID_1,
-            ProfileId.getDefaultInstance(),
-            activity.supportFragmentManager
-          )
-        assertThat(fragmentSkill1).isNotNull()
-        fragmentSkill0!!.showNow(activity.supportFragmentManager, fragmentSkill0.tag)
-        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(2)
+          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+        assertThat(fragmentSkill1).isNotEqualTo(fragmentSkill0)
+        fragmentSkill0.showNow(activity.supportFragmentManager, fragmentSkill0.tag)
+        assertThat(activity.supportFragmentManager.fragments).hasSize(2)
         ConceptCardFragment.dismissAll(activity.supportFragmentManager)
-        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(0)
+        assertThat(activity.supportFragmentManager.fragments).hasSize(0)
       }
     }
   }
@@ -450,27 +454,30 @@ class ConceptCardFragmentTest {
         randomFragment.showNow(activity.supportFragmentManager, "test_tag")
 
         // Show two ConceptCards
-        val fragmentSkill0 = ConceptCardFragment.bringToFrontOrCreateIfNew(
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           ProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
-        assertThat(fragmentSkill0).isNotNull()
-        val fragmentSkill1 = ConceptCardFragment.bringToFrontOrCreateIfNew(
+        val fragmentSkill0 =
+          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
           ProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
-        assertThat(fragmentSkill1).isNotNull()
+        val fragmentSkill1 =
+          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+        assertThat(fragmentSkill1).isNotEqualTo(fragmentSkill0)
 
         // Assert that the fragment manager only has two fragments: the first and the last
-        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(2)
+        assertThat(activity.supportFragmentManager.fragments).hasSize(2)
         assertThat(activity.supportFragmentManager.fragments[0]).isEqualTo(randomFragment)
         assertThat(activity.supportFragmentManager.fragments[1]).isEqualTo(fragmentSkill1)
 
         // Assert that DismissAll does not dismiss non ConceptCard fragments
         ConceptCardFragment.dismissAll(activity.supportFragmentManager)
-        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(1)
+        assertThat(activity.supportFragmentManager.fragments).hasSize(1)
         assertThat(activity.supportFragmentManager.fragments[0]).isEqualTo(randomFragment)
       }
     }

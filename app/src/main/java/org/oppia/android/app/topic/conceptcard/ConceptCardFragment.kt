@@ -42,13 +42,12 @@ class ConceptCardFragment : InjectableDialogFragment() {
      * @param skillId the skill ID for which a concept card should be loaded
      * @param profileId the profile in which the concept card will be shown
      * @param fragmentManager the [FragmentManager] where to show the concept card
-     * @return the fragment created or null if none
      */
     fun bringToFrontOrCreateIfNew(
       skillId: String,
       profileId: ProfileId,
       fragmentManager: FragmentManager
-    ): ConceptCardFragment? {
+    ) {
       // Concept cards are keyed by profileId and skillId. However, in this method we are only
       // using the skillId for equality checks. The reason is that when the user switches profiles
       // the UI is recreated, so that it is not possible to have concept cards from different
@@ -62,9 +61,9 @@ class ConceptCardFragment : InjectableDialogFragment() {
         }
         transaction.commitNow()
       }
-      return if (allConceptCards.size <= conceptCardsWithDifferentSkillId.size) {
+      if (allConceptCards.size <= conceptCardsWithDifferentSkillId.size) {
         showNewInstance(skillId, profileId, fragmentManager)
-      } else null
+      }
     }
 
     /**
