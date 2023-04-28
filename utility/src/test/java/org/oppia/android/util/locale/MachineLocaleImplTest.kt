@@ -186,7 +186,7 @@ class MachineLocaleImplTest {
 
     val timeOfDay = machineLocale.getCurrentTimeOfDay()
 
-    assertThat(timeOfDay).isEqualTo(OppiaLocale.MachineLocale.TimeOfDay.MORNING)
+    assertThat(timeOfDay).isEqualTo(OppiaLocale.MachineLocale.TimeOfDay.MID_MORNING)
   }
 
   @Test
@@ -213,7 +213,7 @@ class MachineLocaleImplTest {
 
     val timeOfDay = machineLocale.getCurrentTimeOfDay()
 
-    assertThat(timeOfDay).isEqualTo(OppiaLocale.MachineLocale.TimeOfDay.NIGHT)
+    assertThat(timeOfDay).isEqualTo(OppiaLocale.MachineLocale.TimeOfDay.LATE_NIGHT)
   }
 
   @Test

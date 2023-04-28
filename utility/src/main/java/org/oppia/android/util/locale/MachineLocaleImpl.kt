@@ -51,10 +51,10 @@ class MachineLocaleImpl @Inject constructor(
   override fun getCurrentTimeOfDay(): TimeOfDay {
     return when (oppiaClock.getCurrentCalendar().get(Calendar.HOUR_OF_DAY)) {
       in 4..8 -> TimeOfDay.EARLY_MORNING
-      in 9..11 -> TimeOfDay.MORNING
+      in 9..11 -> TimeOfDay.MID_MORNING
       in 12..16 -> TimeOfDay.AFTERNOON
       in 17..22 -> TimeOfDay.EVENING
-      in 0..3, 23 -> TimeOfDay.NIGHT
+      in 0..3, 23 -> TimeOfDay.LATE_NIGHT
       else -> TimeOfDay.UNKNOWN
     }
   }

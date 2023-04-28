@@ -40,11 +40,11 @@ class SurveyGatingController @Inject constructor(
   fun shouldShowSurvey(profileId: ProfileId, topicId: String) {}
 
   private fun isSurveyTimeOfDayWindowOpen(): Boolean = when (machineLocale.getCurrentTimeOfDay()) {
-    OppiaLocale.MachineLocale.TimeOfDay.MORNING,
+    OppiaLocale.MachineLocale.TimeOfDay.MID_MORNING,
     OppiaLocale.MachineLocale.TimeOfDay.AFTERNOON,
     OppiaLocale.MachineLocale.TimeOfDay.EVENING -> true
     OppiaLocale.MachineLocale.TimeOfDay.EARLY_MORNING,
-    OppiaLocale.MachineLocale.TimeOfDay.NIGHT,
+    OppiaLocale.MachineLocale.TimeOfDay.LATE_NIGHT,
     OppiaLocale.MachineLocale.TimeOfDay.UNKNOWN -> false
   }
 
