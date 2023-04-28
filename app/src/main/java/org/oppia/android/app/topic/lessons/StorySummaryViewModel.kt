@@ -83,7 +83,7 @@ class StorySummaryViewModel(
             ephemeralStorySummary.chaptersList[index - 1].writtenTranslationContext
           )
         } else {
-          ""
+          null
         },
         storyId = storySummary.storyId,
         index = index,

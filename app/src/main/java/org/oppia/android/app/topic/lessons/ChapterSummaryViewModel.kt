@@ -11,7 +11,7 @@ class ChapterSummaryViewModel(
   val chapterPlayState: ChapterPlayState,
   val explorationId: String,
   val chapterTitle: String,
-  val previousChapterTitle: String,
+  val previousChapterTitle: String?,
   val storyId: String,
   private val index: Int,
   private val chapterSummarySelector: ChapterSummarySelector,
@@ -31,9 +31,15 @@ class ChapterSummaryViewModel(
         )
       }
       ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> {
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.chapter_prerequisite_title_label, (index).toString(), previousChapterTitle
-        )
+        if (previousChapterTitle != null) {
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.chapter_prerequisite_title_label, index.toString(), previousChapterTitle
+          )
+        } else {
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.chapter_prerequisite_title_label_without_chapter_title
+          )
+        }
       }
       else -> {
         resourceHandler.getStringInLocaleWithWrapping(

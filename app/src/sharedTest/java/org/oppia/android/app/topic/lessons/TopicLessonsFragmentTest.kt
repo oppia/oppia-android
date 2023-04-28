@@ -17,6 +17,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.hasContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -345,6 +346,25 @@ class TopicLessonsFragmentTest {
           targetViewId = R.id.locked_chapter_container
         )
       ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterIsLocked_contentDescriptionIsCorrect() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_play_state_icon
+        )
+      ).check(matches(isDisplayed()))
+        .check(matches(hasContentDescription()))
+        .check(matches(withContentDescription(
+          "Complete Chapter 1: What is a Ratio? to unlock this chapter."
+        )))
     }
   }
 
