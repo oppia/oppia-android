@@ -362,9 +362,13 @@ class TopicLessonsFragmentTest {
         )
       ).check(matches(isDisplayed()))
         .check(matches(hasContentDescription()))
-        .check(matches(withContentDescription(
+        .check(
+          matches(
+            withContentDescription(
           "Complete Chapter 1: What is a Ratio? to unlock this chapter."
-        )))
+            )
+          )
+        )
     }
   }
 
