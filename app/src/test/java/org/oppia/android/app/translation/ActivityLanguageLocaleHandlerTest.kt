@@ -57,7 +57,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ActivityLanguageLocaleHandlerTest.TestApplication::class)
-@RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
 class ActivityLanguageLocaleHandlerTest {
   @Inject
   lateinit var context: Context
@@ -80,6 +79,7 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testActivityDisplayLocale_initializeToEnglish_returnsInitializedDisplayLocale() {
     appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
 
@@ -90,6 +90,7 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testActivityDisplayLocale_initializeToSwahili_returnsInitializedDisplayLocale() {
     appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(SWAHILI))
 
@@ -100,6 +101,7 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLocale_initialized_sameLocale_returnsFalse() {
     appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
 
@@ -110,6 +112,7 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLocale_initialized_differentLocale_returnsTrue() {
     appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
 
@@ -120,6 +123,7 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLocale_afterUpdate_newLocale_returnsTrue() {
     appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
     activityLanguageLocaleHandler.updateLocale(
@@ -134,6 +138,7 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testInitializeLocaleForActivity_uninitialized_throwsException() {
     val configuration = Configuration()
 
@@ -146,6 +151,7 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testInitializeLocaleForActivity_initialized_updatesSystemLocale() {
     forceDefaultLocale(Locale.ROOT)
     val configuration = Configuration()
@@ -161,6 +167,7 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testInitializeLocaleForActivity_initialized_updatesConfigurationLocale() {
     val configuration = Configuration()
     appLanguageLocaleHandler.initializeLocale(
