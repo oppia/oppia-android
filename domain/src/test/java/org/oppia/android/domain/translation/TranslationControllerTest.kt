@@ -504,7 +504,7 @@ class TranslationControllerTest {
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection).isEqualToDefaultInstance()
+    assertThat(selection).isEqualTo(expectedLanguageSelection)
   }
 
   @Test
