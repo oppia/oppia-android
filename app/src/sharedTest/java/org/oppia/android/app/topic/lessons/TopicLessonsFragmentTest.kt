@@ -365,7 +365,7 @@ class TopicLessonsFragmentTest {
         .check(
           matches(
             withContentDescription(
-          "Complete Chapter 1: What is a Ratio? to unlock this chapter."
+              "Complete Chapter 1: What is a Ratio? to unlock this chapter."
             )
           )
         )
