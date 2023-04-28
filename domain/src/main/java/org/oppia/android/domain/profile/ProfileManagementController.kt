@@ -853,7 +853,7 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) { profileDatabase ->
       val profile = profileDatabase.profilesMap[profileId.internalId]
-      val updatedProfile = profile?.toBuilder()?.setSurveyLastShownTimestamp(
+      val updatedProfile = profile?.toBuilder()?.setSurveyLastShownTimestampMs(
         oppiaClock.getCurrentTimeMs()
       )?.build()
       val profileDatabaseBuilder = profileDatabase.toBuilder().putProfiles(
@@ -876,7 +876,7 @@ class ProfileManagementController @Inject constructor(
     return profileDataStore.transform(
       GET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID
     ) { profileDatabase ->
-      profileDatabase.profilesMap[profileId.internalId]?.surveyLastShownTimestamp ?: 0L
+      profileDatabase.profilesMap[profileId.internalId]?.surveyLastShownTimestampMs ?: 0L
     }
   }
 
