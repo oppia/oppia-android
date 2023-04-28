@@ -14,13 +14,19 @@ class BazelClient(
   private val universeScope: String = "//..."
 ) {
   fun build(
-    pattern: String, keepGoing: Boolean = false, allowFailures: Boolean = false
+    pattern: String,
+    keepGoing: Boolean = false,
+    allowFailures: Boolean = false,
+    checkUpToDate: Boolean = false,
+    buildRunfileLinks: Boolean = true
   ): List<String> {
     return executeBazelCommand(
       *listOfNotNull(
         "build",
         "--noshow_progress",
         "--keep_going".takeIf { keepGoing },
+        "--check_up_to_date".takeIf { checkUpToDate },
+        "--nobuild_runfile_links".takeUnless { buildRunfileLinks },
         pattern,
       ).toTypedArray(),
       allowAllFailures = allowFailures
