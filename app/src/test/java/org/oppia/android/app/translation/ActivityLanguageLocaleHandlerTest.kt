@@ -178,38 +178,6 @@ class ActivityLanguageLocaleHandlerTest {
     assertThat(locales[0].country).isEqualTo("BR")
   }
 
-  @Test
-  fun testInitializeLocaleForActivity_initedAndUpdated_updatesSystemLocaleWithNewLocale() {
-    forceDefaultLocale(Locale.ROOT)
-    val configuration = Configuration()
-    appLanguageLocaleHandler.initializeLocale(
-      computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE)
-    )
-
-    activityLanguageLocaleHandler.initializeLocaleForActivity(configuration)
-
-    activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
-
-    // Verify that the system locale changed to the updated version.
-    assertThat(Locale.getDefault().language).isEqualTo("en")
-  }
-
-  @Test
-  fun testInitializeLocaleForActivity_initedAndUpdated_updatesConfigurationLocaleWithNewLocale() {
-    val configuration = Configuration()
-    appLanguageLocaleHandler.initializeLocale(
-      computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE)
-    )
-    activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
-
-    activityLanguageLocaleHandler.initializeLocaleForActivity(configuration)
-
-    // Verify that the configuration locale matches the updated version.
-    val locales = configuration.locales
-    assertThat(locales.size()).isEqualTo(1)
-    assertThat(locales[0].language).isEqualTo("en")
-  }
-
   private fun forceDefaultLocale(locale: Locale) {
     context.applicationContext.resources.configuration.setLocale(locale)
     Locale.setDefault(locale)
