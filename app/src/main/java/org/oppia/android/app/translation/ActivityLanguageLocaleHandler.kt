@@ -17,7 +17,7 @@ import javax.inject.Inject
  */
 class ActivityLanguageLocaleHandler @Inject constructor(
   private val localeController: LocaleController,
-  val appLanguageLocaleHandler: AppLanguageLocaleHandler
+  private val appLanguageLocaleHandler: AppLanguageLocaleHandler
 ) {
 
   /**
