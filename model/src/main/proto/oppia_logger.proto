@@ -2,7 +2,8 @@ syntax = "proto3";
 
 package model;
 
-import "exploration.proto";
+import "languages.proto";
+import "profile.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -11,12 +12,29 @@ option java_multiple_files = true;
 message EventLog {
   // The timestamp of the event.
   int64 timestamp = 1;
+
   // Deprecated Event Action. This is now handled via the context below.
   reserved 2;
+
   // The priority of the event.
   Priority priority = 3;
+
   // The activity context of the event.
   Context context = 4;
+
+  // The profile to which this event corresponds, or empty if this event is not tied to a particular
+  // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
+  // at source.
+  ProfileId profile_id = 8;
+
+  // The app language selection context at the time of this event's creation.
+  AppLanguageSelection app_language_selection = 5;
+
+  // The written language selection context at the time of this event's creation.
+  WrittenTranslationLanguageSelection written_translation_language_selection = 6;
+
+  // The audio language selection context at the time of this event's creation.
+  AudioTranslationLanguageSelection audio_translation_language_selection = 7;
 
   // Structure of an activity context.
   message Context {
@@ -67,8 +85,11 @@ message EventLog {
       // The event being logged is related to the opening of concept card.
       ConceptCardContext open_concept_card = 14;
 
-      // The event being logged is related to the opening of revision card.
+      // The event being logged is related to the opening of a revision card.
       RevisionCardContext open_revision_card = 15;
+
+      // The event being logged is related to the closing of a revision card.
+      RevisionCardContext close_revision_card = 36;
 
       // The event being logged is related to starting an exploration card.
       CardContext start_card_context = 16;
@@ -77,13 +98,13 @@ message EventLog {
       CardContext end_card_context = 17;
 
       // The event being logged is related to offering a hint when it becomes available.
-      HintContext hint_offered_context = 18;
+      HintContext hint_unlocked_context = 18;
 
       // The event being logged is related to accessing a hint.
       HintContext access_hint_context = 19;
 
       // The event being logged is related to offering a solution when it becomes available.
-      ExplorationContext solution_offered_context = 20;
+      ExplorationContext solution_unlocked_context = 20;
 
       // The event being logged is related to accessing a solution.
       ExplorationContext access_solution_context = 21;
@@ -92,7 +113,10 @@ message EventLog {
       SubmitAnswerContext submit_answer_context = 22;
 
       // The event being logged is related to playing a voiceover.
-      PlayVoiceOverContext play_voice_over_context = 23;
+      VoiceoverActionContext play_voice_over_context = 23;
+
+      // The event being logged is related to pausing a voiceover.
+      VoiceoverActionContext pause_voice_over_context = 35;
 
       // The event being logged is related to backgrounding of the application.
       LearnerDetailsContext app_in_background_context = 24;
@@ -126,6 +150,10 @@ message EventLog {
       // The event being logged indicates that the user has reached an invested level of learning
       // engagement in a lesson.
       ExplorationContext reach_invested_engagement = 34;
+
+      // The event being logged indicates that the user switched their lesson's content language
+      // using the in-lesson language switcher.
+      SwitchInLessonLanguageEventContext switch_in_lesson_language = 37;
 
       // Indicates that something went wrong when trying to log a learner analytics even for the
       // device corresponding to the specified device ID.
@@ -202,13 +230,22 @@ message EventLog {
     bool is_answer_correct = 3;
   }
 
-  // Represents the event context for playing a voiceover within an exploration.
-  message PlayVoiceOverContext {
+  // Represents the event context for performing an action pertaining to a voiceover within an
+  // exploration.
+  message VoiceoverActionContext {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
 
+    // This field index was previously skipped, so it's been marked as reserved to ensure no
+    // possible binary compatibility issues occur in the future due to potential developer
+    // confusion.
+    reserved 2;
+
     // The content id of the voiceover recording being played.
     string content_id = 3;
+
+    // The language code being played.
+    string language_code = 4;
   }
 
   // Represents event context which contains learner-specific details that are logged with every
@@ -246,6 +283,20 @@ message EventLog {
 
     // Defined attributes that are common among all learner analytics related event log contexts.
     LearnerDetailsContext learner_details = 7;
+  }
+
+  // Represents the event context for switching a lesson's content language mid-lesson. Note that
+  // this differs from the language selection available via the options menu since the latter
+  // changes the app language rather than just specifically the content language.
+  message SwitchInLessonLanguageEventContext {
+    // Defined attributes that are common among other exploration related event log contexts.
+    ExplorationContext exploration_details = 1;
+
+    // The content language from which the lesson is being switched.
+    OppiaLanguage switch_from_language = 2;
+
+    // The content language to which the lesson is being switched.
+    OppiaLanguage switch_to_language = 3;
   }
 
   // Supported priority of events for event logging
@@ -298,7 +349,13 @@ message ExceptionLog {
 
 // Structure for a container that contains event log reports.
 message OppiaEventLogs {
-  repeated EventLog event_log = 1;
+  // Contains all event logs pending to be uploaded for analytics that are likely cached due to the
+  // app not have internet connectivity at the time of wanting to originally log the event.
+  repeated EventLog event_logs_to_upload = 1;
+
+  // Contains all events that have been uploaded remotely to the analytics service. This is only
+  // used for special builds of the app that have additional telemetry diagnostics enabled.
+  repeated EventLog uploaded_event_logs = 2;
 }
 
 // Structure for a container that contains exception log reports.

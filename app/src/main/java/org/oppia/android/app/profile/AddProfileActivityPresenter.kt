@@ -111,7 +111,7 @@ class AddProfileActivityPresenter @Inject constructor(
           uploadImageView.setColorFilter(
             ResourcesCompat.getColor(
               activity.resources,
-              R.color.color_def_avatar_background_11,
+              R.color.component_color_avatar_background_11_color,
               null
             ),
             PorterDuff.Mode.DST_OVER

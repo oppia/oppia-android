@@ -35,6 +35,7 @@ import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -48,6 +49,7 @@ class StoryFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   private val htmlParserFactory: HtmlParser.Factory,
   private val explorationDataController: ExplorationDataController,
   @DefaultResourceBucketName private val resourceBucketName: String,
@@ -61,12 +63,10 @@ class StoryFragmentPresenter @Inject constructor(
   private lateinit var binding: StoryFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
+  private lateinit var profileId: ProfileId
 
-  @Inject
-  lateinit var storyViewModel: StoryViewModel
-
-  @Inject
-  lateinit var accessibilityService: AccessibilityService
+  @Inject lateinit var storyViewModel: StoryViewModel
+  @Inject lateinit var accessibilityService: AccessibilityService
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -80,6 +80,7 @@ class StoryFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
+    profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     storyViewModel.setInternalProfileId(internalProfileId)
     storyViewModel.setTopicId(topicId)
     storyViewModel.setStoryId(storyId)
@@ -255,7 +256,10 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun logStoryActivityEvent(topicId: String, storyId: String) {
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenStoryActivityContext(topicId, storyId))
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenStoryActivityContext(topicId, storyId),
+      profileId
+    )
   }
 
   private fun playExploration(

@@ -11,6 +11,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ConceptCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
@@ -22,13 +23,16 @@ import javax.inject.Inject
 class ConceptCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
   private val htmlParserFactory: HtmlParser.Factory,
   @ConceptCardHtmlParserEntityType private val entityType: String,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
   private val translationController: TranslationController,
   private val appLanguageResourceHandler: AppLanguageResourceHandler
-) {
+) : HtmlParser.CustomOppiaTagActionListener {
+  private lateinit var profileId: ProfileId
+
   /**
    * Sets up data binding and toolbar.
    * Host activity must inherit ConceptCardListener to dismiss this fragment.
@@ -39,6 +43,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
     skillId: String,
     profileId: ProfileId
   ): View? {
+    this.profileId = profileId
     val binding = ConceptCardFragmentBinding.inflate(
       inflater,
       container,
@@ -64,26 +69,28 @@ class ConceptCardFragmentPresenter @Inject constructor(
     }
 
     viewModel.conceptCardLiveData.observe(
-      fragment,
-      { ephemeralConceptCard ->
-        val explanationHtml =
-          translationController.extractString(
-            ephemeralConceptCard.conceptCard.explanation,
-            ephemeralConceptCard.writtenTranslationContext
-          )
-        view.text = htmlParserFactory
-          .create(
-            resourceBucketName,
-            entityType,
-            skillId,
-            imageCenterAlign = true,
-            displayLocale = appLanguageResourceHandler.getDisplayLocale()
-          )
-          .parseOppiaHtml(
-            explanationHtml, view
-          )
-      }
-    )
+      fragment
+    ) { ephemeralConceptCard ->
+      val explanationHtml =
+        translationController.extractString(
+          ephemeralConceptCard.conceptCard.explanation,
+          ephemeralConceptCard.writtenTranslationContext
+        )
+      view.text =
+        htmlParserFactory.create(
+          resourceBucketName,
+          entityType,
+          skillId,
+          customOppiaTagActionListener = this,
+          imageCenterAlign = true,
+          displayLocale = appLanguageResourceHandler.getDisplayLocale()
+        ).parseOppiaHtml(
+          explanationHtml,
+          view,
+          supportsLinks = true,
+          supportsConceptCards = true
+        )
+    }
 
     return binding.root
   }
@@ -93,6 +100,14 @@ class ConceptCardFragmentPresenter @Inject constructor(
   }
 
   private fun logConceptCardEvent(skillId: String) {
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenConceptCardContext(skillId))
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenConceptCardContext(skillId), profileId
+    )
+  }
+
+  override fun onConceptCardLinkClicked(view: View, skillId: String) {
+    ConceptCardFragment
+      .newInstance(skillId, profileId)
+      .showNow(fragment.childFragmentManager, ConceptCardFragment.CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 }

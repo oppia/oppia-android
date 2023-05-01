@@ -510,6 +510,7 @@
   <string name="size_mb">%s MB</string>
   <string name="size_gb">%s GB</string>
   <string name="topic_prefix">Topic: %s</string>
+  <string name="welcome_profile_name">%s!</string>
   <string name="lessons">Lessons</string>
   <string name="replay_button_item_activity_lesson_replay_button_text">Replay</string>
   <string name="image_interaction_answer_text">Clicks on %s</string>

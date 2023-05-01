@@ -43,7 +43,11 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "event_logger_proto",
     srcs = ["oppia_logger.proto"],
-    deps = [":exploration_proto"],
+    deps = [
+        ":exploration_proto",
+        ":languages_proto",
+        ":profile_proto",
+    ],
 )
 
 java_lite_proto_library(
@@ -319,6 +323,18 @@ java_lite_proto_library(
     name = "platform_parameter_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":platform_parameter_proto"],
+)
+
+oppia_proto_library(
+    name = "survey_proto",
+    srcs = ["survey.proto"],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+java_lite_proto_library(
+    name = "survey_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":survey_proto"],
 )
 
 android_library(

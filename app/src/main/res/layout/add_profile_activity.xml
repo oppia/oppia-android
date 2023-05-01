@@ -102,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/add_profile_pin_checkbox_margin_top"
-            android:buttonTint="@color/shared_checkbox_selector"
+            android:buttonTint="@color/component_color_shared_checkbox_selector"
             android:minHeight="48dp"
             android:text="@string/add_profile_activity_add_profile_create_a_3_digit_pin"
             android:textColor="@color/component_color_shared_secondary_1_text_color"

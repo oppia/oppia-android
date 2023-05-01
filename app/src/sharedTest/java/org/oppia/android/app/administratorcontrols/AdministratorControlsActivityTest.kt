@@ -29,7 +29,9 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -41,6 +43,7 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -270,7 +273,6 @@ class AdministratorControlsActivityTest {
     }
   }
 
-  // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
   @Test
   fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
     launch<AdministratorControlsActivity>(
@@ -416,6 +418,56 @@ class AdministratorControlsActivityTest {
         )
       ).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_defaultTabletConfig_openAppVersion_replacesPreviousFragment() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Check that the multipane container has only one child and it is the edit profiles fragment
+      onView(
+        allOf(
+          withId(R.id.profile_list_recycler_view),
+          isDescendantOfA(withId(R.id.administrator_controls_fragment_multipane_placeholder))
+        )
+      ).check(
+        matches(
+          isDisplayed()
+        )
+      )
+      onView(withId(R.id.administrator_controls_fragment_multipane_placeholder)).check(
+        matches(
+          hasChildCount(1)
+        )
+      )
+
+      // Open the app version fragment
+      scrollToPosition(position = 3)
+      onView(withId(R.id.app_version_text_view)).perform(click())
+
+      // Check that the multipane container has only one child and it is the app version fragment
+      onView(
+        allOf(
+          withId(R.id.app_version_text_view),
+          isDescendantOfA(withId(R.id.administrator_controls_fragment_multipane_placeholder))
+        )
+      ).check(
+        matches(
+          isDisplayed()
+        )
+      )
+      onView(withId(R.id.administrator_controls_fragment_multipane_placeholder)).check(
+        matches(
+          hasChildCount(1)
+        )
+      )
     }
   }
 

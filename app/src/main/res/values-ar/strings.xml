@@ -172,7 +172,6 @@
   <string name="size_gb">%s ج.ب</string>
   <string name="state_fragment_activity_correct_text">صحيح!</string>
   <string name="topic_prefix">الموضوع: %s</string>
-  <string name="story_summary_activity_chapter_count_with_story_name">%1$s في %2$s</string>
   <plurals name="chapter_count">
     <item quantity="zero">و لا فصل</item>
     <item quantity="one">فصلًا واحدًا</item>
@@ -318,11 +317,15 @@
   <string name="home_activity_promoted_story_spotlight_hint">من الآن يمكنك مشاهدة الدروس المقترحة لك هنا.</string>
   <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="profile_list_activity_title">الملفات الشخصية</string>
+  <string name="profile_edit_activity_title">تعديل الملفات الشخصية</string>
   <string name="profile_edit_created">تم الإنشاء في %s</string>
   <string name="profile_last_used">آخر استخدام</string>
   <string name="profile_edit_activity_profile_edit_rename">تغيير الاسم</string>
   <string name="profile_edit_activity_profile_edit_reset">إعادة ضبط رقم التعريف الشخصي</string>
   <string name="profile_edit_activity_profile_edit_delete">حذف الملف الشخصي</string>
+  <string name="profile_edit_mark_chapter_completion">علم الفصول المكتملة</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_label">شغل مبدل اللغات السريع</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_explanation">السماح لهذا المستخدم بالتبديل بسرعة بين اللغة الإنجليزية والسواحيلية ضمن درس.</string>
   <string name="profile_edit_activity_profile_edit_delete_dialog_title">هل تريد حذف هذا الملف الشخصي نهائيًا؟</string>
   <string name="profile_edit_activity_profile_edit_delete_dialog_message">سيتم حذف كل التقدم ولن تتمكن من استعادته.</string>
   <string name="profile_edit_activity_profile_edit_delete_dialog_positive">حذف</string>
@@ -405,11 +408,14 @@
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="solution_summary_activity_show_solution_button_text">عرض الحل</string>
   <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title">عرض الحل</string>
+  <string name="hint_list_solution_title">الحل</string>
   <string name="solution_summary_activity_show_solution">عرض الحل</string>
   <string name="hints_summary_activity_reveal_hint_button_text">عرض الملاحظة</string>
   <string name="hints_summary_activity_hide_hint_button_text">إخفاء تلميح</string>
   <string name="solution_summary_activity_hide_solution">إخفاء الحل</string>
   <string name="solution_summary_activity_solution_correct_answer_label_text">الحل الوحيد هو :</string>
+  <string name="hints_list_exclusive_solution_text">الحل الوحيد هو :%s</string>
+  <string name="hints_list_possible_solution_text">أحد الاجابات هي : %s</string>
   <string name="reveal_solution_dialog_fragment_this_will_reveal_the_solution_message">سوف يتم إظهار الحل. هل أنت متأكد؟</string>
   <string name="reveal_solution_dialog_fragment_reveal_text">إظهار</string>
   <string name="text_view_binding_adapters_activity_just_now">الآن</string>
@@ -523,4 +529,7 @@
   <string name="administrator_controls_fragment_test_activity_label">يتحكم المسؤول في نشاط اختبار التجزئة</string>
   <string name="revision_card_fragment_revision_navigation_cards_header">أكمل دراستك</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">انتقل إلى الجزء السفلي من الشاشة للحصول على تلميح.</string>
+  <string name="state_fragment_item_selection_no_items_selected_hint_text">اختر كل الإجابات الصحيحة من فضلك.</string>
+  <string name="state_fragment_item_selection_some_items_selected_hint_text">يمكنك أن تختار المزيد من الخيارات</string>
+  <string name="state_fragment_item_selection_max_items_selected_hint_text">لا يمكنك اختيار أكثر من %s خيار.</string>
 </resources>

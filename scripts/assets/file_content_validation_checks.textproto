@@ -313,6 +313,8 @@ file_content_checks {
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsLoggerTest.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "testing/src/test/java/org/oppia/android/testing/logging/TestSyncStatusManagerTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/EventBundleCreatorTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsAssessorImplTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/ExpressionToComparableOperationConverterTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionExtensionsTest.kt"
@@ -320,8 +322,6 @@ file_content_checks {
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathTokenizerTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/PolynomialExtensionsTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/RealExtensionsTest.kt"
-  exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsAssessorImplTest.kt"
-  exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/EventBundleCreatorTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/profile/ProfileNameValidatorTest.kt"
   exempted_file_patterns: "testing/src/main/java/org/oppia/android/testing/junit/.+?\\.kt"
 }
@@ -338,6 +338,16 @@ file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml|app/src/main/res/values/color_palette.xml"
   prohibited_content_regex: "name=.+(?<!_color).>@|name=.*[A-Z].*>@"
   failure_message: "All color declarations in component_color.xml and color_palette.xml should end with _color suffix following snake_case naming convention."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/res/layout.*?/.+?\\.xml"
+  prohibited_content_regex: "@color/(?!component_color_).+|\"#\\p{XDigit}+\""
+  failure_message: "Only colors from component_colors.xml may be used in layouts."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/java/org/oppia/android/app.?/.+(ActivityPresenter|FragmentPresenter|ViewPresenter|Activity|Fragment|View)\\.kt"
+  prohibited_content_regex: "R.color.(?!component_color_).+"
+  failure_message: "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments, Views and Presenters)."
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/color_defs.xml"
@@ -407,4 +417,15 @@ file_content_checks {
   failure_message: "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one using getInstance (as the latter may create a WorkManager if one isn't already present, and the application may intend to disable it)."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
   exempted_file_patterns: ".+?Test\\.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: ".+?\\.(post|postDelayed)[\\s]*(\\(|\\{).*?"
+  failure_message: "Prefer avoiding post() and postDelayed() methods as they can can lead to subtle and difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when an operation needs to run at a future time. For cases when state needs to be synchronized with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/drawer/NavigationDrawerFragmentPresenter.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/topic/info/TopicInfoFragmentPresenter.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
 }

@@ -48,9 +48,9 @@
         android:onClick="@{() -> viewModel.clickOnViewAll()}"
         android:text="@string/profile_progress_header_activity_view_all"
         android:textAllCaps="true"
-        android:visibility="@{viewModel.getViewAllButtonVisibility()}"
         android:textColor="@color/component_color_home_activity_view_all_text_color"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="@{viewModel.getViewAllButtonVisibility()}" />
     </LinearLayout>
 
     <org.oppia.android.app.home.promotedlist.PromotedStoryListView
@@ -61,9 +61,9 @@
       android:clipToPadding="false"
       android:orientation="horizontal"
       android:overScrollMode="never"
-      android:scrollbars="none"
       android:paddingStart="@dimen/home_padding_start"
       android:paddingEnd="@{viewModel.endPadding}"
+      android:scrollbars="none"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:promotedStoryList="@{viewModel.promotedStoryList}" />
   </LinearLayout>

@@ -152,28 +152,27 @@
   <string name="input_interaction_activity_ratio_error_invalid_size">Idadi ya masharti si sawa na masharti yanayohitajika.</string>
   <string name="input_interaction_activity_ratio_error_includes_zero">Uwiano hauwezi kuwa na 0 kama kipengele.</string>
   <string name="topic_info_activity_unknown_size">Ukubwa usiojulikana</string>
-  <string name="size_bytes"> Baiti %s</string>
+  <string name="size_bytes">Baiti %s</string>
   <string name="size_kb">%s KB</string>
   <string name="size_mb">%s MB</string>
   <string name="size_gb">%s GB</string>
   <string name="state_fragment_activity_correct_text">Sahihi!</string>
   <string name="topic_prefix">Mada: %s</string>
-  <string name="story_summary_activity_chapter_count_with_story_name">%1$s katika %2$s</string>
   <plurals name="chapter_count">
-    <item quantity="one">Sura 1\n    </item>
-    <item quantity="other">\n      Sura %s \n    </item>
+    <item quantity="one">Sura 1</item>
+    <item quantity="other">Sura %s</item>
   </plurals>
   <plurals name="story_count">
-    <item quantity="one">Hadithi 1\n    </item>
-    <item quantity="other">      Hadithi %s\n    </item>
+    <item quantity="one">Hadithi 1</item>
+    <item quantity="other">Hadithi %s</item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="one">%s kati ya Sura %s Imekamilika</item>
-    <item quantity="other"> %s ya Sura %s Imekamilika</item>
+    <item quantity="other">%s ya Sura %s Imekamilika</item>
   </plurals>
   <plurals name="lesson_count">
-    <item quantity="one">Somo 1\n    </item>
-    <item quantity="other">      Masomo %s \n    </item>
+    <item quantity="one">Somo 1</item>
+    <item quantity="other">Masomo %s</item>
   </plurals>
   <string name="profile_chooser_activity_label_text">Ukurasa wa kuchagua wasifu</string>
   <string name="profile_chooser_activity_profile_chooser_admin">Msimamizi</string>
@@ -347,11 +346,11 @@
   <string name="question_player_activity_show_hints_and_solution">Onyesha vidokezo na suluhisho</string>
   <string name="hint_and_solution_activity_close_icon_description">Nenda juu</string>
   <string name="hints_toolbar_title">Vidokezo</string>
-  <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title">Fichua Suluhisho</string>
+  <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title" fuzzy="true">Fichua Suluhisho</string>
   <string name="hints_summary_activity_reveal_hint_button_text" fuzzy="true">Fichua Kidokezo</string>
   <string name="solution_summary_activity_solution_correct_answer_label_text">Suluhisho pekee ni:</string>
   <string name="reveal_solution_dialog_fragment_this_will_reveal_the_solution_message">Hii itafichua suluhisho. Una uhakika?</string>
-  <string name="reveal_solution_dialog_fragment_reveal_text">Fichua</string>
+  <string name="reveal_solution_dialog_fragment_reveal_text" fuzzy="true">Fichua</string>
   <string name="text_view_binding_adapters_activity_just_now">sasa hivi</string>
   <string name="text_view_binding_adapters_activity_last_logged_in_recently">hivi karibuni</string>
   <string name="text_view_binding_adapters_activity_time_ago">%s iliyopita</string>
@@ -368,7 +367,7 @@
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes">
     <item quantity="one">dakika</item>
-    <item quantity="other"> dakika %s</item>
+    <item quantity="other">dakika %s</item>
   </plurals>
   <plurals name="hours">
     <item quantity="one">saa</item>
