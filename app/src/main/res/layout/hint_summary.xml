@@ -97,7 +97,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:background="@color/component_color_shared_transparent_background_color"
-            android:contentDescription="@{isListExpanded? @string/hide_hint : @string/reveal_hint}"
+            android:contentDescription="@{isListExpanded? @string/hints_summary_activity_hide_hint_button_text : @string/hints_summary_activity_reveal_hint_button_text}"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:padding="8dp"

@@ -78,8 +78,8 @@ class SolutionViewModel private constructor(
   val correctAnswerContentDescription: String by lazy { computeCorrectAnswerContentDescription() }
 
   private val correctAnswerTextStringResId = if (isSolutionExclusive) {
-    R.string.hints_list_exclusive_solution_text
-  } else R.string.hints_list_possible_solution_text
+    R.string.hint_and_solution_activity_hints_list_exclusive_solution_text
+  } else R.string.hint_and_solution_activity_hints_list_possible_solution_text
 
   private fun computeCorrectAnswerHtml(): String {
     val answerTextHtml = when (correctAnswer.objectTypeCase) {

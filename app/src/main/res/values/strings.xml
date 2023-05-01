@@ -16,7 +16,7 @@
   <string name="admin_auth_activity_close_button_text">Close</string>
   <!-- AdminPinActivity -->
   <string name="admin_pin_activity_submit_button_text">Save</string>
-  <string name="admin_pin_activity_admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
+  <string name="admin_pin_activity_admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize manage profiles on the device.</string>
   <string name="admin_pin_activity_admin_pin_warning_text">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
   <string name="admin_pin_activity_admin_pin_input_hint_text">New 5-Digit PIN</string>
   <string name="admin_pin_activity_admin_pin_input_confirm_pin_text">Confirm 5-Digit PIN</string>
@@ -44,9 +44,9 @@
   <string name="administrator_controls_app_version_activity_app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_activity_add_profile_toolbar_title">Add Profile</string>
-  <string name="add_profile_activity_add_profile_input_name_hint_text">Name*</string>
-  <string name="add_profile_activity_add_profile_input_pin_hint_text">3-Digit PIN*</string>
-  <string name="add_profile_activity_add_profile_input_confirm_pin_hint_text">Confirm 3-Digit PIN*</string>
+  <string name="add_profile_activity_add_profile_input_name_hint_text">Name</string>
+  <string name="add_profile_activity_add_profile_input_pin_hint_text">3-Digit PIN</string>
+  <string name="add_profile_activity_add_profile_input_confirm_pin_hint_text">Confirm 3-Digit PIN</string>
   <string name="add_profile_activity_add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_activity_add_profile_allow_download_sub_text">User is able to download and delete content without Administrator PIN.</string>
   <string name="add_profile_activity_add_profile_create_btn_text">Create</string>
@@ -105,7 +105,7 @@
   <string name="exploration_activity_audio_player_off">Audio, OFF</string>
   <string name="exploration_activity_exploration_exit_button_spotlight_hint">Exit anytime using this button. We will save your progress.</string>
   <string name="exploration_activity_voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try it!</string>
-  <string name="exploration_activity_voiceover_language_icon_spotlight_hint">Tap to change voiceover language.</string>
+  <string name="exploration_activity_voiceover_language_icon_spotlight_hint">Tap to change the voiceover language.</string>
   <!-- UnsavedExplorationDialogFragment -->
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_description">Your progress will not be saved.</string>
@@ -160,17 +160,18 @@
   <string name="help_activity_copyright_licenses_list">copyright licenses list</string>
   <string name="help_activity_frequently_asked_questions_FAQ_text">Frequently Asked Questions (FAQs)</string>
   <!-- HintsAndSolutionDialogFragment -->
+  <string name="hint_and_solution_activity_hint_list_solution_title">Solution</string>
   <string name="hint_and_solution_activity_close_icon_description">Navigate up</string>
   <string name="solution_summary_activity_show_solution_button_text">Show solution</string>
   <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title">Reveal Solution</string>
   <string name="hints_summary_activity_hide_hint_button_text">Hide Hint</string>
+  <string name="hint_and_solution_activity_hints_list_exclusive_solution_text">The only solution is: %s</string>
+  <string name="hint_and_solution_activity_hints_list_possible_solution_text">One solution is: %s</string>
   <string name="hints_summary_activity_reveal_hint_button_text">Show Hint</string>
   <string name="solution_summary_activity_hide_solution">Hide solution</string>
   <string name="solution_summary_activity_show_solution">Show solution</string>
-  <string name="solution_summary_activity_solution_correct_answer_label_text">The only solution is :  </string>
   <string name="reveal_solution_dialog_fragment_this_will_reveal_the_solution_message">This will reveal the solution. Are you sure?</string>
   <string name="reveal_solution_dialog_fragment_reveal_text">Reveal</string>
-  <string name="hint_and_solution_activity_hints_android_solution_correct_answer">%s/%s</string>
   <!-- InputInteractionActivity -->
   <string name="text_input_interaction_item_activity_text_input_default_content_description">Enter text.</string>
   <string name="numeric_input_interaction_item_activity_numeric_input_hint">Enter a number.</string>
@@ -307,6 +308,7 @@
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->
+  <string name="profile_edit_activity_title">Edit Profile</string>
   <string name="profile_edit_activity_profile_edit_rename">Rename</string>
   <string name="profile_edit_activity_profile_edit_reset">Reset PIN</string>
   <string name="profile_edit_activity_profile_edit_delete">Profile Deletion</string>
@@ -316,6 +318,9 @@
   <string name="profile_edit_activity_profile_edit_delete_dialog_negative">Cancel</string>
   <string name="profile_edit_activity_profile_edit_allow_download_heading">Allow Download Access</string>
   <string name="profile_edit_activity_profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
+  <string name="profile_edit_activity_mark_chapter_completion">Mark Chapters Completed</string>
+  <string name="profile_edit_activity_enable_quick_lesson_language_switching_label">Enable Quick Language Switching</string>
+  <string name="profile_edit_activity_enable_quick_lesson_language_switching_explanation">Allow this user to quickly switch between English and Swahili within a lesson.</string>
   <!-- ProfilePictureActivity -->
   <string name="profile_picture_activity_title">Profile Picture</string>
   <!-- ProfileProgressActivity -->
@@ -510,7 +515,6 @@
   <string name="size_mb">%s MB</string>
   <string name="size_gb">%s GB</string>
   <string name="topic_prefix">Topic: %s</string>
-  <string name="welcome_profile_name">%s!</string>
   <string name="lessons">Lessons</string>
   <string name="replay_button_item_activity_lesson_replay_button_text">Replay</string>
   <string name="image_interaction_answer_text">Clicks on %s</string>
