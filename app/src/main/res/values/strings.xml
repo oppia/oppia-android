@@ -170,7 +170,7 @@
   <string name="hints_summary_activity_reveal_hint_button_text">Show Hint</string>
   <string name="solution_summary_activity_hide_solution">Hide solution</string>
   <string name="solution_summary_activity_show_solution">Show solution</string>
-  <string name="reveal_solution_dialog_fragment_this_will_reveal_the_solution_message">This will reveal the solution. Are you sure?</string>
+  <string name="reveal_solution_dialog_fragment_this_will_reveal_the_solution_message">This will show the solution. Are you sure?</string>
   <string name="reveal_solution_dialog_fragment_reveal_text">Reveal</string>
   <!-- InputInteractionActivity -->
   <string name="text_input_interaction_item_activity_text_input_default_content_description">Enter text.</string>
