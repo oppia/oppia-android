@@ -68,9 +68,9 @@ private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID =
   "update_audio_language_provider_id"
 private const val UPDATE_LEARNER_ID_PROVIDER_ID = "update_learner_id_provider_id"
 private const val SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
-  "set_survey_last_shown_timestamp_provider_id"
-private const val GET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
-  "get_survey_last_shown_timestamp_provider_id"
+  "record_survey_last_shown_timestamp_provider_id"
+private const val RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
+  "retrieve_survey_last_shown_timestamp_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -723,20 +723,20 @@ class ProfileManagementController @Inject constructor(
 
   private fun updateLastLoggedInAsyncAndNumberOfLogins(profileId: ProfileId):
     Deferred<ProfileActionStatus> {
-      return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val profile = it.profilesMap[profileId.internalId]
-          ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
-        val updatedProfile = profile.toBuilder()
-          .setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs())
-          .setNumberOfLogins(profile.numberOfLogins + 1)
-          .build()
-        val profileDatabaseBuilder = it.toBuilder().putProfiles(
-          profileId.internalId,
-          updatedProfile
-        )
-        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-      }
+    return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId]
+        ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
+      val updatedProfile = profile.toBuilder()
+        .setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs())
+        .setNumberOfLogins(profile.numberOfLogins + 1)
+        .build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
+  }
 
   /**
    * Deletes an existing profile.
@@ -848,7 +848,7 @@ class ProfileManagementController @Inject constructor(
    * Sets the timestamp when an nps survey was last shown for the specified profile.
    *  Returns a [DataProvider] indicating whether the save was a success
    */
-  fun setSurveyLastShownTimestamp(profileId: ProfileId): DataProvider<Any?> {
+  fun recordSurveyLastShownTimestamp(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) { profileDatabase ->
@@ -870,13 +870,13 @@ class ProfileManagementController @Inject constructor(
   }
 
   /** Returns the timestamp at which the nps survey was last shown. */
-  fun fetchSurveyLastShownTimestamp(
+  fun retrieveSurveyLastShownTimestamp(
     profileId: ProfileId
   ): DataProvider<Long> {
-    return profileDataStore.transform(
-      GET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID
-    ) { profileDatabase ->
-      profileDatabase.profilesMap[profileId.internalId]?.surveyLastShownTimestampMs ?: 0L
+    return profileDataStore.transformAsync(RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID) {
+      val surveyLastShownTimestampMs =
+        it.profilesMap[profileId.internalId]?.surveyLastShownTimestampMs ?: 0L
+      AsyncResult.Success(surveyLastShownTimestampMs)
     }
   }
 

@@ -14,6 +14,7 @@ import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 
 private const val CACHE_NAME = "topic_learning_time_database"
 private const val RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
@@ -56,7 +57,6 @@ class ExplorationActiveTimeController @Inject constructor(
    */
   fun setExplorationSessionStarted() {
     this.startExplorationTimestampMs = oppiaClock.getCurrentTimeMs()
-    println("Start session timer $startExplorationTimestampMs")
   }
 
   /**
@@ -66,7 +66,6 @@ class ExplorationActiveTimeController @Inject constructor(
    * executing, or the app goes to the background.
    */
   fun setExplorationSessionPaused(profileId: ProfileId, topicId: String) {
-    println("Pause session timer")
     recordAggregateTopicLearningTime(
       profileId = profileId,
       topicId = topicId,
@@ -135,11 +134,11 @@ class ExplorationActiveTimeController @Inject constructor(
     topicId: String
   ): DataProvider<TopicLearningTime> {
     return retrieveCacheStore(profileId)
-      .transform(
-        RETRIEVE_AGGREGATE_LEARNING_TIME_PROVIDER_ID
-      ) { learningTimeDb ->
-        learningTimeDb.aggregateTopicLearningTimeMap[topicId]
-          ?: TopicLearningTime.getDefaultInstance()
+      .transformAsync(RETRIEVE_AGGREGATE_LEARNING_TIME_PROVIDER_ID) { learningTimeDb ->
+        return@transformAsync AsyncResult.Success(
+          learningTimeDb.aggregateTopicLearningTimeMap[topicId]
+            ?: TopicLearningTime.getDefaultInstance()
+        )
       }
   }
 
