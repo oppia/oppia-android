@@ -39,6 +39,7 @@ import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.AsyncResult
@@ -81,6 +82,7 @@ class ProfileManagementControllerTest {
   @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
+  @Inject lateinit var oppiaClock: FakeOppiaClock
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -103,6 +105,7 @@ class ProfileManagementControllerTest {
     private const val DEFAULT_ALLOW_DOWNLOAD_ACCESS = true
     private const val DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING = false
     private const val DEFAULT_AVATAR_COLOR_RGB = -10710042
+    private const val DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS = 0L
   }
 
   @After
@@ -129,6 +132,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.numberOfLogins).isEqualTo(0)
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
   }
 
   @Test
@@ -1106,6 +1110,75 @@ class ProfileManagementControllerTest {
       )
 
     monitorFactory.waitForNextFailureResult(updateProvider)
+  }
+
+  @Test
+  fun testFetchSurveyLastShownTime_realProfile_beforeFirstSurveyShown_returnsDefaultTimestamp() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    val lastShownTimeMs = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveSurveyLastShownTimestamp(
+        PROFILE_ID_1
+      )
+    )
+
+    assertThat(lastShownTimeMs).isEqualTo(DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS)
+  }
+
+  @Test
+  fun testFetchSurveyLastShownTime_updateLastShownTimeFunctionCalled_returnsCurrentTime() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::updateSurveyLastShownTimestamp,
+      PROFILE_ID_1
+    )
+
+    val lastShownTimeMs = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveSurveyLastShownTimestamp(
+        PROFILE_ID_1
+      )
+    )
+
+    assertThat(lastShownTimeMs).isEqualTo(oppiaClock.getCurrentTimeMs())
+  }
+
+  @Test
+  fun testFetchSurveyLastShownTime_updateLastShownTime_inOneProfile_doesNotUpdateOtherProfiles() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::updateSurveyLastShownTimestamp,
+      PROFILE_ID_1
+    )
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_2)
+    )
+
+    val lastShownTimeMs = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveSurveyLastShownTimestamp(
+        PROFILE_ID_2
+      )
+    )
+
+    assertThat(lastShownTimeMs).isEqualTo(DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS)
   }
 
   private fun addTestProfiles() {

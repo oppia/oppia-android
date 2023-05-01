@@ -845,10 +845,10 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Sets the timestamp when an nps survey was last shown for the specified profile.
-   *  Returns a [DataProvider] indicating whether the save was a success
+   * Sets the timestamp when a nps survey was last shown for the specified profile.
+   * Returns a [DataProvider] indicating whether the save was a success.
    */
-  fun recordSurveyLastShownTimestamp(profileId: ProfileId): DataProvider<Any?> {
+  fun updateSurveyLastShownTimestamp(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) { profileDatabase ->
