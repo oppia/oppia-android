@@ -4,7 +4,6 @@
 * VivianW
 -->
 <resources>
-  <string name="nav_header_desc">kichwa cha urambazaji</string>
   <string name="menu_options">Chaguzi</string>
   <string name="navigation_drawer_activity_menu_my_downloads">Vipakuliwa Vyangu</string>
   <string name="menu_help">Msaada</string>
@@ -29,7 +28,6 @@
   <string name="cellular_audio_dialog_fragment_cellular_data_alert_dialog_checkbox">Usionyeshe ujumbe huu tena</string>
   <string name="concept_card_fragment_concept_card_toolbar_title">Kadi ya Dhana</string>
   <string name="concept_card_fragment_concept_card_close_icon_description">Kubofya kwenye hii kutafunga kadi ya dhana.</string>
-  <string name="revision_card_activity_toolbar_title">Kadi ya Marudio</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_title">Je, ungependa kwenda kwenye Ukurasa wa Mada?</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_description">Maendeleo yako hayatahifadhiwa.</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_leave_button_text">Toka</string>
@@ -48,7 +46,6 @@
   <string name="topic_practice_header_view_activity_topic_practice_skills_description">Chagua ujuzi ambao ungependa kufanyia mazoezi.</string>
   <string name="topic_practice_footer_view_activity_topic_practice_start">Anza</string>
   <string name="state_continue_button">Endelea</string>
-  <string name="state_continue_submit">Wasilisha</string>
   <string name="previous_state_description">Nenda kwenye kadi iliyotangulia</string>
   <string name="next_state_description">Nenda kwenye kadi iliyofuata</string>
   <string name="submit_button_item_activity_state_submit_button_text">Wasilisha</string>
@@ -56,7 +53,6 @@
   <string name="unsaved_exploration_dialog_fragment_state_end_exploration_button_text">Rudi kwa Mada iliopita</string>
   <string name="previous_responses_header">Majibu ya awali (%s)</string>
   <string name="image_interaction_answer_text">Mibofyo kwenye %s</string>
-  <string name="state_learn_again_button">Jifunze Tena</string>
   <string name="topic_info_activity_see_more_text">Ona zaidi</string>
   <string name="topic_info_activity_see_less">ona kidogo</string>
   <string name="FAQs">Maswali Yanayoulizwa Mara kwa Mara</string>
@@ -83,7 +79,6 @@
   <string name="fractions_default_hint_text">Ingiza sehemu katika mpangilio huu x/x, au nambari iliyochanganywa katika mpangilio huu x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Ingiza sehemu katika mpangilio huu X/X.</string>
   <string name="numeric_input_interaction_item_activity_numeric_input_hint">Weka nambari.</string>
-  <string name="number_with_units_input_hint_text">Andika Nambari za vitengo hapa.</string>
   <string name="numeric_expression_activity_default_hint_text">Andika hesabu hapa,tumia nambari peke yake.</string>
   <string name="algebraic_expression_activity_default_hint_text">Andika swali la hesabu hapa.</string>
   <string name="math_expression_activity_math_equation_default_hint_text">Andika hesabu ya kulinganisha hapa.</string>
@@ -118,7 +113,6 @@
   <string name="math_expression_activity_error_unsupported_function">Chaguo la kukokotoa \'%s\' haitumiki. Tafadhali rekebisha jibu lako.</string>
   <string name="math_expression_activity_error_incomplete_function_name">Ulimaanisha sqrt? Ikiwa sivyo, tafadhali tenganisha vigeu kwa kutumia alama za kuzidisha.</string>
   <string name="math_expression_activity_error_generic_text">Samahani, hatukuweza kuelewa jibu lako. Tafadhali iangalie ili kuhakikisha kuwa hakuna hitilafu zozote.</string>
-  <string name="enable_audio_playback_content_description">Washa sauti kwa somo hili.</string>
   <string name="profile_progress_header_activity_recently_played_stories">Hadithi Zilizochezwa hivi karibuni</string>
   <string name="recently_played_stories">Hadithi Zilizochezwa hivi karibuni</string>
   <string name="last_played_stories">Hadithi Zilizochezwa Mwisho</string>
@@ -218,14 +212,12 @@
   <string name="add_profile_activity_add_profile_create_btn_text">Anzisha</string>
   <string name="add_profile_activity_add_profile_info_dialog_close_text">Funga</string>
   <string name="add_profile_activity_add_profile_info_dialog_message_text">Ukiwa na Nambari ya Siri, hakuna mtu mwingine anayeweza kufikia wasifu kando na mtumiaji huyu aliyekabidhiwa.</string>
-  <string name="add_profile_error_image_failed_store">Tumeshindwa kuhifadhi picha yako. Tafadhali jaribu tena.</string>
   <string name="add_profile_activity_add_profile_error_text_name_not_unique">Jina hili tayari linatumiwa na wasifu mwingine.</string>
   <string name="add_profile_activity_add_profile_error_text_name_empty" fuzzy="true">Tafadhali weka jina la wasifu huu.</string>
   <string name="add_profile_activity_add_profile_error_text_name_only_letters" fuzzy="true">Majina yanaweza kuwa na herufi pekee. Jaribu jina lingine?</string>
   <string name="add_profile_activity_add_profile_error_text_pin_length">Nambari yako ya Siri inapaswa kuwa na urefu wa tarakimu 3.</string>
   <string name="add_profile_activity_add_profile_error_text_pin_confirm_wrong">Tafadhali hakikisha kwamba Nambari za Siri zote mbili zinalingana.</string>
   <string name="add_profile_activity_add_profile_info_content_description">Maelezo zaidi kuhusu Nambari za Siri zenye tarakimu 3.</string>
-  <string name="add_profile_activity_required_fields_content_description">Sehemu zilizo na alama ya * zinahitajika.</string>
   <string name="current_profile_picture_content_description">Picha ya sasa ya wasifu</string>
   <string name="edit_profile_picture_content_description">Hariri picha ya wasifu</string>
   <string name="onboarding_activity_onboarding_slide_0_title">Karibu kwa %s!</string>
@@ -253,10 +245,8 @@
   <string name="pin_password_activity_pin_password_success">Mabadiliko ya Nambari ya Siri yamefaulu</string>
   <string name="pin_password_activity_pin_password_forgot_title">Je, umesahau Nambari ya Siri?</string>
   <string name="pin_password_activity_admin_forgot_pin_message" fuzzy="true">Ili kuweka upya Nambari yako ya Siri, tafadhali ondoa %s kisha uisakinishe upya.\n\nKumbuka kwamba ikiwa kifaa hakijakuwa mtandaoni, unaweza kupoteza maendeleo ya mtumiaji kwenye akaunti nyingi.</string>
-  <string name="show_hide_password_icon">Onyesha/Ficha ishara ya nenosiri</string>
   <string name="pin_password_activity_password_shown_icon">Ishara ya nenosiri iliyoonyeshwa</string>
   <string name="pin_password_activity_password_hidden_icon">Ishara ya nenosiri iliyofichwa</string>
-  <string name="enter_your_pin">Weka Nambari yako ya Siri</string>
   <string name="pin_password_activity_pin_password_toolbar_title">Weka Nambari ya Siri</string>
   <string name="admin_settings_dialog_fragment_input_pin_label_text">Nambari ya Siri ya Msimamizi</string>
   <string name="admin_settings_dialog_fragment_admin_settings_heading">Ufikiaji wa mipangilio ya msimamizi</string>
@@ -329,15 +319,12 @@
   <string name="reading_text_size_activity_title">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="reading_text_size">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="reading_text_size_activity_toolbar_title_text">Ukubwa wa Maandishi ya Kusoma</string>
-  <string name="story_text_will_look_like_this">Nakala ya hadithi itaonekana hivi.</string>
-  <string name="constant_string_for_text_size">A</string>
   <string name="audio_language">Sauti Chaguomsingi</string>
   <string name="app_language_activity_label_text">Lugha ya Programu</string>
   <string name="reading_text_size_small">Ndogo</string>
   <string name="reading_text_size_medium">Kati</string>
   <string name="reading_text_size_large">Kubwa</string>
   <string name="reading_text_size_extra_large">Kubwa Zaidi</string>
-  <string name="slide_seekbar_to_control_text_size">Telezesha upau wa utafutaji ili kudhibiti ukubwa wa maandishi.</string>
   <string name="profile_progress_activity_profile_title">Wasifu</string>
   <string name="story_count_text_view">Hadithi 2</string>
   <string name="profile_progress_header_activity_topics_in_progress">Mada zinazoendelea</string>
@@ -399,8 +386,6 @@
   <string name="splash_activity_unsupported_app_version_dialog_close_button_text">Funga programu</string>
   <string name="ratio_content_description_separator">kwa</string>
   <string name="ratio_default_hint_text">Weka uwiano katika fomu x:y.</string>
-  <string name="smallest_text_size_content_description">Maandishi madogo zaidi</string>
-  <string name="largest_text_size_content_description">Maandishi kubwa zaidi</string>
   <string name="coming_soon_topic_list_activity_title">Inakuja Hivi Karibuni</string>
   <string name="recommended_stories">Hadithi Zinazopendekezwa</string>
   <string name="stories_for_you">Hadithi Kwa Ajili Yako</string>

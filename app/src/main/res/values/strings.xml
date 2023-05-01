@@ -58,7 +58,6 @@
   <string name="add_profile_activity_add_profile_error_text_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_activity_add_profile_error_text_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_activity_add_profile_info_content_description">More information on 3-digit PINs.</string>
-  <string name="add_profile_activity_required_fields_content_description">Fields marked with an * are required.</string>
   <string name="add_profile_activity_add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
   <!-- AdminSettingsDialogFragment -->
   <string name="admin_settings_dialog_fragment_input_pin_label_text">Administrator\'s PIN</string>
@@ -262,7 +261,6 @@
   <string name="onboarding_activity_onboarding_slide_dots_content_description">Slide %s of %s</string>
   <string name="onboarding_activity_title">Introduction</string>
   <string name="onboarding_activity_agree_to_terms"><![CDATA[By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">Privacy Policy</oppia-noninteractive-policy>.]]></string>
-  <string name="onboarding_activity_onboarding_next_button_spotlight_hint">Next</string>
   <!-- OptionsActivity -->
   <string name="options_activity_title">Options</string>
   <string name="app_language_activity_label_text">App Language</string>
@@ -363,7 +361,6 @@
   <string name="question_player_activity_show_hints_and_solution">Show hints and solution</string>
   <!-- RevisionCardActivity -->
   <string name="revision_card_activity_title">Skill revision page</string>
-  <string name="revision_card_activity_toolbar_title">Revision Card</string>
   <string name="revision_card_fragment_revision_navigation_cards_header">Continue Studying</string>
   <string name="bottom_sheet_options_menu_fragment_close_text">Close</string>
   <!-- RecentlyPlayedActivity -->
@@ -476,27 +473,18 @@
   <string name="recommended_stories">Recommended Stories</string>
   <string name="stories_for_you">Stories For You</string>
   <!-- TO BE PLACED -->
-  <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
-  <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="search">Search</string>
   <string name="developer_options">Developer Options</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="hint_list_item_number">Hint %s</string>
-  <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
-  <string name="nav_header_desc">Navigation header</string>
-  <string name="story_text_will_look_like_this">Story text will look like this.</string>
-  <string name="constant_string_for_text_size">A</string>
   <string name="reading_text_size_small">Small</string>
   <string name="reading_text_size_medium">Medium</string>
   <string name="reading_text_size_large">Large</string>
   <string name="reading_text_size_extra_large">Extra Large</string>
-  <string name="slide_seekbar_to_control_text_size">Slide seekbar to control the text size.</string>
   <string name="preferences">Preferences</string>
   <string name="story_count_text_view">2 Stories</string>
   <string name="last_played_stories">Last-Played Stories</string>
-  <string name="show_hide_password_icon">Show/Hide password icon</string>
-  <string name="enter_your_pin">Enter your PIN</string>
   <string name="welcome_profile_name">%s!</string>
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>
@@ -504,10 +492,8 @@
   <string name="add_profile_required">Required</string>
   <string name="revision">Revision</string>
   <string name="state_continue_button">Continue</string>
-  <string name="state_continue_submit">Submit</string>
   <string name="previous_state_description">Navigate to the previous card</string>
   <string name="next_state_description">Navigate to the next card</string>
-  <string name="state_learn_again_button">Learn Again</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
@@ -605,8 +591,6 @@
     Enter a ratio in the form x:y.
   </string>
   <string name="text_input_default_hint_text">Tap here to enter text.</string>
-  <string name="smallest_text_size_content_description">Smallest text size</string>
-  <string name="largest_text_size_content_description">Largest text size</string>
   <string name="reading_text_size">Reading Text Size</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
 </resources>

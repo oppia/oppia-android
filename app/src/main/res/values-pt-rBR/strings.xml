@@ -9,7 +9,6 @@
 * YuriNikolai
 -->
 <resources>
-  <string name="nav_header_desc">Cabeçalho de navegação</string>
   <string name="menu_options">Opções</string>
   <string name="navigation_drawer_activity_menu_my_downloads">Meus Downloads</string>
   <string name="menu_help">Ajuda</string>
@@ -36,7 +35,6 @@
   <string name="cellular_audio_dialog_fragment_cellular_data_alert_dialog_checkbox">Não mostre esta mensagem novamente</string>
   <string name="concept_card_fragment_concept_card_toolbar_title">Cartão de Conceito</string>
   <string name="concept_card_fragment_concept_card_close_icon_description">Clicar aqui fechará o cartão de conceito.</string>
-  <string name="revision_card_activity_toolbar_title">Cartão de Revisão</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_title">Pretende ir para a página do tópico?</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_description">Seu progresso não será salvo.</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_leave_button_text">Sair</string>
@@ -55,7 +53,6 @@
   <string name="topic_practice_header_view_activity_topic_practice_skills_description">Selecione as habilidades que você gostaria de praticar.</string>
   <string name="topic_practice_footer_view_activity_topic_practice_start">Começar</string>
   <string name="state_continue_button">Continuar</string>
-  <string name="state_continue_submit">Enviar</string>
   <string name="previous_state_description">Voltar ao cartão anterior</string>
   <string name="next_state_description">Avançar para o próximo cartão</string>
   <string name="submit_button_item_activity_state_submit_button_text">Enviar</string>
@@ -63,7 +60,6 @@
   <string name="unsaved_exploration_dialog_fragment_state_end_exploration_button_text">Retornar ao Tópico</string>
   <string name="previous_responses_header">Respostas Anteriores (%s)</string>
   <string name="image_interaction_answer_text">Cliques em %s</string>
-  <string name="state_learn_again_button">Aprender Novamente</string>
   <string name="topic_info_activity_see_more_text">Veja Mais</string>
   <string name="topic_info_activity_see_less">Veja Menos</string>
   <string name="FAQs">FAQs</string>
@@ -90,7 +86,6 @@
   <string name="fractions_default_hint_text">Insira uma fração na forma x/x, ou um número misto na forma x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Insira uma fração no formato x/x.</string>
   <string name="numeric_input_interaction_item_activity_numeric_input_hint">Digite um número.</string>
-  <string name="number_with_units_input_hint_text">Escreva números com unidades aqui.</string>
   <string name="numeric_expression_activity_default_hint_text">Digite uma expressão aqui, usando apenas números.</string>
   <string name="algebraic_expression_activity_default_hint_text">Digite uma expressão aqui.</string>
   <string name="math_expression_activity_math_equation_default_hint_text">Digite uma equação aqui.</string>
@@ -125,7 +120,6 @@
   <string name="math_expression_activity_error_unsupported_function">A função \'%s\' não é suportada. Por favor, revise sua resposta.</string>
   <string name="math_expression_activity_error_incomplete_function_name">Será que queria dizer sqrt? Se não, por favor, separe as variáveis ​​com símbolos de multiplicação.</string>
   <string name="math_expression_activity_error_generic_text">Desculpe, não conseguimos entender sua resposta. Por favor, verifique se não há erros.</string>
-  <string name="enable_audio_playback_content_description">Habilitar narração de áudio para esta lição.</string>
   <string name="profile_progress_header_activity_recently_played_stories">Histórias Reproduzidas Recentemente</string>
   <string name="recently_played_stories">Histórias Reproduzidas Recentemente</string>
   <string name="last_played_stories">Últimas Histórias Reproduzidas</string>
@@ -235,14 +229,12 @@
   <string name="add_profile_activity_add_profile_create_btn_text">Criar</string>
   <string name="add_profile_activity_add_profile_info_dialog_close_text">Fechar</string>
   <string name="add_profile_activity_add_profile_info_dialog_message_text">Com um PIN, ninguém mais pode acessar um perfil além deste usuário atribuído.</string>
-  <string name="add_profile_error_image_failed_store">Falha ao armazenar sua imagem de avatar. Por favor, tente novamente.</string>
   <string name="add_profile_activity_add_profile_error_text_name_not_unique">Este nome já está em uso por outro perfil.</string>
   <string name="add_profile_activity_add_profile_error_text_name_empty" fuzzy="true">Por favor, insira um nome válido para este perfil.</string>
   <string name="add_profile_activity_add_profile_error_text_name_only_letters" fuzzy="true">Por favor, escolha um nome de perfil que não inclua números ou símbolos.</string>
   <string name="add_profile_activity_add_profile_error_text_pin_length">Seu PIN deve ter 3 dígitos.</string>
   <string name="add_profile_activity_add_profile_error_text_pin_confirm_wrong">Certifique-se de que os dois PINs coincidam.</string>
   <string name="add_profile_activity_add_profile_info_content_description">Mais informações sobre PINs de 3 dígitos.</string>
-  <string name="add_profile_activity_required_fields_content_description">Os campos marcados com * são obrigatórios.</string>
   <string name="current_profile_picture_content_description">Foto de perfil atual</string>
   <string name="edit_profile_picture_content_description">Editar foto de perfil</string>
   <string name="onboarding_activity_onboarding_slide_0_title">Bem-vindo à %s!</string>
@@ -275,10 +267,8 @@
   <string name="pin_password_activity_admin_confirm_app_wipe_message">Tem certeza de que deseja excluir todos os perfis %s neste dispositivo? Esta ação não poderá ser desfeita.</string>
   <string name="pin_password_activity_admin_confirm_app_wipe_positive_button_text">Sim</string>
   <string name="pin_password_activity_admin_confirm_app_wipe_negative_button_text">Não</string>
-  <string name="show_hide_password_icon">Mostrar/Esconder ícone da senha</string>
   <string name="pin_password_activity_password_shown_icon">Ícone de mostrar a senha</string>
   <string name="pin_password_activity_password_hidden_icon">Ícone de esconder a senha</string>
-  <string name="enter_your_pin">Insira seu PIN</string>
   <string name="pin_password_activity_pin_password_toolbar_title">Insira o PIN</string>
   <string name="admin_settings_dialog_fragment_input_pin_label_text">PIN do Administrador</string>
   <string name="admin_settings_dialog_fragment_admin_settings_heading">Acesso às Configurações do Administrador</string>
@@ -351,15 +341,12 @@
   <string name="reading_text_size">Tamanho do Texto de Leitura</string>
   <string name="reading_text_size_activity_title">Tamanho do Texto de Leitura</string>
   <string name="reading_text_size_activity_toolbar_title_text">Tamanho do Texto de Leitura</string>
-  <string name="story_text_will_look_like_this">O texto da história ficará assim.</string>
-  <string name="constant_string_for_text_size">A</string>
   <string name="audio_language">Áudio Padrão</string>
   <string name="app_language_activity_label_text">Idioma do Aplicativo</string>
   <string name="reading_text_size_small">Pequeno</string>
   <string name="reading_text_size_medium">Médio</string>
   <string name="reading_text_size_large">Grande</string>
   <string name="reading_text_size_extra_large">Extra Grande</string>
-  <string name="slide_seekbar_to_control_text_size">Deslize a barra para controlar o tamanho do texto.</string>
   <string name="profile_progress_activity_profile_title">Perfil</string>
   <string name="story_count_text_view">2 Histórias</string>
   <string name="profile_progress_header_activity_topics_in_progress">Tópicos em Andamento</string>
@@ -437,8 +424,6 @@
   <string name="ratio_content_description_separator">para</string>
   <string name="ratio_default_hint_text">Insira uma razão no formato x:y.</string>
   <string name="text_input_default_hint_text">Clique aqui para inserir texto.</string>
-  <string name="smallest_text_size_content_description">Menor tamanho de texto</string>
-  <string name="largest_text_size_content_description">Maior tamanho de texto</string>
   <string name="coming_soon_topic_list_activity_title">Em Breve</string>
   <string name="recommended_stories">Histórias Recomendadas</string>
   <string name="stories_for_you">Histórias Para Você</string>
