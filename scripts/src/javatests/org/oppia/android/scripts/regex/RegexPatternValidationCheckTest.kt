@@ -202,9 +202,10 @@ class RegexPatternValidationCheckTest {
   @Test
   fun testFileNamePattern_activityInAppModule_fileNamePatternIsCorrect() {
     val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val moreRequiredContent = "decorateWithUserProfileId(PROFILE_ID)"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val tempFile = tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
-    tempFile.writeText(requiredContent)
+    tempFile.writeText(requiredContent + moreRequiredContent)
 
     runScript()
 
@@ -2234,7 +2235,7 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_kotlinFiles_includesNonColorComponentReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        decorateWithScreenName(HOME_ACTIVITY)
+        decorateWithUserProfileId(PROFILE_ID)
         R.color.component_color_shared_activity_status_bar_color
         R.color.color_def_avatar_background_1
         R.color.color_palette_primary_color
