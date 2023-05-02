@@ -52,3 +52,9 @@ oppia_android_library(
         "//third_party:com_google_protobuf_protobuf-javalite",
     ],
 )
+
+oppia_android_library(
+    name = "topic_selector",
+    srcs = ["TopicSelector.kt"],
+    visibility = ["//app:app_visibility"],
+)

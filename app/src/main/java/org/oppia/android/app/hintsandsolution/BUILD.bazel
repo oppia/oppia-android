@@ -122,3 +122,9 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/html:custom_html_content_handler",
     ],
 )
+
+oppia_android_library(
+    name = "reveal_solution_interface",
+    srcs = ["RevealSolutionInterface.kt"],
+    visibility = ["//app:app_visibility"],
+)

@@ -11,3 +11,53 @@ exports_files([
     "RatioInputInteractionView.kt",
     "TextInputInteractionView.kt",
 ])
+
+oppia_android_library(
+    name = "fraction_input_interaction_view",
+    srcs = ["FractionInputInteractionView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:state_keyboard_button_listener",
+        "//app/src/main/java/org/oppia/android/app/utility:keyboard_helper",
+    ],
+)
+
+oppia_android_library(
+    name = "math_expression_interactions_view",
+    srcs = ["MathExpressionInteractionsView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:state_keyboard_button_listener",
+        "//app/src/main/java/org/oppia/android/app/utility:keyboard_helper",
+    ],
+)
+
+oppia_android_library(
+    name = "numeric_input_interaction_view",
+    srcs = ["NumericInputInteractionView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:state_keyboard_button_listener",
+        "//app/src/main/java/org/oppia/android/app/utility:keyboard_helper",
+    ],
+)
+
+oppia_android_library(
+    name = "ratio_input_interaction_view",
+    srcs = ["RatioInputInteractionView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:state_keyboard_button_listener",
+        "//app/src/main/java/org/oppia/android/app/utility:keyboard_helper",
+    ],
+)
+
+oppia_android_library(
+    name = "text_input_interaction_view",
+    srcs = ["TextInputInteractionView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:state_keyboard_button_listener",
+        "//app/src/main/java/org/oppia/android/app/utility:keyboard_helper",
+    ],
+)

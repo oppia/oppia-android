@@ -56,3 +56,9 @@ oppia_android_library(
         "//third_party:javax_inject_javax_inject",
     ],
 )
+
+oppia_android_library(
+    name = "exit_profile_dialog_interface",
+    srcs = ["ExitProfileDialogInterface.kt"],
+    visibility = ["//app:app_visibility"],
+)

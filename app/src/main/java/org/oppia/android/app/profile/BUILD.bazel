@@ -159,3 +159,9 @@ oppia_android_library(
         "//third_party:javax_inject_javax_inject",
     ],
 )
+
+oppia_android_library(
+    name = "profile_route_dialog_interface",
+    srcs = ["ProfileRouteDialogInterface.kt"],
+    visibility = ["//app:app_visibility"],
+)

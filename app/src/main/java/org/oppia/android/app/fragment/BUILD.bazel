@@ -15,6 +15,7 @@ oppia_android_library(
     name = "fragment_component",
     srcs = ["FragmentComponent.kt"],
     visibility = [
+        "//:oppia_testing_visibility",
         "//app:__pkg__",
         "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
     ],

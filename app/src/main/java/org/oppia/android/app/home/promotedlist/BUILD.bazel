@@ -82,3 +82,42 @@ oppia_android_library(
         "//third_party:com_google_protobuf_protobuf-javalite",
     ],
 )
+
+oppia_android_library(
+    name = "coming_soon_topics_list_view",
+    srcs = ["ComingSoonTopicsListView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/home:home_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/home/promotedlist:coming_soon_topics_view_model",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:snap_helper",
+        "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "promoted_story_list_view",
+    srcs = ["PromotedStoryListView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/home/promotedlist:promoted_story_view_model",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:snap_helper",
+        "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)

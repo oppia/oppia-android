@@ -12,3 +12,103 @@ exports_files([
     "SegmentedCircularProgressView.kt",
     "VerticalDashedLineView.kt",
 ])
+
+oppia_android_library(
+    name = "chapter_not_started_container_constraint_layout",
+    srcs = ["ChapterNotStartedContainerConstraintLayout.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/spotlight",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//model/src/main/proto:spotlight_java_proto_lite",
+        "//third_party:androidx_constraintlayout_constraintlayout",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "continue_button_view",
+    srcs = ["ContinueButtonView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/utility/lifecycle:lifecycle_safe_timer_factory",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+oppia_android_library(
+    name = "lesson_thumbnail_image_view",
+    srcs = ["LessonThumbnailImageView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model/src/main/proto:thumbnail_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_targets",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",
+    ],
+)
+
+oppia_android_library(
+    name = "promoted_story_card_view",
+    srcs = ["PromotedStoryCardView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/spotlight",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//model/src/main/proto:spotlight_java_proto_lite",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:com_google_android_material_material",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "segmented_circular_progress_view",
+    srcs = ["SegmentedCircularProgressView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//third_party:androidx_core_core",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+oppia_android_library(
+    name = "vertical_dashed_line_view",
+    srcs = ["VerticalDashedLineView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:resources",
+        "//third_party:androidx_core_core",
+    ],
+)

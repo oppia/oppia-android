@@ -119,7 +119,7 @@ oppia_android_library(
     srcs = ["AppLanguageItemViewModel.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
-        "//app/src/main/java/org/oppia/android/app/options:app_language_radio_button_listener",
+        ":app_language_radio_button_listener",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_lifecycle_lifecycle-livedata",

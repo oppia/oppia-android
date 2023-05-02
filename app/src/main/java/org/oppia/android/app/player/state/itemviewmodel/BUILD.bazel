@@ -35,7 +35,7 @@ oppia_android_library(
     srcs = ["InteractionViewModelModule.kt"],
     visibility = [
         "//:oppia_prod_module_visibility",
-        "//app:app_visibility",  # TODO: Remove.
+        "//app:app_visibility",
     ],
     deps = [
         ":continue_interaction_view_model",
@@ -49,8 +49,6 @@ oppia_android_library(
         ":state_item_view_model",
         ":text_input_view_model",
         "//:dagger",
-        "//third_party:javax_annotation_javax_annotation-api",
-        "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
     ],
 )

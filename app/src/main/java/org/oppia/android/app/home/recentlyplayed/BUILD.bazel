@@ -28,8 +28,8 @@ oppia_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         "//app:resources",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:promoted_story_click_listener",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:recently_played_item_view_model",
+        ":promoted_story_click_listener",
+        ":recently_played_item_view_model",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",

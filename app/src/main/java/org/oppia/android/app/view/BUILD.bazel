@@ -28,7 +28,16 @@ oppia_android_library(
         ":view_component",
         ":view_scope",
         "//:dagger",
-        "//app:views",
+        "//app/src/main/java/org/oppia/android/app/customview:chapter_not_started_container_constraint_layout",
+        "//app/src/main/java/org/oppia/android/app/customview:continue_button_view",
+        "//app/src/main/java/org/oppia/android/app/customview:lesson_thumbnail_image_view",
+        "//app/src/main/java/org/oppia/android/app/customview:promoted_story_card_view",
+        "//app/src/main/java/org/oppia/android/app/customview:segmented_circular_progress_view",
+        "//app/src/main/java/org/oppia/android/app/home/promotedlist:coming_soon_topics_list_view",
+        "//app/src/main/java/org/oppia/android/app/home/promotedlist:promoted_story_list_view",
+        "//app/src/main/java/org/oppia/android/app/player/state:drag_drop_sort_interaction_view",
+        "//app/src/main/java/org/oppia/android/app/player/state:image_region_selection_interaction_view",
+        "//app/src/main/java/org/oppia/android/app/player/state:selection_interaction_view",
     ],
 )
 

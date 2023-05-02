@@ -84,3 +84,9 @@ oppia_android_library(
         "//third_party:javax_inject_javax_inject",
     ],
 )
+
+oppia_android_library(
+    name = "developer_options_starter",
+    srcs = ["DeveloperOptionsStarter.kt"],
+    visibility = ["//app:app_visibility"],
+)

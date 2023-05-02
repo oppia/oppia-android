@@ -37,3 +37,9 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],
 )
+
+oppia_android_library(
+    name = "subtopic_selector",
+    srcs = ["SubtopicSelector.kt"],
+    visibility = ["//app:app_visibility"],
+)

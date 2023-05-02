@@ -152,3 +152,10 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
     ],
 )
+
+oppia_android_library(
+    name = "copy_id_material_button_view",
+    srcs = ["CopyIdMaterialButtonView.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = ["//third_party:com_google_android_material_material"],
+)
