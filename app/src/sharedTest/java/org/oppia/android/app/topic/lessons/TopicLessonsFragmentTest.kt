@@ -392,6 +392,33 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterCompleted_contentDescriptionIsCorrect() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_index
+        )
+      ).check(matches(isDisplayed()))
+        .check(matches(hasContentDescription()))
+        .check(
+          matches(
+            withContentDescription(
+              "Chapter 1 with title What is a Ratio? is completed"
+            )
+          )
+        )
+    }
+  }
+
+  @Test
   fun testLessonsPlayFragment_loadRatiosTopic_chapterInProgressIsCorrectlyDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
@@ -408,6 +435,34 @@ class TopicLessonsFragmentTest {
           targetViewId = R.id.lessons_in_progress_chapter_container
         )
       ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterInProgress_contentDescriptionIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_play_state_icon
+        )
+      ).check(matches(isDisplayed()))
+        .check(matches(hasContentDescription()))
+        .check(
+          matches(
+            withContentDescription(
+              "Chapter 1 with title What is a Ratio? is in progress"
+            )
+          )
+        )
     }
   }
 
