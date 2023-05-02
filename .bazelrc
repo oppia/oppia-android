@@ -13,3 +13,15 @@ test --test_output=all
 # Enable strict dependency checking for Java and protobuf.
 build --strict_proto_deps=error \
     --experimental_strict_java_deps=error
+
+# Custom configurations for the Kotlin toolchain.
+build --flag_alias=kotlin_report_unused_deps=//third_party/tools/kotlin:report_unused_deps
+build --flag_alias=kotlin_report_strict_deps=//third_party/tools/kotlin:report_strict_deps
+build --flag_alias=kotlin_use_abi_jars=//third_party/tools/kotlin:use_abi_jars
+build --flag_alias=nokotlin_use_abi_jars=no//third_party/tools/kotlin:use_abi_jars
+
+# General build profiles for simplicity. For some of the options used here, see:
+# https://bazel-docs-staging.netlify.app/versions/master/command-line-reference.html.
+build:disable_ijars --nokotlin_use_abi_jars --nojava_header_compilation --nouse_ijars
+build:only_check_for_failures --check_up_to_date --nobuild_runfile_links
+build:ignore_deps_issues --kotlin_report_unused_deps=off --kotlin_report_strict_deps=off --strict_proto_deps=off --experimental_strict_java_deps=off

@@ -168,10 +168,26 @@ index 42f4b60..00c6944 100644
  
      # Collect and prepare plugin descriptor for the worker.
      args.add_all(
-index 510d72b..7b8b96f 100644
+index 23aa068..c37a6b6 100644
+--- kotlin/internal/toolchains.bzl
++++ kotlin/internal/toolchains.bzl
+@@ -298,11 +298,7 @@ def define_kt_toolchain(
+                 absolute_target("//kotlin/internal:builder_debug_timings"): ["timings"],
+                 "//conditions:default": [],
+             }),
+-        experimental_use_abi_jars = select({
+-            absolute_target("//kotlin/internal:experimental_use_abi_jars"): True,
+-            absolute_target("//kotlin/internal:noexperimental_use_abi_jars"): False,
+-            "//conditions:default": experimental_use_abi_jars,
+-        }),
++        experimental_use_abi_jars = experimental_use_abi_jars,
+         experimental_multiplex_workers = experimental_multiplex_workers,
+         experimental_strict_kotlin_deps = experimental_strict_kotlin_deps,
+         experimental_report_unused_deps = experimental_report_unused_deps,
+index 510d72b..6098042 100644
 --- src/main/kotlin/io/bazel/kotlin/builder/tasks/jvm/JdepsMerger.kt
 +++ src/main/kotlin/io/bazel/kotlin/builder/tasks/jvm/JdepsMerger.kt
-@@ -62,35 +62,58 @@ class JdepsMerger {
+@@ -62,35 +62,77 @@ class JdepsMerger {
        output: String,
        reportUnusedDeps: String,
      ): Int {
@@ -192,10 +208,29 @@ index 510d72b..7b8b96f 100644
 -          }
 +      val dependencyMap = inputs.flatMap { input ->
 +        Paths.get(input).toFile().inputStream().buffered().use {
-+          Deps.Dependencies.parseFrom(it).dependencyList
++          val deps = Deps.Dependencies.parseFrom(it)
++          deps.dependencyList.map { input to it }
++        }
++      }.groupBy { (_, dep) -> dep.path }.mapValues { (_, depsPairs) ->
++        // Pick the dependency first by prioritizing if it's a rules_kotlin jdeps file, and only use
++        // other jdeps if the dependency is not part of the rules_kotlin-generated jdeps file or if
++        // another jdeps file declares it as EXPLICIT. This is to counteract that Java's
++        // ImplicitDependencyExtractor presumes all dependencies are IMPLICIT by default rather than
++        // UNUSED (since it doesn't support UNUSED dependency detection), and UNUSED deps are
++        // considered a lower priority than IMPLICIT. This results in a lot of dependencies being
++        // skipped for possible removal. This is a hacky workaround that places more trust on
++        // rules_kotlin's ability to determine unused dependencies, though it won't affect any
++        // implicit dependencies solely coming from Java-built jdeps files. The particular
++        // implementation is especially hacky since it's making strong assumptions about the
++        // dependency paths when determining the rules_kotlin-created jdeps file.
++        val rulesKotlinDep = depsPairs.filter { (input, _) -> input.endsWith("-kt.jdeps") }.minByOrNull { (_, dep) -> dep.kind }?.second
++        val otherDep = depsPairs.filter { (input, _) -> !input.endsWith("-kt.jdeps") }.minByOrNull { (_, dep) -> dep.kind }?.second
++        when {
++          rulesKotlinDep == null -> otherDep!! // Can't be null since there's at least 1 dependency.
++          otherDep == null -> rulesKotlinDep
++          otherDep.kind == Deps.Dependency.Kind.EXPLICIT -> otherDep
++          else -> rulesKotlinDep
          }
-+      }.groupBy { it.path }.mapValues { (_, deps) ->
-+        deps.minBy { it.kind } // Pick the dependency with the strongest kind.
        }
  
 -      rootBuilder.addAllDependency(dependencyMap.values)
@@ -252,7 +287,7 @@ index 510d72b..7b8b96f 100644
            .filter { it.kind == Deps.Dependency.Kind.UNUSED }
            .mapNotNull { readJarOwnerFromManifest(Paths.get(it.path)).label }
            .filter { it != label }
-@@ -100,9 +123,8 @@ class JdepsMerger {
+@@ -100,9 +142,8 @@ class JdepsMerger {
              val open = "\u001b[35m\u001b[1m"
              val close = "\u001b[0m"
              return@info """
