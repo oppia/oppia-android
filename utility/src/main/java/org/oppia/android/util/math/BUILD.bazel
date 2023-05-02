@@ -3,6 +3,7 @@ General-purpose mathematics utilities, especially for supporting math-based inte
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 oppia_android_library(
     name = "fraction_parser",
@@ -55,12 +56,15 @@ oppia_android_library(
     ],
 )
 
-oppia_android_library(
+kt_jvm_library(
     name = "peekable_iterator",
     srcs = [
         "PeekableIterator.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//scripts/src/java/org/oppia/android/scripts/build:__pkg__",
+    ],
 )
 
 oppia_android_library(
