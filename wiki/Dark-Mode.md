@@ -5,7 +5,7 @@ _Author credit: Thanks to **@ayush0402** for writing up the initial version of t
 - [Overview](#overview)
   - [Knowing the convention](#knowing-the-convention)
 - [Working with the layouts](#working-with-the-layouts)
-	- [How to achieve this goal?](#how-to-achieve-this-goal)
+  - [How to achieve this goal?](#how-to-achieve-this-goal)
 - [Running the app with dark mode](#running-the-app-with-dark-mode)
 
 ## Overview

@@ -1,8 +1,8 @@
 ## Table of Contents
 
 - [Installation](#installation)
-    - [Commands](#commands)
-    - [Configuration File](#configuration-file)
+  - [Commands](#commands)
+  - [Configuration File](#configuration-file)
 
 # Installation
 Once you had completed all the [installation steps](https://github.com/oppia/oppia-android/wiki#prerequisites), you will be having a `buf` file in your `opensource/oppia-android-tools` folder.<br>

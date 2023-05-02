@@ -4,8 +4,8 @@ _For a detailed explanation of the fork-and-clone process, please see this [GitH
 ## Table of Contents
 
 - [Fork and clone the Oppia Android repository](#fork-and-clone-the-oppia-android-repository)
-   - [Using the terminal](#using-the-terminal)
-   - [Using android studio's UI based GitHub workflow](#using-android-studios-ui-based-github-workflow)
+  - [Using the terminal](#using-the-terminal)
+  - [Using android studio's UI based GitHub workflow](#using-android-studios-ui-based-github-workflow)
 
 ## Fork and clone the Oppia Android repository
 

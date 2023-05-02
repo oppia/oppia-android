@@ -3,8 +3,8 @@
 - [Overview](#overview)
 - [How it works.](#how-it-works)
 - [How to run an End-to-End test](#how-to-run-an-end-to-end-test)
-    - [Prerequisites](#prerequisites)
-    - [Steps to run the tests](#steps-to-run-the-tests)
+  - [Prerequisites](#prerequisites)
+  - [Steps to run the tests](#steps-to-run-the-tests)
 - [Best practices when writing End-to-End tests](#best-practices-when-writing-end-to-end-tests)
 - [Writing E2E tests](#writing-e2e-tests)
 

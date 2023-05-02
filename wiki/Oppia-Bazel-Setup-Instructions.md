@@ -2,10 +2,10 @@
 
 - [Overview](#overview)
 - [Installation](#installation)
-    - [Building the app](#building-the-app)
-    - [Building + installing the app](#building--installing-the-app)
-    - [Running specific module (app) Robolectric tests](#running-specific-module-app-robolectric-tests)
-    - [Running all Robolectric tests (slow)](#running-all-robolectric-tests-slow)
+  - [Building the app](#building-the-app)
+  - [Building + installing the app](#building--installing-the-app)
+  - [Running specific module (app) Robolectric tests](#running-specific-module-app-robolectric-tests)
+  - [Running all Robolectric tests (slow)](#running-all-robolectric-tests-slow)
 - [Known Issues and Troubleshooting](#known-issues-and-troubleshooting)
 - [Concepts and Terminology](#concepts-and-terminology)
 

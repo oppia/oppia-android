@@ -2,8 +2,8 @@
 
 - [Overview](#overview)
 - [Background](#background)
-    - [Definition of background processing & when to use it](#definition-of-background-processing--when-to-use-it)
-    - [Why we care](#why-we-care)
+  - [Definition of background processing & when to use it](#definition-of-background-processing--when-to-use-it)
+  - [Why we care](#why-we-care)
 - [Background processing & concurrency in Oppia Android](#background-processing--concurrency-in-oppia-android)
 
 ## Overview

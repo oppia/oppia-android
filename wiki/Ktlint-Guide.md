@@ -3,7 +3,7 @@
 - [Installation](#installation)
 - [Commands](#commands)
 - [Macros](#macros)
-   - [Steps to create a macro](#steps-to-create-a-macro)
+  - [Steps to create a macro](#steps-to-create-a-macro)
 - [How to fix the most common issues?](#how-to-fix-the-most-common-issues) 
 
 # Installation
