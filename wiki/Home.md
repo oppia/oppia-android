@@ -6,9 +6,6 @@ To make it easier to get started, we've catalogued some different ways to help o
 
   * [Coders](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android)
 
-#### To search any solution easily in wiki follow:
-<img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/235522765-3d17617e-1f3b-4531-b84c-33af94885863.gif">
-
 If you are interested in working on Oppia's web repository, you should also look at the [oppia/oppia repository](https://github.com/oppia/oppia).
 
 If you run into any problems, you can ask questions on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions). You can also check out the [developer mailing list](https://groups.google.com/forum/?fromgroups#!forum/oppia-android-dev).
