@@ -25,7 +25,7 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/recently_played_activity"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"/>
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
