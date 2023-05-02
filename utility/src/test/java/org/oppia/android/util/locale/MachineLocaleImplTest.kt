@@ -182,7 +182,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testGetCurrentTimeOfDay_inMorningHour_returnsMorning() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val timeOfDay = machineLocale.getCurrentTimeOfDay()
 
@@ -209,7 +209,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testGetCurrentTimeOfDay_inNightHour_returnsNight() {
-    fakeOppiaClock.setCurrentTimeMs(NIGHT_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
 
     val timeOfDay = machineLocale.getCurrentTimeOfDay()
 
@@ -227,7 +227,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testParseOppiaDate_emptyString_returnsNull() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val date = machineLocale.parseOppiaDate(dateString = "")
 
@@ -251,7 +251,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testOppiaDateIsBeforeToday_validDateObject_forYesterday_returnsTrue() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val date = machineLocale.parseOppiaDate(dateString = "2019-04-23")
 
@@ -260,7 +260,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testOppiaDateIsBeforeToday_validDateObject_forTomorrow_returnsFalse() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val date = machineLocale.parseOppiaDate(dateString = "2019-04-25")
 
@@ -269,7 +269,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testComputeCurrentTimeString_forFixedTime_returnsHourMinuteSecondParts() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val timeString = machineLocale.computeCurrentTimeString()
 
@@ -320,7 +320,7 @@ class MachineLocaleImplTest {
     private const val EARLY_MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
 
     // Date & time: Wed Apr 24 2019 10:30:12 GMT.
-    private const val MORNING_UTC_TIMESTAMP_MILLIS = 1556101812000
+    private const val MID_MORNING_UTC_TIMESTAMP_MILLIS = 1556101812000
 
     // Date & time: Tue Apr 23 2019 14:22:00 GMT.
     private const val AFTERNOON_UTC_TIMESTAMP_MILLIS = 1556029320000
@@ -329,6 +329,6 @@ class MachineLocaleImplTest {
     private const val EVENING_UTC_TIMESTAMP_MILLIS = 1556054772000
 
     // Date & time: Tue Apr 23 2019 23:22:00 GMT.
-    private const val NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
+    private const val LATE_NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
   }
 }

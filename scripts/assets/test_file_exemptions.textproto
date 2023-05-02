@@ -647,7 +647,6 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rule
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputRuleModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgress.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgressListener.kt"
-exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgressModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationRetriever.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationRetrieverImpl.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing/ExplorationStorageDatabaseSize.kt"

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -39,6 +40,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Test
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.locale.MachineLocaleImplTest
 
 /** Tests for [SurveyGatingController]. */
 @RunWith(AndroidJUnit4::class)
@@ -60,6 +66,8 @@ class SurveyGatingControllerTest {
   @Inject
   lateinit var surveyGatingController: SurveyGatingController
 
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -67,6 +75,16 @@ class SurveyGatingControllerTest {
 
   // check time window open, date passed, time threshold met -- happy path
   // check time window closed, date not passed, time threshold not met -- worst case
+  @Test
+  fun testGating_timeOfDayWindowClosed_withinGracePeriod_minimumAggregateNotMet_returnsFalse() {
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+  //add assertion
+  }
   // check time window closed, date passed, time threshold met
   // check time window open, date not passed, time threshold met
   // check time window open, date passed, time threshold not met
@@ -162,5 +180,22 @@ class SurveyGatingControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+  }
+
+  private companion object {
+    // Date & time: Wed Apr 24 2019 08:22:03 GMT.
+    private const val EARLY_MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
+
+    // Date & time: Wed Apr 24 2019 10:30:12 GMT.
+    private const val MORNING_UTC_TIMESTAMP_MILLIS = 1556101812000
+
+    // Date & time: Tue Apr 23 2019 14:22:00 GMT.
+    private const val AFTERNOON_UTC_TIMESTAMP_MILLIS = 1556029320000
+
+    // Date & time: Tue Apr 23 2019 21:26:12 GMT.
+    private const val EVENING_UTC_TIMESTAMP_MILLIS = 1556054772000
+
+    // Date & time: Tue Apr 23 2019 23:22:00 GMT.
+    private const val LATE_NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
   }
 }
