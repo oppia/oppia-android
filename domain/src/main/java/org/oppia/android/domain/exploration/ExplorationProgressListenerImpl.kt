@@ -14,8 +14,8 @@ class ExplorationProgressListenerImpl @Inject constructor(
     explorationActiveTimeController.setExplorationSessionStarted()
   }
 
-  override fun onExplorationSessionPaused(profileId: ProfileId, topicId: String) {
-    explorationActiveTimeController.setExplorationSessionPaused(profileId, topicId)
+  override fun onExplorationSessionEnded(profileId: ProfileId, topicId: String) {
+    explorationActiveTimeController.setExplorationSessionStopped(profileId, topicId)
   }
 
   override fun onAppInForeground() {

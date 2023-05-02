@@ -73,7 +73,7 @@ class ExplorationActiveTimeControllerTest {
 
     explorationActiveTimeController.setExplorationSessionStarted()
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-    explorationActiveTimeController.setExplorationSessionPaused(firstTestProfile, TEST_TOPIC_ID_0)
+    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -94,7 +94,7 @@ class ExplorationActiveTimeControllerTest {
       testComponent.getExplorationActiveTimeController().setExplorationSessionStarted()
       testComponent.getTestCoroutineDispatchers().advanceTimeBy(SESSION_LENGTH_1)
       testComponent.getExplorationActiveTimeController()
-        .setExplorationSessionPaused(firstTestProfile, TEST_TOPIC_ID_0)
+        .setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
@@ -104,7 +104,7 @@ class ExplorationActiveTimeControllerTest {
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.DAYS.toMillis(1))
     explorationActiveTimeController.setExplorationSessionStarted()
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-    explorationActiveTimeController.setExplorationSessionPaused(firstTestProfile, TEST_TOPIC_ID_0)
+    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -126,7 +126,7 @@ class ExplorationActiveTimeControllerTest {
       testComponent.getExplorationActiveTimeController().setExplorationSessionStarted()
       testComponent.getTestCoroutineDispatchers().advanceTimeBy(SESSION_LENGTH_1)
       testComponent.getExplorationActiveTimeController()
-        .setExplorationSessionPaused(firstTestProfile, TEST_TOPIC_ID_0)
+        .setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
@@ -136,7 +136,7 @@ class ExplorationActiveTimeControllerTest {
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.DAYS.toMillis(10))
     explorationActiveTimeController.setExplorationSessionStarted()
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-    explorationActiveTimeController.setExplorationSessionPaused(firstTestProfile, TEST_TOPIC_ID_0)
+    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -156,11 +156,11 @@ class ExplorationActiveTimeControllerTest {
 
     explorationActiveTimeController.setExplorationSessionStarted()
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-    explorationActiveTimeController.setExplorationSessionPaused(firstTestProfile, TEST_TOPIC_ID_0)
+    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
 
     explorationActiveTimeController.setExplorationSessionStarted()
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-    explorationActiveTimeController.setExplorationSessionPaused(firstTestProfile, TEST_TOPIC_ID_1)
+    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_1)
 
     val retrieveTopic0AggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -188,11 +188,11 @@ class ExplorationActiveTimeControllerTest {
 
     explorationActiveTimeController.setExplorationSessionStarted()
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-    explorationActiveTimeController.setExplorationSessionPaused(firstTestProfile, TEST_TOPIC_ID_0)
+    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
 
     explorationActiveTimeController.setExplorationSessionStarted()
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-    explorationActiveTimeController.setExplorationSessionPaused(secondTestProfile, TEST_TOPIC_ID_0)
+    explorationActiveTimeController.setExplorationSessionStopped(secondTestProfile, TEST_TOPIC_ID_0)
 
     val retrieveFirstTestProfileAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(

@@ -585,7 +585,7 @@ class ExplorationProgressController @Inject constructor(
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
       explorationProgressListeners.forEach {
-        it.onExplorationSessionPaused(
+        it.onExplorationSessionEnded(
           profileId = profileId,
           topicId = explorationProgress.currentTopicId
         )

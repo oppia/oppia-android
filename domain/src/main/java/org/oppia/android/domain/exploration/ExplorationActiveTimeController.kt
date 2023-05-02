@@ -14,6 +14,7 @@ import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleListener
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 
 private const val CACHE_NAME = "topic_learning_time_database"
@@ -65,7 +66,7 @@ class ExplorationActiveTimeController @Inject constructor(
    * This method is called when the [ExplorationProgressController.finishExplorationImpl] finishes
    * executing, or the app goes to the background.
    */
-  fun setExplorationSessionPaused(profileId: ProfileId, topicId: String) {
+  fun setExplorationSessionStopped(profileId: ProfileId, topicId: String) {
     recordAggregateTopicLearningTime(
       profileId = profileId,
       topicId = topicId,

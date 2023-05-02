@@ -33,7 +33,8 @@ class SurveyGatingController @Inject constructor(
   private val minimumLearningTimeForGatingMillis = TimeUnit.MINUTES.toMillis(5)
 
   /**
-   * Returns a boolean indicating whether a survey can be shown.
+   * Returns a data provider containing the outcome of gating, which will be used by callers to
+   * determine if a survey can be shown.
    */
   fun maybeShowSurvey(profileId: ProfileId, topicId: String): DataProvider<Any?> {
     val lastShownDateProvider = retrieveSurveyLastShownDate(profileId)
