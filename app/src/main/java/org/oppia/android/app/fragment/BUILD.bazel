@@ -149,10 +149,7 @@ oppia_android_library(
 oppia_android_library(
     name = "fragment_component_builder_injector",
     srcs = ["FragmentComponentBuilderInjector.kt"],
-    visibility = [
-        "//app:__pkg__",
-        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
-    ],
+    visibility = ["//app:app_visibility"],
     deps = [
         ":fragment_component",
         "//third_party:javax_inject_javax_inject",

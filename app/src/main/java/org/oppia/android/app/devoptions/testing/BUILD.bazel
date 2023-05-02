@@ -5,3 +5,29 @@ TODO: finish build file doc.
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files(["DeveloperOptionsTestActivity.kt"])
+
+oppia_android_library(
+    name = "developer_options_test_activity",
+    srcs = ["DeveloperOptionsTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_activity",
+        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_fragment",
+        "//app/src/main/java/org/oppia/android/app/devoptions:force_crash_button_click_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_chapters_completed_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_stories_completed_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_topics_completed_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_view_event_logs_listener",
+        "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:mark_chapters_completed_activity",
+        "//app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted:mark_stories_completed_activity",
+        "//app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted:mark_topics_completed_activity",
+        "//app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs:view_event_logs_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

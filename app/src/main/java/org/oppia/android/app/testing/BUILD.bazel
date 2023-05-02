@@ -210,3 +210,802 @@ oppia_android_library(
         "//third_party:kotlinx-coroutines-core-jvm",
     ],
 )
+
+oppia_android_library(
+    name = "administrator_controls_fragment_test_activity",
+    srcs = ["AdministratorControlsFragmentTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols:load_app_version_listener",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols:load_profile_edit_listener",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols:load_profile_list_listener",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols:route_to_app_version_listener",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols:route_to_profile_list_listener",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols:show_logout_dialog_listener",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/appversion:app_version_activity",
+        "//app/src/main/java/org/oppia/android/app/drawer:navigation_drawer_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_list_activity",
+        "//app/src/main/java/org/oppia/android/app/testing:administrator_controls_fragment_test_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "administrator_controls_fragment_test_activity_presenter",
+    srcs = ["AdministratorControlsFragmentTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols:administrator_controls_fragment",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "app_compat_check_box_binding_adapters_test_activity",
+    srcs = ["AppCompatCheckBoxBindingAdaptersTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "audio_fragment_test_activity",
+    srcs = ["AudioFragmentTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:audio_fragment_test_activity_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "audio_fragment_test_activity_presenter",
+    srcs = ["AudioFragmentTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/audio:audio_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/audio:audio_language_interaction_listener",
+        "//app/src/main/java/org/oppia/android/app/player/audio:audio_ui_manager",
+        "//app/src/main/java/org/oppia/android/app/player/audio:cellular_data_interface",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:subtitled_html_java_proto_lite",
+        "//model/src/main/proto:voiceover_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "bindable_adapter_test_activity",
+    srcs = ["BindableAdapterTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:bindable_adapter_test_fragment",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "circular_progress_indicator_adapters_test_activity",
+    srcs = ["CircularProgressIndicatorAdaptersTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:circular_progress_indicator_adapters_test_view_model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "concept_card_fragment_test_activity",
+    srcs = ["ConceptCardFragmentTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/testing:concept_card_fragment_test_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/topic/conceptcard:concept_card_fragment",
+        "//app/src/main/java/org/oppia/android/app/topic/conceptcard:concept_card_listener",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "concept_card_fragment_test_activity_presenter",
+    srcs = ["ConceptCardFragmentTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/topic/conceptcard:concept_card_fragment",
+        "//domain/src/main/java/org/oppia/android/domain/topic:story_progress_controller",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "drag_drop_test_activity",
+    srcs = ["DragDropTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:drag_drop_test_activity_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "drag_drop_test_activity_presenter",
+    srcs = ["DragDropTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:on_drag_ended_listener",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:on_item_drag_listener",
+        "//app/src/main/java/org/oppia/android/app/testing:drag_drop_test_fragment",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "drawable_binding_adapters_test_activity",
+    srcs = ["DrawableBindingAdaptersTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "exploration_injection_activity",
+    srcs = ["ExplorationInjectionActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//domain/src/main/java/org/oppia/android/domain/exploration:exploration_data_controller",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+    ],
+)
+
+oppia_android_library(
+    name = "exploration_test_activity",
+    srcs = ["ExplorationTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_exploration_listener",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:exploration_activity",
+        "//app/src/main/java/org/oppia/android/app/testing:exploration_test_activity_fragment",
+        "//app/src/main/java/org/oppia/android/app/testing:exploration_test_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/utility:split_screen_manager",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "exploration_test_activity_presenter",
+    srcs = ["ExplorationTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_exploration_listener",
+        "//app/src/main/java/org/oppia/android/app/testing:exploration_test_activity_fragment",
+        "//domain/src/main/java/org/oppia/android/domain/exploration:exploration_data_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/topic:story_progress_controller",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+oppia_android_library(
+    name = "home_fragment_test_activity",
+    srcs = ["HomeFragmentTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_recently_played_listener",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_topic_listener",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_topic_play_story_listener",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "home_test_activity",
+    srcs = ["HomeTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:home_test_activity_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "home_test_activity_presenter",
+    srcs = ["HomeTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "html_parser_test_activity",
+    srcs = ["HtmlParserTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "image_region_selection_test_activity",
+    srcs = ["ImageRegionSelectionTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/testing:bindable_adapter_test_fragment",
+        "//app/src/main/java/org/oppia/android/app/testing:image_region_selection_test_fragment",
+        "//app/src/main/java/org/oppia/android/app/utility:on_clickable_area_clicked_listener",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "image_view_binding_adapters_test_activity",
+    srcs = ["ImageViewBindingAdaptersTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "input_interaction_view_test_activity",
+    srcs = ["InputInteractionViewTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:fraction_interaction_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:math_expression_interactions_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:numeric_input_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:ratio_expression_input_interaction_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:text_input_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:state_keyboard_button_listener",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "lesson_thumbnail_image_view_test_activity",
+    srcs = ["LessonThumbnailImageViewTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:lesson_thumbnail_image_view_test_fragment",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "list_item_leading_margin_span_test_activity",
+    srcs = ["ListItemLeadingMarginSpanTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "margin_binding_adapters_test_activity",
+    srcs = ["MarginBindingAdaptersTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "navigation_drawer_test_activity",
+    srcs = ["NavigationDrawerTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/drawer:navigation_drawer_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/home:home_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_recently_played_listener",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_topic_listener",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_topic_play_story_listener",
+        "//app/src/main/java/org/oppia/android/app/topic:topic_activity",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "policies_fragment_test_activity",
+    srcs = ["PoliciesFragmentTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/policies:route_to_policies_listener",
+        "//app/src/main/java/org/oppia/android/app/testing:policies_fragment_test_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "policies_fragment_test_activity_presenter",
+    srcs = ["PoliciesFragmentTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/policies:policies_fragment",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_chooser_fragment_test_activity",
+    srcs = ["ProfileChooserFragmentTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:profile_chooser_fragment_test_activity_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_chooser_fragment_test_activity_presenter",
+    srcs = ["ProfileChooserFragmentTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/profile:profile_chooser_fragment",
+        "//app/src/main/java/org/oppia/android/app/profile:route_to_admin_pin_listener",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_edit_fragment_test_activity",
+    srcs = ["ProfileEditFragmentTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:profile_edit_fragment_test_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_edit_fragment_test_activity_presenter",
+    srcs = ["ProfileEditFragmentTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:load_profile_edit_deletion_dialog_listener",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_edit_dialog_interface",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_edit_fragment",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "splash_test_activity",
+    srcs = ["SplashTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:splash_test_activity_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "splash_test_activity_presenter",
+    srcs = ["SplashTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:platform_parameter_controller",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_lifecycle_lifecycle-livedata",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
+    ],
+)
+
+oppia_android_library(
+    name = "spotlight_fragment_test_activity",
+    srcs = ["SpotlightFragmentTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/spotlight",
+        "//app/src/main/java/org/oppia/android/app/spotlight:spotlight_fragment",
+        "//app/src/main/java/org/oppia/android/app/testing:spotlight_fragment_test_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "spotlight_fragment_test_activity_presenter",
+    srcs = ["SpotlightFragmentTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/spotlight",
+        "//app/src/main/java/org/oppia/android/app/spotlight:spotlight_fragment",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "state_assembler_margin_binding_adapters_test_activity",
+    srcs = ["StateAssemblerMarginBindingAdaptersTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "state_assembler_padding_binding_adapters_test_activity",
+    srcs = ["StateAssemblerPaddingBindingAdaptersTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "test_font_scale_configuration_util_activity",
+    srcs = ["TestFontScaleConfigurationUtilActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:test_font_scale_configuration_util_activity_presenter",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "test_font_scale_configuration_util_activity_presenter",
+    srcs = ["TestFontScaleConfigurationUtilActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/utility:font_scale_configuration_util",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "text_view_binding_adapters_test_activity",
+    srcs = ["TextViewBindingAdaptersTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "topic_for_story_test_activity",
+    srcs = ["TopicForStoryTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_exploration_listener",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:exploration_activity",
+        "//app/src/main/java/org/oppia/android/app/resumelesson:resume_lesson_activity",
+        "//app/src/main/java/org/oppia/android/app/story:story_activity",
+        "//app/src/main/java/org/oppia/android/app/topic:route_to_question_player_listener",
+        "//app/src/main/java/org/oppia/android/app/topic:route_to_resume_lesson_listener",
+        "//app/src/main/java/org/oppia/android/app/topic:route_to_revision_card_listener",
+        "//app/src/main/java/org/oppia/android/app/topic:route_to_story_listener",
+        "//app/src/main/java/org/oppia/android/app/topic:topic_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/topic/questionplayer:question_player_activity",
+        "//app/src/main/java/org/oppia/android/app/topic/revisioncard:revision_card_activity",
+        "//domain/src/main/java/org/oppia/android/domain/topic:story_progress_controller",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "topic_revision_test_activity",
+    srcs = ["TopicRevisionTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/testing:topic_revision_test_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/topic:route_to_revision_card_listener",
+        "//app/src/main/java/org/oppia/android/app/topic/revisioncard:revision_card_activity",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "topic_revision_test_activity_presenter",
+    srcs = ["TopicRevisionTestActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/topic/revision:revision_subtopic_selection_listener",
+        "//app/src/main/java/org/oppia/android/app/topic/revision:topic_revision_fragment",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "topic_test_activity",
+    srcs = ["TopicTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_exploration_listener",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:exploration_activity",
+        "//app/src/main/java/org/oppia/android/app/story:story_activity",
+        "//app/src/main/java/org/oppia/android/app/topic:route_to_question_player_listener",
+        "//app/src/main/java/org/oppia/android/app/topic:route_to_revision_card_listener",
+        "//app/src/main/java/org/oppia/android/app/topic:route_to_story_listener",
+        "//app/src/main/java/org/oppia/android/app/topic:topic_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/topic/questionplayer:question_player_activity",
+        "//app/src/main/java/org/oppia/android/app/topic/revisioncard:revision_card_activity",
+        "//domain/src/main/java/org/oppia/android/domain/topic:story_progress_controller",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "view_binding_adapters_test_activity",
+    srcs = ["ViewBindingAdaptersTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

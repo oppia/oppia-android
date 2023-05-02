@@ -293,3 +293,150 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],
 )
+
+oppia_android_library(
+    name = "profile_edit_activity",
+    srcs = ["ProfileEditActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_edit_activity_presenter",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:screens_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_edit_activity_presenter",
+    srcs = ["ProfileEditActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:load_profile_edit_deletion_dialog_listener",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_edit_dialog_interface",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_edit_fragment",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_list_activity",
+    srcs = ["ProfileListActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_list_activity_presenter",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:route_to_profile_edit_listener",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:screens_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_list_activity_presenter",
+    srcs = ["ProfileListActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_list_fragment",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_rename_activity",
+    srcs = ["ProfileRenameActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_rename_activity_presenter",
+        "//model/src/main/proto:screens_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_rename_activity_presenter",
+    srcs = ["ProfileRenameActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_rename_fragment",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_reset_pin_activity",
+    srcs = ["ProfileResetPinActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_reset_pin_activity_presenter",
+        "//model/src/main/proto:screens_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_reset_pin_activity_presenter",
+    srcs = ["ProfileResetPinActivityPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/settings/profile:profile_reset_pin_fragment",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

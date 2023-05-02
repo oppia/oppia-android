@@ -5,3 +5,20 @@ TODO: finish build file doc.
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 exports_files(["MarkChaptersCompletedTestActivity.kt"])
+
+oppia_android_library(
+    name = "mark_chapters_completed_test_activity",
+    srcs = ["MarkChaptersCompletedTestActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_component",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:mark_chapters_completed_fragment",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

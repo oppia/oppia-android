@@ -10,8 +10,7 @@ oppia_android_library(
         "AppLanguageLocaleHandler.kt",
     ],
     visibility = [
-        "//app:app_testing_visibility",
-        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+        "//app:app_visibility",
         "//testing/src/test/java/org/oppia/android/testing/junit:__pkg__",
     ],
     deps = [

@@ -15,7 +15,6 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//app",
-        "//app:activities",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
@@ -24,7 +23,10 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
         "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
         "//app/src/main/java/org/oppia/android/app/application:modules",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_activity",
+        "//app/src/main/java/org/oppia/android/app/profile:profile_chooser_activity",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
+        "//app/src/main/java/org/oppia/android/app/splash:splash_activity",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_locale_handler",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
