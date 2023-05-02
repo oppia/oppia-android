@@ -63,13 +63,13 @@ oppia_android_library(
     srcs = ["DeveloperOptionsViewModel.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
-        "//app/src/main/java/org/oppia/android/app/devoptions:force_crash_button_click_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_force_network_type_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_chapters_completed_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_stories_completed_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_topics_completed_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_math_expression_parser_test_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_view_event_logs_listener",
+        ":force_crash_button_click_listener",
+        ":route_to_force_network_type_listener",
+        ":route_to_mark_chapters_completed_listener",
+        ":route_to_mark_stories_completed_listener",
+        ":route_to_mark_topics_completed_listener",
+        ":route_to_math_expression_parser_test_listener",
+        ":route_to_view_event_logs_listener",
         "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_item_view_model",
         "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_modify_lesson_progress_view_model",
         "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_override_app_behaviors_view_model",
@@ -96,7 +96,7 @@ oppia_android_library(
     srcs = ["DeveloperOptionsFragment.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
-        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_fragment_presenter",
+        ":developer_options_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
         "//third_party:javax_inject_javax_inject",
@@ -109,8 +109,8 @@ oppia_android_library(
     srcs = ["DeveloperOptionsFragmentPresenter.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":developer_options_view_model",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
-        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_view_model",
         "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_item_view_model",
         "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_modify_lesson_progress_view_model",
         "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_override_app_behaviors_view_model",
@@ -133,18 +133,18 @@ oppia_android_library(
     srcs = ["DeveloperOptionsActivity.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":developer_options_activity_presenter",
+        ":force_crash_button_click_listener",
+        ":route_to_force_network_type_listener",
+        ":route_to_mark_chapters_completed_listener",
+        ":route_to_mark_stories_completed_listener",
+        ":route_to_mark_topics_completed_listener",
+        ":route_to_math_expression_parser_test_listener",
+        ":route_to_view_event_logs_listener",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
-        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_activity_presenter",
-        "//app/src/main/java/org/oppia/android/app/devoptions:force_crash_button_click_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_force_network_type_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_chapters_completed_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_stories_completed_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_topics_completed_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_math_expression_parser_test_listener",
-        "//app/src/main/java/org/oppia/android/app/devoptions:route_to_view_event_logs_listener",
         "//app/src/main/java/org/oppia/android/app/drawer:navigation_drawer_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
@@ -162,9 +162,9 @@ oppia_android_library(
     srcs = ["DeveloperOptionsActivityPresenter.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":developer_options_fragment",
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
-        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_fragment",
         "//app/src/main/java/org/oppia/android/app/drawer:exit_profile_dialog_interface",
         "//app/src/main/java/org/oppia/android/app/drawer:navigation_drawer_fragment",
         "//app/src/main/java/org/oppia/android/app/drawer:route_to_profile_progress_listener",
@@ -173,6 +173,40 @@ oppia_android_library(
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
         "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "developer_options_module",
+    srcs = ["DeveloperOptionsModule.kt"],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":developer_options_starter",
+        "//:dagger",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "developer_options_starter_module",
+    srcs = ["DeveloperOptionsStarterModule.kt"],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":developer_options_starter",
+        ":developer_options_starter_impl",
+        "//:dagger",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "developer_options_starter_impl",
+    srcs = ["DeveloperOptionsStarterImpl.kt"],
+    deps = [
+        ":developer_options_activity",
+        ":developer_options_starter",
         "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
     ],

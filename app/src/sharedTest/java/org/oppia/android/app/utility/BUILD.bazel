@@ -11,7 +11,6 @@ oppia_android_test(
     android_merge_deps = ["//app/src/main/java/org/oppia/android/app/databinding:databinding_resources"],
     deps = [
         "//:dagger",
-        "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
@@ -21,6 +20,9 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
         "//app/src/main/java/org/oppia/android/app/application:modules",
         "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
+        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_module",
+        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_starter_module",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:split_screen_interaction_module",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",

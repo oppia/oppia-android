@@ -14,11 +14,12 @@ oppia_android_library(
     visibility = ["//:oppia_binary_visibility"],
     deps = [
         "//:dagger",
-        "//app",
         "//app/src/main/java/org/oppia/android/app/application:abstract_application",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_build_flavor_module",
+        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_module",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:split_screen_interaction_module",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
         "//domain/src/main/java/org/oppia/android/domain/exploration:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/hintsandsolution:alpha_kenya_prod_config_module",

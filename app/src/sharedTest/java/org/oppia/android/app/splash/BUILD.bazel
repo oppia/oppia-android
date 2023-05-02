@@ -14,7 +14,6 @@ oppia_android_test(
     runtime_deps = ["//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner"],
     deps = [
         "//:dagger",
-        "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
@@ -23,7 +22,10 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
         "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
         "//app/src/main/java/org/oppia/android/app/application:modules",
+        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_module",
+        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_starter_module",
         "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_activity",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:split_screen_interaction_module",
         "//app/src/main/java/org/oppia/android/app/profile:profile_chooser_activity",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
         "//app/src/main/java/org/oppia/android/app/splash:splash_activity",

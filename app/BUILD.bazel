@@ -45,7 +45,10 @@ package_group(
 filegroup(
     name = "manifest",
     srcs = ["src/main/AndroidManifest.xml"],
-    visibility = ["//:oppia_binary_visibility"],
+    visibility = [
+        "//:oppia_binary_visibility",
+        "//app/src/main/java/org/oppia/android/app/databinding:__pkg__",
+    ],
 )
 
 # Library for non-layout resource files.
@@ -64,28 +67,6 @@ oppia_android_resource_library(
     deps = ["//third_party:com_google_android_material_material"],
 )
 
-# Library containing all activity, fragment, and view-based UI flows in the app.
-oppia_android_library(
-    name = "app",
-    srcs = [
-        "//app/src/main/java/org/oppia/android/app/devoptions:DeveloperOptionsModule.kt",
-        "//app/src/main/java/org/oppia/android/app/devoptions:DeveloperOptionsStarterImpl.kt",
-        "//app/src/main/java/org/oppia/android/app/devoptions:DeveloperOptionsStarterModule.kt",
-        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:SplitScreenInteractionModule.kt",
-    ],
-    exports_manifest = True,
-    manifest = ":manifest",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//:dagger",
-        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_activity",
-        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_starter",
-        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:split_screen_interaction_ids",
-        "//third_party:javax_inject_javax_inject",
-        "//third_party:kotlinx-coroutines-core-jvm",
-    ],
-)
-
 # TODO(#1607): Remove this shared library once everything is modularized.
 oppia_android_library(
     name = "_combined_test_lib_do_not_depend",
@@ -101,7 +82,6 @@ oppia_android_library(
         "//domain:assets",
     ],
     deps = [
-        ":app",
         "//:dagger",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
@@ -128,6 +108,8 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/customview:lesson_thumbnail_image_view",
         "//app/src/main/java/org/oppia/android/app/customview/interaction:ratio_input_interaction_view",
         "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_activity",
+        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_module",
+        "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_starter_module",
         "//app/src/main/java/org/oppia/android/app/devoptions:force_crash_button_click_listener",
         "//app/src/main/java/org/oppia/android/app/devoptions:route_to_force_network_type_listener",
         "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_chapters_completed_listener",
@@ -214,6 +196,7 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:fraction_interaction_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:numeric_input_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:ratio_expression_input_interaction_view_model",
+        "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:split_screen_interaction_module",
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:text_input_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/listener:route_to_hints_and_solution_listener",

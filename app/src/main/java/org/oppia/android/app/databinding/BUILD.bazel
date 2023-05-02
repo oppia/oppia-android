@@ -1,5 +1,3 @@
-load("//defs:generate_android_manifest.bzl", "generate_android_manifest")
-
 _DATABINDING_PACKAGE = "org.oppia.android"
 
 genrule(
@@ -15,6 +13,15 @@ genrule(
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
+# TODO: Split up the manifest declarations rather than centralizing it here. This involves:
+# - No longer exporting the manifest.
+# - Generating a manifest similar to:
+#     manifest = generate_android_manifest(
+#         name = "databinding_resources",
+#         min_sdk_version = 19,
+#         package = _DATABINDING_PACKAGE,
+#         target_sdk_version = 31,
+#     ),
 android_library(
     name = "databinding_resources",
     srcs = [
@@ -36,13 +43,8 @@ android_library(
     ],
     custom_package = _DATABINDING_PACKAGE,
     enable_data_binding = True,
-    exports_manifest = False,
-    manifest = generate_android_manifest(
-        name = "databinding_resources",
-        min_sdk_version = 19,
-        package = _DATABINDING_PACKAGE,
-        target_sdk_version = 31,
-    ),
+    exports_manifest = True,
+    manifest = "//app:manifest",
     resource_files = ["//app:databinding_layouts"],
     visibility = [
         "//:oppia_binary_visibility",

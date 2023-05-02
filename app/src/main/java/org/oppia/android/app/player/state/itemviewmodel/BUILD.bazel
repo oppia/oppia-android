@@ -448,3 +448,14 @@ oppia_android_library(
         "//third_party:javax_inject_javax_inject",
     ],
 )
+
+oppia_android_library(
+    name = "split_screen_interaction_module",
+    srcs = ["SplitScreenInteractionModule.kt"],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":split_screen_interaction_ids",
+        "//:dagger",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

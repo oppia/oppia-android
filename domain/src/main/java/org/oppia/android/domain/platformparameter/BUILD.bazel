@@ -10,9 +10,8 @@ oppia_android_library(
         "PlatformParameterController.kt",
     ],
     visibility = [
+        "//:oppia_api_visibility",
         "//:oppia_testing_visibility",
-        "//app:__pkg__",
-        "//domain/src/main/java/org/oppia/android/domain/platformparameter/syncup:__pkg__",
     ],
     deps = [
         "//:dagger",
