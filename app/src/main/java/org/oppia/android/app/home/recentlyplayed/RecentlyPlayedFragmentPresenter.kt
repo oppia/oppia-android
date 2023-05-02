@@ -48,7 +48,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
-  private var internalProfileId: Int = -1
+
+  private lateinit var profileId: ProfileId
   private lateinit var binding: RecentlyPlayedFragmentBinding
   private lateinit var promotedStoryListAdapter: PromotedStoryListAdapter
   private val itemList: MutableList<RecentlyPlayedItemViewModel> = ArrayList()
@@ -56,11 +57,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    profileId: ProfileId
   ): View? {
     binding = RecentlyPlayedFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    this.internalProfileId = internalProfileId
+    this.profileId = profileId
 
     promotedStoryListAdapter = PromotedStoryListAdapter(itemList)
     binding.ongoingStoryRecyclerView.apply {
@@ -76,7 +77,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     LiveData<AsyncResult<PromotedActivityList>>
     by lazy {
       topicListController.getPromotedActivityList(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        profileId
       ).toLiveData()
     }
 
@@ -229,9 +230,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   fun promotedStoryClicked(promotedStory: PromotedStory) {
-    val profileId = ProfileId.newBuilder().apply {
-      internalId = internalProfileId
-    }.build()
     val canHavePartialProgressSaved =
       when (promotedStory.chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
@@ -295,13 +293,13 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       // cases, lessons played from this fragment are known to be in progress, and that progress
       // can't be resumed here (hence the restart).
       explorationDataController.restartExploration(
-        internalProfileId, topicId, storyId, explorationId
+        profileId = this.profileId, topicId, storyId, explorationId
       )
     } else {
       // The only lessons that can't have their progress saved are those that were already
       // completed.
       explorationDataController.replayExploration(
-        internalProfileId, topicId, storyId, explorationId
+        profileId = this.profileId, topicId, storyId, explorationId
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->
@@ -312,7 +310,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+            profileId,
             topicId,
             storyId,
             explorationId,
