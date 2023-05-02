@@ -4,6 +4,23 @@ Oppia-Android app mocks have been prepared on AdobeXD and the mocks have a versi
 - [Mobile Landscape](https://xd.adobe.com/view/ee9e607b-dbd6-4372-48dc-b687d32af3da-98af/grid/)
 - [Tablet](https://xd.adobe.com/view/d405de00-a871-4f0f-73a0-f8acef30349b-a234/grid/)
 
+## Table of Contents
+
+- [Understanding the Mock Link](#understanding-the-mock-link)
+- [Gathering information about each view](#gathering-information-about-each-view)
+- [Important Points](#important-points)
+    - [Fonts](#fonts)
+    - [Padding/Margin/View Dimensions](#paddingmarginview-dimensions)
+    - [Color Code](#color-code)
+    - [Opacity](#opacity)
+    - [Blur effect](#blur-effect)
+    - [ImageView Aspect Ratio](#imageview-aspect-ratio)
+    - [Bottom Margin in scrollable screens](#bottom-margin-in-scrollable-screens)
+    - [TextViews](#textviews)
+- [Testing UI](#testing-ui)
+    - [Manual testing](#manual-testing)
+    - [Accessibility Scanner](#accessibility-scanner) 
+
 # Understanding the Mock Link:
 For understanding the mocks let's take one example. 
 Open [Admin Auth Mock Link](https://xd.adobe.com/view/0687f00c-695b-437a-79a6-688e7f4f7552-70b6/screen/a841330e-efe5-4bdb-acdd-4d6e52a59571/PC-MP-Admin-Authorization-Add-Profile-Empty-)

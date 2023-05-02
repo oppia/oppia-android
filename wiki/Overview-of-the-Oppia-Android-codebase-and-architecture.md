@@ -1,5 +1,14 @@
 The Oppia Android codebase makes use of Kotlin and XML and can be built using Android Studio. The Oppia app follows a layered architecture that combines parts of [MVP](https://medium.com/upday-devs/android-architecture-patterns-part-2-model-view-presenter-8a6faaae14a5) (Model-View-Presenter),  [MVC](https://medium.com/@joespinelli_6190/mvc-model-view-controller-ef878e2fd6f5) (Model-View-Controller), and [MVVM](https://medium.com/upday-devs/android-architecture-patterns-part-3-model-view-viewmodel-e7eeee76b73b) (Model-View-ViewModel).
 
+## Table of Contents
+
+- [Directory Structure](#directory-structure)
+- [App Architecture](#app-architecture)
+- [Codebase Walkthrough](#codebase-walkthrough)
+	- [Example 1](#example-1)
+	- [Example 2](#example-2)
+- [Dependency Injection](#dependency-injection)
+
 ## Directory Structure
 
 <img width="750" alt="Screenshot 2020-01-13 at 1 21 25 PM" src="https://user-images.githubusercontent.com/9396084/72245148-e60c4b80-3615-11ea-8a28-73b2b2bfc656.png">
