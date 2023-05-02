@@ -13,7 +13,6 @@ import org.oppia.android.app.administratorcontrols.administratorcontrolsitemview
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileAndDeviceIdViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -31,6 +30,10 @@ import javax.inject.Inject
 private const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 private const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 private const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
+
+// TODO: Consolidate with NavigationDrawerFragmentPresenter & clean it up.
+private const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
+  "NavigationDrawerFragmentPresenter.navigation_profile_id"
 
 /** The presenter for [AdministratorControlsFragment]. */
 @FragmentScope

@@ -121,7 +121,7 @@ class AudioFragmentPresenter @Inject constructor(
 
     binding.let {
       it.viewModel = audioViewModel
-      it.audioFragment = fragment as AudioFragment
+      it.audioFragment = fragment as AudioLanguageInteractionListener
       it.lifecycleOwner = fragment
     }
     subscribeToAudioLanguageLiveData()

@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
@@ -38,6 +37,10 @@ private const val AUDIO_LANGUAGE_ERROR =
 private const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
 private const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
 private const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
+
+// TODO: Consolidate with NavigationDrawerFragmentPresenter & clean it up.
+private const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
+  "NavigationDrawerFragmentPresenter.navigation_profile_id"
 
 /** The presenter for [OptionsFragment]. */
 @FragmentScope

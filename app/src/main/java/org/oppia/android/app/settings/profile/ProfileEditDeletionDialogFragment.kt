@@ -17,7 +17,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
     const val PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY =
       "ProfileEditDeletionDialogFragment.profile_deletion_dialog_internal_profile_id"
 
-    /** Creates new instance of the fragment [ProfileEditFragment]. */
+    /** Creates new instance of the fragment ``ProfileEditFragment``. */
     fun newInstance(internalProfileId: Int): ProfileEditDeletionDialogFragment {
       val profileEditDeletionDialog = ProfileEditDeletionDialogFragment()
       val args = Bundle()
@@ -43,8 +43,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
     val internalProfileId = args.getInt(PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY)
 
-    profileEditDialogInterface =
-      parentFragment as ProfileEditFragment
+    profileEditDialogInterface = parentFragment as ProfileEditDialogInterface
 
     val alertDialog = AlertDialog.Builder(activity as Context, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.profile_edit_delete_dialog_title)

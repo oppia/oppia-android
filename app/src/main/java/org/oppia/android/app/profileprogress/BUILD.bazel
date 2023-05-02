@@ -145,3 +145,57 @@ oppia_android_library(
     srcs = ["ProfilePictureDialogInterface.kt"],
     visibility = ["//app:app_visibility"],
 )
+
+oppia_android_library(
+    name = "profile_picture_edit_dialog_fragment",
+    srcs = ["ProfilePictureEditDialogFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/profileprogress:profile_picture_dialog_interface",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_progress_fragment",
+    srcs = ["ProfileProgressFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/profileprogress:profile_picture_click_listener",
+        "//app/src/main/java/org/oppia/android/app/profileprogress:profile_progress_fragment_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_progress_fragment_presenter",
+    srcs = ["ProfileProgressFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/customview:lesson_thumbnail_image_view",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_topic_play_story_listener",
+        "//app/src/main/java/org/oppia/android/app/profileprogress:profile_picture_edit_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/profileprogress:profile_progress_header_view_model",
+        "//app/src/main/java/org/oppia/android/app/profileprogress:profile_progress_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/profileprogress:profile_progress_view_model",
+        "//app/src/main/java/org/oppia/android/app/profileprogress:recently_played_story_summary_view_model",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

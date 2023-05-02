@@ -27,3 +27,48 @@ oppia_android_library(
     srcs = ["StopStatePlayingSessionWithSavedProgressListener.kt"],
     visibility = ["//app:app_visibility"],
 )
+
+oppia_android_library(
+    name = "progress_database_full_dialog_fragment",
+    srcs = ["ProgressDatabaseFullDialogFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/stopplaying:stop_state_playing_session_with_saved_progress_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "stop_exploration_dialog_fragment",
+    srcs = ["StopExplorationDialogFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/stopplaying:stop_state_playing_session_listener",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "unsaved_exploration_dialog_fragment",
+    srcs = ["UnsavedExplorationDialogFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/stopplaying:stop_state_playing_session_with_saved_progress_listener",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

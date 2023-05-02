@@ -32,3 +32,88 @@ oppia_android_library(
         "//third_party:kotlinx-coroutines-core-jvm",
     ],
 )
+
+oppia_android_library(
+    name = "downloads_tab_fragment",
+    srcs = ["DownloadsTabFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/mydownloads:downloads_tab_fragment_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "downloads_tab_fragment_presenter",
+    srcs = ["DownloadsTabFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "my_downloads_fragment",
+    srcs = ["MyDownloadsFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/mydownloads:my_downloads_fragment_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "my_downloads_fragment_presenter",
+    srcs = ["MyDownloadsFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/mydownloads:downloads_tab_fragment",
+        "//app/src/main/java/org/oppia/android/app/mydownloads:my_downloads_view_pager_adapter",
+        "//app/src/main/java/org/oppia/android/app/mydownloads:updates_tab_fragment",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_viewpager2_viewpager2",
+        "//third_party:com_google_android_material_material",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "updates_tab_fragment",
+    srcs = ["UpdatesTabFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/mydownloads:updates_tab_fragment_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "updates_tab_fragment_presenter",
+    srcs = ["UpdatesTabFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

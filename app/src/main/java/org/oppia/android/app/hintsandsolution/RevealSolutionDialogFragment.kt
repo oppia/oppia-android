@@ -36,8 +36,7 @@ class RevealSolutionDialogFragment : InjectableDialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val view = View.inflate(context, R.layout.reveal_solution_dialog, /* root= */ null)
-    val revealSolutionInterface: RevealSolutionInterface =
-      parentFragment as HintsAndSolutionDialogFragment
+    val revealSolutionInterface = parentFragment as RevealSolutionInterface
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))

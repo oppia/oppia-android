@@ -36,3 +36,31 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
     ],
 )
+
+oppia_android_library(
+    name = "math_expression_parser_fragment",
+    srcs = ["MathExpressionParserFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/devoptions/mathexpressionparser:math_expression_parser_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "math_expression_parser_fragment_presenter",
+    srcs = ["MathExpressionParserFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/devoptions/mathexpressionparser:math_expression_parser_view_model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

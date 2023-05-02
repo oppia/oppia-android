@@ -88,3 +88,50 @@ oppia_android_library(
         "//third_party:androidx_databinding_databinding-common",
     ],
 )
+
+oppia_android_library(
+    name = "onboarding_fragment",
+    srcs = ["OnboardingFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_navigation_listener",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
+    ],
+)
+
+oppia_android_library(
+    name = "onboarding_fragment_presenter",
+    srcs = ["OnboardingFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_navigation_listener",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_slide_final_view_model",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_slide_view_model",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_view_model",
+        "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_view_pager_view_model",
+        "//app/src/main/java/org/oppia/android/app/onboarding:view_pager_slide",
+        "//app/src/main/java/org/oppia/android/app/policies:route_to_policies_listener",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_viewpager2_viewpager2",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:policy_type",
+        "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
+    ],
+)

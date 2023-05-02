@@ -58,3 +58,151 @@ oppia_android_library(
         "//third_party:javax_inject_javax_inject",
     ],
 )
+
+oppia_android_library(
+    name = "bottom_sheet_options_menu_dialog_fragment",
+    srcs = ["BottomSheetOptionsMenuDialogFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_bottom_sheet_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:bottom_sheet_options_menu_item_click_listener",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "exploration_fragment",
+    srcs = ["ExplorationFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:exploration_fragment_presenter",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "exploration_fragment_presenter",
+    srcs = ["ExplorationFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:request_voice_over_icon_spotlight_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state:state_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:continue_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:next_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_responses_header_click_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:return_to_topic_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:show_hint_availability_listener",
+        "//app/src/main/java/org/oppia/android/app/player/state/listener:submit_navigation_button_listener",
+        "//app/src/main/java/org/oppia/android/app/spotlight",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//app/src/main/java/org/oppia/android/app/utility:font_scale_configuration_util",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:spotlight_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_core_core-ktx",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "exploration_manager_fragment",
+    srcs = ["ExplorationManagerFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:exploration_manager_fragment_presenter",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "exploration_manager_fragment_presenter",
+    srcs = ["ExplorationManagerFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:default_font_size_state_listener",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-livedata",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+oppia_android_library(
+    name = "hints_and_solution_exploration_manager_fragment",
+    srcs = ["HintsAndSolutionExplorationManagerFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:hints_and_solution_exploration_manager_fragment_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "hints_and_solution_exploration_manager_fragment_presenter",
+    srcs = ["HintsAndSolutionExplorationManagerFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:hints_and_solution_exploration_manager_listener",
+        "//domain/src/main/java/org/oppia/android/domain/exploration:exploration_progress_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)

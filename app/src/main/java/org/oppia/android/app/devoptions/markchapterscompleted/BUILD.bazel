@@ -79,3 +79,44 @@ oppia_android_library(
         "//third_party:androidx_databinding_databinding-common",
     ],
 )
+
+oppia_android_library(
+    name = "mark_chapters_completed_fragment",
+    srcs = ["MarkChaptersCompletedFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:mark_chapters_completed_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "mark_chapters_completed_fragment_presenter",
+    srcs = ["MarkChaptersCompletedFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:chapter_summary_view_model",
+        "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:mark_chapters_completed_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:mark_chapters_completed_view_model",
+        "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:story_summary_view_model",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//domain/src/main/java/org/oppia/android/domain/devoptions:modify_lesson_progress_controller",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:topic_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_constraintlayout_constraintlayout",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

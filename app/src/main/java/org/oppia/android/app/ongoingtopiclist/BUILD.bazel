@@ -63,3 +63,37 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/html:exploration_html_parser_entity_type",
     ],
 )
+
+oppia_android_library(
+    name = "ongoing_topic_list_fragment",
+    srcs = ["OngoingTopicListFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/ongoingtopiclist:ongoing_topic_list_fragment_presenter",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "ongoing_topic_list_fragment_presenter",
+    srcs = ["OngoingTopicListFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/customview:lesson_thumbnail_image_view",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/home:route_to_topic_listener",
+        "//app/src/main/java/org/oppia/android/app/ongoingtopiclist:ongoing_topic_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/ongoingtopiclist:ongoing_topic_list_view_model",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

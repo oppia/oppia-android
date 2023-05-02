@@ -66,7 +66,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
 
     val options = languageNameArrayList.toTypedArray<CharSequence>()
 
-    val audioLanguageInteractionListener: AudioLanguageInteractionListener = parentFragment as AudioFragment
+    val audioLanguageInteractionListener = parentFragment as AudioLanguageInteractionListener
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))

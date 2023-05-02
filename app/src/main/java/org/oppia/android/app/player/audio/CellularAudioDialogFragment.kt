@@ -34,7 +34,7 @@ class CellularAudioDialogFragment : InjectableDialogFragment() {
     val view = View.inflate(context, R.layout.cellular_data_dialog, /* root= */ null)
     val checkBox = view.findViewById<CheckBox>(R.id.cellular_data_dialog_checkbox)
 
-    val cellularDataInterface: CellularDataInterface = parentFragment as AudioFragment
+    val cellularDataInterface = parentFragment as CellularDataInterface
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))

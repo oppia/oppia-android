@@ -159,3 +159,38 @@ oppia_android_library(
     visibility = ["//app:app_visibility"],
     deps = ["//third_party:com_google_android_material_material"],
 )
+
+oppia_android_library(
+    name = "profile_and_device_id_fragment",
+    srcs = ["ProfileAndDeviceIdFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_and_device_id_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "profile_and_device_id_fragment_presenter",
+    srcs = ["ProfileAndDeviceIdFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:control_buttons_view_model",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:copy_id_material_button_view",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:device_id_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_learner_id_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_list_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_list_view_model",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:sync_status_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

@@ -7,12 +7,10 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 oppia_android_library(
     name = "bottom_sheet_options_menu_test_activity",
     testonly = True,
-    srcs = [
-        "BottomSheetOptionsMenuTestActivity.kt",
-    ],
+    srcs = ["BottomSheetOptionsMenuTestActivity.kt"],
     visibility = ["//app:app_testing_visibility"],
     deps = [
-        "//app:fragments",
+        "//app/src/main/java/org/oppia/android/app/player/exploration:bottom_sheet_options_menu_dialog_fragment",
         "//app/src/main/java/org/oppia/android/app/player/exploration:bottom_sheet_options_menu_item_click_listener",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     ],

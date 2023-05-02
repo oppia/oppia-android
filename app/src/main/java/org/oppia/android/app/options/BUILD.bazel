@@ -311,3 +311,159 @@ oppia_android_library(
         "//third_party:com_google_protobuf_protobuf-javalite",
     ],
 )
+
+oppia_android_library(
+    name = "app_language_fragment",
+    srcs = ["AppLanguageFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/options:app_language_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/options:app_language_radio_button_listener",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "app_language_fragment_presenter",
+    srcs = ["AppLanguageFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/options:app_language_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:app_language_selection_listener",
+        "//app/src/main/java/org/oppia/android/app/options:app_language_selection_view_model",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "audio_language_fragment",
+    srcs = ["AudioLanguageFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/options:audio_language_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/options:audio_language_radio_button_listener",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "audio_language_fragment_presenter",
+    srcs = ["AudioLanguageFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/options:audio_language_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:audio_language_selected_listener",
+        "//app/src/main/java/org/oppia/android/app/options:audio_language_selection_view_model",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "options_fragment",
+    srcs = ["OptionsFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/options:options_fragment_presenter",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "options_fragment_presenter",
+    srcs = ["OptionsFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/options:option_controls_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:options_app_language_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:options_audio_language_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:options_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:options_reading_text_size_view_model",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+oppia_android_library(
+    name = "reading_text_size_fragment",
+    srcs = ["ReadingTextSizeFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/options:reading_text_size_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/options:text_size_radio_button_listener",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+oppia_android_library(
+    name = "reading_text_size_fragment_presenter",
+    srcs = ["ReadingTextSizeFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/options:reading_text_size_selection_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:text_size_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/options:text_size_selected_listener",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)

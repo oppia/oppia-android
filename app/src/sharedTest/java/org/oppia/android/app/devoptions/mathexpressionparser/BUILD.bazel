@@ -88,11 +88,10 @@ oppia_android_test(
 oppia_android_test(
     name = "MathExpressionParserFragmentTest",
     srcs = ["MathExpressionParserFragmentTest.kt"],
-    android_merge_deps = ["//app:resources"],
+    android_merge_deps = ["//app/src/main/java/org/oppia/android/app/databinding:databinding_resources"],
     deps = [
         "//:dagger",
         "//app",
-        "//app:fragments",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
@@ -102,6 +101,7 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
         "//app/src/main/java/org/oppia/android/app/application:modules",
         "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
+        "//app/src/main/java/org/oppia/android/app/devoptions/mathexpressionparser:math_expression_parser_fragment",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",

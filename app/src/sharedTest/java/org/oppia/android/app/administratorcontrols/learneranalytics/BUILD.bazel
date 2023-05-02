@@ -94,15 +94,15 @@ oppia_android_test(
 oppia_android_test(
     name = "ProfileAndDeviceIdFragmentTest",
     srcs = ["ProfileAndDeviceIdFragmentTest.kt"],
-    android_merge_deps = ["//app:resources"],
+    android_merge_deps = ["//app/src/main/java/org/oppia/android/app/databinding:databinding_resources"],
     deps = [
         "//:dagger",
         "//app",
-        "//app:fragments",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
         "//app/src/main/java/org/oppia/android/app/activity:activity_component_impl",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router_module",
+        "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_and_device_id_fragment",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
         "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",

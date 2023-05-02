@@ -7,13 +7,11 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 oppia_android_library(
     name = "beta_notice_dialog_frgment_test_activity",
     testonly = True,
-    srcs = [
-        "BetaNoticeDialogFragmentTestActivity.kt",
-    ],
+    srcs = ["BetaNoticeDialogFragmentTestActivity.kt"],
     visibility = ["//app:app_testing_visibility"],
     deps = [
-        "//app:fragments",
         "//app/src/main/java/org/oppia/android/app/notice:beta_notice_closed_listener",
+        "//app/src/main/java/org/oppia/android/app/notice:beta_notice_dialog_fragment",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     ],
 )
@@ -21,13 +19,11 @@ oppia_android_library(
 oppia_android_library(
     name = "general_availability_upgrade_notice_dialog_fragment_test_activity",
     testonly = True,
-    srcs = [
-        "GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity.kt",
-    ],
+    srcs = ["GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity.kt"],
     visibility = ["//app:app_testing_visibility"],
     deps = [
-        "//app:fragments",
         "//app/src/main/java/org/oppia/android/app/notice:general_availability_upgrade_notice_closed_listener",
+        "//app/src/main/java/org/oppia/android/app/notice:general_availability_upgrade_notice_dialog_fragment",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     ],
 )

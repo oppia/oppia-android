@@ -44,3 +44,36 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
     ],
 )
+
+oppia_android_library(
+    name = "view_event_logs_fragment",
+    srcs = ["ViewEventLogsFragment.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs:view_event_logs_fragment_presenter",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
+
+oppia_android_library(
+    name = "view_event_logs_fragment_presenter",
+    srcs = ["ViewEventLogsFragmentPresenter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs:event_log_item_view_model",
+        "//app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs:view_event_logs_view_model",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:kotlinx-coroutines-core-jvm",
+    ],
+)
