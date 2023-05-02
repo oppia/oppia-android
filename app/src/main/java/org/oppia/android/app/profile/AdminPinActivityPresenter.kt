@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
@@ -17,6 +16,10 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.AddProfileActivityParams
+import org.oppia.android.app.model.AdministratorControlsActivityParams
+import org.oppia.android.app.model.DestinationScreen
 
 /** The presenter for [AdminPinActivity]. */
 @ActivityScope
@@ -25,7 +28,8 @@ class AdminPinActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val adminViewModel: AdminPinViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val activityRouter: ActivityRouter
 ) {
 
   private var inputtedPin = false
@@ -113,21 +117,25 @@ class AdminPinActivityPresenter @Inject constructor(
           if (it is AsyncResult.Success) {
             when (activity.intent.getIntExtra(ADMIN_PIN_ENUM_EXTRA_KEY, 0)) {
               AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-                activity.startActivity(
-                  AdministratorControlsActivity.createIntent(
-                    context, activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1)
-                  )
+                activityRouter.routeToScreen(
+                  DestinationScreen.newBuilder().apply {
+                    administratorControlsActivityParams =
+                      AdministratorControlsActivityParams.newBuilder().apply {
+                        this.internalProfileId =
+                          activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1)
+                      }.build()
+                  }.build()
                 )
                 activity.finish()
               }
               AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
-                activity.startActivity(
-                  AddProfileActivity.createIntent(
-                    context,
-                    activity.intent.getIntExtra(
-                      ADMIN_PIN_COLOR_RGB_EXTRA_KEY, -10710042
-                    )
-                  )
+                activityRouter.routeToScreen(
+                  DestinationScreen.newBuilder().apply {
+                    addProfileActivityParams = AddProfileActivityParams.newBuilder().apply {
+                      this.colorRgb =
+                        activity.intent.getIntExtra(ADMIN_PIN_COLOR_RGB_EXTRA_KEY, -10710042)
+                    }.build()
+                  }.build()
                 )
                 activity.finish()
               }
@@ -157,5 +165,11 @@ class AdminPinActivityPresenter @Inject constructor(
 
   private fun setValidPin() {
     adminViewModel.isButtonActive.set(inputtedPin && inputtedConfirmPin)
+  }
+
+  companion object {
+    const val ADMIN_PIN_PROFILE_ID_EXTRA_KEY = "AdminPinActivity.admin_pin_profile_id"
+    const val ADMIN_PIN_COLOR_RGB_EXTRA_KEY = "AdminPinActivity.admin_pin_color_rgb"
+    const val ADMIN_PIN_ENUM_EXTRA_KEY = "AdminPinActivity.admin_pin_enum"
   }
 }

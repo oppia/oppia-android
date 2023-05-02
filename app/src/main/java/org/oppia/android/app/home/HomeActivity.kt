@@ -16,10 +16,10 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
-import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.TopicActivityParams
 
 /** The central activity for all users entering the app. */
 class HomeActivity :
@@ -27,14 +27,9 @@ class HomeActivity :
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
   RouteToRecentlyPlayedListener {
-  @Inject
-  lateinit var homeActivityPresenter: HomeActivityPresenter
-
-  @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
-
-  @Inject
-  lateinit var activityRouter: ActivityRouter
+  @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
+  @Inject lateinit var activityRouter: ActivityRouter
 
   private var internalProfileId: Int = -1
 
@@ -61,7 +56,15 @@ class HomeActivity :
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createIntent(this, internalProfileId, topicId))
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        topicActivityParams = TopicActivityParams.newBuilder().apply {
+          this.internalProfileId = internalProfileId
+          this.topicId = topicId
+          this.storyList = true
+        }.build()
+      }.build()
+    )
   }
 
   override fun onBackPressed() {
@@ -81,13 +84,14 @@ class HomeActivity :
   }
 
   override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
-    startActivity(
-      TopicActivity.createIntent(
-        this,
-        internalProfileId,
-        topicId,
-        storyId
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        topicActivityParams = TopicActivityParams.newBuilder().apply {
+          this.internalProfileId = internalProfileId
+          this.topicId = topicId
+          this.specificStoryId = storyId
+        }.build()
+      }.build()
     )
   }
 

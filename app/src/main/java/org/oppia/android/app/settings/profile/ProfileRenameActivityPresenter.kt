@@ -7,11 +7,11 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.ProfileRenameActivityBinding
 import javax.inject.Inject
 
-/** The presenter for [ProfileRenameActivity]. */
+/** The presenter for ``ProfileRenameActivity``. */
 @ActivityScope
 class ProfileRenameActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
 
-  /** Handles onCreate() of [ProfileRenameActivity]. */
+  /** Handles onCreate() of ``ProfileRenameActivity``. */
   fun handleOnCreate(profileId: Int) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
@@ -26,9 +26,7 @@ class ProfileRenameActivityPresenter @Inject constructor(private val activity: A
       lifecycleOwner = activity
     }
 
-    binding.profileRenameToolbar.setNavigationOnClickListener {
-      (activity as ProfileRenameActivity).finish()
-    }
+    binding.profileRenameToolbar.setNavigationOnClickListener { activity.finish() }
     if (getProfileRenameFragment() == null) {
       val profileRenameFragment = ProfileRenameFragment.newInstance(profileId)
       activity.supportFragmentManager.beginTransaction()

@@ -7,20 +7,21 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.LicenseListActivityParams
 
 /** The activity for displaying a list of third-party dependencies used to build Oppia Android. */
 class ThirdPartyDependencyListActivity :
   InjectableAppCompatActivity(),
   RouteToLicenseListListener {
-
-  @Inject
-  lateinit var thirdPartyDependencyListActivityPresenter:
-    ThirdPartyDependencyListActivityPresenter
+  @Inject lateinit var presenter: ThirdPartyDependencyListActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as Injector).inject(this)
-    thirdPartyDependencyListActivityPresenter.handleOnCreate(false)
+    presenter.handleOnCreate(false)
   }
 
   companion object {
@@ -33,12 +34,12 @@ class ThirdPartyDependencyListActivity :
   }
 
   override fun onRouteToLicenseList(dependencyIndex: Int) {
-    startActivity(
-      LicenseListActivity
-        .createIntent(
-          context = this,
-          dependencyIndex = dependencyIndex
-        )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        licenseListActivityParams = LicenseListActivityParams.newBuilder().apply {
+          this.dependencyIndex = dependencyIndex
+        }.build()
+      }.build()
     )
   }
 

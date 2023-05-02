@@ -5,17 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.PROFILE_PROGRESS_ACTIVITY
-import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.CompletedStoryListActivityParams
+import org.oppia.android.app.model.OngoingTopicListActivityParams
+import org.oppia.android.app.model.ProfilePictureActivityParams
 
 /** Activity to display profile progress. */
 class ProfileProgressActivity :
@@ -24,16 +25,11 @@ class ProfileProgressActivity :
   RouteToOngoingTopicListListener,
   RouteToRecentlyPlayedListener,
   ProfilePictureDialogInterface {
+  @Inject lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
 
-  @Inject
-  lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
   private var internalProfileId = -1
-
-  @Inject
-  lateinit var activityRouter: ActivityRouter
-
-  @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -59,20 +55,22 @@ class ProfileProgressActivity :
   }
 
   override fun routeToCompletedStory() {
-    startActivity(
-      CompletedStoryListActivity.createIntent(
-        this,
-        internalProfileId
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        completedStoryListActivityParams = CompletedStoryListActivityParams.newBuilder().apply {
+          this.internalProfileId = internalProfileId
+        }.build()
+      }.build()
     )
   }
 
   override fun routeToOngoingTopic() {
-    startActivity(
-      OngoingTopicListActivity.createIntent(
-        this,
-        internalProfileId
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        ongoingTopicListActivityParams = OngoingTopicListActivityParams.newBuilder().apply {
+          this.internalProfileId = internalProfileId
+        }.build()
+      }.build()
     )
   }
 
@@ -89,11 +87,12 @@ class ProfileProgressActivity :
   }
 
   override fun showProfilePicture() {
-    startActivity(
-      ProfilePictureActivity.createIntent(
-        this,
-        internalProfileId
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        profilePictureActivityParams = ProfilePictureActivityParams.newBuilder().apply {
+          this.internalProfileId = internalProfileId
+        }.build()
+      }.build()
     )
   }
 

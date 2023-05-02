@@ -8,14 +8,14 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ThirdPartyDependencyListActivityBinding
 import javax.inject.Inject
 
-/** The presenter for [ThirdPartyDependencyListActivity]. */
+/** The presenter for ``ThirdPartyDependencyListActivity``. */
 @ActivityScope
 class ThirdPartyDependencyListActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
 
-  /** Handles onCreate() method of the [ThirdPartyDependencyListActivity]. */
+  /** Handles onCreate() method of the ``ThirdPartyDependencyListActivity``. */
   fun handleOnCreate(isMultipane: Boolean) {
     val binding =
       DataBindingUtil.setContentView<ThirdPartyDependencyListActivityBinding>(
@@ -35,7 +35,7 @@ class ThirdPartyDependencyListActivityPresenter @Inject constructor(
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
     binding.thirdPartyDependencyListActivityToolbar.setNavigationOnClickListener {
-      (activity as ThirdPartyDependencyListActivity).finish()
+      activity.finish()
     }
 
     if (getThirdPartyDependencyListFragment() == null) {

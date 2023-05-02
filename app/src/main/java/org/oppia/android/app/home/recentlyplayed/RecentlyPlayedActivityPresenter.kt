@@ -10,7 +10,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.RecentlyPlayedActivityBinding
 import javax.inject.Inject
 
-/** The presenter for [RecentlyPlayedActivity]. */
+/** The presenter for ``RecentlyPlayedActivity``. */
 @ActivityScope
 class RecentlyPlayedActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -25,9 +25,7 @@ class RecentlyPlayedActivityPresenter @Inject constructor(
       R.layout.recently_played_activity
     )
 
-    binding.recentlyPlayedToolbar.setNavigationOnClickListener {
-      (activity as RecentlyPlayedActivity).finish()
-    }
+    binding.recentlyPlayedToolbar.setNavigationOnClickListener { activity.finish() }
     binding.recentlyPlayedToolbar.title = getTitle(recentlyPlayedActivityParams)
     if (getRecentlyPlayedFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

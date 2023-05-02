@@ -8,11 +8,10 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.utility.SplitScreenManager
 import javax.inject.Inject
 
-/** The activity for testing [TopicFragment]. */
+/** The activity for testing [ExplorationActivity]. */
 class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
   @Inject
   lateinit var presenter: ExplorationTestActivityPresenter

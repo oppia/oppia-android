@@ -8,7 +8,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.AppLanguageActivityBinding
 import javax.inject.Inject
 
-/** The presenter for [AppLanguageActivity]. */
+/** The presenter for ``AppLanguageActivity``. */
 @ActivityScope
 class AppLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var prefSummaryValue: String
@@ -22,7 +22,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
       val intent = Intent().apply {
         putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, prefSummaryValue)
       }
-      (activity as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)
+      activity.setResult(REQUEST_CODE_APP_LANGUAGE, intent)
       activity.finish()
     }
     setLanguageSelected(prefValue)

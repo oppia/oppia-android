@@ -10,15 +10,17 @@ import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.ScreenName.RESUME_LESSON_ACTIVITY
-import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
 
 /** Activity that allows the user to resume a saved exploration. */
 class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
   @Inject lateinit var resumeLessonActivityPresenter: ResumeLessonActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -80,18 +82,18 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    startActivity(
-      ExplorationActivity.createIntent(
-        this,
-        profileId,
-        topicId,
-        storyId,
-        explorationId,
-        parentScreen,
-        isCheckpointingEnabled
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        explorationActivityParams = ExplorationActivityParams.newBuilder().apply {
+          this.profileId = profileId
+          this.topicId = topicId
+          this.storyId = storyId
+          this.explorationId = explorationId
+          this.parentScreen = parentScreen
+          this.isCheckpointingEnabled = isCheckpointingEnabled
+        }.build()
+      }.build()
     )
-    finish()
   }
 
   interface Injector {

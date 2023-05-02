@@ -358,7 +358,9 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasExtra(ADMIN_PIN_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
+      intended(
+        hasExtra("AdminPinActivity.admin_pin_enum", AdminAuthEnum.PROFILE_ADD_PROFILE.value)
+      )
     }
   }
 
@@ -459,7 +461,9 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
+      intended(
+        hasExtra("AdminAuthActivity.admin_auth_enum", AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value)
+      )
     }
   }
 
@@ -475,7 +479,9 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
+      intended(
+        hasExtra("AdminAuthActivity.admin_auth_enum", AdminAuthEnum.PROFILE_ADD_PROFILE.value)
+      )
     }
   }
 

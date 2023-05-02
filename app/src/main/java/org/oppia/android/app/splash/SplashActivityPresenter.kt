@@ -13,8 +13,6 @@ import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
-import org.oppia.android.app.onboarding.OnboardingActivity
-import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.SplashActivityBinding
@@ -29,6 +27,10 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.OnboardingActivityParams
+import org.oppia.android.app.model.ProfileChooserActivityParams
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val BETA_NOTICE_DIALOG_FRAGMENT_TAG = "beta_notice_dialog"
@@ -46,7 +48,8 @@ class SplashActivityPresenter @Inject constructor(
   private val localeController: LocaleController,
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val currentBuildFlavor: BuildFlavor
+  private val currentBuildFlavor: BuildFlavor,
+  private val activityRouter: ActivityRouter
 ) {
   lateinit var startupMode: StartupMode
 
@@ -165,7 +168,11 @@ class SplashActivityPresenter @Inject constructor(
   private fun processStartupMode() {
     when (startupMode) {
       StartupMode.USER_IS_ONBOARDED -> {
-        activity.startActivity(ProfileChooserActivity.createIntent(activity))
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            profileChooserActivityParams = ProfileChooserActivityParams.getDefaultInstance()
+          }.build()
+        )
         activity.finish()
       }
       StartupMode.APP_IS_DEPRECATED -> {
@@ -177,7 +184,11 @@ class SplashActivityPresenter @Inject constructor(
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
-        activity.startActivity(OnboardingActivity.createIntent(activity))
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            onboardingActivityParams = OnboardingActivityParams.getDefaultInstance()
+          }.build()
+        )
         activity.finish()
       }
     }

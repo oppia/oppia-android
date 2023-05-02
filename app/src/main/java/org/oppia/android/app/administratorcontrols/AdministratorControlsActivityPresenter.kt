@@ -30,8 +30,7 @@ private const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
 private const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 private const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 
-
-/** The presenter for [AdministratorControlsActivity]. */
+/** The presenter for ``AdministratorControlsActivity``. */
 @ActivityScope
 class AdministratorControlsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -46,7 +45,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var extraControlsTitle: String
   private var isProfileDeletionDialogVisible: Boolean = false
 
-  /** Initializes the [AdministratorControlsActivity] and sets the navigation drawer. */
+  /** Initializes the ``AdministratorControlsActivity`` and sets the navigation drawer. */
   fun handleOnCreate(
     extraControlsTitle: String?,
     lastLoadedFragment: String,
@@ -74,13 +73,14 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       AdministratorControlsFragment.newInstance(isMultipane)
     ).commitNow()
     if (isMultipane) {
-      val adminControlsActivity = activity as AdministratorControlsActivity
       when (lastLoadedFragment) {
-        PROFILE_LIST_FRAGMENT -> activity.loadProfileList()
-        APP_VERSION_FRAGMENT -> activity.loadAppVersion()
+        PROFILE_LIST_FRAGMENT -> (activity as LoadProfileListListener).loadProfileList()
+        APP_VERSION_FRAGMENT -> (activity as LoadAppVersionListener).loadAppVersion()
         PROFILE_EDIT_FRAGMENT -> selectedProfileId.let { profileId ->
           if (extraControlsTitle != null) {
-            activity.loadProfileEdit(profileId = profileId, profileName = extraControlsTitle)
+            (activity as LoadProfileEditListener).loadProfileEdit(
+              profileId = profileId, profileName = extraControlsTitle
+            )
             if (isProfileDeletionDialogVisible && profileId != 0) {
               val fragment = activity.supportFragmentManager.findFragmentById(
                 R.id.administrator_controls_fragment_multipane_placeholder
@@ -91,7 +91,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
             }
           }
         }
-        PROFILE_AND_DEVICE_ID_FRAGMENT -> adminControlsActivity.loadLearnerAnalyticsData()
+        PROFILE_AND_DEVICE_ID_FRAGMENT ->
+          (activity as LoadLearnerAnalyticsListener).loadLearnerAnalyticsData()
       }
       setBackButtonClickListener()
     }
@@ -122,7 +123,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       ) as AdministratorControlsFragment?
   }
 
-  /** Loads the profile list fragment as the [AdministratorControlsActivity] is started in multipane tablet mode. */
+  /** Loads the profile list fragment as the activity is started in multipane tablet mode. */
   fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)

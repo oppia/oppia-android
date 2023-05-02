@@ -12,13 +12,14 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.TOPIC_ACTIVITY
-import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.app.resumelesson.ResumeLessonActivity
-import org.oppia.android.app.story.StoryActivity
-import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.QuestionPlayerActivityParams
+import org.oppia.android.app.model.ResumeLessonActivityParams
+import org.oppia.android.app.model.RevisionCardActivityParams
+import org.oppia.android.app.model.StoryActivityParams
 
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
@@ -31,13 +32,12 @@ class TopicActivity :
   RouteToExplorationListener,
   RouteToResumeLessonListener,
   RouteToRevisionCardListener {
+  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
 
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private var storyId: String? = null
-
-  @Inject
-  lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -51,23 +51,25 @@ class TopicActivity :
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
-    startActivity(
-      QuestionPlayerActivity.createIntent(
-        this,
-        skillIdList,
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        questionPlayerActivityParams = QuestionPlayerActivityParams.newBuilder().apply {
+          addAllSkillIds(skillIdList)
+          this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        }.build()
+      }.build()
     )
   }
 
   override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
-    startActivity(
-      StoryActivity.createIntent(
-        this,
-        internalProfileId,
-        topicId,
-        storyId
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        storyActivityParams = StoryActivityParams.newBuilder().apply {
+          this.internalProfileId = internalProfileId
+          this.topicId = topicId
+          this.storyId = storyId
+        }.build()
+      }.build()
     )
   }
 
@@ -77,14 +79,15 @@ class TopicActivity :
     subtopicId: Int,
     subtopicListSize: Int
   ) {
-    startActivity(
-      RevisionCardActivity.createIntent(
-        this,
-        internalProfileId,
-        topicId,
-        subtopicId,
-        subtopicListSize
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        revisionCardActivityParams = RevisionCardActivityParams.newBuilder().apply {
+          this.internalProfileId = internalProfileId
+          this.topicId = topicId
+          this.subtopicIndex = subtopicId
+          this.subtopicListSize = subtopicListSize
+        }.build()
+      }.build()
     )
   }
 
@@ -96,16 +99,17 @@ class TopicActivity :
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    startActivity(
-      ExplorationActivity.createIntent(
-        this,
-        profileId,
-        topicId,
-        storyId,
-        explorationId,
-        parentScreen,
-        isCheckpointingEnabled
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        explorationActivityParams = ExplorationActivityParams.newBuilder().apply {
+          this.profileId = profileId
+          this.topicId = topicId
+          this.storyId = storyId
+          this.explorationId = explorationId
+          this.parentScreen = parentScreen
+          this.isCheckpointingEnabled = isCheckpointingEnabled
+        }.build()
+      }.build()
     )
   }
 
@@ -117,16 +121,17 @@ class TopicActivity :
     parentScreen: ExplorationActivityParams.ParentScreen,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
-    startActivity(
-      ResumeLessonActivity.createIntent(
-        this,
-        profileId,
-        topicId,
-        storyId,
-        explorationId,
-        parentScreen,
-        explorationCheckpoint
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        resumeLessonActivityParams = ResumeLessonActivityParams.newBuilder().apply {
+          this.profileId = profileId
+          this.topicId = topicId
+          this.storyId = storyId
+          this.explorationId = explorationId
+          this.parentScreen = parentScreen
+          this.checkpoint = explorationCheckpoint
+        }.build()
+      }.build()
     )
   }
 

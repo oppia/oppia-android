@@ -3,9 +3,11 @@ package org.oppia.android.app.profile
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
+
+// TODO: Consolidate with version in ProfileChooserFragmentTestActivityPresenter.
+private const val TAG_PROFILE_CHOOSER_FRAGMENT = "TAG_PROFILE_CHOOSER_FRAGMENT"
 
 /** The presenter for [ProfileChooserActivity]. */
 @ActivityScope
@@ -29,7 +31,7 @@ class ProfileChooserActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_chooser_fragment_placeholder,
         ProfileChooserFragment(),
-        ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
+        TAG_PROFILE_CHOOSER_FRAGMENT
       ).commitNow()
     }
   }

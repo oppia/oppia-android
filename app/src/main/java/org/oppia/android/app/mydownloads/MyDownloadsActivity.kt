@@ -5,15 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ScreenName.MY_DOWNLOADS_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.HomeActivityParams
 
 /** The activity for displaying [MyDownloadsFragment]. */
 class MyDownloadsActivity : InjectableAppCompatActivity() {
-  @Inject
-  lateinit var myDownloadsActivityPresenter: MyDownloadsActivityPresenter
+  @Inject lateinit var myDownloadsActivityPresenter: MyDownloadsActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
+
   private var internalProfileId: Int = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +40,13 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val intent = HomeActivity.createIntent(this, internalProfileId)
-    startActivity(intent)
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        homeActivityParams = HomeActivityParams.newBuilder().apply {
+          this.internalProfileId = internalProfileId
+        }.build()
+      }.build()
+    )
     finish()
   }
 

@@ -7,11 +7,10 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.ADMIN_AUTH_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-
-const val ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY = "AdminAuthActivity.admin_auth_admin_pin"
-const val ADMIN_AUTH_COLOR_RGB_EXTRA_KEY = "AdminAuthActivity.admin_auth_color_rgb"
-const val ADMIN_AUTH_ENUM_EXTRA_KEY = "AdminAuthActivity.admin_auth_enum"
-const val ADMIN_AUTH_PROFILE_ID_EXTRA_KEY = "AdminAuthActivity.admin_auth_profile_id"
+import org.oppia.android.app.profile.AdminAuthActivityPresenter.Companion.ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY
+import org.oppia.android.app.profile.AdminAuthActivityPresenter.Companion.ADMIN_AUTH_COLOR_RGB_EXTRA_KEY
+import org.oppia.android.app.profile.AdminAuthActivityPresenter.Companion.ADMIN_AUTH_ENUM_EXTRA_KEY
+import org.oppia.android.app.profile.AdminAuthActivityPresenter.Companion.ADMIN_AUTH_PROFILE_ID_EXTRA_KEY
 
 /** Activity that authenticates by checking for admin's PIN. */
 class AdminAuthActivity : InjectableAppCompatActivity() {

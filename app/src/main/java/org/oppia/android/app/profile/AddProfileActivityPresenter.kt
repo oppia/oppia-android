@@ -33,8 +33,14 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileChooserActivityParams
 
-const val GALLERY_INTENT_RESULT_CODE = 1
+// TODO: Consolidate with the one in AddProfileActivity.
+private const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
+
+private const val GALLERY_INTENT_RESULT_CODE = 1
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -43,6 +49,7 @@ class AddProfileActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val resourceHandler: AppLanguageResourceHandler,
   private val profileViewModel: AddProfileViewModel,
+  private val activityRouter: ActivityRouter,
   @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
 ) {
   private lateinit var uploadImageView: ImageView
@@ -280,9 +287,11 @@ class AddProfileActivityPresenter @Inject constructor(
   ) {
     when (result) {
       is AsyncResult.Success -> {
-        val intent = Intent(activity, ProfileChooserActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        activity.startActivity(intent)
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            profileChooserActivityParams = ProfileChooserActivityParams.getDefaultInstance()
+          }.build()
+        )
       }
       is AsyncResult.Failure -> {
         when (result.error) {

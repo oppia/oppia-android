@@ -362,9 +362,7 @@ class ProfileChooserSpanTest {
   ): ProfileChooserFragment {
     return activity
       .supportFragmentManager
-      .findFragmentByTag(
-        ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
-      ) as ProfileChooserFragment
+      .findFragmentByTag("TAG_PROFILE_CHOOSER_FRAGMENT") as ProfileChooserFragment
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

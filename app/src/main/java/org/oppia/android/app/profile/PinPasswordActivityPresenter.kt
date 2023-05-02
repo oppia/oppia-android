@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
-import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
@@ -18,17 +17,21 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 import kotlin.system.exitProcess
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.HomeActivityParams
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
 
-/** The presenter for [PinPasswordActivity]. */
+/** The presenter for ``PinPasswordActivity``. */
 class PinPasswordActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val pinViewModel: PinPasswordViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val activityRouter: ActivityRouter
 ) {
   private var profileId = -1
   private lateinit var alertDialog: AlertDialog
@@ -47,9 +50,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       viewModel = pinViewModel
     }
 
-    binding.pinPasswordToolbar.setNavigationOnClickListener {
-      (activity as PinPasswordActivity).finish()
-    }
+    binding.pinPasswordToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.showPin.setOnClickListener {
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
@@ -82,13 +83,18 @@ class PinPasswordActivityPresenter @Inject constructor(
                 ProfileId.newBuilder().setInternalId(profileId).build()
               ).toLiveData()
               .observe(
-                activity,
-                {
-                  if (it is AsyncResult.Success) {
-                    activity.startActivity((HomeActivity.createIntent(activity, profileId)))
-                  }
+                activity
+              ) {
+                if (it is AsyncResult.Success) {
+                  activityRouter.routeToScreen(
+                    DestinationScreen.newBuilder().apply {
+                      homeActivityParams = HomeActivityParams.newBuilder().apply {
+                        this.internalProfileId = profileId
+                      }.build()
+                    }.build()
+                  )
                 }
-              )
+              }
           } else {
             pinViewModel.errorMessage.set(
               resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin)
@@ -229,5 +235,10 @@ class PinPasswordActivityPresenter @Inject constructor(
       .setPositiveButton(R.string.pin_password_close) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
+  }
+
+  companion object {
+    const val PIN_PASSWORD_PROFILE_ID_EXTRA_KEY = "PinPasswordActivity.pin_password_profile_id"
+    const val PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY = "PinPasswordActivity.pin_password_admin_pin"
   }
 }

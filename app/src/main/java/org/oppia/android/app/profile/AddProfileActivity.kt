@@ -7,13 +7,16 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileChooserActivityParams
 
-const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
+private const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
 
 /** Activity that allows users to create new profiles. */
 class AddProfileActivity : InjectableAppCompatActivity() {
-  @Inject
-  lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
+  @Inject lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
 
   companion object {
     fun createIntent(context: Context, colorRgb: Int): Intent {
@@ -32,9 +35,11 @@ class AddProfileActivity : InjectableAppCompatActivity() {
 
   override fun onSupportNavigateUp(): Boolean {
     // TODO(#3641): Investigate on using finish instead of intent.
-    val intent = Intent(this, ProfileChooserActivity::class.java)
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-    startActivity(intent)
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        profileChooserActivityParams = ProfileChooserActivityParams.getDefaultInstance()
+      }.build()
+    )
     return false
   }
 
