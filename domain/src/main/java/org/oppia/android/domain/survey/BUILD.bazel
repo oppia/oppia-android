@@ -1,0 +1,24 @@
+"""
+Library for providing survey functionality in the app.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "gating_controller",
+    srcs = [
+        "SurveyGatingController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+         ":dagger",
+         "//domain/src/main/java/org/oppia/android/domain/exploration:active_time_controller",
+         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+         "//third_party:javax_inject_javax_inject",
+         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+    ],
+)
+
+dagger_rules()

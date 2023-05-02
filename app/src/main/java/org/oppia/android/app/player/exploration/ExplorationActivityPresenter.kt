@@ -10,6 +10,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -36,8 +37,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
-import org.oppia.android.domain.survey.SurveyGatingController
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -55,8 +54,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val gatingController: SurveyGatingController
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -281,31 +279,9 @@ class ExplorationActivityPresenter @Inject constructor(
               oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
             is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              //backPressActivitySelector()
-              //(activity as ExplorationActivity).finish()
-              maybeShowSurvey()
+              backPressActivitySelector()
+              (activity as ExplorationActivity).finish()
             }
-          }
-        }
-      )
-  }
-
-  private fun maybeShowSurvey() {
-    gatingController.maybeShowSurvey(profileId, topicId).toLiveData()
-      .observe(
-        activity,
-        {
-          when (it) {
-            is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Getting gating result")
-            is AsyncResult.Failure -> oppiaLogger.e(
-              "ExplorationActivity",
-              "Failed to fetch survey gating state",
-              it.error
-            )
-            is AsyncResult.Success -> oppiaLogger.e(
-              "ExplorationActivity",
-              "Returned should show survey: ${it.value.toString()}"
-            )
           }
         }
       )
