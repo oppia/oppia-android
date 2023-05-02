@@ -8,13 +8,17 @@ If you run into any problems along the way, we're here to help! Check out our [w
 
 ## Table of Contents
 
+- [How to find information on this wiki](#how-to-find-information-on-this-wiki)
 - [Onboarding instructions](#onboarding-instructions)
   - [Guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)
   - [Developing your skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
 - [Important: Ongoing Bazel migration](#important-ongoing-bazel-migration)
 - [Installing the Oppia web app](#installing-the-oppia-web-app)
 - [Communication channels](#communication-channels)
-- [How to find information on this wiki](#how-to-find-information-on-this-wiki)
+
+## How to find information on this wiki
+
+<img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/235522765-3d17617e-1f3b-4531-b84c-33af94885863.gif">
 
 ## Onboarding instructions
 
@@ -102,7 +106,3 @@ For now, you generally won't need to do this, until the Android app supports on-
 If you run into any problems (including non-coding ones), you can ask questions on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions). You can use this avenue for asking anything -- questions about any issue, who to contact for specific things, etc.
 
 You can also check out the [developer mailing list](https://groups.google.com/forum/?fromgroups#!forum/oppia-android-dev).
-
-## How to find information on this wiki
-
-<img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/235522765-3d17617e-1f3b-4531-b84c-33af94885863.gif">
