@@ -1,12 +1,14 @@
 package org.oppia.android.app.settings.profile
 
-import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileListActivityParams
 
 // TODO: Consolidate with ones in ProfileEditActivity & clean up.
 private const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"
@@ -16,7 +18,8 @@ private const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY =
 /** The presenter for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val activityRouter: ActivityRouter
 ) {
 
   private lateinit var toolbar: Toolbar
@@ -33,9 +36,13 @@ class ProfileEditActivityPresenter @Inject constructor(
       if (isMultipane) {
         activity.onBackPressed()
       } else {
-        val intent = Intent(activity, ProfileListActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        activity.startActivity(intent)
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            profileListActivityParams = ProfileListActivityParams.newBuilder().apply {
+              clearTop = true
+            }.build()
+          }.build()
+        )
       }
     }
 

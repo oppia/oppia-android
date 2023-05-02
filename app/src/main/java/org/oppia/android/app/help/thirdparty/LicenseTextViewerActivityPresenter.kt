@@ -8,14 +8,14 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.LicenseTextViewerActivityBinding
 import javax.inject.Inject
 
-/** The presenter for [LicenseTextViewerActivity]. */
+/** The presenter for ``LicenseTextViewerActivity``. */
 @ActivityScope
 class LicenseTextViewerActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
 
-  /** Handles onCreate() method of the [LicenseTextViewerActivity]. */
+  /** Handles onCreate() method of the ``LicenseTextViewerActivity``. */
   fun handleOnCreate(dependencyIndex: Int, licenseIndex: Int) {
     val binding =
       DataBindingUtil.setContentView<LicenseTextViewerActivityBinding>(
@@ -40,9 +40,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-    binding.licenseTextViewerActivityToolbar.setNavigationOnClickListener {
-      (activity as LicenseTextViewerActivity).finish()
-    }
+    binding.licenseTextViewerActivityToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
       binding.licenseTextViewerActivityToolbarTitle.isSelected = true

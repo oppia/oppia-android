@@ -6,32 +6,27 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
-import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
-import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
-import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-
-const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
-const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
-const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
-  "HelpActivity.third_party_dependency_index"
-const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
-const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
-const val POLICIES_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
-const val POLICIES_FRAGMENT_TAG = "PoliciesFragment.tag"
-const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
-const val LICENSE_LIST_FRAGMENT_TAG = "LicenseListFragment.tag"
-const val LICENSE_TEXT_FRAGMENT_TAG = "LicenseTextFragment.tag"
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.help.HelpActivityPresenter.Companion.FAQ_LIST_FRAGMENT_TAG
+import org.oppia.android.app.help.HelpActivityPresenter.Companion.HELP_OPTIONS_TITLE_SAVED_KEY
+import org.oppia.android.app.help.HelpActivityPresenter.Companion.LICENSE_INDEX_SAVED_KEY
+import org.oppia.android.app.help.HelpActivityPresenter.Companion.POLICIES_ARGUMENT_PROTO
+import org.oppia.android.app.help.HelpActivityPresenter.Companion.SELECTED_FRAGMENT_SAVED_KEY
+import org.oppia.android.app.help.HelpActivityPresenter.Companion.THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.FaqListActivityParams
+import org.oppia.android.app.model.FaqSingleActivityParams
+import org.oppia.android.app.model.ThirdPartyDependencyListActivityParams
 
 /** The help page activity for FAQs, third-party dependencies and policies page. */
 class HelpActivity :
@@ -45,12 +40,9 @@ class HelpActivity :
   LoadThirdPartyDependencyListFragmentListener,
   LoadLicenseListFragmentListener,
   LoadLicenseTextViewerFragmentListener {
-
-  @Inject
-  lateinit var helpActivityPresenter: HelpActivityPresenter
-
-  @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
+  @Inject lateinit var helpActivityPresenter: HelpActivityPresenter
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
+  @Inject lateinit var activityRouter: ActivityRouter
 
   private lateinit var selectedFragment: String
   private lateinit var selectedHelpOptionsTitle: String
@@ -103,13 +95,20 @@ class HelpActivity :
   }
 
   override fun onRouteToFAQList() {
-    val intent = FAQListActivity.createIntent(this)
-    startActivity(intent)
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        faqListActivityParams = FaqListActivityParams.getDefaultInstance()
+      }.build()
+    )
   }
 
   override fun onRouteToThirdPartyDependencyList() {
-    val intent = ThirdPartyDependencyListActivity.createIntent(this)
-    startActivity(intent)
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        thirdPartyDependencyListActivityParams =
+          ThirdPartyDependencyListActivityParams.getDefaultInstance()
+      }.build()
+    )
   }
 
   override fun loadFaqListFragment() {
@@ -135,11 +134,24 @@ class HelpActivity :
 
   // TODO(#3681): Add support to display Single FAQ in split mode on tablet devices.
   override fun onRouteToFAQSingle(question: String, answer: String) {
-    startActivity(FAQSingleActivity.createIntent(this, question, answer))
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        faqSingleActivityParams = FaqSingleActivityParams.newBuilder().apply {
+          this.questionText = question
+          this.answerText = answer
+        }.build()
+      }.build()
+    )
   }
 
   override fun onRouteToPolicies(policyPage: PolicyPage) {
-    startActivity(PoliciesActivity.createIntent(this, policyPage))
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        policiesActivityParams = PoliciesActivityParams.newBuilder().apply {
+          this.policyPage = policyPage
+        }.build()
+      }.build()
+    )
   }
 
   override fun loadPoliciesFragment(policyPage: PolicyPage) {

@@ -7,7 +7,10 @@ import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-/** The presenter for [ProfileChooserFragmentTestActivity]. */
+// TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+private const val TAG_PROFILE_CHOOSER_FRAGMENT = "TAG_PROFILE_CHOOSER_FRAGMENT"
+
+/** The presenter for ``ProfileChooserFragmentTestActivity``. */
 @ActivityScope
 class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -37,7 +40,7 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_chooser_fragment_placeholder,
         ProfileChooserFragment(),
-        ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
+        TAG_PROFILE_CHOOSER_FRAGMENT
       ).commitNow()
     }
   }

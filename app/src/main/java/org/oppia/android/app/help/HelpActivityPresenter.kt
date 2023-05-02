@@ -348,4 +348,18 @@ class HelpActivityPresenter @Inject constructor(
     selectedFragmentTag = POLICIES_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
+
+  companion object {
+    const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
+    const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
+    const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
+      "HelpActivity.third_party_dependency_index"
+    const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
+    const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
+    const val POLICIES_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
+    private const val POLICIES_FRAGMENT_TAG = "PoliciesFragment.tag"
+    private const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
+    private const val LICENSE_LIST_FRAGMENT_TAG = "LicenseListFragment.tag"
+    private const val LICENSE_TEXT_FRAGMENT_TAG = "LicenseTextFragment.tag"
+  }
 }

@@ -5,17 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY
 import org.oppia.android.app.settings.profile.ProfileEditFragment
-import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.AppVersionActivityParams
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileAndDeviceIdActivityParams
+import org.oppia.android.app.model.ProfileListActivityParams
 
 /** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
 private const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
@@ -59,11 +61,10 @@ class AdministratorControlsActivity :
   LoadProfileEditListener,
   ProfileEditDeletionDialogListener,
   ShowLogoutDialogListener {
-  @Inject
-  lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
+  @Inject lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
+  @Inject lateinit var activityRouter: ActivityRouter
 
-  @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
   private lateinit var lastLoadedFragment: String
   private var isProfileDeletionDialogVisible: Boolean = false
 
@@ -91,15 +92,27 @@ class AdministratorControlsActivity :
   }
 
   override fun routeToAppVersion() {
-    startActivity(AppVersionActivity.createIntent(this))
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        appVersionActivityParams = AppVersionActivityParams.getDefaultInstance()
+      }.build()
+    )
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileListActivity.createIntent(this))
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        profileListActivityParams = ProfileListActivityParams.getDefaultInstance()
+      }.build()
+    )
   }
 
   override fun routeToLearnerAnalytics() {
-    startActivity(ProfileAndDeviceIdActivity.createIntent(this))
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        profileAndDeviceIdActivityParams = ProfileAndDeviceIdActivityParams.getDefaultInstance()
+      }.build()
+    )
   }
 
   override fun loadProfileEdit(profileId: Int, profileName: String) {

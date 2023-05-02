@@ -200,7 +200,7 @@ class PlatformParameterIntegrationTest {
       testCoroutineDispatchers.runCurrent()
 
       assertThat(ShadowToast.getLatestToast()).isNotNull()
-      assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(SplashTestActivity.WELCOME_MSG)
+      assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("Welcome User")
     }
   }
 
@@ -231,7 +231,7 @@ class PlatformParameterIntegrationTest {
       // As the local database was updated correctly the app will use the server values, and the
       // server value for the splash screen welcome msg param is true.
       assertThat(ShadowToast.getLatestToast()).isNotNull()
-      assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(SplashTestActivity.WELCOME_MSG)
+      assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("Welcome User")
     }
   }
 

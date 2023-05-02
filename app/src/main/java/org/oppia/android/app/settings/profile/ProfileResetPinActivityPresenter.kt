@@ -8,11 +8,10 @@ import org.oppia.android.databinding.ProfileResetPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-/** The presenter for [ProfileResetPinActivity]. */
+/** The presenter for ``ProfileResetPinActivity``. */
 @ActivityScope
 class ProfileResetPinActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val profileManagementController: ProfileManagementController,
+  private val activity: AppCompatActivity
 ) {
 
   /** Handles onCreate() method of the [ProfileResetPinActivity]. */
@@ -32,9 +31,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY, false
     )
 
-    binding.profileResetPinToolbar.setNavigationOnClickListener {
-      (activity as ProfileResetPinActivity).finish()
-    }
+    binding.profileResetPinToolbar.setNavigationOnClickListener { activity.finish() }
 
     binding.apply {
       lifecycleOwner = activity
@@ -50,5 +47,15 @@ class ProfileResetPinActivityPresenter @Inject constructor(
   private fun getProfileResetPinFragment(): ProfileResetPinFragment? {
     return activity.supportFragmentManager
       .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment?
+  }
+
+  companion object {
+    /** Argument key for the ID of the profile resetting their pin. */
+    const val PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY =
+      "ProfileResetPinActivity.profile_reset_pin_profile_id"
+
+    /**Argument key for confirming profile is admin. */
+    const val PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY =
+      "ProfileResetPinActivity.profile_reset_pin_is_admin"
   }
 }

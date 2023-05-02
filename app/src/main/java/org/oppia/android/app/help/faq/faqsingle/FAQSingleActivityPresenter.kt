@@ -12,7 +12,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
-/** The presenter for [FAQSingleActivity]. */
+/** The presenter for ``FAQSingleActivity``. */
 @ActivityScope
 class FAQSingleActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -38,9 +38,7 @@ class FAQSingleActivityPresenter @Inject constructor(
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-    binding.faqSingleActivityToolbar.setNavigationOnClickListener {
-      (activity as FAQSingleActivity).finish()
-    }
+    binding.faqSingleActivityToolbar.setNavigationOnClickListener { activity.finish() }
     activity.findViewById<TextView>(R.id.faq_question_text_view).text = question
 
     // NOTE: Here entityType and entityId can be anything as it will actually not get used.

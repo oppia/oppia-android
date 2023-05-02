@@ -76,7 +76,6 @@ import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.ALGEBRAIC_EXPRESSION_INPUT_INTERACTION
@@ -2742,7 +2741,7 @@ class StateFragmentLocalTest {
     // being called.
     activityScenario.onActivity { activity ->
       val hintAndSolutionDialogFragment = activity.supportFragmentManager.findFragmentByTag(
-        TAG_HINTS_AND_SOLUTION_DIALOG
+        "HINTS_AND_SOLUTION_DIALOG"
       )
       val revealSolutionDialogFragment =
         hintAndSolutionDialogFragment?.childFragmentManager?.findFragmentByTag(
@@ -2764,7 +2763,7 @@ class StateFragmentLocalTest {
     // being called.
     activityScenario.onActivity { activity ->
       val hintAndSolutionDialogFragment = activity.supportFragmentManager.findFragmentByTag(
-        TAG_HINTS_AND_SOLUTION_DIALOG
+        "HINTS_AND_SOLUTION_DIALOG"
       )
       val revealSolutionDialogFragment =
         hintAndSolutionDialogFragment?.childFragmentManager?.findFragmentByTag(

@@ -8,14 +8,14 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.LicenseListActivityBinding
 import javax.inject.Inject
 
-/** The presenter for [LicenseListActivity]. */
+/** The presenter for ``LicenseListActivity``. */
 @ActivityScope
 class LicenseListActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
 
-  /** Handles onCreate() method of the [LicenseListActivity]. */
+  /** Handles onCreate() method of the ``LicenseListActivity``. */
   fun handleOnCreate(dependencyIndex: Int, isMultipane: Boolean) {
     val binding =
       DataBindingUtil.setContentView<LicenseListActivityBinding>(
@@ -33,9 +33,7 @@ class LicenseListActivityPresenter @Inject constructor(
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-    binding.licenseListActivityToolbar.setNavigationOnClickListener {
-      (activity as LicenseListActivity).finish()
-    }
+    binding.licenseListActivityToolbar.setNavigationOnClickListener { activity.finish() }
     if (getLicenseListFragment() == null) {
       val licenseListFragment = LicenseListFragment.newInstance(dependencyIndex, isMultipane)
       activity.supportFragmentManager.beginTransaction()

@@ -6,19 +6,21 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName.ONBOARDING_ACTIVITY
-import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
-import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.ProfileChooserActivityParams
 
 /** Activity that contains the onboarding flow for learners. */
 class OnboardingActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
   RouteToPoliciesListener {
-  @Inject
-  lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
+  @Inject lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
 
   companion object {
     fun createIntent(context: Context): Intent {
@@ -35,12 +37,22 @@ class OnboardingActivity :
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileChooserActivity.createIntent(this))
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        profileChooserActivityParams = ProfileChooserActivityParams.getDefaultInstance()
+      }.build()
+    )
     finish()
   }
 
   override fun onRouteToPolicies(policyPage: PolicyPage) {
-    startActivity(PoliciesActivity.createIntent(this, policyPage))
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        policiesActivityParams = PoliciesActivityParams.newBuilder().apply {
+          this.policyPage = policyPage
+        }.build()
+      }.build()
+    )
   }
 
   interface Injector {

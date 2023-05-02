@@ -7,12 +7,14 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.LICENSE_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.LicenseTextViewerActivityParams
 
 /** The activity that will show list of licenses corresponding to a third-party dependency. */
 class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextListener {
-
-  @Inject
-  lateinit var licenseListActivityPresenter: LicenseListActivityPresenter
+  @Inject lateinit var licenseListActivityPresenter: LicenseListActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -34,12 +36,13 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
   }
 
   override fun onRouteToLicenseText(dependencyIndex: Int, licenseIndex: Int) {
-    startActivity(
-      LicenseTextViewerActivity.createIntent(
-        this,
-        dependencyIndex,
-        licenseIndex
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        licenseTextViewerActivityParams = LicenseTextViewerActivityParams.newBuilder().apply {
+          this.dependencyIndex = dependencyIndex
+          this.licenseIndex = licenseIndex
+        }.build()
+      }.build()
     )
   }
 

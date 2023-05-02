@@ -10,7 +10,6 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController
@@ -18,7 +17,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
+private const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
+private const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_QUESTION_MANAGER"
 
 /** The presenter for [QuestionPlayerActivity]. */
@@ -212,5 +212,10 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_HINTS_AND_SOLUTION_DIALOG
     ) as? HintsAndSolutionDialogFragment
+  }
+
+  companion object {
+    const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
+      "QuestionPlayerActivity.skill_id_list"
   }
 }

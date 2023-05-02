@@ -9,7 +9,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.FaqListActivityBinding
 import javax.inject.Inject
 
-/** The presenter for [FAQListActivity]. */
+/** The presenter for ``FAQListActivity``. */
 @ActivityScope
 class FAQListActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -30,9 +30,7 @@ class FAQListActivityPresenter @Inject constructor(
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-    binding.faqListActivityToolbar.setNavigationOnClickListener {
-      (activity as FAQListActivity).finish()
-    }
+    binding.faqListActivityToolbar.setNavigationOnClickListener { activity.finish() }
 
     if (getFAQListFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

@@ -8,7 +8,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
@@ -19,6 +18,10 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+
+// TODO: Consolidate with the one in ExplorationActivityPresenter.
+private const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER =
+  "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
 
@@ -158,5 +161,16 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
     ) as HintsAndSolutionExplorationManagerFragment?
+  }
+
+  companion object {
+    const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
+      "StateFragmentTestActivity.test_activity_profile_id"
+    const val TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY = "StateFragmentTestActivity.test_activity_topic_id"
+    const val TEST_ACTIVITY_STORY_ID_EXTRA_KEY = "StateFragmentTestActivity.test_activity_story_id"
+    const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
+      "StateFragmentTestActivity.test_activity_exploration_id"
+    const val TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY =
+      "StateFragmentTestActivity.test_activity_should_save_partial_progress"
   }
 }

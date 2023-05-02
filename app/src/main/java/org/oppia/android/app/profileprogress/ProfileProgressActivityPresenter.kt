@@ -8,9 +8,11 @@ import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.profile.GALLERY_INTENT_RESULT_CODE
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
+
+// TODO: Consolidate with the one in AddProfileActivityPresenter.
+private const val GALLERY_INTENT_RESULT_CODE = 1
 
 /** The presenter for [ProfileProgressActivity]. */
 @ActivityScope

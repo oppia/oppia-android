@@ -13,21 +13,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Spotlight
-import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
-import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.ExplorationActivityBinding
@@ -37,15 +34,21 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.HelpActivityParams
+import org.oppia.android.app.model.OptionsActivityParams
+import org.oppia.android.app.model.TopicActivityParams
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 private const val TAG_PROGRESS_DATABASE_FULL_DIALOG = "PROGRESS_DATABASE_FULL_DIALOG"
 private const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 private const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
-const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
+private const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER =
+  "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
 
-/** The Presenter for [ExplorationActivity]. */
+/** The Presenter for ``ExplorationActivity``. */
 @ActivityScope
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -54,7 +57,8 @@ class ExplorationActivityPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val activityRouter: ActivityRouter
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -191,22 +195,27 @@ class ExplorationActivityPresenter @Inject constructor(
   fun handleOnOptionsItemSelected(itemId: Int): Boolean {
     return when (itemId) {
       R.id.action_options -> {
-        val intent = OptionsActivity.createIntent(
-          activity,
-          profileId.internalId,
-          /* isFromNavigationDrawer= */ false
-        )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
-        context.startActivity(intent)
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            optionsActivityParams = OptionsActivityParams.newBuilder().apply {
+              internalProfileId = profileId.internalId
+              isFromNavigationDrawer = false
+            }.build()
+          }.build()
+        )
         true
       }
       R.id.action_help -> {
-        val intent = HelpActivity.createIntent(
-          activity, profileId.internalId,
-          /* isFromNavigationDrawer= */false
-        )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
-        context.startActivity(intent)
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            helpActivityParams = HelpActivityParams.newBuilder().apply {
+              internalProfileId = profileId.internalId
+              isFromNavigationDrawer = false
+            }.build()
+          }.build()
+        )
         true
       }
       else -> false
@@ -276,7 +285,7 @@ class ExplorationActivityPresenter @Inject constructor(
             is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
               backPressActivitySelector()
-              (activity as ExplorationActivity).finish()
+              activity.finish()
             }
           }
         }
@@ -363,8 +372,14 @@ class ExplorationActivityPresenter @Inject constructor(
       ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
       ExplorationActivityParams.ParentScreen.UNRECOGNIZED -> {
         // Default to the topic activity.
-        activity.startActivity(
-          TopicActivity.createIntent(context, profileId.internalId, topicId)
+        activityRouter.routeToScreen(
+          DestinationScreen.newBuilder().apply {
+            topicActivityParams = TopicActivityParams.newBuilder().apply {
+              internalProfileId = profileId.internalId
+              this.topicId = topicId
+              storyList = true
+            }.build()
+          }.build()
         )
       }
     }

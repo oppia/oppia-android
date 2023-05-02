@@ -15,7 +15,7 @@ import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import javax.inject.Inject
 import javax.inject.Provider
 
-/** The presenter for [SplashTestActivity]. */
+/** The presenter for ``SplashTestActivity``. */
 @ActivityScope
 class SplashTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -53,7 +53,11 @@ class SplashTestActivityPresenter @Inject constructor(
 
   private fun showToastIfAllowed() {
     if (splashScreenWelcomeMsgParam.get().value) {
-      Toast.makeText(activity, SplashTestActivity.WELCOME_MSG, Toast.LENGTH_SHORT).show()
+      Toast.makeText(activity, WELCOME_MSG, Toast.LENGTH_SHORT).show()
     }
+  }
+
+  private companion object {
+    private const val WELCOME_MSG = "Welcome User"
   }
 }

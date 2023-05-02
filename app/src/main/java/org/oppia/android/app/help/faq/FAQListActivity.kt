@@ -4,16 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.model.ScreenName.FAQ_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.FaqSingleActivityParams
 
 /** The FAQ page activity for placement of different FAQs. */
 class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener {
-
-  @Inject
-  lateinit var faqListActivityPresenter: FAQListActivityPresenter
+  @Inject lateinit var faqListActivityPresenter: FAQListActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -30,7 +31,14 @@ class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener 
   }
 
   override fun onRouteToFAQSingle(question: String, answer: String) {
-    startActivity(FAQSingleActivity.createIntent(this, question, answer))
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        faqSingleActivityParams = FaqSingleActivityParams.newBuilder().apply {
+          this.questionText = question
+          this.answerText = answer
+        }.build()
+      }.build()
+    )
   }
 
   interface Injector {

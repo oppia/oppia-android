@@ -12,22 +12,22 @@ import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.ScreenName
-import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ResumeLessonActivityParams
 
 /** Activity for recent stories. */
 class RecentlyPlayedActivity :
   InjectableAppCompatActivity(),
   RouteToExplorationListener,
   RouteToResumeLessonListener {
-
-  @Inject
-  lateinit var recentlyPlayedActivityPresenter: RecentlyPlayedActivityPresenter
+  @Inject lateinit var recentlyPlayedActivityPresenter: RecentlyPlayedActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -67,16 +67,17 @@ class RecentlyPlayedActivity :
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    startActivity(
-      ExplorationActivity.createIntent(
-        this,
-        profileId,
-        topicId,
-        storyId,
-        explorationId,
-        parentScreen,
-        isCheckpointingEnabled
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        explorationActivityParams = ExplorationActivityParams.newBuilder().apply {
+          this.profileId = profileId
+          this.topicId = topicId
+          this.storyId = storyId
+          this.explorationId = explorationId
+          this.parentScreen = parentScreen
+          this.isCheckpointingEnabled = isCheckpointingEnabled
+        }.build()
+      }.build()
     )
   }
 
@@ -88,16 +89,17 @@ class RecentlyPlayedActivity :
     parentScreen: ExplorationActivityParams.ParentScreen,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
-    startActivity(
-      ResumeLessonActivity.createIntent(
-        this,
-        profileId,
-        topicId,
-        storyId,
-        explorationId,
-        parentScreen,
-        explorationCheckpoint
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        resumeLessonActivityParams = ResumeLessonActivityParams.newBuilder().apply {
+          this.profileId = profileId
+          this.topicId = topicId
+          this.storyId = storyId
+          this.explorationId = explorationId
+          this.parentScreen = parentScreen
+          this.checkpoint = explorationCheckpoint
+        }.build()
+      }.build()
     )
   }
 

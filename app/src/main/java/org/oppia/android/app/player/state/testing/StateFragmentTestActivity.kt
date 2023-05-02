@@ -14,22 +14,17 @@ import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerListener
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import javax.inject.Inject
+import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY
+import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY
+import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY
+import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_STORY_ID_EXTRA_KEY
+import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY
 
-internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_profile_id"
-internal const val TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_topic_id"
-internal const val TEST_ACTIVITY_STORY_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_story_id"
-internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_exploration_id"
-internal const val TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_should_save_partial_progress"
+private const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** Test Activity used for testing StateFragment */
 class StateFragmentTestActivity :

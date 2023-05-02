@@ -7,13 +7,16 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileEditActivityParams
 
 /** Activity to display all profiles to admin. */
 class ProfileListActivity :
   InjectableAppCompatActivity(),
   RouteToProfileEditListener {
-  @Inject
-  lateinit var profileListActivityPresenter: ProfileListActivityPresenter
+  @Inject lateinit var profileListActivityPresenter: ProfileListActivityPresenter
+  @Inject lateinit var activityRouter: ActivityRouter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -27,12 +30,13 @@ class ProfileListActivity :
   }
 
   override fun routeToProfileEditActivity(profileId: Int) {
-    startActivity(
-      ProfileEditActivity.createIntent(
-        context = this,
-        profileId = profileId,
-        isMultipane = false
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen.newBuilder().apply {
+        profileEditActivityParams = ProfileEditActivityParams.newBuilder().apply {
+          this.internalProfileId = profileId
+          this.isMultipane = false
+        }.build()
+      }.build()
     )
   }
 

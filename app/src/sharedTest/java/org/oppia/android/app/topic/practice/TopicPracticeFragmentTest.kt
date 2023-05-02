@@ -50,7 +50,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
-import org.oppia.android.app.topic.questionplayer.QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -281,7 +280,7 @@ class TopicPracticeFragmentTest {
       scrollToPosition(position = 5)
       clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
-      intended(hasExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList))
+      intended(hasExtra("QuestionPlayerActivity.skill_id_list", skillIdList))
     }
   }
 
