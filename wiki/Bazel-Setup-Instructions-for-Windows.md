@@ -1,3 +1,17 @@
+## Table of Contents
+
+- [Overview & Disclaimer](#overview--disclaimer)
+- [Instructions](#instructions)
+    - [1. Install Ubuntu subsystem](#1-install-ubuntu-subsystem)
+    - [2. Prerequisite debian packages](#2-prerequisite-debian-packages)
+    - [3. Installing the Android SDK](#3-installing-the-android-sdk)
+    - [4. Installing Bazel](#4-installing-bazel)
+    - [5. Preparing build environment for Oppia Android](#5-preparing-build-environment-for-oppia-android)
+    - [6. Verifying the build](#6-verifying-the-build)
+    - [7. Next steps](#7-next-steps)
+- [Appendix](#appendix)
+  - [Limitations](#limitations)
+
 ## Overview & Disclaimer
 
 This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. You may run into some problems--we suggest that you [file an issue](https://github.com/oppia/oppia-android/issues/new/choose) ior contact us at [gitter](https://gitter.im/oppia/oppia-android).

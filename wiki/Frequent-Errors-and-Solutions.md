@@ -1,3 +1,12 @@
+## Table of Contents
+
+- [Dagger Unresolved reference](#dagger-unresolved-reference)
+- [Crashing layout tags in tablet](#crashing-layout-tags-in-tablet)
+- [Push failed](#push-failed)
+- [Facing error while debugging code](#facing-error-while-debugging-code)
+    - [Benefits](#benefits)
+    - [How to Write a Debugging Doc](#how-to-write-a-debugging-doc)
+
 ## Dagger Unresolved reference
 **Error**: Unresolved reference `DaggerXXTest_TestApplicationComponent`
 

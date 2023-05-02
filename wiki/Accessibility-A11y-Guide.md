@@ -1,3 +1,19 @@
+## Table of Contents
+
+- [Overview](#overview)
+- [How to test the app for a11y users?](#how-to-test-the-app-for-a11y-users)
+- [Setting up Accessibility Scanner and Talkback](#setting-up-accessibility-scanner-and-talkback)
+    - [Setup Play Store in mobile emulator](#setup-play-store-in-mobile-emulator)
+    - [Setup Play Store in tablet emulator](#setup-play-store-in-tablet-emulator)
+    - [Using a11y scanner in android](#using-a11y-scanner-in-android)
+    - [Using Talkback in android](#using-talkback-in-android)
+    - [Useful Resources](#useful-resources)
+- [Using AccessibilityTestRule in Espresso Tests](#using-accessibilitytestrule-in-espresso-tests)
+- [Auditing the app](#auditing-the-app)
+- [General Tips to make app Accessible](#general-tips-to-make-app-accessible)
+- [Exceptional Cases](#exceptional-cases)
+- [Android 12 Warnings around TextViews in Fixed Layouts](#android-12-warnings-around-textviews-in-fixed-layouts)
+
 ## Overview
 Accessibility is an important part of Oppia to ensure that the app is accessible by everyone. Some common conditions that affect a person's use of an Android device are:
 * blindness / low vision
