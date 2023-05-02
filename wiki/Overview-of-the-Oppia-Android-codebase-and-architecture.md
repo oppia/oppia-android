@@ -5,8 +5,8 @@ The Oppia Android codebase makes use of Kotlin and XML and can be built using An
 - [Directory Structure](#directory-structure)
 - [App Architecture](#app-architecture)
 - [Codebase Walkthrough](#codebase-walkthrough)
-	- [Example 1](#example-1)
-	- [Example 2](#example-2)
+  - [Example 1](#example-1)
+  - [Example 2](#example-2)
 - [Dependency Injection](#dependency-injection)
 
 ## Directory Structure
