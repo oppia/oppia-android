@@ -33,11 +33,11 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_gravity="start"
+          android:background="@color/component_color_shared_fragment_container_background_color"
           android:fitsSystemWindows="true"
           android:overScrollMode="never"
           android:scrollbars="none"
           app:elevation="0dp"
-          android:background="@color/component_color_shared_fragment_container_background_color"
           app:itemIconTint="@color/component_color_shared_drawer_item"
           app:itemTextColor="@color/component_color_shared_drawer_item"
           app:menu="@menu/navigation_drawer_menu" />
@@ -97,8 +97,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_admin_settings_icon_brown_24dp"
-            android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_image_color : @color/component_color_shared_primary_dark_text_color}" />
+            android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_image_color : @color/component_color_shared_primary_dark_text_color}"
+            app:srcCompat="@drawable/ic_admin_settings_icon_brown_24dp" />
 
           <TextView
             android:layout_width="match_parent"
