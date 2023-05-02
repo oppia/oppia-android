@@ -3,6 +3,7 @@ Configurations for a codebase-wide build toolchain for Kotlin.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
 
 kt_kotlinc_options(
     name = "oppia_kotlinc_options",
@@ -17,12 +18,89 @@ kt_javac_options(
     warn = "error",
 )
 
+string_flag(
+    name = "report_unused_deps",
+    build_setting_default = "error",
+    values = [
+        "off",
+        "warn",
+        "error",
+    ],
+)
+
+string_flag(
+    name = "report_strict_deps",
+    build_setting_default = "error",
+    values = [
+        "off",
+        "warn",
+        "error",
+    ],
+)
+
+bool_flag(
+    name = "use_abi_jars",
+    build_setting_default = True,
+)
+
+config_setting(
+    name = "_disable_unused_deps",
+    flag_values = {":report_unused_deps": "off"},
+)
+
+config_setting(
+    name = "_report_unused_deps_as_warnings",
+    flag_values = {":report_unused_deps": "warn"},
+)
+
+config_setting(
+    name = "_report_unused_deps_as_errors",
+    flag_values = {":report_unused_deps": "error"},
+)
+
+config_setting(
+    name = "_disable_strict_deps",
+    flag_values = {":report_strict_deps": "off"},
+)
+
+config_setting(
+    name = "_report_strict_deps_as_warnings",
+    flag_values = {":report_strict_deps": "warn"},
+)
+
+config_setting(
+    name = "_report_strict_deps_as_errors",
+    flag_values = {":report_strict_deps": "error"},
+)
+
+config_setting(
+    name = "_enable_use_abi_jars",
+    flag_values = {":use_abi_jars": "true"},
+)
+
+config_setting(
+    name = "_disable_use_abi_jars",
+    flag_values = {":use_abi_jars": "false"},
+)
+
 define_kt_toolchain(
     name = "kotlin_16_jdk9_toolchain",
     api_version = "1.6",
-    experimental_report_unused_deps = "error",
-    experimental_strict_kotlin_deps = "error",
-    experimental_use_abi_jars = True,
+    experimental_report_unused_deps = select({
+        ":_disable_unused_deps": "off",
+        ":_report_unused_deps_as_warnings": "warn",
+        ":_report_unused_deps_as_errors": "error",
+    }),
+    experimental_strict_kotlin_deps = select({
+        ":_disable_strict_deps": "off",
+        ":_report_strict_deps_as_warnings": "warn",
+        ":_report_strict_deps_as_errors": "error",
+    }),
+    experimental_use_abi_jars = select({
+        "//third_party/tools/kotlin:_enable_use_abi_jars": True,
+        "//third_party/tools/kotlin:_disable_use_abi_jars": False,
+        "//conditions:default": False,
+    }),
     javac_options = ":oppia_javac_options",
     jvm_target = "9",
     kotlinc_options = ":oppia_kotlinc_options",

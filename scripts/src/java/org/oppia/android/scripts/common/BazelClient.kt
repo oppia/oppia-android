@@ -17,18 +17,16 @@ class BazelClient(
     pattern: String,
     keepGoing: Boolean = false,
     allowFailures: Boolean = false,
-    checkUpToDate: Boolean = false,
-    buildRunfileLinks: Boolean = true
+    configProfiles: Set<String> = emptySet()
   ): List<String> {
+    val args = listOfNotNull(
+      "build",
+      "--noshow_progress",
+      "--keep_going".takeIf { keepGoing },
+      pattern,
+    ) + configProfiles.map { "--config=$it" }
     return executeBazelCommand(
-      *listOfNotNull(
-        "build",
-        "--noshow_progress",
-        "--keep_going".takeIf { keepGoing },
-        "--check_up_to_date".takeIf { checkUpToDate },
-        "--nobuild_runfile_links".takeUnless { buildRunfileLinks },
-        pattern,
-      ).toTypedArray(),
+      *args.toTypedArray(),
       allowAllFailures = allowFailures
     )
   }
