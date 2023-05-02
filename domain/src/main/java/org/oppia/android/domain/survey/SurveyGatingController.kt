@@ -1,7 +1,5 @@
 package org.oppia.android.domain.survey
 
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -11,6 +9,8 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 private const val GET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "get_survey_last_shown_timestamp_provider_id"

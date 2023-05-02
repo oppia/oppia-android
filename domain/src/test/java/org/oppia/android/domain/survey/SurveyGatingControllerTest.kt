@@ -4,17 +4,19 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -40,11 +42,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Test
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.locale.MachineLocaleImplTest
 
 /** Tests for [SurveyGatingController]. */
 @RunWith(AndroidJUnit4::class)
@@ -83,7 +80,7 @@ class SurveyGatingControllerTest {
 
     val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
 
-  //add assertion
+    // add assertion
   }
   // check time window closed, date passed, time threshold met
   // check time window open, date not passed, time threshold met

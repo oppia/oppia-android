@@ -9,13 +9,11 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleListener
-import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 
 private const val CACHE_NAME = "topic_learning_time_database"
 private const val RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
