@@ -1,9 +1,9 @@
 package org.oppia.android.domain.snackbar
 
 import androidx.annotation.StringRes
+import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import java.util.LinkedList
 import java.util.Queue
 import javax.inject.Inject

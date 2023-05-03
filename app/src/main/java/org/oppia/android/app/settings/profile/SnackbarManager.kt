@@ -5,9 +5,9 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import org.oppia.android.domain.snackbar.SnackbarController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.domain.snackbar.SnackbarController
 import javax.inject.Inject
 
 class SnackbarManager @Inject constructor(private val snackbarController: SnackbarController) {
