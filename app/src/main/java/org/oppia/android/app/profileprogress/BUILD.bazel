@@ -23,25 +23,25 @@ exports_files([
 oppia_android_library(
     name = "profile_picture_click_listener",
     srcs = ["ProfilePictureClickListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_completed_story_list_listener",
     srcs = ["RouteToCompletedStoryListListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_ongoing_topic_list_listener",
     srcs = ["RouteToOngoingTopicListListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "profile_picture_activity_view_model",
     srcs = ["ProfilePictureActivityViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//model/src/main/proto:profile_java_proto_lite",
@@ -54,7 +54,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_progress_header_view_model",
     srcs = ["ProfileProgressHeaderViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/home:route_to_recently_played_listener",
         "//app/src/main/java/org/oppia/android/app/profileprogress:profile_picture_click_listener",
@@ -76,7 +76,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_progress_item_view_model",
     srcs = ["ProfileProgressItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -86,7 +86,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_progress_view_model",
     srcs = ["ProfileProgressViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -121,7 +121,7 @@ oppia_android_library(
 oppia_android_library(
     name = "recently_played_story_summary_view_model",
     srcs = ["RecentlyPlayedStorySummaryViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/home:route_to_topic_play_story_listener",
@@ -143,13 +143,13 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_picture_dialog_interface",
     srcs = ["ProfilePictureDialogInterface.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "profile_picture_edit_dialog_fragment",
     srcs = ["ProfilePictureEditDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -163,7 +163,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_progress_fragment",
     srcs = ["ProfileProgressFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -177,7 +177,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_progress_fragment_presenter",
     srcs = ["ProfileProgressFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/customview:lesson_thumbnail_image_view",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -203,7 +203,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_picture_activity",
     srcs = ["ProfilePictureActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -220,7 +220,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_picture_activity_presenter",
     srcs = ["ProfilePictureActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -246,7 +246,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_progress_activity",
     srcs = ["ProfileProgressActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -271,7 +271,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_progress_activity_presenter",
     srcs = ["ProfileProgressActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

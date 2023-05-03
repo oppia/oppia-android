@@ -19,49 +19,49 @@ exports_files([
 oppia_android_library(
     name = "force_crash_button_click_listener",
     srcs = ["ForceCrashButtonClickListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_force_network_type_listener",
     srcs = ["RouteToForceNetworkTypeListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_mark_chapters_completed_listener",
     srcs = ["RouteToMarkChaptersCompletedListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_mark_stories_completed_listener",
     srcs = ["RouteToMarkStoriesCompletedListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_mark_topics_completed_listener",
     srcs = ["RouteToMarkTopicsCompletedListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_math_expression_parser_test_listener",
     srcs = ["RouteToMathExpressionParserTestListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_view_event_logs_listener",
     srcs = ["RouteToViewEventLogsListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "developer_options_view_model",
     srcs = ["DeveloperOptionsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":force_crash_button_click_listener",
         ":route_to_force_network_type_listener",
@@ -88,13 +88,13 @@ oppia_android_library(
 oppia_android_library(
     name = "developer_options_starter",
     srcs = ["DeveloperOptionsStarter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "developer_options_fragment",
     srcs = ["DeveloperOptionsFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":developer_options_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -107,7 +107,7 @@ oppia_android_library(
 oppia_android_library(
     name = "developer_options_fragment_presenter",
     srcs = ["DeveloperOptionsFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":developer_options_view_model",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -131,7 +131,7 @@ oppia_android_library(
 oppia_android_library(
     name = "developer_options_activity",
     srcs = ["DeveloperOptionsActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":developer_options_activity_presenter",
         ":force_crash_button_click_listener",
@@ -160,7 +160,7 @@ oppia_android_library(
 oppia_android_library(
     name = "developer_options_activity_presenter",
     srcs = ["DeveloperOptionsActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":developer_options_fragment",
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",

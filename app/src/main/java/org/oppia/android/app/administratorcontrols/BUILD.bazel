@@ -16,61 +16,61 @@ exports_files([
 oppia_android_library(
     name = "load_app_version_listener",
     srcs = ["LoadAppVersionListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "load_learner_analytics_listener",
     srcs = ["LoadLearnerAnalyticsListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "load_profile_edit_listener",
     srcs = ["LoadProfileEditListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "load_profile_list_listener",
     srcs = ["LoadProfileListListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "profile_edit_deletion_dialog_listener",
     srcs = ["ProfileEditDeletionDialogListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_app_version_listener",
     srcs = ["RouteToAppVersionListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_learner_analytics_listener",
     srcs = ["RouteToLearnerAnalyticsListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_profile_list_listener",
     srcs = ["RouteToProfileListListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "show_logout_dialog_listener",
     srcs = ["ShowLogoutDialogListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "administrator_controls_view_model",
     srcs = ["AdministratorControlsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:load_profile_list_listener",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:route_to_profile_list_listener",
@@ -106,7 +106,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_fragment",
     srcs = ["AdministratorControlsFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:administrator_controls_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -119,7 +119,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_fragment_presenter",
     srcs = ["AdministratorControlsFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:administrator_controls_view_model",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel:administrator_controls_account_actions_view_model",
@@ -147,7 +147,7 @@ oppia_android_library(
 oppia_android_library(
     name = "logout_dialog_fragment",
     srcs = ["LogoutDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -164,7 +164,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_activity",
     srcs = ["AdministratorControlsActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -198,7 +198,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_activity_presenter",
     srcs = ["AdministratorControlsActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:administrator_controls_fragment",

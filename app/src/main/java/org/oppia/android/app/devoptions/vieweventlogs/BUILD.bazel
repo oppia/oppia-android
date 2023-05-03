@@ -16,7 +16,7 @@ exports_files([
 oppia_android_library(
     name = "event_log_item_view_model",
     srcs = ["EventLogItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -30,7 +30,7 @@ oppia_android_library(
 oppia_android_library(
     name = "view_event_logs_view_model",
     srcs = ["ViewEventLogsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs:event_log_item_view_model",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -48,7 +48,7 @@ oppia_android_library(
 oppia_android_library(
     name = "view_event_logs_fragment",
     srcs = ["ViewEventLogsFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs:view_event_logs_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -61,7 +61,7 @@ oppia_android_library(
 oppia_android_library(
     name = "view_event_logs_fragment_presenter",
     srcs = ["ViewEventLogsFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs:event_log_item_view_model",
@@ -81,7 +81,7 @@ oppia_android_library(
 oppia_android_library(
     name = "view_event_logs_activity",
     srcs = ["ViewEventLogsActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -100,7 +100,7 @@ oppia_android_library(
 oppia_android_library(
     name = "view_event_logs_activity_presenter",
     srcs = ["ViewEventLogsActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

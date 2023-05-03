@@ -7,7 +7,7 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 oppia_android_library(
     name = "fragment_scope",
     srcs = ["FragmentScope.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = ["//third_party:javax_inject_javax_inject"],
 )
 
@@ -16,7 +16,7 @@ oppia_android_library(
     srcs = ["FragmentComponent.kt"],
     visibility = [
         "//:oppia_testing_visibility",
-        "//app:app_visibility",
+        "//app:app_prod_visibility",
     ],
     deps = ["//third_party:androidx_fragment_fragment"],
 )
@@ -139,7 +139,7 @@ oppia_android_library(
 oppia_android_library(
     name = "fragment_component_factory",
     srcs = ["FragmentComponentFactory.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":fragment_component",
         "//third_party:androidx_fragment_fragment",
@@ -149,7 +149,7 @@ oppia_android_library(
 oppia_android_library(
     name = "fragment_component_builder_injector",
     srcs = ["FragmentComponentBuilderInjector.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":fragment_component",
         "//third_party:javax_inject_javax_inject",
@@ -159,7 +159,7 @@ oppia_android_library(
 oppia_android_library(
     name = "injectable_fragment",
     srcs = ["InjectableFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":fragment_component",
         ":fragment_component_factory",
@@ -174,7 +174,7 @@ oppia_android_library(
 oppia_android_library(
     name = "injectable_dialog_fragment",
     srcs = ["InjectableDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":fragment_component",
         ":fragment_component_factory",
@@ -189,7 +189,7 @@ oppia_android_library(
 oppia_android_library(
     name = "injectable_bottom_sheet_dialog_fragment",
     srcs = ["InjectableBottomSheetDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":fragment_component",
         ":fragment_component_factory",

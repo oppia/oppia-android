@@ -15,7 +15,7 @@ exports_files([
 oppia_android_library(
     name = "app_version_view_model",
     srcs = ["AppVersionViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -31,7 +31,7 @@ oppia_android_library(
 oppia_android_library(
     name = "app_version_fragment",
     srcs = ["AppVersionFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/appversion:app_version_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -44,7 +44,7 @@ oppia_android_library(
 oppia_android_library(
     name = "app_version_fragment_presenter",
     srcs = ["AppVersionFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/appversion:app_version_view_model",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -59,7 +59,7 @@ oppia_android_library(
 oppia_android_library(
     name = "app_version_activity",
     srcs = ["AppVersionActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -76,7 +76,7 @@ oppia_android_library(
 oppia_android_library(
     name = "app_version_activity_presenter",
     srcs = ["AppVersionActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/appversion:app_version_fragment",

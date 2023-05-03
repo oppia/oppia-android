@@ -16,25 +16,25 @@ exports_files([
 oppia_android_library(
     name = "beta_notice_closed_listener",
     srcs = ["BetaNoticeClosedListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "deprecation_notice_exit_app_listener",
     srcs = ["DeprecationNoticeExitAppListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "general_availability_upgrade_notice_closed_listener",
     srcs = ["GeneralAvailabilityUpgradeNoticeClosedListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "automatic_app_deprecation_notice_dialog_fragment",
     srcs = ["AutomaticAppDeprecationNoticeDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
@@ -47,7 +47,7 @@ oppia_android_library(
 oppia_android_library(
     name = "automatic_app_deprecation_notice_dialog_fragment_presenter",
     srcs = ["AutomaticAppDeprecationNoticeDialogFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/notice:deprecation_notice_exit_app_listener",
@@ -60,7 +60,7 @@ oppia_android_library(
 oppia_android_library(
     name = "beta_notice_dialog_fragment",
     srcs = ["BetaNoticeDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
@@ -73,7 +73,7 @@ oppia_android_library(
 oppia_android_library(
     name = "beta_notice_dialog_fragment_presenter",
     srcs = ["BetaNoticeDialogFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/notice:beta_notice_closed_listener",
@@ -86,7 +86,7 @@ oppia_android_library(
 oppia_android_library(
     name = "general_availability_upgrade_notice_dialog_fragment",
     srcs = ["GeneralAvailabilityUpgradeNoticeDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
@@ -99,7 +99,7 @@ oppia_android_library(
 oppia_android_library(
     name = "general_availability_upgrade_notice_dialog_fragment_presenter",
     srcs = ["GeneralAvailabilityUpgradeNoticeDialogFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/notice:general_availability_upgrade_notice_closed_listener",

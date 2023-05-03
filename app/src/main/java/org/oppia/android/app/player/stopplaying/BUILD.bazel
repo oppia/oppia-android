@@ -13,25 +13,25 @@ exports_files([
 oppia_android_library(
     name = "restart_playing_session_listener",
     srcs = ["RestartPlayingSessionListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "stop_state_playing_session_listener",
     srcs = ["StopStatePlayingSessionListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "stop_state_playing_session_with_saved_progress_listener",
     srcs = ["StopStatePlayingSessionWithSavedProgressListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "progress_database_full_dialog_fragment",
     srcs = ["ProgressDatabaseFullDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -48,7 +48,7 @@ oppia_android_library(
 oppia_android_library(
     name = "stop_exploration_dialog_fragment",
     srcs = ["StopExplorationDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -62,7 +62,7 @@ oppia_android_library(
 oppia_android_library(
     name = "unsaved_exploration_dialog_fragment",
     srcs = ["UnsavedExplorationDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",

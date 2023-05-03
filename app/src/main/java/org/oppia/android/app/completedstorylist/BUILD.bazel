@@ -16,7 +16,7 @@ exports_files([
 oppia_android_library(
     name = "completed_story_item_view_model",
     srcs = ["CompletedStoryItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/home:route_to_topic_play_story_listener",
         "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
@@ -35,7 +35,7 @@ oppia_android_library(
 oppia_android_library(
     name = "completed_story_list_view_model",
     srcs = ["CompletedStoryListViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/completedstorylist:completed_story_item_view_model",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -64,7 +64,7 @@ oppia_android_library(
 oppia_android_library(
     name = "completed_story_list_fragment",
     srcs = ["CompletedStoryListFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/completedstorylist:completed_story_list_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -77,7 +77,7 @@ oppia_android_library(
 oppia_android_library(
     name = "completed_story_list_fragment_presenter",
     srcs = ["CompletedStoryListFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/completedstorylist:completed_story_item_view_model",
         "//app/src/main/java/org/oppia/android/app/completedstorylist:completed_story_list_view_model",
@@ -98,7 +98,7 @@ oppia_android_library(
 oppia_android_library(
     name = "completed_story_list_activity",
     srcs = ["CompletedStoryListActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -115,7 +115,7 @@ oppia_android_library(
 oppia_android_library(
     name = "completed_story_list_activity_presenter",
     srcs = ["CompletedStoryListActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/completedstorylist:completed_story_list_fragment",

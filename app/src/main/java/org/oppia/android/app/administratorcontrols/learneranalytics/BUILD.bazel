@@ -21,7 +21,7 @@ exports_files([
 oppia_android_library(
     name = "control_buttons_view_model",
     srcs = ["ControlButtonsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:device_id_item_view_model",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_learner_id_item_view_model",
@@ -49,7 +49,7 @@ oppia_android_library(
 oppia_android_library(
     name = "device_id_item_view_model",
     srcs = ["DeviceIdItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_list_item_view_model",
@@ -73,7 +73,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_learner_id_item_view_model",
     srcs = ["ProfileLearnerIdItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_list_item_view_model",
@@ -100,7 +100,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_list_view_model",
     srcs = ["ProfileListViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:control_buttons_view_model",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:device_id_item_view_model",
@@ -125,7 +125,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_list_item_view_model",
     srcs = ["ProfileListItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -135,7 +135,7 @@ oppia_android_library(
 oppia_android_library(
     name = "sync_status_item_view_model",
     srcs = ["SyncStatusItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_list_item_view_model",
@@ -156,14 +156,14 @@ oppia_android_library(
 oppia_android_library(
     name = "copy_id_material_button_view",
     srcs = ["CopyIdMaterialButtonView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = ["//third_party:com_google_android_material_material"],
 )
 
 oppia_android_library(
     name = "profile_and_device_id_fragment",
     srcs = ["ProfileAndDeviceIdFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_and_device_id_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -176,7 +176,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_and_device_id_fragment_presenter",
     srcs = ["ProfileAndDeviceIdFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:control_buttons_view_model",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:copy_id_material_button_view",
@@ -198,7 +198,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_and_device_id_activity",
     srcs = ["ProfileAndDeviceIdActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -215,7 +215,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_and_device_id_activity_presenter",
     srcs = ["ProfileAndDeviceIdActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics:profile_and_device_id_fragment",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

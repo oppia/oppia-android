@@ -10,7 +10,7 @@ oppia_android_library(
     srcs = [
         "IntentFactoryShim.kt",
     ],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
@@ -18,7 +18,7 @@ oppia_android_library(
     srcs = [
         "ViewBindingShim.kt",
     ],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/home:home_item_view_model",
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:coming_soon_topics_view_model",

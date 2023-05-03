@@ -17,7 +17,7 @@ exports_files([
 oppia_android_library(
     name = "administrator_controls_account_actions_view_model",
     srcs = ["AdministratorControlsAccountActionsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:show_logout_dialog_listener",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel:administrator_controls_item_view_model",
@@ -29,7 +29,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_app_information_view_model",
     srcs = ["AdministratorControlsAppInformationViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:load_app_version_listener",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:route_to_app_version_listener",
@@ -45,7 +45,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_download_permissions_view_model",
     srcs = ["AdministratorControlsDownloadPermissionsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel:administrator_controls_item_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -67,7 +67,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_general_view_model",
     srcs = ["AdministratorControlsGeneralViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel:administrator_controls_item_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -78,7 +78,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_item_view_model",
     srcs = ["AdministratorControlsItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -89,7 +89,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_profile_and_device_id_view_model",
     srcs = ["AdministratorControlsProfileAndDeviceIdViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:load_learner_analytics_listener",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:route_to_learner_analytics_listener",
@@ -105,7 +105,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_profile_view_model",
     srcs = ["AdministratorControlsProfileViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:load_profile_list_listener",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:route_to_profile_list_listener",

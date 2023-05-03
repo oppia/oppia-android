@@ -9,7 +9,7 @@ exports_files(["TopicRevisionItemViewModel.kt"])
 oppia_android_library(
     name = "topic_revision_item_view_model",
     srcs = ["TopicRevisionItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/topic/revision:revision_subtopic_selection_listener",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",

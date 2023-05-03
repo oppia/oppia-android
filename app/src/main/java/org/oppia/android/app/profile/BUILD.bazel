@@ -34,19 +34,19 @@ exports_files([
 oppia_android_library(
     name = "admin_auth_enum",
     srcs = ["AdminAuthEnum.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_admin_pin_listener",
     srcs = ["RouteToAdminPinListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "add_profile_view_model",
     srcs = ["AddProfileViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -60,7 +60,7 @@ oppia_android_library(
 oppia_android_library(
     name = "admin_auth_view_model",
     srcs = ["AdminAuthViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -73,7 +73,7 @@ oppia_android_library(
 oppia_android_library(
     name = "admin_pin_view_model",
     srcs = ["AdminPinViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -86,7 +86,7 @@ oppia_android_library(
 oppia_android_library(
     name = "admin_settings_view_model",
     srcs = ["AdminSettingsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -99,7 +99,7 @@ oppia_android_library(
 oppia_android_library(
     name = "pin_password_view_model",
     srcs = ["PinPasswordViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
@@ -123,7 +123,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_chooser_view_model",
     srcs = ["ProfileChooserViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/profile:route_to_admin_pin_listener",
@@ -148,7 +148,7 @@ oppia_android_library(
 oppia_android_library(
     name = "reset_pin_view_model",
     srcs = ["ResetPinViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -163,13 +163,13 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_route_dialog_interface",
     srcs = ["ProfileRouteDialogInterface.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "admin_settings_dialog_fragment",
     srcs = ["AdminSettingsDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
@@ -184,7 +184,7 @@ oppia_android_library(
 oppia_android_library(
     name = "admin_settings_dialog_fragment_presenter",
     srcs = ["AdminSettingsDialogFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -205,7 +205,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_chooser_fragment",
     srcs = ["ProfileChooserFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -219,7 +219,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_chooser_fragment_presenter",
     srcs = ["ProfileChooserFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -253,7 +253,7 @@ oppia_android_library(
 oppia_android_library(
     name = "reset_pin_dialog_fragment",
     srcs = ["ResetPinDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
@@ -268,7 +268,7 @@ oppia_android_library(
 oppia_android_library(
     name = "reset_pin_dialog_fragment_presenter",
     srcs = ["ResetPinDialogFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -296,7 +296,7 @@ oppia_android_library(
 oppia_android_library(
     name = "add_profile_activity",
     srcs = ["AddProfileActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -315,7 +315,7 @@ oppia_android_library(
 oppia_android_library(
     name = "add_profile_activity_presenter",
     srcs = ["AddProfileActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
@@ -345,7 +345,7 @@ oppia_android_library(
 oppia_android_library(
     name = "admin_auth_activity",
     srcs = ["AdminAuthActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -362,7 +362,7 @@ oppia_android_library(
 oppia_android_library(
     name = "admin_auth_activity_presenter",
     srcs = ["AdminAuthActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
@@ -385,7 +385,7 @@ oppia_android_library(
 oppia_android_library(
     name = "admin_pin_activity",
     srcs = ["AdminPinActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -402,7 +402,7 @@ oppia_android_library(
 oppia_android_library(
     name = "admin_pin_activity_presenter",
     srcs = ["AdminPinActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
@@ -431,7 +431,7 @@ oppia_android_library(
 oppia_android_library(
     name = "pin_password_activity",
     srcs = ["PinPasswordActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -449,7 +449,7 @@ oppia_android_library(
 oppia_android_library(
     name = "pin_password_activity_presenter",
     srcs = ["PinPasswordActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -480,7 +480,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_chooser_activity",
     srcs = ["ProfileChooserActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -497,7 +497,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_chooser_activity_presenter",
     srcs = ["ProfileChooserActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

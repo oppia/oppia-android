@@ -27,19 +27,19 @@ exports_files([
 oppia_android_library(
     name = "route_to_license_list_listener",
     srcs = ["RouteToLicenseListListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_license_text_listener",
     srcs = ["RouteToLicenseTextListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "license_item_view_model",
     srcs = ["LicenseItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/help:load_license_text_viewer_fragment_listener",
         "//app/src/main/java/org/oppia/android/app/help/thirdparty:route_to_license_text_listener",
@@ -53,7 +53,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_list_view_model",
     srcs = ["LicenseListViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/help:help_view_model",
@@ -70,7 +70,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_text_view_model",
     srcs = ["LicenseTextViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
@@ -84,7 +84,7 @@ oppia_android_library(
 oppia_android_library(
     name = "third_party_dependency_item_view_model",
     srcs = ["ThirdPartyDependencyItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/help:load_license_list_fragment_listener",
         "//app/src/main/java/org/oppia/android/app/help/thirdparty:route_to_license_list_listener",
@@ -98,7 +98,7 @@ oppia_android_library(
 oppia_android_library(
     name = "third_party_dependency_list_view_model",
     srcs = ["ThirdPartyDependencyListViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/help:help_view_model",
@@ -116,7 +116,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_list_fragment",
     srcs = ["LicenseListFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -129,7 +129,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_list_fragment_presenter",
     srcs = ["LicenseListFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -151,7 +151,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_text_viewer_fragment",
     srcs = ["LicenseTextViewerFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -164,7 +164,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_text_viewer_fragment_presenter",
     srcs = ["LicenseTextViewerFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -181,7 +181,7 @@ oppia_android_library(
 oppia_android_library(
     name = "third_party_dependency_list_fragment",
     srcs = ["ThirdPartyDependencyListFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -194,7 +194,7 @@ oppia_android_library(
 oppia_android_library(
     name = "third_party_dependency_list_fragment_presenter",
     srcs = ["ThirdPartyDependencyListFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -215,7 +215,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_list_activity",
     srcs = ["LicenseListActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -235,7 +235,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_list_activity_presenter",
     srcs = ["LicenseListActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -254,7 +254,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_text_viewer_activity",
     srcs = ["LicenseTextViewerActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -271,7 +271,7 @@ oppia_android_library(
 oppia_android_library(
     name = "license_text_viewer_activity_presenter",
     srcs = ["LicenseTextViewerActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -290,7 +290,7 @@ oppia_android_library(
 oppia_android_library(
     name = "third_party_dependency_list_activity",
     srcs = ["ThirdPartyDependencyListActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -310,7 +310,7 @@ oppia_android_library(
 oppia_android_library(
     name = "third_party_dependency_list_activity_presenter",
     srcs = ["ThirdPartyDependencyListActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

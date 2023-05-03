@@ -16,7 +16,7 @@ exports_files([
 oppia_android_library(
     name = "coming_soon_topic_list_view_model",
     srcs = ["ComingSoonTopicListViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/home:home_item_view_model",
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:coming_soon_topics_view_model",
@@ -28,7 +28,7 @@ oppia_android_library(
 oppia_android_library(
     name = "coming_soon_topics_view_model",
     srcs = ["ComingSoonTopicsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/home:home_item_view_model",
@@ -47,7 +47,7 @@ oppia_android_library(
 oppia_android_library(
     name = "promoted_story_list_view_model",
     srcs = ["PromotedStoryListViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/home:home_item_view_model",
@@ -67,7 +67,7 @@ oppia_android_library(
 oppia_android_library(
     name = "promoted_story_view_model",
     srcs = ["PromotedStoryViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/home:route_to_topic_play_story_listener",
@@ -86,7 +86,7 @@ oppia_android_library(
 oppia_android_library(
     name = "coming_soon_topics_list_view",
     srcs = ["ComingSoonTopicsListView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/home:home_item_view_model",
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:coming_soon_topics_view_model",
@@ -106,7 +106,7 @@ oppia_android_library(
 oppia_android_library(
     name = "promoted_story_list_view",
     srcs = ["PromotedStoryListView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:promoted_story_view_model",
         "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",

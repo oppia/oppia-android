@@ -13,7 +13,6 @@ def oppia_android_test(
         name,
         srcs,
         deps,
-        temp_test_class_migration = None,
         android_merge_deps = [],
         include_robolectric_support = True,
         runtime_deps = []):
@@ -42,22 +41,18 @@ def oppia_android_test(
     test_manifest = _generate_test_android_manifest(name, package = resources_package)
     include_support_for_android_resources = len(android_merge_deps) != 0
 
-    extra_kt_lib_dep = []
-    if temp_test_class_migration == None:
-        kt_android_library(
-            name = name + "_lib",
-            custom_package = resources_package if include_support_for_android_resources else None,
-            srcs = srcs,
-            deps = deps,
-            testonly = True,
-            manifest = test_manifest if include_support_for_android_resources else None,
-            android_merge_deps = android_merge_deps,
-        )
-        extra_kt_lib_dep = [":" + name + "_lib"]
+    kt_android_library(
+        name = name + "_lib",
+        custom_package = resources_package if include_support_for_android_resources else None,
+        srcs = srcs,
+        deps = deps,
+        testonly = True,
+        manifest = test_manifest if include_support_for_android_resources else None,
+        android_merge_deps = android_merge_deps,
+    )
 
     native.android_local_test(
         name = name,
-        test_class = temp_test_class_migration,
         manifest = test_manifest,
         manifest_values = {
             "applicationId": resources_package,
@@ -66,7 +61,7 @@ def oppia_android_test(
             "versionCode": "0",
             "versionName": "0.1-test",
         },
-        deps = extra_kt_lib_dep + deps + ([
+        deps = [":%s_lib" % name] + deps + ([
             "//third_party:robolectric_android-all",
         ] if include_robolectric_support else []),
         runtime_deps = runtime_deps + ([

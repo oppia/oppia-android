@@ -13,13 +13,13 @@ exports_files([
 oppia_android_library(
     name = "concept_card_listener",
     srcs = ["ConceptCardListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "concept_card_view_model",
     srcs = ["ConceptCardViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -44,7 +44,7 @@ oppia_android_library(
         "ConceptCardFragment.kt",
         "ConceptCardFragmentPresenter.kt",
     ],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",

@@ -15,7 +15,7 @@ exports_files([
 oppia_android_library(
     name = "developer_options_item_view_model",
     srcs = ["DeveloperOptionsItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -26,7 +26,7 @@ oppia_android_library(
 oppia_android_library(
     name = "developer_options_modify_lesson_progress_view_model",
     srcs = ["DeveloperOptionsModifyLessonProgressViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_chapters_completed_listener",
         "//app/src/main/java/org/oppia/android/app/devoptions:route_to_mark_stories_completed_listener",
@@ -40,7 +40,7 @@ oppia_android_library(
 oppia_android_library(
     name = "developer_options_override_app_behaviors_view_model",
     srcs = ["DeveloperOptionsOverrideAppBehaviorsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions:force_crash_button_click_listener",
         "//app/src/main/java/org/oppia/android/app/devoptions:route_to_force_network_type_listener",
@@ -55,7 +55,7 @@ oppia_android_library(
 oppia_android_library(
     name = "developer_options_test_parsers_view_model",
     srcs = ["DeveloperOptionsTestParsersViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions:route_to_math_expression_parser_test_listener",
         "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_item_view_model",
@@ -67,7 +67,7 @@ oppia_android_library(
 oppia_android_library(
     name = "developer_options_view_logs_view_model",
     srcs = ["DeveloperOptionsViewLogsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions:route_to_view_event_logs_listener",
         "//app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel:developer_options_item_view_model",

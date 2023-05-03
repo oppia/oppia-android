@@ -17,7 +17,7 @@ exports_files([
 oppia_android_library(
     name = "confetti_config",
     srcs = ["ConfettiConfig.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//third_party:nl_dionsegijn_konfetti",
@@ -27,7 +27,7 @@ oppia_android_library(
 oppia_android_library(
     name = "state_view_model",
     srcs = ["StateViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
@@ -62,7 +62,7 @@ oppia_android_library(
 oppia_android_library(
     name = "drag_drop_sort_interaction_view",
     srcs = ["DragDropSortInteractionView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:drag_drop_interaction_content_view_model",
         "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
@@ -88,7 +88,7 @@ oppia_android_library(
 oppia_android_library(
     name = "image_region_selection_interaction_view",
     srcs = ["ImageRegionSelectionInteractionView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
         "//app/src/main/java/org/oppia/android/app/utility:clickable_areas_image",
@@ -114,7 +114,7 @@ oppia_android_library(
 oppia_android_library(
     name = "selection_interaction_view",
     srcs = ["SelectionInteractionView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:selection_interaction_content_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:selection_interaction_view_model",
@@ -136,7 +136,7 @@ oppia_android_library(
 oppia_android_library(
     name = "state_fragment",
     srcs = ["StateFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -160,7 +160,7 @@ oppia_android_library(
 oppia_android_library(
     name = "state_fragment_presenter",
     srcs = ["StateFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -214,7 +214,7 @@ oppia_android_library(
 oppia_android_library(
     name = "state_player_recycler_view_assembler",
     srcs = ["StatePlayerRecyclerViewAssembler.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/customview:continue_button_view",
         "//app/src/main/java/org/oppia/android/app/customview/interaction:fraction_input_interaction_view",

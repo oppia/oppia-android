@@ -9,7 +9,7 @@ oppia_android_library(
     srcs = [
         "LifecycleSafeTimerFactory.kt",
     ],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//third_party:androidx_lifecycle_lifecycle-common",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",

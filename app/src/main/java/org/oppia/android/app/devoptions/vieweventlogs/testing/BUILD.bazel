@@ -9,7 +9,7 @@ exports_files(["ViewEventLogsTestActivity.kt"])
 oppia_android_library(
     name = "view_event_logs_test_activity",
     srcs = ["ViewEventLogsTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",

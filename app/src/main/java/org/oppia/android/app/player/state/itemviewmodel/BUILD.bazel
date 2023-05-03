@@ -35,7 +35,7 @@ oppia_android_library(
     srcs = ["InteractionViewModelModule.kt"],
     visibility = [
         "//:oppia_prod_module_visibility",
-        "//app:app_visibility",
+        "//app:app_prod_visibility",
     ],
     deps = [
         ":continue_interaction_view_model",
@@ -56,14 +56,14 @@ oppia_android_library(
 oppia_android_library(
     name = "split_screen_interaction_ids",
     srcs = ["SplitScreenInteractionIds.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = ["//third_party:javax_inject_javax_inject"],
 )
 
 oppia_android_library(
     name = "content_view_model",
     srcs = ["ContentViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -74,7 +74,7 @@ oppia_android_library(
 oppia_android_library(
     name = "continue_interaction_view_model",
     srcs = ["ContinueInteractionViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
@@ -94,7 +94,7 @@ oppia_android_library(
 oppia_android_library(
     name = "continue_navigation_button_view_model",
     srcs = ["ContinueNavigationButtonViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/listener:continue_navigation_button_listener",
@@ -107,7 +107,7 @@ oppia_android_library(
 oppia_android_library(
     name = "drag_and_drop_sort_interaction_view_model",
     srcs = ["DragAndDropSortInteractionViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:drag_drop_interaction_content_view_model",
@@ -133,7 +133,7 @@ oppia_android_library(
 oppia_android_library(
     name = "drag_drop_interaction_content_view_model",
     srcs = ["DragDropInteractionContentViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
@@ -148,7 +148,7 @@ oppia_android_library(
 oppia_android_library(
     name = "feedback_view_model",
     srcs = ["FeedbackViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -159,7 +159,7 @@ oppia_android_library(
 oppia_android_library(
     name = "fraction_interaction_view_model",
     srcs = ["FractionInteractionViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/parser:fraction_parsing_ui_error",
@@ -184,7 +184,7 @@ oppia_android_library(
 oppia_android_library(
     name = "image_region_selection_interaction_view_model",
     srcs = ["ImageRegionSelectionInteractionViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
@@ -206,7 +206,7 @@ oppia_android_library(
 oppia_android_library(
     name = "math_expression_interactions_view_model",
     srcs = ["MathExpressionInteractionsViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
@@ -237,7 +237,7 @@ oppia_android_library(
 oppia_android_library(
     name = "next_button_view_model",
     srcs = ["NextButtonViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/listener:next_navigation_button_listener",
@@ -250,7 +250,7 @@ oppia_android_library(
 oppia_android_library(
     name = "numeric_input_view_model",
     srcs = ["NumericInputViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/parser:string_to_number_parser",
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
@@ -270,7 +270,7 @@ oppia_android_library(
 oppia_android_library(
     name = "previous_button_view_model",
     srcs = ["PreviousButtonViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
@@ -282,7 +282,7 @@ oppia_android_library(
 oppia_android_library(
     name = "previous_responses_header_view_model",
     srcs = ["PreviousResponsesHeaderViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
@@ -297,7 +297,7 @@ oppia_android_library(
 oppia_android_library(
     name = "ratio_expression_input_interaction_view_model",
     srcs = ["RatioExpressionInputInteractionViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/parser:string_to_ratio_parser",
@@ -324,7 +324,7 @@ oppia_android_library(
 oppia_android_library(
     name = "replay_button_view_model",
     srcs = ["ReplayButtonViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/listener:replay_button_listener",
@@ -336,7 +336,7 @@ oppia_android_library(
 oppia_android_library(
     name = "return_to_topic_button_view_model",
     srcs = ["ReturnToTopicButtonViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
@@ -349,7 +349,7 @@ oppia_android_library(
 oppia_android_library(
     name = "selection_interaction_content_view_model",
     srcs = ["SelectionInteractionContentViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//model/src/main/proto:subtitled_html_java_proto_lite",
@@ -362,7 +362,7 @@ oppia_android_library(
 oppia_android_library(
     name = "selection_interaction_view_model",
     srcs = ["SelectionInteractionViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
@@ -386,7 +386,7 @@ oppia_android_library(
 oppia_android_library(
     name = "state_item_view_model",
     srcs = ["StateItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -400,7 +400,7 @@ oppia_android_library(
 oppia_android_library(
     name = "submit_button_view_model",
     srcs = ["SubmitButtonViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
         "//app/src/main/java/org/oppia/android/app/player/state/listener:previous_navigation_button_listener",
@@ -414,7 +414,7 @@ oppia_android_library(
 oppia_android_library(
     name = "submitted_answer_view_model",
     srcs = ["SubmittedAnswerViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/player/state/itemviewmodel:state_item_view_model",
@@ -430,7 +430,7 @@ oppia_android_library(
 oppia_android_library(
     name = "text_input_view_model",
     srcs = ["TextInputViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",

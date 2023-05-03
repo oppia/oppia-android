@@ -17,7 +17,7 @@ exports_files([
 oppia_android_library(
     name = "mark_topics_completed_view_model",
     srcs = ["MarkTopicsCompletedViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted:topic_view_model",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -41,7 +41,7 @@ oppia_android_library(
 oppia_android_library(
     name = "topic_view_model",
     srcs = ["TopicViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
@@ -56,13 +56,13 @@ oppia_android_library(
 oppia_android_library(
     name = "topic_selector",
     srcs = ["TopicSelector.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "mark_topics_completed_fragment",
     srcs = ["MarkTopicsCompletedFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted:mark_topics_completed_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted:topic_selector",
@@ -76,7 +76,7 @@ oppia_android_library(
 oppia_android_library(
     name = "mark_topics_completed_fragment_presenter",
     srcs = ["MarkTopicsCompletedFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted:mark_topics_completed_view_model",
@@ -102,7 +102,7 @@ oppia_android_library(
 oppia_android_library(
     name = "mark_topics_completed_activity",
     srcs = ["MarkTopicsCompletedActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -121,7 +121,7 @@ oppia_android_library(
 oppia_android_library(
     name = "mark_topics_completed_activity_presenter",
     srcs = ["MarkTopicsCompletedActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

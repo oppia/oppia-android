@@ -7,14 +7,14 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 oppia_android_library(
     name = "view_scope",
     srcs = ["ViewScope.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = ["//third_party:javax_inject_javax_inject"],
 )
 
 oppia_android_library(
     name = "view_component",
     srcs = ["ViewComponent.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
@@ -58,7 +58,7 @@ oppia_android_library(
 oppia_android_library(
     name = "view_component_factory",
     srcs = ["ViewComponentFactory.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [":view_component"],
 )
 

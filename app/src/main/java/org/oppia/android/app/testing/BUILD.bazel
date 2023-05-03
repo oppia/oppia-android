@@ -66,14 +66,14 @@ exports_files([
 oppia_android_library(
     name = "bindable_adapter_test_data_model",
     srcs = ["BindableAdapterTestDataModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = ["//third_party:androidx_lifecycle_lifecycle-livedata-core"],
 )
 
 oppia_android_library(
     name = "bindable_adapter_test_view_model",
     srcs = ["BindableAdapterTestViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/testing:bindable_adapter_test_data_model",
@@ -87,7 +87,7 @@ oppia_android_library(
 oppia_android_library(
     name = "circular_progress_indicator_adapters_test_view_model",
     srcs = ["CircularProgressIndicatorAdaptersTestViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -98,7 +98,7 @@ oppia_android_library(
 oppia_android_library(
     name = "bindable_adapter_test_fragment",
     srcs = ["BindableAdapterTestFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -111,7 +111,7 @@ oppia_android_library(
 oppia_android_library(
     name = "bindable_adapter_test_fragment_presenter",
     srcs = ["BindableAdapterTestFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
@@ -128,7 +128,7 @@ oppia_android_library(
 oppia_android_library(
     name = "drag_drop_test_fragment",
     srcs = ["DragDropTestFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -144,7 +144,7 @@ oppia_android_library(
 oppia_android_library(
     name = "drag_drop_test_fragment_presenter",
     srcs = ["DragDropTestFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
@@ -159,7 +159,7 @@ oppia_android_library(
 oppia_android_library(
     name = "exploration_test_activity_fragment",
     srcs = ["ExplorationTestActivityFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -172,7 +172,7 @@ oppia_android_library(
 oppia_android_library(
     name = "image_region_selection_test_fragment",
     srcs = ["ImageRegionSelectionTestFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -187,7 +187,7 @@ oppia_android_library(
 oppia_android_library(
     name = "image_region_selection_test_fragment_presenter",
     srcs = ["ImageRegionSelectionTestFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/player/state:image_region_selection_interaction_view",
@@ -203,7 +203,7 @@ oppia_android_library(
 oppia_android_library(
     name = "lesson_thumbnail_image_view_test_fragment",
     srcs = ["LessonThumbnailImageViewTestFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -214,7 +214,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_fragment_test_activity",
     srcs = ["AdministratorControlsFragmentTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -239,7 +239,7 @@ oppia_android_library(
 oppia_android_library(
     name = "administrator_controls_fragment_test_activity_presenter",
     srcs = ["AdministratorControlsFragmentTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:administrator_controls_fragment",
@@ -254,7 +254,7 @@ oppia_android_library(
 oppia_android_library(
     name = "app_compat_check_box_binding_adapters_test_activity",
     srcs = ["AppCompatCheckBoxBindingAdaptersTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -267,7 +267,7 @@ oppia_android_library(
 oppia_android_library(
     name = "audio_fragment_test_activity",
     srcs = ["AudioFragmentTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -281,7 +281,7 @@ oppia_android_library(
 oppia_android_library(
     name = "audio_fragment_test_activity_presenter",
     srcs = ["AudioFragmentTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -304,7 +304,7 @@ oppia_android_library(
 oppia_android_library(
     name = "bindable_adapter_test_activity",
     srcs = ["BindableAdapterTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -319,7 +319,7 @@ oppia_android_library(
 oppia_android_library(
     name = "circular_progress_indicator_adapters_test_activity",
     srcs = ["CircularProgressIndicatorAdaptersTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -335,7 +335,7 @@ oppia_android_library(
 oppia_android_library(
     name = "concept_card_fragment_test_activity",
     srcs = ["ConceptCardFragmentTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -356,7 +356,7 @@ oppia_android_library(
 oppia_android_library(
     name = "concept_card_fragment_test_activity_presenter",
     srcs = ["ConceptCardFragmentTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
@@ -374,7 +374,7 @@ oppia_android_library(
 oppia_android_library(
     name = "drag_drop_test_activity",
     srcs = ["DragDropTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -388,7 +388,7 @@ oppia_android_library(
 oppia_android_library(
     name = "drag_drop_test_activity_presenter",
     srcs = ["DragDropTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -405,7 +405,7 @@ oppia_android_library(
 oppia_android_library(
     name = "drawable_binding_adapters_test_activity",
     srcs = ["DrawableBindingAdaptersTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -418,7 +418,7 @@ oppia_android_library(
 oppia_android_library(
     name = "exploration_injection_activity",
     srcs = ["ExplorationInjectionActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -433,7 +433,7 @@ oppia_android_library(
 oppia_android_library(
     name = "exploration_test_activity",
     srcs = ["ExplorationTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -455,7 +455,7 @@ oppia_android_library(
 oppia_android_library(
     name = "exploration_test_activity_presenter",
     srcs = ["ExplorationTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -483,7 +483,7 @@ oppia_android_library(
 oppia_android_library(
     name = "home_fragment_test_activity",
     srcs = ["HomeFragmentTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -501,7 +501,7 @@ oppia_android_library(
 oppia_android_library(
     name = "home_test_activity",
     srcs = ["HomeTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -515,7 +515,7 @@ oppia_android_library(
 oppia_android_library(
     name = "home_test_activity_presenter",
     srcs = ["HomeTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -528,7 +528,7 @@ oppia_android_library(
 oppia_android_library(
     name = "html_parser_test_activity",
     srcs = ["HtmlParserTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -541,7 +541,7 @@ oppia_android_library(
 oppia_android_library(
     name = "image_region_selection_test_activity",
     srcs = ["ImageRegionSelectionTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -559,7 +559,7 @@ oppia_android_library(
 oppia_android_library(
     name = "image_view_binding_adapters_test_activity",
     srcs = ["ImageViewBindingAdaptersTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -572,7 +572,7 @@ oppia_android_library(
 oppia_android_library(
     name = "input_interaction_view_test_activity",
     srcs = ["InputInteractionViewTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -601,7 +601,7 @@ oppia_android_library(
 oppia_android_library(
     name = "lesson_thumbnail_image_view_test_activity",
     srcs = ["LessonThumbnailImageViewTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -615,7 +615,7 @@ oppia_android_library(
 oppia_android_library(
     name = "list_item_leading_margin_span_test_activity",
     srcs = ["ListItemLeadingMarginSpanTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -628,7 +628,7 @@ oppia_android_library(
 oppia_android_library(
     name = "margin_binding_adapters_test_activity",
     srcs = ["MarginBindingAdaptersTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -641,7 +641,7 @@ oppia_android_library(
 oppia_android_library(
     name = "navigation_drawer_test_activity",
     srcs = ["NavigationDrawerTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -666,7 +666,7 @@ oppia_android_library(
 oppia_android_library(
     name = "policies_fragment_test_activity",
     srcs = ["PoliciesFragmentTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -685,7 +685,7 @@ oppia_android_library(
 oppia_android_library(
     name = "policies_fragment_test_activity_presenter",
     srcs = ["PoliciesFragmentTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -703,7 +703,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_chooser_fragment_test_activity",
     srcs = ["ProfileChooserFragmentTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -717,7 +717,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_chooser_fragment_test_activity_presenter",
     srcs = ["ProfileChooserFragmentTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -736,7 +736,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_edit_fragment_test_activity",
     srcs = ["ProfileEditFragmentTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -751,7 +751,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_edit_fragment_test_activity_presenter",
     srcs = ["ProfileEditFragmentTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -769,7 +769,7 @@ oppia_android_library(
 oppia_android_library(
     name = "splash_test_activity",
     srcs = ["SplashTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -783,7 +783,7 @@ oppia_android_library(
 oppia_android_library(
     name = "splash_test_activity_presenter",
     srcs = ["SplashTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -803,7 +803,7 @@ oppia_android_library(
 oppia_android_library(
     name = "spotlight_fragment_test_activity",
     srcs = ["SpotlightFragmentTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -821,7 +821,7 @@ oppia_android_library(
 oppia_android_library(
     name = "spotlight_fragment_test_activity_presenter",
     srcs = ["SpotlightFragmentTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -839,7 +839,7 @@ oppia_android_library(
 oppia_android_library(
     name = "state_assembler_margin_binding_adapters_test_activity",
     srcs = ["StateAssemblerMarginBindingAdaptersTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -852,7 +852,7 @@ oppia_android_library(
 oppia_android_library(
     name = "state_assembler_padding_binding_adapters_test_activity",
     srcs = ["StateAssemblerPaddingBindingAdaptersTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -865,7 +865,7 @@ oppia_android_library(
 oppia_android_library(
     name = "test_font_scale_configuration_util_activity",
     srcs = ["TestFontScaleConfigurationUtilActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -881,7 +881,7 @@ oppia_android_library(
 oppia_android_library(
     name = "test_font_scale_configuration_util_activity_presenter",
     srcs = ["TestFontScaleConfigurationUtilActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -897,7 +897,7 @@ oppia_android_library(
 oppia_android_library(
     name = "text_view_binding_adapters_test_activity",
     srcs = ["TextViewBindingAdaptersTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -910,7 +910,7 @@ oppia_android_library(
 oppia_android_library(
     name = "topic_for_story_test_activity",
     srcs = ["TopicForStoryTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -940,7 +940,7 @@ oppia_android_library(
 oppia_android_library(
     name = "topic_revision_test_activity",
     srcs = ["TopicRevisionTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -956,7 +956,7 @@ oppia_android_library(
 oppia_android_library(
     name = "topic_revision_test_activity_presenter",
     srcs = ["TopicRevisionTestActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -973,7 +973,7 @@ oppia_android_library(
 oppia_android_library(
     name = "topic_test_activity",
     srcs = ["TopicTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -1000,7 +1000,7 @@ oppia_android_library(
 oppia_android_library(
     name = "view_binding_adapters_test_activity",
     srcs = ["ViewBindingAdaptersTestActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",

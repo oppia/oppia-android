@@ -13,19 +13,19 @@ exports_files([
 oppia_android_library(
     name = "walkthrough_back_navigation_listener",
     srcs = ["WalkthroughBackNavigationListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "walkthrough_final_listener",
     srcs = ["WalkthroughFinalListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "walkthrough_final_view_model",
     srcs = ["WalkthroughFinalViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -36,7 +36,7 @@ oppia_android_library(
 oppia_android_library(
     name = "walkthrough_final_fragment",
     srcs = ["WalkthroughFinalFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -51,7 +51,7 @@ oppia_android_library(
 oppia_android_library(
     name = "walkthrough_final_fragment_presenter",
     srcs = ["WalkthroughFinalFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",

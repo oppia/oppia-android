@@ -15,13 +15,13 @@ exports_files([
 oppia_android_library(
     name = "route_to_faq_single_listener",
     srcs = ["RouteToFAQSingleListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "faq_list_view_model",
     srcs = ["FAQListViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/help/faq/faqItemViewModel:faq_content_view_model",
@@ -39,7 +39,7 @@ oppia_android_library(
 oppia_android_library(
     name = "faq_list_fragment",
     srcs = ["FAQListFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -52,7 +52,7 @@ oppia_android_library(
 oppia_android_library(
     name = "faq_list_fragment_presenter",
     srcs = ["FAQListFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -74,7 +74,7 @@ oppia_android_library(
 oppia_android_library(
     name = "faq_list_activity",
     srcs = ["FAQListActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -94,7 +94,7 @@ oppia_android_library(
 oppia_android_library(
     name = "faq_list_activity_presenter",
     srcs = ["FAQListActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

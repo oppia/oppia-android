@@ -16,20 +16,20 @@ exports_files([
 oppia_android_library(
     name = "navigation_drawer_item",
     srcs = ["NavigationDrawerItem.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = ["//app:resources"],
 )
 
 oppia_android_library(
     name = "route_to_profile_progress_listener",
     srcs = ["RouteToProfileProgressListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "navigation_drawer_footer_view_model",
     srcs = ["NavigationDrawerFooterViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -41,7 +41,7 @@ oppia_android_library(
 oppia_android_library(
     name = "navigation_drawer_header_view_model",
     srcs = ["NavigationDrawerHeaderViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/drawer:route_to_profile_progress_listener",
@@ -60,13 +60,13 @@ oppia_android_library(
 oppia_android_library(
     name = "exit_profile_dialog_interface",
     srcs = ["ExitProfileDialogInterface.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "exit_profile_dialog_fragment",
     srcs = ["ExitProfileDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -85,7 +85,7 @@ oppia_android_library(
 oppia_android_library(
     name = "navigation_drawer_fragment",
     srcs = ["NavigationDrawerFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/drawer:exit_profile_dialog_interface",
         "//app/src/main/java/org/oppia/android/app/drawer:navigation_drawer_fragment_presenter",
@@ -102,7 +102,7 @@ oppia_android_library(
 oppia_android_library(
     name = "navigation_drawer_fragment_presenter",
     srcs = ["NavigationDrawerFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

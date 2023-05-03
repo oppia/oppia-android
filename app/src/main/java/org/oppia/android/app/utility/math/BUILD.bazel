@@ -9,7 +9,7 @@ oppia_android_library(
     srcs = [
         "MathExpressionAccessibilityUtil.kt",
     ],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",

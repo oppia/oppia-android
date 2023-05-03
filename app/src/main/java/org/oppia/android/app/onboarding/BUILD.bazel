@@ -18,25 +18,25 @@ exports_files([
 oppia_android_library(
     name = "view_pager_slide",
     srcs = ["ViewPagerSlide.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "onboarding_navigation_listener",
     srcs = ["OnboardingNavigationListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_profile_list_listener",
     srcs = ["RouteToProfileListListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "onboarding_slide_view_model",
     srcs = ["OnboardingSlideViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_view_pager_view_model",
@@ -51,7 +51,7 @@ oppia_android_library(
 oppia_android_library(
     name = "onboarding_slide_final_view_model",
     srcs = ["OnboardingSlideFinalViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_view_pager_view_model",
         "//app/src/main/java/org/oppia/android/app/onboarding:route_to_profile_list_listener",
@@ -67,7 +67,7 @@ oppia_android_library(
 oppia_android_library(
     name = "onboarding_view_model",
     srcs = ["OnboardingViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/onboarding:onboarding_slide_view_model",
@@ -82,7 +82,7 @@ oppia_android_library(
 oppia_android_library(
     name = "onboarding_view_pager_view_model",
     srcs = ["OnboardingViewPagerViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -92,7 +92,7 @@ oppia_android_library(
 oppia_android_library(
     name = "onboarding_fragment",
     srcs = ["OnboardingFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -107,7 +107,7 @@ oppia_android_library(
 oppia_android_library(
     name = "onboarding_fragment_presenter",
     srcs = ["OnboardingFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -139,7 +139,7 @@ oppia_android_library(
 oppia_android_library(
     name = "onboarding_activity",
     srcs = ["OnboardingActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -160,7 +160,7 @@ oppia_android_library(
 oppia_android_library(
     name = "onboarding_activity_presenter",
     srcs = ["OnboardingActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

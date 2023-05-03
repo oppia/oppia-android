@@ -16,7 +16,7 @@ oppia_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
-        "//app:app_visibility",
+        "//app:app_prod_visibility",
     ],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",

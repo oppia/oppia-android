@@ -18,7 +18,7 @@ exports_files([
 oppia_android_library(
     name = "chapter_summary_view_model",
     srcs = ["ChapterSummaryViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:mark_chapters_completed_item_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -34,7 +34,7 @@ oppia_android_library(
 oppia_android_library(
     name = "mark_chapters_completed_item_view_model",
     srcs = ["MarkChaptersCompletedItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -44,7 +44,7 @@ oppia_android_library(
 oppia_android_library(
     name = "mark_chapters_completed_view_model",
     srcs = ["MarkChaptersCompletedViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:chapter_summary_view_model",
         "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:mark_chapters_completed_item_view_model",
@@ -72,7 +72,7 @@ oppia_android_library(
 oppia_android_library(
     name = "story_summary_view_model",
     srcs = ["StorySummaryViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:mark_chapters_completed_item_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -83,7 +83,7 @@ oppia_android_library(
 oppia_android_library(
     name = "mark_chapters_completed_fragment",
     srcs = ["MarkChaptersCompletedFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:mark_chapters_completed_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -96,7 +96,7 @@ oppia_android_library(
 oppia_android_library(
     name = "mark_chapters_completed_fragment_presenter",
     srcs = ["MarkChaptersCompletedFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted:chapter_summary_view_model",
@@ -124,7 +124,7 @@ oppia_android_library(
 oppia_android_library(
     name = "mark_chapters_completed_activity",
     srcs = ["MarkChaptersCompletedActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -143,7 +143,7 @@ oppia_android_library(
 oppia_android_library(
     name = "mark_chapters_completed_activity_presenter",
     srcs = ["MarkChaptersCompletedActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

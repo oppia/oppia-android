@@ -45,10 +45,10 @@ android_library(
     enable_data_binding = True,
     exports_manifest = True,
     manifest = "//app:manifest",
-    resource_files = ["//app:databinding_layouts"],
+    resource_files = ["//app:layout_resources"],
     visibility = [
         "//:oppia_binary_visibility",
-        "//app:app_visibility",
+        "//app:app_prod_visibility",
         "//instrumentation:__pkg__",
     ],
     deps = [

@@ -15,13 +15,13 @@ exports_files([
 oppia_android_library(
     name = "story_fragment_scroller",
     srcs = ["StoryFragmentScroller.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "exploration_selection_listener",
     srcs = ["ExplorationSelectionListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//model/src/main/proto:arguments_java_proto_lite",
         "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
@@ -32,7 +32,7 @@ oppia_android_library(
 oppia_android_library(
     name = "story_view_model",
     srcs = ["StoryViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/story:exploration_selection_listener",
@@ -67,7 +67,7 @@ oppia_android_library(
 oppia_android_library(
     name = "story_fragment",
     srcs = ["StoryFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -87,7 +87,7 @@ oppia_android_library(
 oppia_android_library(
     name = "story_fragment_presenter",
     srcs = ["StoryFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/home:route_to_exploration_listener",
@@ -129,7 +129,7 @@ oppia_android_library(
 oppia_android_library(
     name = "story_activity",
     srcs = ["StoryActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -152,7 +152,7 @@ oppia_android_library(
 oppia_android_library(
     name = "story_activity_presenter",
     srcs = ["StoryActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

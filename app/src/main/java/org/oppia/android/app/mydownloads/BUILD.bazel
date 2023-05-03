@@ -18,13 +18,13 @@ exports_files([
 oppia_android_library(
     name = "my_downloads_tab",
     srcs = ["MyDownloadsTab.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "my_downloads_view_pager_adapter",
     srcs = ["MyDownloadsViewPagerAdapter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":my_downloads_tab",
         "//third_party:androidx_fragment_fragment",
@@ -36,7 +36,7 @@ oppia_android_library(
 oppia_android_library(
     name = "downloads_tab_fragment",
     srcs = ["DownloadsTabFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -49,7 +49,7 @@ oppia_android_library(
 oppia_android_library(
     name = "downloads_tab_fragment_presenter",
     srcs = ["DownloadsTabFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -62,7 +62,7 @@ oppia_android_library(
 oppia_android_library(
     name = "my_downloads_fragment",
     srcs = ["MyDownloadsFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -75,7 +75,7 @@ oppia_android_library(
 oppia_android_library(
     name = "my_downloads_fragment_presenter",
     srcs = ["MyDownloadsFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -95,7 +95,7 @@ oppia_android_library(
 oppia_android_library(
     name = "updates_tab_fragment",
     srcs = ["UpdatesTabFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -108,7 +108,7 @@ oppia_android_library(
 oppia_android_library(
     name = "updates_tab_fragment_presenter",
     srcs = ["UpdatesTabFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -121,7 +121,7 @@ oppia_android_library(
 oppia_android_library(
     name = "my_downloads_activity",
     srcs = ["MyDownloadsActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -141,7 +141,7 @@ oppia_android_library(
 oppia_android_library(
     name = "my_downloads_activity_presenter",
     srcs = ["MyDownloadsActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

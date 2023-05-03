@@ -16,7 +16,7 @@ exports_files([
 oppia_android_library(
     name = "chapter_not_started_container_constraint_layout",
     srcs = ["ChapterNotStartedContainerConstraintLayout.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/spotlight",
@@ -33,7 +33,7 @@ oppia_android_library(
 oppia_android_library(
     name = "continue_button_view",
     srcs = ["ContinueButtonView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/utility/lifecycle:lifecycle_safe_timer_factory",
@@ -52,7 +52,7 @@ oppia_android_library(
 oppia_android_library(
     name = "lesson_thumbnail_image_view",
     srcs = ["LessonThumbnailImageView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/view:view_component",
@@ -74,7 +74,7 @@ oppia_android_library(
 oppia_android_library(
     name = "promoted_story_card_view",
     srcs = ["PromotedStoryCardView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/spotlight",
@@ -91,7 +91,7 @@ oppia_android_library(
 oppia_android_library(
     name = "segmented_circular_progress_view",
     srcs = ["SegmentedCircularProgressView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
@@ -106,7 +106,7 @@ oppia_android_library(
 oppia_android_library(
     name = "vertical_dashed_line_view",
     srcs = ["VerticalDashedLineView.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//third_party:androidx_core_core",

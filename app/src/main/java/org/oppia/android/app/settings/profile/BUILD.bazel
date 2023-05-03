@@ -32,19 +32,19 @@ exports_files([
 oppia_android_library(
     name = "load_profile_edit_deletion_dialog_listener",
     srcs = ["LoadProfileEditDeletionDialogListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "route_to_profile_edit_listener",
     srcs = ["RouteToProfileEditListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "profile_edit_view_model",
     srcs = ["ProfileEditViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -66,7 +66,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_list_view_model",
     srcs = ["ProfileListViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -88,7 +88,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_rename_view_model",
     srcs = ["ProfileRenameViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -101,7 +101,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_reset_pin_view_model",
     srcs = ["ProfileResetPinViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -114,13 +114,13 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_edit_dialog_interface",
     srcs = ["ProfileEditDialogInterface.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
 )
 
 oppia_android_library(
     name = "profile_edit_deletion_dialog_fragment",
     srcs = ["ProfileEditDeletionDialogFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
@@ -134,7 +134,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_edit_fragment",
     srcs = ["ProfileEditFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -149,7 +149,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_edit_fragment_presenter",
     srcs = ["ProfileEditFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:profile_edit_deletion_dialog_listener",
@@ -179,7 +179,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_list_fragment",
     srcs = ["ProfileListFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -192,7 +192,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_list_fragment_presenter",
     srcs = ["ProfileListFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/administratorcontrols:load_profile_edit_listener",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -214,7 +214,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_rename_fragment",
     srcs = ["ProfileRenameFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -227,7 +227,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_rename_fragment_presenter",
     srcs = ["ProfileRenameFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -256,7 +256,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_reset_pin_fragment",
     srcs = ["ProfileResetPinFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -269,7 +269,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_reset_pin_fragment_presenter",
     srcs = ["ProfileResetPinFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -297,7 +297,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_edit_activity",
     srcs = ["ProfileEditActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -316,7 +316,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_edit_activity_presenter",
     srcs = ["ProfileEditActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
@@ -337,7 +337,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_list_activity",
     srcs = ["ProfileListActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -357,7 +357,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_list_activity_presenter",
     srcs = ["ProfileListActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -374,7 +374,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_rename_activity",
     srcs = ["ProfileRenameActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -391,7 +391,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_rename_activity_presenter",
     srcs = ["ProfileRenameActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -409,7 +409,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_reset_pin_activity",
     srcs = ["ProfileResetPinActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -426,7 +426,7 @@ oppia_android_library(
 oppia_android_library(
     name = "profile_reset_pin_activity_presenter",
     srcs = ["ProfileResetPinActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

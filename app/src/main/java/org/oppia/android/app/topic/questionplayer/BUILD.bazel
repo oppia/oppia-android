@@ -17,7 +17,7 @@ exports_files([
 oppia_android_library(
     name = "hints_and_solution_question_manager_listener",
     srcs = ["HintsAndSolutionQuestionManagerListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//model/src/main/proto:exploration_java_proto_lite",
         "//model/src/main/proto:translation_java_proto_lite",
@@ -27,7 +27,7 @@ oppia_android_library(
 oppia_android_library(
     name = "question_player_view_model",
     srcs = ["QuestionPlayerViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/player/state/answerhandling:interaction_answer_handler",
@@ -46,7 +46,7 @@ oppia_android_library(
 oppia_android_library(
     name = "hints_and_solution_question_manager_fragment",
     srcs = ["HintsAndSolutionQuestionManagerFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -59,7 +59,7 @@ oppia_android_library(
 oppia_android_library(
     name = "hints_and_solution_question_manager_fragment_presenter",
     srcs = ["HintsAndSolutionQuestionManagerFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/topic/questionplayer:hints_and_solution_question_manager_listener",
@@ -82,7 +82,7 @@ oppia_android_library(
 oppia_android_library(
     name = "question_player_fragment",
     srcs = ["QuestionPlayerFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -107,7 +107,7 @@ oppia_android_library(
 oppia_android_library(
     name = "question_player_fragment_presenter",
     srcs = ["QuestionPlayerFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
@@ -151,7 +151,7 @@ oppia_android_library(
 oppia_android_library(
     name = "question_player_activity",
     srcs = ["QuestionPlayerActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
@@ -184,7 +184,7 @@ oppia_android_library(
 oppia_android_library(
     name = "question_player_activity_presenter",
     srcs = ["QuestionPlayerActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

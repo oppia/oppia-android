@@ -18,14 +18,14 @@ exports_files([
 oppia_android_library(
     name = "promoted_story_click_listener",
     srcs = ["PromotedStoryClickListener.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = ["//model/src/main/proto:topic_java_proto_lite"],
 )
 
 oppia_android_library(
     name = "promoted_story_view_model",
     srcs = ["PromotedStoryViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":promoted_story_click_listener",
         ":recently_played_item_view_model",
@@ -46,7 +46,7 @@ oppia_android_library(
 oppia_android_library(
     name = "recently_played_item_view_model",
     srcs = ["RecentlyPlayedItemViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
@@ -56,7 +56,7 @@ oppia_android_library(
 oppia_android_library(
     name = "recently_played_view_model",
     srcs = ["RecentlyPlayedViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":promoted_story_view_model",
         "//app:resources",
@@ -86,7 +86,7 @@ oppia_android_library(
 oppia_android_library(
     name = "section_title_view_model",
     srcs = ["SectionTitleViewModel.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:recently_played_item_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -97,7 +97,7 @@ oppia_android_library(
 oppia_android_library(
     name = "recently_played_fragment",
     srcs = ["RecentlyPlayedFragment.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
@@ -113,7 +113,7 @@ oppia_android_library(
 oppia_android_library(
     name = "recently_played_fragment_presenter",
     srcs = ["RecentlyPlayedFragmentPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/customview:lesson_thumbnail_image_view",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
@@ -150,7 +150,7 @@ oppia_android_library(
 oppia_android_library(
     name = "recently_played_activity",
     srcs = ["RecentlyPlayedActivity.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_component",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -176,7 +176,7 @@ oppia_android_library(
 oppia_android_library(
     name = "recently_played_activity_presenter",
     srcs = ["RecentlyPlayedActivityPresenter.kt"],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",

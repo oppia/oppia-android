@@ -10,7 +10,7 @@ oppia_android_library(
         "AppLanguageLocaleHandler.kt",
     ],
     visibility = [
-        "//app:app_visibility",
+        "//app:app_prod_visibility",
         "//testing/src/test/java/org/oppia/android/testing/junit:__pkg__",
     ],
     deps = [
@@ -26,7 +26,7 @@ oppia_android_library(
         "AppLanguageResourceHandler.kt",
     ],
     visibility = [
-        "//app:app_visibility",
+        "//app:app_prod_visibility",
         "//app/src/main/java/org/oppia/android/app/databinding:__pkg__",
     ],
     deps = [
@@ -44,7 +44,7 @@ oppia_android_library(
     srcs = [
         "AppLanguageWatcherMixin.kt",
     ],
-    visibility = ["//app:app_visibility"],
+    visibility = ["//app:app_prod_visibility"],
     deps = [
         ":activity_recreator",
         ":app_language_locale_handler",
