@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 import org.oppia.android.domain.snackbar.SnackbarController
+import javax.inject.Inject
 
 class SnackbarManager @Inject constructor(private val snackbarController: SnackbarController) {
 
@@ -32,7 +32,7 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
             request
           )
           SnackbarController.SnackbarRequest.ShowNothing -> {
-            if (snackbarController.snackbarRequestQueue.isNotEmpty()){
+            if (snackbarController.snackbarRequestQueue.isNotEmpty()) {
               snackbarController.notifyPotentialSnackbarChange()
               snackbarController.dismissCurrentSnackbar()
             }
