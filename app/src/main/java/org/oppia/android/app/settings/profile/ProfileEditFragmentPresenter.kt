@@ -16,6 +16,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.snackbar.SnackbarController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject

@@ -8,6 +8,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.domain.snackbar.SnackbarController
 
 class SnackbarManager @Inject constructor(private val snackbarController: SnackbarController) {
 
@@ -30,7 +31,12 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
             ),
             request
           )
-          SnackbarController.SnackbarRequest.ShowNothing -> {}
+          SnackbarController.SnackbarRequest.ShowNothing -> {
+            if (snackbarController.snackbarRequestQueue.isNotEmpty()){
+              snackbarController.notifyPotentialSnackbarChange()
+              snackbarController.dismissCurrentSnackbar()
+            }
+          }
         }
         else -> {}
       }
@@ -54,7 +60,7 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
         .addCallback(object : Snackbar.Callback() {
           override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             super.onDismissed(transientBottomBar, event)
-            // ...dismiss the snackbar when it's dismissed.
+            snackbarController.notifyPotentialSnackbarChange()
             snackbarController.dismissCurrentSnackbar()
           }
         })
