@@ -43,6 +43,7 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
     private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
       "MarkChaptersCompletedActivity.show_confirmation_notice"
 
+    /** Returns an [Intent] to start this activity. */
     fun createMarkChaptersCompletedIntent(
       context: Context,
       internalProfileId: Int,

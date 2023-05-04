@@ -57,6 +57,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private var audioLanguage = AudioLanguage.NO_AUDIO
   private val viewModel = getOptionControlsItemViewModel()
 
+  /** Initializes and creates the views for [OptionsFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -184,6 +185,11 @@ class OptionsFragmentPresenter @Inject constructor(
     VIEW_TYPE_AUDIO_LANGUAGE
   }
 
+  /** Updates [ReadingTextSize] value in
+   * [OptionsFragment] when user selects new value.
+   *
+   * Also notifys the adapter to refresh after the changes
+   * **/
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     profileManagementController.updateReadingTextSize(profileId, textSize).toLiveData().observe(
       fragment,
@@ -201,6 +207,11 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter.notifyItemChanged(0)
   }
 
+  /** Updates [OppiaLanguage] value in
+   * [OptionsFragment] when user selects new value.
+   *
+   * Also notifys the adapter to refresh after the changes
+   * **/
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
       selectedLanguage = oppiaLanguage
@@ -226,6 +237,11 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter.notifyItemChanged(1)
   }
 
+  /** Updates [AudioLanguage] value in
+   * [OptionsFragment] when user selects new value.
+   *
+   * Also notifys the adapter to refresh after the changes
+   * **/
   fun updateAudioLanguage(language: AudioLanguage) {
     val updateLanguageResult = profileManagementController.updateAudioLanguage(profileId, language)
     updateLanguageResult.toLiveData().observe(fragment) {

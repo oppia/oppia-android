@@ -10,6 +10,7 @@ class OptionsAppLanguageViewModel(
   val appLanguageDisplayName: String
 ) : OptionsItemViewModel() {
 
+  /** Invoked when user clicks on AppLanguage option in OptionsFragment list**/
   fun onAppLanguageClicked() {
     if (isMultipane.get()!!) {
       loadAppLanguageListListener.loadAppLanguageFragment(oppiaLanguage)

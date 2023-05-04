@@ -7,6 +7,7 @@ import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
 import org.oppia.android.app.model.ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -39,8 +40,10 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
+    /**ProfileId instance utilized by this activity and it's child fragment's*/
     const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedActivity.profile_id"
 
+    /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
     fun createMarkTopicsCompletedIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, MarkTopicsCompletedActivity::class.java).apply {
         putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)

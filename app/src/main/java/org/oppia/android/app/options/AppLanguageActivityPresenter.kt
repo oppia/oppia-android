@@ -14,6 +14,7 @@ import javax.inject.Inject
 class AppLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var oppiaLangauge: OppiaLanguage
 
+  /** Initializes and creates the views for [AppLanguageActivity]. */
   fun handleOnCreate(oppiaLanguage: OppiaLanguage, profileId: Int) {
     val binding: AppLanguageActivityBinding = DataBindingUtil.setContentView(
       activity,
@@ -34,10 +35,12 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     }
   }
 
+  /** Set the selected language for this Activity. */
   fun setLanguageSelected(oppiaLanguage: OppiaLanguage) {
     this.oppiaLangauge = oppiaLanguage
   }
 
+  /** Return's the selected language for this Activity. */
   fun getLanguageSelected(): OppiaLanguage {
     return oppiaLangauge
   }

@@ -24,6 +24,7 @@ import javax.inject.Inject
 /** [ViewModel] for [OptionsFragment]. */
 private const val OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID =
   "OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID"
+/** Options settings view model for the recycler view in [OptionsFragment]. */
 @FragmentScope
 class OptionControlsViewModel @Inject constructor(
   val activity: AppCompatActivity,
@@ -41,7 +42,9 @@ class OptionControlsViewModel @Inject constructor(
   private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
   private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
   private var isFirstOpen = true
+  /** Holds [Boolean] value showing if UI is initialized  */
   val uiLiveData = MutableLiveData<Boolean>()
+  /** Holds the index for the currently selected fragment. */
   val selectedFragmentIndex = ObservableField<Int>()
 
   /**
@@ -106,10 +109,12 @@ class OptionControlsViewModel @Inject constructor(
     }
   }
 
+  /**Sets the user ProfileId*/
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }
 
+  /**Options List data shown to the user.*/
   val optionsListLiveData: LiveData<List<OptionsItemViewModel>> by lazy {
     Transformations.map(optionsItemViewModelProvider.toLiveData(), ::processViewModelListsResult)
   }

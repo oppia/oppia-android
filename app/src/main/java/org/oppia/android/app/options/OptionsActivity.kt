@@ -23,8 +23,11 @@ import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
 private const val SELECTED_FRAGMENT_SAVED_KEY = "OptionsActivity.selected_fragment"
+/**Key used to identify [ReadingTextSizeFragment]*/
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
+/**Key used to identify [AppLanguageFragment]*/
 const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
+/**Key used to identify [AudioLanguageFragment]*/
 const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
 
 /** The activity for setting user preferences. */
@@ -49,9 +52,11 @@ class OptionsActivity :
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    /**[Boolean] indicating whether user is navigating from Drawer*/
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
       "OptionsActivity.bool_is_from_navigation_drawer_extra_key"
 
+    /** Returns an [Intent] to start this activity. */
     fun createOptionsActivity(
       context: Context,
       profileId: Int?,

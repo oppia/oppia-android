@@ -27,6 +27,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
   private lateinit var appLanguage: OppiaLanguage
   private var profileId: Int? = -1
 
+  /** Initializes and creates the views for [AppLanguageFragment]. */
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -51,6 +52,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  /** Returns selected [OppiaLanguage] and defaultInstance if null*/
   fun getLanguageSelected(): OppiaLanguage {
     return appLanguageSelectionViewModel.selectedLanguage.value
       ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
@@ -74,6 +76,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
     }
   }
 
+  /** Updates selected language when new language is selected **/
   fun onLanguageSelected(selectedLanguage: OppiaLanguage) {
     appLanguageSelectionViewModel.selectedLanguage.value = selectedLanguage
     updateAppLanguage(selectedLanguage)

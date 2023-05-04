@@ -23,6 +23,7 @@ class OptionsActivityPresenter @Inject constructor(
   private lateinit var toolbar: Toolbar
   private var profileId: Int? = -1
 
+  /** Initializes and creates the views for [OptionsActivity]. */
   fun handleOnCreate(
     isFromNavigationDrawer: Boolean,
     extraOptionsTitle: String?,
@@ -85,18 +86,27 @@ class OptionsActivityPresenter @Inject constructor(
       ) as OptionsFragment?
   }
 
+  /** Updates [ReadingTextSize] value in
+   * [OptionsFragment] when user selects new value. **/
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     getOptionFragment()?.updateReadingTextSize(textSize)
   }
 
+  /** Updates [OppiaLanguage] value in
+   * [OptionsFragment] when user selects new value. **/
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     getOptionFragment()?.updateAppLanguage(oppiaLanguage)
   }
 
+  /** Updates [AudioLanguage] value in
+   * [OptionsFragment] when user selects new value. **/
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     getOptionFragment()?.updateAudioLanguage(audioLanguage)
   }
 
+  /** Creates new instance of [ReadingTextSizeFragment]
+   * @param [ReadingTextSize]
+   **/
   fun loadReadingTextSizeFragment(textSize: ReadingTextSize) {
     val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(textSize)
     activity.supportFragmentManager
@@ -106,6 +116,9 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.setSelectedFragment(READING_TEXT_SIZE_FRAGMENT)
   }
 
+  /** Creates new instance of [AppLanguageFragment]
+   * @param [OppiaLanguage]
+   **/
   fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
     val appLanguageFragment =
       AppLanguageFragment.newInstance(appLanguage, profileId = this.profileId!!)
@@ -116,6 +129,9 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.setSelectedFragment(APP_LANGUAGE_FRAGMENT)
   }
 
+  /** Creates new instance of [AudioLanguageFragment]
+   * @param [AudioLanguage]
+   **/
   fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {
     val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage)
     activity.supportFragmentManager
@@ -125,6 +141,7 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.setSelectedFragment(AUDIO_LANGUAGE_FRAGMENT)
   }
 
+  /** Set title for [OptionsActivity]*/
   fun setExtraOptionTitle(title: String) {
     activity.findViewById<TextView>(R.id.options_activity_selected_options_title).text = title
   }

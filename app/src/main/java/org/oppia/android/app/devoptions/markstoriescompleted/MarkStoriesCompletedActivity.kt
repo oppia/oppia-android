@@ -39,8 +39,10 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
   }
 
   companion object {
+    /**ProfileId instance utilized by this activity and it's child fragment's*/
     const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedActivity.profile_id"
 
+    /** Returns an [Intent] to start this activity. */
     fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, MarkStoriesCompletedActivity::class.java).apply {
         putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
