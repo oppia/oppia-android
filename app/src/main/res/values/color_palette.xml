@@ -10,11 +10,13 @@
   <color name="color_palette_skip_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_background_color">@color/color_def_oppia_light_yellow</color>
   <color name="color_palette_dark_background_color">@color/color_def_mid_grey_30</color>
+  <color name="color_palette_splash_activity_background_color">@color/color_def_persian_green</color>
   <color name="color_palette_transparent_background_color">@color/color_def_transparent</color>
   <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
   <color name="color_palette_card_topic_name_text_color">@color/color_def_black_80</color>
   <color name="color_palette_text_input_background_color">@color/color_def_white</color>
   <color name="color_palette_shared_white_background_color">@color/color_def_white</color>
+  <color name="color_palette_shared_black_background_color">@color/color_def_black</color>
   <color name="color_palette_shared_hints_background_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_dark_text_color">@color/color_def_black_87</color>
   <color name="color_palette_error_color">@color/color_def_oppia_red</color>
@@ -143,6 +145,8 @@
   <color name="color_palette_hint_dialog_status_bar_color">@color/color_def_catalina_blue</color>
   <color name="color_palette_shared_radio_button_unchecked_color">@color/color_def_black_54</color>
   <color name="color_palette_shared_radio_button_checked_color">@color/color_def_radio_green</color>
+  <color name="color_palette_shared_dialogs_radio_button_unchecked_color">@color/color_def_accessible_light_grey_2</color>
+  <color name="color_palette_shared_dialogs_radio_button_checked_color">@color/color_def_oppia_green</color>
   <color name="color_palette_topic_revision_background_color">@color/color_def_oppia_white</color>
   <color name="color_palette_view_all_text_color">@color/color_def_oppia_green</color>
   <color name="color_palette_completed_progress_activity_background_color">@color/color_def_white</color>
@@ -205,6 +209,15 @@
   <color name="color_palette_onboarding_4_status_bar_color">@color/color_def_onboarding_4_status_bar</color>
   <color name="color_palette_coming_soon_rect_background_end_color">@color/color_def_grape_violet</color>
   <color name="color_palette_coming_soon_rect_background_start_color">@color/color_def_bright_violet</color>
+  <color name="color_palette_question_player_activity_congratulations_text_background_shadow_05_color">@color/color_def_grey_shade_05</color>
+  <color name="color_palette_question_player_activity_congratulations_text_background_shadow_10_color">@color/color_def_grey_shade_10</color>
+  <color name="color_palette_exploration_activity_divider_color">@color/color_def_dark_charcoal_black</color>
+  <color name="color_palette_exploration_activity_divider_dotted_color">@color/color_def_grey</color>
+  <color name="color_palette_profile_chooser_activity_gradient_end_color">@color/color_def_black</color>
+  <color name="color_palette_profile_chooser_activity_gradient_center_color">@color/color_def_lust_red</color>
+  <color name="color_palette_profile_chooser_activity_gradient_start_color">@color/color_def_dark_green_50</color>
+  <color name="color_palette_shared_state_button_background_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_hints_and_solution_reveal_solution_button_background_color">@color/color_def_oppia_brown</color>
   <!-- AVATAR BACKGROUND COLORS -->
   <color name="color_palette_avatar_background_1_color">@color/color_def_avatar_background_1</color>
   <color name="color_palette_avatar_background_2_color">@color/color_def_avatar_background_2</color>
