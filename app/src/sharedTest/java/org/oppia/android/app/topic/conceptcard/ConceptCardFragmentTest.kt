@@ -440,7 +440,7 @@ class ConceptCardFragmentTest {
         fragmentSkill0.showNow(activity.supportFragmentManager, fragmentSkill0.tag)
         assertThat(activity.supportFragmentManager.fragments).hasSize(2)
         ConceptCardFragment.dismissAll(activity.supportFragmentManager)
-        assertThat(activity.supportFragmentManager.fragments).hasSize(0)
+        assertThat(activity.supportFragmentManager.fragments).isEmpty()
       }
     }
   }
