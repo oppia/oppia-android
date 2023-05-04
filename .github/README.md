@@ -51,11 +51,13 @@ The Oppia Android codebase is specifically designed to streamline development by
 The team puts special emphasis on writing high-quality, readable, maintainable, and well-tested code.
 
 
-## Support
+## Support 
 
 If you have any feature requests or bug reports, please log them on our [issue tracker](https://github.com/oppia/oppia-android/issues/new/choose).
 
 Please report security issues directly to admin@oppia.org.
+
+Don't forget to leave a star ⭐️
 
 
 ## License
@@ -69,6 +71,8 @@ The Oppia Android code is released under the [Apache v2 license](https://github.
   * [Announcements mailing list](http://groups.google.com/group/oppia-announce)
 
 ## Social Media
+Follow Us on 
+
 [<img height="30" src="https://img.shields.io/badge/twitter-1DA1F2.svg?&style=for-the-badge&logo=twitter&logoColor=white" />][twitter]
 [<img height="30" src="https://img.shields.io/badge/linkedin-0077B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white" />][LinkedIn]
 [<img height="30" src = "https://img.shields.io/badge/facebook-1877F2.svg?&style=for-the-badge&logo=facebook&logoColor=white">][Facebook]
