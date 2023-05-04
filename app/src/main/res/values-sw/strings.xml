@@ -164,7 +164,6 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Sahihi!</string>
   <string name="topic_prefix">Mada: %s</string>
-  <string name="chapter_count_with_story_name">%1$s katika %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">Sura 1</item>
     <item quantity="other">Sura %s</item>

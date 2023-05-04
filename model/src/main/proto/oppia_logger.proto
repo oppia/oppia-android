@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package model;
 
-import "exploration.proto";
 import "languages.proto";
 import "profile.proto";
 
