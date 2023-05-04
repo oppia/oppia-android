@@ -573,7 +573,12 @@ class ExplorationProgressController @Inject constructor(
         recomputeCurrentStateAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
-      explorationProgressListeners.forEach(ExplorationProgressListener::onExplorationSessionStarted)
+      explorationProgressListeners.forEach {
+        it.onExplorationStarted(
+          profileId = profileId,
+          topicId = explorationProgress.currentTopicId
+        )
+      }
     }
   }
 
@@ -585,7 +590,7 @@ class ExplorationProgressController @Inject constructor(
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
       explorationProgressListeners.forEach {
-        it.onExplorationSessionEnded(
+        it.onExplorationEnded(
           profileId = profileId,
           topicId = explorationProgress.currentTopicId
         )

@@ -3,7 +3,7 @@ package org.oppia.android.domain.oppialogger.analytics
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
-import org.oppia.android.domain.exploration.ExplorationProgressListenerImpl
+import org.oppia.android.domain.exploration.ExplorationSessionTimerController
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import java.util.concurrent.TimeUnit
 
@@ -23,6 +23,6 @@ class ApplicationLifecycleModule {
   @Provides
   @IntoSet
   fun provideApplicationLifecycleListeners(
-    impl: ExplorationProgressListenerImpl
+    impl: ExplorationSessionTimerController
   ): ApplicationLifecycleListener = impl
 }
