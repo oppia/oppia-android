@@ -37,6 +37,10 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
+import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -70,10 +74,22 @@ class SurveyGatingControllerTest {
     setUpTestApplicationComponent()
   }
 
-  // check time window open, date passed, time threshold met -- happy path
   // check time window closed, date not passed, time threshold not met -- worst case
   @Test
-  fun testGating_timeOfDayWindowClosed_withinGracePeriod_minimumAggregateNotMet_returnsFalse() {
+  fun testGating_timeOfDayWindowClosed_isWithinGracePeriod_minimumAggregateNotMet_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    // assertThat()
+  }
+
+  // check time window closed, date passed, time threshold met
+  @Test
+  fun testGating_timeOfDayWindowClosed_isPastGracePeriod_minimumAggregateMet_returnsFalse() {
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
@@ -82,12 +98,66 @@ class SurveyGatingControllerTest {
 
     // add assertion
   }
-  // check time window closed, date passed, time threshold met
+
   // check time window open, date not passed, time threshold met
+  @Test
+  fun testGating_timeOfDayWindowOpen_isWithinGracePeriod_minimumAggregateMet_returnsFalse() {
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    // add assertion
+  }
+
   // check time window open, date passed, time threshold not met
+  @Test
+  fun testGating_timeOfDayWindowOpen_isPastGracePeriod_minimumAggregateNotMet_returnsFalse() {
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    // add assertion
+  }
+
   // check time window closed, date not passed, time threshold met
+  @Test
+  fun testGating_timeOfDayWindowClosed_isWithinGracePeriod_minimumAggregateMet_returnsFalse() {
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    // add assertion
+  }
+
   // check time window closed, date passed, time not threshold met
+  @Test
+  fun testGating_timeOfDayWindowClosed_isPastGracePeriod_minimumAggregateNotMet_returnsFalse() {
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    // add assertion
+  }
+
   // check time window open, date passed, time threshold met
+  @Test
+  fun testGating_timeOfDayWindowOpen_isPastGracePeriod_minimumAggregateMet_returnsTrue() {
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    // add assertion
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>()
@@ -129,6 +199,23 @@ class SurveyGatingControllerTest {
         override val value: Boolean = enableFeature
       }
     }
+
+    @Provides
+    @NpsSurveyGracePeriodInDays
+    fun provideNpsSurveyGracePeriodInDays(): PlatformParameterValue<Int> {
+      return PlatformParameterValue.createDefaultParameter(
+        NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+    fun provideNpsSurveyMinimumAggregateLearningTimeInATopicInMinutes():
+      PlatformParameterValue<Int> {
+        return PlatformParameterValue.createDefaultParameter(
+          NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
+        )
+      }
   }
 
   @Module
