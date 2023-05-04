@@ -49,6 +49,7 @@ kt_android_library(
     visibility = ["//app:app_visibility"],
     deps = [":injectable_app_compat_activity"],
 )
+
 kt_android_library(
     name = "injectable_system_localized_app_compat_activity",
     srcs = ["InjectableSystemLocalizedAppCompatActivity.kt"],
