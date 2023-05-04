@@ -14,7 +14,8 @@ import javax.inject.Qualifier
  * Qualifier for the platform parameter that controls whether the user has support for manually
  * downloading topics.
  */
-@Qualifier annotation class EnableDownloadsSupport
+@Qualifier
+annotation class EnableDownloadsSupport
 
 /** Default value for feature flag corresponding to [EnableDownloadsSupport]. */
 const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
@@ -231,3 +232,42 @@ annotation class EnableInteractionConfigChangeStateRetention
  * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
  */
 const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the platform parameter that controls the time interval in days between showing
+ * subsequent NPS surveys.
+ */
+@Qualifier
+annotation class NpsSurveyGracePeriodInDays
+
+/**
+ * Name of the platform parameter that controls the time interval in days between showing subsequent
+ * NPS surveys.
+ */
+const val NPS_SURVEY_GRACE_PERIOD_IN_DAYS = "nps_survey_grace_period_in_days"
+
+/** Default value of the time interval in days between showing subsequent NPS surveys. */
+const val NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE = 30
+
+/**
+ * Qualifier for the platform parameter that controls the minimum learning time in a topic, in
+ * minutes, that indicates a learner has had sufficient interaction with the app to be able to
+ * provide informed feedback about their experience with the app.
+ */
+@Qualifier
+annotation class NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+
+/**
+ * Name of the platform parameter that controls the minimum learning time in a topic, in
+ * minutes, that indicates a learner has had sufficient interaction with the app to be able to
+ * provide informed feedback about their experience with the app.
+ */
+const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES =
+  "nps_survey_minimum_aggregate_learning_time_in_a_topic_in_minutes"
+
+/**
+ * Default value of the minimum learning time in a topic, in minutes, that indicates a learner has
+ * had sufficient interaction with the app to be able to provide informed feedback about their
+ * experience with the app.
+ * */
+const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL = 5

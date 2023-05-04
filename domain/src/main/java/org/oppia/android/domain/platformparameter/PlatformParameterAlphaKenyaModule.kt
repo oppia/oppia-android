@@ -24,6 +24,12 @@ import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.util.platformparameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS
+import org.oppia.android.util.platformparameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES
+import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
+import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
@@ -187,6 +193,30 @@ class PlatformParameterAlphaKenyaModule {
   fun enableSpotlightUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
       ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @NpsSurveyGracePeriodInDays
+  fun provideNpsSurveyGracePeriodInDays(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      NPS_SURVEY_GRACE_PERIOD_IN_DAYS
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+  fun provideNpsSurveyMinimumAggregateLearningTimeInATopicInMinutes(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
     )
   }
 }

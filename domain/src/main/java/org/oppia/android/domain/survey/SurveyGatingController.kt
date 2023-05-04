@@ -8,6 +8,9 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
+import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -26,23 +29,27 @@ class SurveyGatingController @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val oppiaClock: OppiaClock,
   private val explorationActiveTimeController: ExplorationActiveTimeController,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val machineLocale: OppiaLocale.MachineLocale,
+  @NpsSurveyGracePeriodInDays private val surveyGracePeriodInDays: PlatformParameterValue<Int>,
+  @NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+  private val surveyMinimumAggregateLearningTimeInATopicInMinutes: PlatformParameterValue<Int>
 ) {
-
-  private val gracePeriodMillis = TimeUnit.DAYS.toMillis(30)
-  private val minimumLearningTimeForGatingMillis = TimeUnit.MINUTES.toMillis(5)
+  private val gracePeriodMillis = TimeUnit.DAYS.toMillis(surveyGracePeriodInDays.value.toLong())
+  private val minimumLearningTimeForGatingMillis = TimeUnit.MINUTES.toMillis(
+    surveyMinimumAggregateLearningTimeInATopicInMinutes.value.toLong()
+  )
 
   /**
    * Returns a data provider containing the outcome of gating, which will be used by callers to
    * determine if a survey can be shown.
    */
-  fun maybeShowSurvey(profileId: ProfileId, topicId: String): DataProvider<Any?> {
+  fun maybeShowSurvey(profileId: ProfileId, topicId: String): DataProvider<Boolean> {
     val lastShownDateProvider = retrieveSurveyLastShownDate(profileId)
     val learningTimeProvider = retrieveAggregateLearningTime(profileId, topicId)
     return lastShownDateProvider.combineWith(
       learningTimeProvider, GATING_RESULT_PROVIDER_ID
     ) { lastShownTimestampMs, learningTimeMs ->
-      isSurveyGracePeriodExpired(lastShownTimestampMs) &&
+      isSurveyGracePeriodEnded(lastShownTimestampMs) &&
         hasReachedMinimumTopicLearningThreshold(learningTimeMs) &&
         isWithinSurveyTimeWindow()
     }
@@ -57,7 +64,7 @@ class SurveyGatingController @Inject constructor(
     OppiaLocale.MachineLocale.TimeOfDay.UNKNOWN -> false
   }
 
-  private fun isSurveyGracePeriodExpired(lastShownTimestampMs: Long): Boolean {
+  private fun isSurveyGracePeriodEnded(lastShownTimestampMs: Long): Boolean {
     val surveyLastShownCalendar = oppiaClock.getCurrentCalendar()
     surveyLastShownCalendar.timeInMillis = lastShownTimestampMs
 
