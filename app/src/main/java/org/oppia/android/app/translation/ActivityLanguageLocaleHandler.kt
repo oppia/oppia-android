@@ -13,7 +13,6 @@ import javax.inject.Inject
  * initialized by [AppLanguageLocaleHandler] with global app language and updated automatically if user
  * changes language preferences and kept up-to-date with
  * [AppLanguageWatcherMixin].
- *
  */
 class ActivityLanguageLocaleHandler @Inject constructor(
   private val localeController: LocaleController,
@@ -41,8 +40,8 @@ class ActivityLanguageLocaleHandler @Inject constructor(
   }
 
   /**
-   * Updates the display locale to the specified locale, assuming that the handler has already been
-   * initialized lazily by [AppLanguageLocaleHandler].
+   * Attempts to change the locale for the system-level and won't actually change this handler's locale.
+   * This handler never changes its locale since an activity requires re-creation in order to apply a new language.
    *
    * @return whether the new locale is actually different from the current displayed locale
    */

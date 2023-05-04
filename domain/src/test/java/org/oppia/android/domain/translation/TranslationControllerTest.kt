@@ -1883,7 +1883,6 @@ class TranslationControllerTest {
   ): AudioTranslationLanguageSelection {
     return AudioTranslationLanguageSelection.newBuilder().apply {
       selectedLanguage = language
-      selectedLanguageValue = language.number
     }.build()
   }
 

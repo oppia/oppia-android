@@ -36,8 +36,10 @@ class AppLanguageWatcherMixin @Inject constructor(
    * initialized if previous bootstrapping was lost (e.g. due to process death), so it must be
    * called before interacting with the locale handler to avoid inadvertent crashes in such
    * situations.
+   *
+   * @param [Boolean] if shouldOnlyUseSystemLanguage or also user selected language.
    */
-  fun initialize(shouldUseSystemLanguage: Boolean) {
+  fun initialize(shouldOnlyUseSystemLanguage: Boolean) {
     if (!appLanguageLocaleHandler.isInitialized()) {
       /* The handler might have been de-initialized since bootstrapping. This can generally happen
        * in two cases:
@@ -67,13 +69,13 @@ class AppLanguageWatcherMixin @Inject constructor(
     val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
     val activityLanguageLocaleDataProvider = when {
-      shouldUseSystemLanguage -> translationController.getSystemLanguageLocale()
+      shouldOnlyUseSystemLanguage -> translationController.getSystemLanguageLocale()
       currentUserProfileId == null -> translationController.getSystemLanguageLocale()
       else -> translationController.getAppLanguageLocale(currentUserProfileId)
     }
 
-    val liveData = activityLanguageLocaleDataProvider?.toLiveData()
-    liveData?.observe(
+    val liveData = activityLanguageLocaleDataProvider.toLiveData()
+    liveData.observe(
       activity,
       object : Observer<AsyncResult<OppiaLocale.DisplayLocale>> {
         override fun onChanged(localeResult: AsyncResult<OppiaLocale.DisplayLocale>) {

@@ -49,15 +49,13 @@ class AppLanguageSelectionViewModel @Inject constructor(
       }
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "PROCESS_APP_LANGUAGE_FAILURE",
-          asyncResultAppLanguageListData.error.toString()
+          "AppLanguageSelectionViewModel",
+          "Failed to retrieve supported app languages",
+          asyncResultAppLanguageListData.error
         )
         emptyList()
       }
-      is AsyncResult.Pending ->
-        {
-          emptyList()
-        }
+      is AsyncResult.Pending -> emptyList()
     }
   }
 }

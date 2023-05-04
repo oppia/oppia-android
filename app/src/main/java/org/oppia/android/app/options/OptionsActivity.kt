@@ -112,7 +112,6 @@ class OptionsActivity :
           AppLanguageActivityResultBundle.getDefaultInstance()
         ).oppiaLanguage
         optionActivityPresenter.updateAppLanguage(oppiaLanguage)
-        OptionControlsViewModel.isResuming = true
       }
       REQUEST_CODE_AUDIO_LANGUAGE -> {
         val audioLanguage = data.getProtoExtra(

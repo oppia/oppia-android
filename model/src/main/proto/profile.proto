@@ -84,7 +84,7 @@ message Profile {
   bool is_continue_button_animation_seen = 15;
 
   // Reserve 17 which was used before as using it might cause issues for older profiles.
-    reserved 17;
+  reserved 17;
 }
 
 // Represents a profile avatar image.

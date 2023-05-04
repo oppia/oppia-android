@@ -79,8 +79,8 @@ abstract class InjectableAppCompatActivity :
   }
 
   /**
-   * The [initializeMixin] allows child activities to get initialized with custom AppLanguageWatcherMixin
-   * configuration.
+   * Initializes [appLanguageWatcherMixin] based on the localization requirements of the implementation.
+   * This should never be directly implemented by non-abstract activity classes.
    */
   abstract fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin)
 

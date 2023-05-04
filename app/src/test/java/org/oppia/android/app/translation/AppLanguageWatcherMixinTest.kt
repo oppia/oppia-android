@@ -157,7 +157,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_noAppLanguageChange_doesNothing() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage = false)
+    mixin.initialize(shouldOnlyUseSystemLanguage = false)
     testCoroutineDispatchers.runCurrent()
 
     // Initializing without anything changing should result in no changes to the locale or activity.
@@ -169,7 +169,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_localeIsUnchanged() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage = false)
+    mixin.initialize(shouldOnlyUseSystemLanguage = false)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(ENGLISH)
@@ -182,7 +182,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withAppLanguageChange_newLanguage_shouldNotUpdateLocale() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage = false)
+    mixin.initialize(shouldOnlyUseSystemLanguage = false)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -196,7 +196,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_doesNotRecreateActivity() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage = false)
+    mixin.initialize(shouldOnlyUseSystemLanguage = false)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(ENGLISH)
@@ -208,7 +208,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withAppLanguageChange_newLanguage_shouldNotRecreateActivity() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage = false)
+    mixin.initialize(shouldOnlyUseSystemLanguage = false)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -221,7 +221,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withShouldUseSystemLanguage_initializesSystemLanguage() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage = true)
+    mixin.initialize(shouldOnlyUseSystemLanguage = true)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -233,7 +233,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_withoutShouldUseSystemLanguage_initializesSystemLanguage() {
     val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize(shouldUseSystemLanguage = false)
+    mixin.initialize(shouldOnlyUseSystemLanguage = false)
     testCoroutineDispatchers.runCurrent()
 
     updateAppLanguageTo(BRAZILIAN_PORTUGUESE)

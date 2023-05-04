@@ -161,8 +161,8 @@ class AppLanguageResourceHandler @Inject constructor(
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE ->
         resources.getString(R.string.brazilian_portuguese_localized_language_name)
       AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED,
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-      -> resources.getString(R.string.english_localized_language_name)
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE ->
+        resources.getString(R.string.english_localized_language_name)
     }
   }
 
@@ -178,8 +178,8 @@ class AppLanguageResourceHandler @Inject constructor(
       OppiaLanguage.PORTUGUESE ->
         resources.getString(R.string.portuguese_localized_language_name)
       OppiaLanguage.SWAHILI -> resources.getString(R.string.swahili_localized_language_name)
-      OppiaLanguage.BRAZILIAN_PORTUGUESE
-      -> resources.getString(R.string.brazilian_portuguese_localized_language_name)
+      OppiaLanguage.BRAZILIAN_PORTUGUESE ->
+        resources.getString(R.string.brazilian_portuguese_localized_language_name)
       OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED,
       OppiaLanguage.ENGLISH -> resources.getString(R.string.english_localized_language_name)
       OppiaLanguage.ARABIC -> resources.getString(R.string.arabic_localized_language_name)
