@@ -26,7 +26,7 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.locale.testing.LocaleTestModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -257,9 +257,9 @@ class ExplorationActiveTimeControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, TestLogReportingModule::class,
-      FakeOppiaClockModule::class, ApplicationLifecycleModule::class, TestDispatcherModule::class,
-      LocaleTestModule::class, ExplorationProgressModule::class
+      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
+      ExplorationProgressModule::class, TestLogReportingModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
