@@ -182,7 +182,7 @@
         android:layout_margin="8dp"
         android:onClick="getPendingAnswerErrorOnSubmitClick"
         android:text="Submit"
-        android:textColor="@color/color_def_white" />
+        android:textColor="@color/component_color_shared_secondary_4_text_color" />
     </LinearLayout>
   </ScrollView>
 </layout>

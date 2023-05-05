@@ -111,7 +111,8 @@ class ExplorationProgressController @Inject constructor(
   private val loggingIdentifierController: LoggingIdentifierController,
   private val profileManagementController: ProfileManagementController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -530,7 +531,9 @@ class ExplorationProgressController @Inject constructor(
         // processed (if there's a flow).
         else -> AsyncResult.Pending()
       }
-    } catch (e: Exception) { AsyncResult.Failure(e) }
+    } catch (e: Exception) {
+      AsyncResult.Failure(e)
+    }
 
     // This must be assigned separately since flowResult should always be calculated, even if
     // there's no callbackFlow to report it.
@@ -570,6 +573,12 @@ class ExplorationProgressController @Inject constructor(
         recomputeCurrentStateAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
+      explorationProgressListeners.forEach {
+        it.onExplorationStarted(
+          profileId = profileId,
+          topicId = explorationProgress.currentTopicId
+        )
+      }
     }
   }
 
@@ -580,6 +589,12 @@ class ExplorationProgressController @Inject constructor(
     checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
+      explorationProgressListeners.forEach {
+        it.onExplorationEnded(
+          profileId = profileId,
+          topicId = explorationProgress.currentTopicId
+        )
+      }
     }
 
     // The only way to be sure of an exploration completion is if the user clicks the 'Return to
