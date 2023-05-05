@@ -35,6 +35,7 @@ public final class MarginBindingAdapters {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       params.topMargin = (int) marginTop;
+      view.setLayoutParams(params);
       view.requestLayout();
     }
   }
@@ -45,6 +46,7 @@ public final class MarginBindingAdapters {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       params.bottomMargin = (int) marginBottom;
+      view.setLayoutParams(params);
       view.requestLayout();
     }
   }
