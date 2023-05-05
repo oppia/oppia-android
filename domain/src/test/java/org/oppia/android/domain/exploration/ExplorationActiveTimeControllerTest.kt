@@ -12,11 +12,9 @@ import dagger.Provides
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
-import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -46,16 +44,10 @@ private const val SESSION_LENGTH_2 = 600000L
 @Config(application = ExplorationActiveTimeControllerTest.TestApplication::class)
 class ExplorationActiveTimeControllerTest {
   @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var cacheFactory: PersistentCacheStore.Factory
 
   @Inject
   lateinit var oppiaClock: FakeOppiaClock
