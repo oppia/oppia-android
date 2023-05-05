@@ -41,6 +41,17 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
+import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
+import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
+import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
@@ -193,6 +204,50 @@ class TestPlatformParameterModule {
     )
   }
 
+  @Provides
+  @EnableAppAndOsDeprecation
+  fun provideEnableAppAndOsDeprecation(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(
+      enableAppAndOsDeprecation
+    )
+  }
+
+  @Provides
+  @OptionalAppUpdateVersionCode
+  fun provideOptionalAppUpdateVersionCode(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      OPTIONAL_APP_UPDATE_VERSION_CODE
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      OPTIONAL_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @ForcedAppUpdateVersionCode
+  fun provideForcedAppUpdateVersionCode(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      FORCED_APP_UPDATE_VERSION_CODE
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      FORCED_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @LowestSupportedApiLevel
+  fun provideLowestSupportedApiLevel(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      LOWEST_SUPPORTED_API_LEVEL
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
+    )
+  }
+
   companion object {
     private var enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
@@ -204,6 +259,7 @@ class TestPlatformParameterModule {
     private var enablePerformanceMetricsCollection =
       ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
     private var enableSpotlightUi = true
+    private var enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
