@@ -74,7 +74,6 @@ class SurveyGatingControllerTest {
     setUpTestApplicationComponent()
   }
 
-  // check time window closed, date not passed, time threshold not met -- worst case
   @Test
   fun testGating_timeOfDayWindowClosed_isWithinGracePeriod_minimumAggregateNotMet_returnsFalse() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -82,81 +81,68 @@ class SurveyGatingControllerTest {
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
 
-    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
-
-    // assertThat()
+    monitorFactory.waitForNextSuccessfulResult(gatingProvider)
   }
 
-  // check time window closed, date passed, time threshold met
   @Test
   fun testGating_timeOfDayWindowClosed_isPastGracePeriod_minimumAggregateMet_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
 
-    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
-
-    // add assertion
+    monitorFactory.waitForNextSuccessfulResult(gatingProvider)
   }
 
-  // check time window open, date not passed, time threshold met
   @Test
   fun testGating_timeOfDayWindowOpen_isWithinGracePeriod_minimumAggregateMet_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
 
-    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
-
-    // add assertion
+    monitorFactory.waitForNextSuccessfulResult(gatingProvider)
   }
 
-  // check time window open, date passed, time threshold not met
   @Test
   fun testGating_timeOfDayWindowOpen_isPastGracePeriod_minimumAggregateNotMet_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
 
-    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
-
-    // add assertion
+    monitorFactory.waitForNextSuccessfulResult(gatingProvider)
   }
 
-  // check time window closed, date not passed, time threshold met
   @Test
   fun testGating_timeOfDayWindowClosed_isWithinGracePeriod_minimumAggregateMet_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
 
-    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
-
-    // add assertion
+    monitorFactory.waitForNextSuccessfulResult(gatingProvider)
   }
 
   // check time window closed, date passed, time not threshold met
   @Test
   fun testGating_timeOfDayWindowClosed_isPastGracePeriod_minimumAggregateNotMet_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
 
-    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
-
-    // add assertion
+    monitorFactory.waitForNextSuccessfulResult(gatingProvider)
   }
 
-  // check time window open, date passed, time threshold met
   @Test
   fun testGating_timeOfDayWindowOpen_isPastGracePeriod_minimumAggregateMet_returnsTrue() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(profileId, TEST_TOPIC_ID_0)
 
-    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
-
-    // add assertion
+    monitorFactory.waitForNextSuccessfulResult(gatingProvider)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -233,11 +219,11 @@ class SurveyGatingControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, SyncStatusModule::class,
-      AssetModule::class, ApplicationLifecycleModule::class, TestLoggingIdentifierModule::class,
-      ExplorationProgressModule::class
+      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
+      ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
+      NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
+      TestLoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
