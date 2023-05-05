@@ -169,6 +169,8 @@ class RegexPatternValidationCheckTest {
     "Only colors from color_defs.xml may be used in color_palette.xml."
   private val doesNotReferenceColorFromComponentColorInLayouts =
     "Only colors from component_colors.xml may be used in layouts."
+  private val doesNotReferenceColorFromComponentColorInDrawables =
+    "Only colors from component_colors.xml may be used in drawables except vector assets."
   private val doesNotReferenceColorFromComponentColorInKotlinFiles =
     "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments, " +
       "Views and Presenters)."
@@ -2250,6 +2252,36 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:22: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:23: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:24: $doesNotReferenceColorFromComponentColorInLayouts
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_xmlDrawables_includesNonColorComponentReferences_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        android:color="@color/component_color_shared_primary_text_color"
+        android:color="@color/color_defs_shared_primary_text_color"
+        android:color="@color/color_palette_primary_text_color"
+        android:color="#003933"
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "drawable")
+    val stringFilePath = "app/src/main/res/drawable/test_layout.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:2: $doesNotReferenceColorFromComponentColorInDrawables
+        $stringFilePath:3: $doesNotReferenceColorFromComponentColorInDrawables
+        $stringFilePath:4: $doesNotReferenceColorFromComponentColorInDrawables
         $wikiReferenceNote
         """.trimIndent()
       )
