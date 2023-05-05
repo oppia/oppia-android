@@ -649,6 +649,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/E
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgressListener.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationRetriever.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationRetrieverImpl.kt"
+exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationSessionTimerController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing/ExplorationStorageDatabaseSize.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/feedbackreporting/FeedbackReportingModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowAdditionalHintsFromWrongAnswerMillis.kt"
