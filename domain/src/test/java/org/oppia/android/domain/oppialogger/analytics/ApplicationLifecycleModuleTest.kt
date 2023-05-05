@@ -35,6 +35,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.ExplorationSessionTimerController
 
 /** Tests for [ApplicationLifecycleModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -44,6 +45,7 @@ import javax.inject.Singleton
 @Config(application = ApplicationLifecycleModuleTest.TestApplication::class)
 class ApplicationLifecycleModuleTest {
   @Inject lateinit var startupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
+  @Inject lateinit var lifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
 
   @field:[JvmField Inject LearnerAnalyticsInactivityLimitMillis]
   var inactivityLimitMillis: Long = Long.MIN_VALUE
@@ -66,6 +68,10 @@ class ApplicationLifecycleModuleTest {
     assertThat(inactivityLimitMillis).isEqualTo(TimeUnit.MINUTES.toMillis(30))
   }
 
+  @Test
+  fun testInjectApplicationLifecycleListenerSet_includesExplorationSessionTimerController() {
+    assertThat(lifecycleListeners.any { it is ExplorationSessionTimerController }).isTrue()
+  }
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
