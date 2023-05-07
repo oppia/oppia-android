@@ -181,8 +181,14 @@ class OptionsFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
+    /** Represents view type utilized to render
+     ReadingTextSize to UI via [BindableAdapter]. **/
     VIEW_TYPE_READING_TEXT_SIZE,
+    /** Represents view type utilized to render
+     OppiaLanguage to UI via [BindableAdapter]. **/
     VIEW_TYPE_APP_LANGUAGE,
+    /** Represents view type utilized to render
+     AudioLanguage to UI via [BindableAdapter]. **/
     VIEW_TYPE_AUDIO_LANGUAGE
   }
 
