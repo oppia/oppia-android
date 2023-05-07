@@ -172,14 +172,16 @@ class TranslationController @Inject constructor(
     selection: AppLanguageSelection
   ): DataProvider<AppLanguageSelection> {
     val cacheStore = retrieveLanguageContentCacheStore(profileId)
-    cacheStore.storeDataAsync(updateInMemoryCache = true) {
+    val deferred = cacheStore.storeDataAsync(updateInMemoryCache = true) {
       selection
-    }.invokeOnCompletion { exception ->
-      oppiaLogger.e(
-        "TranslationController", "Failed updating language: $exception"
-      )
     }
-    return cacheStore
+
+    return dataProviders.createInMemoryDataProviderAsync(
+      UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID
+    ) {
+      deferred.await()
+      AsyncResult.Success(cacheStore.readDataAsync().await())
+    }
   }
 
   /**

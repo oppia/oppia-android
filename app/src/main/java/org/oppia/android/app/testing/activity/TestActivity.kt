@@ -7,6 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.translation.ActivityLanguageLocaleHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
 import org.oppia.android.app.utility.datetime.DateTimeUtil
@@ -45,6 +46,9 @@ open class TestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   @Inject
   lateinit var activityRouter: ActivityRouter
+
+  @Inject
+  lateinit var activityLanguageLocaleHandler: ActivityLanguageLocaleHandler
 
   override fun attachBaseContext(newBase: Context?) {
     super.attachBaseContext(newBase)

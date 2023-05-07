@@ -158,6 +158,7 @@ class OptionsFragmentPresenter @Inject constructor(
     binding.viewModel = model
   }
 
+  /** Sets the selected fragment index in [OptionsControlViewModel] **/
   fun setSelectedFragment(selectedFragment: String) {
     viewModel.selectedFragmentIndex.set(
       getSelectedFragmentIndex(
@@ -189,7 +190,7 @@ class OptionsFragmentPresenter @Inject constructor(
    * [OptionsFragment] when user selects new value.
    *
    * Also notifys the adapter to refresh after the changes
-   * **/
+   */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     profileManagementController.updateReadingTextSize(profileId, textSize).toLiveData().observe(
       fragment,
@@ -211,7 +212,7 @@ class OptionsFragmentPresenter @Inject constructor(
    * [OptionsFragment] when user selects new value.
    *
    * Also notifys the adapter to refresh after the changes
-   * **/
+   */
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
       selectedLanguage = oppiaLanguage
@@ -241,7 +242,8 @@ class OptionsFragmentPresenter @Inject constructor(
    * [OptionsFragment] when user selects new value.
    *
    * Also notifys the adapter to refresh after the changes
-   * **/
+   *
+   */
   fun updateAudioLanguage(language: AudioLanguage) {
     val updateLanguageResult = profileManagementController.updateAudioLanguage(profileId, language)
     updateLanguageResult.toLiveData().observe(fragment) {

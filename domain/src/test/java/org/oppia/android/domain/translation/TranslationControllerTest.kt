@@ -508,7 +508,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testUpdateAppLanguage_systemToEnglish_returnsSelectedSelection() {
+  fun testUpdateAppLanguage_systemToEnglish_returnsSystemSelection() {
     forceDefaultLocale(Locale.ROOT)
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
 
@@ -519,12 +519,11 @@ class TranslationControllerTest {
 
     // The previous selection was system language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection.selectionTypeCase)
-      .isEqualTo(AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE)
+    assertThat(selection.selectionTypeCase).isEqualTo(SELECTED_APP_LANGUAGE)
   }
 
   @Test
-  fun testUpdateAppLanguage_englishToPortuguese_returnsSelectedSelection() {
+  fun testUpdateAppLanguage_englishToPortuguese_returnsPortugueseSelection() {
     forceDefaultLocale(Locale.ROOT)
     ensureAppLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
 
@@ -1157,6 +1156,7 @@ class TranslationControllerTest {
     forceDefaultLocale(Locale.US)
     ensureAudioTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
 
+    ensureAppLanguageIsUpdatedTo(PROFILE_ID_0, BRAZILIAN_PORTUGUESE)
     val localeProvider = translationController.getAudioTranslationContentLocale(PROFILE_ID_0)
 
     // Changing the app language should change the provided language since this provider depends on
@@ -1164,7 +1164,7 @@ class TranslationControllerTest {
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
-    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
   }
 
   @Test
@@ -1300,13 +1300,12 @@ class TranslationControllerTest {
   fun testGetAudioContentSelection_uninitializedToUseApp_returnsUninitializedSelection() {
     forceDefaultLocale(Locale.ROOT)
 
-    val audioTranslationLanguageSelection =
-      AudioTranslationLanguageSelection.newBuilder().apply { useAppLanguage = true }.build()
     val updateProvider = translationController.updateAudioTranslationContentLanguage(
       PROFILE_ID_0,
-      audioTranslationLanguageSelection
+      AudioTranslationLanguageSelection.newBuilder().apply { useAppLanguage = true }.build()
     )
 
+    // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
     assertThat(selection).isEqualToDefaultInstance()
   }
@@ -1797,7 +1796,7 @@ class TranslationControllerTest {
 
     assertThat(languageListData[0].name).isEqualTo(ARABIC.name)
     assertThat(languageListData[4].name).isEqualTo(SWAHILI.name)
-    assertThat(languageListData.size).isEqualTo(5)
+    assertThat(languageListData).hasSize(5)
   }
 
   private fun setUpTestApplicationComponent() {
