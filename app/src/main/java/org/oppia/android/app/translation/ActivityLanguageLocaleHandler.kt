@@ -1,6 +1,7 @@
 package org.oppia.android.app.translation
 
 import android.content.res.Configuration
+import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
@@ -14,6 +15,7 @@ import javax.inject.Inject
  * changes language preferences and kept up-to-date with
  * [AppLanguageWatcherMixin].
  */
+@ActivityScope
 class ActivityLanguageLocaleHandler @Inject constructor(
   private val localeController: LocaleController,
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler
