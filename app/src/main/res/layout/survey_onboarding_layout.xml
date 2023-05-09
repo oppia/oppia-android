@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+      android:id="@+id/survey_onboarding_title_text"
+      style="@style/TextViewCenter"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/survey_free_form_text_margin"
+      android:text="@string/survey_onboarding_title_text"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <org.oppia.android.app.customview.SurveyOnboardingBackgroundView
+      android:id="@+id/survey_onboarding_background_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toBottomOf="@id/survey_onboarding_title_text" />
+
+    <TextView
+      android:id="@+id/survey_onboarding_text"
+      style="@style/TextViewCenter"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/survey_free_form_text_margin"
+      android:text="@string/survey_onboarding_message_text"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/survey_onboarding_title_text" />
+
+    <Button
+      android:id="@+id/begin_survey_button"
+      style="@style/SurveyPrimaryButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/survey_submit_button_margin_top"
+      android:text="@string/survey_begin_survey_button"
+      app:layout_constraintEnd_toEndOf="@id/survey_onboarding_text"
+      app:layout_constraintStart_toStartOf="@id/survey_onboarding_text"
+      app:layout_constraintTop_toBottomOf="@id/survey_onboarding_text" />
+
+    <Button
+      android:id="@+id/maybe_later_button"
+      style="@style/SurveySecondaryButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/survey_submit_button_margin_top"
+      android:text="@string/survey_maybe_later_button"
+      app:layout_constraintEnd_toEndOf="@id/begin_survey_button"
+      app:layout_constraintStart_toStartOf="@id/begin_survey_button"
+      app:layout_constraintTop_toBottomOf="@id/begin_survey_button" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
