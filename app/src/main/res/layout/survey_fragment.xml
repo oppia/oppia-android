@@ -55,41 +55,36 @@
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintBaseline_toBaselineOf="@id/survey_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@id/survey_app_bar_layout">
 
       <TextView
         android:id="@+id/survey_question_text"
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="28dp"
+        android:layout_margin="@dimen/survey_question_text_margin"
         android:fontFamily="sans-serif-medium"
-        tools:text="Please select one of the following:"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Please select one of the following:" />
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/survey_question_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="28dp"
+        android:layout_margin="@dimen/survey_question_recycler_view_margin"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/survey_question_text"
         tools:itemCount="1"
         tools:listitem="@layout/survey_nps_score_layout" />
@@ -98,19 +93,18 @@
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent">
+      app:layout_constraintBottom_toBottomOf="parent">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/survey_navigation_buttons_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="28dp">
+        android:layout_margin="@dimen/survey_navigation_buttons_container_margin">
 
         <Button
           android:id="@+id/survey_previous_button"
-          style="@style/PreviousButtonActive"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:text="@string/survey_previous_button"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@id/survey_next_button"
@@ -119,7 +113,8 @@
 
         <Button
           android:id="@+id/survey_next_button"
-          style="@style/NextButtonActive"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:text="@string/next"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
