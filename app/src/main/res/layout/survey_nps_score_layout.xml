@@ -11,7 +11,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-light"
-      android:text="0 - Not at all likely"
+      android:text="@string/survey_nps_not_at_all_likely_label"
       android:textSize="14sp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -156,7 +156,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="16dp"
       android:fontFamily="sans-serif-light"
-      android:text="10 - Extremely likely"
+      android:text="@string/survey_nps_extremely_likely_label"
       android:textSize="14sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@id/survey_nps_buttons_container" />
