@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -65,8 +64,6 @@ class OptionControlsViewModel @Inject constructor(
     return profileProvider.combineWith(
       appLanguageProvider, OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID
     ) { profile, oppiaLanguage ->
-      val appLanguageSelection =
-        AppLanguageSelection.newBuilder().apply { selectedLanguage = oppiaLanguage }.build()
 
       val itemsList = arrayListOf<OptionsItemViewModel>()
 
@@ -74,6 +71,13 @@ class OptionControlsViewModel @Inject constructor(
         OptionsReadingTextSizeViewModel(
           routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
         )
+
+      optionsReadingTextSizeViewModel.readingTextSize.set(profile.readingTextSize)
+      // Loading the initial options in the sub-options container
+      if (isMultipane.get()!! && isFirstOpen) {
+        optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
+        isFirstOpen = false
+      }
 
       val optionAudioViewViewModel =
         OptionsAudioLanguageViewModel(
@@ -83,26 +87,24 @@ class OptionControlsViewModel @Inject constructor(
           resourceHandler.computeLocalizedDisplayName(profile.audioLanguage)
         )
 
-      optionsReadingTextSizeViewModel.readingTextSize.set(profile.readingTextSize)
-
       itemsList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
       itemsList.add(optionAudioViewViewModel as OptionsItemViewModel)
+
+      val optionsAppLanguageViewModel =
+        OptionsAppLanguageViewModel(
+          routeToAppLanguageListListener,
+          loadAppLanguageListListener, oppiaLanguage,
+          resourceHandler.computeLocalizedDisplayName(oppiaLanguage)
+        )
+
+      if (enableLanguageSelectionUi.value) {
+        itemsList.add(1, optionsAppLanguageViewModel as OptionsItemViewModel)
+      }
 
       // Loading the initial options in the sub-options container
       if (isMultipane.get()!! && isFirstOpen) {
         optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
         isFirstOpen = false
-      }
-
-      val optionsAppLanguageViewModel =
-        OptionsAppLanguageViewModel(
-          routeToAppLanguageListListener,
-          loadAppLanguageListListener, appLanguageSelection.selectedLanguage,
-          resourceHandler.computeLocalizedDisplayName(appLanguageSelection.selectedLanguage)
-        )
-
-      if (enableLanguageSelectionUi.value) {
-        itemsList.add(1, optionsAppLanguageViewModel as OptionsItemViewModel)
       }
 
       itemsList
