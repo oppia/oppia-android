@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+      android:id="@+id/free_form_text"
+      style="@style/SurveyFreeFormAnswerEditText"
+      android:layout_margin="@dimen/survey_free_form_text_margin"
+      android:hint="@string/survey_free_form_text_hint"
+      android:inputType="text|textMultiLine"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+      android:id="@+id/submit_button"
+      style="@style/SurveyPrimaryButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/survey_submit_button_margin_top"
+      android:text="@string/survey_submit_button"
+      app:layout_constraintEnd_toEndOf="@id/free_form_text"
+      app:layout_constraintStart_toStartOf="@id/free_form_text"
+      app:layout_constraintTop_toBottomOf="@id/free_form_text" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
