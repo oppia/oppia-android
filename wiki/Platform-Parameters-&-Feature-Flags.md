@@ -1,3 +1,12 @@
+## Table of Contents
+
+- [Introduction](#introduction)
+- [How to create a Platform Parameter](#how-to-create-a-platform-parameter)
+- [How to consume a Platform Parameter](#how-to-consume-a-platform-parameter)
+- [How to write tests related Platform Parameter](#how-to-write-tests-related-platform-parameter)
+  - [1. We actually don't test for platform parameter(s)](#1-we-actually-dont-test-for-platform-parameters)
+  - [2. We test for different values of platform parameter(s)](#2-we-test-for-different-values-of-platform-parameters) 
+
 ## Introduction
 With a large scale system like Oppia, we sometimes have features that contain several points of integration in the codebase, and/or require additional data priming or migrations ahead of the feature being released. These features often span multiple releases and thus require feature flags to gate integration points to ensure that the feature is not partially released ahead of schedule. Moreover, these features often require migrations which need to be run in specific releases due to new versions being made in irreversible data structures (e.g. explorations).
 

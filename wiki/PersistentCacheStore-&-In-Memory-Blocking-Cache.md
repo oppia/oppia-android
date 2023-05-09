@@ -1,3 +1,9 @@
+## Table of Contents
+
+- [PersistentCacheStore](#persistentcachestore)
+- [In-Memory blocking cache](#in-memory-blocking-cache)
+- [Other cases of background processing](#other-cases-of-background-processing)
+
 ### PersistentCacheStore
 
 [``PersistentCacheStore``](https://github.com/oppia/oppia-android/blob/a85399c2b0a2b9cf214881ce8c70d9b487f1e0b8/data/src/main/java/org/oppia/android/data/persistence/PersistentCacheStore.kt#L34) is the team's replacement to ``SharedPreferences`` except it:
