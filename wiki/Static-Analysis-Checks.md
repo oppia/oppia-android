@@ -1,3 +1,17 @@
+## Table of Contents
+
+- [Background](#background)
+- [Static analysis checks in Oppia Android](#static-analysis-checks-in-oppia-android)
+  - [RegexPatternValidation Check](#regexpatternvalidation-check)
+    - [Generic regex pattern matching against file names](#generic-regex-pattern-matching-against-file-names)
+    - [Generic regex pattern matching against file contents](#generic-regex-pattern-matching-against-file-contents)
+    - [XML syntax check](#xml-syntax-check)
+    - [Test file presence check](#test-file-presence-check)
+    - [Accessibility label check](#accessibility-label-check)
+    - [KDoc validity check](#kdoc-validity-check)
+    - [TODO open checks](#todo-open-checks)
+    - [TODO issue resolved check](#todo-issue-resolved-check)
+
 # Background
 Static analysis is a method of debugging by examining source code before a program is run. It’s done by analyzing a set of code against a set (or multiple sets) of coding rules.
 

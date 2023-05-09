@@ -21,6 +21,7 @@
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_transparent_background_color">@color/color_palette_transparent_background_color</color>
   <color name="component_color_shared_white_background_color">@color/color_palette_shared_white_background_color</color>
+  <color name="component_color_shared_black_background_color">@color/color_palette_shared_black_background_color</color>
   <color name="component_color_shared_secondary_button_background_trim_color">@color/color_palette_secondary_button_background_trim_color</color>
   <color name="component_color_shared_hints_background_color">@color/color_palette_shared_hints_background_color</color>
   <color name="component_color_shared_input_error_color">@color/color_palette_input_error_color</color>
@@ -87,6 +88,7 @@
   <color name="component_color_shared_download_story_text_color">@color/color_palette_shared_download_story_text_color</color>
   <color name="component_color_shared_topic_thumbnail_background_color">@color/color_palette_topic_thumbnail_background_color</color>
   <color name="component_color_shared_slide_drawer_open_status_bar_color">@color/color_palette_slide_drawer_open_status_bar_color</color>
+  <color name="component_color_shared_state_button_background_color">@color/color_palette_shared_state_button_background_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_fragment_status_bar_color">@color/color_palette_fragment_status_bar_color</color>
@@ -165,6 +167,7 @@
   <color name="component_color_hints_and_solution_summary_divider_color">@color/color_palette_hints_and_solution_summary_divider_color</color>
   <color name="component_color_hints_and_solution_summary_bottom_background_color">@color/color_palette_hints_and_solution_summary_bottom_background_color</color>
   <color name="component_color_hints_and_solution_summary_button_text_color">@color/color_palette_hints_and_solution_summary_button_text_color</color>
+  <color name="component_color_hints_and_solution_reveal_solution_button_background_color">@color/color_palette_hints_and_solution_reveal_solution_button_background_color</color>
   <!-- Splash Activity -->
   <color name="component_color_splash_activity_background_color">@color/color_palette_splash_activity_background_color</color>
   <!-- Story Activity -->
@@ -178,8 +181,12 @@
   <!-- Exploration Activity -->
   <color name="component_color_exploration_activity_content_background_stroke_color">@color/color_palette_content_background_stroke_color</color>
   <color name="component_color_exploration_activity_content_background_solid_color">@color/color_palette_content_background_solid_color</color>
+  <color name="component_color_exploration_activity_divider_color">@color/color_palette_exploration_activity_divider_color</color>
+  <color name="component_color_exploration_activity_divider_dotted_color">@color/color_palette_exploration_activity_divider_dotted_color</color>
   <!-- Question Player Activity -->
   <color name="component_color_question_player_activity_background_color">@color/color_palette_exploration_background_color</color>
+  <color name="component_color_question_player_activity_congratulations_text_background_shadow_05_color">@color/color_palette_question_player_activity_congratulations_text_background_shadow_05_color</color>
+  <color name="component_color_question_player_activity_congratulations_text_background_shadow_10_color">@color/color_palette_question_player_activity_congratulations_text_background_shadow_10_color</color>
   <!-- Revision Card Activity -->
   <color name="component_color_revision_card_activity_status_bar_color">@color/color_palette_revision_card_fragment_status_bar_color</color>
   <color name="component_color_revision_card_activity_toolbar_color">@color/color_palette_revision_card_toolbar_color</color>
@@ -263,6 +270,9 @@
   <color name="component_color_profile_chooser_activity_background_color">@color/color_palette_profile_chooser_charcoal_black_background_color</color>
   <color name="component_color_profile_chooser_activity_secondary_options_color">@color/color_palette_profile_chooser_silver_text_color</color>
   <color name="component_color_profile_chooser_activity_avatar_border_color">@color/color_palette_profile_chooser_avatar_border_color</color>
+  <color name="component_color_profile_chooser_activity_gradient_end_color">@color/color_palette_profile_chooser_activity_gradient_end_color</color>
+  <color name="component_color_profile_chooser_activity_gradient_center_color">@color/color_palette_profile_chooser_activity_gradient_center_color</color>
+  <color name="component_color_profile_chooser_activity_gradient_start_color">@color/color_palette_profile_chooser_activity_gradient_start_color</color>
   <!-- WalkThrough Activity -->
   <color name="component_color_walkthrough_activity_status_bar_color">@color/color_palette_color_palette_walkthrough_status_bar_color</color>
   <color name="component_color_walkthrough_activity_rounded_corners_color">@color/color_palette_walkthrough_activity_rounded_corners_color</color>
