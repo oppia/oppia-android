@@ -38,8 +38,8 @@
 
       <ImageView
         android:id="@+id/play_pause_audio_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:layout_marginStart="8dp"
         android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
         android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_fragment_audio_pause_description : @string/audio_fragment_audio_play_description}"

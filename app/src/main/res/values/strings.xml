@@ -95,6 +95,8 @@
   <string name="chapter_summary_activity_chapter_name">Chapter %s: %s</string>
   <string name="chapter_summary_activity_chapter_completed">Chapter %s with title %s is completed</string>
   <string name="chapter_summary_activity_chapter_in_progress">Chapter %s with title %s is in progress</string>
+  <string name="chapter_summary_activity_chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
+  <string name="chapter_summary_activity_chapter_prerequisite_title_label_without_chapter_title">Complete the previous chapter to unlock this chapter.</string>
   <!-- CompletedStoryListActivity -->
   <string name="completed_story_list_activity_toolbar_title">Stories Completed</string>
   <!-- ComingSoonTopicActivity -->
