@@ -1,5 +1,15 @@
 Please follow the following style rules when writing code, in order to minimize unnecessary back-and-forth during code review.
 
+## Table of Contents
+
+- [General](#general)
+- [Code Formatting](#code-formatting)
+- [Comments](#comments)
+- [XML files](#xml-files)
+- [Java/Kotlin files](#javakotlin-files)
+- [Layout files](#layout-files)
+- [build.gradle file](#buildgradle-file)
+
 ## General
 - We follow the [Kotlin Android style guide](https://developer.android.com/kotlin/style-guide).
 - Use 2 spaces for indentation and 4 spaces for continuation, per https://google.github.io/styleguide/javaguide.html#s4.2-block-indentation. (This should be configured at the project level for Kotlin. Ensure that you're using the project configuration for Kotlin in your IDE, so that you can reformat the code via the IDE if needed.)
