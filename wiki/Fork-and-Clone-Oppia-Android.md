@@ -1,6 +1,12 @@
 
 _For a detailed explanation of the fork-and-clone process, please see this [GitHub help page](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#platform-linux)._
 
+## Table of Contents
+
+- [Fork and clone the Oppia Android repository](#fork-and-clone-the-oppia-android-repository)
+  - [Using the terminal](#using-the-terminal)
+  - [Using android studio's UI based GitHub workflow](#using-android-studios-ui-based-github-workflow)
+
 ## Fork and clone the Oppia Android repository
 
 To make code changes, please follow the following instructions
