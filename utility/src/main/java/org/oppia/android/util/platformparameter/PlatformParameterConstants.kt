@@ -233,7 +233,7 @@ annotation class EnableInteractionConfigChangeStateRetention
 const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
 
 /**
- * Qualifier for the [EnableAppAndOsDeprecation] platform parameter that controls whether to enable
+ * Qualifier for the [EnableAppAndOsDeprecation] feature flag that controls whether to enable
  * app and OS deprecation or not.
  */
 @Qualifier
@@ -245,59 +245,61 @@ annotation class EnableAppAndOsDeprecation
 const val ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
 
 /**
- * Qualifier for the [OptionalAppUpdateVersionCode] platform parameter that contains the version
- * code for the latest optional app update.
+ * Qualifier for the platform parameter that contains the version code of the latest available
+ * optional app update, which is used to notify the app that a soft update is available.
  */
 @Qualifier
 annotation class OptionalAppUpdateVersionCode
 
 /**
- * Name of the platform parameter that tracks an integer from the gating console that indicates
- * the version code of the latest optional app update.
+ * Name of the platform parameter that contains the integer version code of the latest available
+ * optional app update.
  */
 const val OPTIONAL_APP_UPDATE_VERSION_CODE = "optional_app_update_version_code"
 
 /**
- * Default value for the feature flag corresponding to [OptionalAppUpdateVersionCode].
+ * Default value for the platform parameter corresponding to [OptionalAppUpdateVersionCode]. The
+ * default value is set as 1 which is the version code for the current app version. This will
+ * prevent an optional update being presented incorrectly.
  */
 const val OPTIONAL_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE = 1
 
 /**
- * Qualifier for the [ForcedAppUpdateVersionCode] platform parameter that contains the version
- * code for the latest forced app update.
+ * Qualifier for the platform parameter that contains the version code of the latest available
+ * forced app update, which is used to notify the app that a mandatory update is available.
  */
 @Qualifier
 annotation class ForcedAppUpdateVersionCode
 
 /**
- * Name of the platform parameter that tracks an integer from the gating console that indicates
- * the version code of the latest forced app update.
+ * Name of the platform parameter that contains the integer version code of the latest available
+ * forced app update.
  */
 const val FORCED_APP_UPDATE_VERSION_CODE = "forced_app_update_version_code"
 
 /**
- * Default value for the feature flag corresponding to [ForcedAppUpdateVersionCode]. The default
- * value is intentionally set as 0 which is lower than the default value for the
+ * Default value for the platform parameter corresponding to [ForcedAppUpdateVersionCode]. The
+ * default value is intentionally set to 0 which is lower than the default value for the
  * [OptionalAppUpdateVersionCode] that is 1. This is so that the app will not be forced to update
  * unless the value is explicitly set in the gating console.
  */
 const val FORCED_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE = 0
 
 /**
- * Qualifier for the [LowestSupportedApiLevel] platform parameter that contains an integer that
- * represents the lowest supported API Level.
+ * Qualifier for the platform parameter that contains an integer from the gating console that
+ * indicates the lowest supported API Level.
  */
 @Qualifier
 annotation class LowestSupportedApiLevel
 
 /**
- * Name of the platform parameter that tracks an integer from the gating console that indicates
+ * Name of the platform parameter that contains an integer from the gating console that indicates
  * the lowest supported API Level.
  */
 const val LOWEST_SUPPORTED_API_LEVEL = "lowest_supported_api_level"
 
 /**
- * Default value for the feature flag corresponding to [LowestSupportedApiLevel]. Currently,
+ * Default value for the platform parameter corresponding to [LowestSupportedApiLevel]. Currently,
  * according to the app-level build.gradle file, the lowest supported API Level is 19. This is set
  * as the default value for this feature flag.
  */

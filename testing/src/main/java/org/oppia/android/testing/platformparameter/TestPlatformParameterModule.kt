@@ -326,6 +326,7 @@ class TestPlatformParameterModule {
       enableInteractionConfigChangeStateRetention =
         ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
       enablePerformanceMetricsCollection = ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+      enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
     }
   }
 }
