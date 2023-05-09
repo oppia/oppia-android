@@ -276,4 +276,8 @@
   <!-- WalkThrough Activity -->
   <color name="component_color_walkthrough_activity_status_bar_color">@color/color_palette_color_palette_walkthrough_status_bar_color</color>
   <color name="component_color_walkthrough_activity_rounded_corners_color">@color/color_palette_walkthrough_activity_rounded_corners_color</color>
+  <!-- Survey Activity -->
+  <color name="component_color_survey_background_color">@color/color_palette_survey_background_color</color>
+  <color name="component_color_survey_shared_button_color">@color/color_palette_survey_shared_button_color</color>
+  <color name="component_color_survey_onboarding_background_color">@color/color_palette_primary_color</color>
 </resources>

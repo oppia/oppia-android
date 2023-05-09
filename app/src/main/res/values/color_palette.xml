@@ -243,4 +243,6 @@
   <color name="color_palette_avatar_background_22_color">@color/color_def_avatar_background_22</color>
   <color name="color_palette_avatar_background_23_color">@color/color_def_avatar_background_23</color>
   <color name="color_palette_avatar_background_24_color">@color/color_def_avatar_background_24</color>
+  <color name="color_palette_survey_background_color">@color/color_def_survey_background</color>
+  <color name="color_palette_survey_shared_button_color">@color/color_def_survey_buttons_white</color>
 </resources>
