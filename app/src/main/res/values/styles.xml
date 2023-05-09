@@ -481,7 +481,6 @@
   <style name="TextViewCenterHorizontal" parent="TextView.Common1">
     <item name="android:gravity">center_horizontal</item>
   </style>
-
   <!-- ShapeableImageView -->
   <!-- The corner size & family type are set up to ensure a circular shape is created for components
        with equal width & height
@@ -489,5 +488,62 @@
   <style name="ShapeAppearanceOverlay.RoundedShape">
     <item name="cornerSize">50%</item>
     <item name="cornerFamily">rounded</item>
+  </style>
+
+  <style name="SurveyFreeFormAnswerEditText" parent="Widget.AppCompat.EditText">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textCursorDrawable">@drawable/color_cursor</item>
+    <item name="android:background">@drawable/edit_text_background</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:imeOptions">actionDone</item>
+    <item name="android:maxLength">200</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:paddingBottom">8dp</item>
+    <item name="android:paddingEnd">12dp</item>
+    <item name="android:paddingStart">12dp</item>
+    <item name="android:paddingTop">8dp</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+    <item name="android:textColorHint">@color/component_color_shared_edit_text_hint_color</item>
+    <item name="android:textSize">14sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <!-- Survey Primary Button -->
+  <style name="SurveyPrimaryButton" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:paddingEnd">12dp</item>
+    <item name="android:paddingStart">12dp</item>
+    <item name="android:minWidth">144dp</item>
+    <item name="android:background">@drawable/state_button_primary_background</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">true</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- Survey Secondary Button -->
+  <style name="SurveySecondaryButton" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:paddingEnd">12dp</item>
+    <item name="android:paddingStart">12dp</item>
+    <item name="android:minWidth">144dp</item>
+    <item name="android:background">@drawable/survey_button_secondary_background</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">true</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_button_background_trim_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- Survey Previous Button -->
+  <style name="SurveyPreviousButton" parent="BorderlessMaterialButton">
+    <item name="android:paddingEnd">12dp</item>
+    <item name="android:paddingStart">12dp</item>
+    <item name="android:minWidth">144dp</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">true</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_button_background_trim_color</item>
+    <item name="android:textSize">14sp</item>
   </style>
 </resources>

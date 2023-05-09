@@ -103,6 +103,7 @@
 
         <Button
           android:id="@+id/survey_previous_button"
+          style="@style/SurveyPreviousButton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/survey_previous_button"
@@ -113,6 +114,7 @@
 
         <Button
           android:id="@+id/survey_next_button"
+          style="@style/SurveyPrimaryButton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/next"
