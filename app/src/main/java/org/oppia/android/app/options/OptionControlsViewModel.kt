@@ -73,11 +73,6 @@ class OptionControlsViewModel @Inject constructor(
         )
 
       optionsReadingTextSizeViewModel.readingTextSize.set(profile.readingTextSize)
-      // Loading the initial options in the sub-options container
-      if (isMultipane.get()!! && isFirstOpen) {
-        optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
-        isFirstOpen = false
-      }
 
       val optionAudioViewViewModel =
         OptionsAudioLanguageViewModel(
