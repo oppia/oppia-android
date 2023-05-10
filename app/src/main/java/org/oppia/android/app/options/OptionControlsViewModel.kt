@@ -98,8 +98,10 @@ class OptionControlsViewModel @Inject constructor(
 
       // Loading the initial options in the sub-options container
       if (isMultipane.get()!! && isFirstOpen) {
-        optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
-        isFirstOpen = false
+        activity.runOnUiThread {
+          optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
+          isFirstOpen = false
+        }
       }
 
       itemsList
