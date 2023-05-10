@@ -258,9 +258,8 @@ annotation class OptionalAppUpdateVersionCode
 const val OPTIONAL_APP_UPDATE_VERSION_CODE = "optional_app_update_version_code"
 
 /**
- * Default value for the platform parameter corresponding to [OptionalAppUpdateVersionCode]. The
- * default value is set as 1 which is the version code for the current app version. This will
- * prevent an optional update being presented incorrectly.
+ * Default value for the platform parameter that contains the integer version code of the latest
+ * available optional app update.
  */
 const val OPTIONAL_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE = 1
 
@@ -278,29 +277,28 @@ annotation class ForcedAppUpdateVersionCode
 const val FORCED_APP_UPDATE_VERSION_CODE = "forced_app_update_version_code"
 
 /**
- * Default value for the platform parameter corresponding to [ForcedAppUpdateVersionCode]. The
- * default value is intentionally set to 0 which is lower than the default value for the
- * [OptionalAppUpdateVersionCode] that is 1. This is so that the app will not be forced to update
- * unless the value is explicitly set in the gating console.
+ * Default value for the platform parameter that contains the integer version code of the latest
+ * available forced app update.
  */
 const val FORCED_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE = 0
 
 /**
- * Qualifier for the platform parameter that contains an integer from the gating console that
- * indicates the lowest supported API Level.
+ * Qualifier for the platform parameter that contains an integer indicating the lowest supported
+ * Android API Level.
  */
 @Qualifier
 annotation class LowestSupportedApiLevel
 
 /**
- * Name of the platform parameter that contains an integer from the gating console that indicates
- * the lowest supported API Level.
+ * Name of the platform parameter that contains an integer indicating the lowest supported Android
+ * API Level.
  */
 const val LOWEST_SUPPORTED_API_LEVEL = "lowest_supported_api_level"
 
 /**
- * Default value for the platform parameter corresponding to [LowestSupportedApiLevel]. Currently,
- * according to the app-level build.gradle file, the lowest supported API Level is 19. This is set
- * as the default value for this feature flag.
+ * Default value for the platform parameter that contains an integer indicating the lowest
+ * supported Android API Level.
+ *
+ * Th current minimum supported API level is 19 (KitKat).
  */
 const val LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE = 19
