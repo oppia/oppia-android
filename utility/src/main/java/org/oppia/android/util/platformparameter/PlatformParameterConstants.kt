@@ -299,6 +299,6 @@ const val LOWEST_SUPPORTED_API_LEVEL = "lowest_supported_api_level"
  * Default value for the platform parameter that contains an integer indicating the lowest
  * supported Android API Level.
  *
- * Th current minimum supported API level is 19 (KitKat).
+ * The current minimum supported API level is 19 (KitKat).
  */
 const val LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE = 19
