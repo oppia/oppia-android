@@ -138,4 +138,5 @@
   <color name="color_def_avatar_background_24">#CC2970</color>
   <color name="color_def_survey_background">#F5F5F5</color>
   <color name="color_def_survey_buttons_white">#F6F6F6</color>
+  <color name="color_def_survey_dialog_blue">#BDCCCC</color>
 </resources>

@@ -546,4 +546,24 @@
     <item name="android:textColor">@color/component_color_shared_secondary_button_background_trim_color</item>
     <item name="android:textSize">14sp</item>
   </style>
+
+  <!-- Survey Exit Confirmation Dialog -->
+  <style name="ExitSurveyConfirmationDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
+    <item name="android:windowNoTitle">false</item>
+    <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
+    <!-- Set this to true if you want Full Screen without status bar -->
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowIsFloating">false</item>
+    <!-- This is important! Don't forget to set window background -->
+    <item name="android:windowIsTranslucent">false</item>
+    <item name="android:windowBackground">@color/color_palette_transparent_background_color</item>
+    <!-- Additionally if you want animations when dialog opening -->
+    <item name="android:windowEnterAnimation">@anim/slide_up</item>
+    <item name="android:windowExitAnimation">@anim/slide_down</item>
+  </style>
+
+  <style name="SurveyQuestionTextStyle" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">20sp</item>
+  </style>
 </resources>

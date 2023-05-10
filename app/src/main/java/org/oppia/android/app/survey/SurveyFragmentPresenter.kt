@@ -31,7 +31,7 @@ class SurveyFragmentPresenter @Inject constructor(
   private lateinit var surveyProgressText: TextView
   private lateinit var surveyProgressBar: ProgressBar
   private lateinit var questionTextView: TextView
-  private lateinit var questionRecycleView: RecyclerView
+  private lateinit var questionRecyclerView: RecyclerView
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -48,17 +48,19 @@ class SurveyFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     binding.lifecycleOwner = fragment
-    questionRecycleView = binding.root.findViewById(R.id.survey_question_recycler_view)
+
+    questionRecyclerView = binding.root.findViewById(R.id.survey_question_recycler_view)
     questionTextView = binding.root.findViewById(R.id.survey_question_text)
-    surveyToolbar = binding.surveyToolbar
     surveyProgressText = binding.surveyProgressText
     surveyProgressBar = binding.surveyProgressBar
-    activity.setSupportActionBar(surveyToolbar)
 
+    surveyToolbar = binding.surveyToolbar
+    activity.setSupportActionBar(surveyToolbar)
     binding.surveyToolbar.setNavigationOnClickListener {
-      // Implementation of this will show a confirm exit dialog.
-      activity.onBackPressed()
+      val dialogFragment = ExitSurveyConfirmationDialogFragment.newInstance(profileId)
+      dialogFragment.showNow(fragment.childFragmentManager, TAG_EXIT_SURVEY_CONFIRMATION_DIALOG)
     }
+
     return binding.root
   }
 

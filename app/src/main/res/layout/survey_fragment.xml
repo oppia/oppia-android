@@ -5,6 +5,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
+    android:background="@color/component_color_survey_background_color"
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -99,7 +100,7 @@
         android:id="@+id/survey_navigation_buttons_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/survey_navigation_buttons_container_margin">
+        android:layout_margin="@dimen/survey_navigation_buttons_margin">
 
         <Button
           android:id="@+id/survey_previous_button"

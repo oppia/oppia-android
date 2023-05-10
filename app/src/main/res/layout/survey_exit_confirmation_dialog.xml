@@ -4,15 +4,18 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/component_color_shared_white_background_color">
+    android:layout_height="match_parent">
 
     <TextView
       android:id="@+id/exit_survey_confirmation_text"
-      style="@style/TextViewCenter"
-      android:layout_margin="@dimen/survey_free_form_text_margin"
+      style="@style/SurveyQuestionTextStyle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/survey_question_text_margin"
       android:text="@string/survey_exit_confirmation_text"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintVertical_chainStyle="packed"
+      app:layout_constraintBottom_toTopOf="@id/continue_survey_button"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,10 +24,14 @@
       style="@style/SurveyPrimaryButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/survey_submit_button_margin_top"
+      android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
+      android:layout_marginStart="@dimen/survey_navigation_buttons_margin"
+      android:layout_marginEnd="@dimen/survey_navigation_buttons_margin"
       android:text="@string/survey_continue_survey_button"
-      app:layout_constraintEnd_toEndOf="@id/exit_survey_confirmation_text"
-      app:layout_constraintStart_toStartOf="@id/exit_survey_confirmation_text"
+      app:layout_constraintVertical_chainStyle="packed"
+      app:layout_constraintBottom_toTopOf="@id/exit_survey_button"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/exit_survey_confirmation_text" />
 
     <Button
@@ -32,10 +39,11 @@
       style="@style/SurveySecondaryButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/survey_submit_button_margin_top"
+      android:layout_margin="@dimen/survey_navigation_buttons_margin"
       android:text="@string/survey_exit_button"
-      app:layout_constraintEnd_toEndOf="@id/continue_survey_button"
-      app:layout_constraintStart_toStartOf="@id/continue_survey_button"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/continue_survey_button" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

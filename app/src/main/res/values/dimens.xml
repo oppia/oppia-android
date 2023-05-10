@@ -777,5 +777,6 @@
   <dimen name="survey_question_text_margin">28dp</dimen>
   <dimen name="survey_question_recycler_view_margin">28dp</dimen>
   <dimen name="survey_submit_button_margin_top">28dp</dimen>
-  <dimen name="survey_navigation_buttons_container_margin">28dp</dimen>
+  <dimen name="survey_navigation_buttons_margin">28dp</dimen>
+  <dimen name="survey_shared_corner_radius">4dp</dimen>
 </resources>
