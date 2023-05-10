@@ -608,4 +608,15 @@
   <string name="survey_thank_you_title_text">Thank you</string>
   <string name="survey_nps_not_at_all_likely_label">0 - Not at all likely</string>
   <string name="survey_nps_extremely_likely_label">10 - Extremely likely</string>
+  <string name="user_type_answer_learner">I am a learner</string>
+  <string name="user_type_answer_teacher">I am a teacher</string>
+  <string name="user_type_answer_parent">I am a parent</string>
+  <string name="user_type_answer_other">Other</string>
+  <string name="market_fit_answer_very_disappointed">Very disappointed</string>
+  <string name="market_fit_answer_somewhat_disappointed">Somewhat disappointed</string>
+  <string name="market_fit_answer_not_disappointed">Not disappointed</string>
+  <string name="market_fit_answer_wont_use_oppia">N/A - Don\’t use Oppia anymore</string>
+  <string name="nps_promoter_feedback_question">We are glad you have enjoyed your experience with Oppia. Please share what helped you the most:</string>
+  <string name="nps_passive_feedback_question">Thanks for responding! How can we provide a better experience?</string>
+  <string name="nps_detractor_feedback_question">Help us improve your experience! Please share  the primary reason for your score:</string>
 </resources>
