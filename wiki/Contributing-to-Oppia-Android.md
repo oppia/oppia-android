@@ -8,12 +8,17 @@ If you run into any problems along the way, we're here to help! Check out our [w
 
 ## Table of Contents
 
+- [How to find information on this wiki](#how-to-find-information-on-this-wiki)
 - [Onboarding instructions](#onboarding-instructions)
   - [Guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)
   - [Developing your skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
 - [Important: Ongoing Bazel migration](#important-ongoing-bazel-migration)
 - [Installing the Oppia web app](#installing-the-oppia-web-app)
 - [Communication channels](#communication-channels)
+
+## How to find information on this wiki
+
+<img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/235522765-3d17617e-1f3b-4531-b84c-33af94885863.gif">
 
 ## Onboarding instructions
 
