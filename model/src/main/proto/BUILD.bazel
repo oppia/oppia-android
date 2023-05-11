@@ -329,6 +329,7 @@ oppia_proto_library(
     name = "survey_proto",
     srcs = ["survey.proto"],
     visibility = ["//:oppia_api_visibility"],
+    deps = [":languages_proto"],
 )
 
 java_lite_proto_library(
