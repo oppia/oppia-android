@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
@@ -21,22 +22,73 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   companion object {
     /** The fragment tag corresponding to the concept card dialog fragment. */
-    const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
+    private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
-    /**
-     * Creates a new fragment to show a concept card.
-     *
-     * @param skillId the skill ID for which a concept card should be loaded
-     * @param profileId the profile in which the concept card will be shown
-     * @return a new [ConceptCardFragment] to display the specified concept card
-     */
-    fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
+    private fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
       return ConceptCardFragment().apply {
         arguments = Bundle().apply {
           putString(SKILL_ID_ARGUMENT_KEY, skillId)
           decorateWithUserProfileId(profileId)
         }
       }
+    }
+
+    /**
+     * Removes any [ConceptCardFragment] in the given FragmentManager that is not of the given
+     * skill Id. If no [ConceptCardFragment] remains, creates a new fragment to show a concept card
+     * for the given skill id.
+     *
+     * @param skillId the skill ID for which a concept card should be loaded
+     * @param profileId the profile in which the concept card will be shown
+     * @param fragmentManager the [FragmentManager] where to show the concept card
+     */
+    fun bringToFrontOrCreateIfNew(
+      skillId: String,
+      profileId: ProfileId,
+      fragmentManager: FragmentManager
+    ) {
+      // Concept cards are keyed by profileId and skillId. However, in this method we are only
+      // using the skillId for equality checks. The reason is that when the user switches profiles
+      // the UI is recreated, so that it is not possible to have concept cards from different
+      // profiles in the same fragment manager.
+      val allConceptCards = fragmentManager.fragments.filterIsInstance<ConceptCardFragment>()
+      val conceptCardsWithDifferentSkillId = allConceptCards.filter { skillId != it.getSkillId() }
+      if (conceptCardsWithDifferentSkillId.isNotEmpty()) {
+        val transaction = fragmentManager.beginTransaction()
+        for (toRemove in conceptCardsWithDifferentSkillId) {
+          transaction.remove(toRemove)
+        }
+        transaction.commitNow()
+      }
+      if (allConceptCards.size <= conceptCardsWithDifferentSkillId.size) {
+        showNewInstance(skillId, profileId, fragmentManager)
+      }
+    }
+
+    /**
+     * Removes all [ConceptCardFragment] in the given FragmentManager.
+     *
+     * @param fragmentManager the [FragmentManager] from where to remove all concept cards.
+     */
+    fun dismissAll(fragmentManager: FragmentManager) {
+      val toDismiss = fragmentManager.fragments.filterIsInstance<ConceptCardFragment>()
+      if (toDismiss.isNotEmpty()) {
+        val transaction = fragmentManager.beginTransaction()
+        for (fragment in toDismiss) {
+          transaction.remove(fragment)
+        }
+        transaction.commitNow()
+      }
+    }
+
+    private fun showNewInstance(
+      skillId: String,
+      profileId: ProfileId,
+      fragmentManager: FragmentManager,
+    ): ConceptCardFragment {
+      val conceptCardFragment = newInstance(skillId, profileId)
+      conceptCardFragment.showNow(fragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+      return conceptCardFragment
     }
   }
 
@@ -74,4 +126,6 @@ class ConceptCardFragment : InjectableDialogFragment() {
     super.onStart()
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
+
+  private fun getSkillId(): String? = arguments?.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)
 }

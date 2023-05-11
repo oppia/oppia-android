@@ -8,8 +8,8 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
 /** Test Activity used for testing ConceptCardFragment */
@@ -22,7 +22,7 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     conceptCardFragmentTestActivityController.handleOnCreate(
-      intent.extractCurrentUserProfileId()
+      intent.getProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
     )
   }
 
@@ -31,16 +31,16 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_CONCEPT_CARD_DIALOG) as ConceptCardFragment?
+    return supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().singleOrNull()
   }
 
   companion object {
-
-    const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
+    private const val TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
+      "ConceptCardFragmentTestActivity.profile_id"
 
     fun createIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, ConceptCardFragmentTestActivity::class.java).also {
-        it.decorateWithUserProfileId(profileId)
+        it.putProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
       }
     }
   }
