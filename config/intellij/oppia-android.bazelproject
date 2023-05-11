@@ -1,0 +1,57 @@
+# This file contains the shared project settings for building Oppia Android using the IntelliJ Bazel
+# plugin. For possible configuration choices, see: https://ij.bazel.build/docs/project-views.html.
+
+# The directories to include (by default, all). Exclude generated and IDE files.
+directories:
+  .
+  -.aswb
+  -bazel-bin
+  -bazel-oppia-android
+  -bazel-out
+  -bazel-testlogs
+
+# Automatically use all targets from the above directories when importing.
+derive_targets_from_directories: true
+
+# All directories that are considered tests (note: not test utilities).
+test_sources:
+  app/src/test/*
+  app/src/sharedTest/*
+  domain/src/test/*
+  testing/src/test/*
+  utility/src/test/*
+  data/src/test/*
+  scripts/src/javatests/*
+
+# Non-Java languages to support.
+additional_languages:
+  kotlin
+
+# Language & Android SDK versions.
+android_min_sdk: 21
+android_sdk_platform: android-31
+java_language_level: 11
+
+# Special settings to improve syncing performance.
+shard_sync: true
+target_shard_size: 250
+sync_flags:
+  --local_ram_resources=HOST_RAM*.5
+  --config=ignore_deps_issues
+
+# Shared run configurations for a better Android Studio experience.
+import_run_configurations:
+  config/intellij/all_app_tests.xml
+  config/intellij/all_data_tests.xml
+  config/intellij/all_domain_tests.xml
+  config/intellij/all_scripts_tests.xml
+  config/intellij/all_utility_tests.xml
+  config/intellij/bazel_lint.xml
+  config/intellij/build_all_targets.xml
+  config/intellij/build_oppia_dev.xml
+  config/intellij/install_oppia_dev.xml
+  config/intellij/java_lint.xml
+  config/intellij/kotlin_lint.xml
+  config/intellij/proto_lint.xml
+  config/intellij/run_pre_push_checks.xml
+  config/intellij/xml_lint.xml

@@ -185,6 +185,12 @@ java_binary(
 )
 
 java_binary(
+    name = "bazel_setup_wizard",
+    main_class = "org.oppia.android.scripts.build.BazelSetupWizardKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/build:bazel_setup_wizard_lib"],
+)
+
+java_binary(
     name = "buf",
     main_class = "org.oppia.android.scripts.lint.BufKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/lint:buf_lib"],

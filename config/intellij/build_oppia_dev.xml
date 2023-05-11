@@ -1,0 +1,10 @@
+<configuration name="Build //:oppia_dev" default="false" factoryName="Bazel Command"
+  type="BlazeCommandRunConfigurationType">
+  <blaze-settings blaze-command="build"
+    handler-id="BlazeCommandGenericRunConfigurationHandlerProvider">
+    <blaze-target>//:oppia_dev</blaze-target>
+  </blaze-settings>
+  <method v="2">
+    <option name="Blaze.BeforeRunTask" enabled="true" />
+  </method>
+</configuration>

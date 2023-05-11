@@ -1,0 +1,11 @@
+<configuration name="Run pre-push checks" default="false" factoryName="Bazel Command"
+  type="BlazeCommandRunConfigurationType">
+  <blaze-settings blaze-command="run"
+    handler-id="BlazeCommandGenericRunConfigurationHandlerProvider">
+    <blaze-target>//scripts:pre_push_checks</blaze-target>
+    <blaze-user-exe-flag>$PROJECT_DIR$/..</blaze-user-exe-flag>
+  </blaze-settings>
+  <method v="2">
+    <option name="Blaze.BeforeRunTask" enabled="true" />
+  </method>
+</configuration>

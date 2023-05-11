@@ -1,0 +1,12 @@
+<configuration name="Kotlin Lint" factoryName="Bazel Command"
+  folderName="Static Checks" type="BlazeCommandRunConfigurationType">
+  <blaze-settings blaze-command="run"
+    handler-id="BlazeCommandGenericRunConfigurationHandlerProvider">
+    <blaze-target>//scripts:ktlint</blaze-target>
+    <blaze-user-exe-flag>$PROJECT_DIR$/..</blaze-user-exe-flag>
+    <blaze-user-exe-flag>check</blaze-user-exe-flag>
+  </blaze-settings>
+  <method v="2">
+    <option name="Blaze.BeforeRunTask" enabled="true" />
+  </method>
+</configuration>

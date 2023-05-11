@@ -5,6 +5,17 @@ Libraries corresponding to build pipeline scripts.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
+    name = "bazel_setup_wizard_lib",
+    srcs = ["BazelSetupWizard.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+    ],
+)
+
+kt_jvm_library(
     name = "filter_per_language_resources_lib",
     srcs = ["FilterPerLanguageResources.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],

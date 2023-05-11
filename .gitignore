@@ -22,6 +22,7 @@ gradlew.bat
 !*.secret
 config/oppia-dev-workflow-remote-cache-credentials.json
 bazel-*
-.bazelproject
 .aswb
 *.pb
+config/bazel/user.bazelrc
+scripts/pre-push-failures.log
