@@ -353,7 +353,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_chapterIsLocked_contentDescriptionIsCorrect() {
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+    launch<TopicActivity>(createTopicActivityIntent(profileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
@@ -399,7 +399,7 @@ class TopicLessonsFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+    launch<TopicActivity>(createTopicActivityIntent(profileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
@@ -447,7 +447,7 @@ class TopicLessonsFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+    launch<TopicActivity>(createTopicActivityIntent(profileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(

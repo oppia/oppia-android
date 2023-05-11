@@ -2267,6 +2267,7 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_kotlinFiles_includesNonColorComponentReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
+        decorateWithScreenName(HOME_ACTIVITY)
         decorateWithUserProfileId(PROFILE_ID)
         R.color.component_color_shared_activity_status_bar_color
         R.color.color_def_avatar_background_1
@@ -2302,24 +2303,23 @@ class RegexPatternValidationCheckTest {
     val exception = assertThrows(Exception::class) {
       runScript()
     }
-
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath1:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath1:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath2:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath1:5: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath2:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath3:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath2:5: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath3:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath4:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath3:5: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath4:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath5:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath4:5: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath5:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
-        $stringFilePath6:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath5:5: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath6:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath6:5: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -2427,9 +2427,10 @@ class RegexPatternValidationCheckTest {
   @Test
   fun testScreenNameTestPresence_activityTestWithScreenNameTest_screenNameTestIsPresent() {
     val requiredContent = "testActivity_createIntent_verifyScreenNameInIntent()"
+    val moreRequiredContent = "testActivity_createIntent_verifyProfileIdInIntent()"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/HomeActivityTest.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(requiredContent)
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(requiredContent + moreRequiredContent)
 
     runScript()
 
