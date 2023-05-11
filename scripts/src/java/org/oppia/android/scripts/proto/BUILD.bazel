@@ -46,7 +46,7 @@ java_proto_library(
 oppia_proto_library(
     name = "filename_pattern_validation_checks_proto",
     srcs = ["filename_pattern_validation_checks.proto"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
 java_proto_library(
@@ -58,7 +58,7 @@ java_proto_library(
 oppia_proto_library(
     name = "file_content_validation_checks_proto",
     srcs = ["file_content_validation_checks.proto"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
 java_proto_library(
@@ -70,7 +70,7 @@ java_proto_library(
 oppia_proto_library(
     name = "script_exemptions_proto",
     srcs = ["script_exemptions.proto"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
 java_proto_library(
@@ -82,7 +82,7 @@ java_proto_library(
 oppia_proto_library(
     name = "maven_dependencies_proto",
     srcs = ["maven_dependencies.proto"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
 java_proto_library(

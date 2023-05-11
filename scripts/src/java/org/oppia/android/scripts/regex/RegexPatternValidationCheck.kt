@@ -7,7 +7,7 @@ import org.oppia.android.scripts.proto.FileContentChecks
 import org.oppia.android.scripts.proto.FilenameCheck
 import org.oppia.android.scripts.proto.FilenameChecks
 import java.io.File
-import java.io.FileInputStream
+import java.io.InputStream
 
 /**
  * Script for ensuring that prohibited file contents and file naming patterns are not present in the
@@ -74,7 +74,7 @@ fun main(vararg args: String) {
  */
 private fun retrieveFilenameChecks(): List<FilenameCheck> {
   return loadProto(
-    "filename_pattern_validation_checks.pb",
+    "filename_pattern_validation_checks",
     FilenameChecks.getDefaultInstance()
   ).filenameChecksList
 }
@@ -86,28 +86,18 @@ private fun retrieveFilenameChecks(): List<FilenameCheck> {
  */
 private fun retrieveFileContentChecks(): List<FileContentCheck> {
   return loadProto(
-    "file_content_validation_checks.pb",
+    "file_content_validation_checks",
     FileContentChecks.getDefaultInstance()
   ).fileContentChecksList
 }
 
-/**
- * Helper function to parse the textproto file to a proto class.
- *
- * @param textProtoFileName name of the textproto file to be parsed
- * @param proto instance of the proto class
- * @return proto class from the parsed textproto file
- */
 private fun <T : MessageLite> loadProto(textProtoFileName: String, proto: T): T {
-  val protoBinaryFile = File("scripts/assets/$textProtoFileName")
-  val builder = proto.newBuilderForType()
-
-  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-  // and this method is bounded by the generic type T.
-  @Suppress("UNCHECKED_CAST")
-  return FileInputStream(protoBinaryFile).use {
-    builder.mergeFrom(it)
-  }.build() as T
+  return ResourceLoader.loadResource("assets/$textProtoFileName.pb").use { inputStream ->
+    // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
+    // and this method is bounded by the generic type T.
+    @Suppress("UNCHECKED_CAST")
+    proto.newBuilderForType().mergeFrom(inputStream).build() as T
+  }
 }
 
 /**
@@ -246,11 +236,11 @@ private data class MatchableFileContentCheck(
    * provided iterable.
    */
   fun computeAffectedLines(lines: Iterable<String>): List<Int> {
-    if (prohibitedContentRegex != null)
-      return lines.withIndex().filter { (_, line) ->
+    return if (prohibitedContentRegex != null) {
+      lines.withIndex().filter { (_, line) ->
         prohibitedContentRegex.containsMatchIn(line)
       }.map { (index, _) -> index }
-    else return emptyList()
+    } else emptyList()
   }
 
   /** Returns a boolean indicating whether the file contains the required content or not. */
@@ -279,6 +269,14 @@ private data class MatchableFileContentCheck(
         exemptedFileNames = fileContentCheck.exemptedFileNameList,
         exemptedFilePatterns = fileContentCheck.exemptedFilePatternsList.map { it.toRegex() }
       )
+    }
+  }
+}
+
+private object ResourceLoader {
+  fun loadResource(name: String): InputStream {
+    return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
+      "Failed to find resource corresponding to name: $name."
     }
   }
 }

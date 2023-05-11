@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.psi.KtVariableDeclaration
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.proto.KdocValidityExemptions
 import java.io.File
-import java.io.FileInputStream
+import java.io.InputStream
 
 /**
  * Script for ensuring the KDocs validity on all non-private:
@@ -40,26 +40,21 @@ import java.io.FileInputStream
  * exempted for the KDoc check.
  *
  * Usage:
- *   bazel run //scripts:kdoc_validity_check -- <path_to_directory_root> <path_to_proto_binary>
+ *   bazel run //scripts:kdoc_validity_check -- <path_to_directory_root>
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
- * - path_to_proto_binary: relative path to the exemption .pb file.
  *
  * Example:
- *   bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb
+ *   bazel run //scripts:kdoc_validity_check -- $(pwd)
  */
 fun main(vararg args: String) {
   // Path of the repo to be analyzed.
   val repoPath = "${args[0]}/"
 
-  val pathToProtoBinary = args[1]
-
-  val kdocExemptionTextProtoFilePath = "scripts/assets/kdoc_validity_exemptions"
-
   // List of annotation entries which when present on an element, the element does not needs to be
   // checked for a KDoc.
-  val kDocNotRequiredAnnotationEntryList = listOf<String>(
+  val kDocNotRequiredAnnotationEntryList = listOf(
     "Rule",
     "Mock",
     "Test",
@@ -75,8 +70,9 @@ fun main(vararg args: String) {
 
   // A list of all the files to be exempted for this check.
   val kdocExemptionList =
-    loadKdocExemptionsProto(pathToProtoBinary).getExemptedFilePathList()
-
+    ResourceLoader.loadResource("assets/kdoc_validity_exemptions.pb")
+      .use(InputStream::loadKdocExemptionsProto)
+      .exemptedFilePathList
   // A list of all kotlin files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(
     repoPath = repoPath,
@@ -87,26 +83,21 @@ fun main(vararg args: String) {
   val filesExcludingTestFiles = searchFiles.filter { file ->
     !file.nameWithoutExtension.endsWith("Test")
   }
-
   // A list of all kdoc presence failures.
   val kdocPresenceFailures = filesExcludingTestFiles.flatMap { file ->
     hasKdocFailure(file, kDocNotRequiredAnnotationEntryList)
   }
-
   val matchedFilesRelativePaths = kdocPresenceFailures.map {
     RepositoryFile.retrieveRelativeFilePath(it.first, repoPath)
   }
-
   val redundantExemptions = kdocExemptionList.filter { exemption ->
     exemption !in matchedFilesRelativePaths
   }
-
   val kdocPresenceFailuresAfterExemption = kdocPresenceFailures.filter {
     RepositoryFile.retrieveRelativeFilePath(it.first, repoPath) !in kdocExemptionList
   }
 
-  logRedundantExemptions(redundantExemptions, kdocExemptionTextProtoFilePath)
-
+  logRedundantExemptions(redundantExemptions)
   logKdocPresenceFailures(kdocPresenceFailuresAfterExemption)
 
   if (kdocPresenceFailuresAfterExemption.isNotEmpty()) {
@@ -115,7 +106,6 @@ fun main(vararg args: String) {
         "#kdoc-validity-check for more details on how to fix this.\n"
     )
   }
-
   if (kdocPresenceFailuresAfterExemption.isNotEmpty() || redundantExemptions.isNotEmpty()) {
     throw Exception("KDOC VALIDITY CHECK FAILED")
   } else {
@@ -223,9 +213,9 @@ private fun recursiveKdocPresenceChecker(
       return (memberMissingKdoc + objectKdocMissing).filterNotNull()
     }
     elem is KtNamedFunction || elem is KtVariableDeclaration || elem is KtSecondaryConstructor ->
-      return listOf(
+      return listOfNotNull(
         checkIfKDocIsMissing(elem as KtDeclaration, file, kDocNotRequiredAnnotationEntryList)
-      ).filterNotNull()
+      )
     else -> return emptyList()
   }
 }
@@ -248,7 +238,7 @@ private fun checkIfKDocIsMissing(
     return null
   }
   if (elem.docComment == null) {
-    return Pair(file, retrieveLineNumberForElement(elem, false))
+    return Pair(file, retrieveLineNumberForElement(elem))
   }
   return null
 }
@@ -271,10 +261,8 @@ private fun isKdocRequired(
   if (elem.hasModifier(KtTokens.OVERRIDE_KEYWORD)) {
     return false
   }
-  elem.getModifierList()?.getAnnotationEntries()?.forEach { it ->
-    if (it.getShortName().toString() in kDocNotRequiredAnnotationEntryList) {
-      return false
-    }
+  elem.modifierList?.annotationEntries?.forEach { it ->
+    if (it.shortName.toString() in kDocNotRequiredAnnotationEntryList) return false
   }
   return true
 }
@@ -283,23 +271,16 @@ private fun isKdocRequired(
  * Retrieves the line number for a particular [KtElement].
  *
  * @param statement the [KtElement] for which we want to get the line number
- * @param markEndOffset Whether to mark the end offset for the given element. For example:
- *     when set to true, the function will return the line number where the statement ends.
- *     Similarly, when this is set to false, the function returns the line number where the
- *     statement starts.
  * @return the line number
  */
-private fun retrieveLineNumberForElement(statement: KtElement, markEndOffset: Boolean): Int? {
+private fun retrieveLineNumberForElement(statement: KtElement): Int? {
   val file = statement.containingFile
   if (statement is KtConstructorDelegationReferenceExpression && statement.textLength == 0) {
     // PsiElement for constructor delegation reference is always generated, so we shouldn't mark
     // it's line number if it's empty
     return null
   }
-  val document = file.viewProvider.document
-  return document?.getLineNumber(
-    if (markEndOffset) statement.textRange.endOffset else statement.textOffset
-  )?.plus(1)
+  return file.viewProvider.document?.getLineNumber(statement.textOffset)?.plus(1)
 }
 
 /**
@@ -321,40 +302,25 @@ private fun logKdocPresenceFailures(kdocPresenceFailuresAfterExemption: List<Pai
  * Logs the redundant exemptions.
  *
  * @param redundantExemptions list of redundant exemptions
- * @param kdocExemptionTextProtoFilePath the location of the kdoc validity exemption textproto file
  */
-private fun logRedundantExemptions(
-  redundantExemptions: List<String>,
-  kdocExemptionTextProtoFilePath: String
-) {
+private fun logRedundantExemptions(redundantExemptions: List<String>) {
   if (redundantExemptions.isNotEmpty()) {
     println("Redundant exemptions:")
     redundantExemptions.sorted().forEach { exemption ->
       println("- $exemption")
     }
-    println(
-      "Please remove them from $kdocExemptionTextProtoFilePath.textproto"
-    )
+    println("Please remove them from kdoc_validity_exemptions.textproto")
     println()
   }
 }
 
-/**
- * Loads the KDoc validity exemptions list from a text proto file.
- *
- * @param kdocExemptionTextProtoFilePath the location of the kdoc validity exemption textproto file
- * @return proto class from the parsed textproto file
- */
-private fun loadKdocExemptionsProto(pathToProtoBinary: String): KdocValidityExemptions {
-  val protoBinaryFile = File(pathToProtoBinary)
-  val builder = KdocValidityExemptions.getDefaultInstance().newBuilderForType()
+private fun InputStream.loadKdocExemptionsProto(): KdocValidityExemptions =
+  KdocValidityExemptions.newBuilder().mergeFrom(this).build()
 
-  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-  // and this method is bounded by the generic type T.
-  @Suppress("UNCHECKED_CAST")
-  val protoObj: KdocValidityExemptions =
-    FileInputStream(protoBinaryFile).use {
-      builder.mergeFrom(it)
-    }.build() as KdocValidityExemptions
-  return protoObj
+private object ResourceLoader {
+  fun loadResource(name: String): InputStream {
+    return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
+      "Failed to find resource corresponding to name: $name."
+    }
+  }
 }

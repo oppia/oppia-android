@@ -4,7 +4,6 @@ Bazel macros for defining proto libraries.
 
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
-# TODO(#4096): Remove this once it's no longer needed.
 def oppia_proto_library(name, **kwargs):
     """
     Defines a new proto library.

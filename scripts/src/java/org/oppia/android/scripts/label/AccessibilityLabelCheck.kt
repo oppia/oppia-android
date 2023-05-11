@@ -5,6 +5,7 @@ import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import java.io.File
 import java.io.FileInputStream
+import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**
@@ -12,34 +13,24 @@ import javax.xml.parsers.DocumentBuilderFactory
  * labels.
  *
  * Usage:
- *   bazel run //scripts:accessibility_label_check -- <path_to_directory_root>
- *   <path_to_proto_binary> [paths to manifest files...]
+ *   bazel run //scripts:accessibility_label_check -- <path_to_directory_root> [manifests/paths ...]
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
- * - path_to_proto_binary: relative path to the exemption .pb file.
  * - paths to manifest files: paths leading to the manifest files.
  *
  * Example:
- *   bazel run //scripts:accessibility_label_check -- $(pwd)
- *   scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
+ *   bazel run //scripts:accessibility_label_check -- $(pwd) app/src/main/AndroidManifest.xml
  */
 fun main(vararg args: String) {
   val repoPath = "${args[0]}/"
-
-  val pathToProtoBinary = args[1]
-
-  val accessibilityLabelExemptionTextProtoFilePath = "scripts/assets/accessibility_label_exemptions"
-
   val accessibilityLabelExemptionList =
-    loadAccessibilityLabelExemptionsProto(pathToProtoBinary).getExemptedActivityList()
-
-  val manifestPaths = args.drop(2)
-
+    ResourceLoader.loadResource("assets/accessibility_label_exemptions.pb")
+      .use(InputStream::loadAccessibilityLabelExemptionsProto)
+      .exemptedActivityList
+  val manifestPaths = args.drop(1)
   val activityPathPrefix = "app/src/main/java/"
-
   val builderFactory = DocumentBuilderFactory.newInstance()
-
   val repoRoot = File(repoPath)
 
   val missingAccessibilityLabelActivities = manifestPaths.flatMap { relativePath ->
@@ -48,8 +39,8 @@ fun main(vararg args: String) {
     val doc = docBuilder.parse(file)
     // Normalisation results in the removal of redundancies such as whitespaces, line breaks and
     // comments.
-    doc.getDocumentElement().normalize()
-    val packageName = doc.getDocumentElement().getAttribute("package")
+    doc.documentElement.normalize()
+    val packageName = doc.documentElement.getAttribute("package")
     return@flatMap doc.getElementsByTagName("activity").toListOfNodes().mapNotNull { activityNode ->
       computeFailureActivityPath(
         activityNode = activityNode,
@@ -60,12 +51,10 @@ fun main(vararg args: String) {
   }
 
   val redundantExemptions = accessibilityLabelExemptionList - missingAccessibilityLabelActivities
-
   val failureActivitiesAfterExemption = missingAccessibilityLabelActivities -
     accessibilityLabelExemptionList
 
-  logRedundantExemptions(redundantExemptions, accessibilityLabelExemptionTextProtoFilePath)
-
+  logRedundantExemptions(redundantExemptions)
   logFailures(failureActivitiesAfterExemption)
 
   if (failureActivitiesAfterExemption.isNotEmpty()) {
@@ -74,7 +63,6 @@ fun main(vararg args: String) {
         "#accessibility-label-check for more details on how to fix this.\n"
     )
   }
-
   if (failureActivitiesAfterExemption.isNotEmpty() || redundantExemptions.isNotEmpty()) {
     throw Exception("ACCESSIBILITY LABEL CHECK FAILED")
   } else {
@@ -155,43 +143,25 @@ private fun logFailures(missingAccessibilityLabelActivities: List<String>) {
  * Logs the redundant exemptions.
  *
  * @param redundantExemptions list of redundant exemptions
- * @param accessibilityLabelExemptionTextProtoFilePath the location of the accessibility label
- *     exemption textproto file.
  */
-private fun logRedundantExemptions(
-  redundantExemptions: List<String>,
-  accessibilityLabelExemptionTextProtoFilePath: String
-) {
+private fun logRedundantExemptions(redundantExemptions: List<String>) {
   if (redundantExemptions.isNotEmpty()) {
     println("Redundant exemptions:")
     redundantExemptions.sorted().forEach { exemption ->
       println("- $exemption")
     }
-    println(
-      "Please remove them from $accessibilityLabelExemptionTextProtoFilePath.textproto"
-    )
+    println("Please remove them from accessibility_label_exemptions.textproto")
     println()
   }
 }
 
-/**
- * Loads the test file exemptions list to proto.
- *
- * @param pathToProtoBinary path to the pb file to be parsed
- * @return proto class from the parsed textproto file
- */
-private fun loadAccessibilityLabelExemptionsProto(
-  pathToProtoBinary: String
-): AccessibilityLabelExemptions {
-  val protoBinaryFile = File(pathToProtoBinary)
-  val builder = AccessibilityLabelExemptions.getDefaultInstance().newBuilderForType()
+private fun InputStream.loadAccessibilityLabelExemptionsProto(): AccessibilityLabelExemptions =
+  AccessibilityLabelExemptions.newBuilder().mergeFrom(this).build()
 
-  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-  // and this method is bounded by the generic type T.
-  @Suppress("UNCHECKED_CAST")
-  val protoObj: AccessibilityLabelExemptions =
-    FileInputStream(protoBinaryFile).use {
-      builder.mergeFrom(it)
-    }.build() as AccessibilityLabelExemptions
-  return protoObj
+private object ResourceLoader {
+  fun loadResource(name: String): InputStream {
+    return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
+      "Failed to find resource corresponding to name: $name."
+    }
+  }
 }

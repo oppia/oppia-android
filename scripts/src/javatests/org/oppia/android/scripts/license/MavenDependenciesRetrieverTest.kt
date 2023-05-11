@@ -801,9 +801,7 @@ class MavenDependenciesRetrieverTest {
 
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val mavenDependenciesList = retriever.retrieveMavenDependencyList(
-      "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-    )
+    val mavenDependenciesList = retriever.retrieveMavenDependencyList()
 
     assertThat(mavenDependenciesList).isEmpty()
   }
@@ -842,9 +840,7 @@ class MavenDependenciesRetrieverTest {
 
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val mavenDependenciesList = retriever.retrieveMavenDependencyList(
-      "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-    )
+    val mavenDependenciesList = retriever.retrieveMavenDependencyList()
 
     assertThat(mavenDependenciesList).isEqualTo(mavenDependencyList.mavenDependencyList)
     assertIsDependency(

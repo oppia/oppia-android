@@ -542,3 +542,9 @@ file_content_checks {
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/caching/testing/FakeAssetRepository.kt"
 }
+file_content_checks {
+  file_path_regex: "(BUILD|BUILD.bazel|.*?.bzl)$"
+  prohibited_content_regex: "\\bproto_library\\s*\\("
+  failure_message: "proto_library should never be used directly. Instead, use oppia_proto_library."
+  exempted_file_name: "model/oppia_proto_library.bzl"
+}

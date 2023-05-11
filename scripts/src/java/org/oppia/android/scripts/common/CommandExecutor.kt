@@ -4,6 +4,7 @@ import java.io.File
 
 /** Utility class for executing commands on the local filesystem. */
 interface CommandExecutor {
+  // TODO: Update kdocs.
   /**
    * Executes the specified [command] in the specified working directory [workingDir] with the
    * provided arguments being passed as arguments to the command.
@@ -19,6 +20,8 @@ interface CommandExecutor {
     workingDir: File,
     command: String,
     vararg arguments: String,
-    includeErrorOutput: Boolean = true
+    includeErrorOutput: Boolean = true,
+    standardOutputMonitor: (String) -> Unit = {},
+    standardErrorMonitor: (String) -> Unit = {}
   ): CommandResult
 }

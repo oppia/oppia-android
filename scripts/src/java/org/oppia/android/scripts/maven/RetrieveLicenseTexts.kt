@@ -17,6 +17,10 @@ import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
+import org.oppia.android.scripts.common.CommandExecutor
+import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.license.MavenDependenciesRetriever
 
 private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
   "maven_dependencies.textproto is not up-to-date"
@@ -31,7 +35,6 @@ const val MAX_LICENSE_LENGTH = 16383
  *
  * Usage:
  *   bazel run //scripts:retrieve_license_texts -- <path_to_directory_values>
- *     <path_to_maven_dependenices.pb>
  *
  * Arguments:
  * - path_to_directory_values: directory path to the values folder of the Oppia Android repository.
@@ -39,7 +42,6 @@ const val MAX_LICENSE_LENGTH = 16383
 
  * Example:
  *   bazel run //scripts:retrieve_license_texts -- $(pwd)/app/src/main/res/values
- *   scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
   RetrieveLicenseTexts(MavenArtifactPropertyFetcherImpl()).main(args)
@@ -55,7 +57,7 @@ class RetrieveLicenseTexts(
 
   /** Generates a resource xml file that contains license texts of the third-party dependencies. */
   fun main(args: Array<String>) {
-    if (args.size < 2) {
+    if (args.size != 1) {
       println(
         """
         Usage: bazel run //scripts:generate_license_texts -- <path_to_directory_values>
@@ -66,12 +68,18 @@ class RetrieveLicenseTexts(
     }
 
     val pathToValuesDirectory = args[0]
-    val pathToMavenDependenciesPb = args[1]
     val valuesDirectory = File(pathToValuesDirectory)
     check(valuesDirectory.isDirectory) { "Expected '$pathToValuesDirectory' to be a directory" }
     val thirdPartyDependenciesXml = File(valuesDirectory, "third_party_dependencies.xml")
 
-    val mavenDependencyList = retrieveMavenDependencyList(pathToMavenDependenciesPb)
+    val mavenDependencyList = ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+      val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+      val retriever =
+        MavenDependenciesRetriever(
+          pathToValuesDirectory, mavenArtifactPropertyFetcher, scriptBgDispatcher, commandExecutor
+        )
+      return@use retriever.retrieveMavenDependencyList()
+    }
     if (mavenDependencyList.isEmpty()) {
       throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
     }
@@ -90,19 +98,6 @@ class RetrieveLicenseTexts(
     )
 
     println("\nScript execution completed successfully.")
-  }
-
-  /**
-   * Retrieve the list of Maven dependencies from maven_dependencies.textproto.
-   *
-   * @param pathToPbFile path to the pb file to be parsed
-   * @return list of [MavenDependency]s
-   */
-  private fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
-    return parseTextProto(
-      pathToPbFile,
-      MavenDependencyList.getDefaultInstance()
-    ).mavenDependencyList
   }
 
   /**

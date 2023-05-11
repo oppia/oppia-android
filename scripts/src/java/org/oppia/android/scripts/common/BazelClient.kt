@@ -8,13 +8,116 @@ import java.util.Locale
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
  * the specified root directory).
  */
-class BazelClient(private val rootDirectory: File, private val commandExecutor: CommandExecutor) {
-  /** Returns all Bazel test targets in the workspace. */
-  fun retrieveAllTestTargets(): List<String> {
-    return correctPotentiallyBrokenTargetNames(
-      executeBazelCommand("query", "--noshow_progress", "kind(test, //...)")
-    )
+class BazelClient(
+  private val rootDirectory: File,
+  private val commandExecutor: CommandExecutor,
+  private val universeScope: String = "//..."
+) {
+  fun build(
+    vararg patterns: String,
+    keepGoing: Boolean = false,
+    allowFailures: Boolean = false,
+    configProfiles: Set<String> = emptySet(),
+    reportProgress: ((Int, Int) -> Unit)? = null
+  ): Result {
+    val args = listOfNotNull(
+      if (reportProgress == null) "--noshow_progress" else null,
+      "--keep_going".takeIf { keepGoing }
+    ) + configProfiles.map { "--config=$it" } + listOf("--") + patterns
+    return if (reportProgress != null) {
+      executeBazelCommandWithMonitoring(
+        "build",
+        *args.toTypedArray(),
+        allowAllFailures = allowFailures,
+        reportProgress = reportProgress
+      )
+    } else executeBazelCommand("build", *args.toTypedArray(), allowAllFailures = allowFailures)
   }
+
+  fun test(
+    vararg patterns: String,
+    keepGoing: Boolean = false,
+    allowFailures: Boolean = false,
+    configProfiles: Set<String> = emptySet(),
+    reportProgress: ((Int, Int) -> Unit)? = null
+  ): Result {
+    val args = listOfNotNull(
+      if (reportProgress == null) "--noshow_progress" else null,
+      "--keep_going".takeIf { keepGoing }
+    ) + configProfiles.map { "--config=$it" } + listOf("--") + patterns
+    return if (reportProgress != null) {
+      executeBazelCommandWithMonitoring(
+        "test",
+        *args.toTypedArray(),
+        allowAllFailures = allowFailures,
+        reportProgress = reportProgress
+      )
+    } else executeBazelCommand("test", *args.toTypedArray(), allowAllFailures = allowFailures)
+  }
+
+  fun run(
+    target: String,
+    vararg args: String,
+    allowFailures: Boolean = false,
+    silenceBazelOutput: Boolean = true,
+    monitorOutputLines: ((String) -> Unit)? = null
+  ): Result {
+    // See https://github.com/bazelbuild/bazel/issues/4867#issuecomment-830402410 for the output
+    // filtering being done here.
+    val silenceArgs = if (silenceBazelOutput) {
+      listOf(
+        "--ui_event_filters=-info,-stdout,-stderr,-progress,-warning,-start,-debug",
+        "--noshow_progress"
+      )
+    } else emptyList()
+    return executeBazelCommand(
+      "run",
+      *silenceArgs.toTypedArray(),
+      target,
+      "--",
+      *args,
+      allowAllFailures = allowFailures,
+      includeErrorOutput = monitorOutputLines != null || allowFailures,
+      combinedOutputMonitor = { line ->
+        if (monitorOutputLines != null) {
+          if (!silenceBazelOutput || ANOTHER_COMMAND_RUNNING_PATTERN.matchEntire(line) == null) {
+            monitorOutputLines(line)
+          }
+        }
+      }
+    ).let { result ->
+      result.copy(
+        outputLines = result.outputLines.filter { line ->
+          !silenceBazelOutput || ANOTHER_COMMAND_RUNNING_PATTERN.matchEntire(line) == null
+        }
+      )
+    }
+  }
+
+  fun sync(): Result = executeBazelCommand("sync")
+
+  fun shutdown(): Result = executeBazelCommand("shutdown")
+
+  fun query(
+    pattern: String, withSkyQuery: Boolean = false, allowFailures: Boolean = false
+  ): List<String> {
+    val args = listOfNotNull(
+
+      "--noshow_progress",
+      "--order_output=no".takeIf { withSkyQuery },
+      "--universe_scope=$universeScope".takeIf { withSkyQuery },
+      pattern
+    )
+    // Ignore queries which result in an error if allowFailures is enabled.
+    val queryResults =
+      executeBazelCommand(
+        "query", *args.toTypedArray(), allowAllFailures = allowFailures, includeErrorOutput = false
+      )
+    return correctPotentiallyBrokenTargetNames(queryResults.outputLines)
+  }
+
+  /** Returns all Bazel test targets in the workspace. */
+  fun retrieveAllTestTargets(): List<String> = query("kind(test, //...)")
 
   /** Returns all Bazel file targets that correspond to each of the relative file paths provided. */
   fun retrieveBazelTargets(changedFileRelativePaths: Iterable<String>): List<String> {
@@ -87,12 +190,8 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
    * Returns the list of direct and indirect Maven third-party dependencies on which the specified
    * binary depends.
    */
-  fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> {
-    return executeBazelCommand(
-      "query",
-      "deps(deps($binaryTarget) intersect //third_party/...) intersect @maven//..."
-    )
-  }
+  fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> =
+    query("deps(deps($binaryTarget) intersect //third_party/...) intersect @maven_app//...")
 
   private fun retrieveFilteredSiblings(
     filterRuleType: String,
@@ -104,7 +203,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
       "--universe_scope=//...",
       "--order_output=no",
       "kind($filterRuleType, siblings($buildFileTarget))"
-    )
+    ).outputLines
   }
 
   private fun correctPotentiallyBrokenTargetNames(lines: List<String>): List<String> {
@@ -149,7 +248,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
       "coverage",
       bazelTestTarget,
       "--instrumentation_filter=$computeInstrumentation"
-    )
+    ).outputLines
     return parseCoverageDataFilePath(bazelTestTarget, coverageCommandOutputLines).map { path ->
       File(path).readLines()
     }
@@ -195,39 +294,111 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
       val allArguments = prefixArgs.toList() + lastArgument
       executeBazelCommand(
         "query", *allArguments.toTypedArray(), allowPartialFailures = allowPartialFailures
-      )
+      ).outputLines
     }
   }
 
   private fun computeMaxArgumentLength(partitions: List<List<String>>) =
-    partitions.map(this::computeArgumentLength).maxOrNull() ?: 0
+    partitions.maxOfOrNull(this::computeArgumentLength) ?: 0
 
   private fun computeArgumentLength(args: List<String>) = args.joinToString(" ").length
 
   @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
-  private fun executeBazelCommand(
+  private fun executeBazelCommandWithMonitoring(
+    command: String,
     vararg arguments: String,
-    allowPartialFailures: Boolean = false
-  ): List<String> {
+    allowAllFailures: Boolean = false,
+    allowPartialFailures: Boolean = false,
+    includeErrorOutput: Boolean = allowAllFailures,
+    reportProgress: ((Int, Int) -> Unit)
+  ): Result {
+    return executeBazelCommand(
+      command,
+      "--color=yes",
+      "--curses=yes",
+      "--progress_in_terminal_title",
+      *arguments,
+      allowAllFailures = allowAllFailures,
+      allowPartialFailures = allowPartialFailures,
+      includeErrorOutput = includeErrorOutput,
+      combinedOutputMonitor = createUpdateMonitor(reportProgress)
+    )
+  }
+
+  @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
+  private fun executeBazelCommand(
+    command: String,
+    vararg arguments: String,
+    allowAllFailures: Boolean = false,
+    allowPartialFailures: Boolean = false,
+    includeErrorOutput: Boolean = allowAllFailures,
+    combinedOutputMonitor: (String) -> Unit = {}
+  ): Result {
     val result =
       commandExecutor.executeCommand(
-        rootDirectory, command = "bazel", *arguments, includeErrorOutput = false
+        rootDirectory,
+        command = "bazel",
+        command,
+        *arguments,
+        includeErrorOutput = includeErrorOutput,
+        standardOutputMonitor = combinedOutputMonitor,
+        standardErrorMonitor = combinedOutputMonitor
       )
     // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
     // 3 is expected for queries since it indicates that some of the arguments don't correspond to
     // valid targets. Note that this COULD result in legitimate issues being ignored, but it's
     // unlikely.
-    val expectedExitCodes = if (allowPartialFailures) listOf(0, 3) else listOf(0)
-    check(result.exitCode in expectedExitCodes) {
-      "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +
-        "\nStandard output:\n${result.output.joinToString("\n")}" +
-        "\nError output:\n${result.errorOutput.joinToString("\n")}"
+    if (!allowAllFailures) {
+      val expectedExitCodes = if (allowPartialFailures) listOf(0, 3) else listOf(0)
+      check(result.exitCode in expectedExitCodes) {
+        "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +
+          "\nStandard output:\n${result.output.joinToString("\n")}" +
+          "\nError output:\n${result.errorOutput.joinToString("\n")}"
+      }
     }
-    return result.output
+    return Result(result.exitCode, result.output)
   }
+
+  private fun createUpdateMonitor(
+    reportProgress: ((Int, Int) -> Unit)
+  ): (String) -> Unit {
+    var lastNum = 0
+    var lastDen = 0
+    return { line ->
+      val (newNum, newDen) = maybeUpdateProgress(line, reportProgress, lastNum, lastDen)
+      lastNum = newNum
+      lastDen = newDen
+    }
+  }
+
+  private fun maybeUpdateProgress(
+    line: String, reportProgress: ((Int, Int) -> Unit), lastNumerator: Int, lastDenominator: Int
+  ): Pair<Int, Int> {
+    val progress = line.parseProgressUpdate() ?: (lastNumerator to lastDenominator)
+    val updatedNumerator = progress.first.coerceAtLeast(lastNumerator)
+    val updatedDenominator = progress.second.coerceAtLeast(lastDenominator)
+    if (updatedNumerator > lastNumerator || updatedDenominator > lastDenominator) {
+      // Only report progress if it doesn't go backwards (and has actually changed).
+      reportProgress(updatedNumerator, updatedDenominator)
+    }
+    return updatedNumerator to updatedDenominator
+  }
+
+  data class Result(val exitCode: Int, val outputLines: List<String>)
 
   private companion object {
     private const val MAX_ALLOWED_ARG_STR_LENGTH = 50_000
+    private val CHANGE_TERMINAL_TITLE_PATTERN =
+      "^\\x1B]0;\\[([\\d,]+)\\s+/\\s+([\\d,]+)].+?$".toRegex()
+    private val ANOTHER_COMMAND_RUNNING_PATTERN =
+      "^Another command \\(pid=\\d+?\\) is running. Waiting for it to complete.+?$".toRegex()
+
+    private fun String.parseProgressUpdate(): Pair<Int, Int>? {
+      return CHANGE_TERMINAL_TITLE_PATTERN.matchEntire(this)?.let {
+        val (numerator, denominator) = it.destructured
+        numerator.replace(",", "").toInt() to denominator.replace(",", "").toInt()
+      }
+    }
   }
 }
 

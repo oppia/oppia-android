@@ -11,7 +11,7 @@ import org.oppia.android.scripts.proto.TodoOpenExemption
 import org.oppia.android.scripts.proto.TodoOpenExemptions
 import org.oppia.android.scripts.todo.model.Todo
 import java.io.File
-import java.io.FileInputStream
+import java.io.InputStream
 
 /**
  * Script for ensuring that all TODOs present in the repository are correctly formatted and
@@ -22,7 +22,7 @@ import java.io.FileInputStream
  * followed in order to ensure that this script works correctly in the local environment.
  *
  * Usage:
- *   bazel run //scripts:todo_open_check -- <path_to_dir_root> <path_to_proto_binary> [regenerate]
+ *   bazel run //scripts:todo_open_check -- <path_to_dir_root> [regenerate]
  *
  * Arguments:
  * - path_to_dir_root: directory path to the root of the Oppia Android repository.
@@ -31,15 +31,14 @@ import java.io.FileInputStream
  *     exemption textproto file and print it to the command output.
  *
  * Examples:
- *   bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
- *   bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb regenerate
+ *   bazel run //scripts:todo_open_check -- $(pwd)
+ *   bazel run //scripts:todo_open_check -- $(pwd) regenerate
  */
 fun main(vararg args: String) {
   val repoRoot = File(args[0]).absoluteFile.normalize()
-  val pathToProtoBinary = args[1]
-  val regenerateFile = args.getOrNull(2) == "regenerate"
+  val regenerateFile = args.getOrNull(1) == "regenerate"
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    TodoOpenCheck(repoRoot, scriptBgDispatcher).runTodoOpenCheck(pathToProtoBinary, regenerateFile)
+    TodoOpenCheck(repoRoot, scriptBgDispatcher).runTodoOpenCheck(regenerateFile)
   }
 }
 
@@ -58,25 +57,22 @@ class TodoOpenCheck(
    * Determines whether the TODOs in the configured repository are correctly formatted and
    * correspond to open issues on GitHub.
    *
-   * @param pathToProtoBinary the absolute path to the exemptions proto that defines lines on which
-   *   it's okay for the issue to either not exist or not be correctly formatted
    * @param regenerateFile whether, regardless of an existing failure, the exemptions file should be
    *   regenerated and printed to the standard output in textproto format
    */
-  fun runTodoOpenCheck(pathToProtoBinary: String, regenerateFile: Boolean) {
+  fun runTodoOpenCheck(regenerateFile: Boolean) {
     // List of all the open issues on GitHub of this repository.
     val openIssueList = runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
 
     val todoExemptionList =
-      loadTodoExemptionsProto(pathToProtoBinary).getTodoOpenExemptionList()
+      ResourceLoader.loadResource("assets/todo_open_exemptions.pb")
+        .use(InputStream::loadTodoExemptionsProto)
+        .todoOpenExemptionList
 
     val allTodos = TodoCollector.collectTodos(repoPath = "${repoRoot.path}/")
-
     val poorlyFormattedTodos = TodoCollector.collectPoorlyFormattedTodos(allTodos)
-
-    val correctlyFormattedTodos = TodoCollector.collectCorrectlyFormattedTodos(
-      allTodos - poorlyFormattedTodos
-    )
+    val correctlyFormattedTodos =
+      TodoCollector.collectCorrectlyFormattedTodos(allTodos - poorlyFormattedTodos.toSet())
 
     val openIssueFailureTodos = correctlyFormattedTodos.filter { todo ->
       checkIfIssueDoesNotMatchOpenIssue(codeLine = todo.lineContent, openIssueList = openIssueList)
@@ -88,19 +84,16 @@ class TodoOpenCheck(
 
     val poorlyFormattedTodosAfterExemption =
       retrieveTodosAfterExemption(todos = poorlyFormattedTodos, todoExemptionList, repoRoot)
-
     val openIssueFailureTodosAfterExemption =
       retrieveTodosAfterExemption(todos = openIssueFailureTodos, todoExemptionList, repoRoot)
 
-    val todoExemptionTextProtoFilePath = "scripts/assets/todo_exemptions"
-    logRedundantExemptions(redundantExemptions, todoExemptionTextProtoFilePath)
+    logRedundantExemptions(redundantExemptions)
 
     logFailures(
       invalidTodos = poorlyFormattedTodosAfterExemption,
       repoRoot,
       failureMessage = "TODOs not in correct format:",
     )
-
     logFailures(
       invalidTodos = openIssueFailureTodosAfterExemption,
       repoRoot,
@@ -202,27 +195,21 @@ class TodoOpenCheck(
     openIssueList: List<GitHubIssue>,
   ): Boolean {
     val parsedIssueNumberFromTodo = TodoCollector.parseIssueNumberFromTodo(codeLine)
-    return openIssueList.none { it -> it.number == parsedIssueNumberFromTodo }
+    return openIssueList.none { it.number == parsedIssueNumberFromTodo }
   }
 
   /**
    * Logs the redundant exemptions.
    *
    * @param redundantExemptions list of redundant exemptions
-   * @param todoExemptionTextProtoFilePath the location of the TODO exemption textproto file
    */
-  private fun logRedundantExemptions(
-    redundantExemptions: List<Pair<String, Int>>,
-    todoExemptionTextProtoFilePath: String
-  ) {
+  private fun logRedundantExemptions(redundantExemptions: List<Pair<String, Int>>) {
     if (redundantExemptions.isNotEmpty()) {
       println("Redundant exemptions (there are no TODOs corresponding to these lines):")
       redundantExemptions.sortedWith(compareBy({ it.first }, { it.second })).forEach { exemption ->
         println("- ${exemption.first}:${exemption.second}")
       }
-      println(
-        "Please remove them from $todoExemptionTextProtoFilePath.textproto"
-      )
+      println("Please remove them from todo_exemptions.textproto")
       println()
     }
   }
@@ -262,23 +249,14 @@ class TodoOpenCheck(
     return TextFormat.printer().printToString(baseProto)
   }
 
-  /**
-   * Loads the TODO open check exemptions list corresponding to a text proto file.
-   *
-   * @param pathToProtoBinary the location of the exemption textproto file
-   * @return proto class from the parsed textproto file
-   */
-  private fun loadTodoExemptionsProto(pathToProtoBinary: String): TodoOpenExemptions {
-    val protoBinaryFile = File(pathToProtoBinary)
-    val builder = TodoOpenExemptions.getDefaultInstance().newBuilderForType()
-
-    // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-    // and this method is bounded by the generic type T.
-    @Suppress("UNCHECKED_CAST")
-    val protoObj: TodoOpenExemptions =
-      FileInputStream(protoBinaryFile).use {
-        builder.mergeFrom(it)
-      }.build() as TodoOpenExemptions
-    return protoObj
+  private object ResourceLoader {
+    fun loadResource(name: String): InputStream {
+      return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
+        "Failed to find resource corresponding to name: $name."
+      }
+    }
   }
 }
+
+private fun InputStream.loadTodoExemptionsProto(): TodoOpenExemptions =
+  TodoOpenExemptions.newBuilder().mergeFrom(this).build()
