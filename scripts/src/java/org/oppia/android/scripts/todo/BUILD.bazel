@@ -4,6 +4,12 @@ and correspond to open issues on GitHub
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//scripts:script_assets.bzl", "generate_todo_assets_list_from_text_protos")
+
+_TODO_OPEN_EXEMPTION_ASSETS = generate_todo_assets_list_from_text_protos(
+    name = "todo_exemption_assets",
+    todo_exemptions_name = ["todo_open_exemptions"],
+)
 
 kt_jvm_library(
     name = "todo_collector",
@@ -18,6 +24,8 @@ kt_jvm_library(
 kt_jvm_library(
     name = "todo_open_check_lib",
     srcs = ["TodoOpenCheck.kt"],
+    resource_strip_prefix = "scripts/src/java",
+    resources = _TODO_OPEN_EXEMPTION_ASSETS,
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":todo_collector",

@@ -19,7 +19,6 @@ import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.xml.sax.InputSource
 import java.io.File
-import java.io.FileInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
 private const val MAVEN_PREFIX = "@maven_app//:"
@@ -170,15 +169,10 @@ class MavenDependenciesRetriever(
   /**
    * Retrieves the list of Maven dependencies from maven_dependencies.textproto.
    *
-   * @param pathToPbFile path to the pb file to be parsed
    * @return list of dependencies
    */
-  fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
-    return parseTextProto(
-      pathToPbFile,
-      MavenDependencyList.getDefaultInstance()
-    ).mavenDependencyList
-  }
+  fun retrieveMavenDependencyList(): List<MavenDependency> =
+    parseTextProto(MavenDependencyList.getDefaultInstance()).mavenDependencyList
 
   /**
    * Extracts the license names and license links of the dependencies from their corresponding POM
@@ -225,17 +219,13 @@ class MavenDependenciesRetriever(
   /**
    * Parses the text proto file to a proto class.
    *
-   * @param pathToPbFile path to the pb file to be parsed
    * @param proto instance of the proto class
    * @return proto class from the parsed text proto file
    */
-  private fun parseTextProto(
-    pathToPbFile: String,
-    proto: MavenDependencyList
-  ): MavenDependencyList {
-    return FileInputStream(File(pathToPbFile)).use {
-      proto.newBuilderForType().mergeFrom(it)
-    }.build() as MavenDependencyList
+  private fun parseTextProto(proto: MavenDependencyList): MavenDependencyList {
+    return checkNotNull(javaClass.getResourceAsStream("assets/maven_dependencies.pb")) {
+      "Failed to find maven_dependencies.pb."
+    }.use { proto.newBuilderForType().mergeFrom(it).build() }
   }
 
   private fun extractLicenseLinksFromPom(

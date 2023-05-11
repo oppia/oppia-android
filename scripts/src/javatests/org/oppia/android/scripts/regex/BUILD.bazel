@@ -9,7 +9,6 @@ kt_jvm_test(
     name = "RegexPatternValidationCheckTest",
     srcs = ["RegexPatternValidationCheckTest.kt"],
     deps = [
-        "//scripts:regex_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",

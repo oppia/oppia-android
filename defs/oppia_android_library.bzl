@@ -1,3 +1,7 @@
+"""
+TODO: Finish docstring.
+"""
+
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load(":generate_android_manifest.bzl", "generate_android_manifest")
 
@@ -17,6 +21,19 @@ def oppia_android_library(
         testonly = False,
         manifest = None,
         exports_manifest = False):
+    """TODO: Finish explanation.
+
+    Args:
+        name: str. TODO: Finish.
+        srcs: list of label. TODO: Finish.
+        visibility: list of str. TODO: Finish.
+        deps: list of label. TODO: Finish.
+        android_merge_deps: list of label. TODO: Finish.
+        requires_android_resources_support: boolean. TODO: Finish.
+        testonly: boolean. TODO: Finish.
+        manifest: label. TODO: Finish.
+        exports_manifest: boolean. TODO: Finish.
+    """
     if requires_android_resources_support and len(android_merge_deps) != 0:
         fail(
             "requires_android_resources_support doesn't need to be set when android_merge_deps" +

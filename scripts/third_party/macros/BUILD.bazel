@@ -1,0 +1,3 @@
+"""
+This package provides Starlark macros and rules for interacting with verification and build scripts.
+"""

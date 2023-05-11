@@ -3,10 +3,18 @@ Libraries corresponding to documentation-related scripts.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//scripts:script_assets.bzl", "generate_kdoc_validity_assets_list_from_text_protos")
+
+_KDOC_VALIDITY_EXEMPTION_ASSETS = generate_kdoc_validity_assets_list_from_text_protos(
+    name = "kdoc_validity_exemption_assets",
+    kdoc_validity_exemptions_name = ["kdoc_validity_exemptions"],
+)
 
 kt_jvm_library(
     name = "kdoc_validity_check_lib",
     srcs = ["KdocValidityCheck.kt"],
+    resource_strip_prefix = "scripts/src/java",
+    resources = _KDOC_VALIDITY_EXEMPTION_ASSETS,
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",

@@ -2,8 +2,8 @@
 TODO: finish build file doc.
 """
 
-load("//defs:oppia_android_test.bzl", "oppia_android_test")
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
+load("//defs:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
     name = "RatioExtensionsTest",

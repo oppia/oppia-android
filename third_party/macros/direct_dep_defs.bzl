@@ -33,8 +33,11 @@ IMPORT_TYPE = struct(
     # Indicates that the dependency is an HTTP Jar file, per Bazel's http_jar.
     HTTP_JAR = struct(import_type_enum_value = 1),
 
+    # Indicates that the dependency is an HTTP file, per Bazel's http_file.
+    HTTP_FILE = struct(import_type_enum_value = 2),
+
     # Indicates that the dependency is a git repository, per Bazel's git_repository.
-    GIT_REPOSITORY = struct(import_type_enum_value = 2),
+    GIT_REPOSITORY = struct(import_type_enum_value = 3),
 )
 
 # Represents a type of patch to apply to an imported dependency.
@@ -90,6 +93,7 @@ def create_http_archive_reference(
         remote_patch_path_start_removal_count: int. An optional integer specifying the number of
             leading path fragments to remove from remote patches before applying them. This defaults
             to 0, but oftentimes '1' is required as it removes the normal "a/" and "b/" prefixes.
+        workspace_file: label. TODO: Finish.
         export_details: dict. An optional dict created using one of create_export_library_details or
             create_export_binary_details. When provided, the system will ensure this archive is made
             accessible under a "third_party:<alias>" reference (where the alias is defined as part
@@ -166,6 +170,36 @@ def create_http_jar_reference(
         workspace_file = None,
         export_details = export_details,
         exports_details = exports_details,
+    )
+
+def create_http_file_reference(
+        name,
+        sha,
+        version,
+        test_only,
+        url = None,
+        urls = None,
+        maven_url_suffix = None,
+        export_details = None,
+        exports_details = None,
+        executable = False):
+    return _create_http_import_reference(
+        name,
+        import_type = IMPORT_TYPE.HTTP_FILE,
+        sha = sha,
+        version = version,
+        test_only = test_only,
+        import_bind_name = None,
+        url = url,
+        urls = urls,
+        maven_url_suffix = maven_url_suffix,
+        strip_prefix_template = None,
+        patches_details = [],
+        remote_patch_path_start_removal_count = None,
+        workspace_file = None,
+        export_details = export_details,
+        exports_details = exports_details,
+        executable = executable,
     )
 
 def create_git_repository_reference(
@@ -249,11 +283,11 @@ def create_export_library_details(
             cases.
     """
     return {
-        "runtime_deps": runtime_deps,
         "export_toolchain": export_toolchain,
         "export_type": EXPORT_TYPE.LIBRARY,
         "exportable_target": exportable_target,
         "exposed_artifact_name": exposed_artifact_name,
+        "runtime_deps": runtime_deps,
         "should_be_visible_to_maven_targets": should_be_visible_to_maven_targets,
     }
 
@@ -280,12 +314,12 @@ def create_export_binary_details(
             cases.
     """
     return {
-        "runtime_deps": runtime_deps,
         "export_toolchain": EXPORT_TOOLCHAIN.JAVA,
         "export_type": EXPORT_TYPE.BINARY,
         "exportable_runtime_target": exportable_runtime_target,
         "exposed_artifact_name": exposed_artifact_name,
         "main_class": main_class,
+        "runtime_deps": runtime_deps,
     }
 
 def create_maven_artifact_configuration(
@@ -388,7 +422,8 @@ def _create_http_import_reference(
         remote_patch_path_start_removal_count,
         workspace_file,
         export_details,
-        exports_details):
+        exports_details,
+        executable = False):
     # The '+' here is working around syntax issues when trying to use XOR.
     if int(url != None) + int(urls != None) + int(maven_url_suffix != None) != 1:
         fail("Expected exactly one of url, urls, or maven_template_url to be defined.")
@@ -401,6 +436,7 @@ def _create_http_import_reference(
         import_type = import_type,
         test_only = test_only,
         dependency_details = {
+            "executable": executable,
             "sha": sha,
             "strip_prefix_template": strip_prefix_template,
             "url_templates": urls,
@@ -435,8 +471,8 @@ def _create_import_dependency_reference(
         "import_bind_name": import_bind_name,
         "import_type": import_type,
         "name": name,
-        "remote_patch_path_start_removal_count": remote_patch_path_start_removal_count,
-        "workspace_file": workspace_file,
         "patches_details": patches_details,
+        "remote_patch_path_start_removal_count": remote_patch_path_start_removal_count,
         "test_only": test_only,
+        "workspace_file": workspace_file,
     }

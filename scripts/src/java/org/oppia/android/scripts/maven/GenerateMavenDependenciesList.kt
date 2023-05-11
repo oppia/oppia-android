@@ -16,7 +16,6 @@ import org.oppia.android.scripts.proto.MavenDependencyList
  * Usage:
  *   bazel run //scripts:generate_maven_dependencies_list  -- <path_to_directory_root>
  *   <path_to_maven_install_json> <path_to_maven_dependencies_textproto>
- *   <path_to_maven_dependencies_pb>
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
@@ -25,8 +24,8 @@ import org.oppia.android.scripts.proto.MavenDependencyList
  * - path_to_maven_dependencies_pb: relative path to the maven_dependencies.pb file.
  * Example:
  *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
- *   third_party/versions/maven_install.json scripts/assets/maven_dependencies.textproto
- *   scripts/assets/maven_dependencies.pb
+ *   third_party/versions/maven_install.json
+ *   scripts/src/java/org/oppia/android/scripts/license/assets/maven_dependencies.textproto
  */
 fun main(args: Array<String>) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
@@ -45,20 +44,16 @@ class GenerateMavenDependenciesList(
    * which Oppia Android depends and write them in maven_dependencies.textproto.
    */
   fun main(args: Array<String>) {
-    if (args.size < 4) {
-      throw Exception("Too few Arguments passed")
-    }
+    require(args.size == 3) { "Too few Arguments passed." }
     val pathToRoot = args[0]
     val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
-    val pathToMavenDependenciesPb = args[3]
     ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
       runBlocking {
         generateDependenciesList(
           pathToRoot,
           pathToMavenInstallJson,
           pathToMavenDependenciesTextProto,
-          pathToMavenDependenciesPb,
           scriptBgDispatcher
         )
       }
@@ -69,7 +64,6 @@ class GenerateMavenDependenciesList(
     pathToRoot: String,
     pathToMavenInstallJson: String,
     pathToMavenDependenciesTextProto: String,
-    pathToMavenDependenciesPb: String,
     scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
   ) {
     val retriever =
@@ -85,8 +79,7 @@ class GenerateMavenDependenciesList(
     val dependenciesListFromPom =
       retriever.retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
-    val dependenciesListFromTextProto =
-      retriever.retrieveMavenDependencyList(pathToMavenDependenciesPb)
+    val dependenciesListFromTextProto = retriever.retrieveMavenDependencyList()
 
     val updatedDependenciesList = retriever.addChangesFromTextProto(
       dependenciesListFromPom, dependenciesListFromTextProto

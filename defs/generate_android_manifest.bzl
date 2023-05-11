@@ -1,3 +1,7 @@
+"""
+TODO: Finish docstring.
+"""
+
 def _generate_android_manifest_impl(ctx):
     output_file = ctx.outputs.output_file
     package = ctx.attr.package
@@ -20,9 +24,9 @@ def _generate_android_manifest_impl(ctx):
 
 _generate_android_manifest = rule(
     attrs = {
+        "min_sdk_version": attr.int(mandatory = True),
         "output_file": attr.output(mandatory = True),
         "package": attr.string(mandatory = True),
-        "min_sdk_version": attr.int(mandatory = True),
         "target_sdk_version": attr.int(mandatory = True),
     },
     implementation = _generate_android_manifest_impl,

@@ -3,7 +3,7 @@ package org.oppia.android.scripts.testfile
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
-import java.io.FileInputStream
+import java.io.InputStream
 
 /**
  * Script for ensuring that all production files have test files present.
@@ -18,15 +18,15 @@ import java.io.FileInputStream
  *   bazel run //scripts:test_file_check -- $(pwd)
  */
 fun main(vararg args: String) {
-  // Path of the repo to be analyzed.
   val repoPath = "${args[0]}/"
-
-  val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
 
   // A list of all the files to be exempted for this check.
   // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
-  val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
-    .getExemptedFilePathList()
+
+  val testFileExemptionList =
+    ResourceLoader.loadResource("assets/test_file_exemptions.pb")
+      .use(InputStream::loadTestFileExemptionsProto)
+      .exemptedFilePathList
 
   // A list of all kotlin files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(
@@ -88,22 +88,13 @@ private fun logFailures(matchedFiles: List<File>) {
   }
 }
 
-/**
- * Loads the test file exemptions list to proto.
- *
- * @param testFileExemptiontextProto the location of the test file exemption textproto file
- * @return proto class from the parsed textproto file
- */
-private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-  val protoBinaryFile = File("$testFileExemptiontextProto.pb")
-  val builder = TestFileExemptions.getDefaultInstance().newBuilderForType()
+private fun InputStream.loadTestFileExemptionsProto(): TestFileExemptions =
+  TestFileExemptions.newBuilder().mergeFrom(this).build()
 
-  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-  // and this method is bounded by the generic type T.
-  @Suppress("UNCHECKED_CAST")
-  val protoObj: TestFileExemptions =
-    FileInputStream(protoBinaryFile).use {
-      builder.mergeFrom(it)
-    }.build() as TestFileExemptions
-  return protoObj
+private object ResourceLoader {
+  fun loadResource(name: String): InputStream {
+    return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
+      "Failed to find resource corresponding to name: $name."
+    }
+  }
 }

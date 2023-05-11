@@ -8,6 +8,8 @@ Furthermore, annotation processor plugins must be configured within this file by
 corresponding setup macro.
 """
 
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
+load("//scripts/third_party/macros:ktlint.bzl", "extract_ktlint_jar")
 load("//scripts/third_party/versions:direct_http_versions.bzl", "DIRECT_REMOTE_DEPENDENCIES")
 load("//scripts/third_party/versions:maven_config.bzl", "MAVEN_ARTIFACT_CONFIGURATION")
 load(
@@ -53,4 +55,26 @@ set_up_moshi_plugin(
     moshi_compiler_dep = "//scripts/third_party:com_squareup_moshi_moshi-kotlin-codegen",
     moshi_exported_library = "//scripts/third_party:com_squareup_moshi_moshi",
     visibility = [":script_all_artifact_visibility"],
+)
+
+native_binary(
+    name = "buf",
+    src = select(
+        {
+            "@bazel_tools//src/conditions:darwin_arm64": "@buf-darwin-arm64//file",
+            "@bazel_tools//src/conditions:darwin_x86_64": "@buf-darwin-x86_64//file",
+            "@bazel_tools//src/conditions:linux_aarch64": "@buf-linux-aarch64//file",
+            "@bazel_tools//src/conditions:linux_x86_64": "@buf-linux-x86_64//file",
+            "@bazel_tools//src/conditions:windows_arm64": "@buf-windows-arm64//file",
+            "@bazel_tools//src/conditions:windows_x64": "@buf-windows-x86_64//file",
+        },
+        no_match_error = "Buf is not supported on this platform.",
+    ),
+    out = "buf",
+)
+
+extract_ktlint_jar(
+    name = "ktlint",
+    input_ktlint_shell_file = "@ktlint//file",
+    main_class = "com.pinterest.ktlint.Main",
 )

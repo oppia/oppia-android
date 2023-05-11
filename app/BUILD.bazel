@@ -3,9 +3,9 @@
 This library contains the app's core user-facing source files and functionality.
 """
 
-load("//defs:oppia_android_library.bzl", "oppia_android_resource_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
+load("//defs:oppia_android_library.bzl", "oppia_android_resource_library")
 
 filegroup(
     name = "layout_resources",

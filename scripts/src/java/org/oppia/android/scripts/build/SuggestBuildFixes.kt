@@ -72,7 +72,9 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     if (expFastRun) {
       println("[Experimental] Pre-building to compute which targets actually require reanalysis...")
     } else println("Pre-building to improve analyzing performance...")
-    targetPatterns.forEach { bazelClient.build(it, keepGoing = true, allowFailures = true) }
+    targetPatterns.forEach {
+      bazelClient.build(it, keepGoing = true, allowFailures = true).outputLines
+    }
 
     // Second, determine which targets are failing and require reworking.
     val targetsRequiringAnalysis = if (expFastRun) {
@@ -82,7 +84,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
           keepGoing = true,
           allowFailures = true,
           configProfiles = setOf("only_check_for_failures")
-        ).mapNotNull { outputLine ->
+        ).outputLines.mapNotNull { outputLine ->
           outputLine.takeIf { it.startsWith("ERROR: ") }
             ?.substringAfter("ERROR: ", missingDelimiterValue = "")
         }.mapNotNull { errorLine ->
@@ -228,7 +230,8 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
 
     companion object {
       fun detectFailures(bazelClient: BazelClient, target: Target): DetectedFailure {
-        val failureLines = bazelClient.build(target.fullyQualifiedTargetPath, allowFailures = true)
+        val failureLines =
+          bazelClient.build(target.fullyQualifiedTargetPath, allowFailures = true).outputLines
         val correctedTarget = target.normalize()
 
         val targetForDepAdding = failureLines.singleOrNull {

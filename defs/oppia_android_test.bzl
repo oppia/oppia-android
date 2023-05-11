@@ -24,15 +24,10 @@ def oppia_android_test(
     Args:
       name: str. The name of the Kotlin test file without the '.kt' suffix.
       srcs: list of str. The name of the Kotlin test files to be run.
-      test_manifest: str. The path to the test manifest file.
-      test_class: The package of the src file. For example, if the src is 'FakeEventLoggerTest.kt',
-          then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
-      enable_data_binding: boolean. Indicates whether the test enables data-binding.
       deps: list of str. The list of dependencies needed to run the tests.
-      additional_runtime_deps: list of str. The list of runtime-only dependencies needed to run the
-          tests.
-      assets: list of str. A list of assets needed to run the tests.
-      assets_dir: str. The path to the assets directory.
+      android_merge_deps: list of label. TODO: Finish.
+      include_robolectric_support: boolean. TODO: Finish.
+      runtime_deps: list of label. The list of runtime-only dependencies needed to run the tests.
     """
 
     # TODO: Double-check that all tests using resources are doing it through the new way.

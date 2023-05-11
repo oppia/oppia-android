@@ -32,7 +32,9 @@ class CommandExecutorImpl(
     workingDir: File,
     command: String,
     vararg arguments: String,
-    includeErrorOutput: Boolean
+    includeErrorOutput: Boolean,
+    standardOutputMonitor: (String) -> Unit,
+    standardErrorMonitor: (String) -> Unit
   ): CommandResult {
     check(workingDir.isDirectory) {
       "Expected working directory to be an actual directory: $workingDir"
@@ -47,8 +49,8 @@ class CommandExecutorImpl(
     // Consume the input & error streams individually, and separately from waiting for the process
     // to complete (since consuming the output channels may be required for the process to actually
     // finish executing properly).
-    val stdoutLinesDeferred = process.inputStream.readAllLinesAsync()
-    val stderrLinesDeferred = process.errorStream.readAllLinesAsync()
+    val stdoutLinesDeferred = process.inputStream.readAllLinesAsync(standardOutputMonitor)
+    val stderrLinesDeferred = process.errorStream.readAllLinesAsync(standardErrorMonitor)
 
     val finished = process.waitFor(processTimeout, processTimeoutUnit)
     val (standardOutputLines, standardErrorLines) = try {
@@ -66,9 +68,14 @@ class CommandExecutorImpl(
     )
   }
 
-  private fun InputStream.readAllLinesAsync(): Deferred<List<String>> {
+  private fun InputStream.readAllLinesAsync(monitor: (String) -> Unit): Deferred<List<String>> {
     return CoroutineScope(scriptBgDispatcher).async {
-      mutableListOf<String>().also { lines -> convertToAsyncLineFlow().collect { lines += it } }
+      mutableListOf<String>().also { lines ->
+        convertToAsyncLineFlow().collect { line ->
+          lines += line
+          monitor(line)
+        }
+      }
     }
   }
 

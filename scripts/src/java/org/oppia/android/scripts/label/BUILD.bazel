@@ -4,10 +4,18 @@ are defined with labels.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//scripts:script_assets.bzl", "generate_accessibility_label_assets_list_from_text_protos")
+
+_ACCESSIBILITY_LABEL_EXEMPTION_ASSETS = generate_accessibility_label_assets_list_from_text_protos(
+    name = "accessibility_label_exemption_assets",
+    accessibility_label_exemptions_name = ["accessibility_label_exemptions"],
+)
 
 kt_jvm_library(
     name = "accessibility_label_check_lib",
     srcs = ["AccessibilityLabelCheck.kt"],
+    resource_strip_prefix = "scripts/src/java",
+    resources = _ACCESSIBILITY_LABEL_EXEMPTION_ASSETS,
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",

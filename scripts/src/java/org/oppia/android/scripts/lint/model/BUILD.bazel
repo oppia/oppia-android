@@ -1,0 +1,22 @@
+"""
+Libraries corresponding to logical domain models corresponding to lint static analysis scripts.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "model",
+    srcs = [
+        "SarifArtifactLocation.kt",
+        "SarifLocation.kt",
+        "SarifMessage.kt",
+        "SarifOutput.kt",
+        "SarifPhysicalLocation.kt",
+        "SarifRegion.kt",
+        "SarifResult.kt",
+        "SarifResultLevel.kt",
+        "SarifRun.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//scripts/third_party:moshi"],
+)

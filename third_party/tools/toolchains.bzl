@@ -4,12 +4,12 @@ Android project.
 """
 
 load("//third_party/tools/android:toolchain_setup.bzl", set_up_android = "set_up")
+load("//third_party/tools/go:toolchain_setup.bzl", set_up_go = "set_up")
 load("//third_party/tools/java:toolchain_setup.bzl", set_up_java = "set_up")
 load("//third_party/tools/kotlin:toolchain_setup.bzl", set_up_kotlin = "set_up")
 load("//third_party/tools/proto:toolchain_setup.bzl", set_up_proto = "set_up")
 load("//third_party/tools/robolectric:toolchain_setup.bzl", set_up_robolectric = "set_up")
 load("//third_party/tools/skylib:toolchain_setup.bzl", set_up_skylib = "set_up")
-load("//third_party/tools/stardoc:toolchain_setup.bzl", set_up_stardoc = "set_up")
 load("//third_party/tools/tools_android:toolchain_setup.bzl", set_up_tools_android = "set_up")
 
 # buildifier: disable=unnamed-macro
@@ -33,3 +33,4 @@ def initialize_toolchains_for_workspace():
     set_up_proto()
     set_up_robolectric()
     set_up_tools_android()
+    set_up_go()

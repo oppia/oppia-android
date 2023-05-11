@@ -3,7 +3,7 @@ Provides Starlark macros for importing direct dependencies needed to build Oppia
 """
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file", "http_jar")
 load(":direct_dep_defs.bzl", "IMPORT_TYPE", "PATCH_ORIGIN")
 
 def download_direct_workspace_dependencies(dependencies, maven_repositories):
@@ -42,6 +42,9 @@ def _set_up_http_archive_dependency(import_details, maven_repositories):
 def _set_up_http_jar_dependency(import_details, maven_repositories):
     _set_up_http_import(import_details, maven_repositories, import_dep_without_patches = http_jar)
 
+def _set_up_http_file_dependency(import_details, maven_repositories):
+    _set_up_http_import(import_details, maven_repositories, import_dep_without_patches = http_file)
+
 def _set_up_http_import(
         import_details,
         maven_repositories,
@@ -77,6 +80,13 @@ def _set_up_http_import(
             remote_patch_strip = import_details.get("remote_patch_path_start_removal_count"),
             workspace_file = import_details.get("workspace_file"),
         )
+    elif import_dep_without_patches == http_file:
+        import_dep_without_patches(
+            name = import_details.get("import_bind_name") or import_details["name"],
+            urls = unique_urls,
+            sha256 = dependency_details["sha"],
+            executable = dependency_details["executable"],
+        )
     else:
         import_dep_without_patches(
             name = import_details.get("import_bind_name") or import_details["name"],
@@ -107,6 +117,8 @@ def _set_up_remote_dependency(import_details, maven_repositories):
         _set_up_http_archive_dependency(import_details, maven_repositories)
     elif import_details["import_type"] == IMPORT_TYPE.HTTP_JAR:
         _set_up_http_jar_dependency(import_details, maven_repositories)
+    elif import_details["import_type"] == IMPORT_TYPE.HTTP_FILE:
+        _set_up_http_file_dependency(import_details, maven_repositories)
     elif import_details["import_type"] == IMPORT_TYPE.GIT_REPOSITORY:
         _set_up_git_repository_dependency(import_details)
     else:

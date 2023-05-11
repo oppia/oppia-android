@@ -13,17 +13,16 @@ import org.oppia.android.scripts.proto.MavenDependency
  *
  * Usage:
  *   bazel run //scripts:maven_dependencies_list_check -- <path_to_root>
- *   <path_to_maven_install_json> <path_to_maven_dependencies_pb>
+ *   <path_to_maven_install_json>
  *
  *
  * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.
  * - path_to_maven_install_json: relative path to the Maven installation manifest file.
- * - path_to_maven_dependencies_pb: relative path to the maven_dependencies.pb file.
  *
  * Example:
  *   bazel run //scripts:maven_dependencies_list_check -- $(pwd)
- *   third_party/versions/maven_install.json scripts/assets/maven_dependencies.pb
+ *   third_party/versions/maven_install.json
  */
 fun main(args: Array<String>) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
@@ -47,12 +46,9 @@ class MavenDependenciesListCheck(
   fun main(args: Array<String>) {
     val pathToRoot = args[0]
     val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
-    val pathToMavenDependenciesPb = args[2]
     ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
       runBlocking {
-        checkMavenDependenciesList(
-          pathToRoot, pathToMavenInstallJson, pathToMavenDependenciesPb, scriptBgDispatcher
-        )
+        checkMavenDependenciesList(pathToRoot, pathToMavenInstallJson, scriptBgDispatcher)
       }
     }
   }
@@ -60,7 +56,6 @@ class MavenDependenciesListCheck(
   private suspend fun checkMavenDependenciesList(
     pathToRoot: String,
     pathToMavenInstallJson: String,
-    pathToMavenDependenciesPb: String,
     scriptBackgroundCoroutineDispatcher: ScriptBackgroundCoroutineDispatcher
   ) {
     val mavenDependenciesRetriever = MavenDependenciesRetriever(
@@ -84,7 +79,7 @@ class MavenDependenciesListCheck(
 
     val dependenciesListFromTextProto =
       mavenDependenciesRetriever
-        .retrieveMavenDependencyList(pathToMavenDependenciesPb)
+        .retrieveMavenDependencyList()
 
     val updatedDependenciesList =
       mavenDependenciesRetriever.addChangesFromTextProto(
