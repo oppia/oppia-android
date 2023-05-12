@@ -3,7 +3,7 @@ package org.oppia.android.app.databinding;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import androidx.annotation.NonNull;
-import androidx.core.view.MarginLayoutParamsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
 /** Holds all custom binding adapters that set margin values. */
@@ -14,7 +14,12 @@ public final class MarginBindingAdapters {
   public static void setLayoutMarginStart(@NonNull View view, float marginStart) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      MarginLayoutParamsCompat.setMarginStart(params, (int) marginStart);
+      float marginEnd = params.getMarginEnd();
+      if (isRtlLayout(view)) {
+        setLayoutDirectionalMargins(view, (int) marginEnd, (int) marginStart);
+      } else {
+        setLayoutDirectionalMargins(view, (int) marginStart, (int) marginEnd);
+      }
       view.requestLayout();
     }
   }
@@ -24,9 +29,23 @@ public final class MarginBindingAdapters {
   public static void setLayoutMarginEnd(@NonNull View view, float marginEnd) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      MarginLayoutParamsCompat.setMarginEnd(params, (int) marginEnd);
+      float marginStart = params.getMarginStart();
+      if (isRtlLayout(view)) {
+        setLayoutDirectionalMargins(view, (int) marginEnd, (int) marginStart);
+      } else {
+        setLayoutDirectionalMargins(view, (int) marginStart, (int) marginEnd);
+      }
       view.requestLayout();
     }
+  }
+
+  private static void setLayoutDirectionalMargins(
+      @NonNull View view,
+      int marginStart,
+      int marginEnd
+  ) {
+    MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+    params.setMargins(marginStart, params.topMargin, marginEnd, params.bottomMargin);
   }
 
   /** Used to set a margin-top for views. */
@@ -34,7 +53,12 @@ public final class MarginBindingAdapters {
   public static void setLayoutMarginTop(@NonNull View view, float marginTop) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.topMargin = (int) marginTop;
+      params.setMargins(
+          params.getMarginStart(),
+          (int) marginTop,
+          params.getMarginEnd(),
+          params.bottomMargin
+      );
       view.requestLayout();
     }
   }
@@ -44,7 +68,12 @@ public final class MarginBindingAdapters {
   public static void setLayoutMarginBottom(@NonNull View view, float marginBottom) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.bottomMargin = (int) marginBottom;
+      params.setMargins(
+          params.getMarginStart(),
+          params.topMargin,
+          params.getMarginEnd(),
+          (int) marginBottom
+      );
       view.requestLayout();
     }
   }
@@ -62,5 +91,9 @@ public final class MarginBindingAdapters {
       );
       view.requestLayout();
     }
+  }
+
+  private static boolean isRtlLayout(View view) {
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 }

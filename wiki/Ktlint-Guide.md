@@ -1,3 +1,11 @@
+## Table of Contents
+
+- [Installation](#installation)
+- [Commands](#commands)
+- [Macros](#macros)
+  - [Steps to create a macro](#steps-to-create-a-macro)
+- [How to fix the most common issues?](#how-to-fix-the-most-common-issues) 
+
 # Installation
 Once you had completed all the [installation steps](https://github.com/oppia/oppia-android/wiki#prerequisites), you will be having a `ktlint` file in your `opensource/oppia-android-tools` folder. 
 

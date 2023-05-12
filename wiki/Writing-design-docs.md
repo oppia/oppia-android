@@ -1,3 +1,11 @@
+## Table of Contents
+
+- [Instructions](#instructions)
+- [How to respond to doc reviews](#how-to-respond-to-doc-reviews)
+- [Why we write design documents](#why-we-write-design-documents)
+- [Tips when writing design documents](#tips-when-writing-design-documents)
+  - [Additional tips for large projects](#additional-tips-for-large-projects)
+
 ## Instructions
 When writing design docs at Oppia, please use this [design doc template](https://docs.google.com/document/d/1mnz8f708DZIa6BpUyRmbb0gCT6EKO3wIvWa_3rOEOYs/edit#). This will ensure that all the necessary information for the project is documented in a central location, and enable project reviews to be done effectively.
 
