@@ -17,7 +17,7 @@
     android:id="@+id/mark_topics_completed_fragment_root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_shared_white_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/mark_topics_completed_app_bar_layout"

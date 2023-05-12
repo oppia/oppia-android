@@ -35,6 +35,8 @@
     * [Ktlint Guide](https://github.com/oppia/oppia-android/wiki/Ktlint-Guide) 
     * [Static Analysis Checks](https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks)
     * [Accessibility Guide](https://github.com/oppia/oppia-android/wiki/Accessibility-A11y-Guide)
+    * [Debugging](https://github.com/oppia/oppia-android/wiki/Debugging)
+      * [How do I find the root cause of a bug?](https://github.com/oppia/oppia-android/wiki/Debugging#How-do-I-find-the-root-cause-of-a-bug)
   * [Background Processing](https://github.com/oppia/oppia-android/wiki/Background-Processing)
     * [Kotlin Coroutines](https://github.com/oppia/oppia-android/wiki/Kotlin-Coroutines)
     * [DataProvider & LiveData](https://github.com/oppia/oppia-android/wiki/DataProvider-&-LiveData)
@@ -46,6 +48,7 @@
   * [Work Manager](https://github.com/oppia/oppia-android/wiki/Work-Manager)
   * [Dependency Injection](https://github.com/oppia/oppia-android/wiki/Dependency-Injection) with [Dagger](https://github.com/oppia/oppia-android/wiki/Dagger)
   * [Revert & regression policy](https://github.com/oppia/oppia-android/wiki/Revert-&-regression-policy)
+  * [Spotlight Guide](https://github.com/oppia/oppia-android/wiki/Spotlight-Guide)
   * Bazel
     * [Gradle Bazel Migration Best Practices and FAQ](https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ)    
     * [Updating Maven Dependencies](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies)
