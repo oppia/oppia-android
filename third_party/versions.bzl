@@ -149,16 +149,9 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
         "version": "5.1",
     },
-    "rules_kotlin": {
-        "sha": "12d22a3d9cbcf00f2e2d8f0683ba87d3823cb8c7f6837568dd7e48846e023307",
-        "version": "v1.5.0",
-        # TODO: Finalize.
-        #        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
-        #        "version": "v1.7.1",
-    },
     "rules_kotlin_prerelease": {
         "sha": "1d872b9c6546f0f737a356d873b164d70282760fe4c880349770abc9e494c9ce",
-        "version": "v1.7.2",  # TODO: See if the 1.8 RC3 works, instead.
+        "version": "v1.7.2",
     },
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
