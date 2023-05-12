@@ -1,6 +1,7 @@
 package org.oppia.android.domain.platformparameter
 
 import android.app.Application
+import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,6 +12,7 @@ import dagger.Provides
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_DEFAULT_VALUE
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
@@ -24,6 +26,8 @@ import org.oppia.android.testing.platformparameter.TestBooleanParam
 import org.oppia.android.testing.platformparameter.TestIntegerParam
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.platformparameter.TestStringParam
+import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
@@ -44,6 +48,9 @@ class PlatformParameterModuleTest {
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
 
+  @Inject
+  lateinit var context: Context
+
   @field:[Inject TestStringParam]
   lateinit var stringPlatformParameterProvider: Provider<PlatformParameterValue<String>>
 
@@ -52,6 +59,12 @@ class PlatformParameterModuleTest {
 
   @field:[Inject TestBooleanParam]
   lateinit var booleanPlatformParameterProvider: Provider<PlatformParameterValue<Boolean>>
+
+  @field:[Inject OptionalAppUpdateVersionCode]
+  lateinit var optionalAppUpdateVersionCodeProvider: Provider<PlatformParameterValue<Int>>
+
+  @field:[Inject ForcedAppUpdateVersionCode]
+  lateinit var forcedAppUpdateVersionCodeProvider: Provider<PlatformParameterValue<Int>>
 
   private val platformParameterMapWithValues by lazy {
     val mockStringPlatformParameter = PlatformParameter.newBuilder()
@@ -137,6 +150,20 @@ class PlatformParameterModuleTest {
       .isEqualTo(TEST_BOOLEAN_PARAM_SERVER_VALUE)
   }
 
+  @Test
+  fun testModule_retrieveOptionalAppUpdateVersionCode_returnsParamValue() {
+    setUpTestApplicationComponent(platformParameterMapWithValues)
+    assertThat(optionalAppUpdateVersionCodeProvider.get().value)
+      .isEqualTo(context.getVersionCode())
+  }
+
+  @Test
+  fun testModule_retrieveForcedAppUpdateVersionCode_returnsParamValue() {
+    setUpTestApplicationComponent(platformParameterMapWithValues)
+    assertThat(forcedAppUpdateVersionCodeProvider.get().value)
+      .isEqualTo(context.getVersionCode())
+  }
+
   private fun setUpTestApplicationComponent(platformParameterMap: Map<String, PlatformParameter>) {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
@@ -149,6 +176,12 @@ class PlatformParameterModuleTest {
     fun providePlatformParameterSingleton(
       platformParameterSingletonImpl: PlatformParameterSingletonImpl
     ): PlatformParameterSingleton = platformParameterSingletonImpl
+
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
   }
 
   // TODO(#89): Move this to a common test application component.

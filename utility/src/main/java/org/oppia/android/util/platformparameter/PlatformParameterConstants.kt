@@ -258,12 +258,6 @@ annotation class OptionalAppUpdateVersionCode
 const val OPTIONAL_APP_UPDATE_VERSION_CODE = "optional_app_update_version_code"
 
 /**
- * Default value for the platform parameter that contains the integer version code of the latest
- * available optional app update.
- */
-const val OPTIONAL_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE = 1
-
-/**
  * Qualifier for the platform parameter that contains the version code of the latest available
  * forced app update, which is used to notify the app that a mandatory update is available.
  */
@@ -275,12 +269,6 @@ annotation class ForcedAppUpdateVersionCode
  * forced app update.
  */
 const val FORCED_APP_UPDATE_VERSION_CODE = "forced_app_update_version_code"
-
-/**
- * Default value for the platform parameter that contains the integer version code of the latest
- * available forced app update.
- */
-const val FORCED_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE = 0
 
 /**
  * Qualifier for the platform parameter that contains an integer indicating the lowest supported

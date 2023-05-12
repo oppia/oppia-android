@@ -13,6 +13,7 @@ kt_android_library(
         "TestBooleanPlatformParameter.kt",
         "TestIntegerPlatformParameter.kt",
         "TestStringPlatformParameter.kt",
+        "TestOptionalAppUpdateVersionCode.kt",
     ],
     visibility = [
         "//:oppia_testing_visibility",
@@ -35,6 +36,7 @@ kt_android_library(
         ":dagger",
         ":test_constants",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
 

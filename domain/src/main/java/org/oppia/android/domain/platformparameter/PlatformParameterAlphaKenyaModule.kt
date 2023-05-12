@@ -1,7 +1,9 @@
 package org.oppia.android.domain.platformparameter
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -26,14 +28,12 @@ import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
-import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
 import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
-import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
@@ -212,24 +212,26 @@ class PlatformParameterAlphaKenyaModule {
   @Provides
   @OptionalAppUpdateVersionCode
   fun provideOptionalAppUpdateVersionCode(
-    platformParameterSingleton: PlatformParameterSingleton
+    platformParameterSingleton: PlatformParameterSingleton,
+    context: Context
   ): PlatformParameterValue<Int> {
     return platformParameterSingleton.getIntegerPlatformParameter(
       OPTIONAL_APP_UPDATE_VERSION_CODE
     ) ?: PlatformParameterValue.createDefaultParameter(
-      OPTIONAL_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE
+      context.getVersionCode()
     )
   }
 
   @Provides
   @ForcedAppUpdateVersionCode
   fun provideForcedAppUpdateVersionCode(
-    platformParameterSingleton: PlatformParameterSingleton
+    platformParameterSingleton: PlatformParameterSingleton,
+    context: Context
   ): PlatformParameterValue<Int> {
     return platformParameterSingleton.getIntegerPlatformParameter(
       FORCED_APP_UPDATE_VERSION_CODE
     ) ?: PlatformParameterValue.createDefaultParameter(
-      FORCED_APP_UPDATE_VERSION_CODE_DEFAULT_VALUE
+      context.getVersionCode()
     )
   }
 
