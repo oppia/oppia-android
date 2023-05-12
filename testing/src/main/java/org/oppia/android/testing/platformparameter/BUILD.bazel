@@ -13,7 +13,6 @@ kt_android_library(
         "TestBooleanPlatformParameter.kt",
         "TestIntegerPlatformParameter.kt",
         "TestStringPlatformParameter.kt",
-        "TestOptionalAppUpdateVersionCode.kt",
     ],
     visibility = [
         "//:oppia_testing_visibility",

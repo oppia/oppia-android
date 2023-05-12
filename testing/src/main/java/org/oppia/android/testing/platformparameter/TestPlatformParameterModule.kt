@@ -237,20 +237,6 @@ class TestPlatformParameterModule {
     )
   }
 
-  @TestOptionalAppUpdateVersionCode
-  @Provides
-  @Singleton
-  fun provideTestForcedAppUpdateVersionCode(
-    platformParameterSingleton: PlatformParameterSingleton,
-    context: Context
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      TEST_OPTIONAL_APP_UPDATE_VERSION_CODE_NAME
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      context.getVersionCode()
-    )
-  }
-
   @Provides
   @LowestSupportedApiLevel
   fun provideLowestSupportedApiLevel(
