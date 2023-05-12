@@ -65,10 +65,6 @@ class TopicFragmentPresenter @Inject constructor(
       (activity as TopicActivity).finish()
     }
 
-    binding.topicToolbar.setOnClickListener {
-      binding.topicToolbarTitle.isSelected = true
-    }
-
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
