@@ -45,9 +45,9 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/expandable_solution_header"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:id="@+id/expandable_solution_header">
+          android:layout_height="wrap_content">
 
           <TextView
             android:id="@+id/solution_title"
@@ -58,9 +58,9 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif-medium"
+            android:text="@string/hint_list_solution_title"
             android:textColor="@color/component_color_hints_and_solutions_fragment_text_color"
             android:textSize="20sp"
-            android:text="@string/hint_list_solution_title"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -96,6 +96,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
+            android:background="@color/component_color_shared_transparent_background_color"
             android:contentDescription="@{isListExpanded? @string/hide_solution : @string/show_solution}"
             android:minWidth="48dp"
             android:minHeight="48dp"
@@ -110,7 +111,6 @@
             app:layout_constraintVertical_bias="0.0"
             app:rotationAnimationAngle="@{180f}"
             app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
-            android:background="@color/component_color_shared_transparent_background_color"
             app:tint="@color/component_color_hints_and_solutions_drawable_tint_color" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -137,9 +137,9 @@
             style="@style/TextViewStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@{viewModel.correctAnswerContentDescription}"
             android:fontFamily="sans-serif"
             android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
-            android:contentDescription="@{viewModel.correctAnswerContentDescription}"
             android:textSize="16sp" />
 
           <LinearLayout

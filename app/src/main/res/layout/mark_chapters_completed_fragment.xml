@@ -40,7 +40,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/developer_options_mark_chapters_completed"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/color_def_white" />
+        app:titleTextColor="@color/component_color_shared_activity_toolbar_text_color" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
