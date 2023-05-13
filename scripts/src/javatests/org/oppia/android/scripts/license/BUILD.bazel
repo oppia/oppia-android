@@ -22,7 +22,6 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/license:maven_coordinate",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
     ],
 )
