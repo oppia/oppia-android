@@ -30,4 +30,4 @@ To solve this
 If there is an error with any of the lint failures it will be detailed in the command line itself. 
 
 ## Facing error while debugging code
-Follow the guidelines outlined on this [[wiki page|Debugging]].
+Follow the guidelines outlined on this [wiki page](https://github.com/oppia/oppia-android/wiki/Debugging).

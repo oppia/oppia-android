@@ -10,4 +10,4 @@ Generally, finding the root cause of a bug is a question of strategically checki
 4. Then, work towards the solution, until the test case you wrote in step 3 passes.
 
 Unless the bug you are trying to fix is trivial, we recommend creating a debugging doc to organize your work:
-- [[Debugging Docs|Debugging-Docs]]
+- [Debugging Docs](https://github.com/oppia/oppia-android/wiki/Debugging-Docs)
