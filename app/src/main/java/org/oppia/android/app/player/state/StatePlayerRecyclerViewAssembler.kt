@@ -65,7 +65,6 @@ import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
-import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.ContentItemBinding
@@ -182,9 +181,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val isSplitView = ObservableField<Boolean>(false)
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
-    ConceptCardFragment
-      .newInstance(skillId, profileId)
-      .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+    ConceptCardFragment.bringToFrontOrCreateIfNew(skillId, profileId, fragment.childFragmentManager)
   }
 
   /**
