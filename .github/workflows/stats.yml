@@ -43,6 +43,16 @@ jobs:
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
+      - name: Set up Oppia Bazel Android Tools (for old configurations)
+        run: |
+          mkdir $HOME/opensource
+          cd $HOME/opensource
+          git clone https://github.com/oppia/oppia-bazel-tools
+          cd $GITHUB_WORKSPACE
+          echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> ./custom-android-tooling.bazelrc
+          echo try-import \"custom-android-tooling.bazelrc\" >> ./.bazelrc
+        shell: bash
+
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
       # https://github.com/actions/cache/issues/109#issuecomment-558771281. Note that these work
@@ -106,6 +116,10 @@ jobs:
           cp bazel-bin/oppia_alpha.aab ./oppia_alpha_without_changes.aab
           cp bazel-bin/oppia_beta.aab ./oppia_beta_without_changes.aab
           cp bazel-bin/oppia_ga.aab ./oppia_ga_without_changes.aab
+
+      - name: Disable old Oppia Bazel Android Tools (for new configurations)
+        run: |
+          rm ./custom-android-tooling.bazelrc
 
       - name: Change to feature branch
         run: |
