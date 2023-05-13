@@ -30,15 +30,15 @@ jobs:
           curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
           sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
           echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
-          sudo apt update && sudo apt install bazel
+          sudo apt-get update && sudo apt-get install bazel
 
       - name: Set up Bazel (previous version)
         run: |
-          sudo apt install bazel-4.0.0
+          sudo apt-get install bazel-4.0.0
 
       - name: Set up Bazel (latest version)
         run: |
-          sudo apt install bazel-6.2.0
+          sudo apt-get install bazel-6.2.0
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
@@ -49,8 +49,6 @@ jobs:
           cd $HOME/opensource
           git clone https://github.com/oppia/oppia-bazel-tools
           cd $GITHUB_WORKSPACE
-          echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> ./custom-android-tooling.bazelrc
-          echo try-import \"custom-android-tooling.bazelrc\" >> ./.bazelrc
         shell: bash
 
       # For reference on this & the later cache actions, see:
@@ -102,12 +100,17 @@ jobs:
 
       - name: Check Bazel environment
         run: bazel info
+
       - name: Change to base
         env:
           base_commit_hash: ${{ github.event.pull_request.base.sha }}
         run: |
           git checkout $base_commit_hash
           git log -n 1
+
+      - name: Enable Oppia's custom Bazel Android Tools (for old configurations)
+        run: |
+          echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> ./.bazelrc
 
       - name: Build Oppia dev, alpha, beta, and GA (base)
         run: |
@@ -119,7 +122,7 @@ jobs:
 
       - name: Disable old Oppia Bazel Android Tools (for new configurations)
         run: |
-          rm ./custom-android-tooling.bazelrc
+          git checkout ./.bazelrc
 
       - name: Change to feature branch
         run: |
