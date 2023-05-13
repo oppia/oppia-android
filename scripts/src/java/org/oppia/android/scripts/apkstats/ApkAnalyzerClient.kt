@@ -24,16 +24,14 @@ class ApkAnalyzerClient(private val aapt2Client: Aapt2Client) {
   // CLI reference: https://developer.android.com/studio/command-line/apkanalyzer.
 
   /** Returns the file size of the specified APK as similarly reported by apkanalyzer. */
-  fun computeFileSize(inputApkPath: String): String {
-    return apkSizeCalculator.getFullApkRawSize(File(inputApkPath).toPath()).toString()
-  }
+  fun computeFileSize(inputApkPath: String): Long =
+    apkSizeCalculator.getFullApkRawSize(File(inputApkPath).toPath())
 
   /**
    * Returns the estimated download size of the specified APK as similarly reported by apkanalyzer.
    */
-  fun computeDownloadSize(inputApkPath: String): String {
-    return apkSizeCalculator.getFullApkDownloadSize(File(inputApkPath).toPath()).toString()
-  }
+  fun computeDownloadSize(inputApkPath: String): Long =
+    apkSizeCalculator.getFullApkDownloadSize(File(inputApkPath).toPath())
 
   /**
    * Returns the list of required features of the specified APK as similarly reported by

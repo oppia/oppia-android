@@ -98,6 +98,8 @@ oppia_android_library(
     deps = [
         "//third_party:androidx_annotation_annotation",
         "//third_party:kotlinx-coroutines-core-jvm",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
     ],
 )
 

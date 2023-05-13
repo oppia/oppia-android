@@ -1,7 +1,7 @@
 # Contains common operations to set up a hermetic Android + Bazel build environment for Oppia
 # Android CI workflows. Action prerequisites:
 # - JDK 11 must be installed & set as the default version via JAVA_HOME
-# - Bazel must be installed, in the path, and be version 6.1.1
+# - Bazel must be installed, in the path, and be version 6.2.0
 
 # TODO(#1861): Revert SDK pinning for improved CI performance once Bazel is sufficiently stable that
 # we can rely on the automatic SDK provided by GitHub's CI environment.
@@ -29,10 +29,10 @@ runs:
 
     - name: Verify Bazel version
       run: |
-        bazel --version | grep -q 6.1.1
+        bazel --version | grep -q 6.2.0
         HAS_CORRECT_BAZEL_VERSION=$(echo $?)
         if [[ "$HAS_CORRECT_JAVA_VERSION" == 1 ]] ; then
-          echo "Expected Bazel 6.1.1 to be installed"
+          echo "Expected Bazel 6.2.0 to be installed"
           exit 1
         fi
       shell: bash

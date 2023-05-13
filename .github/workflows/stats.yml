@@ -8,7 +8,7 @@ on:
 jobs:
   build_stats:
     name: Build Stats
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -22,10 +22,15 @@ jobs:
         with:
           java-version: 11
 
-      - name: Set up Bazel
+      - name: Set up Bazel (previous version)
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.1.1
+          version: 4.0.0
+
+      - name: Set up Bazel (latest version)
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.2.0
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
