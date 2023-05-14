@@ -5,5 +5,5 @@
   <corners
     android:radius="4dp"/>
   <solid
-    android:color="@color/color_def_oppia_brown"/>
+    android:color="@color/component_color_hints_and_solution_reveal_solution_button_background_color"/>
 </shape>
