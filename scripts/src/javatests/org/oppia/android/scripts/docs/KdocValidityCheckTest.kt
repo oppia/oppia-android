@@ -54,7 +54,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -70,7 +70,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -86,7 +86,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -103,7 +103,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -120,7 +120,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -137,7 +137,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -154,7 +154,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -171,7 +171,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -187,7 +187,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -202,7 +202,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -217,7 +217,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -233,7 +233,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -248,7 +248,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -264,7 +264,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFileTest.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -304,7 +304,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -325,7 +325,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -341,7 +341,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -736,7 +736,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -766,6 +766,70 @@ class KdocValidityCheckTest {
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testKdoc_methodOfNestedPrivateClass_withoutKdoc_checkShouldPass() {
+    val testContent =
+      """
+      /** Outer class docs. */
+      class OuterClass {
+        private class Nested {
+          fun publicLookingFunction() {}
+        }
+      }
+      """.trimIndent()
+    val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
+    tempFile.writeText(testContent)
+
+    assertDoesNotThrow { runScript() }
+
+    assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testKdoc_multipleMembersOfDeeplyNestedPrivateClass_withoutKdoc_checkShouldPass() {
+    val testContent =
+      """
+      /** Outer class docs. */
+      class OuterClass {
+        private object OnePrivateObject {
+          lateinit var publicLookingVal: String
+          fun publicLookingFunction() {}
+          annotation class PublicLookingAnnotation
+          interface PublicLookingInterface
+          companion object {}
+          object PublicLookingObject {}
+          data class PublicLookingDataClass(val value: String)
+          class NestedPublicLookingClass {
+            lateinit var publicLookingVal: String
+            fun publicLookingFunction() {}
+            annotation class PublicLookingAnnotation
+            interface PublicLookingInterface
+            companion object {}
+            object PublicLookingObject {}
+            data class PublicLookingDataClass(val value: String)
+          }
+        }
+        private class OnePrivateClass {
+          class NestedPublicLookingClass {
+            lateinit var publicLookingVal: String
+            fun publicLookingFunction() {}
+            annotation class PublicLookingAnnotation
+            interface PublicLookingInterface
+            companion object {}
+            object PublicLookingObject {}
+            data class PublicLookingDataClass(val value: String)
+          }
+        }
+      }
+      """.trimIndent()
+    val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
+    tempFile.writeText(testContent)
+
+    assertDoesNotThrow { runScript() }
+
+    assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   @Test
@@ -845,7 +909,7 @@ class KdocValidityCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    runScript()
+    assertDoesNotThrow { runScript() }
 
     assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -928,6 +992,14 @@ class KdocValidityCheckTest {
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  private fun assertDoesNotThrow(operation: () -> Unit) {
+    try {
+      operation()
+    } catch (e: Exception) {
+      throw AssertionError("Operation throws when it was expected not to. Error:\n$outContent", e)
+    }
   }
 
   /** Retrieves the absolute path of testfiles directory. */

@@ -8,9 +8,7 @@ oppia_android_test(
     name = "SplashActivityTest",
     srcs = ["SplashActivityTest.kt"],
     android_merge_deps = ["//config/src/java/org/oppia/android/config:all_languages_config"],
-    runtime_deps = [
-        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
-    ],
+    runtime_deps = ["//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner"],
     deps = [
         "//:dagger",
         "//app",
@@ -48,7 +46,6 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
-        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:languages_java_proto_lite",
         "//model/src/main/proto:onboarding_java_proto_lite",
         "//model/src/main/proto:screens_java_proto_lite",

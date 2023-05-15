@@ -199,6 +199,8 @@ oppia_proto_library(
 
 java_lite_proto_library(
     name = "test_java_proto_lite",
+    testonly = True,
+    visibility = ["//:oppia_testing_visibility"],
     deps = [":test_proto"],
 )
 
@@ -337,11 +339,4 @@ java_lite_proto_library(
     name = "survey_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":survey_proto"],
-)
-
-android_library(
-    name = "test_models",
-    testonly = True,
-    visibility = ["//:oppia_testing_visibility"],
-    exports = [":test_java_proto_lite"],
 )

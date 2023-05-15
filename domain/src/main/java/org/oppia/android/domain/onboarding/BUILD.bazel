@@ -6,9 +6,7 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 oppia_android_library(
     name = "state_controller",
-    srcs = [
-        "AppStartupStateController.kt",
-    ],
+    srcs = ["AppStartupStateController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":exploration_meta_data_retriever",
@@ -16,6 +14,7 @@ oppia_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//model/src/main/proto:onboarding_java_proto_lite",
         "//model/src/main/proto:version_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
         "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",

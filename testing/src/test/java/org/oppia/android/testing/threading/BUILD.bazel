@@ -106,7 +106,6 @@ oppia_android_test(
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
         "//testing/src/main/java/org/oppia/android/testing/threading:annotations",
-        "//testing/src/main/java/org/oppia/android/testing/threading:espresso_impl",
         "//testing/src/main/java/org/oppia/android/testing/threading:robolectric_impl",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

@@ -9,9 +9,7 @@ oppia_android_library(
     name = "sync_status_manager_test_base",
     testonly = True,
     srcs = ["SyncStatusManagerTestBase.kt"],
-    visibility = [
-        "//testing/src/test/java/org/oppia/android/testing/logging:__pkg__",
-    ],
+    visibility = ["//testing/src/test/java/org/oppia/android/testing/logging:__pkg__"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//model/src/main/proto:event_logger_java_proto_lite",
@@ -19,6 +17,7 @@ oppia_android_library(
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/networking:network_connection_test_util",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//third_party:com_google_protobuf_protobuf-javalite",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//third_party:kotlinx-coroutines-core-jvm",

@@ -60,7 +60,6 @@ oppia_android_library(
         "//third_party:kotlinx-coroutines-core-jvm",
         "//third_party:org_robolectric_annotations",
         "//third_party:org_robolectric_shadows-framework",
-        "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],
 )

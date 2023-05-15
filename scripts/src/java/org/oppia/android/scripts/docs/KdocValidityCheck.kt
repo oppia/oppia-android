@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtConstructorDelegationReferenceExpression
 import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtElement
@@ -19,6 +20,7 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtObjectDeclaration
 import org.jetbrains.kotlin.psi.KtSecondaryConstructor
 import org.jetbrains.kotlin.psi.KtVariableDeclaration
+import org.jetbrains.kotlin.psi.psiUtil.parents
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.proto.KdocValidityExemptions
 import java.io.File
@@ -257,26 +259,29 @@ private fun checkIfKDocIsMissing(
  * Returns whether an element is required to be checked for a KDoc presence.
  *
  * @param elem the element to be checked
- * @param kDocNotRequiredAnnotationEntryList the list of annotation entries which when present
- *     on an element, the element does not needs to be checked for a KDoc.
+ * @param exemptionList the list of annotation entries which, when present on an element, the
+ *     element does not needs to be checked for a KDoc.
  * @return whether a KDoc is required for this element
  */
 private fun isKdocRequired(
   elem: KtDeclaration,
-  kDocNotRequiredAnnotationEntryList: List<String>
+  exemptionList: List<String>
 ): Boolean {
-  if (elem.hasModifier(KtTokens.PRIVATE_KEYWORD)) {
+  if (elem.hasModifier(KtTokens.PRIVATE_KEYWORD) || elem.hasModifier(KtTokens.OVERRIDE_KEYWORD)) {
     return false
   }
-  if (elem.hasModifier(KtTokens.OVERRIDE_KEYWORD)) {
-    return false
-  }
-  elem.getModifierList()?.getAnnotationEntries()?.forEach { it ->
-    if (it.getShortName().toString() in kDocNotRequiredAnnotationEntryList) {
-      return false
+  val parentContainers =
+    elem.parents.filterIsInstance<KtClassOrObject>().filter {
+      it is KtClass || it is KtObjectDeclaration
     }
+  if (parentContainers.any { it.hasModifier(KtTokens.PRIVATE_KEYWORD) }) {
+    // If the element is nested within a private class or object at any level then it's technically
+    // private and doesn't require a KDoc.
+    return false
   }
-  return true
+  return elem.modifierList?.annotationEntries?.none {
+    it.shortName.toString() in exemptionList
+  } ?: true
 }
 
 /**

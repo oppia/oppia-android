@@ -437,3 +437,25 @@ file_content_checks {
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
 }
+# TODO(#1566): Update app/BUILD.bazel exemption to be more targeted for crashlytics_deps.
+# TODO(#1720): Remove app/application/BUILD.bazel from the exemptions for this check.
+# TODO(#1639): Remove app/databinding/BUILD.bazel from the exemptions for this check.
+file_content_checks {
+  file_path_regex: ".+?\\.(bazel|bzl)$"
+  prohibited_content_regex: "\\b(kt_android_library|android_library)"
+  failure_message: "oppia_android_library() & related macros should be used instead of android_library/kt_android_library."
+  exempted_file_name: "app/BUILD.bazel"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/application/BUILD.bazel"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/databinding/BUILD.bazel"
+  exempted_file_name: "defs/generate_android_manifest.bzl"
+  exempted_file_name: "defs/oppia_android_library.bzl"
+  exempted_file_name: "defs/oppia_android_test.bzl"
+  exempted_file_name: "instrumentation/oppia_instrumentation_test.bzl"
+  exempted_file_name: "third_party/macros/direct_dep_loader.bzl"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.(bazel|bzl)$"
+  prohibited_content_regex: "\\b(kt_android_local_test|android_local_test)"
+  failure_message: "oppia_android_test() should be used instead of android_local_test/kt_android_local_test."
+  exempted_file_name: "defs/oppia_android_test.bzl"
+}

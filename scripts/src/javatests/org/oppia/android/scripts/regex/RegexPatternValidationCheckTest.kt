@@ -183,6 +183,11 @@ class RegexPatternValidationCheckTest {
       "with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying " +
       "issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your" +
       "-android-views-9d1c8eeaadf2."
+  private val doNotUseAndroidOrKtAndroidLibrary =
+    "oppia_android_library() & related macros should be used instead of" +
+      " android_library/kt_android_library."
+  private val doNotUseAndroidLocalOrKtAndroidLocalTest =
+    "oppia_android_test() should be used instead of android_local_test/kt_android_local_test."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -2529,6 +2534,75 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $doesNotUsePostOrPostDelayed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidAndKtAndroidLibraryReferenced_fileContentIsNotCorrect() {
+    val prohibitedBuildContent =
+      """
+      android_library(name = "test1")
+      oppia_android_library(name = "test2")
+      kt_android_library(name = "test3")
+      """.trimIndent()
+    val prohibitedBazelContent =
+      """
+      def new_macro(name):
+          android_library(name = "%s_redef1" % name)
+          oppia_android_library(name = "%s_redef2" % name)
+          kt_android_library(name = "%s_redef3" % name)
+      """.trimIndent()
+    val buildFile = "BUILD.bazel"
+    val bazelFile = "new_macro.bzl"
+    tempFolder.newFile("testfiles/$buildFile").writeText(prohibitedBuildContent)
+    tempFolder.newFile("testfiles/$bazelFile").writeText(prohibitedBazelContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $buildFile:1: $doNotUseAndroidOrKtAndroidLibrary
+        $buildFile:3: $doNotUseAndroidOrKtAndroidLibrary
+        $bazelFile:2: $doNotUseAndroidOrKtAndroidLibrary
+        $bazelFile:4: $doNotUseAndroidOrKtAndroidLibrary
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLocalAndKtAndroidLocalTestReferenced_fileContentIsNotCorrect() {
+    val prohibitedBuildContent =
+      """
+      oppia_android_test(name = "test1")
+      android_local_test(name = "test2")
+      """.trimIndent()
+    val prohibitedBazelContent =
+      """
+      def new_macro(name):
+          oppia_android_test(name = "%s_redef1" % name)
+          android_local_test(name = "%s_redef2" % name)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "src", "javatests")
+    val buildFile = "src/javatests/BUILD.bazel"
+    val bazelFile = "new_macro.bzl"
+    tempFolder.newFile("testfiles/$buildFile").writeText(prohibitedBuildContent)
+    tempFolder.newFile("testfiles/$bazelFile").writeText(prohibitedBazelContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $bazelFile:3: $doNotUseAndroidLocalOrKtAndroidLocalTest
+        $buildFile:2: $doNotUseAndroidLocalOrKtAndroidLocalTest
         $wikiReferenceNote
         """.trimIndent()
       )
