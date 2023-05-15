@@ -763,6 +763,7 @@ kt_android_library(
         ":view_models",
         ":views",
         "//:dagger",
+        "//app:crashlytics",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",

@@ -1,29 +1,38 @@
 package org.oppia.android.testing
 
 import dagger.Binds
+import dagger.BindsOptionalOf
 import dagger.Module
+import dagger.Provides
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import javax.inject.Singleton
 
 /** Provides fake log reporting dependencies. */
 @Module
 interface TestLogReportingModule {
+  companion object {
+    @Provides
+    @Singleton
+    fun bindFakeEventLogger(
+      fakeLoggerFactory: FakeAnalyticsEventLogger.FactoryImpl
+    ): AnalyticsEventLogger = fakeLoggerFactory.create()
+  }
 
-  @Binds
-  fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
-
-  @Binds
-  fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger
+  @Binds fun bindFakeExceptionLogger(impl: FakeExceptionLogger): ExceptionLogger
 
   @Binds
   fun bindFakePerformanceMetricsEventLogger(
-    fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+    impl: FakePerformanceMetricsEventLogger
   ): PerformanceMetricsEventLogger
 
   @Binds
   fun bindFakePerformanceMetricsAssessor(
-    fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
+    impl: FakePerformanceMetricAssessor
   ): PerformanceMetricsAssessor
+
+  @BindsOptionalOf fun bindOptionalDebugAnalyticsEventLogger(): DebugAnalyticsEventLogger
 }
