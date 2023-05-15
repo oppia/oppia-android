@@ -9,5 +9,4 @@ Generally, finding the root cause of a bug is a question of strategically checki
 3. Based on the environment you've identified in steps 1 + 2, write a test case which the bug causes to fail (if one doesn't already exist). This gives you an automatic way to check whether or not the bug is fixed.
 4. Then, work towards the solution, until the test case you wrote in step 3 passes.
 
-Unless the bug you are trying to fix is trivial, we recommend creating a debugging doc to organize your work:
-- [Debugging Docs](https://github.com/oppia/oppia-android/wiki/Debugging-Docs)
+Unless the bug you are trying to fix is trivial, we recommend creating a debugging doc to organize your work and easily communicate it to other team members. See [Debugging Docs](https://github.com/oppia/oppia-android/wiki/Debugging-Docs) for guidance on how to write a debugging doc.
