@@ -258,7 +258,6 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/profile_edit_delete_margin_bottom"
         android:background="@drawable/general_item_background_border"
         android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
