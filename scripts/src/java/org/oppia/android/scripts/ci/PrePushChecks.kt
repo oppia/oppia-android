@@ -1,8 +1,5 @@
 package org.oppia.android.scripts.ci
 
-import java.io.File
-import java.io.PrintStream
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -12,6 +9,9 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import java.io.File
+import java.io.PrintStream
+import java.util.concurrent.TimeUnit
 
 fun main(vararg args: String) {
   require(args.size == 1) { "Usage: bazel run //scripts:pre_push_checks -- </path/to/repo_root>" }
@@ -128,7 +128,8 @@ class PrePushChecks(
     private const val CONSOLE_COL_LIMIT = 80
 
     class Logger(
-      private val plainStreams: List<PrintStream>, private val colorStreams: List<PrintStream>
+      private val plainStreams: List<PrintStream>,
+      private val colorStreams: List<PrintStream>
     ) {
       private val allStreams by lazy { plainStreams + colorStreams }
 
@@ -159,7 +160,10 @@ class PrePushChecks(
     }
 
     private data class CheckSuite(
-      val name: String, val bazelTarget: String, val speed: SuiteSpeed, val extraArgs: List<String>
+      val name: String,
+      val bazelTarget: String,
+      val speed: SuiteSpeed,
+      val extraArgs: List<String>
     ) {
       val deployTarget = "${bazelTarget}_deploy.jar"
       private val targetName get() = bazelTarget.substringAfter(':')
@@ -256,7 +260,10 @@ class PrePushChecks(
     )
 
     private fun createSuite(
-      name: String, target: String, speed: SuiteSpeed, vararg extraArgs: String
+      name: String,
+      target: String,
+      speed: SuiteSpeed,
+      vararg extraArgs: String
     ): CheckSuite = CheckSuite(name, target, speed, extraArgs.toList())
 
     private fun Logger.printSection(label: String) {
@@ -271,7 +278,9 @@ class PrePushChecks(
     }
 
     private fun <T> Logger.printAndAwaitResult(
-      prefix: String, delayMs: Long, deferred: Deferred<T>
+      prefix: String,
+      delayMs: Long,
+      deferred: Deferred<T>
     ): T {
       val numberOfChecks = CONSOLE_COL_LIMIT - prefix.length - 7 // 7 chars for the result.
       var completionCheckCount = 0

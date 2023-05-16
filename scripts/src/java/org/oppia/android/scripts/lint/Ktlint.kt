@@ -1,10 +1,10 @@
 package org.oppia.android.scripts.lint
 
-import java.io.File
-import java.io.InputStream
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import java.io.File
+import java.io.InputStream
 
 fun main(vararg args: String) {
   require(args.size in 2..4) { "Usage: bazel run //scripts:ktlint -- </path/to/repo_root> <mode>" }
@@ -101,7 +101,7 @@ class Ktlint(private val repoRoot: File, private val bazelClient: BazelClient) {
     FIX
   }
 
-  private class SkipToZipInputStream(baseStream: InputStream): InputStream() {
+  private class SkipToZipInputStream(baseStream: InputStream) : InputStream() {
     private val bufferedBase by lazy { baseStream.buffered() }
     private var hasFoundZipStart = false
 

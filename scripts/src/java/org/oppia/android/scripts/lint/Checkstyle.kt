@@ -1,13 +1,13 @@
 package org.oppia.android.scripts.lint
 
 import com.squareup.moshi.Moshi
-import java.io.File
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.lint.model.SarifOutput
 import org.oppia.android.scripts.lint.model.SarifResult
 import org.oppia.android.scripts.lint.model.SarifRun
+import java.io.File
 
 fun main(vararg args: String) {
   require(args.size == 1) { "Usage: bazel run //scripts:checkstyle -- </path/to/repo_root>" }

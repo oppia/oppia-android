@@ -1,13 +1,13 @@
 package org.oppia.android.scripts.build
 
-import java.io.BufferedReader
-import java.io.File
-import java.io.PrintStream
-import java.util.concurrent.TimeUnit
 import org.oppia.android.scripts.build.BazelWorkspaceInfo.Companion.readBoolean
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import java.io.BufferedReader
+import java.io.File
+import java.io.PrintStream
+import java.util.concurrent.TimeUnit
 
 // TODO: Somehow add check to enforce running this script...
 // TODO: Verify this script end-to-end once the branch is in a good state.

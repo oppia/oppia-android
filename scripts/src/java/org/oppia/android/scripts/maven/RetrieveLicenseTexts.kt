@@ -1,7 +1,10 @@
 package org.oppia.android.scripts.maven
 
+import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.license.MavenArtifactPropertyFetcher
 import org.oppia.android.scripts.license.MavenArtifactPropertyFetcherImpl
+import org.oppia.android.scripts.license.MavenDependenciesRetriever
 import org.oppia.android.scripts.license.model.CopyrightLicense
 import org.oppia.android.scripts.license.model.Dependency
 import org.oppia.android.scripts.proto.License
@@ -17,10 +20,6 @@ import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
-import org.oppia.android.scripts.common.CommandExecutor
-import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.scripts.license.MavenDependenciesRetriever
 
 private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
   "maven_dependencies.textproto is not up-to-date"

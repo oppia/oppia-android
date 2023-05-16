@@ -379,7 +379,10 @@ class BazelClient(
   }
 
   private fun maybeUpdateProgress(
-    line: String, reportProgress: ((Int, Int) -> Unit), lastNumerator: Int, lastDenominator: Int
+    line: String,
+    reportProgress: ((Int, Int) -> Unit),
+    lastNumerator: Int,
+    lastDenominator: Int
   ): Pair<Int, Int> {
     val progress = line.parseProgressUpdate() ?: (lastNumerator to lastDenominator)
     val updatedNumerator = progress.first.coerceAtLeast(lastNumerator)

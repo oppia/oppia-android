@@ -1,3 +1,8 @@
+"""
+Macro for extracting the ktlint executable Jar file from the shell script provided as the primary
+release mechanism on ktlint's GitHub project page.
+"""
+
 load("@rules_java//java:defs.bzl", "java_binary", "java_import")
 
 def _extract_ktlint_jar_impl(ctx):

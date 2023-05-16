@@ -1,9 +1,9 @@
 package org.oppia.android.scripts.lint
 
-import java.io.File
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import java.io.File
 
 fun main(vararg args: String) {
   require(args.size == 2) { "Usage: bazel run //scripts:buildifier -- </path/to/repo_root> <mode>" }

@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class SarifArtifactLocation(
   @Json(name = "uri") val uri: String
-): Comparable<SarifArtifactLocation> {
+) : Comparable<SarifArtifactLocation> {
   override fun compareTo(other: SarifArtifactLocation): Int = COMPARATOR.compare(this, other)
 
   private companion object {
