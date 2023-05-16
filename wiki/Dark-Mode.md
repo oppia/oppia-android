@@ -1,5 +1,13 @@
 _Author credit: Thanks to **@ayush0402** for writing up the initial version of this guide._
 
+## Table of Contents
+
+- [Overview](#overview)
+  - [Knowing the convention](#knowing-the-convention)
+- [Working with the layouts](#working-with-the-layouts)
+  - [How to achieve this goal?](#how-to-achieve-this-goal)
+- [Running the app with dark mode](#running-the-app-with-dark-mode)
+
 ## Overview
 This guide explains the newly adopted convention for using colors in oppia-android and adding support for dark mode 
 to any particular layout while keeping the code organised and strictly following the decided convention.

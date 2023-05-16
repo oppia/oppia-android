@@ -1,5 +1,14 @@
 We are grateful for the support of [Translatewiki](https://translatewiki.net/w/i.php?title=Special:Translate&group=oppia-android-app&filter=%21translated&action=translate) in contributing internationalized platform strings for the Oppia Android app! (Note that Translatewiki only provides support for translations of platform UI strings; content string translations are handled via the Contributor Dashboard on the Oppia.org website.)
 
+## Table of Contents
+
+- [Helping out with translations](#helping-out-with-translations)
+- [Minimal set of topics](#minimal-set-of-topics)
+- [Policy for enabling new languages](#policy-for-enabling-new-languages)
+- [Procedure for enabling new languages](#procedure-for-enabling-new-languages)
+  - [To enable a new language in Translatewiki](#to-enable-a-new-language-in-translatewiki)
+  - [To enable a new language in the Android app](#to-enable-a-new-language-in-the-android-app)
+
 ## Helping out with translations
 
 If you would like to help out with translations, you can do so by visiting the [Translatewiki dashboard](https://translatewiki.net/w/i.php?title=Special:Translate&group=oppia-android-app&filter=%21translated&action=translate) and picking a supported language from the dropdown menu on the right.
