@@ -55,7 +55,9 @@ class BazelClient(
    * @return the output lines from the query
    */
   fun query(
-    pattern: String, withSkyQuery: Boolean = false, allowFailures: Boolean = false
+    pattern: String,
+    withSkyQuery: Boolean = false,
+    allowFailures: Boolean = false
   ): List<String> {
     val args = listOfNotNull(
       "query",
