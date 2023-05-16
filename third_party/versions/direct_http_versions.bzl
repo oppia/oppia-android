@@ -91,9 +91,11 @@ DIRECT_REMOTE_DEPENDENCIES = [
         url = "https://github.com/bazelbuild/rules_kotlin/releases/download/{0}/rules_kotlin_release.tgz",
         import_bind_name = "io_bazel_rules_kotlin",
         patches_details = [
+            # See https://github.com/orgs/community/discussions/12531#discussioncomment-5271653 for
+            # an explanation on the 'full_index' bit.
             create_remote_patch_config(
-                patch_url = "https://github.com/bazelbuild/rules_kotlin/commit/0b75e942.patch",
-                patch_sri = "sha256-cP0YqxMiQSye3T7E1w6c8HY6XDtd3CaYnGtnlmqRnKg=",
+                patch_url = "https://github.com/bazelbuild/rules_kotlin/commit/0b75e942e444ccced07cfec50cbc8d925821ed57.patch?full_index=1",
+                patch_sri = "sha256-UgznkSxEhnHcDh8PjaWI92EEPHRe/8HEtlmXrr7O4i8=",
             ),
         ],
         patch_path_start_removal_count = 1,
