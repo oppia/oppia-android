@@ -37,7 +37,6 @@
   <string name="cellular_data_alert_dialog_description">O streaming de áudio pode usar muitos dados móveis.</string>
   <string name="cellular_data_alert_dialog_checkbox">Não mostre esta mensagem novamente</string>
   <string name="concept_card_toolbar_title">Cartão de Conceito</string>
-  <string name="concept_card_close_icon_description">Clicar aqui fechará o cartão de conceito.</string>
   <string name="revision_card_toolbar_title">Cartão de Revisão</string>
   <string name="unsaved_exploration_dialog_title">Pretende ir para a página do tópico?</string>
   <string name="unsaved_exploration_dialog_description">Seu progresso não será salvo.</string>
