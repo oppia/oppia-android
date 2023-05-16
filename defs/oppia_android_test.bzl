@@ -40,11 +40,6 @@ def oppia_android_test(
         deps: list of label. The Java, Kotlin, or Android dependencies that this library requires to
             build and run. This is expected to always be required even for simple tests (since the
             test needs to at least include the dependency of the target that it's testing).
-        temp_test_class_migration: str. A temporary parameter used to specify the test class for
-            suites that are using a shared test library. This turns off library generation and
-            significantly changes the behavior of this macro. This should *not* be used for new
-            code as it's meant only for legacy combined test suites that will eventually be split
-            up. This defaults to None.
         android_merge_deps: list of label. The Android dependencies that this test requires
             resources and/or assets from (but not code--those dependencies should go in 'deps').
             This defaults to empty list.
