@@ -6,9 +6,7 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 oppia_android_library(
     name = "spotlight_state_controller",
-    srcs = [
-        "SpotlightStateController.kt",
-    ],
+    srcs = ["SpotlightStateController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",

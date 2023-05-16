@@ -9,7 +9,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.HelpActivityParams
+import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuDialogFragment
 import org.oppia.android.databinding.RevisionCardActivityBinding
@@ -20,10 +24,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.HelpActivityParams
-import org.oppia.android.app.model.OptionsActivityParams
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
@@ -76,7 +76,9 @@ class RevisionCardActivityPresenter @Inject constructor(
 
     binding.actionBottomSheetOptionsMenu.setOnClickListener {
       val bottomSheetOptionsMenuDialogFragment = BottomSheetOptionsMenuDialogFragment()
-      bottomSheetOptionsMenuDialogFragment.showNow(activity.supportFragmentManager, bottomSheetOptionsMenuDialogFragment.tag)
+      bottomSheetOptionsMenuDialogFragment.showNow(
+        activity.supportFragmentManager, bottomSheetOptionsMenuDialogFragment.tag
+      )
     }
 
     if (getReviewCardFragment() == null) {

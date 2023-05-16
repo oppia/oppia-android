@@ -1,3 +1,10 @@
+## Table of Contents
+
+- [What is WorkManager?](#what-is-workmanager)
+- [Its Usage in Oppia Android](#its-usage-in-oppia-android)
+- [How to use WorkManager](#how-to-use-workmanager)
+- [Writing tests with WorkManager](#writing-tests-with-workmanager)
+
 # What is WorkManager?
 WorkManager is part of Android Jetpack and an Architecture Component for background work that needs a combination of opportunistic and guaranteed execution. Opportunistic execution means that WorkManager will do your background work as soon as it can. Guaranteed execution means that WorkManager will take care of the logic to start your work under a variety of situations, even if you navigate away from your app.
 

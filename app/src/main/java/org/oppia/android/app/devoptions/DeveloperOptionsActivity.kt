@@ -5,19 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
 import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ForceNetworkTypeActivityParams
 import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
 import org.oppia.android.app.model.MarkStoriesCompletedActivityParams
 import org.oppia.android.app.model.MarkTopicsCompletedActivityParams
 import org.oppia.android.app.model.MathExpressionParserActivityParams
+import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
 import org.oppia.android.app.model.ViewEventLogsActivityParams
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :

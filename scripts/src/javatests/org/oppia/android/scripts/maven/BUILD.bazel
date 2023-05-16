@@ -44,6 +44,8 @@ kt_jvm_test(
     srcs = ["ValidateMavenDependenciesTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/maven:validate_maven_dependencies_lib",
+        "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
+        "//testing:assertion_helpers",
     ],
 )

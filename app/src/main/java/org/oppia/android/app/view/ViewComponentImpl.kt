@@ -19,11 +19,17 @@ import org.oppia.android.app.player.state.SelectionInteractionView
 /** Implementation of [ViewComponent]. */
 @Subcomponent
 @ViewScope
-interface ViewComponentImpl
-  : ViewComponent, ChapterNotStartedContainerConstraintLayout.Injector,
-  ComingSoonTopicsListView.Injector, ContinueButtonView.Injector, SelectionInteractionView.Injector,
-  DragDropSortInteractionView.Injector, ImageRegionSelectionInteractionView.Injector,
-  LessonThumbnailImageView.Injector, PromotedStoryCardView.Injector, PromotedStoryListView.Injector,
+interface ViewComponentImpl :
+  ViewComponent,
+  ChapterNotStartedContainerConstraintLayout.Injector,
+  ComingSoonTopicsListView.Injector,
+  ContinueButtonView.Injector,
+  SelectionInteractionView.Injector,
+  DragDropSortInteractionView.Injector,
+  ImageRegionSelectionInteractionView.Injector,
+  LessonThumbnailImageView.Injector,
+  PromotedStoryCardView.Injector,
+  PromotedStoryListView.Injector,
   SegmentedCircularProgressView.Injector {
   /** Implementation of [ViewComponent.Builder]. */
   @Subcomponent.Builder

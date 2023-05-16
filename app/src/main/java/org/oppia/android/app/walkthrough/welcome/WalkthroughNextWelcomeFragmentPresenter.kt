@@ -40,7 +40,9 @@ class WalkthroughNextWelcomeFragmentPresenter @Inject constructor(
   private lateinit var profileName: String
 
   fun handleCreateView(
-    inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
   ): View? {
     binding =
       WalkthroughWelcomeFragmentBinding.inflate(

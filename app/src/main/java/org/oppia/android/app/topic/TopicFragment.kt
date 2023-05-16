@@ -9,7 +9,6 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
-import org.oppia.android.app.topic.info.TopicInfoFragment
 
 // TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
 private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"

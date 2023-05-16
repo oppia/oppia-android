@@ -8,7 +8,7 @@ on:
 jobs:
   build_stats:
     name: Build Stats
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -22,10 +22,23 @@ jobs:
         with:
           java-version: 11
 
-      - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
-        with:
-          version: 6.1.1
+      # Note that a different Bazel binary installation is used here since multiple versions need to
+      # be set up simultaneously.
+      - name: Set up Bazel apt repository & install latest
+        run: |
+          sudo apt-get install apt-transport-https curl gnupg -y
+          curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
+          sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+          sudo apt-get update && sudo apt-get install bazel
+
+      - name: Set up Bazel (previous version)
+        run: |
+          sudo apt-get install bazel-4.0.0
+
+      - name: Set up Bazel (latest version)
+        run: |
+          sudo apt-get install bazel-6.2.0
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
@@ -79,6 +92,7 @@ jobs:
 
       - name: Check Bazel environment
         run: bazel info
+
       - name: Change to base
         env:
           base_commit_hash: ${{ github.event.pull_request.base.sha }}

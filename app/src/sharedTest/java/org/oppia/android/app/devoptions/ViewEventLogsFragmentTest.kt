@@ -15,8 +15,11 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
+import dagger.Binds
+import dagger.BindsOptionalOf
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -72,6 +75,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -84,13 +90,16 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
+import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
+import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -553,6 +562,31 @@ class ViewEventLogsFragmentTest {
     )
   }
 
+  @Module
+  interface TestModule {
+    companion object {
+      @Provides
+      @Singleton
+      fun provideDebugEventLogger(
+        debugLoggerFactory: DebugAnalyticsEventLogger.Factory,
+        fakeLoggerFactory: FakeAnalyticsEventLogger.FactoryImpl
+      ): DebugAnalyticsEventLogger = debugLoggerFactory.create(fakeLoggerFactory)
+    }
+
+    @Binds
+    fun provideAnalyticsEventLogger(
+      debugAnalyticsEventLogger: DebugAnalyticsEventLogger
+    ): AnalyticsEventLogger
+
+    @Binds
+    fun bindFakePerformanceMetricsEventLogger(
+      impl: FakePerformanceMetricsEventLogger
+    ): PerformanceMetricsEventLogger
+
+    @Binds fun bindFakeExceptionLogger(impl: FakeExceptionLogger): ExceptionLogger
+    @BindsOptionalOf fun bindOptionalDebugAnalyticsEventLogger(): DebugAnalyticsEventLogger
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -564,7 +598,7 @@ class ViewEventLogsFragmentTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, DebugLogReportingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -608,11 +642,6 @@ class ViewEventLogsFragmentTest {
       DaggerViewEventLogsFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
-    }
-
-    override fun onCreate() {
-      super.onCreate()
-      FirebaseApp.initializeApp(applicationContext)
     }
 
     /** Called when setting up [TestApplication]. */

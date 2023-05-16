@@ -34,7 +34,9 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(
-    inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
   ): View? {
     val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     viewModel.initialize(profileId)

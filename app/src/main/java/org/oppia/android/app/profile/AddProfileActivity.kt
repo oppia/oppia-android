@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileChooserActivityParams
+import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 private const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
 

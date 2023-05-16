@@ -37,7 +37,11 @@ class ExplorationTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.setContentView(R.layout.exploration_test_activity)
     activity.supportFragmentManager.beginTransaction().apply {
-      add(R.id.exploration_test_fragment_placeholder, ExplorationTestActivityFragment(), TEST_FRAGMENT_TAG)
+      add(
+        R.id.exploration_test_fragment_placeholder,
+        ExplorationTestActivityFragment(),
+        TEST_FRAGMENT_TAG
+      )
     }.commitNow()
     activity.findViewById<Button>(R.id.play_exploration_button).setOnClickListener {
       playExplorationButton()
@@ -76,6 +80,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
   }
 
   fun getTestFragment(): ExplorationTestActivityFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(TEST_FRAGMENT_TAG) as? ExplorationTestActivityFragment
+    return activity.supportFragmentManager.findFragmentByTag(TEST_FRAGMENT_TAG)
+      as? ExplorationTestActivityFragment
   }
 }

@@ -7,7 +7,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.fragment.InjectableDialogFragment
@@ -17,6 +16,7 @@ import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import javax.inject.Inject
 
 /** [DialogFragment] that gives option to either cancel or exit current profile. */
 class ExitProfileDialogFragment : InjectableDialogFragment() {
