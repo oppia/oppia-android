@@ -1,3 +1,14 @@
+## Table of Contents
+
+- [What is Dagger?](#what-is-dagger)
+  - [Components & Subcomponents](#components--subcomponents)
+  - [Scopes](#scopes)
+  - [Injectables & Providers](#injectables--providers)
+  - [Modules](#modules)
+- [Its Usage in Oppia Android](#its-usage-in-oppia-android)
+- [How to write Tests with Dagger](#how-to-write-tests-with-dagger)
+- [Points to Note](#points-to-note)
+
 # What is Dagger?
 Dagger is a fully static and compile-time [dependency injection](https://github.com/oppia/oppia-android/wiki/Dependency-Injection) framework. Compile-time means that issues in the dependency graph (such as cycles or missing providers) are caught during build-time.
 
