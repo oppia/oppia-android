@@ -165,9 +165,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "expression_to_comparable_operation_converter",
-    srcs = [
-        "ExpressionToComparableOperationConverter.kt",
-    ],
+    srcs = ["ExpressionToComparableOperationConverter.kt"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":comparator_extensions",

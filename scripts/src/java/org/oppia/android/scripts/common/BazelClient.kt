@@ -6,13 +6,27 @@ import java.util.Locale
 
 /**
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
- * the specified root directory).
+ * the specified root directory). The provided [universeScope] is the default Sky Query scope to use
+ * in corresponding query operations.
  */
 class BazelClient(
   private val rootDirectory: File,
   private val commandExecutor: CommandExecutor,
   private val universeScope: String = "//..."
 ) {
+  /**
+   * Attempts to build the provided patterns using ``bazel build``.
+   *
+   * @param patterns one or more build patterns, as ``bazel build`` usually accepts
+   * @param keepGoing whether to continue building if any targets in the provided patterns fails to
+   *     build. This defaults to false.
+   * @param allowFailures whether to throw an exception on a build failure, or to instead capture
+   *     the results of the failure as part of the returned [Result.outputLines]. This defaults to
+   *     false.
+   * @param configProfiles the set of configuration profiles to enable, e.g. using
+   *     ``bazel --config=<profile_name>``. This defaults to an empty set (i.e. no profiles).
+   * @return the [Result] of the attempted build
+   */
   fun build(
     vararg patterns: String,
     keepGoing: Boolean = false,
@@ -98,8 +112,19 @@ class BazelClient(
 
   fun shutdown(): Result = executeBazelCommand("shutdown")
 
+  /**
+   * Attempts to perform a query on the specific pattern using ``bazel query``.
+   *
+   * @param pattern a queryable Bazel target pattern, as ``bazel query`` usually accepts
+   * @param withSkyQuery whether to enable Sky Query during querying, using the client's configured
+   *     universe scope. This defaults to false.
+   * @param allowFailures whether to throw an exception when querying targets that might be invalid
+   * @return the output lines from the query
+   */
   fun query(
-    pattern: String, withSkyQuery: Boolean = false, allowFailures: Boolean = false
+    pattern: String,
+    withSkyQuery: Boolean = false,
+    allowFailures: Boolean = false
   ): List<String> {
     val args = listOfNotNull(
       "--noshow_progress",
@@ -112,7 +137,7 @@ class BazelClient(
       executeBazelCommand(
         "query", *args.toTypedArray(), allowAllFailures = allowFailures, includeErrorOutput = false
       )
-    return correctPotentiallyBrokenTargetNames(queryResults.outputLines)
+    return correctPotentiallyBrokenTargetNames(queryResults)
   }
 
   /** Returns all Bazel test targets in the workspace. */
@@ -177,7 +202,7 @@ class BazelClient(
           "--universe_scope=$universeScope",
           "--order_output=no",
           delimiter = ","
-        )
+        ).outputLines
       // Compute only test & library siblings for each individual build file. While this is both
       // much slower than a fully combined query & can potentially miss targets, it runs
       // substantially faster per query and helps to avoid potential hanging in CI. Note also that
@@ -219,9 +244,9 @@ class BazelClient(
     ).outputLines
   }
 
-  private fun correctPotentiallyBrokenTargetNames(lines: List<String>): List<String> {
+  private fun correctPotentiallyBrokenTargetNames(result: Result): List<String> {
     val correctedTargets = mutableListOf<String>()
-    for (line in lines) {
+    for (line in result.outputLines) {
       when {
         line.isEmpty() -> correctedTargets += line
         else -> {
@@ -260,7 +285,7 @@ class BazelClient(
     vararg prefixArgs: String,
     delimiter: String = " ",
     allowPartialFailures: Boolean = false
-  ): List<String> {
+  ): Result {
     // Split up values into partitions to ensure that the argument calls don't over-run the limit.
     var partitionCount = 0
     lateinit var partitions: List<List<String>>
@@ -270,13 +295,14 @@ class BazelClient(
     } while (computeMaxArgumentLength(partitions) >= MAX_ALLOWED_ARG_STR_LENGTH)
 
     // Fragment the query across the partitions to ensure all values can be considered.
-    return partitions.flatMap { partition ->
+    val allOutputLines = partitions.flatMap { partition ->
       val lastArgument = queryFormatStr.format(Locale.US, partition.joinToString(delimiter))
       val allArguments = prefixArgs.toList() + lastArgument
       executeBazelCommand(
         "query", *allArguments.toTypedArray(), allowPartialFailures = allowPartialFailures
       ).outputLines
     }
+    return Result(exitCode = 0, outputLines = allOutputLines)
   }
 
   private fun computeMaxArgumentLength(partitions: List<List<String>>) =
@@ -337,7 +363,7 @@ class BazelClient(
           "\nError output:\n${result.errorOutput.joinToString("\n")}"
       }
     }
-    return Result(result.exitCode, result.output)
+    return Result(exitCode = result.exitCode, outputLines = result.output)
   }
 
   private fun createUpdateMonitor(
@@ -365,6 +391,16 @@ class BazelClient(
     return updatedNumerator to updatedDenominator
   }
 
+  /**
+   * The outcome of an attempted Bazel command.
+   *
+   * Note that the specific possibilities of what the contained [exitCode] can be or whether
+   * [outputLines] includes standard error output is dependent on the configuration of the run
+   * command.
+   *
+   * @property exitCode the command's exit code (where '0' is expected to be a success)
+   * @property outputLines the list of lines comprising the command's output
+   */
   data class Result(val exitCode: Int, val outputLines: List<String>)
 
   private companion object {

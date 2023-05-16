@@ -1,19 +1,51 @@
 package org.oppia.android.scripts.build
 
-import java.io.BufferedReader
-import java.io.File
-import java.util.concurrent.TimeUnit
 import org.oppia.android.scripts.build.SuggestBuildFixes.PeekableSequence.Companion.toPeekable
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.util.math.PeekableIterator
 import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
+import java.io.BufferedReader
+import java.io.File
+import java.util.concurrent.TimeUnit
 
+/**
+ * The main entrypoint for suggesting build fixes for both missing strict and extra unused
+ * dependencies, as reported by rules_kotlin.
+ *
+ * This script has the capability of attempting to automatically fix and re-try failing targets
+ * whenever fixable issues are encountered (generally strict or unused dependencies). It can
+ * automatically map the less-clear targets mentioned by rules_kotlin into proper first-party
+ * references, including considering relative packages (e.g. for ":<target_name>"-type packages).
+ *
+ * The script operates on wildcard patterns, and supports pattern negation. Note that larger package
+ * patterns (such as "//...") can potentially take a significant time to run through as they may
+ * contain thousands of targets to potentially individually analyze. It's not uncommon for the
+ * script to take a few hours if there are multiple failures to fix (as it will re-check the targets
+ * until all issues are fixed or a non-fixable issue is encountered).
+ *
+ * The script attempts to aggressively reduce its target space, but this optimization may not always
+ * be available for certain patterns. Only patterns of package directories that themselves do not
+ * contain BUILD.bazel files will benefit from this.
+ *
+ * Usage:
+ *   bazel run //scripts:suggest_build_fixes -- <path_to_repo_root> <mode=deltas/fix> <patterns...>
+ *
+ * Arguments:
+ * - path_to_repo_root: directory path to the root of the Oppia Android repository.
+ * - mode: one of: "mode=deltas" or "mode=fix" for whether the script should only output changes it
+ *     would fix, or if it should go ahead and make the fixes itself.
+ * - patterns: one or more build patterns that end with '...' and optionally start with '-' (for
+ *     negation). Example: "//scripts/... -//scripts/src/javatests/..."
+ *
+ * Example:
+ *   bazel run //scripts:suggest_build_fixes -- $(pwd) mode=fix //...
+ */
 fun main(vararg args: String) {
   require(args.size > 2) {
     "Usage: bazel run //scripts:suggest_build_fixes --" +
-      " <root_directory> <mode=deltas/fix>[_force] <bazel_target_exp:String> ..."
+      " <root_directory> <mode=deltas/fix> <bazel_target_exp:String> ..."
   }
   val repoRoot = File(args[0]).absoluteFile.normalize().also {
     require(it.exists() && it.isDirectory) {
@@ -21,8 +53,7 @@ fun main(vararg args: String) {
     }
   }
   require(args[1].startsWith("mode=")) { "Expected 'mode' argument to start with 'mode='." }
-  val expFastRun = args[1].endsWith("_exp_fast_run")
-  val mode = when (val modeStr = args[1].removePrefix("mode=").removeSuffix("_exp_fast_run")) {
+  val mode = when (val modeStr = args[1].removePrefix("mode=")) {
     "deltas" -> SuggestBuildFixes.OutputMode.DELTAS
     "fix" -> SuggestBuildFixes.OutputMode.FIX
     else -> error("Expected mode to be one of: 'deltas' or 'fix', not: $modeStr.")
@@ -33,78 +64,102 @@ fun main(vararg args: String) {
         scriptBgDispatcher, processTimeout = 30, processTimeoutUnit = TimeUnit.MINUTES
       )
     val bazelClient = BazelClient(repoRoot, commandExecutor)
-    SuggestBuildFixes(repoRoot, bazelClient)
-      .suggestBuildFixes(args.drop(2).toList(), mode, expFastRun)
+    SuggestBuildFixes(repoRoot, bazelClient).suggestBuildFixes(args.drop(2).toList(), mode)
   }
 }
 
-// TODO: Update to assemble an actual dependency graph to traverse. This has major benefits:
-//  - It should significantly speed up rebuilding (since building should always start at the bottom
-//    of the graph).
-//  - It theoretically allows for batch building by asking Bazel to build unrelated targets (care
-//    needs to be taken during output parsing) which also means utilizing parallelization for faster
-//    builds.
-//  - It allows for correct target specification when mentioning import failures (since the exact
-//    target will be known).
-//  (Follow-up: is the above still needed with the new pruning technique + retry?)
+/**
+ * Utility to detect and auto-fix build issues for patterns of Bazel build targets.
+ *
+ * @property repoRoot the absolute [File] corresponding to the root of the inspected repository
+ * @property bazelClient a [BazelClient] configured for [repoRoot], ideally with an especially long
+ *     timeout execution time since this script may spend dozens of minutes running individual Bazel
+ *     commands
+ */
 class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: BazelClient) {
-  fun suggestBuildFixes(targetPatterns: List<String>, outputMode: OutputMode, expFastRun: Boolean) {
-    suggestBuildFixesAux(targetPatterns, outputMode, expFastRun)
+  /**
+   * Analyzes the specified [targetPatterns] in the given [outputMode] and outputs progress to
+   * standard output.
+   *
+   * If run with [OutputMode.FIX], this method will not complete until one of either:
+   * 1. All issues have been fixed and the provided patterns are now building.
+   * 2. An non-fixable error was encountered.
+   */
+  fun suggestBuildFixes(targetPatterns: List<String>, outputMode: OutputMode) {
+    suggestBuildFixesAux(targetPatterns, outputMode)
   }
 
   private fun suggestBuildFixesAux(
     targetPatterns: List<String>,
     outputMode: OutputMode,
-    expFastRun: Boolean,
     previousFailures: Set<DetectedFailure> = emptySet()
   ) {
-    val allTargets = targetPatterns.flatMap {
-      // Ignore 'manual' tagged builds as they aren't meant to be included in broad patterns.
+    require(targetPatterns.all { it.endsWith("...") }) {
+      "Only wildcard '...' patterns are supported."
+    }
+    val removePatterns =
+      targetPatterns.filter { it.startsWith("-") }.mapToSet { it.removePrefix("-") }
+    val addPatterns = targetPatterns.filterNot { it.startsWith("-") }.toSet()
+    // Ignore 'manual' tagged builds as they aren't meant to be included in broad patterns.
+    val allTargetsToAdd = addPatterns.flatMapTo(mutableSetOf()) {
       bazelClient.query("set($it) - attr(tags, 'manual', $it)", withSkyQuery = true)
     }
-    println(
-      "Trying to build ${allTargets.size} total targets from ${targetPatterns.size} pattern(s):"
-    )
+    val allTargetsToRemove = removePatterns.flatMapTo(mutableSetOf()) {
+      bazelClient.query("set($it) - attr(tags, 'manual', $it)", withSkyQuery = true)
+    }
+    val allTargets = allTargetsToAdd - allTargetsToRemove
+    println("${allTargets.size} total targets found from ${targetPatterns.size} pattern(s):")
     targetPatterns.forEach { println("- $it") }
     println()
 
-    // First, build the targets to ensure unrelated out-of-date actions are addressed.
-    if (expFastRun) {
-      println("[Experimental] Pre-building to compute which targets actually require reanalysis...")
-    } else println("Pre-building to improve analyzing performance...")
-    targetPatterns.forEach {
-      bazelClient.build(it, keepGoing = true, allowFailures = true).outputLines
+    // Expand patterns to their most specific forms (so that they can be more aggressively filtered
+    // out). Note that subtraction patterns are filtered out.
+    val expandedPatternsToAdd = addPatterns.mapToSet {
+      File(repoRoot, it.removePrefix("//").removeSuffix("..."))
+    }.flatMap { it.findTopLevelBazelPackages() }.mapToSet {
+      "//${it.toRelativeString(repoRoot)}/...".replace("///", "//")
+    }
+    println(
+      "Expanding provided ${targetPatterns.size} pattern(s) into ${expandedPatternsToAdd.size}" +
+        " pattern(s) for more granularity:"
+    )
+    expandedPatternsToAdd.forEach { println("- $it") }
+    println()
+    print("Querying 0/${expandedPatternsToAdd.size} patterns for targets...")
+    val expandedPatternCount = expandedPatternsToAdd.withIndex().sumOf { (index, ptrn) ->
+      bazelClient.query("set($ptrn) - attr(tags, 'manual', $ptrn)", withSkyQuery = true).also {
+        print("\rQuerying ${index + 1}/${expandedPatternsToAdd.size} patterns for targets...")
+      }.size
+    } - allTargetsToRemove.size
+    println()
+
+    // Sanity check to make sure no targets were missed.
+    check(expandedPatternCount == allTargets.size) {
+      "Internal failure in script: expanded patterns computation lost targets."
     }
 
-    // Second, determine which targets are failing and require reworking.
-    val targetsRequiringAnalysis = if (expFastRun) {
-      targetPatterns.flatMap { targetPattern ->
-        bazelClient.build(
-          targetPattern,
-          keepGoing = true,
-          allowFailures = true,
-          configProfiles = setOf("only_check_for_failures")
-        ).outputLines.mapNotNull { outputLine ->
-          outputLine.takeIf { it.startsWith("ERROR: ") }
-            ?.substringAfter("ERROR: ", missingDelimiterValue = "")
-        }.mapNotNull { errorLine ->
-          check(errorLine.startsWith("action '") && errorLine.endsWith("is not up-to-date")) {
-            "Encountered unexpected failure while building pattern '$targetPattern':\n$errorLine" +
-              "\nPlease resolve this manually."
-          }
-          // Ignore out-of-date actions that don't include targets, and ones that have targets which
-          // aren't tied to the main repository (since these should be built incidentally).
-          return@mapNotNull errorLine.takeIf { line ->
-            '@' in line
-          }?.substringAfter('@', missingDelimiterValue = "")?.substringBefore(' ')?.takeIf {
-            it.startsWith("//")
-          }
-        }
-      }.mapToSet(Target::parse)
-    } else {
-      println("Forcing all targets to be analyzed (per command line).")
-      allTargets.mapToSet(Target::parse)
+    // First, build the targets to ensure unrelated out-of-date actions are addressed.
+    val preBuildPrefix = "Pre-building to improve analyzing performance..."
+    print("\r$preBuildPrefix...0/${expandedPatternsToAdd.size}")
+    val patternOmissions = removePatterns.map { "-$it" }.toTypedArray()
+    val failingPatterns = expandedPatternsToAdd.filterIndexed { index, pattern ->
+      bazelClient.build(pattern, *patternOmissions, keepGoing = true, allowFailures = true).also {
+        print("\r$preBuildPrefix...${index + 1}/${expandedPatternsToAdd.size}")
+      }.exitCode != 0
     }
+    println()
+    if (failingPatterns.isEmpty()) {
+      println("All targets are already building, so no additional analysis is needed.")
+      return
+    }
+    println("${failingPatterns.size}/${expandedPatternsToAdd.size} pattern(s) have failures.")
+
+    val possiblyFailingTargets = failingPatterns.flatMapTo(mutableSetOf()) {
+      bazelClient.query("set($it) - attr(tags, 'manual', $it)", withSkyQuery = true)
+    } - allTargetsToRemove
+
+    // Second, determine which targets are failing and require reworking.
+    val targetsRequiringAnalysis = possiblyFailingTargets.mapToSet(Target::parse)
 
     val targetCount = targetsRequiringAnalysis.size
     println("$targetCount/${allTargets.size} target(s) require analysis.")
@@ -185,15 +240,9 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         println("All remaining issues cannot be auto-resolved. Please fix them manually.")
       outputMode == OutputMode.FIX -> {
         println("Issues were fixed, re-running check to ensure everything has been fixed.")
-        if (expFastRun) {
-          println(
-            "WARNING: Fast running was enabled. This is experimental and may miss targets." +
-              " Suggest re-running with it disabled to ensure everything is up-to-date."
-          )
-        }
         println()
         suggestBuildFixesAux(
-          targetPatterns, outputMode, expFastRun, previousFailures = noteworthyFailures.toSet()
+          targetPatterns, outputMode, previousFailures = noteworthyFailures.toSet()
         )
       }
       else -> println("Please fix the issues described above and try again.")
@@ -203,32 +252,66 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
   private fun findIssuesWithTarget(target: Target): DetectedFailure =
     DetectedFailure.detectFailures(bazelClient, target)
 
+  /** Different runtime and output configuration modes for [SuggestBuildFixes]. */
   enum class OutputMode {
+    /** Indicates that computed fixes should only be outputted, not auto-fixed. */
     DELTAS,
+
+    /** Indicates that computed fixes should be auto-fixed and verified. */
     FIX
   }
 
+  /** A failure that was encountered while trying to build a specific target. */
   private sealed class DetectedFailure {
+    /** The [Target] that resulted in this build failure. */
     abstract val target: Target
 
+    /** Indicates that the specified [target] had no build issues. */
     data class NoFailure(override val target: Target) : DetectedFailure()
 
+    /**
+     * Indicates that the specified [target] had a build failure that the script does not know how
+     * to categorize.
+     */
     data class Unknown(override val target: Target) : DetectedFailure()
 
+    /**
+     * Indicates that the specified [target] has at least one source file missing dependencies for
+     * the imports specified in [unresolvableImports] (so they cannot be resolved properly at
+     * compile-time).
+     */
     data class UnresolvedReferences(
       override val target: Target,
       val unresolvableImports: Set<String>
-    ): DetectedFailure()
+    ) : DetectedFailure()
 
+    /**
+     * Indicates that the specified [target] is missing dependencies, indicated by [targetsToAdd],
+     * that it directly depends on.
+     */
     data class StrictDeps(
-      override val target: Target, val targetsToAdd: Set<InterpretedTarget>
-    ): DetectedFailure()
+      override val target: Target,
+      val targetsToAdd: Set<InterpretedTarget>
+    ) : DetectedFailure()
 
+    /**
+     * Indicates that the specified [target] has extra, unnecessary dependencies, as indicated by
+     * [targetsToRemove], that it does not need to depend on.
+     */
     data class UnusedDeps(
-      override val target: Target, val targetsToRemove: Set<InterpretedTarget>
-    ): DetectedFailure()
+      override val target: Target,
+      val targetsToRemove: Set<InterpretedTarget>
+    ) : DetectedFailure()
 
     companion object {
+      /**
+       * Using the provided [bazelClient], attempts to build the provided [target] and returns the
+       * first [DetectedFailure] that it encounters, or [DetectedFailure.NoFailure] if the target
+       * builds without issue.
+       *
+       * [DetectedFailure.Unknown] is returned if an issue is encountered that cannot be categorized
+       * into existing known failure types.
+       */
       fun detectFailures(bazelClient: BazelClient, target: Target): DetectedFailure {
         val failureLines =
           bazelClient.build(target.fullyQualifiedTargetPath, allowFailures = true).outputLines
@@ -291,11 +374,11 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
   private sealed class InterpretedTarget {
     abstract val correctedTarget: Target
 
-    data class Unknown(val originalRawTarget: String): InterpretedTarget() {
+    data class Unknown(val originalRawTarget: String) : InterpretedTarget() {
       override val correctedTarget get() = error("Unknown target: $originalRawTarget.")
     }
 
-    data class Resolved(val target: Target): InterpretedTarget() {
+    data class Resolved(val target: Target) : InterpretedTarget() {
       override val correctedTarget by lazy { target.normalize() }
     }
 
@@ -307,7 +390,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       )
       private val externalRepoReferenceFixesMapping = mapOf(
         Workspace.parse("@com_google_protobuf_protobuf_javalite") to
-          Target.parse("//third_party:com_google_protobuf_protobuf"),
+          Target.parse("//third_party:com_google_protobuf_protobuf-javalite"),
         Workspace.parse("@kotlitex") to Target.parse("//third_party:io_github_karino2_kotlitex"),
         Workspace.parse("@guava_android") to Target.parse("//third_party:com_google_guava_guava"),
         Workspace.parse("@circularimageview") to
@@ -355,7 +438,8 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       }
 
       private fun BazelClient.interpretAarTarget(
-        rawTarget: String, parsedTarget: Target?
+        rawTarget: String,
+        parsedTarget: Target?
       ): InterpretedTarget {
         val mavenType =
           rawTarget.substringBefore("/_aar/").substringAfterLast('/', missingDelimiterValue = "")
@@ -365,7 +449,8 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       }
 
       private fun BazelClient.interpretMavenTarget(
-        rawTarget: String, parsedTarget: Target?
+        rawTarget: String,
+        parsedTarget: Target?
       ): InterpretedTarget {
         return interpretThirdPartyWrappedDependency(
           rawTarget,
@@ -374,7 +459,8 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       }
 
       private fun BazelClient.interpretThirdPartyWrappedDependency(
-        rawTarget: String, expectedThirdPartyPrefix: String
+        rawTarget: String,
+        expectedThirdPartyPrefix: String
       ): InterpretedTarget {
         return resolveTarget(rawTarget) {
           val queryResult =
@@ -396,8 +482,10 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
   }
 
   private data class Target(
-    val workspace: Workspace, val pkg: Package, val name: String
-  ): Comparable<Target> {
+    val workspace: Workspace,
+    val pkg: Package,
+    val name: String
+  ) : Comparable<Target> {
     val simpleQualifiedTargetPath: String by lazy {
       "${workspace.simpleName}//${pkg.path}$simpleLocalName"
     }
@@ -450,7 +538,9 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       }
 
       fun parseInterpretedReference(
-        targetReference: String, workspace: Workspace, pkg: Package
+        targetReference: String,
+        workspace: Workspace,
+        pkg: Package
       ): Target {
         return if (targetReference.startsWith(':')) {
           parse("${workspace.simpleName}//${pkg.path}$targetReference")
@@ -478,7 +568,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     }
   }
 
-  private data class Package(val parent: Package? = null, val name: String): Comparable<Package> {
+  private data class Package(val parent: Package? = null, val name: String) : Comparable<Package> {
     val path: String by lazy { parent?.path?.let { "$it/$name" } ?: name }
 
     override fun compareTo(other: Package): Int = PACKAGE_COMPARATOR.compare(this, other)
@@ -498,40 +588,40 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     }
   }
 
-  private sealed class Workspace: Comparable<Workspace> {
+  private sealed class Workspace : Comparable<Workspace> {
     abstract val fullName: String
     abstract val simpleName: String
     protected abstract val intrinsicOrder: Int
 
     override fun compareTo(other: Workspace): Int = WORKSPACE_COMPARATOR.compare(this, other)
 
-    object Main: Workspace() {
+    object Main : Workspace() {
       override val fullName = "@"
       override val simpleName = ""
       override val intrinsicOrder get() = 0 // Main dependencies always go first.
     }
 
-    data class Remote(val name: String): Workspace() {
+    data class Remote(val name: String) : Workspace() {
       override val fullName = "@$name"
       override val simpleName = fullName
       override val intrinsicOrder get() = 1 // External dependencies always go second.
     }
 
-   companion object {
-     private val WORKSPACE_COMPARATOR =
-       compareBy(Workspace::intrinsicOrder).thenBy(Workspace::simpleName)
+    companion object {
+      private val WORKSPACE_COMPARATOR =
+        compareBy(Workspace::intrinsicOrder).thenBy(Workspace::simpleName)
 
-     fun parse(prefix: String): Workspace? {
-       val workspaceName = prefix.substringAfter('@', missingDelimiterValue = "")
-       return when {
-         prefix.isEmpty() -> Main
-         !prefix.startsWith('@') -> null
-         workspaceName.isEmpty() -> Main // prefix is just '@'.
-         workspaceName.any { it !in Package.VALID_COMPONENT_CHARS } -> null // Invalid chars.
-         else -> Remote(workspaceName)
-       }
-     }
-   }
+      fun parse(prefix: String): Workspace? {
+        val workspaceName = prefix.substringAfter('@', missingDelimiterValue = "")
+        return when {
+          prefix.isEmpty() -> Main
+          !prefix.startsWith('@') -> null
+          workspaceName.isEmpty() -> Main // prefix is just '@'.
+          workspaceName.any { it !in Package.VALID_COMPONENT_CHARS } -> null // Invalid chars.
+          else -> Remote(workspaceName)
+        }
+      }
+    }
   }
 
   private data class LineFragment(val linePart: String, val indentation: Int = 0)
@@ -541,35 +631,35 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
 
     abstract fun generate(indentation: Int): List<LineFragment>
 
-    object RuntimeEvaluated: PropertyValue() {
+    object RuntimeEvaluated : PropertyValue() {
       override val canBeRegenerated = false
 
       override fun generate(indentation: Int) =
         error("Generation is unsupported for runtime-evaluated properties.")
     }
 
-    data class StringValue(val value: String): PropertyValue() {
+    data class StringValue(val value: String) : PropertyValue() {
       override val canBeRegenerated = true
 
       override fun generate(indentation: Int) =
         listOf(LineFragment(linePart = "\"$value\"", indentation))
     }
 
-    data class BooleanValue(val value: Boolean): PropertyValue() {
+    data class BooleanValue(val value: Boolean) : PropertyValue() {
       override val canBeRegenerated = true
 
       override fun generate(indentation: Int) =
         listOf(LineFragment(linePart = if (value) "True" else "False", indentation))
     }
 
-    data class IntValue(val value: Int): PropertyValue() {
+    data class IntValue(val value: Int) : PropertyValue() {
       override val canBeRegenerated = true
 
       override fun generate(indentation: Int) =
         listOf(LineFragment(linePart = value.toString(), indentation))
     }
 
-    data class ListValue(val values: List<PropertyValue>): PropertyValue() {
+    data class ListValue(val values: List<PropertyValue>) : PropertyValue() {
       override val canBeRegenerated = values.all { it.canBeRegenerated }
 
       override fun generate(indentation: Int): List<LineFragment> {
@@ -583,7 +673,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       }
     }
 
-    data class DictionaryValue(val values: Map<String, PropertyValue>): PropertyValue() {
+    data class DictionaryValue(val values: Map<String, PropertyValue>) : PropertyValue() {
       override val canBeRegenerated = values.values.all { it.canBeRegenerated }
 
       override fun generate(indentation: Int): List<LineFragment> {
@@ -601,7 +691,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       }
     }
 
-    data class SimpleGlob(val patterns: ListValue): PropertyValue() {
+    data class SimpleGlob(val patterns: ListValue) : PropertyValue() {
       override val canBeRegenerated = patterns.canBeRegenerated
 
       override fun generate(indentation: Int): List<LineFragment> {
@@ -678,15 +768,16 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         ?.map(PropertyValue.StringValue::value)
     }
 
-    private inline fun <reified T: PropertyValue> getProperty(name: String) = properties[name] as? T
+    private inline fun <reified T : PropertyValue> getProperty(name: String) =
+      properties[name] as? T
 
-    private inline fun <reified T: PropertyValue> getExpectedProperty(name: String): T {
+    private inline fun <reified T : PropertyValue> getExpectedProperty(name: String): T {
       return checkNotNull(getProperty(name)) {
         "Expected property with name $name and type ${T::class.java}."
       }
     }
 
-    private inline fun <reified T: PropertyValue> PropertyValue.ListValue.extractVals(
+    private inline fun <reified T : PropertyValue> PropertyValue.ListValue.extractVals(
       name: String
     ): List<T> {
       return values.filterIsInstance<T>().also {
@@ -714,9 +805,9 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     }
   }
 
-  private class PeekableSequence<T: Any> private constructor(
+  private class PeekableSequence<T : Any> private constructor(
     private val iterator: PeekableIterator<T>
-  ): Sequence<T> {
+  ) : Sequence<T> {
     val currentValue: T? get() = iterator.peek()
     val currentCount: Int get() = iterator.getRetrievalCount()
 
@@ -746,7 +837,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     }
 
     companion object {
-      fun <T: Any> Sequence<T>.toPeekable(): PeekableSequence<T> =
+      fun <T : Any> Sequence<T>.toPeekable(): PeekableSequence<T> =
         if (this is PeekableSequence) this else PeekableSequence(toPeekableIterator())
     }
   }
@@ -777,7 +868,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       val lastSlash = rawTarget.indexOfLast { it == '/' }
       val initialDelimiter = firstColon.coerceAtMost(firstSlash)
       val finalDelimiter = lastColon.coerceAtLeast(lastSlash)
-      val requiredTargetPrefix = rawTarget.substring(0 .. initialDelimiter)
+      val requiredTargetPrefix = rawTarget.substring(0..initialDelimiter)
       val targetMiddle = rawTarget.substring(initialDelimiter + 1 until finalDelimiter)
       val requiredTargetSuffix = rawTarget.substring(finalDelimiter)
       if (requiredTargetPrefix.isEmpty() || requiredTargetSuffix.isEmpty()) {
@@ -830,7 +921,8 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     }
 
     private fun <T> Sequence<T>.replaceRange(
-      range: IntRange, createReplacement: () -> Iterable<T>
+      range: IntRange,
+      createReplacement: () -> Iterable<T>
     ): Sequence<T> {
       var addedReplacement = false
       return withIndex().flatMap { (index, line) ->
@@ -855,41 +947,53 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
 
     private fun Int.generateIndentation(): String =
       " ".repeat(this * 4) // 4 spaces per indent in Starlark.
+
+    private fun File.findTopLevelBazelPackages(): List<File> {
+      require(isDirectory) { "Expected directory, not: $this." }
+      val files = listFiles()?.toList() ?: emptyList()
+      val hasBuildFile = files.any { it.name == "BUILD" || it.name == "BUILD.bazel" }
+      return if (!hasBuildFile) {
+        // This is just a directory, not a Bazel package. Expand children.
+        files.filter(File::isDirectory).flatMap { it.findTopLevelBazelPackages() }
+      } else listOf(this) // Otherwise, the top-level package of this tree is the current directory.
+    }
   }
 
   // Subset of the actual language available tokens (just need enough to parse BUILD files).
   private sealed class StarlarkToken {
     abstract val location: Location
 
-    data class LineComment(val contents: String, override val location: Location): StarlarkToken()
+    data class LineComment(val contents: String, override val location: Location) : StarlarkToken()
 
-    data class DocString(val contents: String, override val location: Location): StarlarkToken()
-    data class Identifier(val value: String, override val location: Location): StarlarkToken()
-    data class SimpleString(val value: String, override val location: Location): StarlarkToken()
-    data class Integer(val value: Int, override val location: Location): StarlarkToken()
-    data class Bool(val value: Boolean, override val location: Location): StarlarkToken()
+    data class DocString(val contents: String, override val location: Location) : StarlarkToken()
+    data class Identifier(val value: String, override val location: Location) : StarlarkToken()
+    data class SimpleString(val value: String, override val location: Location) : StarlarkToken()
+    data class Integer(val value: Int, override val location: Location) : StarlarkToken()
+    data class Bool(val value: Boolean, override val location: Location) : StarlarkToken()
 
-    data class If(override val location: Location): StarlarkToken()
-    data class Else(override val location: Location): StarlarkToken()
-    data class For(override val location: Location): StarlarkToken()
-    data class In(override val location: Location): StarlarkToken()
+    data class If(override val location: Location) : StarlarkToken()
+    data class Else(override val location: Location) : StarlarkToken()
+    data class For(override val location: Location) : StarlarkToken()
+    data class In(override val location: Location) : StarlarkToken()
 
-    data class Comma(override val location: Location): StarlarkToken()
-    data class Equals(override val location: Location): StarlarkToken()
-    data class Colon(override val location: Location): StarlarkToken()
-    data class Period(override val location: Location): StarlarkToken()
-    data class Plus(override val location: Location): StarlarkToken()
-    data class Minus(override val location: Location): StarlarkToken()
-    data class Modulo(override val location: Location): StarlarkToken()
-    data class LeftParenthesis(override val location: Location): StarlarkToken()
-    data class RightParenthesis(override val location: Location): StarlarkToken()
-    data class LeftSquareBrace(override val location: Location): StarlarkToken()
-    data class RightSquareBrace(override val location: Location): StarlarkToken()
-    data class LeftCurlyBrace(override val location: Location): StarlarkToken()
-    data class RightCurlyBrace(override val location: Location): StarlarkToken()
+    data class Comma(override val location: Location) : StarlarkToken()
+    data class Equals(override val location: Location) : StarlarkToken()
+    data class Colon(override val location: Location) : StarlarkToken()
+    data class Period(override val location: Location) : StarlarkToken()
+    data class Plus(override val location: Location) : StarlarkToken()
+    data class Minus(override val location: Location) : StarlarkToken()
+    data class Modulo(override val location: Location) : StarlarkToken()
+    data class LeftParenthesis(override val location: Location) : StarlarkToken()
+    data class RightParenthesis(override val location: Location) : StarlarkToken()
+    data class LeftSquareBrace(override val location: Location) : StarlarkToken()
+    data class RightSquareBrace(override val location: Location) : StarlarkToken()
+    data class LeftCurlyBrace(override val location: Location) : StarlarkToken()
+    data class RightCurlyBrace(override val location: Location) : StarlarkToken()
 
     data class Location(
-      val filePath: String, val sourceLineIndexes: IntRange, val lineCharacterIndexes: IntRange
+      val filePath: String,
+      val sourceLineIndexes: IntRange,
+      val lineCharacterIndexes: IntRange
     ) {
       fun computeErrorMessagePrefix(): String {
         val linePart = if (sourceLineIndexes.first == sourceLineIndexes.last) {
@@ -961,7 +1065,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
                   val lastCol = token.location.lineCharacterIndexes.last
                   token.copy(
                     contents = token.contents.removeSuffix("\"\""),
-                    location = token.location.copy(lineCharacterIndexes = firstCol .. (lastCol - 2))
+                    location = token.location.copy(lineCharacterIndexes = firstCol..(lastCol - 2))
                   )
                 }
               } else stringToken
@@ -1040,7 +1144,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       )
     }
 
-    private fun <T: StarlarkToken, V> TrackedPeekableSequence.createToken(
+    private fun <T : StarlarkToken, V> TrackedPeekableSequence.createToken(
       constructToken: (V, StarlarkToken.Location) -> T,
       consumeStream: TrackedPeekableSequence.() -> V
     ): T {
@@ -1064,8 +1168,9 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     private fun isIdentifierChar(char: Char): Boolean = char.isLetterOrDigit() || char == '_'
 
     private class TrackedPeekableSequence(
-      val base: PeekableSequence<Char>, val filePath: String
-    ): Sequence<Char> {
+      val base: PeekableSequence<Char>,
+      val filePath: String
+    ) : Sequence<Char> {
       var currentLineIndex: Int = 0
       var lineStartCharacterIndex: Int = 0
       val currentCharacterIndex: Int get() = base.currentCount
@@ -1083,16 +1188,17 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
   private sealed class StarlarkNode {
     abstract val sourceLineIndexRange: IntRange
 
-    sealed class Literal: StarlarkNode() {
+    sealed class Literal : StarlarkNode() {
       data class StarlarkString(
-        val value: String, override val sourceLineIndexRange: IntRange
-      ): Literal()
-      data class Bool(val value: Boolean, override val sourceLineIndexRange: IntRange): Literal()
-      data class Integer(val value: Int, override val sourceLineIndexRange: IntRange): Literal()
+        val value: String,
+        override val sourceLineIndexRange: IntRange
+      ) : Literal()
+      data class Bool(val value: Boolean, override val sourceLineIndexRange: IntRange) : Literal()
+      data class Integer(val value: Int, override val sourceLineIndexRange: IntRange) : Literal()
     }
 
-    sealed class Expression: StarlarkNode() {
-      data class LiteralExpression(val literal: Literal): Expression() {
+    sealed class Expression : StarlarkNode() {
+      data class LiteralExpression(val literal: Literal) : Expression() {
         override val sourceLineIndexRange get() = literal.sourceLineIndexRange
       }
 
@@ -1101,97 +1207,107 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         val positionalArguments: List<Expression>,
         val namedArguments: Map<String, Expression>,
         override val sourceLineIndexRange: IntRange
-      ): Expression()
+      ) : Expression()
 
       data class VariableReference(
-        val name: String, override val sourceLineIndexRange: IntRange
-      ): Expression()
+        val name: String,
+        override val sourceLineIndexRange: IntRange
+      ) : Expression()
 
-      data class MemberReference(val container: Expression, val access: Expression): Expression() {
+      data class MemberReference(val container: Expression, val access: Expression) : Expression() {
         override val sourceLineIndexRange: IntRange
           get() = container.sourceLineIndexRange.union(access.sourceLineIndexRange)
       }
 
-      sealed class Indexing: Expression() {
+      sealed class Indexing : Expression() {
         abstract val container: Expression
 
         data class LowerBounded(
           override val container: Expression,
           val bounds: Expression,
           override val sourceLineIndexRange: IntRange
-        ): Indexing()
+        ) : Indexing()
 
         data class UpperBounded(
           override val container: Expression,
           val bounds: Expression,
           override val sourceLineIndexRange: IntRange
-        ): Indexing()
+        ) : Indexing()
 
         data class DualBounded(
           override val container: Expression,
           val lowerBounds: Expression,
           val upperBounds: Expression,
           override val sourceLineIndexRange: IntRange
-        ): Indexing()
+        ) : Indexing()
       }
 
       data class Conditional(
-        val condition: Expression, val resultWhenTrue: Expression, val resultWhenFalse: Expression
-      ): Expression() {
+        val condition: Expression,
+        val resultWhenTrue: Expression,
+        val resultWhenFalse: Expression
+      ) : Expression() {
         override val sourceLineIndexRange: IntRange get() =
           listOf(condition, resultWhenTrue, resultWhenFalse).computeManifoldSourceLineRange()
       }
 
-      data class Loop(val repeated: Expression, val condition: Contains): Expression() {
+      data class Loop(val repeated: Expression, val condition: Contains) : Expression() {
         override val sourceLineIndexRange: IntRange
           get() = listOf(repeated, condition).computeManifoldSourceLineRange()
       }
 
-      data class Contains(val subject: Expression, val container: Expression): Expression() {
+      data class Contains(val subject: Expression, val container: Expression) : Expression() {
         override val sourceLineIndexRange: IntRange
           get() = listOf(subject, container).computeManifoldSourceLineRange()
       }
 
-      sealed class BinaryOperation: Expression() {
+      sealed class BinaryOperation : Expression() {
         abstract val lhs: Expression
         abstract val rhs: Expression
 
         override val sourceLineIndexRange get() = listOf(lhs, rhs).computeManifoldSourceLineRange()
 
         data class Addition(
-          override val lhs: Expression, override val rhs: Expression
-        ): BinaryOperation()
+          override val lhs: Expression,
+          override val rhs: Expression
+        ) : BinaryOperation()
         data class Subtraction(
-          override val lhs: Expression, override val rhs: Expression
-        ): BinaryOperation()
+          override val lhs: Expression,
+          override val rhs: Expression
+        ) : BinaryOperation()
         data class Modulus(
-          override val lhs: Expression, override val rhs: Expression
-        ): BinaryOperation()
+          override val lhs: Expression,
+          override val rhs: Expression
+        ) : BinaryOperation()
       }
 
       data class StarlarkList(
-        val elements: List<Expression>, override val sourceLineIndexRange: IntRange
-      ): Expression()
+        val elements: List<Expression>,
+        override val sourceLineIndexRange: IntRange
+      ) : Expression()
 
       data class Dict(
-        val elements: Map<String, Expression>, override val sourceLineIndexRange: IntRange
-      ): Expression()
+        val elements: Map<String, Expression>,
+        override val sourceLineIndexRange: IntRange
+      ) : Expression()
 
       // Note that this can just be a single wrapped expression rather than a tuple (for the sake of
       // ensuring correct source line ranges).
       data class Tuple(
-        val elements: List<Expression>, override val sourceLineIndexRange: IntRange
-      ): Expression()
+        val elements: List<Expression>,
+        override val sourceLineIndexRange: IntRange
+      ) : Expression()
     }
 
-    sealed class Statement: StarlarkNode() {
-      data class ExpressionStatement(val expression: Expression): Statement() {
+    sealed class Statement : StarlarkNode() {
+      data class ExpressionStatement(val expression: Expression) : Statement() {
         override val sourceLineIndexRange: IntRange get() = expression.sourceLineIndexRange
       }
 
       data class Definition(
-        val name: Expression.VariableReference, val result: Expression
-      ): Statement() {
+        val name: Expression.VariableReference,
+        val result: Expression
+      ) : Statement() {
         override val sourceLineIndexRange: IntRange
           get() = listOf(name, result).computeManifoldSourceLineRange()
       }
@@ -1225,7 +1341,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       return currentValue
     }
 
-    private inline fun <reified T: StarlarkToken> PeekableSequence<StarlarkToken>.dropToken(): T {
+    private inline fun <reified T : StarlarkToken> PeekableSequence<StarlarkToken>.dropToken(): T {
       val droppedToken = skip()
       if (droppedToken !is T) {
         failOnToken(droppedToken, expected = "token of type ${T::class.java.name}")
@@ -1242,8 +1358,9 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         is StarlarkToken.Identifier -> {
           val baseExpression = parseExpression()
           // Check if the top-level identifier is actually an assignment.
-          if (baseExpression is StarlarkNode.Expression.VariableReference
-            && seekNextToken() is StarlarkToken.Equals) {
+          if (baseExpression is StarlarkNode.Expression.VariableReference &&
+            seekNextToken() is StarlarkToken.Equals
+          ) {
             dropToken<StarlarkToken.Equals>()
             val result = parseExpression()
             StarlarkNode.Statement.Definition(baseExpression, result)
@@ -1435,10 +1552,11 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       return StarlarkNode.Expression.Contains(subject, container)
     }
 
-    private inline fun <reified T: StarlarkToken> PeekableSequence<StarlarkToken>.parseBinOp(
+    private inline fun <reified T : StarlarkToken> PeekableSequence<StarlarkToken>.parseBinOp(
       leftSide: StarlarkNode.Expression,
       createNode: (
-        StarlarkNode.Expression, StarlarkNode.Expression
+        StarlarkNode.Expression,
+        StarlarkNode.Expression
       ) -> StarlarkNode.Expression.BinaryOperation
     ): StarlarkNode.Expression.BinaryOperation {
       dropToken<T>()
@@ -1492,7 +1610,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       return Argument.Named(name, expression = parseExpression())
     }
 
-    private inline fun <E, reified T: StarlarkToken> PeekableSequence<StarlarkToken>.parseRepeated(
+    private inline fun <E, reified T : StarlarkToken> PeekableSequence<StarlarkToken>.parseRepeated(
       parseElement: () -> E
     ): List<E> {
       return buildList {
@@ -1543,8 +1661,10 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       )
     }
 
-    private inline fun <reified T: StarlarkToken, V, N: StarlarkNode> parseLiteral(
-      token: T, extractValue: T.() -> V, createNode: (V, IntRange) -> N
+    private inline fun <reified T : StarlarkToken, V, N : StarlarkNode> parseLiteral(
+      token: T,
+      extractValue: T.() -> V,
+      createNode: (V, IntRange) -> N
     ): N = createNode(token.extractValue(), token.location.sourceLineIndexes)
 
     private fun failOnToken(token: StarlarkToken?, expected: String): Nothing {
@@ -1553,8 +1673,8 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     }
 
     private sealed class Argument {
-      data class Positional(val expression: StarlarkNode.Expression): Argument()
-      data class Named(val name: String, val expression: StarlarkNode.Expression): Argument()
+      data class Positional(val expression: StarlarkNode.Expression) : Argument()
+      data class Named(val name: String, val expression: StarlarkNode.Expression) : Argument()
     }
   }
 
@@ -1575,7 +1695,10 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     }
 
     private fun BufferedReader.parseTargets(
-      repoRoot: File, buildFile: File, workspace: Workspace, pkg: Package
+      repoRoot: File,
+      buildFile: File,
+      workspace: Workspace,
+      pkg: Package
     ): Sequence<ParsedTarget> {
       val filePath = buildFile.toRelativeString(repoRoot)
       val nodes = StarlarkParser.parse(filePath, lineSequence())

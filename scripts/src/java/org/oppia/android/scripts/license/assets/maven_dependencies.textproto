@@ -296,17 +296,6 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.lifecycle:lifecycle-extensions:2.2.0"
-  artifact_version: "2.2.0"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-maven_dependency {
   artifact_name: "androidx.lifecycle:lifecycle-livedata-core-ktx:2.2.0"
   artifact_version: "2.2.0"
   license {
@@ -582,17 +571,6 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.work:work-runtime-ktx:2.4.0"
-  artifact_version: "2.4.0"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-maven_dependency {
   artifact_name: "androidx.work:work-runtime:2.4.0"
   artifact_version: "2.4.0"
   license {
@@ -815,28 +793,6 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.google.android.gms:play-services-measurement-sdk:17.5.0"
-  artifact_version: "17.5.0"
-  license {
-    license_name: "Android Software Development Kit License"
-    original_link: "https://developer.android.com/studio/terms.html"
-    direct_link_only {
-      url: "https://developer.android.com/studio/terms.html"
-    }
-  }
-}
-maven_dependency {
-  artifact_name: "com.google.android.gms:play-services-measurement:17.5.0"
-  artifact_version: "17.5.0"
-  license {
-    license_name: "Android Software Development Kit License"
-    original_link: "https://developer.android.com/studio/terms.html"
-    direct_link_only {
-      url: "https://developer.android.com/studio/terms.html"
-    }
-  }
-}
-maven_dependency {
   artifact_name: "com.google.android.gms:play-services-stats:17.0.0"
   artifact_version: "17.0.0"
   license {
@@ -908,17 +864,6 @@ maven_dependency {
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-maven_dependency {
-  artifact_name: "com.google.firebase:firebase-analytics:17.5.0"
-  artifact_version: "17.5.0"
-  license {
-    license_name: "Android Software Development Kit License"
-    original_link: "https://developer.android.com/studio/terms.html"
-    direct_link_only {
-      url: "https://developer.android.com/studio/terms.html"
     }
   }
 }
@@ -1064,17 +1009,6 @@ maven_dependency {
 }
 maven_dependency {
   artifact_name: "com.squareup.moshi:moshi:1.13.0"
-  artifact_version: "1.13.0"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-maven_dependency {
-  artifact_name: "com.squareup.moshi:moshi-kotlin:1.13.0"
   artifact_version: "1.13.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
@@ -1267,8 +1201,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-  artifact_version: "1.6.4"
+  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4"
+  artifact_version: "1.3.4"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1278,7 +1212,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+  artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4"
   artifact_version: "1.6.4"
   license {
     license_name: "The Apache Software License, Version 2.0"

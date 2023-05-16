@@ -1,6 +1,7 @@
 package org.oppia.android.util.logging.firebase
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import dagger.BindsOptionalOf
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.logging.AnalyticsEventLogger
@@ -10,21 +11,25 @@ import javax.inject.Singleton
 
 /** Provides Firebase-specific logging implementations. */
 @Module
-class LogReportingModule {
-  @Provides
-  @Singleton
-  fun provideCrashLogger(): ExceptionLogger =
-    FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
+interface LogReportingModule {
+  companion object {
+    @Provides
+    @Singleton
+    fun provideCrashLogger(): ExceptionLogger =
+      FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
 
-  @Provides
-  @Singleton
-  fun provideFirebaseAnalyticsEventLogger(factory: FirebaseAnalyticsEventLogger.Factory):
-    AnalyticsEventLogger = factory.create()
+    @Provides
+    @Singleton
+    fun provideFirebaseAnalyticsEventLogger(
+      factory: FirebaseAnalyticsEventLogger.FactoryImpl
+    ): AnalyticsEventLogger = factory.create()
 
-  @Provides
-  @Singleton
-  fun providePerformanceMetricsEventLogger(
-    factory: FirebaseAnalyticsEventLogger.Factory
-  ): PerformanceMetricsEventLogger =
-    factory.createPerformanceMetricEventLogger()
+    @Provides
+    @Singleton
+    fun providePerformanceMetricsEventLogger(
+      factory: FirebaseAnalyticsEventLogger.FactoryImpl
+    ): PerformanceMetricsEventLogger = factory.createPerformanceMetricEventLogger()
+  }
+
+  @BindsOptionalOf fun bindOptionalDebugAnalyticsEventLogger(): DebugAnalyticsEventLogger
 }

@@ -6,17 +6,17 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
+import org.oppia.android.app.model.CompletedStoryListActivityParams
 import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.OngoingTopicListActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfilePictureActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.PROFILE_PROGRESS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.model.CompletedStoryListActivityParams
-import org.oppia.android.app.model.OngoingTopicListActivityParams
-import org.oppia.android.app.model.ProfilePictureActivityParams
 
 /** Activity to display profile progress. */
 class ProfileProgressActivity :

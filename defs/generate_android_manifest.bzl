@@ -1,5 +1,5 @@
 """
-TODO: Finish docstring.
+Macros for generating a build-time AndroidManifest.xml file for android_*() targets.
 """
 
 def _generate_android_manifest_impl(ctx):
@@ -32,8 +32,24 @@ _generate_android_manifest = rule(
     implementation = _generate_android_manifest_impl,
 )
 
-# TODO: Add docs
 def generate_android_manifest(name, package, min_sdk_version, target_sdk_version):
+    """Generates a build-time AndroidManifest.xml file.
+
+    A build-time manifest can be useful for cases when android_library requires a manifest to be
+    provided (such as in the cases of processing resources or assets) without needing to maintain
+    on-disk manifests that require updating.
+
+    Args:
+        name: str. The name of the target using this manifest. The actual name of the manifest
+            target itself will be derived from this name.
+        package: str. The Android Java package name used for the corresponding library that will use
+            this manifest.
+        min_sdk_version: int. The minimum SDK version of the Android package using manifest.
+        target_sdk_version: int. The target SDK version of the Android package using manifest.
+
+    Returns:
+        label. The package-relative label to the newly generated manifest.
+    """
     manifest_target_name = "_generate_%s_manifest" % name
     _generate_android_manifest(
         name = manifest_target_name,

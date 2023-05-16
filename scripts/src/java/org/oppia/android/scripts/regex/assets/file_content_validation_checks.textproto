@@ -337,6 +337,27 @@ file_content_checks {
   failure_message: "All color declarations in component_color.xml and color_palette.xml should end with _color suffix following snake_case naming convention."
 }
 file_content_checks {
+  file_path_regex: "app/src/main/res/layout.*?/.+?\\.xml"
+  prohibited_content_regex: "@color/(?!component_color_).+|\"#\\p{XDigit}+\""
+  failure_message: "Only colors from component_colors.xml may be used in layouts."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/res/drawable.*?/.+?\\.xml"
+  prohibited_content_regex: "@color/(?!component_color_).+|\"#\\p{XDigit}+\""
+  failure_message: "Only colors from component_colors.xml may be used in drawables except vector assets."
+  exempted_file_patterns: "app/src/main/res/drawable.*?/(ic_|lesson_thumbnail_graphic_).+?\\.xml"
+  exempted_file_patterns: "app/src/main/res/drawable/full_oppia_logo.xml"
+  exempted_file_patterns: "app/src/main/res/drawable/rounded_white_background_with_shadow.xml"
+  exempted_file_patterns: "app/src/main/res/drawable/profile_image_shadow.xml"
+  exempted_file_patterns: "app/src/main/res/drawable/selected_region_background.xml"
+  exempted_file_patterns: "app/src/main/res/drawable/splash_page.xml"
+}
+file_content_checks {
+  file_path_regex: "app/src/main/java/org/oppia/android/app.?/.+(ActivityPresenter|FragmentPresenter|ViewPresenter|Activity|Fragment|View)\\.kt"
+  prohibited_content_regex: "R.color.(?!component_color_).+"
+  failure_message: "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments, Views and Presenters)."
+}
+file_content_checks {
   file_path_regex: "app/src/main/res/values/color_defs.xml"
   prohibited_content_regex: "name=.+(?<=color).>#|name=.*[A-Z].*>#"
   failure_message: "All color declarations in color_defs.xml should be named using snake_case convention and not contain color keyword."
@@ -410,4 +431,37 @@ file_content_checks {
   prohibited_content_regex: "\\bproto_library\\s*\\("
   failure_message: "proto_library should never be used directly. Instead, use oppia_proto_library."
   exempted_file_name: "model/oppia_proto_library.bzl"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: ".+?\\.(post|postDelayed)[\\s]*(\\(|\\{).*?"
+  failure_message: "Prefer avoiding post() and postDelayed() methods as they can can lead to subtle and difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when an operation needs to run at a future time. For cases when state needs to be synchronized with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/drawer/NavigationDrawerFragmentPresenter.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/topic/info/TopicInfoFragmentPresenter.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
+}
+# TODO(#1566): Update app/BUILD.bazel exemption to be more targeted for crashlytics_deps.
+# TODO(#1720): Remove app/application/BUILD.bazel from the exemptions for this check.
+# TODO(#1639): Remove app/databinding/BUILD.bazel from the exemptions for this check.
+file_content_checks {
+  file_path_regex: ".+?\\.(bazel|bzl)$"
+  prohibited_content_regex: "\\b(kt_android_library|android_library)"
+  failure_message: "oppia_android_library() & related macros should be used instead of android_library/kt_android_library."
+  exempted_file_name: "app/BUILD.bazel"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/application/BUILD.bazel"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/databinding/BUILD.bazel"
+  exempted_file_name: "defs/generate_android_manifest.bzl"
+  exempted_file_name: "defs/oppia_android_library.bzl"
+  exempted_file_name: "defs/oppia_android_test.bzl"
+  exempted_file_name: "instrumentation/oppia_instrumentation_test.bzl"
+  exempted_file_name: "third_party/macros/direct_dep_loader.bzl"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.(bazel|bzl)$"
+  prohibited_content_regex: "\\b(kt_android_local_test|android_local_test)"
+  failure_message: "oppia_android_test() should be used instead of android_local_test/kt_android_local_test."
+  exempted_file_name: "defs/oppia_android_test.bzl"
 }

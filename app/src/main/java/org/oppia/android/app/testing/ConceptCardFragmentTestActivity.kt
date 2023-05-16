@@ -30,9 +30,7 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {
-    return supportFragmentManager.findFragmentByTag(
-      ConceptCardFragmentTestActivityPresenter.TAG_CONCEPT_CARD_DIALOG
-    ) as? ConceptCardFragment
+    return supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().singleOrNull()
   }
 
   interface Injector {

@@ -64,11 +64,11 @@ class FirebaseAnalyticsEventLogger private constructor(
 
   /** Application-scoped injectable factory for creating new [FirebaseAnalyticsEventLogger]s. */
   @SuppressLint("MissingPermission") // This is a false warning probably due to the IJwB plugin.
-  class Factory @Inject constructor(
+  class FactoryImpl @Inject constructor(
     private val application: Application,
     private val networkConnectionUtil: NetworkConnectionUtil,
     private val eventBundleCreator: EventBundleCreator
-  ) {
+  ) : AnalyticsEventLogger.Factory {
     private val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(application) }
 
     /**
@@ -79,7 +79,7 @@ class FirebaseAnalyticsEventLogger private constructor(
      * This [FirebaseAnalyticsEventLogger] implements the [AnalyticsEventLogger] for facilitating analytics log
      * reporting.
      */
-    fun create(): AnalyticsEventLogger =
+    override fun create(): AnalyticsEventLogger =
       FirebaseAnalyticsEventLogger(firebaseAnalytics, networkConnectionUtil, eventBundleCreator)
 
     /**

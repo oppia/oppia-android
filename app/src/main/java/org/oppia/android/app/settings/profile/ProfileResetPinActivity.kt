@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_RESET_PIN_ACTIVITY
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
 import org.oppia.android.app.settings.profile.ProfileResetPinActivityPresenter.Companion.PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY
 import org.oppia.android.app.settings.profile.ProfileResetPinActivityPresenter.Companion.PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity that allows user to change a profile's PIN. */
 class ProfileResetPinActivity : InjectableAppCompatActivity() {

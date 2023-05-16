@@ -44,7 +44,7 @@ fun main(vararg args: String) {
   // Check if the repo has any file content failure.
   val contentChecks = retrieveFileContentChecks().map { MatchableFileContentCheck.createFrom(it) }
   val hasFileContentCheckFailure =
-    searchFiles.fold(initial = false) { hasFailingFile, searchFile ->
+    searchFiles.sorted().fold(initial = false) { hasFailingFile, searchFile ->
       val fileFails = checkFileContent(
         repoRoot,
         searchFile,

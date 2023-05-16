@@ -28,15 +28,12 @@ oppia_android_library(
 
 oppia_android_library(
     name = "performance_metrics_assessor_module",
-    srcs = [
-        "PerformanceMetricsAssessorModule.kt",
-    ],
+    srcs = ["PerformanceMetricsAssessorModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":performance_metrics_assessor",
         ":performance_metrics_assessor_impl",
         "//:dagger",
-        "//third_party:javax_inject_javax_inject",
     ],
 )
 

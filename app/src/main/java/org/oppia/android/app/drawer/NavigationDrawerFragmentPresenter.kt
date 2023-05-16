@@ -15,14 +15,22 @@ import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import com.google.common.base.Optional
 import org.oppia.android.R
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.devoptions.DeveloperOptionsStarter
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AdministratorControlsActivityParams
 import org.oppia.android.app.model.CompletedStoryList
+import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
+import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.model.HomeActivityParams
+import org.oppia.android.app.model.MyDownloadsActivityParams
 import org.oppia.android.app.model.OngoingTopicList
+import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileProgressActivityParams
 import org.oppia.android.databinding.DrawerFragmentBinding
 import org.oppia.android.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -32,14 +40,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.model.AdministratorControlsActivityParams
-import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.HelpActivityParams
-import org.oppia.android.app.model.HomeActivityParams
-import org.oppia.android.app.model.MyDownloadsActivityParams
-import org.oppia.android.app.model.OptionsActivityParams
-import org.oppia.android.app.model.ProfileProgressActivityParams
 
 const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
   "NavigationDrawerFragmentPresenter.navigation_profile_id"

@@ -49,7 +49,7 @@ gradlew.bat @BenHenning
 /.github/stale.yml @BenHenning
 
 # Wiki
-/wiki/ @BenHenning
+/wiki/ @BenHenning @seanlip
 
 # Devbots configurations.
 /.devbots/ @BenHenning
@@ -235,8 +235,6 @@ WORKSPACE @BenHenning
 *.bazel @BenHenning
 .bazelrc @BenHenning
 .bazelversion @BenHenning
-/tools/android/ @BenHenning
-/tools/kotlin/ @BenHenning
 
 # License texts.
 /app/src/main/res/values/third_party_dependencies.xml @BenHenning

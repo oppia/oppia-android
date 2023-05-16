@@ -24,7 +24,7 @@ class BundleToolClientTest {
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
-  // TODO: finish tests for this suite.
+  // TODO(#4971): Finish the tests for this suite.
 
   @After
   fun tearDown() {

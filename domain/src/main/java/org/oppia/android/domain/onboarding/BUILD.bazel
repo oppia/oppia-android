@@ -6,9 +6,7 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 oppia_android_library(
     name = "state_controller",
-    srcs = [
-        "AppStartupStateController.kt",
-    ],
+    srcs = ["AppStartupStateController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":exploration_meta_data_retriever",

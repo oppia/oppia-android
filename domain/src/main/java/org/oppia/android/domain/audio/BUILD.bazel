@@ -27,9 +27,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "cellular_audio_dialog_controller",
-    srcs = [
-        "CellularAudioDialogController.kt",
-    ],
+    srcs = ["CellularAudioDialogController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",

@@ -13,12 +13,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.model.CheckpointState
+import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.HelpActivityParams
+import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.spotlight.SpotlightFragment
@@ -34,11 +39,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.HelpActivityParams
-import org.oppia.android.app.model.OptionsActivityParams
-import org.oppia.android.app.model.TopicActivityParams
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -111,7 +111,9 @@ class ExplorationActivityPresenter @Inject constructor(
 
     binding.actionBottomSheetOptionsMenu.setOnClickListener {
       val bottomSheetOptionsMenuDialogFragment = BottomSheetOptionsMenuDialogFragment()
-      bottomSheetOptionsMenuDialogFragment.showNow(activity.supportFragmentManager, bottomSheetOptionsMenuDialogFragment.tag)
+      bottomSheetOptionsMenuDialogFragment.showNow(
+        activity.supportFragmentManager, bottomSheetOptionsMenuDialogFragment.tag
+      )
     }
 
     this.profileId = profileId

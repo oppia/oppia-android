@@ -5,7 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.model.AppVersionActivityParams
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileAndDeviceIdActivityParams
+import org.oppia.android.app.model.ProfileListActivityParams
 import org.oppia.android.app.model.ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
@@ -13,11 +18,6 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.model.AppVersionActivityParams
-import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.ProfileAndDeviceIdActivityParams
-import org.oppia.android.app.model.ProfileListActivityParams
 
 /** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
 private const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
@@ -61,7 +61,7 @@ class AdministratorControlsActivity :
   LoadProfileEditListener,
   ProfileEditDeletionDialogListener,
   ShowLogoutDialogListener {
-  @Inject lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
+  @Inject lateinit var presenter: AdministratorControlsActivityPresenter
   @Inject lateinit var resourceHandler: AppLanguageResourceHandler
   @Inject lateinit var activityRouter: ActivityRouter
 
@@ -82,7 +82,7 @@ class AdministratorControlsActivity :
       PROFILE_LIST_FRAGMENT
     }
     val selectedProfileId = savedInstanceState?.getInt(SELECTED_PROFILE_ID_SAVED_KEY) ?: -1
-    administratorControlsActivityPresenter.handleOnCreate(
+    presenter.handleOnCreate(
       extraControlsTitle,
       lastLoadedFragment,
       selectedProfileId,
@@ -117,12 +117,12 @@ class AdministratorControlsActivity :
 
   override fun loadProfileEdit(profileId: Int, profileName: String) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
-    administratorControlsActivityPresenter.loadProfileEdit(profileId, profileName)
+    presenter.loadProfileEdit(profileId, profileName)
   }
 
   override fun loadProfileDeletionDialog(isProfileDeletionDialogVisible: Boolean) {
     this.isProfileDeletionDialogVisible = isProfileDeletionDialogVisible
-    administratorControlsActivityPresenter.loadProfileDeletionDialog(isProfileDeletionDialogVisible)
+    presenter.loadProfileDeletionDialog(isProfileDeletionDialogVisible)
   }
 
   companion object {
@@ -152,7 +152,7 @@ class AdministratorControlsActivity :
      * handleOnBackPressed.
      */
     if (fragment is ProfileEditFragment) {
-      administratorControlsActivityPresenter.handleOnBackPressed()
+      presenter.handleOnBackPressed()
     } else {
       super.onBackPressed()
     }
@@ -160,28 +160,28 @@ class AdministratorControlsActivity :
 
   override fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
-    administratorControlsActivityPresenter
+    presenter
       .setExtraControlsTitle(
         resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
       )
-    administratorControlsActivityPresenter.loadProfileList()
+    presenter.loadProfileList()
   }
 
   override fun loadAppVersion() {
     lastLoadedFragment = APP_VERSION_FRAGMENT
-    administratorControlsActivityPresenter
+    presenter
       .setExtraControlsTitle(
         resourceHandler.getStringInLocale(R.string.administrator_controls_app_version)
       )
-    administratorControlsActivityPresenter.loadAppVersion()
+    presenter.loadAppVersion()
   }
 
   override fun loadLearnerAnalyticsData() {
     lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
-    administratorControlsActivityPresenter.setExtraControlsTitle(
+    presenter.setExtraControlsTitle(
       resourceHandler.getStringInLocale(R.string.profile_and_device_id_activity_title)
     )
-    administratorControlsActivityPresenter.loadLearnerAnalyticsData()
+    presenter.loadLearnerAnalyticsData()
   }
 
   override fun showLogoutDialog() {
@@ -190,9 +190,9 @@ class AdministratorControlsActivity :
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
-    administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
+    presenter.handleOnSaveInstanceState(outState)
     super.onSaveInstanceState(outState)
-    administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
+    presenter.handleOnSaveInstanceState(outState)
   }
 
   interface Injector {

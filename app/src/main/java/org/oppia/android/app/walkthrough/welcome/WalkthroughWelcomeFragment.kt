@@ -22,10 +22,11 @@ class WalkthroughWelcomeFragment : InjectableFragment() {
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {    val args =
-    checkNotNull(arguments) {
-      "Expected arguments to be passed to WalkthroughWelcomeFragment."
-    }
+  ): View? {
+    val args =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to WalkthroughWelcomeFragment."
+      }
     val internalProfileId = args.getInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, /* defaultValue = */ -1)
     return walkthroughWelcomeFragmentPresenter.handleCreateView(
       inflater, container, internalProfileId

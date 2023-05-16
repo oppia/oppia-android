@@ -17,9 +17,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "controller",
-    srcs = [
-        "AnalyticsController.kt",
-    ],
+    srcs = ["AnalyticsController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
@@ -47,9 +45,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "performance_metrics_controller",
-    srcs = [
-        "PerformanceMetricsController.kt",
-    ],
+    srcs = ["PerformanceMetricsController.kt"],
     visibility = [
         "//domain:domain_testing_visibility",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__",
@@ -74,9 +70,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "learner_analytics_logger",
-    srcs = [
-        "LearnerAnalyticsLogger.kt",
-    ],
+    srcs = ["LearnerAnalyticsLogger.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":controller",

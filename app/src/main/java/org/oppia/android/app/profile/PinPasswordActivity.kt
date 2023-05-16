@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PIN_PASSWORD_ACTIVITY
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
 import org.oppia.android.app.profile.PinPasswordActivityPresenter.Companion.PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY
 import org.oppia.android.app.profile.PinPasswordActivityPresenter.Companion.PIN_PASSWORD_PROFILE_ID_EXTRA_KEY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity that allows user to input his or her PIN. */
 class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInterface {

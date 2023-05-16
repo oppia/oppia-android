@@ -1,6 +1,5 @@
 package org.oppia.android.app.settings.profile
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,22 +7,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AdministratorControlsActivityParams
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileListActivityParams
+import org.oppia.android.app.model.ProfileRenameActivityParams
+import org.oppia.android.app.model.ProfileResetPinActivityParams
 import org.oppia.android.databinding.ProfileEditFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.model.AdministratorControlsActivityParams
-import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
-import org.oppia.android.app.model.ProfileListActivityParams
-import org.oppia.android.app.model.ProfileRenameActivityParams
-import org.oppia.android.app.model.ProfileResetPinActivityParams
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
@@ -102,7 +101,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
     profileEditViewModel.profile.observe(fragment) { profile ->
       // TODO: Verify that the commented out code is correct (or find an alternative).
 //      if (activity is ProfileEditActivity) {
-        activity.title = profile.name
+      activity.title = profile.name
 //      }
 
       binding.profileEditAllowDownloadSwitch.isChecked = profile.allowDownloadAccess
