@@ -1,4 +1,7 @@
-# TODO: Document.
+"""
+This package contains configuration files and assets that largely impact the compilation flows and
+runtime behaviors of Oppia binaries (e.g. AABs, test suites, etc.).
+"""
 
 exports_files(["bundle_config.pb.json"])
 

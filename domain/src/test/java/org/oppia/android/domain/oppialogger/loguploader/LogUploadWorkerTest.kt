@@ -439,6 +439,12 @@ class LogUploadWorkerTest {
 
     @Provides
     @Singleton
+    fun bindFakeEventLogger(
+      factory: FakeAnalyticsEventLogger.FactoryImpl
+    ): FakeAnalyticsEventLogger = factory.create()
+
+    @Provides
+    @Singleton
     @MockEventLogger
     fun bindMockEventLogger(fakeAnalyticsLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger {
       return mock(AnalyticsEventLogger::class.java).also {
@@ -452,7 +458,7 @@ class LogUploadWorkerTest {
     }
 
     @Provides
-    fun bindFakeEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):
+    fun bindAnalyticsEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):
       AnalyticsEventLogger = delegate
 
     @Provides

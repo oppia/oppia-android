@@ -1,1 +1,5 @@
-# TODO: Add docs.
+"""
+This package contains top-level macros for defining Android libraries, tests, and binaries
+throughout the codebase, along with top-level Android parameters for configuring target SDK, build
+versions, and more.
+"""

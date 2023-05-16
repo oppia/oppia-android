@@ -8,9 +8,7 @@ oppia_android_test(
     name = "SplashActivityTest",
     srcs = ["SplashActivityTest.kt"],
     android_merge_deps = ["//config/src/java/org/oppia/android/config:all_languages_config"],
-    runtime_deps = [
-        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
-    ],
+    runtime_deps = ["//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner"],
     deps = [
         "//:dagger",
         "//app",

@@ -16,12 +16,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/component_color_shared_rounded_rect_background_color"
-    app:layoutMarginTop="@{@dimen/topic_list_item_margin_top_bottom}"
-    app:layoutMarginBottom="@{@dimen/topic_list_item_margin_top_bottom}"
-    app:layoutMarginStart="@{viewModel.computeStartMargin()}"
-    app:layoutMarginEnd="@{viewModel.computeEndMargin()}"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:layoutMarginBottom="@{@dimen/topic_list_item_margin_top_bottom}"
+    app:layoutMarginEnd="@{viewModel.computeEndMargin()}"
+    app:layoutMarginStart="@{viewModel.computeStartMargin()}"
+    app:layoutMarginTop="@{@dimen/topic_list_item_margin_top_bottom}">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -83,8 +83,8 @@
           android:fontFamily="sans-serif-light"
           android:maxLines="1"
           android:text="@{viewModel.topicTitle}"
-          android:textColor="@color/component_color_shared_story_card_topic_name_text_color"
           android:textAllCaps="true"
+          android:textColor="@color/component_color_shared_story_card_topic_name_text_color"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"

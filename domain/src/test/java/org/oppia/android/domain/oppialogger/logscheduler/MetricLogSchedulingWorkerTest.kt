@@ -225,8 +225,14 @@ class MetricLogSchedulingWorkerTest {
     fun provideContext(application: Application): Context = application
 
     @Provides
-    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger):
-      AnalyticsEventLogger = fakeAnalyticsEventLogger
+    fun bindFakeEventLogger(
+      fakeLoggerFactory: FakeAnalyticsEventLogger.FactoryImpl
+    ): FakeAnalyticsEventLogger = fakeLoggerFactory.create()
+
+    @Provides
+    fun bindAnalyticsEventLogger(
+      fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+    ): AnalyticsEventLogger = fakeAnalyticsEventLogger
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger
@@ -255,7 +261,6 @@ class MetricLogSchedulingWorkerTest {
 
   @Module
   interface TestFirebaseLogUploaderModule {
-
     @Binds
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
   }

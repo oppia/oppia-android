@@ -105,9 +105,11 @@ DIRECT_REMOTE_DEPENDENCIES = [
         test_only = False,
         url = "https://github.com/bazelbuild/rules_kotlin/archive/v{0}.tar.gz",
         patches_details = [
+            # See https://github.com/orgs/community/discussions/12531#discussioncomment-5271653 for
+            # an explanation on the 'full_index' bit.
             create_remote_patch_config(
-                patch_url = "https://github.com/bazelbuild/rules_kotlin/commit/0b75e942.patch",
-                patch_sri = "sha256-cP0YqxMiQSye3T7E1w6c8HY6XDtd3CaYnGtnlmqRnKg=",
+                patch_url = "https://github.com/bazelbuild/rules_kotlin/commit/0b75e942e444ccced07cfec50cbc8d925821ed57.patch?full_index=1",
+                patch_sri = "sha256-UgznkSxEhnHcDh8PjaWI92EEPHRe/8HEtlmXrr7O4i8=",
             ),
             create_local_patch_config(
                 patch_file = "//third_party/versions/mods:rules_kotlin-combined.patch",
@@ -129,7 +131,7 @@ DIRECT_REMOTE_DEPENDENCIES = [
         name = "guava_android",
         sha = "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
         version = "31.0.1",
-        maven_url_suffix = "com/google/guava/guava/android-{0}/guava-android-{0}.jar",
+        maven_url_suffix = "com/google/guava/guava/{0}-android/guava-{0}-android.jar",
         test_only = False,
         # Create an alias for Guava Android to support maven_install's override of Guava. This
         # ensures that Guava-Android is always used in builds, even if dependencies request a newer
