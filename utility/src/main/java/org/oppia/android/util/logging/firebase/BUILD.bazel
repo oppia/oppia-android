@@ -47,6 +47,7 @@ oppia_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        ":debug_event_logger",
         ":firebase_exception_logger",
         ":prod_impl",
         "//:dagger",
@@ -66,6 +67,7 @@ oppia_android_library(
     ],
     visibility = [
         "//app:__pkg__",
+        "//testing:__pkg__",
     ],
     deps = [
         ":prod_impl",

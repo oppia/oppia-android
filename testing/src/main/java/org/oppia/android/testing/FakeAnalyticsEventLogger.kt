@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 /**  A test specific fake for the event logger. */
 @Singleton
-class FakeAnalyticsEventLogger @Inject constructor() : AnalyticsEventLogger {
+class FakeAnalyticsEventLogger private constructor() : AnalyticsEventLogger {
   private val eventList = CopyOnWriteArrayList<EventLog>()
 
   override fun logEvent(eventLog: EventLog) {
@@ -38,4 +38,9 @@ class FakeAnalyticsEventLogger @Inject constructor() : AnalyticsEventLogger {
 
   /** Returns the number of events logged to date (and not cleared by [clearAllEvents]). */
   fun getEventListCount(): Int = eventList.size
+
+  /** [AnalyticsEventLogger.Factory] implementation for [FakeAnalyticsEventLogger]. */
+  class FactoryImpl @Inject constructor() : AnalyticsEventLogger.Factory {
+    override fun create(): AnalyticsEventLogger = FakeAnalyticsEventLogger()
+  }
 }

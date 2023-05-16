@@ -56,6 +56,7 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",

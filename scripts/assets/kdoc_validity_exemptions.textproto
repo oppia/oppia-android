@@ -26,7 +26,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/notice/AutomaticApp
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsFragmentPresenter.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsModule.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsStarter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsItemViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedActivity.kt"

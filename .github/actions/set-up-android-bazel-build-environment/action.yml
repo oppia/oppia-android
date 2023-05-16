@@ -77,7 +77,12 @@ runs:
         $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-31"
       shell: bash
 
-    - name: Install build tools 32.0.0
+    - name: Install build tools 29.0.2 (previous configured version)
+      run: |
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;29.0.2"
+      shell: bash
+
+    - name: Install build tools 32.0.0 (current configured version)
       run: |
         $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;32.0.0"
       shell: bash

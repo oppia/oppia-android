@@ -129,7 +129,7 @@ DIRECT_REMOTE_DEPENDENCIES = [
         name = "guava_android",
         sha = "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
         version = "31.0.1",
-        maven_url_suffix = "com/google/guava/guava/android-{0}/guava-android-{0}.jar",
+        maven_url_suffix = "com/google/guava/guava/{0}-android/guava-{0}-android.jar",
         test_only = False,
         # Create an alias for Guava Android to support maven_install's override of Guava. This
         # ensures that Guava-Android is always used in builds, even if dependencies request a newer
