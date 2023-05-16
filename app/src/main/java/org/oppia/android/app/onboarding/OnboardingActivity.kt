@@ -4,15 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ScreenName.ONBOARDING_ACTIVITY
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.PoliciesActivityParams
-import org.oppia.android.app.model.ProfileChooserActivityParams
 
 /** Activity that contains the onboarding flow for learners. */
 class OnboardingActivity :

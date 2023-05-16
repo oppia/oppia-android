@@ -179,7 +179,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@{viewModel.isHintOpenedAndUnRevealed() ? @drawable/ic_keyboard_arrow_down_white_48dp : @drawable/ic_keyboard_arrow_right_white_48}" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
       </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

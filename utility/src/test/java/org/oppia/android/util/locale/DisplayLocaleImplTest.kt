@@ -15,6 +15,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
@@ -28,7 +29,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.R
 
 /** Tests for [DisplayLocaleImpl]. */
 // FunctionName: test names are conventionally named with underscores.

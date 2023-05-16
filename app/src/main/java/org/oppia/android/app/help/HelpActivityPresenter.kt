@@ -358,7 +358,8 @@ class HelpActivityPresenter @Inject constructor(
     const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
     const val POLICIES_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
     private const val POLICIES_FRAGMENT_TAG = "PoliciesFragment.tag"
-    private const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
+    private const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG =
+      "ThirdPartyDependencyListFragment.tag"
     private const val LICENSE_LIST_FRAGMENT_TAG = "LicenseListFragment.tag"
     private const val LICENSE_TEXT_FRAGMENT_TAG = "LicenseTextFragment.tag"
   }

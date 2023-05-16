@@ -58,7 +58,7 @@ def create_http_archive_reference(
         strip_prefix_template = None,
         patches_details = [],
         remote_patch_path_start_removal_count = 0,
-        workspace_file = None,  # TODO: Document.
+        workspace_file = None,
         export_details = None,
         exports_details = None):
     """Creates and returns a structure that will be imported using Bazel's http_archive.
@@ -90,6 +90,8 @@ def create_http_archive_reference(
         remote_patch_path_start_removal_count: int. An optional integer specifying the number of
             leading path fragments to remove from remote patches before applying them. This defaults
             to 0, but oftentimes '1' is required as it removes the normal "a/" and "b/" prefixes.
+        workspace_file: label. An optional label corresponding to the WORKSPACE file to use when
+            building the imported archive. This defaults to None.
         export_details: dict. An optional dict created using one of create_export_library_details or
             create_export_binary_details. When provided, the system will ensure this archive is made
             accessible under a "third_party:<alias>" reference (where the alias is defined as part
@@ -249,11 +251,11 @@ def create_export_library_details(
             cases.
     """
     return {
-        "runtime_deps": runtime_deps,
         "export_toolchain": export_toolchain,
         "export_type": EXPORT_TYPE.LIBRARY,
         "exportable_target": exportable_target,
         "exposed_artifact_name": exposed_artifact_name,
+        "runtime_deps": runtime_deps,
         "should_be_visible_to_maven_targets": should_be_visible_to_maven_targets,
     }
 
@@ -280,12 +282,12 @@ def create_export_binary_details(
             cases.
     """
     return {
-        "runtime_deps": runtime_deps,
         "export_toolchain": EXPORT_TOOLCHAIN.JAVA,
         "export_type": EXPORT_TYPE.BINARY,
         "exportable_runtime_target": exportable_runtime_target,
         "exposed_artifact_name": exposed_artifact_name,
         "main_class": main_class,
+        "runtime_deps": runtime_deps,
     }
 
 def create_maven_artifact_configuration(
@@ -435,8 +437,8 @@ def _create_import_dependency_reference(
         "import_bind_name": import_bind_name,
         "import_type": import_type,
         "name": name,
-        "remote_patch_path_start_removal_count": remote_patch_path_start_removal_count,
-        "workspace_file": workspace_file,
         "patches_details": patches_details,
+        "remote_patch_path_start_removal_count": remote_patch_path_start_removal_count,
         "test_only": test_only,
+        "workspace_file": workspace_file,
     }

@@ -1,9 +1,9 @@
 package org.oppia.android.app.testing
 
 import android.content.Context
-import javax.inject.Inject
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.utility.SplitScreenManager
+import javax.inject.Inject
 
 class ExplorationTestActivityFragment : InjectableFragment() {
   @Inject

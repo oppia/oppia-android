@@ -18,6 +18,17 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
+    name = "SuggestBuildFixesTest",
+    srcs = ["SuggestBuildFixesTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:suggest_build_fixes_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//testing:assertion_helpers",
+    ],
+)
+
+kt_jvm_test(
     name = "TransformAndroidManifestTest",
     srcs = ["TransformAndroidManifestTest.kt"],
     deps = [

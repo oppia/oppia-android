@@ -45,9 +45,9 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/expandable_hint_header"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:id="@+id/expandable_hint_header">
+          android:layout_height="wrap_content">
 
           <TextView
             android:id="@+id/hint_title"
@@ -96,6 +96,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
+            android:background="@color/component_color_shared_transparent_background_color"
             android:contentDescription="@{isListExpanded? @string/hide_hint : @string/reveal_hint}"
             android:minWidth="48dp"
             android:minHeight="48dp"
@@ -110,7 +111,6 @@
             app:layout_constraintVertical_bias="0.0"
             app:rotationAnimationAngle="@{180f}"
             app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
-            android:background="@color/component_color_shared_transparent_background_color"
             app:tint="@color/component_color_hints_and_solutions_drawable_tint_color" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -133,6 +133,7 @@
           android:paddingEnd="12dp"
           android:paddingBottom="16dp"
           android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
+          android:textColorLink="@color/component_color_shared_link_text_color"
           android:textSize="16sp"
           android:visibility="@{isListExpanded? View.VISIBLE : View.GONE, default=gone}" />
       </LinearLayout>

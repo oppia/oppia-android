@@ -20,7 +20,9 @@ class BottomSheetOptionsMenuTestActivity : TestActivity(), BottomSheetOptionsMen
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    BottomSheetOptionsMenuDialogFragment().showNow(supportFragmentManager, "bottom_sheet_options_menu")
+    BottomSheetOptionsMenuDialogFragment().showNow(
+      supportFragmentManager, "bottom_sheet_options_menu"
+    )
   }
 
   override fun handleOnOptionsItemSelected(itemId: Int) {

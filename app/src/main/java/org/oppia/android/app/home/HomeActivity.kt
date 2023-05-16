@@ -16,10 +16,10 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.model.TopicActivityParams
 
 /** The central activity for all users entering the app. */
 class HomeActivity :

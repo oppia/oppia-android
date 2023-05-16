@@ -18,11 +18,11 @@ import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivityPresenter.Companion.QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivityPresenter.Companion.QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
 
 private const val QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
   "QuestionPlayerActivity.profile_id"
