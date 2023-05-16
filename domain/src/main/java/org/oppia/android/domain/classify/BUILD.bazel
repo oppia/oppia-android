@@ -69,9 +69,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "interactions_module",
-    srcs = [
-        "InteractionsModule.kt",
-    ],
+    srcs = ["InteractionsModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":generic_interaction_classifier",
@@ -79,7 +77,6 @@ oppia_android_library(
         ":rule_classifier",
         "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
-        "//third_party:javax_inject_javax_inject",
     ],
 )
 

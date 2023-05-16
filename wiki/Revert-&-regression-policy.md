@@ -6,6 +6,12 @@ When you find yourself in a situation where something seems newly broken in the 
 
 If you get stuck along the way, please mention in the issue that you filed in (1) that you are unable to locate commit introducing the regression.
 
+## Table of Contents
+
+- [Why do we revert PRs rather than just fix them?](#why-do-we-revert-prs-rather-than-just-fix-them)
+- [How to find the offending commit](#how-to-find-the-offending-commit)
+- [What do I do if I caused a regression?](#what-do-i-do-if-i-caused-a-regression)
+
 ## Why do we revert PRs rather than just fix them?
 
 Leaving problems checked in can result in the following two situations:

@@ -1,3 +1,25 @@
+## Table of Contents
+
+- [Overview](#overview)
+- [Learning how to write good tests](#learning-how-to-write-good-tests)
+- [Guidelines for testing](#guidelines-for-testing)
+  - [Naming Convention](#naming-convention)
+  - [assertThat() vs. assertEqual(), assertTrue() / assertFalse()](#assertthat-vs-assertequal-asserttrue--assertfalse)
+  - [Testing private methods/functions](#testing-private-methodsfunctions)
+- [Oppia project organization for tests](#oppia-project-organization-for-tests)
+  - [Robolectric](#robolectric)
+    - [Running Robolectric tests](#running-robolectric-tests)
+  - [Espresso](#espresso)
+    - [How to use View Matchers, View Actions and View Assertions in Espresso?](#how-to-use-view-matchers-view-actions-and-view-assertions-in-espresso)
+    - [Using isCompletelyDisplayed and isDisplayed](#using-iscompletelydisplayed-and-isdisplayed)
+    - [Using swipeLeft/Right and using scrollToPage](#using-swipeleftright-and-using-scrolltopage)
+- [Testing RecyclerViews at Specific Positions](#testing-recyclerviews-at-specific-positions)
+  - [RecyclerViewActions](#recyclerviewactions)
+  - [RecyclerViewMatcher](#recyclerviewmatcher)
+- [Tips to run test cases in both Espresso and Robolectric](#tips-to-run-test-cases-in-both-espresso-and-robolectric)
+  - [Performance Exception/Runtime Exception Failure](#performance-exceptionruntime-exception-failure)
+  - [Assertion Failure](#assertion-failure)
+
 # Overview
 Testing the app is an integral part of an app development process. By running tests against the app consistently, you can verify your app's correctness, functional behavior, and usability before you release it publicly.
 

@@ -2,8 +2,8 @@
 Configurations for a codebase-wide build toolchain for Kotlin.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
+load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
 
 kt_kotlinc_options(
     name = "oppia_kotlinc_options",
@@ -88,17 +88,17 @@ define_kt_toolchain(
     api_version = "1.6",
     experimental_report_unused_deps = select({
         ":_disable_unused_deps": "off",
-        ":_report_unused_deps_as_warnings": "warn",
         ":_report_unused_deps_as_errors": "error",
+        ":_report_unused_deps_as_warnings": "warn",
     }),
     experimental_strict_kotlin_deps = select({
         ":_disable_strict_deps": "off",
-        ":_report_strict_deps_as_warnings": "warn",
         ":_report_strict_deps_as_errors": "error",
+        ":_report_strict_deps_as_warnings": "warn",
     }),
     experimental_use_abi_jars = select({
-        "//third_party/tools/kotlin:_enable_use_abi_jars": True,
         "//third_party/tools/kotlin:_disable_use_abi_jars": False,
+        "//third_party/tools/kotlin:_enable_use_abi_jars": True,
         "//conditions:default": False,
     }),
     javac_options = ":oppia_javac_options",

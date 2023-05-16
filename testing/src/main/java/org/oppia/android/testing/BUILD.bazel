@@ -2,8 +2,8 @@
 Package for common test utilities corresponding to stories and story progress.
 """
 
-load("//defs:oppia_android_library.bzl", "oppia_android_library")
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 kt_jvm_library(
     name = "assertion_helpers",

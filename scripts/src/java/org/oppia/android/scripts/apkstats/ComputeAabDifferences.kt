@@ -181,14 +181,14 @@ class ComputeAabDifferences(
   ): FileSizeStats {
     println("Computing file size for: $apkWithoutChangesPath and $apkWithChangesPath")
     val (fileSizeWithoutChanges, downloadSizeWithoutChanges) = if (apkWithoutChangesPath != null) {
-      apkAnalyzerClient.computeFileSize(apkWithoutChangesPath).toLong() to
-        apkAnalyzerClient.computeDownloadSize(apkWithoutChangesPath).toLong()
+      apkAnalyzerClient.computeFileSize(apkWithoutChangesPath) to
+        apkAnalyzerClient.computeDownloadSize(apkWithoutChangesPath)
     } else 0L to 0L
 
     println("Computing estimated download size for: $apkWithoutChangesPath and $apkWithChangesPath")
     val (fileSizeWithChanges, downloadSizeWithChanges) = if (apkWithChangesPath != null) {
-      apkAnalyzerClient.computeFileSize(apkWithChangesPath).toLong() to
-        apkAnalyzerClient.computeDownloadSize(apkWithChangesPath).toLong()
+      apkAnalyzerClient.computeFileSize(apkWithChangesPath) to
+        apkAnalyzerClient.computeDownloadSize(apkWithChangesPath)
     } else 0L to 0L
 
     return FileSizeStats(

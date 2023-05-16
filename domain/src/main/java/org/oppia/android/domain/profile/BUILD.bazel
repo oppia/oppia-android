@@ -6,9 +6,7 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 oppia_android_library(
     name = "profile_management_controller",
-    srcs = [
-        "ProfileManagementController.kt",
-    ],
+    srcs = ["ProfileManagementController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",

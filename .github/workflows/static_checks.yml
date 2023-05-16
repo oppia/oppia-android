@@ -103,7 +103,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.1.1
+          version: 6.2.0
 
       - uses: actions/cache@v2
         id: scripts_cache
@@ -189,6 +189,11 @@ jobs:
         run: |
           bazel run //scripts:string_resource_validation_check -- $(pwd)
 
+      - name: Verify all files are included in binaries
+        if: always()
+        run: |
+          bazel run //scripts:verify_file_targets -- $(pwd)
+
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to
   # ensure the results exactly match the current state of the repository).
@@ -201,7 +206,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.1.1
+          version: 6.2.0
 
       - name: Dependency validation (app dependencies)
         if: always()

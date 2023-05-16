@@ -10,9 +10,9 @@ order to build with Bazel.
 - All binding adapters must be written in Java.
 """
 
-load("//defs:oppia_android_library.bzl", "oppia_android_library", "oppia_android_resource_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
+load("//defs:oppia_android_library.bzl", "oppia_android_library", "oppia_android_resource_library")
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
 
 filegroup(
@@ -353,6 +353,7 @@ oppia_android_library(
         "//third_party:androidx_lifecycle_lifecycle-livedata",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
         "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:com_google_guava_guava",
         "//third_party:com_google_protobuf_protobuf-javalite",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/data:async_result",
@@ -824,6 +825,7 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_impl",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_module",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
         "//app/src/main/java/org/oppia/android/app/spotlight",
         "//app/src/main/java/org/oppia/android/app/spotlight:spotlight_fragment",
@@ -958,7 +960,6 @@ oppia_android_library(
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:com_github_bumptech_glide_mocks",
         "//third_party:com_google_android_material_material",
-        "//third_party:com_google_firebase_firebase-common",
         "//third_party:com_google_guava_guava",
         "//third_party:com_google_protobuf_protobuf-javalite",
         "//third_party:com_google_truth_truth",
@@ -966,7 +967,6 @@ oppia_android_library(
         "//third_party:com_squareup_retrofit2_converter-moshi",
         "//third_party:com_squareup_retrofit2_retrofit",
         "//third_party:com_squareup_retrofit2_retrofit-mock",
-        "//third_party:javax_annotation_javax_annotation-api",
         "//third_party:javax_inject_javax_inject",
         "//third_party:junit_junit",
         "//third_party:kotlinx-coroutines-core-jvm",
@@ -997,13 +997,16 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:annotations",
         "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:log_level",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
-        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
         "//utility/src/main/java/org/oppia/android/util/math:fraction_parser",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
@@ -1012,7 +1015,6 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser_entity_type_module",
         "//utility/src/main/java/org/oppia/android/util/parser/html:list_item_leading_margin_span",
         "//utility/src/main/java/org/oppia/android/util/parser/html:policy_type",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
@@ -1020,7 +1022,6 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
         "//utility/src/main/java/org/oppia/android/util/platformparameter",
-        "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )

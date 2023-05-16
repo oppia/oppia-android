@@ -1,12 +1,12 @@
 package org.oppia.android.scripts.build
 
-import java.io.File
-import java.io.PrintStream
-import java.util.concurrent.TimeUnit
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import java.io.File
+import java.io.PrintStream
+import java.util.concurrent.TimeUnit
 
 fun main(vararg args: String) {
   require(args.size in 1..2) {
@@ -212,7 +212,7 @@ class VerifyFileTargets(
       println("  ".repeat(indentationLevel) + str)
     }
 
-    data class Root(override val path: String = ""): Tracked(), Container {
+    data class Root(override val path: String = "") : Tracked(), Container {
       override val extendablePath = ""
       override val children: MutableList<Tracked> = mutableListOf()
       val fileSequence: Sequence<File> get() = asSequence().filterIsInstance<File>()
@@ -226,7 +226,7 @@ class VerifyFileTargets(
       }
     }
 
-    data class Directory(val name: String): Tracked(), Container, Child {
+    data class Directory(val name: String) : Tracked(), Container, Child {
       private lateinit var baseParent: Container
       private val trackedParent get() = parent as Tracked
 
@@ -249,7 +249,7 @@ class VerifyFileTargets(
       }
     }
 
-    data class File(val name: String): Tracked(), Child {
+    data class File(val name: String) : Tracked(), Child {
       private lateinit var baseParent: Container
       private val trackedParent get() = parent as Tracked
 

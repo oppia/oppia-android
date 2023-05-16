@@ -2,8 +2,8 @@
 General-purpose mathematics utilities, especially for supporting math-based interactions.
 """
 
-load("//defs:oppia_android_library.bzl", "oppia_android_library")
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 oppia_android_library(
     name = "fraction_parser",
@@ -165,9 +165,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "expression_to_comparable_operation_converter",
-    srcs = [
-        "ExpressionToComparableOperationConverter.kt",
-    ],
+    srcs = ["ExpressionToComparableOperationConverter.kt"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":comparator_extensions",

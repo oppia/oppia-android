@@ -33,7 +33,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.1.1
+          version: 6.2.0
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
@@ -176,7 +176,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.1.1
+          version: 6.2.0
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
@@ -310,7 +310,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.1.1
+          version: 6.2.0
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
@@ -457,7 +457,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.1.1
+          version: 6.2.0
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
@@ -578,7 +578,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.1.1
+          version: 6.2.0
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
