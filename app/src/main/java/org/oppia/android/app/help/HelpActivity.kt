@@ -5,28 +5,28 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.help.faq.RouteToFAQSingleListener
-import org.oppia.android.app.model.PoliciesActivityParams
-import org.oppia.android.app.model.PolicyPage
-import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
-import org.oppia.android.app.policies.RouteToPoliciesListener
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.getStringFromBundle
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
 import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.HelpActivityPresenter.Companion.FAQ_LIST_FRAGMENT_TAG
 import org.oppia.android.app.help.HelpActivityPresenter.Companion.HELP_OPTIONS_TITLE_SAVED_KEY
 import org.oppia.android.app.help.HelpActivityPresenter.Companion.LICENSE_INDEX_SAVED_KEY
 import org.oppia.android.app.help.HelpActivityPresenter.Companion.POLICIES_ARGUMENT_PROTO
 import org.oppia.android.app.help.HelpActivityPresenter.Companion.SELECTED_FRAGMENT_SAVED_KEY
 import org.oppia.android.app.help.HelpActivityPresenter.Companion.THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY
+import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.FaqListActivityParams
 import org.oppia.android.app.model.FaqSingleActivityParams
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
 import org.oppia.android.app.model.ThirdPartyDependencyListActivityParams
+import org.oppia.android.app.policies.RouteToPoliciesListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** The help page activity for FAQs, third-party dependencies and policies page. */
 class HelpActivity :

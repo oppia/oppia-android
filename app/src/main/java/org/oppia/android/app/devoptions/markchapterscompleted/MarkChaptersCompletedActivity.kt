@@ -47,7 +47,9 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
       "MarkChaptersCompletedActivity.show_confirmation_notice"
 
     fun createIntent(
-      context: Context, internalProfileId: Int, showConfirmationNotice: Boolean
+      context: Context,
+      internalProfileId: Int,
+      showConfirmationNotice: Boolean
     ): Intent {
       return Intent(context, MarkChaptersCompletedActivity::class.java).apply {
         putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)

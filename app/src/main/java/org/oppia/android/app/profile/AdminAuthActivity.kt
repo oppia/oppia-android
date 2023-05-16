@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.ADMIN_AUTH_ACTIVITY
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
 import org.oppia.android.app.profile.AdminAuthActivityPresenter.Companion.ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY
 import org.oppia.android.app.profile.AdminAuthActivityPresenter.Companion.ADMIN_AUTH_COLOR_RGB_EXTRA_KEY
 import org.oppia.android.app.profile.AdminAuthActivityPresenter.Companion.ADMIN_AUTH_ENUM_EXTRA_KEY
 import org.oppia.android.app.profile.AdminAuthActivityPresenter.Companion.ADMIN_AUTH_PROFILE_ID_EXTRA_KEY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity that authenticates by checking for admin's PIN. */
 class AdminAuthActivity : InjectableAppCompatActivity() {

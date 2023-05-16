@@ -16,13 +16,13 @@ import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
-import javax.inject.Inject
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_STORY_ID_EXTRA_KEY
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivityPresenter.Companion.TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
+import javax.inject.Inject
 
 private const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 

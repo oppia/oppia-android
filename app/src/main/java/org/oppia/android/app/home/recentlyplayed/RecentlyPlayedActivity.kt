@@ -6,20 +6,20 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.ResumeLessonActivityParams
 
 /** Activity for recent stories. */
 class RecentlyPlayedActivity :

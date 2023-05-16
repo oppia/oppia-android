@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
-import org.oppia.android.app.player.audio.CellularAudioDialogFragment
 
 /** Fragment for displaying completed stories. */
 class CompletedStoryListFragment : InjectableFragment() {

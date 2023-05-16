@@ -5,10 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import javax.inject.Inject
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileListActivityParams
+import javax.inject.Inject
 
 // TODO: Consolidate with ones in ProfileEditActivity & clean up.
 private const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"

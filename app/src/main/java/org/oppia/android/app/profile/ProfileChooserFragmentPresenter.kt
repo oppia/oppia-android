@@ -13,7 +13,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AdminAuthActivityParams
+import org.oppia.android.app.model.AdminAuthActivityParams.AdminAuth
+import org.oppia.android.app.model.AdminPinActivityParams
+import org.oppia.android.app.model.AdministratorControlsActivityParams
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.HomeActivityParams
+import org.oppia.android.app.model.PinPasswordActivityParams
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -27,14 +35,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import org.oppia.android.app.activity.route.ActivityRouter
-import org.oppia.android.app.model.AdminAuthActivityParams
-import org.oppia.android.app.model.AdminAuthActivityParams.AdminAuth
-import org.oppia.android.app.model.AdminPinActivityParams
-import org.oppia.android.app.model.AdministratorControlsActivityParams
-import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.HomeActivityParams
-import org.oppia.android.app.model.PinPasswordActivityParams
 
 private val COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,
