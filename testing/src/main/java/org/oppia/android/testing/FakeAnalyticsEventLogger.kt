@@ -41,6 +41,6 @@ class FakeAnalyticsEventLogger private constructor() : AnalyticsEventLogger {
 
   /** [AnalyticsEventLogger.Factory] implementation for [FakeAnalyticsEventLogger]. */
   class FactoryImpl @Inject constructor() : AnalyticsEventLogger.Factory {
-    override fun create(): AnalyticsEventLogger = FakeAnalyticsEventLogger()
+    override fun create() = FakeAnalyticsEventLogger()
   }
 }

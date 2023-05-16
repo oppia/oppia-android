@@ -17,11 +17,12 @@ interface TestLogReportingModule {
   companion object {
     @Provides
     @Singleton
-    fun bindFakeEventLogger(
+    fun provideFakeEventLogger(
       fakeLoggerFactory: FakeAnalyticsEventLogger.FactoryImpl
-    ): AnalyticsEventLogger = fakeLoggerFactory.create()
+    ): FakeAnalyticsEventLogger = fakeLoggerFactory.create()
   }
 
+  @Binds fun bindFakeEventLogger(impl: FakeAnalyticsEventLogger): AnalyticsEventLogger
   @Binds fun bindFakeExceptionLogger(impl: FakeExceptionLogger): ExceptionLogger
 
   @Binds
