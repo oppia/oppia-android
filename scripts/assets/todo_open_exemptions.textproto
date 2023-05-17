@@ -328,3 +328,10 @@ todo_open_exemption {
   line_number: 972
   line_number: 1061
 }
+todo_open_exemption {
+  exempted_file_path: "third_party/versions/mods/rules_kotlin-combined.patch"
+  line_number: 28
+  line_number: 35
+  line_number: 65
+  line_number: 171
+}

@@ -14,9 +14,9 @@ import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
-import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
-import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
-import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClock

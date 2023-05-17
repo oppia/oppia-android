@@ -76,8 +76,8 @@ PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-stdlib": "1.6.21",
     "org.jetbrains.kotlin:kotlin-stdlib-common": "1.6.21",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk7": "1.6.21",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.3.4",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.3.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-metadata-jvm": "0.3.0",
     "org.jetbrains:annotations": "13.0",
@@ -85,6 +85,7 @@ PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
 }
 
 TEST_TRANSITIVE_DEPENDENCY_VERSIONS = {
+    "androidx.test:runner": "1.2.0",
     "com.almworks.sqlite4java:sqlite4java": "1.0.392",
     "com.ibm.icu:icu4j": "53.1",
     "com.squareup:javawriter": "2.1.1",

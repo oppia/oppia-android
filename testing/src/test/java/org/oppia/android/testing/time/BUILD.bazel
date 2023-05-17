@@ -11,8 +11,8 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
         "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -27,7 +27,6 @@ oppia_android_test(
         "//third_party:org_robolectric_annotations",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
-        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
     ],

@@ -94,7 +94,6 @@ TEST_DEPENDENCY_VERSIONS = {
     "androidx.test:core": "1.4.0",
     "androidx.test:monitor": "1.4.0",
     "androidx.test:rules": "1.1.0",
-    "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework": "2.0",

@@ -8,6 +8,30 @@ import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
+/**
+ * The main entrypoint for verifying files as being part of binaries.
+ *
+ * This script checks a group of files to ensure that they are included in at least one Bazel
+ * binary, that is, an APK target, AAB target, script, or test target. The idea is that all files
+ * should be included in at least one binary, otherwise it's likely they're either unnecessary and
+ * can be removed, or they were missed in a BUILD.bazel file somewhere.
+ *
+ * Some files are automatically exempted from being required as part of being included in a binary
+ * target. This list is hardcoded and expected to rarely change, so any files detected by this
+ * script to be missing will always require some sort of update (where most of the time the update
+ * will be adding the file to a BUILD target for inclusion).
+ *
+ * Usage:
+ *   bazel run //scripts:verify_file_targets -- <root_directory> [rel/path/filter]
+ *
+ * Arguments:
+ * - root_directory: directory path to the root of the Oppia Android repository.
+ * - rel/path/filter: an optional relative path filter for the repository being analyzed. Only files
+ *     under this relative package will be checked.
+ *
+ * Example:
+ *   bazel run //scripts:verify_file_targets -- $(pwd)
+ */
 fun main(vararg args: String) {
   require(args.size in 1..2) {
     "Expected usage: bazel run //scripts:verify_file_targets -- <root_directory> [rel/path/filter]"
@@ -21,20 +45,33 @@ fun main(vararg args: String) {
     val executor = CommandExecutorImpl(scriptBgDispatcher)
     val gitClient = GitClient(repoRoot, baseCommit = "develop", executor)
     val bazelClient = BazelClient(repoRoot, executor)
-    VerifyFileTargets(gitClient, bazelClient).verifyFileTargets(pathFilter = args.getOrNull(1))
+    VerifyFileTargets(repoRoot, gitClient, bazelClient)
+      .verifyFileTargets(pathFilter = args.getOrNull(1))
   }
 }
 
+/**
+ * Utility to determine whether on-disk files are included in Bazel binary builds.
+ *
+ * @property repoRoot the absolute [File] corresponding to the root of the inspected repository
+ * @property gitClient a [GitClient] configured for a single repository at [repoRoot]
+ * @property bazelClient a [BazelClient] configured for a single repository at [repoRoot]
+ */
 class VerifyFileTargets(
+  private val repoRoot: File,
   private val gitClient: GitClient,
   private val bazelClient: BazelClient
 ) {
+  /**
+   * Detects whether all of the files under the specified [pathFilter] are included in binary
+   * targets, or all files in the configured repository if [pathFilter] is null.
+   */
   fun verifyFileTargets(pathFilter: String?) {
     println("Computing tracked files using path filter: ${pathFilter ?: "(none)"}.")
     val realizedPathFilter = pathFilter ?: ""
     val allTrackedFiles = gitClient.computeAllTrackedFiles().filter {
       it.startsWith(realizedPathFilter)
-    }
+    }.filter { File(repoRoot, it).exists() } // Ignore files no longer being tracked.
     check(allTrackedFiles.isNotEmpty()) { "No files found using pattern: $pathFilter." }
     val repo = GitRepository.createFrom(allTrackedFiles)
 
@@ -111,6 +148,7 @@ class VerifyFileTargets(
         path in listOf(
           "data/src/main/AndroidManifest.xml",
           "domain/src/main/AndroidManifest.xml",
+          "testing/src/main/AndroidManifest.xml",
           "utility/src/main/AndroidManifest.xml"
         )
       }
@@ -143,13 +181,15 @@ class VerifyFileTargets(
       // TODO(#3617): Remove this once Espresso tests are supported in Bazel.
       path == "testing/src/main/java/org/oppia/android/testing/junit/" +
         "ParameterizedAndroidJunit4TestRunner.kt" -> true
+      // TODO(#59): Remove the exemption for OppiaTestRunner once it can be removed.
+      path == "testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt" -> true
       else -> false
     }
   }
 
   private data class GitRepository(val root: Tracked.Root) {
     companion object {
-      fun createFrom(trackedFiles: List<String>): GitRepository {
+      internal fun createFrom(trackedFiles: List<String>): GitRepository {
         // Git technically doesn't track directories, so this is an inference from tracked files.
         // Also, the extra '/' prefix helps to provide an elegant auto-root (by using an empty
         // string).

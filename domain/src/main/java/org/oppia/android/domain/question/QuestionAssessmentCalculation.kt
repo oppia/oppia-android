@@ -10,7 +10,7 @@ import javax.inject.Inject
  * This class is not thread-safe, so it is the calling code's responsibility to synchronize access
  * to this class.
  */
-internal class QuestionAssessmentCalculation private constructor(
+class QuestionAssessmentCalculation private constructor(
   private val viewHintPenalty: Int,
   private val wrongAnswerPenalty: Int,
   private val maxScorePerQuestion: Int,
@@ -24,7 +24,7 @@ internal class QuestionAssessmentCalculation private constructor(
   private val skillIdList: List<String>
 ) {
   /** Compute the overall score as well as the score and mastery per skill. */
-  internal fun computeAll(): UserAssessmentPerformance {
+  fun computeAll(): UserAssessmentPerformance {
     return UserAssessmentPerformance.newBuilder().apply {
       totalFractionScore = computeTotalScore()
       putAllFractionScorePerSkillMapping(computeScoresPerSkill())

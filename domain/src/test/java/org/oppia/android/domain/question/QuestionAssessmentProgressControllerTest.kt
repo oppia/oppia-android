@@ -50,9 +50,9 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.topic.TEST_SKILL_ID_0
-import org.oppia.android.domain.topic.TEST_SKILL_ID_1
-import org.oppia.android.domain.topic.TEST_SKILL_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_SKILL_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_SKILL_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_SKILL_ID_2
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeExceptionLogger
