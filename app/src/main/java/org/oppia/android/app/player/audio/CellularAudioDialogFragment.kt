@@ -52,7 +52,9 @@ class CellularAudioDialogFragment : InjectableDialogFragment() {
       .create()
   }
 
+  /** Dagger injector for [CellularAudioDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: CellularAudioDialogFragment)
   }
 }

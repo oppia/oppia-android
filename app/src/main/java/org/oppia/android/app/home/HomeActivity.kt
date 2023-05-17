@@ -34,6 +34,10 @@ class HomeActivity :
   private var internalProfileId: Int = -1
 
   companion object {
+    /**
+     * Returns an [Intent] for opening new instances of [HomeActivity] for the specified user
+     * indicated by their [profileId].
+     */
     fun createIntent(context: Context, profileId: Int?): Intent {
       return Intent(context, HomeActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
@@ -110,7 +114,9 @@ class HomeActivity :
     )
   }
 
+  /** Dagger injector for [HomeActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: HomeActivity)
   }
 }

@@ -34,7 +34,7 @@ import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
-// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 
 /**
@@ -379,7 +379,9 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     object BottomRight : AnchorPosition()
   }
 
+  /** Dagger injector for [SpotlightFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: SpotlightFragment)
   }
 

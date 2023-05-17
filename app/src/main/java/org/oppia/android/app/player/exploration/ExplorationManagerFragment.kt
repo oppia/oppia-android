@@ -45,7 +45,9 @@ class ExplorationManagerFragment : InjectableFragment() {
     }
   }
 
+  /** Dagger injector for [ExplorationManagerFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ExplorationManagerFragment)
   }
 }

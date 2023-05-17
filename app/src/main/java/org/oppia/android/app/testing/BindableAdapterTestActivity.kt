@@ -28,6 +28,7 @@ class BindableAdapterTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [BindableAdapterTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, BindableAdapterTestActivity::class.java)
   }

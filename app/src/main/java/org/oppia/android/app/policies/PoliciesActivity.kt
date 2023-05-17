@@ -54,7 +54,9 @@ class PoliciesActivity :
     startActivity(createIntent(this, policyPage))
   }
 
+  /** Dagger injector for [PoliciesActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: PoliciesActivity)
   }
 }

@@ -38,7 +38,9 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
     )
   }
 
+  /** Dagger injector for [AdminSettingsDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: AdminSettingsDialogFragment)
   }
 }

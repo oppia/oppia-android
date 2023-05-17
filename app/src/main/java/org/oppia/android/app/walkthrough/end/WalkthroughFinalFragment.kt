@@ -56,7 +56,9 @@ class WalkthroughFinalFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [WalkthroughFinalFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: WalkthroughFinalFragment)
   }
 }

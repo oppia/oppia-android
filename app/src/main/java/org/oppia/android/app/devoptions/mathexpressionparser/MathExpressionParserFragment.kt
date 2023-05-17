@@ -31,7 +31,9 @@ class MathExpressionParserFragment : InjectableFragment() {
     return mathExpressionParserFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [MathExpressionParserFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: MathExpressionParserFragment)
   }
 }

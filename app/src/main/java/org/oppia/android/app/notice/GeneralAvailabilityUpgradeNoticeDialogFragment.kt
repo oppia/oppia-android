@@ -28,7 +28,9 @@ class GeneralAvailabilityUpgradeNoticeDialogFragment : InjectableDialogFragment(
     return presenter.handleOnCreateDialog()
   }
 
+  /** Dagger injector for [GeneralAvailabilityUpgradeNoticeDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: GeneralAvailabilityUpgradeNoticeDialogFragment)
   }
 }

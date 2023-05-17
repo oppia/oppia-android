@@ -161,7 +161,9 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       .build()
   }
 
+  /** Dagger injector for [DragDropSortInteractionView]. */
   interface Injector {
-    fun inject(view: DragDropSortInteractionView)
+    /** Injects dependencies into the [view]. */
+    fun inject(activity: AdministratorControlsActivity)
   }
 }

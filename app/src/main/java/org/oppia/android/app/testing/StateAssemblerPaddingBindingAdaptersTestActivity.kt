@@ -14,11 +14,17 @@ class StateAssemblerPaddingBindingAdaptersTestActivity : InjectableAppCompatActi
     setContentView(R.layout.test_margin_bindable_adapter_activity)
   }
 
+  /** Dagger injector for [StateAssemblerPaddingBindingAdaptersTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: StateAssemblerPaddingBindingAdaptersTestActivity)
   }
 
   companion object {
+    /**
+     * Returns an [Intent] for opening new instances of
+     * [StateAssemblerPaddingBindingAdaptersTestActivity].
+     */
     fun createIntent(context: Context): Intent =
       Intent(context, StateAssemblerPaddingBindingAdaptersTestActivity::class.java)
   }

@@ -6,7 +6,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-// TODO: Consolidate with version in ProfileChooserFragmentTestActivityPresenter.
 private const val TAG_PROFILE_CHOOSER_FRAGMENT = "TAG_PROFILE_CHOOSER_FRAGMENT"
 
 /** The presenter for [ProfileChooserActivity]. */

@@ -14,11 +14,14 @@ class TextViewBindingAdaptersTestActivity : InjectableAppCompatActivity() {
     setContentView(R.layout.test_text_view_bindable_adapter_activity)
   }
 
+  /** Dagger injector for [TextViewBindingAdaptersTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: TextViewBindingAdaptersTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [TextViewBindingAdaptersTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, TextViewBindingAdaptersTestActivity::class.java)
   }

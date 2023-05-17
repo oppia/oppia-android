@@ -94,7 +94,9 @@ class QuestionPlayerFragment :
 
   fun dismissConceptCard() = questionPlayerFragmentPresenter.dismissConceptCard()
 
+  /** Dagger injector for [QuestionPlayerFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: QuestionPlayerFragment)
   }
 

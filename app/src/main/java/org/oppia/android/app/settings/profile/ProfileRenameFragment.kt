@@ -46,7 +46,9 @@ class ProfileRenameFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [ProfileRenameFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ProfileRenameFragment)
   }
 }

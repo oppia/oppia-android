@@ -114,7 +114,9 @@ class DeveloperOptionsActivity :
     developerOptionsActivityPresenter.forceCrash()
   }
 
+  /** Dagger injector for [DeveloperOptionsActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: DeveloperOptionsActivity)
   }
 }

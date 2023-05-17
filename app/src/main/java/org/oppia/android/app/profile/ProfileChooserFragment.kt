@@ -30,7 +30,9 @@ class ProfileChooserFragment : InjectableFragment(), RouteToAdminPinListener {
     profileChooserFragmentPresenter.routeToAdminPin()
   }
 
+  /** Dagger injector for [ProfileChooserFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ProfileChooserFragment)
   }
 }

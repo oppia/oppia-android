@@ -10,7 +10,7 @@ import org.oppia.android.domain.topic.DeveloperAssets.TEST_TOPIC_ID_0
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
-// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 private const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 private const val STORY_ID_ARGUMENT_KEY = "story_id"
@@ -49,7 +49,9 @@ class TopicFragment : InjectableFragment() {
     topicFragmentPresenter.startSpotlight()
   }
 
+  /** Dagger injector for [TopicFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: TopicFragment)
   }
 }

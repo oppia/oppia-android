@@ -48,7 +48,9 @@ class ProfileProgressFragment :
     profileProgressFragmentPresenter.showPictureEditDialog()
   }
 
+  /** Dagger injector for [ProfileProgressFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ProfileProgressFragment)
   }
 }

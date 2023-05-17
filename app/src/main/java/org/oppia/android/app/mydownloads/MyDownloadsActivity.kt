@@ -27,6 +27,10 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    /**
+     * Returns an [Intent] for opening new instances of [MyDownloadsActivity] for the specified user
+     * indicated by their [profileId].
+     */
     fun createIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, MyDownloadsActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
@@ -50,7 +54,9 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
     finish()
   }
 
+  /** Dagger injector for [MyDownloadsActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: MyDownloadsActivity)
   }
 }

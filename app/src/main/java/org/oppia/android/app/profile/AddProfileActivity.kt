@@ -11,6 +11,7 @@ import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
 
 /** Activity that allows users to create new profiles. */
@@ -19,6 +20,10 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   @Inject lateinit var activityRouter: ActivityRouter
 
   companion object {
+    /**
+     * Returns an [Intent] for opening new instances of [AddProfileActivity] with the specified
+     * avatar background [colorRgb].
+     */
     fun createIntent(context: Context, colorRgb: Int): Intent {
       return Intent(context, AddProfileActivity::class.java).apply {
         putExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, colorRgb)
@@ -53,7 +58,9 @@ class AddProfileActivity : InjectableAppCompatActivity() {
     addProfileFragmentPresenter.dismissAlertDialog()
   }
 
+  /** Dagger injector for [AddProfileActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: AddProfileActivity)
   }
 }

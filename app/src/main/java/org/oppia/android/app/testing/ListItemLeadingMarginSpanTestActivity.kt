@@ -14,11 +14,14 @@ class ListItemLeadingMarginSpanTestActivity : InjectableAppCompatActivity() {
     setContentView(R.layout.test_list_item_leading_margin_activity)
   }
 
+  /** Dagger injector for [ListItemLeadingMarginSpanTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ListItemLeadingMarginSpanTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ListItemLeadingMarginSpanTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, ListItemLeadingMarginSpanTestActivity::class.java)
   }

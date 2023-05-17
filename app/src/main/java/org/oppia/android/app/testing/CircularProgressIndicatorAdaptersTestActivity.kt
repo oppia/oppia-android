@@ -28,7 +28,9 @@ class CircularProgressIndicatorAdaptersTestActivity : InjectableAppCompatActivit
     }
   }
 
+  /** Dagger injector for [CircularProgressIndicatorAdaptersTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: CircularProgressIndicatorAdaptersTestActivity)
   }
 

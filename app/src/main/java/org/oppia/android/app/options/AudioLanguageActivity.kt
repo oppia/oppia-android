@@ -69,7 +69,9 @@ class AudioLanguageActivity : InjectableAppCompatActivity(), AudioLanguageSelect
     audioLanguageActivityPresenter.setLanguageSelected(audioLanguage)
   }
 
+  /** Dagger injector for [AudioLanguageActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: AudioLanguageActivity)
   }
 }

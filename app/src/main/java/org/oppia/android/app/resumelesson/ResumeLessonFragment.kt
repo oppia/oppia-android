@@ -72,7 +72,9 @@ class ResumeLessonFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [ResumeLessonFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ResumeLessonFragment)
   }
 }

@@ -23,6 +23,7 @@ class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener 
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [FAQListActivity]. */
     fun createIntent(context: Context): Intent {
       return Intent(context, FAQListActivity::class.java).apply {
         decorateWithScreenName(FAQ_LIST_ACTIVITY)
@@ -41,7 +42,9 @@ class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener 
     )
   }
 
+  /** Dagger injector for [FAQListActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: FAQListActivity)
   }
 }

@@ -43,7 +43,9 @@ class ThirdPartyDependencyListActivity :
     )
   }
 
+  /** Dagger injector for [ThirdPartyDependencyListActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ThirdPartyDependencyListActivity)
   }
 }

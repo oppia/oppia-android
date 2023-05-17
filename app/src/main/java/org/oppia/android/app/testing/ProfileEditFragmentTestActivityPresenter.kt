@@ -6,7 +6,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import javax.inject.Inject
 
-// TODO: Consolidate with ones in ProfileEditActivity & clean up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY =
   "ProfileEditActivity.profile_edit_profile_id"
 
@@ -22,7 +22,9 @@ class ProfileEditFragmentTestActivityPresenter @Inject constructor(
     if (getProfileEditFragment() == null) {
       activity.supportFragmentManager.beginTransaction().replace(
         R.id.profile_edit_fragment_placeholder,
-        ProfileEditFragment.newInstance(profileId, isMultipane = false)
+        ProfileEditFragment.newInstance(
+          profileId, isMultipane = false, autoUpdateActivityTitle = false
+        )
       ).commitNow()
     }
   }

@@ -14,11 +14,14 @@ class ViewBindingAdaptersTestActivity : InjectableAppCompatActivity() {
     setContentView(R.layout.activity_view_binding_adapters_test)
   }
 
+  /** Dagger injector for [ViewBindingAdaptersTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ViewBindingAdaptersTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ViewBindingAdaptersTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, ViewBindingAdaptersTestActivity::class.java)
   }

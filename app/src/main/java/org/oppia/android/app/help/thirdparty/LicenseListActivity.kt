@@ -46,7 +46,9 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
     )
   }
 
+  /** Dagger injector for [LicenseListActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: LicenseListActivity)
   }
 }

@@ -22,7 +22,9 @@ class LicenseTextViewerActivity : InjectableAppCompatActivity() {
     licenseTextViewerActivityPresenter.handleOnCreate(dependencyIndex, licenseIndex)
   }
 
+  /** Dagger injector for [LicenseTextViewerActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: LicenseTextViewerActivity)
   }
 

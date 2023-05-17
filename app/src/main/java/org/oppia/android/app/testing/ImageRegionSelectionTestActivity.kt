@@ -36,11 +36,14 @@ class ImageRegionSelectionTestActivity : InjectableAppCompatActivity() {
     fragment.mockOnClickableAreaClickedListener = listener
   }
 
+  /** Dagger injector for [ImageRegionSelectionTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ImageRegionSelectionTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ImageRegionSelectionTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, ImageRegionSelectionTestActivity::class.java)
   }

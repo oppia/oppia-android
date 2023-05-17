@@ -52,7 +52,9 @@ class LicenseListFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [LicenseListFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: LicenseListFragment)
   }
 }

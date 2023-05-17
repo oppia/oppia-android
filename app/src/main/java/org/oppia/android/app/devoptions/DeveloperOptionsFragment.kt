@@ -32,7 +32,9 @@ class DeveloperOptionsFragment : InjectableFragment() {
     return developerOptionsFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [DeveloperOptionsFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: DeveloperOptionsFragment)
   }
 }

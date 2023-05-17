@@ -30,11 +30,14 @@ class ForceNetworkTypeTestActivity : InjectableAppCompatActivity() {
       .findFragmentById(R.id.force_network_type_container) as ForceNetworkTypeFragment?
   }
 
+  /** Dagger injector for [ForceNetworkTypeTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ForceNetworkTypeTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ForceNetworkTypeTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, ForceNetworkTypeTestActivity::class.java)
   }

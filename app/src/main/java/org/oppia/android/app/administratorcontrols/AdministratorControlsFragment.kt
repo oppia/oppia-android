@@ -50,7 +50,9 @@ class AdministratorControlsFragment : InjectableFragment() {
     administratorControlsFragmentPresenter.setSelectedFragment(selectedFragment)
   }
 
+  /** Dagger injector for [AdministratorControlsFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: AdministratorControlsFragment)
   }
 }

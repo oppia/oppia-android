@@ -11,10 +11,8 @@ import org.oppia.android.app.model.ScreenName.PROFILE_EDIT_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
-/** Argument key for the Profile Id in [ProfileEditActivity]. */
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY = "ProfileEditActivity.profile_edit_profile_id"
-
-/** Argument key for the Multipane in tablet mode for [ProfileEditActivity]. */
 private const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.is_multipane"
 
 /** Activity that allows admins to edit a profile. */
@@ -60,7 +58,9 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
     }
   }
 
+  /** Dagger injector for [ProfileEditActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfileEditActivity)
   }
 }

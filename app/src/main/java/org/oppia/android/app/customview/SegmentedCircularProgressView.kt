@@ -206,7 +206,9 @@ class SegmentedCircularProgressView : View {
     }
   }
 
+  /** Dagger injector for [SegmentedCircularProgressView]. */
   interface Injector {
-    fun inject(view: SegmentedCircularProgressView)
+    /** Injects dependencies into the [view]. */
+    fun inject(activity: AdministratorControlsActivity)
   }
 }

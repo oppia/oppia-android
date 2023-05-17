@@ -74,7 +74,9 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
     )
   }
 
+  /** Dagger injector for [ReadingTextSizeFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ReadingTextSizeFragment)
   }
 }

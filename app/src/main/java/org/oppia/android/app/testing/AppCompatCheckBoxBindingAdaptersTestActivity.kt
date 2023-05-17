@@ -15,11 +15,17 @@ class AppCompatCheckBoxBindingAdaptersTestActivity : InjectableAppCompatActivity
   }
 
   companion object {
+    /**
+     * Returns an [Intent] for opening new instances of
+     * [AppCompatCheckBoxBindingAdaptersTestActivity].
+     */
     fun createIntent(context: Context): Intent =
       Intent(context, AppCompatCheckBoxBindingAdaptersTestActivity::class.java)
   }
 
+  /** Dagger injector for [AppCompatCheckBoxBindingAdaptersTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: AppCompatCheckBoxBindingAdaptersTestActivity)
   }
 }

@@ -26,7 +26,9 @@ class MyDownloadsFragment : InjectableFragment() {
     return myDownloadsFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [MyDownloadsFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: MyDownloadsFragment)
   }
 }

@@ -97,10 +97,10 @@ import org.oppia.android.app.walkthrough.WalkthroughActivity
 /** Module to bind destination screens to navigable activity routes. */
 @Module
 class ActivityRouterModule {
-  // TODO: Post-Bazel (and maybe Hilt), decompose this into per-activity modules to simplify
+  // TODO(#1720): Post-Bazel (and maybe Hilt), decompose this into per-activity modules to simplify
   //  dependencies.
-  // TODO: Move the usage of protos into the individual activities & migrate all navigation flow
-  //  over to using the router.
+  // TODO(#4986): Move the usage of protos into the individual activities & migrate all navigation
+  //  flow over to using the router.
 
   @Provides
   @IntoMap

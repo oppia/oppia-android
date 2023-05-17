@@ -23,6 +23,7 @@ class OnboardingActivity :
   @Inject lateinit var activityRouter: ActivityRouter
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [OnboardingActivity]. */
     fun createIntent(context: Context): Intent {
       return Intent(context, OnboardingActivity::class.java).apply {
         decorateWithScreenName(ONBOARDING_ACTIVITY)
@@ -55,7 +56,9 @@ class OnboardingActivity :
     )
   }
 
+  /** Dagger injector for [OnboardingActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: OnboardingActivity)
   }
 }

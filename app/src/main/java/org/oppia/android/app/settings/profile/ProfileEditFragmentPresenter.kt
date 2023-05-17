@@ -47,7 +47,8 @@ class ProfileEditFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
-    isMultipane: Boolean
+    isMultipane: Boolean,
+    autoUpdateActivityTitle: Boolean
   ): View? {
     val binding = ProfileEditFragmentBinding.inflate(
       inflater,
@@ -99,10 +100,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
     }
 
     profileEditViewModel.profile.observe(fragment) { profile ->
-      // TODO: Verify that the commented out code is correct (or find an alternative).
-//      if (activity is ProfileEditActivity) {
-      activity.title = profile.name
-//      }
+      if (autoUpdateActivityTitle) {
+        activity.title = profile.name
+      }
 
       binding.profileEditAllowDownloadSwitch.isChecked = profile.allowDownloadAccess
       binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked =

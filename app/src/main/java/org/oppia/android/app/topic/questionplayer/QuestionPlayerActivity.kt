@@ -123,7 +123,9 @@ class QuestionPlayerActivity :
     questionPlayerActivityPresenter.stopTrainingSession()
   }
 
+  /** Dagger injector for [QuestionPlayerActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: QuestionPlayerActivity)
   }
 }

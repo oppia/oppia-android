@@ -87,7 +87,9 @@ class LanguageDialogFragment : InjectableDialogFragment() {
       .create()
   }
 
+  /** Dagger injector for [LanguageDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: LanguageDialogFragment)
   }
 }

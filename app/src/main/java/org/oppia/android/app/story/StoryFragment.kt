@@ -91,7 +91,9 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     storyFragmentPresenter.smoothScrollToPosition(position)
   }
 
+  /** Dagger injector for [StoryFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: StoryFragment)
   }
 }

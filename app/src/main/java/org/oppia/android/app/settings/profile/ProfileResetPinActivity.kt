@@ -38,7 +38,9 @@ class ProfileResetPinActivity : InjectableAppCompatActivity() {
     return false
   }
 
+  /** Dagger injector for [ProfileResetPinActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfileResetPinActivity)
   }
 }

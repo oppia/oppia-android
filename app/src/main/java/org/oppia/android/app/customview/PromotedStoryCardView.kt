@@ -57,7 +57,9 @@ class PromotedStoryCardView @JvmOverloads constructor(
     viewComponent.inject(this)
   }
 
+  /** Dagger injector for [PromotedStoryCardView]. */
   interface Injector {
-    fun inject(view: PromotedStoryCardView)
+    /** Injects dependencies into the [view]. */
+    fun inject(activity: AdministratorControlsActivity)
   }
 }

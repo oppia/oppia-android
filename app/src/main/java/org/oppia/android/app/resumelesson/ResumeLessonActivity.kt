@@ -96,7 +96,9 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
     )
   }
 
+  /** Dagger injector for [ResumeLessonActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ResumeLessonActivity)
   }
 }

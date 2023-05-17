@@ -186,7 +186,9 @@ class ExplorationActivity :
     explorationActivityPresenter.requestVoiceOverIconSpotlight(numberOfLogins)
   }
 
+  /** Dagger injector for [ExplorationActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ExplorationActivity)
   }
 }

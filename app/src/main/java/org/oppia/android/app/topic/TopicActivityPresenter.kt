@@ -9,8 +9,8 @@ import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import javax.inject.Inject
 
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val TOPIC_FRAGMENT_TAG = "TopicFragment"
-
 private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 private const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 private const val STORY_ID_ARGUMENT_KEY = "story_id"

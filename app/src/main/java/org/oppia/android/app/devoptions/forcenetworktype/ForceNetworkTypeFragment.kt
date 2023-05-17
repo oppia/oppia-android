@@ -31,7 +31,9 @@ class ForceNetworkTypeFragment : InjectableFragment() {
     return forceNetworkTypeFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [ForceNetworkTypeFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ForceNetworkTypeFragment)
   }
 }
