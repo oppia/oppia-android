@@ -69,10 +69,12 @@ class SurveyGatingController @Inject constructor(
     surveyLastShownCalendar.timeInMillis = lastShownTimestampMs
 
     val currentCalendar = oppiaClock.getCurrentCalendar()
-    val showNextCalendar = currentCalendar.timeInMillis.plus(gracePeriodMillis)
+    val showNextTimestamp = surveyLastShownCalendar.timeInMillis.plus(gracePeriodMillis)
+    val showNextCalendar = oppiaClock.getCurrentCalendar()
+    showNextCalendar.timeInMillis = showNextTimestamp
 
     return currentCalendar.after(showNextCalendar) ||
-      currentCalendar.equals(showNextCalendar)
+      showNextCalendar == currentCalendar
   }
 
   private fun retrieveSurveyLastShownDate(profileId: ProfileId): DataProvider<Long> {
