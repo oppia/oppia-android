@@ -11,22 +11,22 @@ import org.oppia.android.domain.state.StateList
  * so owning classes should ensure synchronized access. This class can exist across multiple training session instances,
  * but calling code is responsible for ensuring it is properly reset.
  */
-internal class QuestionAssessmentProgress {
-  internal var trainStage = TrainStage.NOT_IN_TRAINING_SESSION
+class QuestionAssessmentProgress {
+  var trainStage = TrainStage.NOT_IN_TRAINING_SESSION
   private var questionsList: List<Question> = listOf()
-  internal val stateList: StateList by lazy { StateList(questionsList) }
-  internal val stateDeck: StateDeck by lazy {
+  val stateList: StateList by lazy { StateList(questionsList) }
+  val stateDeck: StateDeck by lazy {
     StateDeck(
       stateList.getFirstState(),
       this::isTopStateTerminal
     )
   }
   private var isTopQuestionCompleted: Boolean = false
-  internal var questionSessionMetrics: MutableList<QuestionSessionMetrics> = mutableListOf()
-  internal lateinit var currentProfileId: ProfileId
+  var questionSessionMetrics: MutableList<QuestionSessionMetrics> = mutableListOf()
+  lateinit var currentProfileId: ProfileId
 
   /** Initialize the assessment with the specified list of questions. */
-  internal fun initialize(questionsList: List<Question>) {
+  fun initialize(questionsList: List<Question>) {
     advancePlayStageTo(TrainStage.VIEWING_STATE)
     this.questionsList = questionsList
     stateList.reset(questionsList)
@@ -41,7 +41,7 @@ internal class QuestionAssessmentProgress {
    * Tracks how many hints the user viewed per question this session. This is expected to be called
    * for every hint viewed.
    */
-  internal fun trackHintViewed() {
+  fun trackHintViewed() {
     val currentQuestionIndex = getCurrentQuestionIndex()
     questionSessionMetrics[currentQuestionIndex].numberOfHintsUsed++
   }
@@ -50,7 +50,7 @@ internal class QuestionAssessmentProgress {
    * Tracks which question solutions the user viewed this session. This is expected to be called for
    * every solution viewed.
    */
-  internal fun trackSolutionViewed() {
+  fun trackSolutionViewed() {
     val currentQuestionIndex = getCurrentQuestionIndex()
     questionSessionMetrics[currentQuestionIndex].didViewSolution = true
   }
@@ -59,7 +59,7 @@ internal class QuestionAssessmentProgress {
    * Tracks how many answers the user submits for each question, along with any misconceptions. This
    * is expected to be called for every answer submitted.
    */
-  internal fun trackAnswerSubmitted(taggedSkillId: String?) {
+  fun trackAnswerSubmitted(taggedSkillId: String?) {
     val currentQuestionIndex = getCurrentQuestionIndex()
     questionSessionMetrics[currentQuestionIndex].numberOfAnswersSubmitted++
     if (taggedSkillId != null) {
@@ -68,12 +68,12 @@ internal class QuestionAssessmentProgress {
   }
 
   /** Processes when the current question card has just been completed. */
-  internal fun completeCurrentQuestion() {
+  fun completeCurrentQuestion() {
     isTopQuestionCompleted = true
   }
 
   /** Processes when a new pending question card has been navigated to. */
-  internal fun processNavigationToNewQuestion() {
+  fun processNavigationToNewQuestion() {
     isTopQuestionCompleted = false
   }
 
@@ -85,7 +85,7 @@ internal class QuestionAssessmentProgress {
    * ensure the internal state of the controller remains correct. This method is not meant to be covered in unit tests
    * since none of the failures here should ever be exposed to controller callers.
    */
-  internal fun advancePlayStageTo(nextTrainStage: TrainStage) {
+  fun advancePlayStageTo(nextTrainStage: TrainStage) {
     when (nextTrainStage) {
       TrainStage.NOT_IN_TRAINING_SESSION -> {
         // All transitions to NOT_IN_TRAINING_SESSION are valid except itself. Stopping playing can happen at any time.
@@ -124,27 +124,27 @@ internal class QuestionAssessmentProgress {
   }
 
   /** Returns whether the learner has completed the assessment. */
-  internal fun isAssessmentCompleted(): Boolean {
+  fun isAssessmentCompleted(): Boolean {
     return getCurrentQuestionIndex() == getTotalQuestionCount() - 1 && isTopQuestionCompleted
   }
 
   /** Returns the index of the current question being played. */
-  internal fun getCurrentQuestionIndex(): Int {
+  fun getCurrentQuestionIndex(): Int {
     return stateDeck.getTopStateIndex()
   }
 
   /** Returns the next [State] that should be played. */
-  internal fun getNextState(): State {
+  fun getNextState(): State {
     return stateList.getState(getCurrentQuestionIndex() + 1)
   }
 
   /** Returns whether the learner is currently viewing the most recent question card. */
-  internal fun isViewingMostRecentQuestion(): Boolean {
+  fun isViewingMostRecentQuestion(): Boolean {
     return stateDeck.isCurrentStateTopOfDeck()
   }
 
   /** Returns the number of questions in the assessment. */
-  internal fun getTotalQuestionCount(): Int {
+  fun getTotalQuestionCount(): Int {
     return questionsList.size
   }
 

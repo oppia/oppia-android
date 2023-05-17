@@ -27,6 +27,13 @@ class GitClient(
    */
   val changedFiles: Set<String> by lazy { retrieveChangedFilesWithPotentialDuplicates().toSet() }
 
+  /**
+   * Returns the list of all tracked files, as indicated by Git's index.
+   *
+   * Note that this will *not* exclude removed files that are staged--they must be checked in. It's
+   * recommended for callers to check the existence of the returned tracked files if it's important
+   * that they exist for downstream logic.
+   */
   fun computeAllTrackedFiles(): List<String> =
     executeGitCommand("ls-tree --full-tree --name-only -r HEAD")
 

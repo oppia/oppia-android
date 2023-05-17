@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
-import org.oppia.android.domain.topic.TEST_SKILL_ID_0
-import org.oppia.android.domain.topic.TEST_SKILL_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_SKILL_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_SKILL_ID_1
 import javax.inject.Inject
 
 /** The presenter for ``ConceptCardFragmentTestActivity`` */

@@ -12,9 +12,9 @@ import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
-import org.oppia.android.domain.topic.TEST_STORY_ID_0
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_STORY_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject

@@ -24,7 +24,7 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/build:suggest_build_fixes_lib",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
     ],
 )
 
@@ -36,6 +36,17 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+    ],
+)
+
+kt_jvm_test(
+    name = "VerifyFileTargetsTest",
+    srcs = ["VerifyFileTargetsTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:verify_file_targets_lib",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
         "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",

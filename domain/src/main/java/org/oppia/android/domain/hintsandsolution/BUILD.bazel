@@ -44,14 +44,11 @@ oppia_android_library(
 
 oppia_android_library(
     name = "alpha_kenya_prod_config_module",
-    srcs = [
-        "HintsAndSolutionConfigAlphaKenyaModule.kt",
-    ],
+    srcs = ["HintsAndSolutionConfigAlphaKenyaModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":qualifiers",
         "//:dagger",
-        "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
     ],
 )
@@ -59,42 +56,33 @@ oppia_android_library(
 oppia_android_library(
     name = "fast_show_test_config_module",
     testonly = True,
-    srcs = [
-        "HintsAndSolutionConfigFastShowTestModule.kt",
-    ],
+    srcs = ["HintsAndSolutionConfigFastShowTestModule.kt"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":qualifiers",
         "//:dagger",
-        "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
     ],
 )
 
 oppia_android_library(
     name = "standard_prod_config_module",
-    srcs = [
-        "HintsAndSolutionConfigModule.kt",
-    ],
+    srcs = ["HintsAndSolutionConfigModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":qualifiers",
         "//:dagger",
-        "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
     ],
 )
 
 oppia_android_library(
     name = "debug_impl",
-    srcs = [
-        "HintHandlerDebugImpl.kt",
-    ],
+    srcs = ["HintHandlerDebugImpl.kt"],
     visibility = ["//domain:domain_testing_visibility"],
     deps = [
         ":hint_handler",
         ":prod_impl",
-        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/devoptions:show_all_hints_and_solution_controller",
         "//model/src/main/proto:exploration_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
@@ -104,14 +92,11 @@ oppia_android_library(
 
 oppia_android_library(
     name = "prod_impl",
-    srcs = [
-        "HintHandlerProdImpl.kt",
-    ],
+    srcs = ["HintHandlerProdImpl.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":hint_handler",
         ":qualifiers",
-        "//:dagger",
         "//model/src/main/proto:exploration_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",

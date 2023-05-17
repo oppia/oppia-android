@@ -99,6 +99,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
+  private val scoreCalculatorFactory: QuestionAssessmentCalculation.Factory,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
@@ -119,8 +120,6 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private var mostRecentCommandQueue: SendChannel<ControllerMessage<*>>? = null
 
-  @Inject
-  internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
   private val monitoredQuestionListDataProvider: NestedTransformedDataProvider<Any?> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
@@ -130,8 +129,11 @@ class QuestionAssessmentProgressController @Inject constructor(
    *
    * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
    * [submitAnswer].
+   *
+   * This should never be called directly. Instead, use [QuestionTrainingController] to start
+   * training sessions.
    */
-  internal fun beginQuestionTrainingSession(
+  fun beginQuestionTrainingSession(
     questionsListDataProvider: DataProvider<List<Question>>,
     profileId: ProfileId
   ): DataProvider<Any?> {
@@ -167,8 +169,11 @@ class QuestionAssessmentProgressController @Inject constructor(
    * a session is over. Calling it ensures all other [DataProvider]s reset to a correct
    * out-of-session state, but subsequent calls to [beginQuestionTrainingSession] will reset the
    * session.
+   *
+   * This should never be called directly. Instead, use [QuestionTrainingController] to end training
+   * sessions.
    */
-  internal fun finishQuestionTrainingSession(): DataProvider<Any?> {
+  fun finishQuestionTrainingSession(): DataProvider<Any?> {
     // Reset the base questions list provider so that the ephemeral question has no question list to
     // reference (since the session finished).
     monitoredQuestionListDataProvider.setBaseDataProvider(createEmptyQuestionsListDataProvider()) {
