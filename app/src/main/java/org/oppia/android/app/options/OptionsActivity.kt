@@ -18,6 +18,7 @@ import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
 private const val SELECTED_FRAGMENT_SAVED_KEY = "OptionsActivity.selected_fragment"
 private const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
@@ -182,7 +183,9 @@ class OptionsActivity :
     optionActivityPresenter.updateReadingTextSize(selectedTextSize)
   }
 
+  /** Dagger injector for [OptionsActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: OptionsActivity)
   }
 }

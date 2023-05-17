@@ -65,7 +65,9 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
     appLanguageFragmentPresenter.onLanguageSelected(appLanguage)
   }
 
+  /** Dagger injector for [AppLanguageFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: AppLanguageFragment)
   }
 }

@@ -77,7 +77,9 @@ class DeveloperOptionsTestActivity :
     throw RuntimeException("Force crash occurred")
   }
 
+  /** Dagger injector for [DeveloperOptionsTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: DeveloperOptionsTestActivity)
   }
 

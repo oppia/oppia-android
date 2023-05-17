@@ -80,7 +80,9 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity(), TextSizeSelectedL
     readingTextSizeActivityPresenter.setSelectedReadingTextSize(selectedTextSize)
   }
 
+  /** Dagger injector for [ReadingTextSizeActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ReadingTextSizeActivity)
   }
 }

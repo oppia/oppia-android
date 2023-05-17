@@ -26,7 +26,9 @@ class FAQSingleActivity : InjectableAppCompatActivity() {
     faqSingleActivityPresenter.handleOnCreate(question, answer)
   }
 
+  /** Dagger injector for [FAQSingleActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: FAQSingleActivity)
   }
 

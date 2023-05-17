@@ -11,11 +11,10 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
   "TopicLessonsFragment.current_expanded_list_index"
 private const val IS_DEFAULT_STORY_SHOWN = "TopicLessonsFragment.is_default_story_shown"
-
-// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
 private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 private const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 private const val STORY_ID_ARGUMENT_KEY = "story_id"
@@ -114,7 +113,9 @@ class TopicLessonsFragment :
     topicLessonsFragmentPresenter.selectChapterSummary(storyId, explorationId, chapterPlayState)
   }
 
+  /** Dagger injector for [TopicLessonsFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: TopicLessonsFragment)
   }
 }

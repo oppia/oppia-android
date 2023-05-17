@@ -93,11 +93,14 @@ class TopicTestActivity :
     )
   }
 
+  /** Dagger injector for [TopicTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: TopicTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [TopicTestActivity]. */
     fun createIntent(context: Context): Intent = Intent(context, TopicTestActivity::class.java)
   }
 }

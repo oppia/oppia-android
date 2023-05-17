@@ -17,12 +17,14 @@ class ProfileEditFragmentTestActivity : TestActivity() {
     profileEditFragmentTestActivityPresenter.handleOnCreate()
   }
 
+  /** Dagger injector for [ProfileEditFragmentTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfileEditFragmentTestActivity)
   }
 
   companion object {
-    // TODO: Consolidate with ones in ProfileEditActivity & clean up.
+    // TODO(#4986): Remove the constants corresponding to bundles.
     private const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY =
       "ProfileEditActivity.profile_edit_profile_id"
 

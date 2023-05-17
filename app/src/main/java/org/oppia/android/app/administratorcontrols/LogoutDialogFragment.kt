@@ -45,7 +45,9 @@ class LogoutDialogFragment : InjectableDialogFragment() {
       }.create()
   }
 
+  /** Dagger injector for [LogoutDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: LogoutDialogFragment)
   }
 }

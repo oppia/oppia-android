@@ -380,8 +380,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
    * expected to provide. The [menuItemId] corresponds to the menu ID of the current activity, for navigation purposes.
    */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
-    // TODO: Figure out why the commented out code was needed. Dependence on activities like this should be avoided.
-//    previousMenuItemId = if (activity is TopicActivity) null else menuItemId
     previousMenuItemId = menuItemId
     if (menuItemId != 0 && menuItemId != -1) {
       footerViewModel.isAdministratorControlsSelected.set(false)

@@ -27,11 +27,14 @@ class AppVersionActivity : InjectableAppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
+  /** Dagger injector for [AppVersionActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: AppVersionActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [AppVersionActivity]. */
     fun createIntent(context: Context): Intent {
       return Intent(context, AppVersionActivity::class.java).apply {
         decorateWithScreenName(APP_VERSION_ACTIVITY)

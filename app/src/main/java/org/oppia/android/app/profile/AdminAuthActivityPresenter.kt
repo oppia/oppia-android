@@ -133,9 +133,22 @@ class AdminAuthActivityPresenter @Inject constructor(
   }
 
   companion object {
+    /** The activity intent extra key corresponding to the admin's authentication PIN. */
     const val ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY = "AdminAuthActivity.admin_auth_admin_pin"
+
+    /** The activity intent extra key corresponding to the profile's avatar background color. */
     const val ADMIN_AUTH_COLOR_RGB_EXTRA_KEY = "AdminAuthActivity.admin_auth_color_rgb"
+
+    /**
+     * The activity intent extra key corresponding to [AdminAuthEnum] ordinal denoting
+     * authentication context.
+     */
     const val ADMIN_AUTH_ENUM_EXTRA_KEY = "AdminAuthActivity.admin_auth_enum"
+
+    /**
+     * The activity intent extra key corresponding to the ID of the profile requiring admin
+     * authentication.
+     */
     const val ADMIN_AUTH_PROFILE_ID_EXTRA_KEY = "AdminAuthActivity.admin_auth_profile_id"
   }
 }

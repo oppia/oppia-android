@@ -26,7 +26,9 @@ class FAQListFragment : InjectableFragment() {
     return faqListFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [FAQListFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: FAQListFragment)
   }
 }

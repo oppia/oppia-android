@@ -193,7 +193,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     }
   }
 
+  /** Dagger injector for [LessonThumbnailImageView]. */
   interface Injector {
+    /** Injects dependencies into the [view]. */
     fun inject(view: LessonThumbnailImageView)
   }
 }

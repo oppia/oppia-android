@@ -14,6 +14,7 @@ class ProfileChooserActivity : InjectableAppCompatActivity() {
   lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ProfileChooserActivity]. */
     fun createIntent(context: Context): Intent {
       return Intent(context, ProfileChooserActivity::class.java).apply {
         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -28,7 +29,9 @@ class ProfileChooserActivity : InjectableAppCompatActivity() {
     profileChooserActivityPresenter.handleOnCreate()
   }
 
+  /** Dagger injector for [ProfileChooserActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfileChooserActivity)
   }
 }

@@ -38,11 +38,14 @@ class TopicRevisionTestActivity : InjectableAppCompatActivity(), RouteToRevision
     )
   }
 
+  /** Dagger injector for [TopicRevisionTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: TopicRevisionTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [TopicRevisionTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, TopicRevisionTestActivity::class.java)
   }

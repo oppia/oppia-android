@@ -57,7 +57,9 @@ class SplashActivity :
   override fun onGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss)
 
+  /** Dagger injector for [SplashActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: SplashActivity)
   }
 }

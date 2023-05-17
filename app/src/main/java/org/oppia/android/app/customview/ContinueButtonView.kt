@@ -128,7 +128,9 @@ class ContinueButtonView @JvmOverloads constructor(
     }
   }
 
+  /** Dagger injector for [ContinueButtonView]. */
   interface Injector {
+    /** Injects dependencies into the [view]. */
     fun inject(view: ContinueButtonView)
   }
 }

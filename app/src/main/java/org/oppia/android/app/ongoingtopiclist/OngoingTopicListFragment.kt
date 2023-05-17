@@ -52,7 +52,9 @@ class OngoingTopicListFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [OngoingTopicListFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: OngoingTopicListFragment)
   }
 }

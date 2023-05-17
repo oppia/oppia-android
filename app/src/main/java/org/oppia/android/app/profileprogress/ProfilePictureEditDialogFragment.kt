@@ -61,7 +61,9 @@ class ProfilePictureEditDialogFragment : InjectableDialogFragment() {
       .create()
   }
 
+  /** Dagger injector for [ProfilePictureEditDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ProfilePictureEditDialogFragment)
   }
 }

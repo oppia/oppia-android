@@ -25,7 +25,9 @@ class ForceNetworkTypeActivity : InjectableAppCompatActivity() {
     title = resourceHandler.getStringInLocale(R.string.force_network_type_activity_title)
   }
 
+  /** Dagger injector for [ForceNetworkTypeActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ForceNetworkTypeActivity)
   }
 

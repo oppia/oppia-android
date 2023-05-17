@@ -26,7 +26,9 @@ class AppVersionFragment : InjectableFragment() {
     return appVersionFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [AppVersionFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: AppVersionFragment)
   }
 }

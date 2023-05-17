@@ -107,7 +107,9 @@ class PromotedStoryListView @JvmOverloads constructor(
       ).build()
   }
 
+  /** Dagger injector for [PromotedStoryListView]. */
   interface Injector {
+    /** Injects dependencies into the [view]. */
     fun inject(view: PromotedStoryListView)
   }
 }

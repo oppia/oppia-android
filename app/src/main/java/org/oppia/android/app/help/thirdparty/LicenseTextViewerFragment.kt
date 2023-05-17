@@ -52,7 +52,9 @@ class LicenseTextViewerFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [LicenseTextViewerFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: LicenseTextViewerFragment)
   }
 }

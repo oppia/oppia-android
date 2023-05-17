@@ -50,7 +50,9 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
     recentlyPlayedFragmentPresenter.promotedStoryClicked(promotedStory)
   }
 
+  /** Dagger injector for [RecentlyPlayedFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: RecentlyPlayedFragment)
   }
 }

@@ -21,6 +21,7 @@ class LessonThumbnailImageViewTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [LessonThumbnailImageViewTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, LessonThumbnailImageViewTestActivity::class.java)
   }

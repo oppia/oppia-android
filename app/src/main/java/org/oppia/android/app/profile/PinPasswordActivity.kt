@@ -16,6 +16,14 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
   lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
 
   companion object {
+    /**
+     * Creates an [Intent] for opening new instances of [PinPasswordActivity].
+     *
+     * @param context the [Context] in which the activity should be opened
+     * @param adminPin the administrator PIN that will be used for authentication
+     * @param profileId the ID of the profile whose PIN needs to be verified
+     * @return the new [Intent] that cna be used to open a [PinPasswordActivity]
+     */
     fun createIntent(
       context: Context,
       adminPin: String,
@@ -48,7 +56,9 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
     pinPasswordActivityPresenter.handleOnDestroy()
   }
 
+  /** Dagger injector for [PinPasswordActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: PinPasswordActivity)
   }
 }

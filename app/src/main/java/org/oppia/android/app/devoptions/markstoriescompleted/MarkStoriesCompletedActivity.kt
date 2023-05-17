@@ -37,7 +37,9 @@ class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
+  /** Dagger injector for [MarkStoriesCompletedActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: MarkStoriesCompletedActivity)
   }
 

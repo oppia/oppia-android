@@ -183,7 +183,9 @@ class HintsAndSolutionDialogFragment :
     )
   }
 
+  /** Dagger injector for [HintsAndSolutionDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: HintsAndSolutionDialogFragment)
   }
 }

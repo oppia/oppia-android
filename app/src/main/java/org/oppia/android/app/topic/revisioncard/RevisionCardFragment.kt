@@ -69,7 +69,9 @@ class RevisionCardFragment : InjectableDialogFragment() {
   /** Dismisses the concept card fragment if it's currently active in this fragment. */
   fun dismissConceptCard() = revisionCardFragmentPresenter.dismissConceptCard()
 
+  /** Dagger injector for [RevisionCardFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: RevisionCardFragment)
   }
 }

@@ -33,7 +33,9 @@ class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
       .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment?
   }
 
+  /** Dagger injector for [MarkStoriesCompletedTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: MarkStoriesCompletedTestActivity)
   }
 

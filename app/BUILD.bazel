@@ -67,6 +67,16 @@ oppia_android_resource_library(
     deps = ["//third_party:com_google_android_material_material"],
 )
 
+oppia_android_library(
+    name = "promoted_story_list_adapter",
+    srcs = ["src/main/java/org/oppia/android/app/home/recentlyplayed/PromotedStoryListAdapter.kt"],
+    deps = [
+        ":view_models",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//third_party:androidx_recyclerview_recyclerview",
+    ],
+)
+
 # TODO(#1607): Remove this shared library once everything is modularized.
 oppia_android_library(
     name = "_combined_test_lib_do_not_depend",
@@ -285,6 +295,7 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/utility:region_click_event",
         "//app/src/main/java/org/oppia/android/app/utility:split_screen_manager",
         "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_builder_module",
         "//app/src/main/java/org/oppia/android/app/walkthrough:walkthrough_activity",
         "//app/src/main/java/org/oppia/android/app/walkthrough:walkthrough_fragment_change_listener",
         "//app/src/sharedTest/java/org/oppia/android/app/recyclerview:recycler_view_matcher",

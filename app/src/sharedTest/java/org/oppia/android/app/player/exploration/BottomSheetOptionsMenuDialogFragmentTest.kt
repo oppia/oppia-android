@@ -96,8 +96,8 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = BottomSheetOptionsMenuTest.TestApplication::class)
-class BottomSheetOptionsMenuTest {
+@Config(application = BottomSheetOptionsMenuDialogFragmentTest.TestApplication::class)
+class BottomSheetOptionsMenuDialogFragmentTest {
 
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -204,18 +204,17 @@ class BottomSheetOptionsMenuTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(bottomSheetOptionsMenuTest: BottomSheetOptionsMenuTest)
+    fun inject(test: BottomSheetOptionsMenuDialogFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerBottomSheetOptionsMenuTest_TestApplicationComponent.builder()
+      DaggerBottomSheetOptionsMenuDialogFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(bottomSheetOptionsMenuTest: BottomSheetOptionsMenuTest) =
-      component.inject(bottomSheetOptionsMenuTest)
+    fun inject(test: BottomSheetOptionsMenuDialogFragmentTest) = component.inject(test)
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()

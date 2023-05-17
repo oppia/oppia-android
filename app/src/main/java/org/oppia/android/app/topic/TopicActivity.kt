@@ -149,7 +149,9 @@ class TopicActivity :
       Companion.createIntent(activity, profileId.internalId, topicId, storyId)
   }
 
+  /** Dagger injector for [TopicActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: TopicActivity)
   }
 

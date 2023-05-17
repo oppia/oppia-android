@@ -32,7 +32,9 @@ class ViewEventLogsFragment : InjectableFragment() {
     return viewEventLogsFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [ViewEventLogsFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ViewEventLogsFragment)
   }
 }

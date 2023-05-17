@@ -27,7 +27,9 @@ class BetaNoticeDialogFragment : InjectableDialogFragment() {
     return presenter.handleOnCreateDialog()
   }
 
+  /** Dagger injector for [BetaNoticeDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: BetaNoticeDialogFragment)
   }
 }

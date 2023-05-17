@@ -128,8 +128,6 @@ message DestinationScreen {
   }
 }
 
-// TODO: Document fields and add TODOs for internal profile IDs.
-
 // Intent extras for AppVersionActivity.
 message AppVersionActivityParams {
   // The activity has no parameters.
@@ -142,11 +140,15 @@ message ProfileAndDeviceIdActivityParams {
 
 // Intent extras for CompletedStoryListActivity.
 message CompletedStoryListActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
 // Intent extras for DeveloperOptionsActivity.
 message DeveloperOptionsActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -162,33 +164,50 @@ message ForceNetworkTypeTestActivityParams {
 
 // Intent extras for MarkChaptersCompletedActivity.
 message MarkChaptersCompletedActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // Whether to show a confirmation notice before marking chapters as completed.
   bool show_confirmation_notice = 2;
 }
 
 // Intent extras for MarkChaptersCompletedTestActivity.
 message MarkChaptersCompletedTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // Whether to show a confirmation notice before marking chapters as completed when testing with
+  // MarkChaptersCompletedTestActivity.
   bool show_confirmation_notice = 2;
 }
 
 // Intent extras for MarkStoriesCompletedActivity.
 message MarkStoriesCompletedActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
 // Intent extras for MarkStoriesCompletedTestActivity.
 message MarkStoriesCompletedTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
 // Intent extras for MarkTopicsCompletedActivity.
 message MarkTopicsCompletedActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
 // Intent extras for MarkTopicsCompletedTestActivity.
 message MarkTopicsCompletedTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -199,6 +218,8 @@ message MathExpressionParserActivityParams {
 
 // Intent extras for DeveloperOptionsTestActivity.
 message DeveloperOptionsTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -214,7 +235,11 @@ message ViewEventLogsTestActivityParams {
 
 // Intent extras for HelpActivity.
 message HelpActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // Whether the origin of opening this activity came from the shared navigation drawer.
   bool is_from_navigation_drawer = 2;
 }
 
@@ -225,18 +250,28 @@ message FaqListActivityParams {
 
 // Intent extras for FAQSingleActivity.
 message FaqSingleActivityParams {
+  // The specific question text being displayed to the user.
   string question_text = 1;
+
+  // The specific answer text corresponding to the question being displayed to the user.
   string answer_text = 2;
 }
 
 // Intent extras for LicenseListActivity.
 message LicenseListActivityParams {
+  // The relative index (among all other catalogued third-party dependencies) of the dependency
+  // whose list of licenses should be shown.
   int32 dependency_index = 1;
 }
 
 // Intent extras for LicenseTextViewerActivity.
 message LicenseTextViewerActivityParams {
+  // The relative index (among all other catalogued third-party dependencies) of the dependency
+  // whose license should be shown.
   int32 dependency_index = 1;
+
+  // The relative index (among all other licenses tied to the specific third-party dependency
+  // indicated by dependency_index) whose text should be shown to the user.
   int32 license_index = 2;
 }
 
@@ -247,6 +282,8 @@ message ThirdPartyDependencyListActivityParams {
 
 // Intent extras for HomeActivity.
 message HomeActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -261,6 +298,8 @@ message RecentlyPlayedActivityParams {
 
 // Intent extras for MyDownloadsActivity.
 message MyDownloadsActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -271,11 +310,15 @@ message OnboardingActivityParams {
 
 // Intent extras for OngoingTopicListActivity.
 message OngoingTopicListActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
 // Intent extras for AppLanguageActivity.
 message AppLanguageActivityParams {
+  // The plain-text (human readable) name of the current app language configured for the currently
+  // logged-in profile.
   string summary_value = 1;
 }
 
@@ -287,7 +330,11 @@ message AudioLanguageActivityParams {
 
 // Intent extras for OptionsActivity.
 message OptionsActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // Whether the origin of opening this activity came from the shared navigation drawer.
   bool is_from_navigation_drawer = 2;
 }
 
@@ -332,10 +379,21 @@ message ExplorationActivityParams {
 
 // Intent extras for StateFragmentTestActivity.
 message StateFragmentTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // The ID of the topic containing the story whose lesson is being viewed.
   string topic_id = 2;
+
+  // The ID of the story containing the exploration being viewed.
   string story_id = 3;
+
+  // The ID of the exploration being viewed.
   string exploration_id = 4;
+
+  // Whether the current play session should save partial progress (e.g. navigating away from the
+  // lesson midway rather than completing it).
   bool should_save_partial_progress = 5;
 }
 
@@ -347,33 +405,61 @@ message PoliciesActivityParams {
 
 // Intent extras for AddProfileActivity.
 message AddProfileActivityParams {
+  // The 3-byte RGB value (alpha is ignored) that should be used for the new profile's default
+  // background avatar image.
   int32 color_rgb = 1;
 }
 
 // Intent extras for AdminAuthActivity.
 message AdminAuthActivityParams {
+  // The administrator's PIN to verify that the current user is a device administrator.
   string admin_pin = 1;
+
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 2;
+
+  // The 3-byte RGB value (alpha is ignored) that is used for the admin's default background avatar
+  // image.
   int32 color_rgb = 3;
+
+  // The context for why admin authentication is needed.
   AdminAuth admin_auth = 4;
 
+  // Indicates the contexts in which admin authentication is needed.
   enum AdminAuth {
+    // The reason for authentication isn't known, or hasn't been specified.
     ADMIN_AUTH_UNSPECIFIED = 0;
+
+    // The user is trying to access administrator controls.
     PROFILE_ADMIN_CONTROLS = 1;
+
+    // The user is trying to add a new profile.
     PROFILE_ADD_PROFILE = 2;
   }
 }
 
 // Intent extras for AdminPinActivity.
 message AdminPinActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // The 3-byte RGB value (alpha is ignored) that is used for the admin's default background avatar
+  // image.
   int32 color_rgb = 2;
+
+  // Indicates where the admin will be navigated after updating their PIN.
   AdminAuthActivityParams.AdminAuth admin_auth = 3;
 }
 
 // Intent extras for PinPasswordActivity.
 message PinPasswordActivityParams {
+  // The administrator's PIN that will be used to escalate a "forgot PIN" flow.
   string admin_pin = 1;
+
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 2;
 }
 
@@ -384,11 +470,15 @@ message ProfileChooserActivityParams {
 
 // Intent extras for ProfilePictureActivity.
 message ProfilePictureActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
 // Intent extras for ProfileProgressActivity.
 message ProfileProgressActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -415,24 +505,39 @@ message ResumeLessonActivityParams {
 
 // Intent extras for ProfileEditActivity.
 message ProfileEditActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // Whether the activity should be shown in multi-pane mode (e.g. for tablets).
   bool is_multipane = 2;
+
+  // Whether to clear activities above the current activity, if already open, from the task stack,
+  // per https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_CLEAR_TOP.
   bool clear_top = 3;
 }
 
 // Intent extras for ProfileListActivity.
 message ProfileListActivityParams {
+  // Whether to clear activities above the current activity, if already open, from the task stack,
+  // per https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_CLEAR_TOP.
   bool clear_top = 1;
 }
 
 // Intent extras for ProfileRenameActivity.
 message ProfileRenameActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
 // Intent extras for ProfileResetPinActivity.
 message ProfileResetPinActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // Whether the current user has been verified as being a device administrator.
   bool is_admin = 2;
 }
 
@@ -443,19 +548,32 @@ message SplashActivityParams {
 
 // Intent extras for StoryActivity.
 message StoryActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // The ID of the topic containing the story being viewed.
   string topic_id = 2;
+
+  // The ID of the story being viewed.
   string story_id = 3;
 }
 
 // Intent extras for AdministratorControlsActivity.
 message AdministratorControlsActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // Whether to clear activities above the current activity, if already open, from the task stack,
+  // per https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_CLEAR_TOP.
   bool clear_top = 2;
 }
 
 // Intent extras for AdministratorControlsFragmentTestActivity.
 message AdministratorControlsFragmentTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -466,6 +584,8 @@ message AppCompatCheckBoxBindingAdaptersTestActivityParams {
 
 // Intent extras for AudioFragmentTestActivity.
 message AudioFragmentTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -481,6 +601,7 @@ message CircularProgressIndicatorAdaptersTestActivityParams {
 
 // Intent extras for ConceptCardFragmentTestActivity.
 message ConceptCardFragmentTestActivityParams {
+  // The active profile for which the UI should initialized.
   ProfileId profile_id = 1;
 }
 
@@ -577,6 +698,8 @@ message MarginBindingAdaptersTestActivityParams {
 
 // Intent extras for NavigationDrawerTestActivity.
 message NavigationDrawerTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -592,6 +715,8 @@ message ProfileChooserFragmentTestActivityParams {
 
 // Intent extras for ProfileEditFragmentTestActivity.
 message ProfileEditFragmentTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -602,6 +727,8 @@ message SplashTestActivityParams {
 
 // Intent extras for SpotlightFragmentTestActivity.
 message SpotlightFragmentTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 
@@ -617,6 +744,7 @@ message StateAssemblerPaddingBindingAdaptersTestActivityParams {
 
 // Intent extras for TestFontScaleConfigurationUtilActivity.
 message TestFontScaleConfigurationUtilActivityParams {
+  // The text size with which to adjust font scaling in the app.
   ReadingTextSize reading_text_size = 1;
 }
 
@@ -627,9 +755,17 @@ message TextViewBindingAdaptersTestActivityParams {
 
 // Intent extras for TopicRevisionTestActivity.
 message TopicRevisionTestActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // The ID of the topic containing the revision card being viewed.
   string topic_id = 2;
+
+  // The index of the subtopic within the topic indicated by topic_id that is being viewed.
   int32 subtopic_index = 3;
+
+  // The number of subtopics within the topic indicated by topic_id that are available to be viewed.
   int32 subtopic_list_size = 4;
 }
 
@@ -645,30 +781,54 @@ message ViewBindingAdaptersTestActivityParams {
 
 // Intent extras for TopicActivity.
 message TopicActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // The ID of the topic being viewed.
   string topic_id = 2;
+
+  // Indicates the different modes in which the activity can be opened, defining default navigation
+  // behaviors.
   oneof route_mode {
+    // Indicates that the topic's story list should be shown upon opening the activity. The value of
+    // this field doesn't matter; its presence indicates that this mode should be used.
     bool story_list = 3;
+
+    // Indicates that a specific story should be auto-expanded upon opening the activity.
     string specific_story_id = 4;
   }
 }
 
 // Intent extras for QuestionPlayerActivity.
 message QuestionPlayerActivityParams {
+  // The active profile for which the UI should initialized.
   ProfileId profile_id = 1;
+
+  // The list of skill IDs from which a practice session should be generated.
   repeated string skill_ids = 2;
 }
 
 // Intent extras for RevisionCardActivity.
 message RevisionCardActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
+
+  // The ID of the topic containing the revision card being viewed.
   string topic_id = 2;
+
+  // The index of the subtopic within the topic indicated by topic_id that is being viewed.
   int32 subtopic_index = 3;
+
+  // The number of subtopics within the topic indicated by topic_id that are available to be viewed.
   int32 subtopic_list_size = 4;
 }
 
 // Intent extras for WalkthroughActivity.
 message WalkthroughActivityParams {
+  // TODO(#4865): Replace this with the 'ProfileId' proto structure.
+  // The active profile for which the UI should initialized.
   int32 internal_profile_id = 1;
 }
 

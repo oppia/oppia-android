@@ -49,7 +49,9 @@ class UnsavedExplorationDialogFragment : InjectableDialogFragment() {
       .create()
   }
 
+  /** Dagger injector for [UnsavedExplorationDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: UnsavedExplorationDialogFragment)
   }
 }

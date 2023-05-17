@@ -87,7 +87,9 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
       .create()
   }
 
+  /** Dagger injector for [ProgressDatabaseFullDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ProgressDatabaseFullDialogFragment)
   }
 }
