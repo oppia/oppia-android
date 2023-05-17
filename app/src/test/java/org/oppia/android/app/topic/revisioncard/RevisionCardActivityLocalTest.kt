@@ -56,9 +56,9 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_SUBTOPIC_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -113,7 +113,7 @@ class RevisionCardActivityLocalTest {
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_ID_1,
         fractionsSubtopicListSize
       )
     ).use {

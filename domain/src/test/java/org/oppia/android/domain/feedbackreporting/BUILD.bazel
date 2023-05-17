@@ -16,7 +16,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_config_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//third_party:androidx_test_core",

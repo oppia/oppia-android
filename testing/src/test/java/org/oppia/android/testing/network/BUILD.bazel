@@ -17,7 +17,6 @@ oppia_android_test(
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
         "//third_party:androidx_test_core",
         "//third_party:androidx_test_ext_junit",
-        "//third_party:com_google_guava_guava",
         "//third_party:com_google_truth_truth",
         "//third_party:com_squareup_retrofit2_retrofit",
         "//third_party:com_squareup_retrofit2_retrofit-mock",

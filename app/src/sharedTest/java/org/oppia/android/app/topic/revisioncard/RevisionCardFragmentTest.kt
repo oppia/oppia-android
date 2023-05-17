@@ -91,11 +91,14 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_SUBTOPIC_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_SUBTOPIC_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_SUBTOPIC_ID_3
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_SUBTOPIC_ID_4
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_TOPIC_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_TOPIC_ID_0_SUBTOPIC_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
@@ -133,10 +136,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
-private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
-private const val FRACTIONS_SUBTOPIC_TOPIC_ID_2 = 3
-private const val FRACTIONS_SUBTOPIC_TOPIC_ID_3 = 4
 private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
 
 /** Tests for [RevisionCardActivity]. */
@@ -189,7 +188,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -210,7 +209,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         TEST_TOPIC_ID_0,
-        SUBTOPIC_TOPIC_ID,
+        TEST_TOPIC_ID_0_SUBTOPIC_ID_1,
         1
       )
     ).use {
@@ -226,7 +225,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -243,7 +242,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -270,7 +269,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -298,7 +297,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -321,7 +320,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -339,7 +338,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_2,
+        FRACTIONS_SUBTOPIC_ID_2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -359,7 +358,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_0,
+        FRACTIONS_SUBTOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -379,7 +378,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        FRACTIONS_SUBTOPIC_ID_2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -399,7 +398,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_3,
+        FRACTIONS_SUBTOPIC_ID_4,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -420,7 +419,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        FRACTIONS_SUBTOPIC_ID_2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -428,7 +427,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, FRACTIONS_SUBTOPIC_TOPIC_ID_0))
+      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, FRACTIONS_SUBTOPIC_ID_1))
     }
   }
 
@@ -441,7 +440,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        FRACTIONS_SUBTOPIC_ID_2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -450,7 +449,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.next_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, FRACTIONS_SUBTOPIC_TOPIC_ID_2))
+      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, FRACTIONS_SUBTOPIC_ID_3))
     }
   }
 
@@ -461,7 +460,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -482,7 +481,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_2,
+        FRACTIONS_SUBTOPIC_ID_2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {

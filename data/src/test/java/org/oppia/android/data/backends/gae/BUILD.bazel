@@ -75,7 +75,7 @@ oppia_android_test(
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_interceptors",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/backends/gae/model",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:annotations",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
@@ -92,7 +92,6 @@ oppia_android_test(
         "//third_party:kotlinx-coroutines-core-jvm",
         "//third_party:org_robolectric_annotations",
         "//third_party:org_robolectric_shadows-framework",
-        "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],
 )
