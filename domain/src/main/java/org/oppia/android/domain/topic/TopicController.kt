@@ -1,6 +1,5 @@
 package org.oppia.android.domain.topic
 
-import android.graphics.Color
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
@@ -14,8 +13,6 @@ import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.LessonThumbnail
-import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
@@ -31,6 +28,11 @@ import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.domain.question.QuestionRetriever
+import org.oppia.android.domain.topic.DeveloperAssets.createChapterThumbnail
+import org.oppia.android.domain.topic.DeveloperAssets.createStoryThumbnail
+import org.oppia.android.domain.topic.DeveloperAssets.createSubtopicThumbnail
+import org.oppia.android.domain.topic.DeveloperAssets.createTopicThumbnailFromJson
+import org.oppia.android.domain.topic.DeveloperAssets.createTopicThumbnailFromProto
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
@@ -45,36 +47,6 @@ import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Singleton
-
-const val TEST_SKILL_ID_0 = "test_skill_id_0"
-const val TEST_SKILL_ID_1 = "test_skill_id_1"
-const val TEST_SKILL_ID_2 = "test_skill_id_2"
-const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
-const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
-const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
-const val RATIOS_SKILL_ID_0 = "NGZ89uMw0IGV"
-const val TEST_QUESTION_ID_0 = "question_id_0"
-const val TEST_QUESTION_ID_1 = "question_id_1"
-const val TEST_QUESTION_ID_2 = "question_id_2"
-const val TEST_QUESTION_ID_3 = "question_id_3"
-const val FRACTIONS_QUESTION_ID_0 = "dobbibJorU9T"
-const val FRACTIONS_QUESTION_ID_1 = "EwbUb5oITtUX"
-const val FRACTIONS_QUESTION_ID_2 = "ryIPWUmts8rN"
-const val FRACTIONS_QUESTION_ID_3 = "7LcsKDzzfImQ"
-const val FRACTIONS_QUESTION_ID_4 = "gDQxuodXI3Uo"
-const val FRACTIONS_QUESTION_ID_5 = "Ep2t5mulNUsi"
-const val FRACTIONS_QUESTION_ID_6 = "wTfCaDBKMixD"
-const val FRACTIONS_QUESTION_ID_7 = "leeSNRVbbBwp"
-const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
-const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
-const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
-const val RATIOS_QUESTION_ID_0 = "QiKxvAXpvUbb"
-
-private const val FRACTIONS_SUBTOPIC_ID_1 = 1
-private const val FRACTIONS_SUBTOPIC_ID_2 = 2
-private const val FRACTIONS_SUBTOPIC_ID_3 = 3
-private const val FRACTIONS_SUBTOPIC_ID_4 = 4
-private const val SUBTOPIC_BG_COLOR = "#FFFFFF"
 
 private const val RETRIEVED_QUESTIONS_FOR_SKILLS_ID_PROVIDER_ID =
   "retrieved_questions_for_skills_id_provider_id"
@@ -704,7 +676,9 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(storyId)
       .setStoryTitle(storyTitle)
-      .setStoryThumbnail(createStoryThumbnail(topicId, storyId))
+      .setStoryThumbnail(
+        createStoryThumbnail(jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!, storyId)
+      )
       .addAllChapter(chapterList)
       .build()
   }
@@ -761,102 +735,6 @@ class TopicController @Inject constructor(
       )
     }
     return chapterList
-  }
-
-  private fun createStoryThumbnail(topicId: String, storyId: String): LessonThumbnail {
-    val topicJsonObject = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
-    val storyData = topicJsonObject.getJSONArray("canonical_story_dicts")
-    var thumbnailBgColor = ""
-    var thumbnailFilename = ""
-    for (i in 0 until storyData.length()) {
-      val storyJsonObject = storyData.getJSONObject(i)
-      if (storyId == storyJsonObject.optString("id")) {
-        thumbnailBgColor = storyJsonObject.optString("thumbnail_bg_color")
-        thumbnailFilename = storyJsonObject.optString("thumbnail_filename")
-      }
-    }
-
-    return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
-      LessonThumbnail.newBuilder()
-        .setThumbnailFilename(thumbnailFilename)
-        .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
-        .build()
-    } else if (STORY_THUMBNAILS.containsKey(storyId)) {
-      STORY_THUMBNAILS.getValue(storyId)
-    } else {
-      createDefaultStoryThumbnail()
-    }
-  }
-
-  private fun createChapterThumbnail(chapterJsonObject: JSONObject): LessonThumbnail {
-    val explorationId = chapterJsonObject.optString("exploration_id")
-    val thumbnailBgColor = chapterJsonObject
-      .optString("thumbnail_bg_color")
-    val thumbnailFilename = chapterJsonObject
-      .optString("thumbnail_filename")
-
-    return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
-      LessonThumbnail.newBuilder()
-        .setThumbnailFilename(thumbnailFilename)
-        .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
-        .build()
-    } else if (EXPLORATION_THUMBNAILS.containsKey(explorationId)) {
-      EXPLORATION_THUMBNAILS.getValue(explorationId)
-    } else {
-      createDefaultChapterThumbnail()
-    }
-  }
-
-  private fun createDefaultChapterThumbnail(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-      .setBackgroundColorRgb(0xd325ec)
-      .build()
-  }
-
-  private fun createSubtopicThumbnail(subtopicJsonObject: JSONObject): LessonThumbnail {
-    val subtopicId = subtopicJsonObject.optInt("id")
-    val thumbnailBgColor = subtopicJsonObject.optString("thumbnail_bg_color")
-    val thumbnailFilename = subtopicJsonObject.optString("thumbnail_filename")
-
-    return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
-      LessonThumbnail.newBuilder()
-        .setThumbnailFilename(thumbnailFilename)
-        .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
-        .build()
-    } else {
-      createSubtopicThumbnail(subtopicId)
-    }
-  }
-
-  private fun createSubtopicThumbnail(subtopicId: Int): LessonThumbnail {
-    return when (subtopicId) {
-      FRACTIONS_SUBTOPIC_ID_1 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.WHAT_IS_A_FRACTION)
-          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
-          .build()
-      FRACTIONS_SUBTOPIC_ID_2 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.FRACTION_OF_A_GROUP)
-          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
-          .build()
-      FRACTIONS_SUBTOPIC_ID_3 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.MIXED_NUMBERS)
-          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
-          .build()
-      FRACTIONS_SUBTOPIC_ID_4 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.ADDING_FRACTIONS)
-          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
-          .build()
-      else ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.THE_NUMBER_LINE)
-          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
-          .build()
-    }
   }
 
   private fun Topic.toEphemeral(
@@ -916,6 +794,7 @@ class TopicController @Inject constructor(
     private fun JSONObject.getRemovableOptionalString(name: String) =
       optString(name).takeIf { it.isNotEmpty() && it != "<removed>" && it != "<unknown>" }
 
+    @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
     private fun JSONObject.getFirstRemovableOptionalString(vararg names: String) =
       names.asSequence().map { getRemovableOptionalString(it) }.firstOrNull { it != null }
   }

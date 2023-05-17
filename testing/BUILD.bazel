@@ -7,3 +7,9 @@ package_group(
     name = "testing_testing_visibility",
     packages = ["//testing/src/test/..."],
 )
+
+package_group(
+    name = "testing_visibility",
+    includes = [":testing_testing_visibility"],
+    packages = ["//testing/src/main/..."],
+)

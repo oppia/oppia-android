@@ -19,23 +19,6 @@ import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TEST_STORY_ID_0 = "test_story_id_0"
-const val TEST_STORY_ID_2 = "test_story_id_2"
-const val FRACTIONS_STORY_ID_0 = "wANbh4oOClga"
-const val RATIOS_STORY_ID_0 = "wAMdg4oOClga"
-const val RATIOS_STORY_ID_1 = "xBSdg4oOClga"
-const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
-const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
-const val TEST_EXPLORATION_ID_5 = "test_exp_id_5"
-const val TEST_EXPLORATION_ID_13 = "13"
-const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
-const val FRACTIONS_EXPLORATION_ID_1 = "MjZzEVOG47_1"
-const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
-const val RATIOS_EXPLORATION_ID_1 = "5NWuolNcwH6e"
-const val RATIOS_EXPLORATION_ID_2 = "k2bQ7z5XHNbK"
-const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
-const val UPCOMING_TOPIC_ID_1 = "test_topic_id_2"
-
 private const val CACHE_NAME = "topic_progress_database"
 private const val RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID =
   "retrieve_topic_progress_list_data_provider_id"

@@ -65,7 +65,7 @@ oppia_android_library(
     srcs = ["DebugAnalyticsEventLogger.kt"],
     visibility = [
         "//app:app_visibility",
-        "//testing:__pkg__",
+        "//testing:testing_visibility",
     ],
     visibility = ["//app:app_prod_visibility"],
     deps = [

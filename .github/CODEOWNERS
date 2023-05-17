@@ -116,8 +116,8 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 /app/src/*/java/org/oppia/android/app/player/ @BenHenning
 
 # Bindable adapter utilities.
+/app/src/main/java/org/oppia/android/app/databinding/RecyclerViewBindingAdapter.java @BenHenning
 /app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt @BenHenning
-/app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java @BenHenning
 /app/src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt @BenHenning
 
 # Dagger configuration.
@@ -243,4 +243,4 @@ WORKSPACE @BenHenning
 app/src/main/res/raw/shrink_exemptions.xml @BenHenning
 
 # Version tracking.
-version.bzl @BenHenning
+config/version.bzl @BenHenning
