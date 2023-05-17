@@ -243,4 +243,4 @@ WORKSPACE @BenHenning
 app/src/main/res/raw/shrink_exemptions.xml @BenHenning
 
 # Version tracking.
-config/version.bzl @BenHenning
+/defs/version.bzl @BenHenning
