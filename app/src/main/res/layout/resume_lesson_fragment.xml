@@ -72,9 +72,9 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="28dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +83,8 @@
         <Button
           android:id="@+id/resume_lesson_start_over_button"
           style="@style/StartOverLessonButton"
-          android:layout_marginEnd="12dp"
+          android:layout_marginEnd="8dp"
+          app:layout_constraintHorizontal_weight="1"
           android:text="@string/start_over_lesson_button"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@+id/resume_lesson_continue_button"
@@ -93,7 +94,8 @@
         <Button
           android:id="@+id/resume_lesson_continue_button"
           style="@style/ContinueLessonButton"
-          android:layout_marginStart="12dp"
+          app:layout_constraintHorizontal_weight="1"
+          android:layout_marginStart="8dp"
           android:text="@string/resume_lesson_button"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
