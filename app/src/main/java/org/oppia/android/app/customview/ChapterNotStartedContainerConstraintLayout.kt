@@ -67,6 +67,6 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
   /** Dagger injector for [ChapterNotStartedContainerConstraintLayout]. */
   interface Injector {
     /** Injects dependencies into the [view]. */
-    fun inject(activity: AdministratorControlsActivity)
+    fun inject(view: ChapterNotStartedContainerConstraintLayout)
   }
 }

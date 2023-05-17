@@ -146,6 +146,6 @@ class SelectionInteractionView @JvmOverloads constructor(
   /** Dagger injector for [SelectionInteractionView]. */
   interface Injector {
     /** Injects dependencies into the [view]. */
-    fun inject(activity: AdministratorControlsActivity)
+    fun inject(view: SelectionInteractionView)
   }
 }

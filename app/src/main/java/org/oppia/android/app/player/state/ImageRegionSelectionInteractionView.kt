@@ -157,6 +157,6 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   /** Dagger injector for [ImageRegionSelectionInteractionView]. */
   interface Injector {
     /** Injects dependencies into the [view]. */
-    fun inject(activity: AdministratorControlsActivity)
+    fun inject(view: ImageRegionSelectionInteractionView)
   }
 }
