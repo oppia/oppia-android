@@ -176,8 +176,17 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       it is DetectedFailure.NoFailure || it is DetectedFailure.Unknown
     }.distinct().sortedBy { it.target }
     check(unknownFailures.isEmpty()) {
+      val rerunPackagePatterns =
+        unknownFailures.filter {
+          it.target.workspace == Workspace.Main
+        }.mapToSet { "//${it.target.pkg.path}/..." }
+      val removePackages = removePatterns.map { "-$it" }
+      val rerunPackageLine = (rerunPackagePatterns + removePackages).joinToString(separator = " ")
+      val rerunCommand =
+        "bazel build --keep_going --config=ignore_deps_issues -- $rerunPackageLine"
       "Encountered unknown failures for targets: ${unknownFailures.mapToSet { it.target }}." +
-        " Please resolve them directly and try again."
+        " Please resolve them directly and try again.\n\nYou can use the following command to" +
+        " investigate:\n  $rerunCommand"
     }
 
     for (failure in noteworthyFailures) {
