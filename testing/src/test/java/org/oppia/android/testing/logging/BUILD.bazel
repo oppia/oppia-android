@@ -12,7 +12,7 @@ oppia_android_test(
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//model/src/main/proto:event_logger_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
@@ -45,7 +45,7 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
         "//testing/src/main/java/org/oppia/android/testing/logging:test_sync_status_manager",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

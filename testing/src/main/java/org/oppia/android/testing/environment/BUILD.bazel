@@ -7,12 +7,9 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 oppia_android_library(
     name = "test_environment_config",
     testonly = True,
-    srcs = [
-        "TestEnvironmentConfig.kt",
-    ],
+    srcs = ["TestEnvironmentConfig.kt"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//:dagger",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],

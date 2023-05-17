@@ -64,7 +64,7 @@ oppia_android_test(
         "//model/src/main/proto:languages_java_proto_lite",
         "//model/src/main/proto:subtitled_unicode_java_proto_lite",
         "//model/src/main/proto:translation_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",

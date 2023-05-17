@@ -31,6 +31,45 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_10
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_3
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_4
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_5
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_6
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_7
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_8
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_QUESTION_ID_9
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_SKILL_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_SKILL_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_SKILL_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_STORY_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_SUBTOPIC_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_EXPLORATION_ID_3
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_QUESTION_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_SKILL_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_STORY_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_STORY_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.RATIOS_TOPIC_ID
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_EXPLORATION_ID_4
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_QUESTION_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_QUESTION_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_QUESTION_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_QUESTION_ID_3
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_SKILL_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_SKILL_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_SKILL_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_STORY_ID_2
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_TOPIC_ID_0
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_TOPIC_ID_1
+import org.oppia.android.domain.topic.DeveloperAssets.TEST_TOPIC_ID_2
 import org.oppia.android.domain.topic.TopicController.ChapterNotFoundException
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.BuildEnvironment
@@ -546,7 +585,7 @@ class TopicControllerTest {
   @Test
   fun testGetRevisionCard_fractionSubtopicId1_isSuccessful() {
     val revisionCardProvider =
-      topicController.getRevisionCard(profileId1, FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID_2)
+      topicController.getRevisionCard(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_SUBTOPIC_ID_2)
 
     val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardProvider)
     assertThat(ephemeralRevisionCard.revisionCard.pageContents.html)

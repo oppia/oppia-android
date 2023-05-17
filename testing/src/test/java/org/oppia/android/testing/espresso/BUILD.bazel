@@ -8,7 +8,7 @@ oppia_android_test(
     name = "TextInputActionTest",
     srcs = ["TextInputActionTest.kt"],
     deps = [
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:text_input_action_test_activity",
         "//testing/src/main/java/org/oppia/android/testing/espresso:text_input_action",
         "//third_party:androidx_test_core",
         "//third_party:androidx_test_espresso_espresso-core",

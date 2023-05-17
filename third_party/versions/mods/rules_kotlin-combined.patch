@@ -1,3 +1,9 @@
+index 09b254e..6abaeb2 100644
+--- .bazelversion
++++ .bazelversion
+@@ -1 +1 @@
+-6.0.0
++6.2.0
 index 7e0793b..02c1fb1 100644
 --- kotlin/internal/jvm/android.bzl
 +++ kotlin/internal/jvm/android.bzl

@@ -12,7 +12,6 @@ oppia_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//:dagger",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/classify:answer_classification_controller",
         "//domain/src/main/java/org/oppia/android/domain/classify:classification_result",

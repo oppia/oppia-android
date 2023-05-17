@@ -8,7 +8,7 @@ oppia_android_test(
     name = "BundleExtensionsTest",
     srcs = ["BundleExtensionsTest.kt"],
     deps = [
-        "//model/src/main/proto:test_models",
+        "//model/src/main/proto:test_java_proto_lite",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_ext_truth",
         "//third_party:com_google_protobuf_protobuf-javalite",

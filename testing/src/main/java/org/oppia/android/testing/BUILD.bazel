@@ -16,46 +16,121 @@ kt_jvm_library(
     ],
 )
 
-# TODO: Split this up.
 oppia_android_library(
-    name = "testing",
+    name = "fake_analytics_event_logger",
     testonly = True,
-    srcs = [
-        "DisableAccessibilityChecks.kt",
-        "FakeAnalyticsEventLogger.kt",
-        "FakeExceptionLogger.kt",
-        "FakePerformanceMetricAssessor.kt",
-        "FakePerformanceMetricsEventLogger.kt",
-        "OppiaTestAnnotations.kt",
-        "OppiaTestRule.kt",
-        "OppiaTestRunner.kt",
-        "RichTextViewMatcher.kt",
-        "TestImageLoaderModule.kt",
-        "TestLogReportingModule.kt",
-        "TextInputActionTestActivity.kt",
+    srcs = ["FakeAnalyticsEventLogger.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
     ],
+)
+
+oppia_android_library(
+    name = "fake_exception_logger",
+    testonly = True,
+    srcs = ["FakeExceptionLogger.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+    ],
+)
+
+oppia_android_library(
+    name = "fake_performance_metric_assessor",
+    testonly = True,
+    srcs = ["FakePerformanceMetricAssessor.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+    ],
+)
+
+oppia_android_library(
+    name = "fake_performance_metrics_event_logger",
+    testonly = True,
+    srcs = ["FakePerformanceMetricsEventLogger.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
+    ],
+)
+
+oppia_android_library(
+    name = "rich_text_view_matcher",
+    testonly = True,
+    srcs = ["RichTextViewMatcher.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:androidx_core_core-ktx",
+        "//third_party:org_hamcrest_hamcrest-core",
+    ],
+)
+
+oppia_android_library(
+    name = "test_image_loader_module",
+    testonly = True,
+    srcs = ["TestImageLoaderModule.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//:dagger",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
+    ],
+)
+
+oppia_android_library(
+    name = "test_log_reporting_module",
+    testonly = True,
+    srcs = ["TestLogReportingModule.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":fake_analytics_event_logger",
+        ":fake_exception_logger",
+        ":fake_performance_metric_assessor",
+        ":fake_performance_metrics_event_logger",
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
+    ],
+)
+
+oppia_android_library(
+    name = "text_input_action_test_activity",
+    testonly = True,
+    srcs = ["TextInputActionTestActivity.kt"],
     android_merge_deps = ["//third_party:com_google_android_material_material"],
     exports_manifest = True,
     manifest = "AndroidManifest.xml",
     visibility = ["//:oppia_testing_visibility"],
+    deps = ["//third_party:androidx_appcompat_appcompat"],
+)
+
+oppia_android_library(
+    name = "oppia_test_rule",
+    testonly = True,
+    srcs = [
+        "DisableAccessibilityChecks.kt",
+        "OppiaTestAnnotations.kt",
+        "OppiaTestRule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//:dagger",
-        "//model/src/main/proto:event_logger_java_proto_lite",
-        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:androidx_core_core-ktx",
         "//third_party:androidx_test_espresso_espresso-accessibility",
         "//third_party:androidx_test_espresso_espresso-core",
-        "//third_party:androidx_test_runner",
         "//third_party:com_google_android_apps_common_testing_accessibility_framework_accessibility-test-framework",
-        "//third_party:javax_inject_javax_inject",
         "//third_party:junit_junit",
         "//third_party:org_hamcrest_hamcrest-core",
-        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
-        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
     ],
 )
