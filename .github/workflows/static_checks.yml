@@ -161,7 +161,7 @@ jobs:
         run: |
           bazel run //scripts:test_file_check -- $(pwd)
 
-      - name: File Binary/Test Dependency Check
+      - name: Verify all files are included in app/script/test binaries
         if: always()
         run: |
           bazel run //scripts:verify_file_targets -- $(pwd)
@@ -188,11 +188,6 @@ jobs:
         if: always()
         run: |
           bazel run //scripts:string_resource_validation_check -- $(pwd)
-
-      - name: Verify all files are included in binaries
-        if: always()
-        run: |
-          bazel run //scripts:verify_file_targets -- $(pwd)
 
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to
