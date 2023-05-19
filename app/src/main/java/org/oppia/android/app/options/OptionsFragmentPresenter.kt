@@ -158,7 +158,7 @@ class OptionsFragmentPresenter @Inject constructor(
     binding.viewModel = model
   }
 
-  /** Sets the selected fragment index in [OptionsControlViewModel] **/
+  /** Sets the selected fragment index in [OptionsControlViewModel]. **/
   fun setSelectedFragment(selectedFragment: String) {
     viewModel.selectedFragmentIndex.set(
       getSelectedFragmentIndex(
@@ -181,21 +181,17 @@ class OptionsFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
-    /** Represents view type utilized to render
-     ReadingTextSize to UI via [BindableAdapter]. **/
+    /** Represents view type for displaying [ReadingTextSize]. **/
     VIEW_TYPE_READING_TEXT_SIZE,
-    /** Represents view type utilized to render
-     OppiaLanguage to UI via [BindableAdapter]. **/
+    /** Represents view type for displaying [OppiaLanguage]. **/
     VIEW_TYPE_APP_LANGUAGE,
-    /** Represents view type utilized to render
-     AudioLanguage to UI via [BindableAdapter]. **/
+    /** Represents view type for displaying [AudioLanguage]. **/
     VIEW_TYPE_AUDIO_LANGUAGE
   }
 
-  /** Updates [ReadingTextSize] value in
-   * [OptionsFragment] when user selects new value.
-   *
-   * Also notifys the adapter to refresh after the changes
+  /** Updates [ReadingTextSize] value in [OptionsFragment] when user selects new value
+   * and notifies the adapter to refresh after the changes.
+   * @param [ReadingTextSize]
    */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     profileManagementController.updateReadingTextSize(profileId, textSize).toLiveData().observe(
@@ -214,10 +210,9 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter.notifyItemChanged(0)
   }
 
-  /** Updates [OppiaLanguage] value in
-   * [OptionsFragment] when user selects new value.
-   *
-   * Also notifys the adapter to refresh after the changes
+  /** Updates [OppiaLanguage] value in [OptionsFragment] when user selects new value
+   * and notifies the adapter to refresh after the changes.
+   * @param [OppiaLanguage]
    */
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
@@ -244,11 +239,9 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter.notifyItemChanged(1)
   }
 
-  /** Updates [AudioLanguage] value in
-   * [OptionsFragment] when user selects new value.
-   *
-   * Also notifys the adapter to refresh after the changes
-   *
+  /** Updates [AudioLanguage] value in [OptionsFragment] when user selects new value
+   * and notifies the adapter to refresh after the changes.
+   * @param [AudioLanguage]
    */
   fun updateAudioLanguage(language: AudioLanguage) {
     val updateLanguageResult = profileManagementController.updateAudioLanguage(profileId, language)

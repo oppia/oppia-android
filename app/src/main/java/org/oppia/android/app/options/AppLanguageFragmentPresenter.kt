@@ -52,7 +52,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  /** Returns selected [OppiaLanguage] and defaultInstance if null*/
+  /** Returns the currently selected [OppiaLanguage], or unspecified if there isn't one. */
   fun getLanguageSelected(): OppiaLanguage {
     return appLanguageSelectionViewModel.selectedLanguage.value
       ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
@@ -76,7 +76,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
     }
   }
 
-  /** Updates selected language when new language is selected **/
+  /** Updates selected language when new language is selected. **/
   fun onLanguageSelected(selectedLanguage: OppiaLanguage) {
     appLanguageSelectionViewModel.selectedLanguage.value = selectedLanguage
     updateAppLanguage(selectedLanguage)

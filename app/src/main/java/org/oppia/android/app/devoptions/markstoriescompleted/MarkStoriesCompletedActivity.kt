@@ -39,7 +39,7 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
   }
 
   companion object {
-    /**ProfileId instance utilized by this activity and it's child fragment's*/
+    /** [String] key value for mapping to InternalProfileId in [Bundle]. */
     const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedActivity.profile_id"
 
     /** Returns an [Intent] to start this activity. */

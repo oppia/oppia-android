@@ -43,7 +43,7 @@ class OptionControlsViewModel @Inject constructor(
   private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
   private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
   private var isFirstOpen = true
-  /** Holds [Boolean] value showing if UI is initialized  */
+  /** Holds [Boolean] value showing if UI is initialized.  */
   val uiLiveData = MutableLiveData<Boolean>()
   /** Holds the index for the currently selected fragment. */
   val selectedFragmentIndex = ObservableField<Int>()
@@ -70,12 +70,12 @@ class OptionControlsViewModel @Inject constructor(
     }
   }
 
-  /**Sets the user ProfileId*/
+  /** Set's the user ProfileId value in this ViewModel. */
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }
 
-  /**Options List data shown to the user.*/
+  /** Options List data shown to the user. */
   val optionsListLiveData: LiveData<List<OptionsItemViewModel>> by lazy {
     Transformations.map(optionsItemViewModelProvider.toLiveData(), ::processViewModelListsResult)
   }
@@ -144,7 +144,7 @@ class OptionControlsViewModel @Inject constructor(
   }
 
   /**
-   * Used to set [isFirstOpen] value which controls the loading of the initial extra-option fragment
+   * Set's [isFirstOpen] value which controls the loading of the initial extra-option fragment
    * in the case of multipane.
    */
   fun isFirstOpen(isFirstOpen: Boolean) {
