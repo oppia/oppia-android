@@ -34,6 +34,8 @@ import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
+import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
+import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.SplitScreenManager
@@ -41,6 +43,7 @@ import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
@@ -76,7 +79,8 @@ class StateFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val viewModel: StateViewModel,
   private val accessibilityService: AccessibilityService,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val surveyGatingController: SurveyGatingController
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -184,8 +188,7 @@ class StateFragmentPresenter @Inject constructor(
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     markExplorationCompleted()
-    (activity as StopStatePlayingSessionWithSavedProgressListener)
-      .deleteCurrentProgressAndStopSession(isCompletion = true)
+    maybeShowSurveyDialog(profileId, topicId)
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -522,6 +525,37 @@ class StateFragmentPresenter @Inject constructor(
     } else {
       binding.hintBulb.clearAnimation()
     }
+  }
+
+  private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
+    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+      .observe(
+        activity,
+        { gatingResult ->
+          when (gatingResult) {
+            is AsyncResult.Pending -> {
+              oppiaLogger.d("StateFragment", "A gating decision is pending")
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "StateFragment",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
+            }
+            is AsyncResult.Success -> {
+              if (gatingResult.value) {
+                SurveyWelcomeDialogFragment
+                  .newInstance(profileId, topicId)
+                  .showNow(fragment.childFragmentManager, TAG_SURVEY_WELCOME_DIALOG)
+              } else {
+                (activity as StopStatePlayingSessionWithSavedProgressListener)
+                  .deleteCurrentProgressAndStopSession(isCompletion = true)
+              }
+            }
+          }
+        }
+      )
   }
 
   /**

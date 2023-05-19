@@ -26,6 +26,8 @@ import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
+import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
@@ -33,6 +35,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -54,7 +57,8 @@ class ExplorationActivityPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val surveyGatingController: SurveyGatingController
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -279,8 +283,9 @@ class ExplorationActivityPresenter @Inject constructor(
               oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
             is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              backPressActivitySelector()
-              (activity as ExplorationActivity).finish()
+              if (isCompletion) {
+                maybeShowSurveyDialog(profileId, topicId)
+              }
             }
           }
         }
@@ -304,6 +309,8 @@ class ExplorationActivityPresenter @Inject constructor(
    * current exploration.
    */
   fun backButtonPressed() {
+    // check if survey should be shown
+    maybeShowSurveyDialog(profileId, topicId) // todo create a high level function to avoid dry
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {
@@ -499,5 +506,35 @@ class ExplorationActivityPresenter @Inject constructor(
         else -> showUnsavedExplorationDialogFragment()
       }
     }
+  }
+
+  private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
+    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+      .observe(
+        activity,
+        { gatingResult ->
+          when (gatingResult) {
+            is AsyncResult.Pending -> {
+              oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "ExplorationActivity",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
+            }
+            is AsyncResult.Success -> {
+              if (gatingResult.value) {
+                val dialogFragment = SurveyWelcomeDialogFragment
+                  .newInstance(profileId, topicId)
+                dialogFragment.showNow(activity.supportFragmentManager, TAG_SURVEY_WELCOME_DIALOG)
+              } else {
+                backPressActivitySelector()
+              }
+            }
+          }
+        }
+      )
   }
 }
