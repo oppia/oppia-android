@@ -14,9 +14,8 @@ const val TAG_EXIT_SURVEY_CONFIRMATION_DIALOG = "EXIT_SURVEY_CONFIRMATION_DIALOG
 /** Presenter for [ExitSurveyConfirmationDialogFragment], sets up bindings from ViewModel. */
 @FragmentScope
 class ExitSurveyConfirmationDialogFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
+  private val fragment: Fragment
 ) {
-  private lateinit var profileId: ProfileId
 
   /** Sets up data binding. */
   fun handleCreateView(
@@ -24,8 +23,6 @@ class ExitSurveyConfirmationDialogFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     profileId: ProfileId
   ): View {
-    this.profileId = profileId
-
     val binding =
       SurveyExitConfirmationDialogBinding.inflate(inflater, container, /* attachToRoot= */ false)
 

@@ -13,7 +13,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-/** Fragment that displays a fullscreen dialog for survey exit confirmation. */
+/** Fragment that displays a dialog for survey exit confirmation. */
 class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
   @Inject
   lateinit var exitSurveyConfirmationDialogFragmentPresenter:
@@ -23,7 +23,7 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
     internal const val PROFILE_ID_KEY = "ExitSurveyConfirmationDialogFragment.profile_id"
 
     /**
-     * Creates a new instance of a DialogFragment to display hints and solution
+     * Creates a new instance of a DialogFragment to display an exit confirmation in a survey.
      *
      * @param profileId the ID of the profile viewing the survey
      * @return [ExitSurveyConfirmationDialogFragment]: DialogFragment
