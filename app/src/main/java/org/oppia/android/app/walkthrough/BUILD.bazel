@@ -1,14 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for displaying an introductory app walkthrough experience for users.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "WalkthroughActivity.kt",
-    "WalkthroughActivityPresenter.kt",
-    "WalkthroughViewModel.kt",
-])
 
 oppia_android_library(
     name = "walkthrough_pages",

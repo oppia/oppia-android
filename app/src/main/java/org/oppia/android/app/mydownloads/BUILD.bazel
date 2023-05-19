@@ -1,19 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for accessing the list of a learner's downloaded lessons.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "DownloadsTabFragment.kt",
-    "DownloadsTabFragmentPresenter.kt",
-    "MyDownloadsActivity.kt",
-    "MyDownloadsActivityPresenter.kt",
-    "MyDownloadsFragment.kt",
-    "MyDownloadsFragmentPresenter.kt",
-    "UpdatesTabFragment.kt",
-    "UpdatesTabFragmentPresenter.kt",
-])
 
 oppia_android_library(
     name = "my_downloads_tab",

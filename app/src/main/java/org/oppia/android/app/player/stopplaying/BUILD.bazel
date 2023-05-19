@@ -1,14 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for handling navigating away from an ongoing play session.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ProgressDatabaseFullDialogFragment.kt",
-    "StopExplorationDialogFragment.kt",
-    "UnsavedExplorationDialogFragment.kt",
-])
 
 oppia_android_library(
     name = "restart_playing_session_listener",

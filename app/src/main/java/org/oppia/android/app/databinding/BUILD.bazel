@@ -1,3 +1,9 @@
+"""
+Adapters and libraries corresponding to app-wide databinding. This package provides the necessary
+infrastructure to import databinding layouts and the generated Java code associated with running the
+databinding compiler on those layouts.
+"""
+
 _DATABINDING_PACKAGE = "org.oppia.android"
 
 genrule(
@@ -13,7 +19,7 @@ genrule(
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
-# TODO: Split up the manifest declarations rather than centralizing it here. This involves:
+# TODO(#4990): Split up the manifest declarations rather than centralizing it here. This involves:
 # - No longer exporting the manifest.
 # - Generating a manifest similar to:
 #     manifest = generate_android_manifest(
@@ -22,6 +28,7 @@ genrule(
 #         package = _DATABINDING_PACKAGE,
 #         target_sdk_version = 31,
 #     ),
+# - Splitting up the main manifest to be per-package so that a central manifest isn't needed.
 android_library(
     name = "databinding_resources",
     srcs = [
@@ -167,7 +174,6 @@ android_library(
         "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:promoted_story_click_listener",
         "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:promoted_story_view_model",
         "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:recently_played_item_view_model",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:recently_played_view_model",
         "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:section_title_view_model",
         "//app/src/main/java/org/oppia/android/app/home/topiclist:all_topics_view_model",
         "//app/src/main/java/org/oppia/android/app/home/topiclist:topic_summary_click_listener",

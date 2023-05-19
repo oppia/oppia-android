@@ -1,6 +1,8 @@
 """
-TODO: finish build file doc.
+Test-only utilities (and corresponding tests) for simplifying app UI testing.
 """
+
+# TODO(#59): Move these test utilities to be part of the main build package rather than tests.
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
@@ -59,7 +61,8 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
         "//model/src/main/proto:math_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:oppia_test_rule",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

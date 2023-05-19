@@ -1,17 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for showing specially promoted stories or upcoming topics.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ComingSoonTopicListViewModel.kt",
-    "ComingSoonTopicsListView.kt",
-    "ComingSoonTopicsViewModel.kt",
-    "PromotedStoryListView.kt",
-    "PromotedStoryListViewModel.kt",
-    "PromotedStoryViewModel.kt",
-])
 
 oppia_android_library(
     name = "coming_soon_topic_list_view_model",

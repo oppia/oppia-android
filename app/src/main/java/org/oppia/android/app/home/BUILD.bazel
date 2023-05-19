@@ -1,19 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for a central navigation hub for learners wanting to access their lessons.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "HomeActivity.kt",
-    "HomeActivityPresenter.kt",
-    "HomeFragment.kt",
-    "HomeFragmentPresenter.kt",
-    "HomeItemViewModel.kt",
-    "HomeViewModel.kt",
-    "UserAppHistoryViewModel.kt",
-    "WelcomeViewModel.kt",
-])
 
 oppia_android_library(
     name = "route_to_exploration_listener",
@@ -59,9 +48,9 @@ oppia_android_library(
     srcs = ["HomeViewModel.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":home_item_view_model",
+        ":welcome_view_model",
         "//app:resources",
-        "//app/src/main/java/org/oppia/android/app/home:home_item_view_model",
-        "//app/src/main/java/org/oppia/android/app/home:welcome_view_model",
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:coming_soon_topic_list_view_model",
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:coming_soon_topics_view_model",
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:promoted_story_list_view_model",
@@ -74,7 +63,7 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_list_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",
@@ -133,13 +122,13 @@ oppia_android_library(
     srcs = ["HomeFragmentPresenter.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":home_item_view_model",
+        ":home_view_model",
+        ":route_to_topic_play_story_listener",
+        ":welcome_view_model",
         "//app/src/main/java/org/oppia/android/app/customview:lesson_thumbnail_image_view",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
-        "//app/src/main/java/org/oppia/android/app/home:home_item_view_model",
-        "//app/src/main/java/org/oppia/android/app/home:home_view_model",
-        "//app/src/main/java/org/oppia/android/app/home:route_to_topic_play_story_listener",
-        "//app/src/main/java/org/oppia/android/app/home:welcome_view_model",
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:coming_soon_topic_list_view_model",
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:coming_soon_topics_list_view",
         "//app/src/main/java/org/oppia/android/app/home/promotedlist:promoted_story_list_view",
@@ -152,7 +141,7 @@ oppia_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_list_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//model/src/main/proto:profile_java_proto_lite",

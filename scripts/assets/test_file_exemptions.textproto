@@ -38,6 +38,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontro
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileAndDeviceIdActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileAndDeviceIdFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileLearnerIdItemViewModel.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileListItemViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileListViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ControlButtonsViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/SyncStatusItemViewModel.kt"

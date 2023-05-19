@@ -1,18 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for displaying a list of lessons (via story and chapter organization) in the context
+of a topic.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ChapterSummaryViewModel.kt",
-    "StorySummaryViewModel.kt",
-    "TopicLessonViewModel.kt",
-    "TopicLessonsFragment.kt",
-    "TopicLessonsFragmentPresenter.kt",
-    "TopicLessonsItemViewModel.kt",
-    "TopicLessonsTitleViewModel.kt",
-])
 
 oppia_android_library(
     name = "chapter_summary_selection_listener",
@@ -76,16 +67,16 @@ oppia_android_library(
     srcs = ["TopicLessonViewModel.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":chapter_summary_selection_listener",
+        ":story_summary_selection_listener",
         ":story_summary_view_model",
+        ":topic_lessons_item_view_model",
+        ":topic_lessons_title_view_model",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
-        "//app/src/main/java/org/oppia/android/app/topic/lessons:chapter_summary_selection_listener",
-        "//app/src/main/java/org/oppia/android/app/topic/lessons:story_summary_selection_listener",
-        "//app/src/main/java/org/oppia/android/app/topic/lessons:topic_lessons_item_view_model",
-        "//app/src/main/java/org/oppia/android/app/topic/lessons:topic_lessons_title_view_model",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",

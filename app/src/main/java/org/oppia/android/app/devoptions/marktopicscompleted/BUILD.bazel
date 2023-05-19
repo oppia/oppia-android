@@ -1,18 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for updating the completion progress of individual topics for a single profile as part
+of the developer-only options menu.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "MarkTopicsCompletedActivity.kt",
-    "MarkTopicsCompletedActivityPresenter.kt",
-    "MarkTopicsCompletedFragment.kt",
-    "MarkTopicsCompletedFragmentPresenter.kt",
-    "MarkTopicsCompletedViewModel.kt",
-    "TopicSelector.kt",
-    "TopicViewModel.kt",
-])
 
 oppia_android_library(
     name = "mark_topics_completed_view_model",

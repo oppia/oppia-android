@@ -1,13 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for a splash experience to show upon the initial opening of the app (e.g. from a
+launcher).
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "SplashActivity.kt",
-    "SplashActivityPresenter.kt",
-])
 
 oppia_android_library(
     name = "splash_activity",

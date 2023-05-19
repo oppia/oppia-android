@@ -1,17 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for viewing analytics events logged for the current user's session, available via the
+developer-only options menu.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "EventLogItemViewModel.kt",
-    "ViewEventLogsActivity.kt",
-    "ViewEventLogsActivityPresenter.kt",
-    "ViewEventLogsFragment.kt",
-    "ViewEventLogsFragmentPresenter.kt",
-    "ViewEventLogsViewModel.kt",
-])
 
 oppia_android_library(
     name = "event_log_item_view_model",
@@ -38,6 +30,7 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:androidx_databinding_databinding-common",
+        "//third_party:com_google_guava_guava",
         "//third_party:com_google_protobuf_protobuf-javalite",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",

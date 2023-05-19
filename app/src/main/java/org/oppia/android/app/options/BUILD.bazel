@@ -1,38 +1,8 @@
 """
-TODO: finish build file doc.
+UI components allowing a learner to change their app-wide settings and options.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "AppLanguageActivity.kt",
-    "AppLanguageActivityPresenter.kt",
-    "AppLanguageFragment.kt",
-    "AppLanguageFragmentPresenter.kt",
-    "AppLanguageItemViewModel.kt",
-    "AppLanguageSelectionViewModel.kt",
-    "AudioLanguageActivity.kt",
-    "AudioLanguageActivityPresenter.kt",
-    "AudioLanguageFragment.kt",
-    "AudioLanguageFragmentPresenter.kt",
-    "AudioLanguageItemViewModel.kt",
-    "AudioLanguageSelectionViewModel.kt",
-    "OptionControlsViewModel.kt",
-    "OptionsActivity.kt",
-    "OptionsActivityPresenter.kt",
-    "OptionsAppLanguageViewModel.kt",
-    "OptionsAudioLanguageViewModel.kt",
-    "OptionsFragment.kt",
-    "OptionsFragmentPresenter.kt",
-    "OptionsItemViewModel.kt",
-    "OptionsReadingTextSizeViewModel.kt",
-    "ReadingTextSizeActivity.kt",
-    "ReadingTextSizeActivityPresenter.kt",
-    "ReadingTextSizeFragment.kt",
-    "ReadingTextSizeFragmentPresenter.kt",
-    "ReadingTextSizeSelectionViewModel.kt",
-    "TextSizeItemViewModel.kt",
-])
 
 oppia_android_library(
     name = "app_language_radio_button_listener",

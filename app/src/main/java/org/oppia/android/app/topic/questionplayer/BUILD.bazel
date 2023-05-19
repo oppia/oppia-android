@@ -1,18 +1,8 @@
 """
-TODO: finish build file doc.
+The UI components for managing and playing a question practice session.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "HintsAndSolutionQuestionManagerFragment.kt",
-    "HintsAndSolutionQuestionManagerFragmentPresenter.kt",
-    "QuestionPlayerActivity.kt",
-    "QuestionPlayerActivityPresenter.kt",
-    "QuestionPlayerFragment.kt",
-    "QuestionPlayerFragmentPresenter.kt",
-    "QuestionPlayerViewModel.kt",
-])
 
 oppia_android_library(
     name = "hints_and_solution_question_manager_listener",
@@ -61,10 +51,10 @@ oppia_android_library(
     srcs = ["HintsAndSolutionQuestionManagerFragmentPresenter.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":hints_and_solution_question_manager_listener",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
-        "//app/src/main/java/org/oppia/android/app/topic/questionplayer:hints_and_solution_question_manager_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/question:question_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/question:question_assessment_progress_controller",
         "//model/src/main/proto:exploration_java_proto_lite",
         "//model/src/main/proto:question_java_proto_lite",
         "//model/src/main/proto:translation_java_proto_lite",
@@ -109,6 +99,7 @@ oppia_android_library(
     srcs = ["QuestionPlayerFragmentPresenter.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":question_player_view_model",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/player/state:confetti_config",
@@ -120,11 +111,10 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/player/stopplaying:stop_state_playing_session_listener",
         "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
         "//app/src/main/java/org/oppia/android/app/topic/conceptcard:concept_card_fragment",
-        "//app/src/main/java/org/oppia/android/app/topic/questionplayer:question_player_view_model",
         "//app/src/main/java/org/oppia/android/app/utility:split_screen_manager",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
-        "//domain/src/main/java/org/oppia/android/domain/question:question_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/question:question_assessment_progress_controller",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//model/src/main/proto:exploration_java_proto_lite",
         "//model/src/main/proto:profile_java_proto_lite",
@@ -186,6 +176,8 @@ oppia_android_library(
     srcs = ["QuestionPlayerActivityPresenter.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":hints_and_solution_question_manager_fragment",
+        ":question_player_fragment",
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
@@ -201,10 +193,8 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/player/state/listener:return_to_topic_navigation_button_listener",
         "//app/src/main/java/org/oppia/android/app/player/state/listener:show_hint_availability_listener",
         "//app/src/main/java/org/oppia/android/app/player/state/listener:submit_navigation_button_listener",
-        "//app/src/main/java/org/oppia/android/app/topic/questionplayer:hints_and_solution_question_manager_fragment",
-        "//app/src/main/java/org/oppia/android/app/topic/questionplayer:question_player_fragment",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/question:question_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/question:question_training_controller",
         "//model/src/main/proto:exploration_java_proto_lite",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:translation_java_proto_lite",

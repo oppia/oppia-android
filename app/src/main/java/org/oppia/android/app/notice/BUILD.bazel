@@ -1,17 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for app version deprecation and upgrade notices.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "AutomaticAppDeprecationNoticeDialogFragment.kt",
-    "AutomaticAppDeprecationNoticeDialogFragmentPresenter.kt",
-    "BetaNoticeDialogFragment.kt",
-    "BetaNoticeDialogFragmentPresenter.kt",
-    "GeneralAvailabilityUpgradeNoticeDialogFragment.kt",
-    "GeneralAvailabilityUpgradeNoticeDialogFragmentPresenter.kt",
-])
 
 oppia_android_library(
     name = "beta_notice_closed_listener",

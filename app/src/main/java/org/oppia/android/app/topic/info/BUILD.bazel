@@ -1,14 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for displaying general information about a topic.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "TopicInfoFragment.kt",
-    "TopicInfoFragmentPresenter.kt",
-    "TopicInfoViewModel.kt",
-])
 
 oppia_android_library(
     name = "topic_info_view_model",
@@ -50,11 +44,11 @@ oppia_android_library(
     srcs = ["TopicInfoFragmentPresenter.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":topic_info_view_model",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
-        "//app/src/main/java/org/oppia/android/app/topic/info:topic_info_view_model",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",
         "//third_party:androidx_databinding_databinding-common",

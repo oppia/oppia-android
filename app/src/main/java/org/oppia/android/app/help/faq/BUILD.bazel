@@ -1,16 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for viewing the list of frequently asked questions & answers.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "FAQListActivity.kt",
-    "FAQListActivityPresenter.kt",
-    "FAQListFragment.kt",
-    "FAQListFragmentPresenter.kt",
-    "FAQListViewModel.kt",
-])
 
 oppia_android_library(
     name = "route_to_faq_single_listener",

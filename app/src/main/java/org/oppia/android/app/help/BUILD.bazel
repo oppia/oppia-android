@@ -1,18 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for displaying various assistance flows and references for app users.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "HelpActivity.kt",
-    "HelpActivityPresenter.kt",
-    "HelpFragment.kt",
-    "HelpFragmentPresenter.kt",
-    "HelpItemViewModel.kt",
-    "HelpListViewModel.kt",
-    "HelpViewModel.kt",
-])
 
 oppia_android_library(
     name = "help_items",

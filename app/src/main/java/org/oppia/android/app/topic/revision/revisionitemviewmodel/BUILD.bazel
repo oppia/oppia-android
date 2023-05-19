@@ -1,10 +1,8 @@
 """
-TODO: finish build file doc.
+View models for displaying a list of revision cards within the context of a topic.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files(["TopicRevisionItemViewModel.kt"])
 
 oppia_android_library(
     name = "topic_revision_item_view_model",

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.domain.topic.DeveloperAssets.TEST_TOPIC_ID_0
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
@@ -31,7 +30,7 @@ class TopicFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
-    val topicId = arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
+    val topicId = arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY) ?: error("No topic ID.")
     val storyId = arguments?.getStringFromBundle(STORY_ID_ARGUMENT_KEY) ?: ""
 
     return topicFragmentPresenter.handleCreateView(

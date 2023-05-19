@@ -1,14 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for displaying a list of revision cards within the context of a topic.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "TopicRevisionFragment.kt",
-    "TopicRevisionFragmentPresenter.kt",
-    "TopicRevisionViewModel.kt",
-])
 
 oppia_android_library(
     name = "revision_subtopic_selection_listener",
@@ -22,12 +16,12 @@ oppia_android_library(
     srcs = ["TopicRevisionViewModel.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":revision_subtopic_selection_listener",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
-        "//app/src/main/java/org/oppia/android/app/topic/revision:revision_subtopic_selection_listener",
         "//app/src/main/java/org/oppia/android/app/topic/revision/revisionitemviewmodel:topic_revision_item_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",

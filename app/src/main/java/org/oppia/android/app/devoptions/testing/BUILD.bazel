@@ -1,10 +1,8 @@
 """
-TODO: finish build file doc.
+Support testing infrastructure for verifying top-level behaviors of the developer-only options menu.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files(["DeveloperOptionsTestActivity.kt"])
 
 oppia_android_library(
     name = "developer_options_test_activity",

@@ -1,28 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for viewing the list of third-party dependencies used by the app and their
+corresponding software licenses.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "LicenseItemViewModel.kt",
-    "LicenseListActivity.kt",
-    "LicenseListActivityPresenter.kt",
-    "LicenseListFragment.kt",
-    "LicenseListFragmentPresenter.kt",
-    "LicenseListViewModel.kt",
-    "LicenseTextViewModel.kt",
-    "LicenseTextViewerActivity.kt",
-    "LicenseTextViewerActivityPresenter.kt",
-    "LicenseTextViewerFragment.kt",
-    "LicenseTextViewerFragmentPresenter.kt",
-    "ThirdPartyDependencyItemViewModel.kt",
-    "ThirdPartyDependencyListActivity.kt",
-    "ThirdPartyDependencyListActivityPresenter.kt",
-    "ThirdPartyDependencyListFragment.kt",
-    "ThirdPartyDependencyListFragmentPresenter.kt",
-    "ThirdPartyDependencyListViewModel.kt",
-])
 
 oppia_android_library(
     name = "route_to_license_list_listener",

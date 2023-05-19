@@ -1,17 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for showing a user the stories that they've completed on their profile.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "CompletedStoryItemViewModel.kt",
-    "CompletedStoryListActivity.kt",
-    "CompletedStoryListActivityPresenter.kt",
-    "CompletedStoryListFragment.kt",
-    "CompletedStoryListFragmentPresenter.kt",
-    "CompletedStoryListViewModel.kt",
-])
 
 oppia_android_library(
     name = "completed_story_item_view_model",
@@ -37,13 +28,13 @@ oppia_android_library(
     srcs = ["CompletedStoryListViewModel.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
-        "//app/src/main/java/org/oppia/android/app/completedstorylist:completed_story_item_view_model",
+        ":completed_story_item_view_model",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/home:route_to_topic_play_story_listener",
         "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",

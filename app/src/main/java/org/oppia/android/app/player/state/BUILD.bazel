@@ -1,18 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for the core state learning experience. 'States' are individual 'cards' within an
+exploration learning session, or individual questions within a practice session.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "DragDropSortInteractionView.kt",
-    "ImageRegionSelectionInteractionView.kt",
-    "SelectionInteractionView.kt",
-    "StateFragment.kt",
-    "StateFragmentPresenter.kt",
-    "StatePlayerRecyclerViewAssembler.kt",
-    "StateViewModel.kt",
-])
 
 oppia_android_library(
     name = "confetti_config",

@@ -1,33 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for administrators to change properties and details of a particular learner profile.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ProfileEditActivity.kt",
-    "ProfileEditActivityPresenter.kt",
-    "ProfileEditDeletionDialogFragment.kt",
-    "ProfileEditDialogInterface.kt",
-    "ProfileEditFragment.kt",
-    "ProfileEditFragmentPresenter.kt",
-    "ProfileEditViewModel.kt",
-    "ProfileListActivity.kt",
-    "ProfileListActivityPresenter.kt",
-    "ProfileListFragment.kt",
-    "ProfileListFragmentPresenter.kt",
-    "ProfileListViewModel.kt",
-    "ProfileRenameActivity.kt",
-    "ProfileRenameActivityPresenter.kt",
-    "ProfileRenameFragment.kt",
-    "ProfileRenameFragmentPresenter.kt",
-    "ProfileRenameViewModel.kt",
-    "ProfileResetPinActivity.kt",
-    "ProfileResetPinActivityPresenter.kt",
-    "ProfileResetPinFragment.kt",
-    "ProfileResetPinFragmentPresenter.kt",
-    "ProfileResetPinViewModel.kt",
-])
 
 oppia_android_library(
     name = "load_profile_edit_deletion_dialog_listener",

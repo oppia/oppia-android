@@ -1,16 +1,8 @@
 """
-TODO: finish build file doc.
+Custom views for exploration answer input.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "FractionInputInteractionView.kt",
-    "MathExpressionInteractionsView.kt",
-    "NumericInputInteractionView.kt",
-    "RatioInputInteractionView.kt",
-    "TextInputInteractionView.kt",
-])
 
 oppia_android_library(
     name = "fraction_input_interaction_view",

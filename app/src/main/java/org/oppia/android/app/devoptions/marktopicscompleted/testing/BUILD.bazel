@@ -1,10 +1,9 @@
 """
-TODO: finish build file doc.
+Support testing infrastructure for verifying the topic progress updating UI that's part of the
+developer-only options menu.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files(["MarkTopicsCompletedTestActivity.kt"])
 
 oppia_android_library(
     name = "mark_topics_completed_test_activity",

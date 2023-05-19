@@ -1,16 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for providing learners with a resume flow when they are attempting to play a lesson
+for which they have partially completed progress.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ResumeLessonActivity.kt",
-    "ResumeLessonActivityPresenter.kt",
-    "ResumeLessonFragment.kt",
-    "ResumeLessonFragmentPresenter.kt",
-    "ResumeLessonViewModel.kt",
-])
 
 oppia_android_library(
     name = "resume_lesson_view_model",
@@ -52,13 +45,13 @@ oppia_android_library(
     srcs = ["ResumeLessonFragmentPresenter.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":resume_lesson_view_model",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/home:route_to_exploration_listener",
-        "//app/src/main/java/org/oppia/android/app/resumelesson:resume_lesson_view_model",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//domain/src/main/java/org/oppia/android/domain/exploration:exploration_data_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//model/src/main/proto:exploration_checkpoint_java_proto_lite",

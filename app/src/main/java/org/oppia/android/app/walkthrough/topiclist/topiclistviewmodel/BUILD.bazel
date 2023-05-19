@@ -1,13 +1,8 @@
 """
-TODO: finish build file doc.
+View models for displaying a list of recommended topics to play as part of the app walkthrough flow.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "WalkthroughTopicHeaderViewModel.kt",
-    "WalkthroughTopicSummaryViewModel.kt",
-])
 
 oppia_android_library(
     name = "walkthrough_topic_header_view_model",

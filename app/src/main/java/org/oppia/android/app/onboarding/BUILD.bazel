@@ -1,19 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for the out-of-box/initial user onboarding flow.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "OnboardingSlideViewModel.kt",
-    "OnboardingActivity.kt",
-    "OnboardingActivityPresenter.kt",
-    "OnboardingFragment.kt",
-    "OnboardingFragmentPresenter.kt",
-    "OnboardingSlideFinalViewModel.kt",
-    "OnboardingViewModel.kt",
-    "OnboardingViewPagerViewModel.kt",
-])
 
 oppia_android_library(
     name = "view_pager_slide",

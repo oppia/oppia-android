@@ -1,19 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for updating the completion progress of individual chapters for a single profile as
+part of the developer-only options menu.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ChapterSummaryViewModel.kt",
-    "MarkChaptersCompletedActivity.kt",
-    "MarkChaptersCompletedActivityPresenter.kt",
-    "MarkChaptersCompletedFragment.kt",
-    "MarkChaptersCompletedFragmentPresenter.kt",
-    "MarkChaptersCompletedItemViewModel.kt",
-    "MarkChaptersCompletedViewModel.kt",
-    "StorySummaryViewModel.kt",
-])
 
 oppia_android_library(
     name = "chapter_summary_view_model",
