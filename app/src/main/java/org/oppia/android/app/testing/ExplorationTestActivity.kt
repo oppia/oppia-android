@@ -55,11 +55,14 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
       " screen manager too early in the test?"
   }
 
+  /** Dagger injector for [ExplorationTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ExplorationTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ExplorationTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, ExplorationTestActivity::class.java)
   }

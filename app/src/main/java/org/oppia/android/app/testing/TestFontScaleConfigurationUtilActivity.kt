@@ -22,7 +22,9 @@ class TestFontScaleConfigurationUtilActivity : InjectableAppCompatActivity() {
     configUtilActivityPresenter.handleOnCreate(readingTextSize)
   }
 
+  /** Dagger injector for [TestFontScaleConfigurationUtilActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: TestFontScaleConfigurationUtilActivity)
   }
 

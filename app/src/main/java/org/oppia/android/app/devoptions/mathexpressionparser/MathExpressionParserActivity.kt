@@ -25,7 +25,9 @@ class MathExpressionParserActivity : InjectableAppCompatActivity() {
     title = resourceHandler.getStringInLocale(R.string.math_expression_parser_activity_title)
   }
 
+  /** Dagger injector for [MathExpressionParserActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: MathExpressionParserActivity)
   }
 

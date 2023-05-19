@@ -33,7 +33,9 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
     return supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().singleOrNull()
   }
 
+  /** Dagger injector for [ConceptCardFragmentTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ConceptCardFragmentTestActivity)
   }
 

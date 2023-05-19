@@ -100,7 +100,9 @@ class RevisionCardActivity :
     onReturnToTopicRequested()
   }
 
+  /** Dagger injector for [RevisionCardActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: RevisionCardActivity)
   }
 }

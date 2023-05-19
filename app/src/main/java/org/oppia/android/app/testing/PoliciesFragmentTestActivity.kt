@@ -51,6 +51,9 @@ class PoliciesFragmentTestActivity : TestActivity(), RouteToPoliciesListener {
       return createIntent(context, policiesActivityParams)
     }
 
+    /**
+     * Returns the [Intent] for opening [PoliciesFragmentTestActivity] for the specified [params].
+     */
     fun createIntent(context: Context, params: PoliciesActivityParams): Intent {
       return Intent(context, PoliciesFragmentTestActivity::class.java).also {
         it.putProtoExtra(POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO, params)
@@ -62,7 +65,9 @@ class PoliciesFragmentTestActivity : TestActivity(), RouteToPoliciesListener {
     mockCallbackListener.onRouteToPolicies(PolicyPage.PRIVACY_POLICY)
   }
 
+  /** Dagger injector for [PoliciesFragmentTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: PoliciesFragmentTestActivity)
   }
 }

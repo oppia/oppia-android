@@ -34,6 +34,8 @@ package_group(
     packages = [
         "//app/src/main/java/org/oppia/android/app/notice/testing",
         "//app/src/main/java/org/oppia/android/app/player/exploration/testing",
+        "//app/src/main/java/org/oppia/android/app/player/state/testing",
+        "//app/src/main/java/org/oppia/android/app/testing",
         "//app/src/sharedTest/...",
         "//app/src/test/...",
     ],

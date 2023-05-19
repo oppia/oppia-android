@@ -26,12 +26,11 @@ import org.oppia.android.databinding.AdministratorControlsProfileViewBinding
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
-// TODO: Consolidate these with AdministratorControlsActivity & clean it up.
 private const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 private const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 private const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
-// TODO: Consolidate with NavigationDrawerFragmentPresenter & clean it up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
   "NavigationDrawerFragmentPresenter.navigation_profile_id"
 

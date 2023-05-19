@@ -1,22 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for a user study-only UI that helps facilitators monitor the analytics behaviors of
+learner profiles on the device.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ControlButtonsViewModel.kt",
-    "CopyIdMaterialButtonView.kt",
-    "DeviceIdItemViewModel.kt",
-    "ProfileAndDeviceIdActivity.kt",
-    "ProfileAndDeviceIdActivityPresenter.kt",
-    "ProfileAndDeviceIdFragment.kt",
-    "ProfileAndDeviceIdFragmentPresenter.kt",
-    "ProfileLearnerIdItemViewModel.kt",
-    "ProfileListViewModel.kt",
-    "ProfileListItemViewModel.kt",
-    "SyncStatusItemViewModel.kt",
-])
 
 oppia_android_library(
     name = "control_buttons_view_model",

@@ -1,13 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for viewing a single frequently asked question & answer.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "FAQSingleActivity.kt",
-    "FAQSingleActivityPresenter.kt",
-])
 
 oppia_android_library(
     name = "faq_single_activity",

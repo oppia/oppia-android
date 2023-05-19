@@ -113,7 +113,9 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
       ).build()
   }
 
+  /** Dagger injector for [ComingSoonTopicsListView]. */
   interface Injector {
+    /** Injects dependencies into the [view]. */
     fun inject(view: ComingSoonTopicsListView)
   }
 }

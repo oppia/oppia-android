@@ -32,7 +32,7 @@ import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
 
-// TODO: Consolidate with NavigationDrawerFragmentPresenter & clean it up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
   "NavigationDrawerFragmentPresenter.navigation_profile_id"
 

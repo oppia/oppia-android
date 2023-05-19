@@ -1,16 +1,8 @@
 """
-TODO: finish build file doc.
+UI component for displaying the specific constituent chapters of a particular story.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "StoryActivity.kt",
-    "StoryActivityPresenter.kt",
-    "StoryFragment.kt",
-    "StoryFragmentPresenter.kt",
-    "StoryViewModel.kt",
-])
 
 oppia_android_library(
     name = "story_fragment_scroller",
@@ -34,9 +26,9 @@ oppia_android_library(
     srcs = ["StoryViewModel.kt"],
     visibility = ["//app:app_prod_visibility"],
     deps = [
+        ":exploration_selection_listener",
+        ":story_fragment_scroller",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
-        "//app/src/main/java/org/oppia/android/app/story:exploration_selection_listener",
-        "//app/src/main/java/org/oppia/android/app/story:story_fragment_scroller",
         "//app/src/main/java/org/oppia/android/app/story/storyitemviewmodel:story_chapter_summary_view_model",
         "//app/src/main/java/org/oppia/android/app/story/storyitemviewmodel:story_header_view_model",
         "//app/src/main/java/org/oppia/android/app/story/storyitemviewmodel:story_item_view_model",
@@ -44,7 +36,7 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:exploration_checkpoint_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:subtitled_html_java_proto_lite",

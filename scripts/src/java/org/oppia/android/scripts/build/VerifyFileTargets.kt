@@ -176,6 +176,8 @@ class VerifyFileTargets(
         nameWithoutExtension in listOf("BUILD", "WORKSPACE") || extension == "patch"
       // TODO(#3016): Remove this exemption feedback reporting is being used.
       path == "model/src/main/proto/feedback_reporting.proto" -> true
+      // TODO(#4880): Remove the exemption for the survey proto once it's used.
+      path == "model/src/main/proto/survey.proto" -> true
       // TODO(#2976): Remove this exemption once question loading is supported.
       path == "domain/src/main/assets/questions.textproto" -> true
       // TODO(#3617): Remove this once Espresso tests are supported in Bazel.

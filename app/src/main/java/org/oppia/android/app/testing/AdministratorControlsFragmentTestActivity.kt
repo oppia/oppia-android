@@ -54,7 +54,9 @@ class AdministratorControlsFragmentTestActivity :
 
   override fun showLogoutDialog() {}
 
+  /** Dagger injector for [AdministratorControlsFragmentTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: AdministratorControlsFragmentTestActivity)
   }
 

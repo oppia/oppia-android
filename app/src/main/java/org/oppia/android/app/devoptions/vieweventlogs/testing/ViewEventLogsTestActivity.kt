@@ -30,7 +30,9 @@ class ViewEventLogsTestActivity : TestActivity() {
       .findFragmentById(R.id.view_event_logs_container) as ViewEventLogsFragment?
   }
 
+  /** Dagger injector for [ViewEventLogsTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ViewEventLogsTestActivity)
   }
 

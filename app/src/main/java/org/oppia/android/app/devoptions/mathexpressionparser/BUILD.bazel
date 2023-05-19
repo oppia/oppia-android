@@ -1,16 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for interacting with the math parser system available via the developer-only options
+menu.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "MathExpressionParserActivity.kt",
-    "MathExpressionParserActivityPresenter.kt",
-    "MathExpressionParserFragment.kt",
-    "MathExpressionParserFragmentPresenter.kt",
-    "MathExpressionParserViewModel.kt",
-])
 
 oppia_android_library(
     name = "math_expression_parser_view_model",

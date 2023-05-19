@@ -168,8 +168,16 @@ class AdminPinActivityPresenter @Inject constructor(
   }
 
   companion object {
+    /** The activity intent extra key corresponding to the ID of admin whose PIN is changing. */
     const val ADMIN_PIN_PROFILE_ID_EXTRA_KEY = "AdminPinActivity.admin_pin_profile_id"
+
+    /** The activity intent extra key corresponding to the profile's avatar background color. */
     const val ADMIN_PIN_COLOR_RGB_EXTRA_KEY = "AdminPinActivity.admin_pin_color_rgb"
+
+    /**
+     * The activity intent extra key corresponding to [AdminAuthEnum] ordinal denoting to where the
+     * user should be navigated after their PIN is updated.
+     */
     const val ADMIN_PIN_ENUM_EXTRA_KEY = "AdminPinActivity.admin_pin_enum"
   }
 }

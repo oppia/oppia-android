@@ -25,11 +25,14 @@ class ViewEventLogsActivity : InjectableAppCompatActivity() {
     title = resourceHandler.getStringInLocale(R.string.view_event_logs_activity_title)
   }
 
+  /** Dagger injector for [ViewEventLogsActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ViewEventLogsActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ViewEventLogsActivity]. */
     fun createIntent(context: Context): Intent {
       return Intent(context, ViewEventLogsActivity::class.java).apply {
         decorateWithScreenName(VIEW_EVENT_LOGS_ACTIVITY)

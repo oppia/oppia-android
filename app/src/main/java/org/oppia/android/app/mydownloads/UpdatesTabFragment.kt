@@ -26,7 +26,9 @@ class UpdatesTabFragment : InjectableFragment() {
     return updatesTabFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [UpdatesTabFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: UpdatesTabFragment)
   }
 }

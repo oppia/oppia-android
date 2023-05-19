@@ -1,24 +1,8 @@
 """
-TODO: finish build file doc.
+UI components displaying a learner's personal lesson progress on their profile.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ProfilePictureActivity.kt",
-    "ProfilePictureActivityPresenter.kt",
-    "ProfilePictureActivityViewModel.kt",
-    "ProfilePictureDialogInterface.kt",
-    "ProfilePictureEditDialogFragment.kt",
-    "ProfileProgressActivity.kt",
-    "ProfileProgressActivityPresenter.kt",
-    "ProfileProgressFragment.kt",
-    "ProfileProgressFragmentPresenter.kt",
-    "ProfileProgressHeaderViewModel.kt",
-    "ProfileProgressItemViewModel.kt",
-    "ProfileProgressViewModel.kt",
-    "RecentlyPlayedStorySummaryViewModel.kt",
-])
 
 oppia_android_library(
     name = "profile_picture_click_listener",
@@ -88,18 +72,19 @@ oppia_android_library(
     srcs = ["ProfileProgressViewModel.kt"],
     visibility = ["//app:app_prod_visibility"],
     deps = [
+        ":profile_progress_header_view_model",
+        ":profile_progress_item_view_model",
+        ":recently_played_story_summary_view_model",
         "//app:resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/home:route_to_topic_play_story_listener",
-        "//app/src/main/java/org/oppia/android/app/profileprogress:profile_progress_header_view_model",
-        "//app/src/main/java/org/oppia/android/app/profileprogress:profile_progress_item_view_model",
-        "//app/src/main/java/org/oppia/android/app/profileprogress:recently_played_story_summary_view_model",
         "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_list_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",

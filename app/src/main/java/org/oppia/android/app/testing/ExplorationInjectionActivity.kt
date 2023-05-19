@@ -21,11 +21,14 @@ class ExplorationInjectionActivity : InjectableAppCompatActivity() {
     (activityComponent as Injector).inject(this)
   }
 
+  /** Dagger injector for [ExplorationInjectionActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ExplorationInjectionActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ExplorationInjectionActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, ExplorationInjectionActivity::class.java)
   }

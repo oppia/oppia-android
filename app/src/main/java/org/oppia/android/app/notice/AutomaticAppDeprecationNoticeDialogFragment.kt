@@ -34,7 +34,9 @@ class AutomaticAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
     return automaticAppDeprecationNoticeDialogFragmentPresenter.handleOnCreateDialog()
   }
 
+  /** Dagger injector for [AutomaticAppDeprecationNoticeDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: AutomaticAppDeprecationNoticeDialogFragment)
   }
 }

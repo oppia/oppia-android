@@ -14,11 +14,14 @@ class HtmlParserTestActivity : InjectableAppCompatActivity() {
     setContentView(R.layout.test_html_parser_activity)
   }
 
+  /** Dagger injector for [HtmlParserTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: HtmlParserTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [HtmlParserTestActivity]. */
     fun createIntent(context: Context): Intent = Intent(context, HtmlParserTestActivity::class.java)
   }
 }

@@ -1,34 +1,9 @@
 """
-TODO: finish build file doc.
+View models that define the constituent display portions of a state (e.g. the main content view,
+different answer types, etc.).
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ContentViewModel.kt",
-    "ContinueInteractionViewModel.kt",
-    "ContinueNavigationButtonViewModel.kt",
-    "DragAndDropSortInteractionViewModel.kt",
-    "DragDropInteractionContentViewModel.kt",
-    "FeedbackViewModel.kt",
-    "FractionInteractionViewModel.kt",
-    "ImageRegionSelectionInteractionViewModel.kt",
-    "MathExpressionInteractionsViewModel.kt",
-    "NextButtonViewModel.kt",
-    "NumericInputViewModel.kt",
-    "PreviousButtonViewModel.kt",
-    "PreviousResponsesHeaderViewModel.kt",
-    "RatioExpressionInputInteractionViewModel.kt",
-    "ReplayButtonViewModel.kt",
-    "ReturnToTopicButtonViewModel.kt",
-    "SelectionInteractionContentViewModel.kt",
-    "SelectionInteractionViewModel.kt",
-    "SplitScreenInteractionModule.kt",
-    "StateItemViewModel.kt",
-    "SubmitButtonViewModel.kt",
-    "SubmittedAnswerViewModel.kt",
-    "TextInputViewModel.kt",
-])
 
 oppia_android_library(
     name = "interaction_view_model_module",

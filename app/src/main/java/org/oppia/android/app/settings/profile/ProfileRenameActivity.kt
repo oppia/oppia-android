@@ -42,7 +42,9 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
     return false
   }
 
+  /** Dagger injector for [ProfileRenameActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfileRenameActivity)
   }
 }

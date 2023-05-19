@@ -33,7 +33,9 @@ class WalkthroughWelcomeFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [WalkthroughWelcomeFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: WalkthroughWelcomeFragment)
   }
 
@@ -41,6 +43,10 @@ class WalkthroughWelcomeFragment : InjectableFragment() {
     private const val KEY_INTERNAL_PROFILE_ID_ARGUMENT =
       "WalkthroughWelcomeFragment.internal_profile_id"
 
+    /**
+     * Returns a new [WalkthroughWelcomeFragment] corresponding to the profile indicated by the
+     * specified [internalProfileId].
+     */
     fun createFragment(internalProfileId: Int): WalkthroughWelcomeFragment {
       return WalkthroughWelcomeFragment().apply {
         arguments = Bundle().apply { putInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, internalProfileId) }

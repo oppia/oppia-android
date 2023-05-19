@@ -1,14 +1,8 @@
 """
-TODO: finish build file doc.
+View models for displaying frequently asked questions.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "FAQContentViewModel.kt",
-    "FAQHeaderViewModel.kt",
-    "FAQItemViewModel.kt",
-])
 
 oppia_android_library(
     name = "faq_content_view_model",

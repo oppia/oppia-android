@@ -56,7 +56,9 @@ class ProfileResetPinFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [ProfileResetPinFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ProfileResetPinFragment)
   }
 }

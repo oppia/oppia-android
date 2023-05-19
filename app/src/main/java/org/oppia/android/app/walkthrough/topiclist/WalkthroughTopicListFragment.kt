@@ -39,7 +39,9 @@ class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickList
     walkthroughTopicListFragmentPresenter.changePage(topicSummary)
   }
 
+  /** Dagger injector for [WalkthroughTopicListFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: WalkthroughTopicListFragment)
   }
 
@@ -47,6 +49,10 @@ class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickList
     private const val KEY_INTERNAL_PROFILE_ID_ARGUMENT =
       "WalkthroughTopicListFragment.internal_profile_id"
 
+    /**
+     * Returns a new [WalkthroughTopicListFragment] corresponding to the profile indicated by the
+     * specified [internalProfileId].
+     */
     fun createFragment(internalProfileId: Int): WalkthroughTopicListFragment {
       return WalkthroughTopicListFragment().apply {
         arguments = Bundle().apply { putInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, internalProfileId) }

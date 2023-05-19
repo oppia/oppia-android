@@ -21,7 +21,9 @@ class CompletedStoryListActivity : InjectableAppCompatActivity() {
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
+  /** Dagger injector for [CompletedStoryListActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: CompletedStoryListActivity)
   }
 

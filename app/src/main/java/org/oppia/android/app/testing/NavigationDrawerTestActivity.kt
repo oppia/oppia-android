@@ -36,6 +36,10 @@ class NavigationDrawerTestActivity :
   private var internalProfileId: Int = -1
 
   companion object {
+    /**
+     * Returns an [Intent] for opening new instances of [NavigationDrawerTestActivity] for the
+     * specified [profileId].
+     */
     fun createIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
@@ -87,7 +91,9 @@ class NavigationDrawerTestActivity :
     )
   }
 
+  /** Dagger injector for [NavigationDrawerTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: NavigationDrawerTestActivity)
   }
 }

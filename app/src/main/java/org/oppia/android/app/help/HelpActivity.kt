@@ -158,7 +158,9 @@ class HelpActivity :
     helpActivityPresenter.handleLoadPoliciesFragment(policyPage)
   }
 
+  /** Dagger injector for [HelpActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: HelpActivity)
   }
 }

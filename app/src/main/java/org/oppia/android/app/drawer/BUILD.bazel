@@ -1,17 +1,9 @@
 """
-TODO: finish build file doc.
+UI components for a shared navigation drawer component that can be included across multiple
+top-level app UIs for easy cross-app navigation.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ExitProfileDialogFragment.kt",
-    "ExitProfileDialogInterface.kt",
-    "NavigationDrawerFooterViewModel.kt",
-    "NavigationDrawerFragment.kt",
-    "NavigationDrawerFragmentPresenter.kt",
-    "NavigationDrawerHeaderViewModel.kt",
-])
 
 oppia_android_library(
     name = "navigation_drawer_item",
@@ -104,18 +96,18 @@ oppia_android_library(
     srcs = ["NavigationDrawerFragmentPresenter.kt"],
     visibility = ["//app:app_prod_visibility"],
     deps = [
+        ":exit_profile_dialog_fragment",
+        ":navigation_drawer_footer_view_model",
+        ":navigation_drawer_header_view_model",
+        ":navigation_drawer_item",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/devoptions:developer_options_starter",
-        "//app/src/main/java/org/oppia/android/app/drawer:exit_profile_dialog_fragment",
-        "//app/src/main/java/org/oppia/android/app/drawer:navigation_drawer_footer_view_model",
-        "//app/src/main/java/org/oppia/android/app/drawer:navigation_drawer_header_view_model",
-        "//app/src/main/java/org/oppia/android/app/drawer:navigation_drawer_item",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",

@@ -1,18 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for sepcific administration controls in the admin controls section of the app UI.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "AdministratorControlsAccountActionsViewModel.kt",
-    "AdministratorControlsAppInformationViewModel.kt",
-    "AdministratorControlsDownloadPermissionsViewModel.kt",
-    "AdministratorControlsGeneralViewModel.kt",
-    "AdministratorControlsItemViewModel.kt",
-    "AdministratorControlsProfileAndDeviceIdViewModel.kt",
-    "AdministratorControlsProfileViewModel.kt",
-])
 
 oppia_android_library(
     name = "administrator_controls_account_actions_view_model",

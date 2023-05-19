@@ -1,25 +1,28 @@
 """
-TODO: finish build file doc.
+UI components for showing stories that have been recently played by the learner and are not yet
+completed.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "PromotedStoryViewModel.kt",
-    "RecentlyPlayedActivity.kt",
-    "RecentlyPlayedActivityPresenter.kt",
-    "RecentlyPlayedFragment.kt",
-    "RecentlyPlayedFragmentPresenter.kt",
-    "RecentlyPlayedItemViewModel.kt",
-    "RecentlyPlayedViewModel.kt",
-    "SectionTitleViewModel.kt",
-])
 
 oppia_android_library(
     name = "promoted_story_click_listener",
     srcs = ["PromotedStoryClickListener.kt"],
     visibility = ["//app:app_prod_visibility"],
     deps = ["//model/src/main/proto:topic_java_proto_lite"],
+)
+
+oppia_android_library(
+    name = "promoted_story_list_adapter",
+    srcs = ["PromotedStoryListAdapter.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        ":promoted_story_view_model",
+        ":recently_played_item_view_model",
+        ":section_title_view_model",
+        "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//third_party:androidx_recyclerview_recyclerview",
+    ],
 )
 
 oppia_android_library(
@@ -50,36 +53,6 @@ oppia_android_library(
     deps = [
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//third_party:androidx_databinding_databinding-common",
-    ],
-)
-
-oppia_android_library(
-    name = "recently_played_view_model",
-    srcs = ["RecentlyPlayedViewModel.kt"],
-    visibility = ["//app:app_prod_visibility"],
-    deps = [
-        ":promoted_story_view_model",
-        "//app:resources",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:promoted_story_click_listener",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:recently_played_item_view_model",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:section_title_view_model",
-        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
-        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
-        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
-        "//model/src/main/proto:profile_java_proto_lite",
-        "//model/src/main/proto:topic_java_proto_lite",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:androidx_databinding_databinding-common",
-        "//third_party:androidx_lifecycle_lifecycle-common",
-        "//third_party:androidx_lifecycle_lifecycle-livedata",
-        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
-        "//third_party:com_google_protobuf_protobuf-javalite",
-        "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/android/util/data:async_result",
-        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
-        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:exploration_html_parser_entity_type",
     ],
 )
 
@@ -115,27 +88,29 @@ oppia_android_library(
     srcs = ["RecentlyPlayedFragmentPresenter.kt"],
     visibility = ["//app:app_prod_visibility"],
     deps = [
-        "//app/src/main/java/org/oppia/android/app/customview:lesson_thumbnail_image_view",
+        ":promoted_story_click_listener",
+        ":promoted_story_list_adapter",
+        ":promoted_story_view_model",
+        ":recently_played_item_view_model",
+        ":section_title_view_model",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/home:route_to_exploration_listener",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:promoted_story_click_listener",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:recently_played_item_view_model",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:recently_played_view_model",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:section_title_view_model",
-        "//app/src/main/java/org/oppia/android/app/recyclerview:bindable_adapter",
         "//app/src/main/java/org/oppia/android/app/topic:route_to_resume_lesson_listener",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//domain/src/main/java/org/oppia/android/domain/exploration:exploration_data_controller",
         "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:exploration_checkpoint_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_list_controller",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_databinding_databinding-common",
-        "//third_party:androidx_databinding_databinding-runtime",
         "//third_party:androidx_fragment_fragment",
+        "//third_party:androidx_lifecycle_lifecycle-livedata",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
         "//third_party:androidx_recyclerview_recyclerview",
         "//third_party:com_google_protobuf_protobuf-javalite",
@@ -144,6 +119,7 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:async_result",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:exploration_html_parser_entity_type",
     ],
 )
 

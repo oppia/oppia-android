@@ -49,7 +49,9 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [ThirdPartyDependencyListFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ThirdPartyDependencyListFragment)
   }
 }

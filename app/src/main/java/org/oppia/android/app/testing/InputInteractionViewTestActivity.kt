@@ -165,7 +165,9 @@ class InputInteractionViewTestActivity :
     ) as T
   }
 
+  /** Dagger injector for [InputInteractionViewTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: InputInteractionViewTestActivity)
   }
 

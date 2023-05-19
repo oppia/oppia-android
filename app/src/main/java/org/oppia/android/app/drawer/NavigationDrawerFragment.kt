@@ -56,7 +56,9 @@ class NavigationDrawerFragment :
     navigationDrawerFragmentPresenter.unhighlightSwitchProfileMenuItem()
   }
 
+  /** Dagger injector for [NavigationDrawerFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: NavigationDrawerFragment)
   }
 }

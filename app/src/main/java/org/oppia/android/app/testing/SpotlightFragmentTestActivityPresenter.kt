@@ -9,7 +9,7 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.databinding.SpotlightFragmentTestActivityBinding
 import javax.inject.Inject
 
-// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 
 /** The presenter for [SpotlightFragmentTestActivity] */

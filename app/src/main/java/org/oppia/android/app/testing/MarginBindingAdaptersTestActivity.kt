@@ -14,11 +14,14 @@ class MarginBindingAdaptersTestActivity : InjectableAppCompatActivity() {
     setContentView(R.layout.test_margin_bindable_adapter_activity)
   }
 
+  /** Dagger injector for [MarginBindingAdaptersTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: MarginBindingAdaptersTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [MarginBindingAdaptersTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, MarginBindingAdaptersTestActivity::class.java)
   }

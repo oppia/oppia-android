@@ -89,7 +89,9 @@ class StoryActivity :
     finish()
   }
 
+  /** Dagger injector for [StoryActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: StoryActivity)
   }
 

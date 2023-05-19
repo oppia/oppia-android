@@ -30,7 +30,9 @@ class ProfileAndDeviceIdFragment : InjectableFragment() {
     return profileAndDeviceIdFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [ProfileAndDeviceIdFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ProfileAndDeviceIdFragment)
   }
 }

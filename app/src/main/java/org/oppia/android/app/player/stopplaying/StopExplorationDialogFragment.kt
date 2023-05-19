@@ -48,7 +48,9 @@ class StopExplorationDialogFragment : InjectableDialogFragment() {
       .create()
   }
 
+  /** Dagger injector for [StopExplorationDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: StopExplorationDialogFragment)
   }
 }

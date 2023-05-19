@@ -32,7 +32,9 @@ class ProfileAndDeviceIdActivity : InjectableAppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
+  /** Dagger injector for [ProfileAndDeviceIdActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfileAndDeviceIdActivity)
   }
 

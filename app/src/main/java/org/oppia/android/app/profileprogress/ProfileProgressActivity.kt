@@ -105,7 +105,9 @@ class ProfileProgressActivity :
     profileProgressActivityPresenter.handleOnActivityResult(data)
   }
 
+  /** Dagger injector for [ProfileProgressActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfileProgressActivity)
   }
 }

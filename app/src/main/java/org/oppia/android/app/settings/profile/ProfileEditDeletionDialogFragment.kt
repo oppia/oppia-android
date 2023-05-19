@@ -58,7 +58,9 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
     return alertDialog
   }
 
+  /** Dagger injector for [ProfileEditDeletionDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ProfileEditDeletionDialogFragment)
   }
 }
