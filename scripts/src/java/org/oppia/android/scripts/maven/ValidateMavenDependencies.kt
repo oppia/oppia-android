@@ -146,7 +146,7 @@ class ValidateMavenDependencies(
     println("Check for unreferenced production dependencies...")
     checkForUnreferencedDeps(directVersions, prodDirectDeps, DIRECT_PRODUCTION_DEP_EXEMPTIONS)
     println("Check for unreferenced test dependencies...")
-    checkForUnreferencedDeps(directVersions, testDirectDeps, exemptions = emptySet())
+    checkForUnreferencedDeps(directVersions, testDirectDeps, DIRECT_TEST_DEP_EXEMPTIONS)
 
     // Fourth, compute expected transitive dependencies & verify that all are explicitly listed.
     println("Checking for extra and missing transitive dependencies...")
@@ -505,6 +505,11 @@ class ValidateMavenDependencies(
       MavenCoordinate.parseFrom("com.google.dagger:dagger-compiler:2.41"),
       MavenCoordinate.parseFrom("com.google.dagger:dagger-producers:2.41"),
       MavenCoordinate.parseFrom("com.google.dagger:dagger-spi:2.41")
+    )
+
+    private val DIRECT_TEST_DEP_EXEMPTIONS = setOf(
+      // TODO(#4991): Remove this exemption once Espresso tests are supported.
+      MavenCoordinate.parseFrom("androidx.test:runner:1.2.0")
     )
 
     private fun <V> Map<MavenCoordinate, V>.find(coord: MavenCoordinate): V? {
