@@ -1,7 +1,6 @@
 package org.oppia.android.app.options
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +26,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
     private const val FRAGMENT_ARGUMENTS_KEY = "AppLanguageFragment.arguments"
     private const val FRAGMENT_SAVED_STATE_KEY = "AppLanguageFragment.saved_state"
 
-    /** Returns an [Intent] to start this activity. */
+    /** Returns a new [AppLanguageFragment] instance. */
     fun newInstance(oppiaLanguage: OppiaLanguage, profileId: Int): AppLanguageFragment {
       return AppLanguageFragment().apply {
         arguments = Bundle().apply {

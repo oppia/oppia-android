@@ -16,17 +16,20 @@ class CompletedStoryItemViewModel(
   private val intentFactoryShim: IntentFactoryShim,
   translationController: TranslationController
 ) : ObservableViewModel(), RouteToTopicPlayStoryListener {
+  /** Holds lazily loaded completedStoryName [String] value. **/
   val completedStoryName by lazy {
     translationController.extractString(
       completedStory.storyTitle, completedStory.storyWrittenTranslationContext
     )
   }
+  /** Holds lazily loaded topicName [String] value. **/
   val topicName by lazy {
     translationController.extractString(
       completedStory.topicTitle, completedStory.topicWrittenTranslationContext
     )
   }
 
+  /** Called when user clicks on CompletedStoryItem. **/
   fun onCompletedStoryItemClicked() {
     routeToTopicPlayStory(internalProfileId, completedStory.topicId, completedStory.storyId)
   }

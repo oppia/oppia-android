@@ -12,6 +12,7 @@ class AdministratorControlsAppInformationViewModel(
   private val routeToAppVersionListener = activity as RouteToAppVersionListener
   private val loadAppVersionListener = activity as LoadAppVersionListener
 
+  /** Called when user clicks on AppVersion in [AdministratorControlsActivity]. **/
   fun onAppVersionClicked() {
     if (isMultipane.get()!!) {
       loadAppVersionListener.loadAppVersion()

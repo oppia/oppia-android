@@ -45,6 +45,10 @@ class SegmentedCircularProgressView : View {
   private var chaptersInProgress: Int = 0
   private var totalChapters: Int = 0
 
+  /** Sets the StoryChapterDetails.
+   * @param totalChaptersCount total chapters covered
+   * @param chaptersFinishedCount total finished chapters
+   * @param chaptersInProgressCount chapters in progress count **/
   fun setStoryChapterDetails(
     totalChaptersCount: Int,
     chaptersFinishedCount: Int,

@@ -18,11 +18,14 @@ class AdministratorControlsDownloadPermissionsViewModel(
   private val userProfileId: ProfileId,
   deviceSettings: DeviceSettings
 ) : AdministratorControlsItemViewModel() {
+  /** [Boolean] observable value showing if topic downloads and updates should happen only on Wifi. **/
   val isTopicWifiUpdatePermission =
     ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
+  /** [Boolean] observable value showing if topic updates should happen automatically. **/
   val isTopicAutoUpdatePermission =
     ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
 
+  /** Called when topic wifi update permission changes. **/
   fun onTopicWifiUpdatePermissionChanged() {
     profileManagementController.updateWifiPermissionDeviceSettings(
       userProfileId,
@@ -42,6 +45,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
       )
   }
 
+  /** Called when topic auto update permission changes. **/
   fun onTopicAutoUpdatePermissionChanged() {
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
       userProfileId,
