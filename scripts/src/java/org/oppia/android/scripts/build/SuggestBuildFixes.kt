@@ -420,8 +420,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
               Resolved(Target.parse(rawTarget))
             workspace in mavenThirdPartyPrefixMapping ->
               bazelClient.interpretMavenTarget(rawTarget, parsedTarget)
-            "/_aar/" in rawTarget ->
-              bazelClient.interpretAarTarget(rawTarget, parsedTarget)
+            "/_aar/" in rawTarget -> bazelClient.interpretAarTarget(rawTarget)
             // Special case re-interpretations since deps use a different target for these repos.
             workspace in externalRepoReferenceFixesMapping ->
               Resolved(externalRepoReferenceFixesMapping.getValue(workspace))
@@ -446,15 +445,13 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         }
       }
 
-      private fun BazelClient.interpretAarTarget(
-        rawTarget: String,
-        parsedTarget: Target?
-      ): InterpretedTarget {
+      private fun BazelClient.interpretAarTarget(rawTarget: String): InterpretedTarget {
         val mavenType =
           rawTarget.substringBefore("/_aar/").substringAfterLast('/', missingDelimiterValue = "")
         val targetName =
           rawTarget.substringAfter("/_aar/", missingDelimiterValue = "").substringBefore('/')
-        return interpretMavenTarget(rawTarget = "@$mavenType//:$targetName", parsedTarget)
+        val newRawTarget = "@$mavenType//:$targetName"
+        return interpretMavenTarget(newRawTarget, parsedTarget = Target.parse(newRawTarget))
       }
 
       private fun BazelClient.interpretMavenTarget(
