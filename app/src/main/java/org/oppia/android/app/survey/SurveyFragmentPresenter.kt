@@ -15,6 +15,8 @@ import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.SurveyFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [SurveyFragment]. */
@@ -22,7 +24,8 @@ class SurveyFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val context: Context,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val surveyController: SurveyController
 ) {
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
@@ -61,7 +64,29 @@ class SurveyFragmentPresenter @Inject constructor(
       dialogFragment.showNow(fragment.childFragmentManager, TAG_EXIT_SURVEY_CONFIRMATION_DIALOG)
     }
 
+    startSurveySession()
+
     return binding.root
+  }
+
+  private fun startSurveySession() {
+    val startDataProvider = surveyController.startSurveySession(profileId)
+    startDataProvider.toLiveData().observe(
+      activity,
+      {
+        when (it) {
+          is AsyncResult.Pending ->
+            oppiaLogger.d("SurveyFragment", "survey training session")
+          is AsyncResult.Failure -> {
+            oppiaLogger.e("SurveyFragment", "Failed to start survey session", it.error)
+            activity.finish() // Can't recover from the session failing to start.
+          }
+          is AsyncResult.Success -> {
+            oppiaLogger.d("SurveyFragment", "Successfully started survey session")
+          }
+        }
+      }
+    )
   }
 
   fun handleKeyboardAction() {
