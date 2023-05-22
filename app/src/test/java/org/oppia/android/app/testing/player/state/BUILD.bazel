@@ -1,5 +1,5 @@
 """
-TODO: finish build file doc.
+Tests for verifying the exploration UI in multiple accessibility contexts.
 """
 
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
@@ -64,11 +64,10 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_config_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/question:question_module",
+        "//domain/src/main/java/org/oppia/android/domain/topic:developer_assets",
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
-        "//domain/src/main/java/org/oppia/android/domain/topic:story_progress_controller",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/profile:profile_test_helper",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

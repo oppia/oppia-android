@@ -1,5 +1,5 @@
 """
-TODO: finish build file doc.
+Tests for UI components for displaying a list of revision cards within the context of a topic.
 """
 
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
@@ -66,12 +66,14 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/question:question_module",
         "//domain/src/main/java/org/oppia/android/domain/spotlight:spotlight_state_controller",
+        "//domain/src/main/java/org/oppia/android/domain/topic:developer_assets",
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:spotlight_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:oppia_test_rule",
+        "//testing/src/main/java/org/oppia/android/testing:test_image_loader_module",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/espresso:image_view_matcher",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",

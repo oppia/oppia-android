@@ -1,5 +1,6 @@
 """
-TODO: finish build file doc.
+Tests for UI components for displaying a list of lessons (via story and chapter organization) in the
+context of a topic.
 """
 
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
@@ -61,7 +62,8 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
         "//model/src/main/proto:event_logger_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:fake_analytics_event_logger",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",

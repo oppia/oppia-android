@@ -1,5 +1,5 @@
 """
-TODO: finish build file doc.
+Tests fpr general-purpose utilities for parsing & rendering HTML within the app.
 """
 
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
@@ -60,7 +60,9 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
         "//model/src/main/proto:languages_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:oppia_test_rule",
+        "//testing/src/main/java/org/oppia/android/testing:test_image_loader_module",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:define_app_language_locale_context",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/mockito",
