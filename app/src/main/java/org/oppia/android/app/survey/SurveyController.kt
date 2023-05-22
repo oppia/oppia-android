@@ -1,5 +1,8 @@
 package org.oppia.android.app.survey
 
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
@@ -13,12 +16,10 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val CREATE_SURVEY_PROVIDER_ID = "create_survey_provider_id"
 private const val START_SURVEY_SESSION_PROVIDER_ID = "start_survey_session_provider_id"
+private const val TEMP_QUESTIONS_LIST_DATA_PROVIDER_ID = "temporary_id"
 
 /** Controller that creates and retrieves all attributes of a survey. */
 @Singleton
@@ -28,12 +29,7 @@ class SurveyController @Inject constructor(
 ) {
   private val surveyId = UUID.randomUUID().toString()
 
-  /**
-   * Creates a survey with a unique [surveyId].
-   *
-   * @return a [DataProvider] with the created [Survey].
-   */
-  fun createSurvey(): DataProvider<Survey> {
+  private fun createSurvey(): DataProvider<Survey> {
     return dataProviders.createInMemoryDataProvider(CREATE_SURVEY_PROVIDER_ID) {
       Survey.newBuilder()
         .setSurveyId(surveyId)
@@ -48,11 +44,17 @@ class SurveyController @Inject constructor(
   ): DataProvider<Any?> {
     return try {
       val createSurveyDataProvider = createSurvey()
-      val beginSessionDataProvider = surveyProgressController.beginSurveySession(profileId)
+      // todo replace with real list
+      val questionsListDataProvider =
+        dataProviders.createInMemoryDataProvider(TEMP_QUESTIONS_LIST_DATA_PROVIDER_ID) {
+          createQuestions()
+        }
+      val beginSessionDataProvider =
+        surveyProgressController.beginSurveySession(profileId, questionsListDataProvider)
 
-      createSurveyDataProvider.combineWith(
-        beginSessionDataProvider, START_SURVEY_SESSION_PROVIDER_ID
-      ) { _, sessionResult -> sessionResult }
+      beginSessionDataProvider.combineWith(
+        createSurveyDataProvider, START_SURVEY_SESSION_PROVIDER_ID
+      ) { sessionResult, _ -> sessionResult }
     } catch (e: Exception) {
       // check out exceptionsController
       dataProviders.createInMemoryDataProviderAsync(START_SURVEY_SESSION_PROVIDER_ID) {
@@ -68,7 +70,7 @@ class SurveyController @Inject constructor(
     }
   }
 
-  private fun createQuestions() = mutableListOf(
+  private fun createQuestions() = listOf(
     createUserTypeQuestion(),
     createMarketFitQuestion(),
     createNpsScoreQuestion()
