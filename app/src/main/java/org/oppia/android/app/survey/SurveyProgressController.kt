@@ -1,8 +1,5 @@
 package org.oppia.android.app.survey
 
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -20,6 +17,9 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID = "SurveyProgressController.begin_session_result"
 private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =
@@ -83,7 +83,8 @@ class SurveyProgressController @Inject constructor(
     }
     val beginSessionResultFlow = createAsyncResultStateFlow<Any?>()
     val initializeMessage: ControllerMessage<*> =
-      ControllerMessage.InitializeController(ephemeralQuestionFlow, sessionId, beginSessionResultFlow
+      ControllerMessage.InitializeController(
+        ephemeralQuestionFlow, sessionId, beginSessionResultFlow
       )
     sendCommandForOperation(initializeMessage) {
       "Failed to schedule command for initializing the question assessment progress controller."
@@ -303,7 +304,9 @@ class SurveyProgressController @Inject constructor(
     ) : ControllerMessage<Any?>()
   }
 
-  private suspend fun ControllerState.handleUpdatedQuestionsList(questionsList: List<SurveyQuestion>) {
+  private suspend fun ControllerState.handleUpdatedQuestionsList(
+    questionsList: List<SurveyQuestion>
+  ) {
     // The questions list is possibly changed which may affect the computed ephemeral question.
     if (!this.isQuestionsListInitialized || this.questionsList != questionsList) {
       this.questionsList = questionsList
@@ -321,7 +324,7 @@ class SurveyProgressController @Inject constructor(
       resultFlow.emit(AsyncResult.Success(operation()))
       recomputeCurrentQuestionAndNotifySync()
     } catch (e: Exception) {
-      //exceptionsController.logNonFatalException(e)
+      // exceptionsController.logNonFatalException(e)
       resultFlow.emit(AsyncResult.Failure(e))
     }
   }
@@ -366,11 +369,12 @@ class SurveyProgressController @Inject constructor(
     )
   }
 
-  private fun ControllerState.retrieveEphemeralQuestion(questionsList: List<SurveyQuestion>): EphemeralSurveyQuestion {
-    return EphemeralSurveyQuestion.newBuilder()
-      .setQuestion(questionsList[0])
-      .build()
-  }
+  private fun ControllerState.retrieveEphemeralQuestion(questionsList: List<SurveyQuestion>):
+    EphemeralSurveyQuestion {
+      return EphemeralSurveyQuestion.newBuilder()
+        .setQuestion(questionsList[0])
+        .build()
+    }
 
   /**
    * Represents the current synchronized state of the controller.
@@ -385,7 +389,7 @@ class SurveyProgressController @Inject constructor(
    * @property commandQueue the actor command queue executing all messages that change this state
    */
   private class ControllerState(
-    //val progress: SurveyProgress,
+    // val progress: SurveyProgress,
     val sessionId: String,
     val ephemeralQuestionFlow: MutableStateFlow<AsyncResult<EphemeralSurveyQuestion>>,
     val commandQueue: SendChannel<ControllerMessage<*>>

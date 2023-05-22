@@ -8,7 +8,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
@@ -16,6 +15,7 @@ import org.oppia.android.databinding.SurveyFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** The presenter for [SurveyFragment]. */
 class SurveyFragmentPresenter @Inject constructor(
@@ -105,7 +105,7 @@ class SurveyFragmentPresenter @Inject constructor(
   }
 
   private fun processEphemeralQuestion(ephemeralQuestion: EphemeralSurveyQuestion) {
-    //updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
+    // updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
     updateProgress(1, 4)
     updateQuestionText(ephemeralQuestion.question.questionName)
   }
@@ -116,7 +116,7 @@ class SurveyFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun updateQuestionText(questionName: SurveyQuestionName){
+  private fun updateQuestionText(questionName: SurveyQuestionName) {
     surveyViewModel.updateQuestionText(questionName)
   }
 

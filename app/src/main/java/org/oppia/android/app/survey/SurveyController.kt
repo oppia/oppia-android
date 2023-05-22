@@ -1,8 +1,5 @@
 package org.oppia.android.app.survey
 
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Survey
@@ -16,6 +13,9 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val CREATE_SURVEY_PROVIDER_ID = "create_survey_provider_id"
 private const val START_SURVEY_SESSION_PROVIDER_ID = "start_survey_session_provider_id"
