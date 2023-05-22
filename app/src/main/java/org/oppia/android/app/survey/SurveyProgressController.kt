@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralSurveyQuestion
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.util.data.AsyncResult
@@ -67,7 +66,6 @@ class SurveyProgressController @Inject constructor(
    * whether the start was successful.
    */
   internal fun beginSurveySession(
-    profileId: ProfileId,
     questionsListDataProvider: DataProvider<List<SurveyQuestion>>
   ): DataProvider<Any?> {
     val ephemeralQuestionFlow = createAsyncResultStateFlow<EphemeralSurveyQuestion>()
@@ -85,8 +83,7 @@ class SurveyProgressController @Inject constructor(
     }
     val beginSessionResultFlow = createAsyncResultStateFlow<Any?>()
     val initializeMessage: ControllerMessage<*> =
-      ControllerMessage.InitializeController(
-        profileId, ephemeralQuestionFlow, sessionId, beginSessionResultFlow
+      ControllerMessage.InitializeController(ephemeralQuestionFlow, sessionId, beginSessionResultFlow
       )
     sendCommandForOperation(initializeMessage) {
       "Failed to schedule command for initializing the question assessment progress controller."
@@ -138,7 +135,7 @@ class SurveyProgressController @Inject constructor(
               message.ephemeralQuestionFlow,
               commandQueue
             ).also {
-              it.beginSurveySessionImpl(message.callbackFlow, message.profileId)
+              it.beginSurveySessionImpl(message.callbackFlow)
             }
           }
           is ControllerMessage.FinishSurveySession -> TODO()
@@ -194,8 +191,7 @@ class SurveyProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.beginSurveySessionImpl(
-    beginSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>,
-    profileId: ProfileId
+    beginSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
   ) {
     tryOperation(beginSessionResultFlow) {
       recomputeCurrentQuestionAndNotifyAsync()
@@ -234,7 +230,6 @@ class SurveyProgressController @Inject constructor(
 
     /** [ControllerMessage] for initializing a new survey session. */
     data class InitializeController(
-      val profileId: ProfileId,
       val ephemeralQuestionFlow: MutableStateFlow<AsyncResult<EphemeralSurveyQuestion>>,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>

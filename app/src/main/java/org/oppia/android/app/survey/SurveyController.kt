@@ -5,13 +5,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Survey
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveyQuestionOption
 import org.oppia.android.app.model.SurveyQuestionOptionList
 import org.oppia.android.app.model.UserTypeAnswer
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -19,13 +19,18 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 
 private const val CREATE_SURVEY_PROVIDER_ID = "create_survey_provider_id"
 private const val START_SURVEY_SESSION_PROVIDER_ID = "start_survey_session_provider_id"
-private const val TEMP_QUESTIONS_LIST_DATA_PROVIDER_ID = "temporary_id"
+private const val CREATE_QUESTIONS_LIST_PROVIDER_ID = "create_questions_list_provider_id"
 
-/** Controller that creates and retrieves all attributes of a survey. */
+/** Controller for creating and retrieving all attributes of a survey.
+ *
+ * Only one survey is shown at a time, and its progress is controlled by the
+ * [SurveyProgressController]
+ */
 @Singleton
 class SurveyController @Inject constructor(
   private val dataProviders: DataProviders,
-  private val surveyProgressController: SurveyProgressController
+  private val surveyProgressController: SurveyProgressController,
+  private val exceptionsController: ExceptionsController,
 ) {
   private val surveyId = UUID.randomUUID().toString()
 
@@ -37,26 +42,26 @@ class SurveyController @Inject constructor(
     }
   }
 
-  // todo add kdocs
-  // todo do something with list of question names
-  fun startSurveySession(
-    profileId: ProfileId
-  ): DataProvider<Any?> {
+  /**
+   * Starts a new survey session with a list of questions.
+   *
+   * @return a [DataProvider] indicating whether the session start was successful.
+   */
+  fun startSurveySession(): DataProvider<Any?> {
     return try {
       val createSurveyDataProvider = createSurvey()
-      // todo replace with real list
       val questionsListDataProvider =
-        dataProviders.createInMemoryDataProvider(TEMP_QUESTIONS_LIST_DATA_PROVIDER_ID) {
-          createQuestions()
+        dataProviders.createInMemoryDataProvider(CREATE_QUESTIONS_LIST_PROVIDER_ID) {
+          createSurveyQuestions()
         }
       val beginSessionDataProvider =
-        surveyProgressController.beginSurveySession(profileId, questionsListDataProvider)
+        surveyProgressController.beginSurveySession(questionsListDataProvider)
 
       beginSessionDataProvider.combineWith(
         createSurveyDataProvider, START_SURVEY_SESSION_PROVIDER_ID
       ) { sessionResult, _ -> sessionResult }
     } catch (e: Exception) {
-      // check out exceptionsController
+      exceptionsController.logNonFatalException(e)
       dataProviders.createInMemoryDataProviderAsync(START_SURVEY_SESSION_PROVIDER_ID) {
         AsyncResult.Failure(e)
       }
@@ -70,13 +75,43 @@ class SurveyController @Inject constructor(
     }
   }
 
-  private fun createQuestions() = listOf(
-    createUserTypeQuestion(),
-    createMarketFitQuestion(),
-    createNpsScoreQuestion()
-  )
+  private fun createSurveyQuestions(): List<SurveyQuestion> {
+    return SurveyQuestionName.values()
+      .filter { it.isValid() }
+      .map { questionName ->
+        createSurveyQuestion(
+          questionName,
+          OppiaLanguage.ENGLISH,
+          SurveyQuestion.QuestionTypeCase.MULTIPLE_CHOICE_WITH_OTHER
+        )
+      }
+  }
 
-  private fun createUserTypeQuestion(): SurveyQuestion {
+  private fun createSurveyQuestion(
+    questionName: SurveyQuestionName,
+    language: OppiaLanguage,
+    questionType: SurveyQuestion.QuestionTypeCase
+  ): SurveyQuestion {
+    val surveyQuestionBuilder = SurveyQuestion.newBuilder()
+      .setQuestionName(questionName)
+      .setLanguage(language)
+
+    return when (questionType) {
+      SurveyQuestion.QuestionTypeCase.MULTIPLE_CHOICE_WITH_OTHER -> {
+        surveyQuestionBuilder.setMultipleChoice(createUserTypeAnswerOptions()).build()
+      }
+      SurveyQuestion.QuestionTypeCase.MULTIPLE_CHOICE -> {
+        surveyQuestionBuilder.setMultipleChoice(createMarketFitAnswerOptions()).build()
+      }
+      SurveyQuestion.QuestionTypeCase.FREE_FORM_TEXT -> {
+        surveyQuestionBuilder.setFreeFormText(true).build()
+      }
+      else -> SurveyQuestion.getDefaultInstance()
+    }
+  }
+
+  // todo maybe add question_option_id
+  private fun createUserTypeAnswerOptions(): SurveyQuestionOptionList {
     val userTypeOptions = UserTypeAnswer.values()
       .filter { it.isValid() }
       .map { userType ->
@@ -84,20 +119,12 @@ class SurveyController @Inject constructor(
           .setUserType(userType)
           .build()
       }
-
-    return SurveyQuestion.newBuilder()
-      .setQuestionId("user_type_question")
-      .setQuestionName(SurveyQuestionName.USER_TYPE)
-      .setMultipleChoiceWithOther(
-        SurveyQuestionOptionList.newBuilder()
-          .addAllOptions(userTypeOptions)
-          .build()
-      )
-      .setLanguage(OppiaLanguage.ENGLISH) // TODO: get app language
+    return SurveyQuestionOptionList.newBuilder()
+      .addAllOptions(userTypeOptions)
       .build()
   }
 
-  private fun createMarketFitQuestion(): SurveyQuestion {
+  private fun createMarketFitAnswerOptions(): SurveyQuestionOptionList {
     val marketFitOptions = MarketFitAnswer.values()
       .filter { it.isValid() }
       .map { marketFitAnswer ->
@@ -105,41 +132,24 @@ class SurveyController @Inject constructor(
           .setMarketFit(marketFitAnswer)
           .build()
       }
-
-    return SurveyQuestion.newBuilder()
-      .setQuestionId("market_fit_question")
-      .setQuestionName(SurveyQuestionName.MARKET_FIT)
-      .setMultipleChoice(
-        SurveyQuestionOptionList.newBuilder()
-          .addAllOptions(marketFitOptions)
-          .build()
-      )
-      .setLanguage(OppiaLanguage.ENGLISH) // TODO: get app language
+    return SurveyQuestionOptionList.newBuilder()
+      .addAllOptions(marketFitOptions)
       .build()
   }
 
-  private fun createNpsScoreQuestion(): SurveyQuestion {
+  private fun createNpsScoreAnswerOptions(): SurveyQuestionOptionList {
     val npsOptions = (0..10).map { npsScore ->
       SurveyQuestionOption.newBuilder()
         .setNpsScore(npsScore)
         .build()
     }
-
-    return SurveyQuestion.newBuilder()
-      .setQuestionId("nps_question")
-      .setQuestionName(SurveyQuestionName.NPS)
-      .setMultipleChoice(
-        SurveyQuestionOptionList.newBuilder()
-          .addAllOptions(npsOptions)
-          .build()
-      )
-      .setLanguage(OppiaLanguage.ENGLISH) // TODO: get app language
+    return SurveyQuestionOptionList.newBuilder()
+      .addAllOptions(npsOptions)
       .build()
   }
 
   companion object {
-    /** Returns whether a [MarketFitAnswer] is valid */
-
+    /** Returns whether a [MarketFitAnswer] is valid. */
     fun MarketFitAnswer.isValid(): Boolean {
       return when (this) {
         MarketFitAnswer.UNRECOGNIZED, MarketFitAnswer.MARKET_FIT_ANSWER_UNSPECIFIED -> false
@@ -147,11 +157,18 @@ class SurveyController @Inject constructor(
       }
     }
 
-    /** Returns whether a [UserTypeAnswer] is valid */
-
+    /** Returns whether a [UserTypeAnswer] is valid. */
     fun UserTypeAnswer.isValid(): Boolean {
       return when (this) {
         UserTypeAnswer.UNRECOGNIZED, UserTypeAnswer.USER_TYPE_UNSPECIFIED -> false
+        else -> true
+      }
+    }
+
+    /** Returns whether a [SurveyQuestionName] is valid. */
+    fun SurveyQuestionName.isValid(): Boolean {
+      return when (this) {
+        SurveyQuestionName.UNRECOGNIZED, SurveyQuestionName.QUESTION_NAME_UNSPECIFIED -> false
         else -> true
       }
     }

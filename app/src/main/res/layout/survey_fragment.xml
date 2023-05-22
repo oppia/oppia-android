@@ -4,6 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools">
 
   <data>
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.survey.SurveyViewModel" />
@@ -11,8 +12,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:background="@color/component_color_survey_background_color"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/component_color_survey_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/survey_app_bar_layout"
@@ -55,9 +56,9 @@
             android:layout_marginStart="@dimen/survey_progress_text_margin_start"
             android:layout_marginEnd="@dimen/survey_progress_text_margin_end"
             android:fontFamily="sans-serif"
+            android:text="@{viewModel.questionProgressText}"
             android:textColor="@color/component_color_shared_secondary_4_text_color"
             android:textSize="14sp"
-            android:text="@{viewModel.questionProgressText}"
             tools:text="25%" />
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>
@@ -77,6 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/survey_question_text_margin"
         android:fontFamily="sans-serif-medium"
+        android:text="@{viewModel.questionText}"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"

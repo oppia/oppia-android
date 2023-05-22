@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import javax.inject.Inject
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.databinding.SurveyFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
@@ -62,7 +63,7 @@ class SurveyFragmentPresenter @Inject constructor(
   }
 
   private fun startSurveySession() {
-    val startDataProvider = surveyController.startSurveySession(profileId)
+    val startDataProvider = surveyController.startSurveySession()
     startDataProvider.toLiveData().observe(
       activity,
       {
@@ -105,14 +106,18 @@ class SurveyFragmentPresenter @Inject constructor(
 
   private fun processEphemeralQuestion(ephemeralQuestion: EphemeralSurveyQuestion) {
     //updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
-    println("Ephemeral question is ${ephemeralQuestion.question.questionName}")
     updateProgress(1, 4)
+    updateQuestionText(ephemeralQuestion.question.questionName)
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
     surveyViewModel.updateQuestionProgress(
       progressPercentage = (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt()
     )
+  }
+
+  private fun updateQuestionText(questionName: SurveyQuestionName){
+    surveyViewModel.updateQuestionText(questionName)
   }
 
   fun handleKeyboardAction() {
