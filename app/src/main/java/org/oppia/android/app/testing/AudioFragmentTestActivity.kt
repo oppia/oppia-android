@@ -23,11 +23,17 @@ class AudioFragmentTestActivity : InjectableAppCompatActivity() {
     audioFragmentTestActivityController.handleOnCreate(internalProfileId)
   }
 
+  /** Dagger injector for [AudioFragmentTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: AudioFragmentTestActivity)
   }
 
   companion object {
+    /**
+     * Returns an [Intent] for opening new instances of [AudioFragmentTestActivity] for the
+     * specified [internalProfileId].
+     */
     fun createIntent(context: Context, internalProfileId: Int?): Intent {
       val intent = Intent(context, AudioFragmentTestActivity::class.java)
       intent.putExtra(AUDIO_FRAGMENT_TEST_PROFILE_ID_ARGUMENT_KEY, internalProfileId)

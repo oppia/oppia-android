@@ -19,11 +19,14 @@ class ProfileChooserFragmentTestActivity : InjectableAppCompatActivity() {
     profileChooserFragmentTestActivityPresenter.handleOnCreate()
   }
 
+  /** Dagger injector for [ProfileChooserFragmentTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfileChooserFragmentTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ProfileChooserFragmentTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, ProfileChooserFragmentTestActivity::class.java)
   }

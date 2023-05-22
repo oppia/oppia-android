@@ -1,3 +1,8 @@
+"""
+Tests for UI components for a user study-only UI that helps facilitators monitor the analytics
+behaviors of learner profiles on the device.
+"""
+
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(

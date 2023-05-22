@@ -1,13 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for managing the list of topics for the home screen.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "AllTopicsViewModel.kt",
-    "TopicSummaryViewModel.kt",
-])
 
 oppia_android_library(
     name = "topic_summary_click_listener",

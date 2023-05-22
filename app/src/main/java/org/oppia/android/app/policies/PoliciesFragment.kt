@@ -50,7 +50,9 @@ class PoliciesFragment : InjectableFragment() {
     return policiesFragmentPresenter.handleCreateView(inflater, container, policies)
   }
 
+  /** Dagger injector for [PoliciesFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: PoliciesFragment)
   }
 }

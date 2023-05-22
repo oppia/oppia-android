@@ -104,7 +104,9 @@ class AudioFragment :
   /** Used in data binding to know position of user's touch */
   override fun getUserPosition() = audioFragmentPresenter.userProgress
 
+  /** Dagger injector for [AudioFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: AudioFragment)
   }
 }

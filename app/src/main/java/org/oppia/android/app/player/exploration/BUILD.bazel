@@ -1,21 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for displaying and managing an active exploration learning session.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "BottomSheetOptionsMenuDialogFragment.kt",
-    "ExplorationActivity.kt",
-    "ExplorationActivityPresenter.kt",
-    "ExplorationFragment.kt",
-    "ExplorationFragmentPresenter.kt",
-    "ExplorationManagerFragment.kt",
-    "ExplorationManagerFragmentPresenter.kt",
-    "ExplorationViewModel.kt",
-    "HintsAndSolutionExplorationManagerFragment.kt",
-    "HintsAndSolutionExplorationManagerFragmentPresenter.kt",
-])
 
 oppia_android_library(
     name = "bottom_sheet_options_menu_item_click_listener",

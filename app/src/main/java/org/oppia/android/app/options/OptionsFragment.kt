@@ -91,7 +91,9 @@ class OptionsFragment : InjectableFragment() {
     }
   }
 
+  /** Dagger injector for [OptionsFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: OptionsFragment)
   }
 }

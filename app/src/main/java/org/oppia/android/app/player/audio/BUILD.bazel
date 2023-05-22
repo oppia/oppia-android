@@ -1,18 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for controlling in-lesson audio voiceover playback.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "AudioFragment.kt",
-    "AudioFragmentPresenter.kt",
-    "AudioUiManager.kt",
-    "AudioViewModel.kt",
-    "CellularAudioDialogFragment.kt",
-    "CellularDataInterface.kt",
-    "LanguageDialogFragment.kt",
-])
 
 oppia_android_library(
     name = "audio_button_listener",

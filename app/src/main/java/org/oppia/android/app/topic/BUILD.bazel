@@ -1,16 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for displaying a topic and its constituent learning flows.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "TopicActivity.kt",
-    "TopicActivityPresenter.kt",
-    "TopicFragment.kt",
-    "TopicFragmentPresenter.kt",
-    "TopicViewModel.kt",
-])
 
 oppia_android_library(
     name = "topic_tab",
@@ -79,7 +71,8 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_list_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:subtitled_html_java_proto_lite",
@@ -101,11 +94,9 @@ oppia_android_library(
     srcs = ["TopicFragment.kt"],
     visibility = ["//app:app_prod_visibility"],
     deps = [
+        ":topic_fragment_presenter",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
-        "//app/src/main/java/org/oppia/android/app/topic:topic_fragment_presenter",
-        "//domain/src/main/java/org/oppia/android/domain/topic:story_progress_controller",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
         "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",

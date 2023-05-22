@@ -100,7 +100,9 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
     }
   }
 
+  /** Dagger injector for [ExitProfileDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ExitProfileDialogFragment)
   }
 }

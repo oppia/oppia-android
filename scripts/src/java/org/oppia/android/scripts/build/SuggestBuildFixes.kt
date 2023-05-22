@@ -176,8 +176,17 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       it is DetectedFailure.NoFailure || it is DetectedFailure.Unknown
     }.distinct().sortedBy { it.target }
     check(unknownFailures.isEmpty()) {
+      val rerunPackagePatterns =
+        unknownFailures.filter {
+          it.target.workspace == Workspace.Main
+        }.mapToSet { "//${it.target.pkg.path}/..." }
+      val removePackages = removePatterns.map { "-$it" }
+      val rerunPackageLine = (rerunPackagePatterns + removePackages).joinToString(separator = " ")
+      val rerunCommand =
+        "bazel build --keep_going --config=ignore_deps_issues -- $rerunPackageLine"
       "Encountered unknown failures for targets: ${unknownFailures.mapToSet { it.target }}." +
-        " Please resolve them directly and try again."
+        " Please resolve them directly and try again.\n\nYou can use the following command to" +
+        " investigate:\n  $rerunCommand"
     }
 
     for (failure in noteworthyFailures) {
@@ -411,8 +420,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
               Resolved(Target.parse(rawTarget))
             workspace in mavenThirdPartyPrefixMapping ->
               bazelClient.interpretMavenTarget(rawTarget, parsedTarget)
-            "/_aar/" in rawTarget ->
-              bazelClient.interpretAarTarget(rawTarget, parsedTarget)
+            "/_aar/" in rawTarget -> bazelClient.interpretAarTarget(rawTarget)
             // Special case re-interpretations since deps use a different target for these repos.
             workspace in externalRepoReferenceFixesMapping ->
               Resolved(externalRepoReferenceFixesMapping.getValue(workspace))
@@ -437,15 +445,13 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         }
       }
 
-      private fun BazelClient.interpretAarTarget(
-        rawTarget: String,
-        parsedTarget: Target?
-      ): InterpretedTarget {
+      private fun BazelClient.interpretAarTarget(rawTarget: String): InterpretedTarget {
         val mavenType =
           rawTarget.substringBefore("/_aar/").substringAfterLast('/', missingDelimiterValue = "")
         val targetName =
           rawTarget.substringAfter("/_aar/", missingDelimiterValue = "").substringBefore('/')
-        return interpretMavenTarget(rawTarget = "@$mavenType//:$targetName", parsedTarget)
+        val newRawTarget = "@$mavenType//:$targetName"
+        return interpretMavenTarget(newRawTarget, parsedTarget = Target.parse(newRawTarget))
       }
 
       private fun BazelClient.interpretMavenTarget(

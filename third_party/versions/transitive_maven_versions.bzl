@@ -85,7 +85,6 @@ PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
 }
 
 TEST_TRANSITIVE_DEPENDENCY_VERSIONS = {
-    "androidx.test:runner": "1.2.0",
     "com.almworks.sqlite4java:sqlite4java": "1.0.392",
     "com.ibm.icu:icu4j": "53.1",
     "com.squareup:javawriter": "2.1.1",

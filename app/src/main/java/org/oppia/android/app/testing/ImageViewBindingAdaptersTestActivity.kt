@@ -14,11 +14,14 @@ class ImageViewBindingAdaptersTestActivity : InjectableAppCompatActivity() {
     setContentView(R.layout.test_image_view_bindable_adapter_activity)
   }
 
+  /** Dagger injector for [ImageViewBindingAdaptersTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ImageViewBindingAdaptersTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [ImageViewBindingAdaptersTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, ImageViewBindingAdaptersTestActivity::class.java)
   }

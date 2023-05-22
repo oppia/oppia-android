@@ -129,7 +129,9 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   private fun getSkillId(): String? = arguments?.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)
 
+  /** Dagger injector for [ConceptCardFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ConceptCardFragment)
   }
 }

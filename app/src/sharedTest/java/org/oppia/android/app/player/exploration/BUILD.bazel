@@ -5,8 +5,8 @@ Tests for exploration player.
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
-    name = "BottomSheetOptionsMenuTest",
-    srcs = ["BottomSheetOptionsMenuTest.kt"],
+    name = "BottomSheetOptionsMenuDialogFragmentTest",
+    srcs = ["BottomSheetOptionsMenuDialogFragmentTest.kt"],
     android_merge_deps = [
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//domain:assets",

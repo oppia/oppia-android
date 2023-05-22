@@ -112,6 +112,7 @@ dependencies {
       'com.google.truth:truth:1.1.3',
       'com.squareup.okhttp3:mockwebserver:4.7.2',
       'junit:junit:4.13.2',
+      'org.jetbrains.kotlin:kotlin-reflect:$kotlin_version',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',

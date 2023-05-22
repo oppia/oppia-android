@@ -26,6 +26,7 @@ class HomeFragmentTestActivity :
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [HomeFragmentTestActivity]. */
     fun createIntent(context: Context): Intent =
       Intent(context, HomeFragmentTestActivity::class.java)
   }
@@ -35,7 +36,9 @@ class HomeFragmentTestActivity :
   override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {}
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {}
 
+  /** Dagger injector for [HomeFragmentTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: HomeFragmentTestActivity)
   }
 }

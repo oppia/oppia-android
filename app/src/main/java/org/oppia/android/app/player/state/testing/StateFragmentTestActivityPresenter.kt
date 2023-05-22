@@ -19,7 +19,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-// TODO: Consolidate with the one in ExplorationActivityPresenter.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER =
   "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
 

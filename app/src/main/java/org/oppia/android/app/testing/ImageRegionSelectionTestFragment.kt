@@ -39,7 +39,9 @@ class ImageRegionSelectionTestFragment : InjectableFragment(), OnClickableAreaCl
     mockOnClickableAreaClickedListener.onClickableAreaTouched(region)
   }
 
+  /** Dagger injector for [ImageRegionSelectionTestFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ImageRegionSelectionTestFragment)
   }
 }

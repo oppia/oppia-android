@@ -79,7 +79,9 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
     }
   }
 
+  /** Dagger injector for [AudioLanguageFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: AudioLanguageFragment)
   }
 }

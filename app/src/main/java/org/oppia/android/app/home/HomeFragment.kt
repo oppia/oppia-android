@@ -31,7 +31,9 @@ class HomeFragment : InjectableFragment(), TopicSummaryClickListener {
     homeFragmentPresenter.onTopicSummaryClicked(topicSummary)
   }
 
+  /** Dagger injector for [HomeFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: HomeFragment)
   }
 }

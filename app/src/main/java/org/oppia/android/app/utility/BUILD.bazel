@@ -1,5 +1,5 @@
 """
-TODO: finish build file doc.
+General app UI frontend utilities.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")

@@ -52,7 +52,9 @@ class CompletedStoryListFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [CompletedStoryListFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: CompletedStoryListFragment)
   }
 }

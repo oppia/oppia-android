@@ -1,5 +1,5 @@
 """
-TODO: finish build file doc.
+Tests for test-only activities and structures used for verifying UI components throughout the app.
 """
 
 load("//defs:oppia_android_test.bzl", "oppia_android_test")
@@ -63,7 +63,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
         "//model/src/main/proto:platform_parameter_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/network",
         "//testing/src/main/java/org/oppia/android/testing/network:test_module",
@@ -163,7 +163,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/question:question_module",
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -245,7 +245,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/question:question_module",
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -337,7 +337,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//model/src/main/proto:profile_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/story:story_progress_test_helper",
@@ -424,7 +424,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/question:question_module",
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -510,7 +510,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/question:question_module",
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
@@ -599,7 +599,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/question:question_module",
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -684,7 +684,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/question:question_module",
         "//domain/src/main/java/org/oppia/android/domain/topic:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:prod_module",
-        "//testing/src/main/java/org/oppia/android/testing",
+        "//testing/src/main/java/org/oppia/android/testing:test_log_reporting_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

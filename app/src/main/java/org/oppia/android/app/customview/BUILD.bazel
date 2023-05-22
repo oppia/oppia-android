@@ -1,17 +1,8 @@
 """
-TODO: finish build file doc.
+Assorted custom Android views that are used in UIs throughout the app.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ChapterNotStartedContainerConstraintLayout.kt",
-    "ContinueButtonView.kt",
-    "LessonThumbnailImageView.kt",
-    "PromotedStoryCardView.kt",
-    "SegmentedCircularProgressView.kt",
-    "VerticalDashedLineView.kt",
-])
 
 oppia_android_library(
     name = "chapter_not_started_container_constraint_layout",

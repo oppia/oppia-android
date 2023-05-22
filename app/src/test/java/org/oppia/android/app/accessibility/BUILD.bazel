@@ -1,5 +1,5 @@
 """
-TODO: finish build file doc.
+Tests for general-purpose utilities for Android accessibility checking.
 """
 
 load("//defs:oppia_android_test.bzl", "oppia_android_test")

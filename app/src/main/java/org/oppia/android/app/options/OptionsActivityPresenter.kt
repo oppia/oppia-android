@@ -13,7 +13,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
 
-// TODO: Consolidate these with the ones in OptionsActivity & clean them up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
 private const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
 private const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"

@@ -35,7 +35,9 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
     walkthroughActivityPresenter.handleSystemBack()
   }
 
+  /** Dagger injector for [WalkthroughActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: WalkthroughActivity)
   }
 

@@ -43,7 +43,9 @@ class HelpFragment : InjectableFragment() {
     return helpFragmentPresenter.handleCreateView(inflater, container, isMultipane)
   }
 
+  /** Dagger injector for [HelpFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: HelpFragment)
   }
 }

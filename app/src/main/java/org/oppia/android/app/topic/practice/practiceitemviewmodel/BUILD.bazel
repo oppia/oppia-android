@@ -1,15 +1,8 @@
 """
-TODO: finish build file doc.
+View models for displaying the initiation flow for a practice session in a topic.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "TopicPracticeFooterViewModel.kt",
-    "TopicPracticeHeaderViewModel.kt",
-    "TopicPracticeItemViewModel.kt",
-    "TopicPracticeSubtopicViewModel.kt",
-])
 
 oppia_android_library(
     name = "topic_practice_footer_view_model",

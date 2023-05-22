@@ -16,7 +16,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
 import javax.inject.Inject
 
-// TODO: Consolidate these with AdministratorControlsActivity & clean it up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
   "AdministratorControlsActivity.selected_controls_title"
 private const val SELECTED_PROFILE_ID_SAVED_KEY =
@@ -162,7 +162,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     extraControlsTitle = profileName
     setExtraControlsTitle(extraControlsTitle)
     setMultipaneBackButtonVisibility(View.VISIBLE)
-    val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
+    val fragment =
+      ProfileEditFragment.newInstance(profileId, isMultipane, autoUpdateActivityTitle = false)
     activity.supportFragmentManager.beginTransaction().replace(
       R.id.administrator_controls_fragment_multipane_placeholder,
       fragment

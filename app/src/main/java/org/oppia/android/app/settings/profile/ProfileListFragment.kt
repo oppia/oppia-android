@@ -44,7 +44,9 @@ class ProfileListFragment : InjectableFragment() {
     return profileListFragmentPresenter.handleOnCreateView(inflater, container, isMultipane)
   }
 
+  /** Dagger injector for [ProfileListFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ProfileListFragment)
   }
 }

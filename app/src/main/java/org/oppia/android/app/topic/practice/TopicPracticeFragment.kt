@@ -9,7 +9,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
-// TODO: Consolidate these up with the ones in TopicActivityPresenter & clean up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 private const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 
@@ -78,7 +78,9 @@ class TopicPracticeFragment : InjectableFragment() {
     )
   }
 
+  /** Dagger injector for [TopicPracticeFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: TopicPracticeFragment)
   }
 }

@@ -10,7 +10,7 @@ import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileListActivityParams
 import javax.inject.Inject
 
-// TODO: Consolidate with ones in ProfileEditActivity & clean up.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"
 private const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY =
   "ProfileEditActivity.profile_edit_profile_id"
@@ -49,7 +49,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     if (getProfileEditFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_edit_fragment_placeholder,
-        ProfileEditFragment.newInstance(profileId, isMultipane)
+        ProfileEditFragment.newInstance(profileId, isMultipane, autoUpdateActivityTitle = true)
       ).commitNow()
     }
   }

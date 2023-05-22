@@ -23,7 +23,9 @@ class ProfilePictureActivity : InjectableAppCompatActivity() {
     profilePictureActivityPresenter.handleOnCreate(internalProfileId)
   }
 
+  /** Dagger injector for [ProfilePictureActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfilePictureActivity)
   }
 

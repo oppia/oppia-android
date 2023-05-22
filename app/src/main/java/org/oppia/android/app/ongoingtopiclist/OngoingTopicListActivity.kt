@@ -22,7 +22,9 @@ class OngoingTopicListActivity : InjectableAppCompatActivity() {
     ongoingTopicListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
+  /** Dagger injector for [OngoingTopicListActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: OngoingTopicListActivity)
   }
 

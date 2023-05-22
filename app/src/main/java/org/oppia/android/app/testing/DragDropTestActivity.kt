@@ -18,11 +18,14 @@ class DragDropTestActivity : InjectableAppCompatActivity() {
     dragDropTestActivityPresenter.handleOnCreate()
   }
 
+  /** Dagger injector for [DragDropTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: DragDropTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [DragDropTestActivity]. */
     fun createIntent(context: Context): Intent = Intent(context, DragDropTestActivity::class.java)
   }
 }

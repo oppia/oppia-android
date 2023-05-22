@@ -40,7 +40,9 @@ class ProfileListActivity :
     )
   }
 
+  /** Dagger injector for [ProfileListActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: ProfileListActivity)
   }
 

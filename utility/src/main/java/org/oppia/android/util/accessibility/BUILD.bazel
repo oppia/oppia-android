@@ -1,5 +1,5 @@
 """
-General purposes utilities for Android accessibility checking.
+General-purpose utilities for Android accessibility checking.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")

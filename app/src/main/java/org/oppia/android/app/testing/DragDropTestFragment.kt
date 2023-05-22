@@ -52,7 +52,9 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
     dragDropTestFragmentPresenter.onItemDragged(indexFrom, indexTo, adapter)
   }
 
+  /** Dagger injector for [DragDropTestFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: DragDropTestFragment)
   }
 }

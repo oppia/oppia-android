@@ -1,17 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for app-wide administrator controls, such as editing profiles on the device.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "AdministratorControlsActivity.kt",
-    "AdministratorControlsActivityPresenter.kt",
-    "AdministratorControlsFragment.kt",
-    "AdministratorControlsFragmentPresenter.kt",
-    "AdministratorControlsViewModel.kt",
-    "LogoutDialogFragment.kt",
-])
 
 oppia_android_library(
     name = "load_app_version_listener",

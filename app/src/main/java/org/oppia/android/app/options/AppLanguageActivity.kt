@@ -65,7 +65,9 @@ class AppLanguageActivity : InjectableAppCompatActivity(), AppLanguageSelectionL
     appLanguageActivityPresenter.setLanguageSelected(appLanguage)
   }
 
+  /** Dagger injector for [AppLanguageActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: AppLanguageActivity)
   }
 }

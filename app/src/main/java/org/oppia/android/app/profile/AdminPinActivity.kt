@@ -17,6 +17,16 @@ class AdminPinActivity : InjectableAppCompatActivity() {
   lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
 
   companion object {
+    /**
+     * Creates an [Intent] for opening new instances of [AdminPinActivity].
+     *
+     * @param context the [Context] in which the activity should be opened
+     * @param profileId the ID of the admin profile whose PIN is being updated
+     * @param colorRgb the 3-byte color RGB value of the profile's background avatar color
+     * @param adminPinEnum the [AdminAuthEnum] ordinal indicating to where the user should be
+     *     navigated after the PIN has been updated
+     * @return the new [Intent] that cna be used to open a [AdminPinActivity]
+     */
     fun createIntent(
       context: Context,
       profileId: Int,
@@ -43,7 +53,9 @@ class AdminPinActivity : InjectableAppCompatActivity() {
     return false
   }
 
+  /** Dagger injector for [AdminPinActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: AdminPinActivity)
   }
 }

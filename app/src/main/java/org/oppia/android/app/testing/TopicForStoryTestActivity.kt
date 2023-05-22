@@ -117,7 +117,9 @@ class TopicForStoryTestActivity :
     )
   }
 
+  /** Dagger injector for [TopicForStoryTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: TopicForStoryTestActivity)
   }
 }

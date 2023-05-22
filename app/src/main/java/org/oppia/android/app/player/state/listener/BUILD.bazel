@@ -1,5 +1,5 @@
 """
-TODO: finish build file doc.
+Listeners that define possible callback and navigation flows within an active state.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")

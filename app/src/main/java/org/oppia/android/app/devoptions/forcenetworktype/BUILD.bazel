@@ -1,17 +1,9 @@
 """
-TODO: finish build file doc.
+UI Components corresponding to forcibly changing the app-wide network type and connection status via
+the developer-only options menu.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "ForceNetworkTypeActivity.kt",
-    "ForceNetworkTypeActivityPresenter.kt",
-    "ForceNetworkTypeFragment.kt",
-    "ForceNetworkTypeFragmentPresenter.kt",
-    "ForceNetworkTypeViewModel.kt",
-    "NetworkTypeItemViewModel.kt",
-])
 
 oppia_android_library(
     name = "force_network_type_view_model",

@@ -61,6 +61,17 @@ class StateFragmentTestActivity :
   override fun onEditorAction(actionCode: Int) {}
 
   companion object {
+    /**
+     * Creates an [Intent] for opening new instances of [StateFragmentTestActivity].
+     *
+     * @param context the [Context] in which the activity should be opened
+     * @param profileId the ID of the profile whose PIN needs to be verified
+     * @param topicId the ID of the topic whose story chapter is being opened
+     * @param storyId the ID of the story whose chapter is being opened
+     * @param explorationId the ID of exploration being opened
+     * @param shouldSavePartialProgress whether partial progress should be saved during the session
+     * @return the new [Intent] that cna be used to open a [StateFragmentTestActivity]
+     */
     fun createIntent(
       context: Context,
       profileId: Int,
@@ -138,7 +149,9 @@ class StateFragmentTestActivity :
     ) as HintsAndSolutionDialogFragment?
   }
 
+  /** Dagger injector for [StateFragmentTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: StateFragmentTestActivity)
   }
 }

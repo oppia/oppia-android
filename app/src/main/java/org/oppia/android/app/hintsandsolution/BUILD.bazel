@@ -1,20 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for displaying hints and solutions, accessible within a lesson or practice session.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "HintViewModel.kt",
-    "HintsAndSolutionDialogFragment.kt",
-    "HintsAndSolutionDialogFragmentPresenter.kt",
-    "HintsAndSolutionItemViewModel.kt",
-    "HintsAndSolutionViewModel.kt",
-    "ReturnToLessonViewModel.kt",
-    "RevealSolutionDialogFragment.kt",
-    "RevealSolutionInterface.kt",
-    "SolutionViewModel.kt",
-])
 
 oppia_android_library(
     name = "expanded_hint_list_index_listener",

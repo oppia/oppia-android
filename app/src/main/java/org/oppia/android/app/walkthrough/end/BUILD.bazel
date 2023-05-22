@@ -1,14 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for managing the ending of the app walkthrough experience.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "WalkthroughFinalFragment.kt",
-    "WalkthroughFinalFragmentPresenter.kt",
-    "WalkthroughFinalViewModel.kt",
-])
 
 oppia_android_library(
     name = "walkthrough_back_navigation_listener",
@@ -53,13 +47,13 @@ oppia_android_library(
     srcs = ["WalkthroughFinalFragmentPresenter.kt"],
     visibility = ["//app:app_prod_visibility"],
     deps = [
+        ":walkthrough_back_navigation_listener",
+        ":walkthrough_final_view_model",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
-        "//app/src/main/java/org/oppia/android/app/walkthrough/end:walkthrough_back_navigation_listener",
-        "//app/src/main/java/org/oppia/android/app/walkthrough/end:walkthrough_final_view_model",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controllers",
+        "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:subtitled_html_java_proto_lite",

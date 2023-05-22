@@ -29,7 +29,9 @@ class HintsAndSolutionQuestionManagerFragment : InjectableFragment() {
     return hintsAndSolutionQuestionManagerFragmentPresenter.handleCreateView()
   }
 
+  /** Dagger injector for [HintsAndSolutionQuestionManagerFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: HintsAndSolutionQuestionManagerFragment)
   }
 }

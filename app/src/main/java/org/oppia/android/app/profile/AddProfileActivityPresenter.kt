@@ -37,7 +37,7 @@ import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
-// TODO: Consolidate with the one in AddProfileActivity.
+// TODO(#4986): Remove the constants corresponding to bundles.
 private const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
 
 private const val GALLERY_INTENT_RESULT_CODE = 1

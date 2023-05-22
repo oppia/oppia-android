@@ -79,7 +79,9 @@ class ExplorationFragment : InjectableFragment() {
 
   fun getExplorationCheckpointState() = explorationFragmentPresenter.getExplorationCheckpointState()
 
+  /** Dagger injector for [ExplorationFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ExplorationFragment)
   }
 }

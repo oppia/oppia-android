@@ -43,7 +43,9 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
     )
   }
 
+  /** Dagger injector for [ResetPinDialogFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: ResetPinDialogFragment)
   }
 }

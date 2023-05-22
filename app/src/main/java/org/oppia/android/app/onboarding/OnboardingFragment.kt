@@ -26,7 +26,9 @@ class OnboardingFragment : InjectableFragment() {
     return onboardingFragmentPresenter.handleCreateView(inflater, container)
   }
 
+  /** Dagger injector for [OnboardingFragment]. */
   interface Injector {
+    /** Injects dependencies into the [fragment]. */
     fun inject(fragment: OnboardingFragment)
   }
 }

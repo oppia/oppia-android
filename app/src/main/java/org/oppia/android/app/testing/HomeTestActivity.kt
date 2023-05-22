@@ -18,11 +18,14 @@ class HomeTestActivity : InjectableAppCompatActivity() {
     homeTestActivityPresenter.handleOnCreate()
   }
 
+  /** Dagger injector for [HomeTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: HomeTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [HomeTestActivity]. */
     fun createIntent(context: Context): Intent = Intent(context, HomeTestActivity::class.java)
   }
 }

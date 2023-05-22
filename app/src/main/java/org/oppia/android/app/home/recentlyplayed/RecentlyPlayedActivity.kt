@@ -103,7 +103,9 @@ class RecentlyPlayedActivity :
     )
   }
 
+  /** Dagger injector for [RecentlyPlayedActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: RecentlyPlayedActivity)
   }
 

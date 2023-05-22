@@ -22,11 +22,14 @@ class SplashTestActivity : InjectableAppCompatActivity() {
     splashTestActivityPresenter.handleOnCreate()
   }
 
+  /** Dagger injector for [SplashTestActivity]. */
   interface Injector {
+    /** Injects dependencies into the [activity]. */
     fun inject(activity: SplashTestActivity)
   }
 
   companion object {
+    /** Returns an [Intent] for opening new instances of [SplashTestActivity]. */
     fun createIntent(context: Context): Intent = Intent(context, SplashTestActivity::class.java)
   }
 }

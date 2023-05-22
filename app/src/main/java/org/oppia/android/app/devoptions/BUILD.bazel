@@ -1,20 +1,10 @@
 """
-TODO: finish build file doc.
+UI components for a developer-only options menu that contains various functionality to help modify
+and inspect app behavior in a variety of situations, including event logs, forcing crashes, changing
+lesson completion progress, and more.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "DeveloperOptionsActivity.kt",
-    "DeveloperOptionsActivityPresenter.kt",
-    "DeveloperOptionsFragment.kt",
-    "DeveloperOptionsFragmentPresenter.kt",
-    "DeveloperOptionsModule.kt",
-    "DeveloperOptionsStarter.kt",
-    "DeveloperOptionsStarterImpl.kt",
-    "DeveloperOptionsStarterModule.kt",
-    "DeveloperOptionsViewModel.kt",
-])
 
 oppia_android_library(
     name = "force_crash_button_click_listener",

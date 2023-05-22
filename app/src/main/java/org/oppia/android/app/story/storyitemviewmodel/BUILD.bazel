@@ -1,14 +1,8 @@
 """
-TODO: finish build file doc.
+View models for displaying a list of chapters.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "StoryChapterSummaryViewModel.kt",
-    "StoryHeaderViewModel.kt",
-    "StoryItemViewModel.kt",
-])
 
 oppia_android_library(
     name = "story_chapter_summary_view_model",

@@ -1,16 +1,8 @@
 """
-TODO: finish build file doc.
+UI components for displaying the human-readable version name of the app.
 """
 
 load("//defs:oppia_android_library.bzl", "oppia_android_library")
-
-exports_files([
-    "AppVersionActivity.kt",
-    "AppVersionActivityPresenter.kt",
-    "AppVersionFragment.kt",
-    "AppVersionFragmentPresenter.kt",
-    "AppVersionViewModel.kt",
-])
 
 oppia_android_library(
     name = "app_version_view_model",
