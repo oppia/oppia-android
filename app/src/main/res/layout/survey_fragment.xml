@@ -3,6 +3,12 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools">
 
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.survey.SurveyViewModel" />
+  </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:background="@color/component_color_survey_background_color"
@@ -38,7 +44,7 @@
             android:layout_height="@dimen/survey_progress_bar_height"
             android:layout_weight="1"
             android:max="100"
-            android:progress="25"
+            android:progress="@{viewModel.progressPercentage}"
             android:progressDrawable="@drawable/survey_progress_bar" />
 
           <TextView
@@ -51,6 +57,7 @@
             android:fontFamily="sans-serif"
             android:textColor="@color/component_color_shared_secondary_4_text_color"
             android:textSize="14sp"
+            android:text="@{viewModel.questionProgressText}"
             tools:text="25%" />
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>
