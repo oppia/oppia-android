@@ -12,6 +12,7 @@ import org.oppia.android.app.model.SurveyQuestionName
 internal class SurveyProgress {
   internal var surveyStage: SurveyStage = SurveyStage.NOT_IN_SURVEY_SESSION
   private var questionList: List<SurveyQuestion> = listOf()
+  private var isTopQuestionCompleted: Boolean = false
 
   internal lateinit var currentQuestion: SurveyQuestion
   internal lateinit var currentSurvey: Survey
@@ -31,6 +32,16 @@ internal class SurveyProgress {
       questionGraph.getQuestion(currentQuestion.questionName),
       ::isTopQuestionTerminal
     )
+  }
+
+   /** Returns whether the learner is currently viewing the most recent question. */
+  internal fun isViewingMostRecentQuestion(): Boolean {
+    return questionDeck.isCurrentQuestionTopOfDeck()
+  }
+
+  /** Processes when a new pending question has been navigated to. */
+  internal fun processNavigationToNewQuestion() {
+    isTopQuestionCompleted = false
   }
 
   companion object {

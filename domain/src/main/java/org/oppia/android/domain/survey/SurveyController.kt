@@ -1,5 +1,8 @@
-package org.oppia.android.app.survey
+package org.oppia.android.domain.survey
 
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Survey
@@ -13,9 +16,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
-import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val CREATE_SURVEY_PROVIDER_ID = "create_survey_provider_id"
 private const val START_SURVEY_SESSION_PROVIDER_ID = "start_survey_session_provider_id"
@@ -30,7 +30,7 @@ private const val CREATE_QUESTIONS_LIST_PROVIDER_ID = "create_questions_list_pro
 class SurveyController @Inject constructor(
   private val dataProviders: DataProviders,
   private val surveyProgressController: SurveyProgressController,
-  private val exceptionsController: ExceptionsController,
+  private val exceptionsController: ExceptionsController
 ) {
   private val surveyId = UUID.randomUUID().toString()
 
@@ -65,13 +65,6 @@ class SurveyController @Inject constructor(
       dataProviders.createInMemoryDataProviderAsync(START_SURVEY_SESSION_PROVIDER_ID) {
         AsyncResult.Failure(e)
       }
-    }
-  }
-
-  // todo refine and move to progress controller
-  fun getQuestion(): DataProvider<SurveyQuestionName> {
-    return dataProviders.createInMemoryDataProvider("create_random_question_provider") {
-      SurveyQuestionName.USER_TYPE
     }
   }
 

@@ -1,5 +1,8 @@
-package org.oppia.android.app.survey
+package org.oppia.android.domain.survey
 
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -11,15 +14,13 @@ import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveySelectedAnswer
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.threading.BackgroundDispatcher
-import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID = "SurveyProgressController.begin_session_result"
 private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =
@@ -30,6 +31,10 @@ private const val CURRENT_QUESTION_PROVIDER_ID =
   "SurveyProgressController.current_question"
 private const val EPHEMERAL_QUESTION_FROM_UPDATED_QUESTION_LIST_PROVIDER_ID =
   "SurveyProgressController.ephemeral_question_from_updated_question_list"
+private const val MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID =
+  "SurveyProgressController.move_to_next_question_result"
+private const val MOVE_TO_PREVIOUS_QUESTION_RESULT_PROVIDER_ID =
+  "SurveyProgressController.move_to_previous_question_result"
 
 /**
  * A default session ID to be used before a session has been initialized.
@@ -45,6 +50,7 @@ private const val DEFAULT_SESSION_ID = "default_session_id"
 @Singleton
 class SurveyProgressController @Inject constructor(
   private val dataProviders: DataProviders,
+  private val exceptionsController: ExceptionsController,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   private var mostRecentSessionId: String? = null
@@ -105,6 +111,44 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
+  /**
+   * Navigates to the next question in the survey. Calling code is responsible for ensuring this
+   * method is only called when it's possible to navigate forward.
+   *
+   * @return a [DataProvider] indicating whether the movement to the next question was successful,
+   * or a failure if question navigation was attempted at an invalid time (such as if the current
+   * question is pending or terminal). It's recommended that calling code only listen to this result
+   * for failures, and instead rely on [getCurrentQuestion] for observing a successful transition to
+   * another question.
+   */
+  fun moveToNextQuestion(): DataProvider<Any?> {
+    val moveResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.MoveToNextQuestion(activeSessionId, moveResultFlow)
+    sendCommandForOperation(message) {
+      "Failed to schedule command for moving to the next question."
+    }
+    return moveResultFlow.convertToSessionProvider(MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID)
+  }
+
+  /**
+   * Navigates to the previous question in the survey. Calling code is responsible for ensuring this
+   * method is only called when it's possible to navigate forward.
+   *
+   * @return a [DataProvider] indicating whether the movement to the previous question was
+   * successful, or a failure if question navigation was attempted at an invalid time (such as if
+   * the current question is pending or terminal). It's recommended that calling code only listen
+   * to this result for failures, and instead rely on [getCurrentQuestion] for observing a
+   * successful transition to another question.
+   */
+  fun moveToPreviousQuestion(): DataProvider<Any?> {
+    val moveResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.MoveToPreviousQuestion(activeSessionId, moveResultFlow)
+    sendCommandForOperation(message) {
+      "Failed to schedule command for moving to the previous question."
+    }
+    return moveResultFlow.convertToSessionProvider(MOVE_TO_PREVIOUS_QUESTION_RESULT_PROVIDER_ID)
+  }
+
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<SurveyQuestion>>
   ): DataProviders.NestedTransformedDataProvider<Any?> {
@@ -132,6 +176,7 @@ class SurveyProgressController @Inject constructor(
         when (message) {
           is ControllerMessage.InitializeController -> {
             controllerState = ControllerState(
+              SurveyProgress(),
               message.sessionId,
               message.ephemeralQuestionFlow,
               commandQueue
@@ -140,8 +185,12 @@ class SurveyProgressController @Inject constructor(
             }
           }
           is ControllerMessage.FinishSurveySession -> TODO()
-          is ControllerMessage.MoveToNextQuestion -> TODO()
-          is ControllerMessage.MoveToPreviousQuestion -> TODO()
+          is ControllerMessage.MoveToNextQuestion -> controllerState.moveToNextQuestion(
+            message.callbackFlow
+          )
+          is ControllerMessage.MoveToPreviousQuestion -> controllerState.moveToPreviousQuestion(
+            message.callbackFlow
+          )
           is ControllerMessage.RecomputeQuestionAndNotify ->
             controllerState.recomputeCurrentQuestionAndNotifySync()
           is ControllerMessage.SaveFullCompletion -> TODO()
@@ -324,8 +373,36 @@ class SurveyProgressController @Inject constructor(
       resultFlow.emit(AsyncResult.Success(operation()))
       recomputeCurrentQuestionAndNotifySync()
     } catch (e: Exception) {
-      // exceptionsController.logNonFatalException(e)
+      exceptionsController.logNonFatalException(e)
       resultFlow.emit(AsyncResult.Failure(e))
+    }
+  }
+
+  private suspend fun ControllerState.moveToNextQuestion(
+    moveToNextQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveToNextQuestionResultFlow) {
+      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
+        "Cannot navigate to a next question if an answer submission is pending."
+      }
+      progress.questionDeck.navigateToNextQuestion()
+      if (progress.isViewingMostRecentQuestion()) {
+        progress.processNavigationToNewQuestion()
+      }
+    }
+  }
+
+  private suspend fun ControllerState.moveToPreviousQuestion(
+    moveToPreviousQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveToPreviousQuestionResultFlow) {
+      check(progress.surveyStage != SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION) {
+        "Cannot navigate to a previous question if the current question is initial." // todo replace with check for question index
+      }
+      progress.questionDeck.navigateToPreviousQuestion()
+      if (progress.isViewingMostRecentQuestion()) {
+        progress.processNavigationToNewQuestion() // todo retrieve previous selected answer
+      }
     }
   }
 
@@ -371,10 +448,10 @@ class SurveyProgressController @Inject constructor(
 
   private fun ControllerState.retrieveEphemeralQuestion(questionsList: List<SurveyQuestion>):
     EphemeralSurveyQuestion {
-      return EphemeralSurveyQuestion.newBuilder()
-        .setQuestion(questionsList[0])
-        .build()
-    }
+    return EphemeralSurveyQuestion.newBuilder()
+      .setQuestion(questionsList[0])
+      .build()
+  }
 
   /**
    * Represents the current synchronized state of the controller.
@@ -389,7 +466,7 @@ class SurveyProgressController @Inject constructor(
    * @property commandQueue the actor command queue executing all messages that change this state
    */
   private class ControllerState(
-    // val progress: SurveyProgress,
+    val progress: SurveyProgress,
     val sessionId: String,
     val ephemeralQuestionFlow: MutableStateFlow<AsyncResult<EphemeralSurveyQuestion>>,
     val commandQueue: SendChannel<ControllerMessage<*>>
