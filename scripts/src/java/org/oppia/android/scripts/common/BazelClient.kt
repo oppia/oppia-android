@@ -25,6 +25,11 @@ class BazelClient(
    *     false.
    * @param configProfiles the set of configuration profiles to enable, e.g. using
    *     ``bazel --config=<profile_name>``. This defaults to an empty set (i.e. no profiles).
+   * @param reportProgress a callback that continuously receives two parameters during the build:
+   *     the first being the number of targets built, and the second being the total to build. Note
+   *     that the total may change throughout the build since Bazel computes its action graph
+   *     alongside building for performance reasons. If ``null`` is provided then progress isn't
+   *     reported. This defaults to ``null``.
    * @return the [Result] of the attempted build
    */
   fun build(
@@ -48,6 +53,21 @@ class BazelClient(
     } else executeBazelCommand("build", *args.toTypedArray(), allowAllFailures = allowFailures)
   }
 
+  /**
+   * Attempts to run the provided test patterns using ``bazel test``.
+   *
+   * @param patterns one or more test patterns, as ``bazel test`` usually accepts
+   * @param keepGoing whether to continue building if any targets in the provided patterns fails to
+   *     build. This defaults to false.
+   * @param allowFailures whether to throw an exception on a build or test failure, or to instead
+   *     capture the results of the failure as part of the returned [Result.outputLines]. This
+   *     defaults to false.
+   * @param configProfiles the set of configuration profiles to enable, e.g. using
+   *     ``bazel --config=<profile_name>``. This defaults to an empty set (i.e. no profiles).
+   * @param reportProgress a callback for monitoring test progress in the same way as [build]. This
+   *     defaults to ``null``.
+   * @return the [Result] of the attempted test
+   */
   fun test(
     vararg patterns: String,
     keepGoing: Boolean = false,
@@ -69,6 +89,22 @@ class BazelClient(
     } else executeBazelCommand("test", *args.toTypedArray(), allowAllFailures = allowFailures)
   }
 
+  /**
+   * Attempts to run the specified Bazel binary target using ``bazel run``.
+   *
+   * @param target the binary target that ``bazel run`` can accept
+   * @param args zero or more arguments to pass to the binary being run
+   * @param allowFailures whether to throw an exception on a build or run failure, or to instead
+   *     capture the results of the failure as part of the returned [Result.outputLines]. This
+   *     defaults to false.
+   * @param silenceBazelOutput whether to omit all Bazel-specific output lines from the returned
+   *     [Result]. This is especially useful when the output of the script needs to be parsed,
+   *     interpreted, or printed to the user. This defaults to true.
+   * @param monitorOutputLines a callback that receives each output line of the underlying
+   *     ``bazel run`` command as it's encountered. If ``null``, no monitoring will take place. This
+   *     defaults to ``null``.
+   * @return the [Result] of the attempted run
+   */
   fun run(
     target: String,
     vararg args: String,
@@ -108,8 +144,10 @@ class BazelClient(
     }
   }
 
+  /** Runs ``bazel sync`` and returns the captured [Result] of the attempted sync. */
   fun sync(): Result = executeBazelCommand("sync")
 
+  /** Runs ``bazel shutdown`` and returns the captured [Result] of the attempted shutdown. */
   fun shutdown(): Result = executeBazelCommand("shutdown")
 
   /**

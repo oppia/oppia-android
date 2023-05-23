@@ -9,6 +9,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.oppia.android.scripts.common.BazelClient
+import org.oppia.android.scripts.common.BinaryProtoResourceLoader
+import org.oppia.android.scripts.common.BinaryProtoResourceLoader.Companion.loadProto
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.maven.model.MavenInstallJson
@@ -23,12 +25,22 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 private const val MAVEN_PREFIX = "@maven_app//:"
 
-/** Helper to compile the third-party Maven dependencies list for Oppia Android. */
+/**
+ * Utility for retrieving the project's third-party Maven dependencies list.
+ *
+ * @param rootPath the path to the root directory of the repository
+ * @param mavenArtifactPropertyFetcher the artifact fetcher to used when remotely downloading Maven
+ *     artifacts
+ * @param coroutineDispatcher the background dispatcher to use for operation execution
+ * @param commandExecutor the executor to use for system commands
+ * @param binaryProtoResourceLoader the resource loader to use when loading binary proto resources
+ */
 class MavenDependenciesRetriever(
   private val rootPath: String,
   private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
   private val coroutineDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val commandExecutor: CommandExecutor
+  private val commandExecutor: CommandExecutor,
+  private val binaryProtoResourceLoader: BinaryProtoResourceLoader
 ) {
   private val bazelClient by lazy { BazelClient(File(rootPath), commandExecutor) }
   private val coroutineScope by lazy { CoroutineScope(coroutineDispatcher) }
@@ -222,11 +234,8 @@ class MavenDependenciesRetriever(
    * @param proto instance of the proto class
    * @return proto class from the parsed text proto file
    */
-  private fun parseTextProto(proto: MavenDependencyList): MavenDependencyList {
-    return checkNotNull(javaClass.getResourceAsStream("assets/maven_dependencies.pb")) {
-      "Failed to find maven_dependencies.pb."
-    }.use { proto.newBuilderForType().mergeFrom(it).build() }
-  }
+  private fun parseTextProto(proto: MavenDependencyList): MavenDependencyList =
+    binaryProtoResourceLoader.loadProto(javaClass, "assets/maven_dependencies.pb", proto)
 
   private fun extractLicenseLinksFromPom(
     pomText: String

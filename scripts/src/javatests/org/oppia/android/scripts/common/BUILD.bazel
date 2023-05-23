@@ -4,6 +4,44 @@ common or generic operations.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+load("//model:text_proto_assets.bzl", "gen_binary_proto_from_text")
+
+genrule(
+    name = "_generate_test_textproto1",
+    srcs = [],
+    outs = ["test_proto1.textproto"],
+    cmd = """
+    echo 'str_value: "test string 1"' > \"$@\"
+    echo 'int_value: 1' >> \"$@\"
+    """,
+)
+
+genrule(
+    name = "_generate_test_textproto2",
+    srcs = [],
+    outs = ["test_proto2.textproto"],
+    cmd = """
+    echo 'str_value: "test string 2"' > \"$@\"
+    echo 'int_value: 2' >> \"$@\"
+    """,
+)
+
+_TEST_PROTO_ASSETS = [
+    gen_binary_proto_from_text(
+        name = "_generate_binary_proto_for_test_proto1",
+        input_file = "test_proto1.textproto",
+        output_file = "test_proto1.pb",
+        proto_deps = ["//scripts/src/java/org/oppia/android/scripts/testing/proto:test_proto"],
+        proto_type_name = "model.TestMessage",
+    ),
+    gen_binary_proto_from_text(
+        name = "_generate_binary_proto_for_test_proto2",
+        input_file = "test_proto2.textproto",
+        output_file = "test_proto2.pb",
+        proto_deps = ["//scripts/src/java/org/oppia/android/scripts/testing/proto:test_proto"],
+        proto_type_name = "model.TestMessage",
+    ),
+]
 
 kt_jvm_test(
     name = "BazelClientTest",
@@ -17,6 +55,35 @@ kt_jvm_test(
         "//scripts/third_party:junit_junit",
         "//scripts/third_party:org_mockito_mockito-core",
         "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing/mockito",
+    ],
+)
+
+kt_jvm_test(
+    name = "BinaryProtoResourceLoaderImplTest",
+    srcs = ["BinaryProtoResourceLoaderImplTest.kt"],
+    resource_strip_prefix = "scripts/src/javatests",
+    resources = _TEST_PROTO_ASSETS,
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:binary_proto_resource_loader",
+        "//scripts/src/java/org/oppia/android/scripts/testing/proto:test_java_proto",
+        "//scripts/third_party:com_google_protobuf_protobuf-java",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+    ],
+)
+
+kt_jvm_test(
+    name = "BinaryProtoResourceLoaderTest",
+    srcs = ["BinaryProtoResourceLoaderTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:binary_proto_resource_loader",
+        "//scripts/src/java/org/oppia/android/scripts/testing/proto:test_java_proto",
+        "//scripts/third_party:com_google_protobuf_protobuf-java",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//scripts/third_party:org_mockito_mockito-core",
         "//testing/src/main/java/org/oppia/android/testing/mockito",
     ],
 )

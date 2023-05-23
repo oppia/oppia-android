@@ -11,6 +11,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.common.testing.InterceptingBinaryProtoResourceLoader
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
 import org.oppia.android.scripts.proto.License
@@ -55,7 +56,10 @@ class MavenDependenciesListCheckTest {
 
   @Test
   fun testMavenDepsListCheck_emptyPbFile_failsAndCallsOutMissingDeps() {
-    tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
 
     val coordsList = listOf(DATA_BINDING_DEP, FIREBASE_ANALYTICS_DEP)
     setUpBazelEnvironment(coordsList)
@@ -64,13 +68,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
@@ -102,6 +104,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_singleDepAdded_failsAndCallsOutMissingDep() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -141,13 +146,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
@@ -172,6 +175,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_multipleDepsAdded_failsAndCallsOutMissingDeps() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -206,13 +212,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
@@ -244,6 +248,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_singleDepRemoved_failsAndCallsOutRedundantDep() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "Terms of Service for Firebase Services"
       this.originalLink = "https://fabric.io/terms"
@@ -283,13 +290,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(REDUNDANT_DEPENDENCIES_ONLY_FAILURE)
@@ -318,6 +323,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_multipleDepsRemoved_failsAndCallsOutRedundantDeps() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -363,13 +371,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(REDUNDANT_DEPENDENCIES_ONLY_FAILURE)
@@ -401,6 +407,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_depsRemovedAndAddedBoth_failsAndCallOutRedundantAndMissingDeps() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -440,13 +449,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
@@ -480,6 +487,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_depVersionUpgraded_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -519,13 +529,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
@@ -559,6 +567,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_depVersionDowngraded_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -598,13 +609,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
@@ -638,6 +647,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_allDepsUpToDate_checkPasses() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -679,13 +691,11 @@ class MavenDependenciesListCheckTest {
     MavenDependenciesListCheck(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
+      binaryProtoLoader
     ).main(
-      arrayOf(
-        "${tempFolder.root}",
-        "scripts/assets/maven_install.json",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
+      pathToRoot = tempFolder.root.absolutePath,
+      pathToMavenInstallJson = "scripts/assets/maven_install.json"
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
   }
@@ -693,6 +703,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_licenseLinkNotVerified_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -733,13 +746,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
@@ -748,6 +759,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_depMissingLicenses_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -783,13 +797,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
@@ -798,6 +810,9 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_depWithInvalidLicenseLink_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val binaryProtoLoader = InterceptingBinaryProtoResourceLoader().also {
+      it.interceptResource("assets/maven_dependencies.pb", pbFile)
+    }
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -839,13 +854,11 @@ class MavenDependenciesListCheckTest {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        binaryProtoLoader
       ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
+        pathToRoot = tempFolder.root.absolutePath,
+        pathToMavenInstallJson = "scripts/assets/maven_install.json"
       )
     }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)

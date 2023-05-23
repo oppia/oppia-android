@@ -4,6 +4,7 @@ load("//model:oppia_proto_library.bzl", "oppia_proto_library")
 oppia_proto_library(
     name = "test_proto",
     srcs = ["test.proto"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
 )
 
 java_proto_library(

@@ -1,6 +1,5 @@
 package org.oppia.android.scripts.build
 
-import org.oppia.android.scripts.build.BazelWorkspaceInfo.Companion.readBoolean
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -9,9 +8,27 @@ import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
-// TODO: Somehow add check to enforce running this script...
-// TODO: Verify this script end-to-end once the branch is in a good state.
-
+/**
+ * The main entrypoint for a Bazel setup wizard.
+ *
+ * This script is expected to be run in freshly cloned repositories to ensure that everything is
+ * working and set up properly for the user to be able to make contributions to the project. One
+ * main assumption is that users want to use Android Studio for primary development, and this script
+ * helps to set up the base .bazelproject for use with the IntelliJ Bazel plugin.
+ *
+ * The script also has some functionality for long-term maintenance (such as managing a shared build
+ * cache for faster cross-repository builds), and references for receiving help or building
+ * familiarity with Bazel for team members who might be new to using it.
+ *
+ * Usage:
+ *   bazel run //scripts:bazel_setup_wizard -- <path_to_repo_root>
+ *
+ * Arguments:
+ * - path_to_repo_root: directory path to the root of the Oppia Android repository.
+ *
+ * Example:
+ *   bazel run //scripts:bazel_setup_wizard -- $(pwd)
+ */
 fun main(vararg args: String) {
   require(args.size == 1) {
     "Usage: bazel run //scripts:bazel_setup_wizard -- <path_to_repo>" +
@@ -36,6 +53,13 @@ fun main(vararg args: String) {
   }
 }
 
+/**
+ * Utility for providing a convenience set-up wizard for using Bazel in Oppia Android.
+ *
+ * @property repoRoot the absolute [File] corresponding to the root of the inspected repository
+ * @property workspaceInfo the inspected [BazelWorkspaceInfo] representing the state of [repoRoot]
+ * @property bazelClient a [BazelClient] configured for a single repository at [repoRoot]
+ */
 class BazelSetupWizard(
   private val repoRoot: File,
   private val workspaceInfo: BazelWorkspaceInfo,
@@ -43,6 +67,10 @@ class BazelSetupWizard(
 ) {
   private val inputReader by lazy { System.`in`.bufferedReader() }
 
+  /**
+   * Runs an interactive set-up wizard that requires user input over standard input, and performs a
+   * number of functions depending on how the user navigates through it.
+   */
   fun startSetupWizard() {
     println("Please select a mode to begin:")
     println("  set-up            --  Initiates the first-time user setup for this repository.")
@@ -101,12 +129,10 @@ class BazelSetupWizard(
         "Set-up wizard failed: you must select whether to use a shared disk cache."
       }
 
-      // TODO: Finish link.
       printHeader("STAGE 2/4: Verifying Build Targets")
-      println("NOTE: The verification process is *very* long. If you're new to Bazel, we")
-      println("  suggest heading over to https://github.com/oppia/oppia-android/wiki/<TODO> to")
-      println("  help gain familiarity with Bazel while you wait for initial set-up to")
-      println("  complete.")
+      println("NOTE: The verification process is very long. If you're new to Bazel, we suggest")
+      println("  viewing https://github.com/oppia/oppia-android/wiki/Background-on-Bazel to")
+      println("  help gain familiarity with Bazel while you wait for the set-up to finish.")
       println()
       check(runVerifications()) {
         "Set-up wizard failed: you must select whether to run extended verifications."
@@ -120,7 +146,8 @@ class BazelSetupWizard(
 
       println()
       printHeader("Additional help resources")
-      println("The set-up wizard has completed!")
+      println("The set-up wizard has completed! We suggest following the Android Studio guide")
+      println("in order to get started with using Android Studio.")
       showHelpLinks()
     } else println("Skipping set-up wizard.")
     return true
@@ -251,7 +278,7 @@ class BazelSetupWizard(
       stream.println()
       stream.println("# This is an auto-generated pre-push check for Oppia Android.")
       stream.println(BazelWorkspaceInfo.PRE_PUSH_CHECKS_COMMAND)
-    }
+    }.also { workspaceInfo.expectedPrePushConfig.setExecutable(true) }
     println("done!")
   }
 
@@ -319,14 +346,15 @@ class BazelSetupWizard(
 
   private fun showHelpLinks() {
     println()
-    // TODO: Create/update the missing wiki pages & update the links below.
     println("Here are some links to help in specific cases:")
-    println("- Manual setup instructions:")
-    println("  https://github.com/oppia/oppia-android/wiki/<TODO>")
+    println("- Setup instructions:")
+    println("  https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions")
+    println("- Quick Bazel \"cheat sheet\" reference:")
+    println("  https://github.com/oppia/oppia-android/wiki/Bazel-Cheat-Sheet")
     println("- Detailed Bazel background info:")
-    println("  https://github.com/oppia/oppia-android/wiki/<TODO>")
+    println("  https://github.com/oppia/oppia-android/wiki/Background-on-Bazel")
     println("- Visual tutorial on using Bazel within Android Studio:")
-    println("  https://github.com/oppia/oppia-android/wiki/<TODO>")
+    println("  https://github.com/oppia/oppia-android/wiki/Bazel-Android-Studio-Guide")
     println("- Questions can be posted to:")
     println("  https://github.com/oppia/oppia-android/discussions/categories/q-a-installation")
     println()
@@ -393,9 +421,32 @@ class BazelSetupWizard(
       println("#".repeat(CONSOLE_COL_LIMIT))
       println()
     }
+
+    private fun BufferedReader.readBoolean(prompt: String): Boolean? {
+      print("$prompt ")
+      while (true) {
+        when (readLine()) {
+          "yes" -> return true
+          "no" -> return false
+          "abort" -> return null
+          else -> println("Expected one of: yes/no/abort.\n")
+        }
+      }
+    }
   }
 }
 
+/**
+ * Represents the current state of a Bazel Oppia Android repository.
+ *
+ * @property repoRoot the root [File] of the repository
+ * @property userBazelRcFile the user's configured post-wizard .bazelrc file, or ``null`` if it
+ *     isn't yet defined
+ * @property diskCache the current [DiskCacheInfo] state, or ``null`` if not configured
+ * @property prePushConfig the user's configured pre-push Git hook [File], or ``null`` if not
+ *     yet configured
+ * @property bazelProjectConfig the user's .bazelproject [File], or ``null`` if not yet configured
+ */
 data class BazelWorkspaceInfo(
   val repoRoot: File,
   val userBazelRcFile: File?,
@@ -403,12 +454,26 @@ data class BazelWorkspaceInfo(
   val prePushConfig: File?,
   val bazelProjectConfig: File?
 ) {
+  /** A non-null version of [prePushConfig]. This throws an exception if the file doesn't exist. */
   val expectedPrePushConfig by lazy { prePushConfig ?: File(repoRoot, PRE_PUSH_HOOK_PATH) }
+
+  /**
+   * A non-null version of [bazelProjectConfig]. This throws an exception if the file doesn't exist.
+   */
   val expectedBazelProjectConfig by lazy {
     bazelProjectConfig ?: File(repoRoot, BAZEL_PROJECT_CONFIG_PATH)
   }
+
+  /**
+   * A non-null version of [userBazelRcFile]. This throws an exception if the file doesn't exist.
+   */
   val expectedUserBazelRcFile by lazy { userBazelRcFile ?: File(repoRoot, BAZEL_RC_CONFIG_PATH) }
 
+  /**
+   * Prints the workspace state in a human-readable way to standard output.
+   *
+   * @param linePrefix a prefix to print with each line (such as for indentation)
+   */
   fun printState(linePrefix: String) {
     println("${linePrefix}Repository root: ${repoRoot.path}.")
     val bazelRcPath = userBazelRcFile?.toRelativeString(repoRoot) ?: "(Not set)"
@@ -428,9 +493,14 @@ data class BazelWorkspaceInfo(
     private const val PRE_PUSH_HOOK_PATH = ".git/hooks/pre-push"
     private const val BAZEL_PROJECT_CONFIG_PATH = ".aswb/.bazelproject"
     private const val BAZEL_RC_CONFIG_PATH = "config/bazel/user.bazelrc"
+
+    /** The relative path to the check-in shared .bazelproject file. */
     const val SHARED_BAZEL_PROJECT_CONFIG_PATH = "config/intellij/oppia-android.bazelproject"
+
+    /** The Bazel command to run pre-push checks. */
     const val PRE_PUSH_CHECKS_COMMAND = "bazel run //scripts:pre_push_checks -- \"\$GIT_WORK_TREE\""
 
+    /** Returns the computed, current [BazelWorkspaceInfo] state for the provided [repoRoot]. */
     fun computeState(repoRoot: File): BazelWorkspaceInfo {
       val gitDir = File(repoRoot, ".git")
       val workspaceFile = File(repoRoot, "WORKSPACE")
@@ -463,22 +533,23 @@ data class BazelWorkspaceInfo(
         repoRoot, userBazelRcFile, diskCacheInfo, prePushConfigFile, bazelProjectFile
       )
     }
-
-    fun BufferedReader.readBoolean(prompt: String): Boolean? {
-      print("$prompt ")
-      while (true) {
-        when (readLine()) {
-          "yes" -> return true
-          "no" -> return false
-          "abort" -> return null
-          else -> println("Expected one of: yes/no/abort.\n")
-        }
-      }
-    }
   }
 }
 
+/**
+ * Represents the current state of the user's shared cross-repository on-disk local cache.
+ *
+ * @property diskCacheDir the [File] of the configured cache directory, or ``null`` if the user has
+ *     configured their environment to not use a shared cache
+ * @property size the size of the shared disk cache, in bytes
+ * @property fileCount the number of files within the disk cache (excludes directories)
+ */
 data class DiskCacheInfo(val diskCacheDir: File?, val size: Long, val fileCount: Int) {
+  /**
+   * Prints the disk cache state in a human-readable way to standard output.
+   *
+   * @param linePrefix a prefix to print with each line (such as for indentation)
+   */
   fun printState(linePrefix: String) {
     if (diskCacheDir != null) {
       println("${linePrefix}Configured disk cache: ${diskCacheDir.path}.")
@@ -488,6 +559,11 @@ data class DiskCacheInfo(val diskCacheDir: File?, val size: Long, val fileCount:
   }
 
   companion object {
+    /**
+     * Returns a the [DiskCacheInfo] representing the state of [repoRoot] for a possible disk cache
+     * configuration specified in [userBazelRcFile], or ``null`` if there is no user .bazelrc file
+     * configuring a disk cache.
+     */
     fun computeState(repoRoot: File, userBazelRcFile: File): DiskCacheInfo? =
       userBazelRcFile.takeIf(File::exists)?.let { constructDiskCacheState(repoRoot, it) }
 

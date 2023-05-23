@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.lint
 
+import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -9,6 +10,21 @@ import org.oppia.android.scripts.lint.model.SarifResult
 import org.oppia.android.scripts.lint.model.SarifRun
 import java.io.File
 
+/**
+ * The main entrypoint for running Java lint checks.
+ *
+ * This script wraps the Checkstyle (https://github.com/checkstyle/checkstyle) utility for
+ * performing basic lint checks on all Java source files in the repository.
+ *
+ * Usage:
+ *   bazel run //scripts:checkstyle -- <path_to_repo_root>
+ *
+ * Arguments:
+ * - path_to_repo_root: directory path to the root of the Oppia Android repository.
+ *
+ * Example:
+ *   bazel run //scripts:checkstyle -- $(pwd)
+ */
 fun main(vararg args: String) {
   require(args.size == 1) { "Usage: bazel run //scripts:checkstyle -- </path/to/repo_root>" }
   val repoRoot = File(args[0]).absoluteFile.normalize().also {
@@ -24,7 +40,17 @@ fun main(vararg args: String) {
   }
 }
 
+/**
+ * Utility for running the Checkstyle utility as part of verifying all .java files under [repoRoot].
+ *
+ * @property repoRoot the absolute [File] corresponding to the root of the inspected repository
+ * @property bazelClient a [BazelClient] configured for a single repository at [repoRoot]
+ */
 class Checkstyle(private val repoRoot: File, private val bazelClient: BazelClient) {
+  /**
+   * Performs a lint check on all Java source files in the repository, throwing an exception if any
+   * have lint failures.
+   */
   fun runCheckstyle() {
     val rootDirPaths = JAVA_ROOTS.map { javaRootPath ->
       File(File(repoRoot, javaRootPath), "src").absoluteFile.normalize().also {
@@ -47,7 +73,14 @@ class Checkstyle(private val repoRoot: File, private val bazelClient: BazelClien
         "${outputLines.joinToString(separator = "\n")}."
     }
 
-    val sarifOutput = parseSarif(outputLines.joinToString(separator = "\n"))
+    // Remove extra Bazel output that may be included when the script is run while another Bazel
+    // process is blocking. This generally only happens when running the script directly with Java
+    // (vs. running it via Bazel).
+    val sarifStart = outputLines.indexOfFirst { it.trim() == "{" }.also {
+      check(it != -1) { "Expected Checkstyle output to include SARIF JSON." }
+    }
+    val filteredOutputLines = outputLines.drop(sarifStart)
+    val sarifOutput = parseSarif(filteredOutputLines.joinToString(separator = "\n"))
     val allResults = sarifOutput.runs.flatMap(SarifRun::results)
     val groupedResults = allResults.groupBy(SarifResult::level).toSortedMap()
     groupedResults.forEach { (level, results) ->
@@ -80,10 +113,10 @@ class Checkstyle(private val repoRoot: File, private val bazelClient: BazelClien
       "//scripts/third_party:checkstyle_binary_deploy.jar"
 
     private fun parseSarif(rawSarifJson: String): SarifOutput {
-      val moshi = Moshi.Builder().build()
-      return checkNotNull(moshi.adapter(SarifOutput::class.java).fromJson(rawSarifJson)) {
-        "Error: provided SARIF output is invalid:\n$rawSarifJson."
-      }
+      val output = try {
+        Moshi.Builder().build().adapter(SarifOutput::class.java).fromJson(rawSarifJson)
+      } catch (e: JsonEncodingException) { null }
+      return checkNotNull(output) { "Error: provided SARIF output is invalid:\n$rawSarifJson." }
     }
   }
 }

@@ -6,6 +6,28 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 import java.io.InputStream
 
+/**
+ * The main entrypoint for running Kotlin lint checks.
+ *
+ * This script wraps the Ktlint (https://github.com/pinterest/ktlint) utility for performing lint
+ * checks on all Kotlin source files in the repository. The script also supports auto-fixing most
+ * failures.
+ *
+ * This script also has an undocumented 'generate' mode that's used to create the internal wrapper
+ * for the actual executable binary of Ktlint. This mode should never be used directly as it's meant
+ * to only be used by the build system.
+ *
+ * Usage:
+ *   bazel run //scripts:ktlint -- <path_to_repo_root> <mode>
+ *
+ * Arguments:
+ * - path_to_repo_root: directory path to the root of the Oppia Android repository.
+ * - mode: specific mode to run the check in. One of: 'check' (to just check for failures) or 'fix'
+ *     (to auto-fix found issues).
+ *
+ * Example:
+ *   bazel run //scripts:ktlint -- $(pwd) fix
+ */
 fun main(vararg args: String) {
   require(args.size in 2..4) { "Usage: bazel run //scripts:ktlint -- </path/to/repo_root> <mode>" }
   val repoRoot = File(args[0]).absoluteFile.normalize().also {
@@ -29,7 +51,23 @@ fun main(vararg args: String) {
   }
 }
 
+/**
+ * Utility for running the Ktlint utility as part of verifying all .kt files under [repoRoot].
+ *
+ * @property repoRoot the absolute [File] corresponding to the root of the inspected repository
+ * @property bazelClient a [BazelClient] configured for a single repository at [repoRoot]
+ */
 class Ktlint(private val repoRoot: File, private val bazelClient: BazelClient) {
+  /**
+   * Performs a lint check on Kotlin Bazel files in the repository, throwing an exception if any
+   * have lint failures.
+   *
+   * @param mode the specific [Mode] to run this check in (e.g. whether to auto-fix found issues)
+   * @param inputScript the input Shell script from which to extract the executable Ktlint Jar file,
+   *     only when [mode] is [Mode.GENERATE_JAR] and null when otherwise
+   * @param outputJar the path to write the extract Ktlint Jar file, only when [mode] is
+   *     [Mode.GENERATE_JAR] and null when otherwise
+   */
   fun runKtlint(mode: Mode, inputScript: String?, outputJar: String?) {
     when (mode) {
       Mode.GENERATE_JAR -> {
@@ -53,7 +91,6 @@ class Ktlint(private val repoRoot: File, private val bazelClient: BazelClient) {
         } else println("ktlint command succeeded--no issues found!")
       }
       Mode.FIX -> {
-        // TODO: Verify this once the local codebase doesn't have a ton of fixes from upstream.
         if (!tryRunKtlint(mode = Mode.CHECK, printOutput = false)) {
           // There are failures, try to fix them.
           if (tryRunKtlint(mode)) {
@@ -95,9 +132,18 @@ class Ktlint(private val repoRoot: File, private val bazelClient: BazelClient) {
     return exitCode == 0
   }
 
+  /** Modes that [Ktlint] can run in. */
   enum class Mode {
+    /**
+     * Represents extracting the executable Ktlint Jar file from Ktlint's distribution Shell file.
+     * This should only be used by the internal build system, not directly by developers.
+     */
     GENERATE_JAR,
+
+    /** Represents checking, but not fixing, files for lint issues. */
     CHECK,
+
+    /** Represents checking and attempting to auto-fix lint issues in files. */
     FIX
   }
 

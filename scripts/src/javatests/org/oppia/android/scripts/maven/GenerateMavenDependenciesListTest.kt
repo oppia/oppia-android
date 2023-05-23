@@ -12,6 +12,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.common.testing.InterceptingBinaryProtoResourceLoader
 import org.oppia.android.scripts.license.MavenArtifactPropertyFetcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
@@ -39,6 +40,7 @@ class GenerateMavenDependenciesListTest {
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val mockArtifactPropertyFetcher by lazy { initializeArtifactPropertyFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+  private val interceptingProtoLoader by lazy { InterceptingBinaryProtoResourceLoader() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
 
   @Before
@@ -58,7 +60,8 @@ class GenerateMavenDependenciesListTest {
   @Test
   fun testEmptyPbFile_scriptFailsWithException_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
-    tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val coordsList = listOf(DEP_WITH_SCRAPABLE_LICENSE, DEP_WITH_DIRECT_LINK_ONLY_LICENSE)
     setUpBazelEnvironment(coordsList)
@@ -67,13 +70,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -113,6 +116,7 @@ class GenerateMavenDependenciesListTest {
   @Test
   fun testLicenseLinkNotVerified_forAtleastOneLicense_scriptFailsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -152,13 +156,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -168,7 +172,8 @@ class GenerateMavenDependenciesListTest {
   @Test
   fun testDependencyHasNonScrapableLink_scriptFailsWithException_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
-    tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val coordsList = listOf(DEP_WITH_DIRECT_LINK_ONLY_LICENSE)
     setUpBazelEnvironment(coordsList)
@@ -177,13 +182,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -211,7 +216,8 @@ class GenerateMavenDependenciesListTest {
   @Test
   fun testDependencyHasExtractedCopyLinkAndScrapableLink_scriptFails_andWritesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
-    tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val coordsList = listOf(DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES)
     setUpBazelEnvironment(coordsList)
@@ -220,13 +226,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -262,6 +268,7 @@ class GenerateMavenDependenciesListTest {
   fun testDependencyHasInvalidLicense_scriptFailsWithException_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val license1 = License.newBuilder().apply {
       this.licenseName = "Fabric Software and Services Agreement"
@@ -288,13 +295,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -322,7 +329,8 @@ class GenerateMavenDependenciesListTest {
   @Test
   fun testDependencyHasNoLicense_scriptFails_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
-    tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val coordsList = listOf(DEP_WITH_NO_LICENSE)
     setUpBazelEnvironment(coordsList)
@@ -331,13 +339,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -361,6 +369,7 @@ class GenerateMavenDependenciesListTest {
   fun testDependenciesHaveMultipleLicense_completeLicenseDetails_scriptPasses_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -400,13 +409,13 @@ class GenerateMavenDependenciesListTest {
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
+      interceptingProtoLoader
     ).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
-        "scripts/assets/maven_dependencies.textproto",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+        "scripts/assets/maven_dependencies.textproto"
       )
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
@@ -455,6 +464,7 @@ class GenerateMavenDependenciesListTest {
   fun testDependenciesHaveCompleteLicenseDetails_scriptPasses_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val license1 = License.newBuilder().apply {
       this.licenseName = "Android Software Development Kit License"
@@ -494,13 +504,13 @@ class GenerateMavenDependenciesListTest {
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
+      interceptingProtoLoader
     ).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
-        "scripts/assets/maven_dependencies.textproto",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+        "scripts/assets/maven_dependencies.textproto"
       )
     )
 
@@ -542,6 +552,7 @@ class GenerateMavenDependenciesListTest {
   @Test
   fun testLicensesIncomplete_noUpdatesProvided_scriptFails() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val incompleteApacheLicense = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
@@ -593,13 +604,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -610,6 +621,7 @@ class GenerateMavenDependenciesListTest {
   fun testOneLicenseIncomplete_updatesAtOnePlace_scriptPassesAndUpdatesOtherPlaces() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val incompleteApacheLicense = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
@@ -657,13 +669,13 @@ class GenerateMavenDependenciesListTest {
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
+      interceptingProtoLoader
     ).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
-        "scripts/assets/maven_dependencies.textproto",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+        "scripts/assets/maven_dependencies.textproto"
       )
     )
 
@@ -713,6 +725,7 @@ class GenerateMavenDependenciesListTest {
   fun testMultipleLicensesIncomplete_provideUpdates_scriptPassesAndUpdatesOtherPlaces() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val incompleteApacheLicense = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
@@ -771,13 +784,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -839,6 +852,7 @@ class GenerateMavenDependenciesListTest {
   fun testMultipleLicensesIncomplete_provideUpdatesAtOnePlace_scriptFailsAndUpdatesOtherPlaces() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val incompleteApacheLicense = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
@@ -897,13 +911,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -966,6 +980,7 @@ class GenerateMavenDependenciesListTest {
   fun testCompleteDepsList_newDepAddedWithNewLicense_scriptFailsAndUpdatesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val completeApacheLicense = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
@@ -1011,13 +1026,13 @@ class GenerateMavenDependenciesListTest {
       GenerateMavenDependenciesList(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
-        commandExecutor
+        commandExecutor,
+        interceptingProtoLoader
       ).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "scripts/assets/maven_dependencies.textproto"
         )
       )
     }
@@ -1080,6 +1095,7 @@ class GenerateMavenDependenciesListTest {
   fun testCompleteDepsList_newDepAddedWithExisitingLicense_scriptPassesAndUpdatesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val completeApacheLicense = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
@@ -1131,13 +1147,13 @@ class GenerateMavenDependenciesListTest {
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
+      interceptingProtoLoader
     ).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
-        "scripts/assets/maven_dependencies.textproto",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+        "scripts/assets/maven_dependencies.textproto"
       )
     )
 

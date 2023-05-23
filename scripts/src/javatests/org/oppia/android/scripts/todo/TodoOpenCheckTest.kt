@@ -6,6 +6,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.testing.InterceptingBinaryProtoResourceLoader
 import org.oppia.android.scripts.proto.TodoOpenExemption
 import org.oppia.android.scripts.proto.TodoOpenExemptions
 import org.oppia.android.testing.assertThrows
@@ -29,11 +30,14 @@ class TodoOpenCheckTest {
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
+  private val interceptingProtoLoader by lazy { InterceptingBinaryProtoResourceLoader() }
+
   @Before
   fun setUp() {
     tempFolder.newFolder("testfiles")
     tempFolder.newFolder("scripts", "assets")
-    tempFolder.newFile(pathToProtoBinary)
+    val pbFile = tempFolder.newFile(pathToProtoBinary)
+    interceptingProtoLoader.interceptResource("assets/todo_open_exemptions.pb", pbFile)
     System.setOut(PrintStream(outContent))
   }
 
@@ -80,7 +84,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    runScript()
+    checkForOpenTodos()
 
     assertThat(outContent.toString().trim()).isEqualTo(TODO_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -105,7 +109,7 @@ class TodoOpenCheckTest {
     tempFile.writeText(testContent)
 
     val exception = assertThrows(Exception::class) {
-      runScript()
+      checkForOpenTodos()
     }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -145,7 +149,7 @@ class TodoOpenCheckTest {
     tempFile.writeText(testContent)
 
     val exception = assertThrows(Exception::class) {
-      runScript()
+      checkForOpenTodos()
     }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -191,7 +195,7 @@ class TodoOpenCheckTest {
     tempFile2.writeText(testContent2)
 
     val exception = assertThrows(Exception::class) {
-      runScript()
+      checkForOpenTodos()
     }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -247,7 +251,7 @@ class TodoOpenCheckTest {
     tempFile3.writeText(testContent3)
 
     val exception = assertThrows(Exception::class) {
-      runScript()
+      checkForOpenTodos()
     }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -306,7 +310,7 @@ class TodoOpenCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    runScript()
+    checkForOpenTodos()
 
     assertThat(outContent.toString().trim()).isEqualTo(TODO_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -350,7 +354,7 @@ class TodoOpenCheckTest {
     exemptions.writeTo(exemptionFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
-      runScript()
+      checkForOpenTodos()
     }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -360,7 +364,7 @@ class TodoOpenCheckTest {
       - TempFile1.kt:1
       - TempFile1.kt:2
       - TempFile2.kt:1
-      Please remove them from scripts/assets/todo_exemptions.textproto
+      Please remove them from todo_open_exemptions.textproto
       
       $reRunNote
       """.trimIndent()
@@ -404,7 +408,7 @@ class TodoOpenCheckTest {
     exemptions.writeTo(exemptionFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
-      runScript()
+      checkForOpenTodos()
     }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -412,7 +416,7 @@ class TodoOpenCheckTest {
       """
       Redundant exemptions (there are no TODOs corresponding to these lines):
       - extra_dir/TempFile1.kt:2
-      Please remove them from scripts/assets/todo_exemptions.textproto
+      Please remove them from todo_open_exemptions.textproto
       
       TODOs not in correct format:
       - TempFile2.kt:1
@@ -464,7 +468,7 @@ class TodoOpenCheckTest {
     exemptions.writeTo(exemptionFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
-      runScript(regenerateFile = true)
+      checkForOpenTodos(regenerateFile = true)
     }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -472,7 +476,7 @@ class TodoOpenCheckTest {
       """
       Redundant exemptions (there are no TODOs corresponding to these lines):
       - extra_dir/TempFile1.kt:2
-      Please remove them from scripts/assets/todo_exemptions.textproto
+      Please remove them from todo_open_exemptions.textproto
       
       TODOs not in correct format:
       - TempFile2.kt:1
@@ -497,13 +501,14 @@ class TodoOpenCheckTest {
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
-  /** Runs the todo_open_check. */
   private fun runScript(regenerateFile: Boolean = false) {
-    main(
-      "${tempFolder.root}/testfiles",
-      "${tempFolder.root}/$pathToProtoBinary",
-      "open_issues.json",
-      regenerateFile.toString()
-    )
+    main("${tempFolder.root}/testfiles", "open_issues.json", regenerateFile.toString())
+  }
+
+  private fun checkForOpenTodos(regenerateFile: Boolean = false) {
+    val repoRoot = File(tempFolder.root, "testfiles")
+    TodoOpenCheck(
+      repoRoot, interceptingProtoLoader
+    ).checkForOpenTodos(File(repoRoot, "open_issues.json"), regenerateFile)
   }
 }

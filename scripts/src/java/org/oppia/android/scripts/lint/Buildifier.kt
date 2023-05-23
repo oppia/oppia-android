@@ -5,6 +5,24 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 
+/**
+ * The main entrypoint for running Bazel lint checks.
+ *
+ * This script wraps the Buildifier (https://github.com/bazelbuild/buildtools) utility for
+ * performing lint checks on all BUILD, bzl, and WORKSPACE files in the repository. The script also
+ * supports auto-fixing most failures.
+ *
+ * Usage:
+ *   bazel run //scripts:buildifier -- <path_to_repo_root> <mode>
+ *
+ * Arguments:
+ * - path_to_repo_root: directory path to the root of the Oppia Android repository.
+ * - mode: specific mode to run the check in. One of: 'check' (to just check for failures) or 'fix'
+ *     (to auto-fix found issues).
+ *
+ * Example:
+ *   bazel run //scripts:buildifier -- $(pwd) fix
+ */
 fun main(vararg args: String) {
   require(args.size == 2) { "Usage: bazel run //scripts:buildifier -- </path/to/repo_root> <mode>" }
   val repoRoot = File(args[0]).absoluteFile.normalize().also {
@@ -25,7 +43,20 @@ fun main(vararg args: String) {
   }
 }
 
+/**
+ * Utility for running the Buildifier utility as part of verifying all BUILD, .bazel, .bzl, and
+ * WORKSPACE files under [repoRoot].
+ *
+ * @property repoRoot the absolute [File] corresponding to the root of the inspected repository
+ * @property bazelClient a [BazelClient] configured for a single repository at [repoRoot]
+ */
 class Buildifier(private val repoRoot: File, private val bazelClient: BazelClient) {
+  /**
+   * Performs a lint check on all Bazel files in the repository, throwing an exception if any have
+   * lint failures.
+   *
+   * @param mode the specific [Mode] to run this check in (e.g. whether to auto-fix found issues)
+   */
   fun runBuildifier(mode: Mode) {
     val hasNoBuildifierFailures = when (mode) {
       Mode.CHECK -> tryRunBuildifier(mode)
@@ -73,8 +104,17 @@ class Buildifier(private val repoRoot: File, private val bazelClient: BazelClien
     return exitCode == 0
   }
 
+  /**
+   * Modes that [Buildifier] can run in.
+   *
+   * @property lintModeStr the Buildifier lint mode passed to the binary
+   * @property buildifierModeStr the Buildifier runtime mode passed to the binary
+   */
   enum class Mode(val lintModeStr: String, val buildifierModeStr: String) {
+    /** Represents checking, but not fixing, files for lint issues. */
     CHECK(lintModeStr = "warn", buildifierModeStr = "check"),
+
+    /** Represents checking and attempting to auto-fix lint issues in files. */
     FIX(lintModeStr = "fix", buildifierModeStr = "fix")
   }
 

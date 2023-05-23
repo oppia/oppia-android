@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.oppia.android.scripts.common.testing.InterceptingBinaryProtoResourceLoader
 import org.oppia.android.scripts.license.MavenArtifactPropertyFetcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
@@ -41,6 +42,7 @@ class RetrieveLicenseTextsTest {
   private val LONG_LICENSE_TEXT_LINK = "https://verylonglicense.txt"
 
   private val mockArtifactPropertyFetcher by lazy { initializeArtifactPropertyFetcher() }
+  private val interceptingProtoLoader by lazy { InterceptingBinaryProtoResourceLoader() }
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
@@ -60,23 +62,9 @@ class RetrieveLicenseTextsTest {
   }
 
   @Test
-  fun testScript_oneArgument_printsUsageStringAndThrowsException() {
+  fun testScript_noArguments_printsUsageStringAndThrowsException() {
     val exception = assertThrows(Exception::class) {
-      RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(arrayOf())
-    }
-
-    assertThat(exception).hasMessageThat().contains(TOO_FEW_ARGS_FAILURE)
-    assertThat(outContent.toString()).contains("Usage:")
-  }
-
-  @Test
-  fun testScript_oneArguments_printsUsageStringAndThrowsException() {
-    val exception = assertThrows(Exception::class) {
-      RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
-        arrayOf(
-          "${tempFolder.root}/values"
-        )
-      )
+      createRetrieveLicenseTexts().main(arrayOf())
     }
 
     assertThat(exception).hasMessageThat().contains(TOO_FEW_ARGS_FAILURE)
@@ -89,14 +77,10 @@ class RetrieveLicenseTextsTest {
 
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val exception = assertThrows(Exception::class) {
-      RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
-        arrayOf(
-          "${tempFolder.root}/values",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
-      )
+      createRetrieveLicenseTexts().main(arrayOf("${tempFolder.root}/values"))
     }
     assertThat(exception).hasMessageThat().contains(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE_FAILURE)
   }
@@ -108,14 +92,10 @@ class RetrieveLicenseTextsTest {
 
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val exception = assertThrows(Exception::class) {
-      RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
-        arrayOf(
-          "${tempFolder.root}/values",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
-      )
+      createRetrieveLicenseTexts().main(arrayOf("${tempFolder.root}/values"))
     }
     assertThat(exception).hasMessageThat().contains(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE_FAILURE)
   }
@@ -138,14 +118,10 @@ class RetrieveLicenseTextsTest {
 
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val exception = assertThrows(Exception::class) {
-      RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
-        arrayOf(
-          "${tempFolder.root}/values",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
-      )
+      createRetrieveLicenseTexts().main(arrayOf("${tempFolder.root}/values"))
     }
     assertThat(exception).hasMessageThat().contains(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE_FAILURE)
   }
@@ -182,13 +158,9 @@ class RetrieveLicenseTextsTest {
 
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
-    RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
-      arrayOf(
-        "${tempFolder.root}/values",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
-    )
+    createRetrieveLicenseTexts().main(arrayOf("${tempFolder.root}/values"))
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_INDICATOR)
   }
 
@@ -236,13 +208,9 @@ class RetrieveLicenseTextsTest {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     val xmlFile = tempFolder.newFile("values/third_party_dependencies.xml")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
-    RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
-      arrayOf(
-        "${tempFolder.root}/values",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
-    )
+    createRetrieveLicenseTexts().main(arrayOf("${tempFolder.root}/values"))
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_INDICATOR)
     val xmlContent = xmlFile.inputStream().bufferedReader().use { it.readText() }
     val dependencyNamesList = retrieveListOfStrings(xmlContent, "third_party_dependency_name_")
@@ -581,4 +549,7 @@ class RetrieveLicenseTextsTest {
         )
     }
   }
+
+  private fun createRetrieveLicenseTexts() =
+    RetrieveLicenseTexts(mockArtifactPropertyFetcher, interceptingProtoLoader)
 }

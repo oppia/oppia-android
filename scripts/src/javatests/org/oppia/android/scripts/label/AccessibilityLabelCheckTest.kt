@@ -6,6 +6,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.testing.InterceptingBinaryProtoResourceLoader
 import org.oppia.android.scripts.proto.AccessibilityLabelExemptions
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
@@ -23,13 +24,17 @@ class AccessibilityLabelCheckTest {
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#accessibility-label-check for more details on how to fix this."
 
-  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+  @field:[Rule JvmField]
+  val tempFolder = TemporaryFolder()
+
+  private val interceptingProtoLoader by lazy { InterceptingBinaryProtoResourceLoader() }
 
   @Before
   fun setUp() {
     tempFolder.newFolder("testfiles")
     tempFolder.newFolder("scripts", "assets")
-    tempFolder.newFile(pathToProtoBinary)
+    val pbFile = tempFolder.newFile(pathToProtoBinary)
+    interceptingProtoLoader.interceptResource("assets/accessibility_label_exemptions.pb", pbFile)
     System.setOut(PrintStream(outContent))
   }
 
@@ -59,11 +64,7 @@ class AccessibilityLabelCheckTest {
     val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
     manifestFile.writeText(testContent)
 
-    main(
-      retrieveTestFilesDirectoryPath(),
-      "${tempFolder.root}/$pathToProtoBinary",
-      tempFileRelativePath
-    )
+    createAccessibilityLabelCheck().checkForMissingLabels(listOf(tempFileRelativePath))
 
     assertThat(outContent.toString().trim()).isEqualTo(
       ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR
@@ -91,11 +92,7 @@ class AccessibilityLabelCheckTest {
     manifestFile.writeText(testContent)
 
     val exception = assertThrows(Exception::class) {
-      main(
-        retrieveTestFilesDirectoryPath(),
-        "${tempFolder.root}/$pathToProtoBinary",
-        tempFileRelativePath
-      )
+      createAccessibilityLabelCheck().checkForMissingLabels(listOf(tempFileRelativePath))
     }
 
     assertThat(exception).hasMessageThat().contains(
@@ -133,11 +130,7 @@ class AccessibilityLabelCheckTest {
     manifestFile.writeText(testContent)
 
     val exception = assertThrows(Exception::class) {
-      main(
-        retrieveTestFilesDirectoryPath(),
-        "${tempFolder.root}/$pathToProtoBinary",
-        tempFileRelativePath
-      )
+      createAccessibilityLabelCheck().checkForMissingLabels(listOf(tempFileRelativePath))
     }
 
     assertThat(exception).hasMessageThat().contains(
@@ -193,12 +186,8 @@ class AccessibilityLabelCheckTest {
     appManifestFile.writeText(testContent1)
     splashManifestFile.writeText(testContent2)
 
-    main(
-      retrieveTestFilesDirectoryPath(),
-      "${tempFolder.root}/$pathToProtoBinary",
-      appManifestPath,
-      splashManifestPath
-    )
+    createAccessibilityLabelCheck()
+      .checkForMissingLabels(listOf(appManifestPath, splashManifestPath))
 
     assertThat(outContent.toString().trim()).isEqualTo(
       ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR
@@ -243,12 +232,8 @@ class AccessibilityLabelCheckTest {
     splashManifestFile.writeText(testContent2)
 
     val exception = assertThrows(Exception::class) {
-      main(
-        retrieveTestFilesDirectoryPath(),
-        "${tempFolder.root}/$pathToProtoBinary",
-        appManifestPath,
-        splashManifestPath
-      )
+      createAccessibilityLabelCheck()
+        .checkForMissingLabels(listOf(appManifestPath, splashManifestPath))
     }
 
     assertThat(exception).hasMessageThat().contains(
@@ -307,12 +292,8 @@ class AccessibilityLabelCheckTest {
     splashManifestFile.writeText(testContent2)
 
     val exception = assertThrows(Exception::class) {
-      main(
-        retrieveTestFilesDirectoryPath(),
-        "${tempFolder.root}/$pathToProtoBinary",
-        appManifestPath,
-        splashManifestPath
-      )
+      createAccessibilityLabelCheck()
+        .checkForMissingLabels(listOf(appManifestPath, splashManifestPath))
     }
 
     assertThat(exception).hasMessageThat().contains(
@@ -357,11 +338,7 @@ class AccessibilityLabelCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    main(
-      retrieveTestFilesDirectoryPath(),
-      "${tempFolder.root}/$pathToProtoBinary",
-      tempFileRelativePath
-    )
+    createAccessibilityLabelCheck().checkForMissingLabels(listOf(tempFileRelativePath))
 
     assertThat(outContent.toString().trim()).isEqualTo(
       ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR
@@ -392,11 +369,7 @@ class AccessibilityLabelCheckTest {
     exemptions.writeTo(exemptionFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
-      main(
-        retrieveTestFilesDirectoryPath(),
-        "${tempFolder.root}/$pathToProtoBinary",
-        tempFileRelativePath
-      )
+      createAccessibilityLabelCheck().checkForMissingLabels(listOf(tempFileRelativePath))
     }
 
     assertThat(exception).hasMessageThat().contains(
@@ -406,7 +379,7 @@ class AccessibilityLabelCheckTest {
       """
       Redundant exemptions:
       - app/src/main/java/org/oppia/android/app/home/HomeActivity
-      Please remove them from scripts/assets/accessibility_label_exemptions.textproto
+      Please remove them from accessibility_label_exemptions.textproto
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -435,11 +408,7 @@ class AccessibilityLabelCheckTest {
     exemptions.writeTo(exemptionFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
-      main(
-        retrieveTestFilesDirectoryPath(),
-        "${tempFolder.root}/$pathToProtoBinary",
-        tempFileRelativePath
-      )
+      createAccessibilityLabelCheck().checkForMissingLabels(listOf(tempFileRelativePath))
     }
 
     assertThat(exception).hasMessageThat().contains(
@@ -449,7 +418,7 @@ class AccessibilityLabelCheckTest {
       """
       Redundant exemptions:
       - app/src/main/java/org/oppia/android/app/home/HomeActivity
-      Please remove them from scripts/assets/accessibility_label_exemptions.textproto
+      Please remove them from accessibility_label_exemptions.textproto
       
       Accessibility label missing for Activities:
       - $activityPath
@@ -459,8 +428,6 @@ class AccessibilityLabelCheckTest {
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
-  /** Retrieves the absolute path of testfiles directory. */
-  private fun retrieveTestFilesDirectoryPath(): String {
-    return "${tempFolder.root}/testfiles"
-  }
+  private fun createAccessibilityLabelCheck() =
+    AccessibilityLabelCheck(File(tempFolder.root, "testfiles"), interceptingProtoLoader)
 }

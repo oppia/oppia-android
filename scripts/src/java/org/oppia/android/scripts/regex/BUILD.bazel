@@ -19,6 +19,7 @@ kt_jvm_library(
     resources = _REGEX_PATTERN_CHECK_ASSETS,
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:binary_proto_resource_loader",
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//scripts/src/java/org/oppia/android/scripts/proto:file_content_validation_checks_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/proto:filename_pattern_validation_checks_java_proto",

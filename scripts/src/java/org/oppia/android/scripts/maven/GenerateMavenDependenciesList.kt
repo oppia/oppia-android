@@ -1,6 +1,8 @@
 package org.oppia.android.scripts.maven
 
 import kotlinx.coroutines.runBlocking
+import org.oppia.android.scripts.common.BinaryProtoResourceLoader
+import org.oppia.android.scripts.common.BinaryProtoResourceLoaderImpl
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -33,18 +35,27 @@ fun main(args: Array<String>) {
   }
 }
 
-/** Wrapper class to pass dependencies to be utilized by the the main method. */
+/**
+ * Utility to generate a new list of tracked third-party Maven dependencies and licenses.
+ *
+ * @param mavenArtifactPropertyFetcher the artifact fetcher to used when remotely downloading Maven
+ *     artifacts
+ * @param scriptBgDispatcher the background dispatcher to use for operation execution
+ * @param commandExecutor the executor to use for system commands
+ * @param binaryProtoResourceLoader the resource loader to use when loading binary proto resources
+ */
 class GenerateMavenDependenciesList(
   private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
   scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher),
+  private val binaryProtoResourceLoader: BinaryProtoResourceLoader = BinaryProtoResourceLoaderImpl()
 ) {
   /**
    * Compiles a list of third-party Maven dependencies along with their license links on
    * which Oppia Android depends and write them in maven_dependencies.textproto.
    */
   fun main(args: Array<String>) {
-    require(args.size == 3) { "Too few Arguments passed." }
+    require(args.size == 3) { "Wrong number of arguments passed." }
     val pathToRoot = args[0]
     val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
@@ -68,7 +79,11 @@ class GenerateMavenDependenciesList(
   ) {
     val retriever =
       MavenDependenciesRetriever(
-        pathToRoot, mavenArtifactPropertyFetcher, scriptBgDispatcher, commandExecutor
+        pathToRoot,
+        mavenArtifactPropertyFetcher,
+        scriptBgDispatcher,
+        commandExecutor,
+        binaryProtoResourceLoader
       )
 
     val bazelQueryDepsList =

@@ -22,7 +22,7 @@ def _extract_proto_sources(deps):
 def _gen_binary_proto_from_text_impl(ctx):
     # See: https://docs.bazel.build/versions/master/skylark/lib/actions.html#declare_file.
     output_file = ctx.outputs.output_file
-    input_file = ctx.attr.input_file.files.to_list()[0].short_path
+    input_file = ctx.file.input_file
     input_proto_files = _extract_proto_sources(ctx.attr.proto_deps)
 
     # See 'protoc --help' for specifics on the arguments passed to the tool for converting text
@@ -34,7 +34,7 @@ def _gen_binary_proto_from_text_impl(ctx):
     arguments = [command_path] + [
         "--encode %s" % ctx.attr.proto_type_name,
     ] + proto_directory_path_args + proto_file_names + [
-        "< %s" % input_file,
+        "< %s" % input_file.path,
         "> %s" % output_file.path,
     ]
 
@@ -43,7 +43,7 @@ def _gen_binary_proto_from_text_impl(ctx):
     # run_shell() instead of run() because it requires input redirection.
     ctx.actions.run_shell(
         outputs = [output_file],
-        inputs = ctx.files.input_file + input_proto_files,
+        inputs = [input_file] + input_proto_files,
         tools = [ctx.executable._protoc_tool],
         command = " ".join(arguments),
         mnemonic = "GenerateBinaryProtoFromText",
@@ -59,7 +59,7 @@ def _gen_binary_proto_from_text_impl(ctx):
 _gen_binary_proto_from_text = rule(
     attrs = {
         "input_file": attr.label(
-            allow_files = True,
+            allow_single_file = True,
             mandatory = True,
         ),
         "output_file": attr.output(

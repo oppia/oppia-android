@@ -2,6 +2,8 @@ package org.oppia.android.scripts.license
 
 import com.google.protobuf.TextFormat
 import kotlinx.coroutines.runBlocking
+import org.oppia.android.scripts.common.BinaryProtoResourceLoader
+import org.oppia.android.scripts.common.BinaryProtoResourceLoaderImpl
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -26,29 +28,39 @@ import org.oppia.android.scripts.proto.MavenDependency
  */
 fun main(args: Array<String>) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    MavenDependenciesListCheck(MavenArtifactPropertyFetcherImpl(), scriptBgDispatcher).main(args)
+    MavenDependenciesListCheck(
+      MavenArtifactPropertyFetcherImpl(), scriptBgDispatcher
+    ).main(pathToRoot = args[0], pathToMavenInstallJson = args[1])
   }
 }
 
 /**
- * Wrapper class to pass [MavenArtifactPropertyFetcher] and [CommandExecutor] to be utilized by the the main
- * method.
+ * Utility for checking whether the project's list of third-party Maven dependencies is up-to-date.
+ *
+ * @param mavenArtifactPropertyFetcher the artifact fetcher to used when remotely downloading Maven
+ *     artifacts
+ * @param scriptBgDispatcher the background dispatcher to use for operation execution
+ * @param commandExecutor the executor to use for system commands
+ * @param binaryProtoResourceLoader the resource loader to use when loading binary proto resources
  */
 class MavenDependenciesListCheck(
   private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
   scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher),
+  private val binaryProtoResourceLoader: BinaryProtoResourceLoader = BinaryProtoResourceLoaderImpl()
 ) {
   /**
    * Verifies that the list of third-party Maven dependencies in maven_dependnecies.textproto is
    * up-to-date.
    */
-  fun main(args: Array<String>) {
-    val pathToRoot = args[0]
-    val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
+  fun main(pathToRoot: String, pathToMavenInstallJson: String) {
     ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
       runBlocking {
-        checkMavenDependenciesList(pathToRoot, pathToMavenInstallJson, scriptBgDispatcher)
+        checkMavenDependenciesList(
+          pathToRoot,
+          pathToMavenInstallJson = "$pathToRoot/$pathToMavenInstallJson",
+          scriptBgDispatcher
+        )
       }
     }
   }
@@ -62,7 +74,8 @@ class MavenDependenciesListCheck(
       pathToRoot,
       mavenArtifactPropertyFetcher,
       scriptBackgroundCoroutineDispatcher,
-      commandExecutor
+      commandExecutor,
+      binaryProtoResourceLoader
     )
 
     val bazelQueryDepsList =

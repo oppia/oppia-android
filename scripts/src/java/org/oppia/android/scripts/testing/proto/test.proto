@@ -13,3 +13,11 @@ message TestMessage {
 
   repeated string str_values = 3;
 }
+
+message TestMessage2 {
+  string str_value = 1;
+
+  int32 int_value = 2;
+
+  repeated string str_values = 3;
+}

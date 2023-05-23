@@ -1,0 +1,49 @@
+"""
+Tests corresponding to lint static analysis scripts.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "BufTest",
+    srcs = ["BufTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:buf_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+    ],
+)
+
+kt_jvm_test(
+    name = "BuildifierTest",
+    srcs = ["BuildifierTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:buildifier_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+    ],
+)
+
+kt_jvm_test(
+    name = "CheckstyleTest",
+    srcs = ["CheckstyleTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:checkstyle_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+    ],
+)
+
+kt_jvm_test(
+    name = "KtlintTest",
+    srcs = ["KtlintTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:ktlint_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+    ],
+)

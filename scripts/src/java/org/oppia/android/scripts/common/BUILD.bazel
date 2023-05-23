@@ -8,33 +8,33 @@ load("//defs:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
 
 kt_jvm_library(
     name = "android_build_sdk_properties",
-    srcs = [
-        "AndroidBuildSdkProperties.kt",
-    ],
+    srcs = ["AndroidBuildSdkProperties.kt"],
     resources = [":sdk_info_properties"],
     visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
 kt_jvm_library(
     name = "bazel_client",
+    srcs = ["BazelClient.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//scripts/src/java/org/oppia/android/scripts/common:command_executor"],
+)
+
+kt_jvm_library(
+    name = "binary_proto_resource_loader",
     srcs = [
-        "BazelClient.kt",
+        "BinaryProtoResourceLoader.kt",
+        "BinaryProtoResourceLoaderImpl.kt",
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
-    ],
+    deps = ["//scripts/third_party:com_google_protobuf_protobuf-java"],
 )
 
 kt_jvm_library(
     name = "git_client",
-    srcs = [
-        "GitClient.kt",
-    ],
+    srcs = ["GitClient.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
-    ],
+    deps = ["//scripts/src/java/org/oppia/android/scripts/common:command_executor"],
 )
 
 kt_jvm_library(
@@ -55,27 +55,21 @@ kt_jvm_library(
     name = "proto_string_encoder",
     srcs = ["ProtoStringEncoder.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [
-        "//scripts/third_party:com_google_protobuf_protobuf-java",
-    ],
+    deps = ["//scripts/third_party:com_google_protobuf_protobuf-java"],
 )
 
 kt_jvm_library(
     name = "repository_file",
     srcs = ["RepositoryFile.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [
-        "//scripts/third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8",
-    ],
+    deps = ["//scripts/third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8"],
 )
 
 kt_jvm_library(
     name = "script_background_coroutine_dispatcher",
     srcs = ["ScriptBackgroundCoroutineDispatcher.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [
-        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
-    ],
+    deps = ["//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core"],
 )
 
 genrule(

@@ -5,6 +5,17 @@ Tests corresponding to build pipeline scripts.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
+    name = "BazelSetupWizardTest",
+    srcs = ["BazelSetupWizardTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:bazel_setup_wizard_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+    ],
+)
+
+kt_jvm_test(
     name = "FilterPerLanguageResourcesTest",
     srcs = ["FilterPerLanguageResourcesTest.kt"],
     deps = [

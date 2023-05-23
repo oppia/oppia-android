@@ -14,8 +14,9 @@
     * [How to Get Help ]( https://github.com/oppia/oppia-android/wiki/Get-Help)
     * [Overview of the Oppia Android codebase and architecture](https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture)
   * Bazel
-    * [Bazel setup instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions)
-    * [Bazel Setup Instructions for Windows](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows)
+    * [Bazel overview & FAQs](https://github.com/oppia/oppia-android/wiki/Bazel-Overview)
+    * [Bazel setup instructions](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions)
+    * [Bazel cheat sheet](https://github.com/oppia/oppia-android/wiki/Bazel-Cheat-Sheet)
   * Key Workflows
     * [Guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)
     * [Creating a screenshot](https://github.com/oppia/oppia-android/wiki/Creating-a-screenshot)
@@ -50,8 +51,10 @@
   * [Revert & regression policy](https://github.com/oppia/oppia-android/wiki/Revert-&-regression-policy)
   * [Spotlight Guide](https://github.com/oppia/oppia-android/wiki/Spotlight-Guide)
   * Bazel
-    * [Gradle Bazel Migration Best Practices and FAQ](https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ)    
+    * [Bazel Background](https://github.com/oppia/oppia-android/wiki/Background-on-Bazel)
+    * [Bazel Android Studio Guide](https://github.com/oppia/oppia-android/wiki/Bazel-Android-Studio-Guide)
     * [Updating Maven Dependencies](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies)
+    * [Bazel Advanced Concepts](https://github.com/oppia/oppia-android/wiki/Bazel-Advanced-Concepts)
   * [Internationalization](https://github.com/oppia/oppia-android/wiki/Internationalization) 
   * Past Events
     * Google Summer of Code (note: links are to oppia/oppia): [2021](https://github.com/oppia/oppia/wiki/Google-Summer-of-Code-2021), [2020](https://github.com/oppia/oppia/wiki/Google-Summer-of-Code-2020)

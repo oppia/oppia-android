@@ -6,6 +6,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.testing.InterceptingBinaryProtoResourceLoader
 import org.oppia.android.scripts.proto.KdocValidityExemptions
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
@@ -26,11 +27,14 @@ class KdocValidityCheckTest {
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
+  private val interceptingProtoLoader by lazy { InterceptingBinaryProtoResourceLoader() }
+
   @Before
   fun setUp() {
     tempFolder.newFolder("testfiles")
     tempFolder.newFolder("scripts", "assets")
-    tempFolder.newFile(pathToProtoBinary)
+    val pbFile = tempFolder.newFile(pathToProtoBinary)
+    interceptingProtoLoader.interceptResource("assets/kdoc_validity_exemptions.pb", pbFile)
     System.setOut(PrintStream(outContent))
   }
 
@@ -287,7 +291,7 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
+      - TempFile.kt:2
       
       $wikiReferenceNote
       """.trimIndent()
@@ -363,7 +367,7 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
+      - TempFile.kt:1
       
       $wikiReferenceNote
       """.trimIndent()
@@ -393,7 +397,7 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:5
+      - TempFile.kt:5
       
       $wikiReferenceNote
       """.trimIndent()
@@ -422,8 +426,8 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:5
+      - TempFile.kt:3
+      - TempFile.kt:5
       
       $wikiReferenceNote
       """.trimIndent()
@@ -448,8 +452,8 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
+      - TempFile.kt:1
+      - TempFile.kt:2
       
       $wikiReferenceNote
       """.trimIndent()
@@ -474,7 +478,7 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
+      - TempFile.kt:2
       
       $wikiReferenceNote
       """.trimIndent()
@@ -501,7 +505,7 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
+      - TempFile.kt:4
       
       $wikiReferenceNote
       """.trimIndent()
@@ -528,9 +532,9 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
+      - TempFile.kt:1
+      - TempFile.kt:2
+      - TempFile.kt:3
       
       $wikiReferenceNote
       """.trimIndent()
@@ -556,8 +560,8 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
+      - TempFile.kt:1
+      - TempFile.kt:3
       
       $wikiReferenceNote
       """.trimIndent()
@@ -583,7 +587,7 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
+      - TempFile.kt:1
       
       $wikiReferenceNote
       """.trimIndent()
@@ -610,7 +614,7 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
+      - TempFile.kt:3
       
       $wikiReferenceNote
       """.trimIndent()
@@ -638,10 +642,10 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
+      - TempFile.kt:1
+      - TempFile.kt:2
+      - TempFile.kt:3
+      - TempFile.kt:4
       
       $wikiReferenceNote
       """.trimIndent()
@@ -674,11 +678,11 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:5
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:7
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:8
+      - TempFile.kt:1
+      - TempFile.kt:3
+      - TempFile.kt:5
+      - TempFile.kt:7
+      - TempFile.kt:8
       
       $wikiReferenceNote
       """.trimIndent()
@@ -715,9 +719,9 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:6
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:10
+      - TempFile.kt:4
+      - TempFile.kt:6
+      - TempFile.kt:10
       
       $wikiReferenceNote
       """.trimIndent()
@@ -761,7 +765,7 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
+      - TempFile.kt:4
       
       $wikiReferenceNote
       """.trimIndent()
@@ -870,11 +874,11 @@ class KdocValidityCheckTest {
     val failureMessage =
       """
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:4
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:2
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:6
-      - ${retrieveTestFilesDirectoryPath()}/TempFile3.kt:1
+      - TempFile1.kt:4
+      - TempFile2.kt:1
+      - TempFile2.kt:2
+      - TempFile2.kt:6
+      - TempFile3.kt:1
       
       $wikiReferenceNote
       """.trimIndent()
@@ -901,7 +905,7 @@ class KdocValidityCheckTest {
       "testfiles/app/src/main/java/org/oppia/android/app/home/HomeActivity.kt"
     )
     exemptedFile.writeText(testContent)
-    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+    val exemptionFile = File(tempFolder.root, pathToProtoBinary)
     val exemptions = KdocValidityExemptions.newBuilder().apply {
       this.addAllExemptedFilePath(
         listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt")
@@ -933,7 +937,7 @@ class KdocValidityCheckTest {
       "testfiles/app/src/main/java/org/oppia/android/app/home/HomeActivity.kt"
     )
     exemptedFile.writeText(testContent)
-    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+    val exemptionFile = File(tempFolder.root, pathToProtoBinary)
     val exemptions = KdocValidityExemptions.newBuilder().apply {
       this.addAllExemptedFilePath(
         listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt")
@@ -950,7 +954,7 @@ class KdocValidityCheckTest {
       """
       Redundant exemptions:
       - app/src/main/java/org/oppia/android/app/home/HomeActivity.kt
-      Please remove them from scripts/assets/kdoc_validity_exemptions.textproto
+      Please remove them from kdoc_validity_exemptions.textproto
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -967,7 +971,7 @@ class KdocValidityCheckTest {
       "testfiles/HomeActivity.kt"
     )
     exemptedFile.writeText(testContent)
-    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+    val exemptionFile = File(tempFolder.root, pathToProtoBinary)
     val exemptions = KdocValidityExemptions.newBuilder().apply {
       this.addAllExemptedFilePath(
         listOf("app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt")
@@ -984,10 +988,10 @@ class KdocValidityCheckTest {
       """
       Redundant exemptions:
       - app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt
-      Please remove them from scripts/assets/kdoc_validity_exemptions.textproto
+      Please remove them from kdoc_validity_exemptions.textproto
       
       KDoc missing for files:
-      - ${retrieveTestFilesDirectoryPath()}/HomeActivity.kt:1
+      - HomeActivity.kt:1
       
       $wikiReferenceNote
       """.trimIndent()
@@ -1002,13 +1006,9 @@ class KdocValidityCheckTest {
     }
   }
 
-  /** Retrieves the absolute path of testfiles directory. */
-  private fun retrieveTestFilesDirectoryPath(): String {
-    return "${tempFolder.root}/testfiles"
-  }
-
   /** Runs the kdoc_validity_check. */
   private fun runScript() {
-    main(retrieveTestFilesDirectoryPath(), "${tempFolder.root}/$pathToProtoBinary")
+    val checker = KdocValidityCheck(File(tempFolder.root, "testfiles"), interceptingProtoLoader)
+    checker.checkForMissingKdocs()
   }
 }

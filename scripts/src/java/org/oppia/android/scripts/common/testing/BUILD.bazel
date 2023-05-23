@@ -1,0 +1,16 @@
+"""
+Test-only libraries to help with using and testing common scripting libraries.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "intercepting_binary_proto_resource_loader",
+    testonly = True,
+    srcs = ["InterceptingBinaryProtoResourceLoader.kt"],
+    visibility = ["//scripts:oppia_script_testing_library_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:binary_proto_resource_loader",
+        "//scripts/third_party:com_google_protobuf_protobuf-java",
+    ],
+)

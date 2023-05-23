@@ -1,5 +1,7 @@
 package org.oppia.android.scripts.maven
 
+import org.oppia.android.scripts.common.BinaryProtoResourceLoader
+import org.oppia.android.scripts.common.BinaryProtoResourceLoaderImpl
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.license.MavenArtifactPropertyFetcher
@@ -49,9 +51,14 @@ fun main(args: Array<String>) {
 /**
  * Wrapper class to pass dependencies to be utilized by the the main method to generate license
  * texts of the dependencies.
+ *
+ * @param mavenArtifactPropertyFetcher the artifact fetcher to used when remotely downloading Maven
+ *     artifacts
+ * @param binaryProtoResourceLoader the resource loader to use when loading binary proto resources
  */
 class RetrieveLicenseTexts(
-  private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher
+  private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
+  private val binaryProtoResourceLoader: BinaryProtoResourceLoader = BinaryProtoResourceLoaderImpl()
 ) {
 
   /** Generates a resource xml file that contains license texts of the third-party dependencies. */
@@ -75,7 +82,11 @@ class RetrieveLicenseTexts(
       val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
       val retriever =
         MavenDependenciesRetriever(
-          pathToValuesDirectory, mavenArtifactPropertyFetcher, scriptBgDispatcher, commandExecutor
+          pathToValuesDirectory,
+          mavenArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+          binaryProtoResourceLoader
         )
       return@use retriever.retrieveMavenDependencyList()
     }

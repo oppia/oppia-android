@@ -385,15 +385,18 @@ class BazelClientTest {
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in
     // circumstances where they occur, and the only way to guarantee this happens in the test
     // environment is to force the command output.
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
-      .thenReturn(
-        CommandResult(
-          exitCode = 0,
-          output = listOf(singleLine),
-          errorOutput = listOf(),
-          command = listOf()
-        )
+    `when`(
+      mockCommandExecutor.executeCommand(
+        anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
       )
+    ).thenReturn(
+      CommandResult(
+        exitCode = 0,
+        output = listOf(singleLine),
+        errorOutput = listOf(),
+        command = listOf()
+      )
+    )
   }
 
   private fun createAndroidLibrary(artifactName: String, buildFile: File) {

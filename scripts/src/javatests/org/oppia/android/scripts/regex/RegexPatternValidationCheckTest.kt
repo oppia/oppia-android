@@ -135,7 +135,8 @@ class RegexPatternValidationCheckTest {
     "presence of a screen name for this activity. To do this, add a test named " +
     "testActivity_createIntent_verifyScreenNameInIntent and verify that an appropriate screen " +
     "name has been added to the activity's intent."
-  private val doNotUseProtoLibrary = "Don't use proto_library. Use oppia_proto_library instead."
+  private val doNotUseProtoLibrary =
+    "proto_library should never be used directly. Instead, use oppia_proto_library."
   private val parameterizedTestRunnerRequiresException =
     "To use OppiaParameterizedTestRunner, please add an exemption to" +
       " file_content_validation_checks.textproto and add an explanation for your use case in your" +

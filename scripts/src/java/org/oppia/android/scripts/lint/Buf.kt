@@ -5,6 +5,21 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 
+/**
+ * The main entrypoint for running Protobuf lint checks.
+ *
+ * This script wraps the Buf (https://github.com/bufbuild/buf) utility for performing basic lint
+ * checks on all protos in the repository.
+ *
+ * Usage:
+ *   bazel run //scripts:buf -- <path_to_repo_root>
+ *
+ * Arguments:
+ * - path_to_repo_root: directory path to the root of the Oppia Android repository.
+ *
+ * Example:
+ *   bazel run //scripts:buf -- $(pwd)
+ */
 fun main(vararg args: String) {
   require(args.size == 1) { "Usage: bazel run //scripts:buf -- </path/to/repo_root>" }
   val repoRoot = File(args[0]).absoluteFile.normalize().also {
@@ -19,9 +34,21 @@ fun main(vararg args: String) {
   }
 }
 
+/**
+ * Utility for running the Buf utility as part of verifying all .proto files under [repoRoot].
+ *
+ * @property repoRoot the absolute [File] corresponding to the root of the inspected repository
+ * @property bazelClient a [BazelClient] configured for a single repository at [repoRoot]
+ */
 class Buf(private val repoRoot: File, private val bazelClient: BazelClient) {
+  /**
+   * Performs a lint check on all proto source files in the repository, throwing an exception if any
+   * have lint failures.
+   */
   fun runBuf() {
-    val bufConfig = File("buf.yaml").also { generateBufConfiguration(it) }.absoluteFile.normalize()
+    val bufConfig = File.createTempFile("buf", ".yaml").also {
+      generateBufConfiguration(it)
+    }.absoluteFile.normalize()
     val rootDirs = PROTO_ROOTS.map { protoRootPath ->
       File(repoRoot, protoRootPath).absoluteFile.normalize().also {
         check(it.exists() && it.isDirectory) {

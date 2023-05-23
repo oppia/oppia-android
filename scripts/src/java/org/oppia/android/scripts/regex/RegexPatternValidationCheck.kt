@@ -1,13 +1,14 @@
 package org.oppia.android.scripts.regex
 
-import com.google.protobuf.MessageLite
+import org.oppia.android.scripts.common.BinaryProtoResourceLoader
+import org.oppia.android.scripts.common.BinaryProtoResourceLoader.Companion.loadProto
+import org.oppia.android.scripts.common.BinaryProtoResourceLoaderImpl
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.proto.FileContentCheck
 import org.oppia.android.scripts.proto.FileContentChecks
 import org.oppia.android.scripts.proto.FilenameCheck
 import org.oppia.android.scripts.proto.FilenameChecks
 import java.io.File
-import java.io.InputStream
 
 /**
  * Script for ensuring that prohibited file contents and file naming patterns are not present in the
@@ -31,7 +32,8 @@ fun main(vararg args: String) {
   val searchFiles = RepositoryFile.collectSearchFiles(repoPath)
 
   // Check if the repo has any filename failure.
-  val hasFilenameCheckFailure = retrieveFilenameChecks()
+  val binaryProtoResourceLoader = BinaryProtoResourceLoaderImpl()
+  val hasFilenameCheckFailure = binaryProtoResourceLoader.retrieveFilenameChecks()
     .fold(initial = false) { hasFailingFile, filenameCheck ->
       val fileFails = checkProhibitedFileNamePattern(
         repoRoot,
@@ -42,7 +44,10 @@ fun main(vararg args: String) {
     }
 
   // Check if the repo has any file content failure.
-  val contentChecks = retrieveFileContentChecks().map { MatchableFileContentCheck.createFrom(it) }
+  val contentChecks =
+    binaryProtoResourceLoader.retrieveFileContentChecks().map {
+      MatchableFileContentCheck.createFrom(it)
+    }
   val hasFileContentCheckFailure =
     searchFiles.sorted().fold(initial = false) { hasFailingFile, searchFile ->
       val fileFails = checkFileContent(
@@ -72,9 +77,10 @@ fun main(vararg args: String) {
  *
  * @return a list of all the FilenameChecks
  */
-private fun retrieveFilenameChecks(): List<FilenameCheck> {
+private fun BinaryProtoResourceLoader.retrieveFilenameChecks(): List<FilenameCheck> {
   return loadProto(
-    "filename_pattern_validation_checks",
+    ResourceLoader::class.java,
+    "assets/filename_pattern_validation_checks.pb",
     FilenameChecks.getDefaultInstance()
   ).filenameChecksList
 }
@@ -84,20 +90,12 @@ private fun retrieveFilenameChecks(): List<FilenameCheck> {
  *
  * @return a list of all the FileContentChecks
  */
-private fun retrieveFileContentChecks(): List<FileContentCheck> {
+private fun BinaryProtoResourceLoader.retrieveFileContentChecks(): List<FileContentCheck> {
   return loadProto(
-    "file_content_validation_checks",
+    ResourceLoader::class.java,
+    "assets/file_content_validation_checks.pb",
     FileContentChecks.getDefaultInstance()
   ).fileContentChecksList
-}
-
-private fun <T : MessageLite> loadProto(textProtoFileName: String, proto: T): T {
-  return ResourceLoader.loadResource("assets/$textProtoFileName.pb").use { inputStream ->
-    // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-    // and this method is bounded by the generic type T.
-    @Suppress("UNCHECKED_CAST")
-    proto.newBuilderForType().mergeFrom(inputStream).build() as T
-  }
 }
 
 /**
@@ -273,10 +271,4 @@ private data class MatchableFileContentCheck(
   }
 }
 
-private object ResourceLoader {
-  fun loadResource(name: String): InputStream {
-    return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
-      "Failed to find resource corresponding to name: $name."
-    }
-  }
-}
+private object ResourceLoader

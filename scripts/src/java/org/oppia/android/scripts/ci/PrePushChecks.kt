@@ -13,6 +13,32 @@ import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
+/**
+ * The main entrypoint for all checks that should be run before pushing a Git branch.
+ *
+ * This script automatically runs a suite of pre-selected checks that, together, require about 1-2
+ * minutes to run. These checks catch some of the most common issues that a reviewer is likely to
+ * bring up during review, and thus they should always be fixed before pushing any code to remote
+ * origins (like GitHub).
+ *
+ * The script outputs several noteworthy pieces of information:
+ * - The estimate ongoing progress of each check (these estimates may be off slightly, but serve as
+ *   a rough approximation to track check progress).
+ * - The pass/fail results of each check.
+ * - For failing checks, the complete output of the failure along with a command to re-run that
+ *   specific check in isolation.
+ * - A list of all re-run commands at the end of the results.
+ * - A local file copy of the failure logs (in case they need to be uploaded for help).
+ *
+ * Usage:
+ *   bazel run //scripts:pre_push_checks -- <path_to_repo_root>
+ *
+ * Arguments:
+ * - path_to_repo_root: directory path to the root of the Oppia Android repository.
+ *
+ * Example:
+ *   bazel run //scripts:pre_push_checks -- $(pwd)
+ */
 fun main(vararg args: String) {
   require(args.size == 1) { "Usage: bazel run //scripts:pre_push_checks -- </path/to/repo_root>" }
   val repoRoot = File(args[0]).absoluteFile.normalize().also {
@@ -40,6 +66,18 @@ fun main(vararg args: String) {
   }
 }
 
+/**
+ * Utility for running a series of pre-push checks.
+ *
+ * @property repoRoot the absolute [File] corresponding to the root of the inspected repository
+ * @property prePushLog the file that should have the full log of pre-push results be written to it
+ * @property bazelClient a [BazelClient] configured for a single repository at [repoRoot]
+ * @property commandExecutor the [CommandExecutor] to be used for command execution. Note that this
+ *     executor should have an especially long timeout period.
+ * @property logger the [Logger] that will be used for outputting check results
+ * @property scriptBgDispatcher a [ScriptBackgroundCoroutineDispatcher] to be used for background
+ *     task execution
+ */
 class PrePushChecks(
   private val repoRoot: File,
   private val prePushLog: File,
@@ -48,18 +86,19 @@ class PrePushChecks(
   private val logger: Logger,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
+  /** Runs a series of checks that should pass before pushing a Git branch to a remote origin. */
   fun runPrePushChecks() {
     val preBuildTargetsDeferred = CoroutineScope(scriptBgDispatcher).async {
       val targetsToBuild = SUITES_TO_RUN.map(CheckSuite::deployTarget)
       bazelClient.build(*targetsToBuild.toTypedArray())
     }
     logger.printAndAwaitResult(
-      prefix = "Pre-building ${SUITES_TO_RUN.size} static check suites",
+      prefix = "Pre-building ${SUITES_TO_RUN.size} check suites",
       delayMs = SuiteSpeed.REASONABLE.runningCheckFrequencyMs,
       preBuildTargetsDeferred
     )
     // Failures will result in an exception being thrown.
-    logger.println("passed!", color = Logger.ConsoleColor.GREEN)
+    logger.println("passed!", color = Logger.ConsoleTextColor.GREEN)
 
     val startTimeMs = System.currentTimeMillis()
     val suiteRunOrders = SUITES_TO_RUN.withIndex().sortedByDescending { (_, checkSuite) ->
@@ -86,9 +125,9 @@ class PrePushChecks(
           runSuiteDeferred
         )
       return@mapIndexedNotNull if (exitCode != 0) {
-        logger.println("failed!", color = Logger.ConsoleColor.RED)
+        logger.println("failed!", color = Logger.ConsoleTextColor.RED)
         checkSuite to outputLines
-      } else null.also { logger.println("passed!", color = Logger.ConsoleColor.GREEN) }
+      } else null.also { logger.println("passed!", color = Logger.ConsoleTextColor.GREEN) }
     }.toMap()
     failures.forEach { (suite, failureLines) ->
       logger.println()
@@ -97,7 +136,7 @@ class PrePushChecks(
       failureLines.forEach(logger::println)
       logger.println()
       logger.println("Re-run command:")
-      logger.println("  ${suite.createBazelRunCommand()}", color = Logger.ConsoleColor.MAGENTA)
+      logger.println("  ${suite.createBazelRunCommand()}", color = Logger.ConsoleTextColor.MAGENTA)
     }
     logger.println("\n${"*".repeat(n = CONSOLE_COL_LIMIT)}\n")
 
@@ -107,8 +146,13 @@ class PrePushChecks(
 
     if (failures.isNotEmpty()) {
       logger.println(
-        "${failures.size}/${SUITES_TO_RUN.size} suites failed.", color = Logger.ConsoleColor.RED
+        "${failures.size}/${SUITES_TO_RUN.size} suites failed.", color = Logger.ConsoleTextColor.RED
       )
+
+      logger.println()
+      logger.println("All commands to re-run:", color = Logger.ConsoleTextColor.MAGENTA)
+      failures.keys.forEach { logger.println("  ${it.createBazelRunCommand()}") }
+      logger.println()
 
       // The IntelliJ-clickable version is a bit hacky. See:
       // https://stackoverflow.com/a/30941328/3689782.
@@ -120,23 +164,38 @@ class PrePushChecks(
 
       error("Checks failed.")
     } else {
-      logger.println("All ${SUITES_TO_RUN.size} suites pass.", color = Logger.ConsoleColor.GREEN)
+      logger.println(
+        "All ${SUITES_TO_RUN.size} suites pass.", color = Logger.ConsoleTextColor.GREEN
+      )
     }
   }
 
   companion object {
     private const val CONSOLE_COL_LIMIT = 80
 
+    /**
+     * A de-multiplexing console logger that supports colors.
+     *
+     * @property plainStreams the list of [PrintStream]s to output lines to without colors
+     * @property colorStreams the list of [PrintStream]s to output lines to with escaped colors
+     */
     class Logger(
       private val plainStreams: List<PrintStream>,
       private val colorStreams: List<PrintStream>
     ) {
       private val allStreams by lazy { plainStreams + colorStreams }
 
+      /** Prints a string [str] to the output streams without color or a newline. */
       fun print(str: String) = allStreams.forEach { it.print(str) }
+
+      /** Prints a newline to the output streams. */
       fun println() = allStreams.forEach { it.println() }
+
+      /** Prints a string [str] with a newline to the output streams without color. */
       fun println(str: String) = allStreams.forEach { it.println(str) }
-      fun println(str: String, color: ConsoleColor) {
+
+      /** Prints a string [str] with the specified [color] to the output streams, with a newline. */
+      fun println(str: String, color: ConsoleTextColor) {
         startColor(color)
         print(str)
         endColor()
@@ -145,16 +204,31 @@ class PrePushChecks(
 
       // Wrap the string with a color to render per:
       // https://www.tutorialspoint.com/how-to-output-colored-text-to-a-linux-terminal.
-      private fun startColor(color: ConsoleColor) {
+      private fun startColor(color: ConsoleTextColor) {
         colorStreams.forEach { it.print("\u001B[1;${color.colorCode}m") }
       }
 
       private fun endColor() = colorStreams.forEach { it.print("\u001B[0m") }
 
-      enum class ConsoleColor(val colorCode: Int) {
+      /**
+       * An escapable representation of a console color that can be used when printing text with
+       * [Logger].
+       *
+       * Note that the actual RGB values of the rendered colors is TTY-dependent.
+       *
+       * @property colorCode the escape code used when representing the color
+       */
+      enum class ConsoleTextColor(val colorCode: Int) {
+        /** Represents a red color. */
         RED(colorCode = 31),
+
+        /** Represents a green color. */
         GREEN(colorCode = 32),
+
+        /** Represents a magenta color. */
         MAGENTA(colorCode = 35),
+
+        /** Represents a cyan color. */
         CYAN(colorCode = 36)
       }
     }
@@ -205,6 +279,11 @@ class PrePushChecks(
         "check"
       ),
       createSuite(
+        name = "Resource validation",
+        target = "//scripts:string_resource_validation_check",
+        speed = SuiteSpeed.FAST
+      ),
+      createSuite(
         name = "Test file presence",
         target = "//scripts:test_file_check",
         speed = SuiteSpeed.FAST
@@ -251,12 +330,6 @@ class PrePushChecks(
         speed = SuiteSpeed.SLOW,
         "third_party/versions/maven_install.json",
       ),
-      createSuite(
-        name = "Maven license validation (scripts)",
-        target = "//scripts:maven_dependencies_list_check",
-        speed = SuiteSpeed.REASONABLE,
-        "scripts/third_party/versions/maven_install.json",
-      ),
     )
 
     private fun createSuite(
@@ -273,8 +346,8 @@ class PrePushChecks(
         val postfixLength = CONSOLE_COL_LIMIT - label.length - prefixLength - 2
         val prefix = "*".repeat(prefixLength)
         val postfix = "*".repeat(postfixLength)
-        println("$prefix $label $postfix", color = Logger.ConsoleColor.CYAN)
-      } else println(label, color = Logger.ConsoleColor.CYAN)
+        println("$prefix $label $postfix", color = Logger.ConsoleTextColor.CYAN)
+      } else println(label, color = Logger.ConsoleTextColor.CYAN)
     }
 
     private fun <T> Logger.printAndAwaitResult(

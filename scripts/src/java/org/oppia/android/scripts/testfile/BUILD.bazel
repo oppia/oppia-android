@@ -18,6 +18,7 @@ kt_jvm_library(
     resources = _TEST_FILE_EXEMPTION_ASSETS,
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:binary_proto_resource_loader",
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
         "//scripts/third_party:com_google_protobuf_protobuf-java",

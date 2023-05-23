@@ -25,6 +25,17 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
+    name = "PrePushChecksTest",
+    srcs = ["PrePushChecksTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/ci:pre_push_checks_lib",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:junit_junit",
+        "//testing/src/main/java/org/oppia/android/testing:assertion_helpers",
+    ],
+)
+
+kt_jvm_test(
     name = "RetrieveAffectedTestsTest",
     srcs = ["RetrieveAffectedTestsTest.kt"],
     deps = [

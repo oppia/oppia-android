@@ -286,9 +286,10 @@ file_content_checks {
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  file_path_regex: "BUILD"
-  prohibited_content_regex: "^proto_library\\("
-  failure_message: "Don't use proto_library. Use oppia_proto_library instead."
+  file_path_regex: "(BUILD|BUILD.bazel|.*?.bzl)$"
+  prohibited_content_regex: "\\bproto_library\\s*\\("
+  failure_message: "proto_library should never be used directly. Instead, use oppia_proto_library."
+  exempted_file_name: "model/oppia_proto_library.bzl"
 }
 file_content_checks {
   file_path_regex: ".+?\\.kt"
@@ -425,12 +426,6 @@ file_content_checks {
   failure_message: "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one using getInstance (as the latter may create a WorkManager if one isn't already present, and the application may intend to disable it)."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
   exempted_file_patterns: ".+?Test\\.kt"
-}
-file_content_checks {
-  file_path_regex: "(BUILD|BUILD.bazel|.*?.bzl)$"
-  prohibited_content_regex: "\\bproto_library\\s*\\("
-  failure_message: "proto_library should never be used directly. Instead, use oppia_proto_library."
-  exempted_file_name: "model/oppia_proto_library.bzl"
 }
 file_content_checks {
   file_path_regex: ".+?.kt"

@@ -1,9 +1,10 @@
 package org.oppia.android.scripts.testfile
 
+import org.oppia.android.scripts.common.BinaryProtoResourceLoader.Companion.loadProto
+import org.oppia.android.scripts.common.BinaryProtoResourceLoaderImpl
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
-import java.io.InputStream
 
 /**
  * Script for ensuring that all production files have test files present.
@@ -23,10 +24,13 @@ fun main(vararg args: String) {
   // A list of all the files to be exempted for this check.
   // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
 
+  val binaryProtoResourceLoader = BinaryProtoResourceLoaderImpl()
   val testFileExemptionList =
-    ResourceLoader.loadResource("assets/test_file_exemptions.pb")
-      .use(InputStream::loadTestFileExemptionsProto)
-      .exemptedFilePathList
+    binaryProtoResourceLoader.loadProto(
+      ResourceLoader::class.java,
+      "assets/test_file_exemptions.pb",
+      TestFileExemptions.getDefaultInstance()
+    ).exemptedFilePathList
 
   // A list of all kotlin files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(
@@ -88,13 +92,4 @@ private fun logFailures(matchedFiles: List<File>) {
   }
 }
 
-private fun InputStream.loadTestFileExemptionsProto(): TestFileExemptions =
-  TestFileExemptions.newBuilder().mergeFrom(this).build()
-
-private object ResourceLoader {
-  fun loadResource(name: String): InputStream {
-    return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
-      "Failed to find resource corresponding to name: $name."
-    }
-  }
-}
+private object ResourceLoader

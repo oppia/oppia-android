@@ -13,6 +13,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.common.testing.InterceptingBinaryProtoResourceLoader
 import org.oppia.android.scripts.license.MavenDependenciesRetriever.MavenListDependency
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
@@ -37,6 +38,7 @@ class MavenDependenciesRetrieverTest {
 
   private val mockArtifactPropertyFetcher by lazy { initializeArtifactPropertyFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+  private val interceptingProtoLoader by lazy { InterceptingBinaryProtoResourceLoader() }
   private val mavenDependenciesRetriever by lazy { initializeMavenDependenciesRetriever() }
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
 
@@ -803,6 +805,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testRetrieveMavenDepList_emptyPbFile_returnsEmptyDepsList() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
     val mavenDependencyList = MavenDependencyList.newBuilder().build()
 
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
@@ -815,6 +818,7 @@ class MavenDependenciesRetrieverTest {
   @Test
   fun testRetrieveMavenDepList_nonEmptyMavenDependencyList_returnsCorrectDepsList() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    interceptingProtoLoader.interceptResource("assets/maven_dependencies.pb", pbFile)
 
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
@@ -1612,7 +1616,8 @@ class MavenDependenciesRetrieverTest {
       "${tempFolder.root}",
       mockArtifactPropertyFetcher,
       ScriptBackgroundCoroutineDispatcher(),
-      commandExecutor
+      commandExecutor,
+      interceptingProtoLoader
     )
   }
 
