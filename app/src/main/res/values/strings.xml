@@ -89,7 +89,6 @@
   <string name="cellular_audio_dialog_fragment_cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <!-- ConceptCardActivity -->
   <string name="concept_card_fragment_concept_card_toolbar_title">Concept Card</string>
-  <string name="concept_card_fragment_concept_card_close_icon_description">Clicking on this will close the concept card.</string>
   <!-- ChapterSummaryActivity -->
   <string name="chapter_summary_activity_topic_play_chapter_index">%s</string>
   <string name="chapter_summary_activity_chapter_name">Chapter %s: %s</string>
@@ -409,7 +408,6 @@
   <!-- StoryActivity -->
   <string name="story_activity_title">Chapter List</string>
   <string name="story_summary_activity_topic_story_progress_percentage">%s\%%</string>
-  <string name="story_summary_activity_chapter_count_with_story_name">%1$s in %2$s</string>
   <string name="story_activity_chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="topic_lesson_title_activity_stories_you_can_play">Stories You Can Play</string>
   <!-- TopicActivity -->

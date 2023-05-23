@@ -35,7 +35,6 @@
   <string name="cellular_audio_dialog_fragment_cellular_data_alert_dialog_description">O streaming de áudio pode usar muitos dados móveis.</string>
   <string name="cellular_audio_dialog_fragment_cellular_data_alert_dialog_checkbox">Não mostre esta mensagem novamente</string>
   <string name="concept_card_fragment_concept_card_toolbar_title">Cartão de Conceito</string>
-  <string name="concept_card_fragment_concept_card_close_icon_description">Clicar aqui fechará o cartão de conceito.</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_title">Pretende ir para a página do tópico?</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_description">Seu progresso não será salvo.</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_leave_button_text">Sair</string>
@@ -338,7 +337,6 @@
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">Versão do Aplicativo</string>
   <string name="app_language_activity_title">Idioma do Aplicativo</string>
   <string name="audio_language_activity_title">Idioma Padrão de Áudio</string>
-  <string name="reading_text_size">Tamanho do Texto de Leitura</string>
   <string name="reading_text_size_activity_title">Tamanho do Texto de Leitura</string>
   <string name="reading_text_size_activity_toolbar_title_text">Tamanho do Texto de Leitura</string>
   <string name="audio_language">Áudio Padrão</string>

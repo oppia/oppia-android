@@ -31,7 +31,6 @@
   <string name="cellular_audio_dialog_fragment_cellular_data_alert_dialog_description">تشغيل الصوت عبر الإنترنت قد يستخدم الكثير من بيانات الهاتف.</string>
   <string name="cellular_audio_dialog_fragment_cellular_data_alert_dialog_checkbox">لا تُظهِر هذه الرسالة مُجددًا</string>
   <string name="concept_card_fragment_concept_card_toolbar_title">بطاقة المفهوم</string>
-  <string name="concept_card_fragment_concept_card_close_icon_description">الضغط هنا سوف يغلق بطاقة المفهوم</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_title">هل تريد المغادرة إلى صفحة الموضوع؟</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_description">لن يتم حفظ تقدمك.</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_leave_button_text">مغادرة</string>
@@ -67,8 +66,9 @@
   <string name="unsaved_exploration_dialog_fragment_state_end_exploration_button_text">العودة إلى الموضوع</string>
   <string name="previous_responses_header" fuzzy="true">الردود السابقة (%s)</string>
   <string name="image_interaction_answer_text">يضغط على %s</string>
-  <string name="topic_info_activity_see_more_text">اعرض المزيد</string>
-  <string name="topic_info_activity_see_less">اعرض أقل</string>
+  <string name="state_learn_again_button">تعلم مرة أخرى</string>
+  <string name="see_more">اعرض المزيد</string>
+  <string name="see_less">اعرض أقل</string>
   <string name="FAQs">الأسئلة المتكررة</string>
   <string name="faq_list_activity_featured_questions_text">الأسئلة المميزة</string>
   <string name="frequently_asked_questions">الأسئلة المتكررة</string>
