@@ -1,3 +1,12 @@
+## Table of Contents
+
+- [DataProviders](#dataproviders)
+- [Transferring data to UI via LiveData](#transferring-data-to-ui-via-livedata)
+- [Best practices/antipractices](#best-practicesantipractices)
+- [DataProvider simplifications](#dataprovider-simplifications)
+- [DataProviders utility](#dataproviders-utility)
+- [LiveData transformations](#livedata-transformations)
+
 ### DataProviders
 
 [DataProvider](https://github.com/oppia/oppia-android/blob/a85399c2b0a2b9cf214881ce8c70d9b487f1e0b8/utility/src/main/java/org/oppia/android/util/data/DataProvider.kt#L10)s are gateways to safely receiving an asynchronous result from an operation. They support notifications for when the DataProvider has new data to be retrieved, force usage of suspend functions to encourage coroutine use, have utilities for simplifying their usage, and provide an easy way to pass data to the UI via LiveData.
