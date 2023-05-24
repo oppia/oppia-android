@@ -497,8 +497,13 @@ data class BazelWorkspaceInfo(
     /** The relative path to the check-in shared .bazelproject file. */
     const val SHARED_BAZEL_PROJECT_CONFIG_PATH = "config/intellij/oppia-android.bazelproject"
 
-    /** The Bazel command to run pre-push checks. */
-    const val PRE_PUSH_CHECKS_COMMAND = "bazel run //scripts:pre_push_checks -- \"\$GIT_WORK_TREE\""
+    /**
+     * The Bazel command to run pre-push checks.
+     *
+     * See https://git-scm.com/docs/githooks for details on the available context for pre-push hook
+     * scripts.
+     */
+    const val PRE_PUSH_CHECKS_COMMAND = "bazel run //scripts:pre_push_checks -- \"\$(pwd)\""
 
     /** Returns the computed, current [BazelWorkspaceInfo] state for the provided [repoRoot]. */
     fun computeState(repoRoot: File): BazelWorkspaceInfo {
