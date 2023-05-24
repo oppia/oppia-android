@@ -102,7 +102,7 @@ jobs:
 
       - name: Build Oppia dev, alpha, beta, and GA (base)
         run: |
-          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
+          bazel build --strategy=Desugar=sandboxed,local -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
           cp bazel-bin/oppia_dev.aab ./oppia_dev_without_changes.aab
           cp bazel-bin/oppia_alpha.aab ./oppia_alpha_without_changes.aab
           cp bazel-bin/oppia_beta.aab ./oppia_beta_without_changes.aab
@@ -115,7 +115,7 @@ jobs:
 
       - name: Build Oppia dev, alpha, beta, and GA (branch)
         run: |
-          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
+          bazel build --strategy=Desugar=sandboxed,local -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
           cp bazel-bin/oppia_dev.aab ./oppia_dev_with_changes.aab
           cp bazel-bin/oppia_alpha.aab ./oppia_alpha_with_changes.aab
           cp bazel-bin/oppia_beta.aab ./oppia_beta_with_changes.aab

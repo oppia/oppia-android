@@ -125,12 +125,12 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
+          bazel build --strategy=Desugar=sandboxed,local --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
 
       - name: Build Oppia binary (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build -- //:oppia
+          bazel build --strategy=Desugar=sandboxed,local -- //:oppia
 
       # Note that caching only works on non-forks.
       - name: Build Oppia KitKat binary (with caching, non-fork only)
@@ -138,12 +138,12 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_kitkat
+          bazel build --strategy=Desugar=sandboxed,local --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_kitkat
 
       - name: Build Oppia binary KitKat (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build -- //:oppia_kitkat
+          bazel build --strategy=Desugar=sandboxed,local -- //:oppia_kitkat
 
       - name: Copy Oppia dev APKs for uploading
         run: |
@@ -268,12 +268,12 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_dev
+          bazel build --strategy=Desugar=sandboxed,local --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_dev
 
       - name: Build Oppia developer AAB (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build -- //:oppia_dev
+          bazel build --strategy=Desugar=sandboxed,local -- //:oppia_dev
 
       # Note that caching only works on non-forks.
       - name: Build Oppia developer KitKat AAB (with caching, non-fork only)
@@ -281,12 +281,12 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_dev_kitkat
+          bazel build --strategy=Desugar=sandboxed,local --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_dev_kitkat
 
       - name: Build Oppia developer KitKat AAB (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build -- //:oppia_dev_kitkat
+          bazel build --strategy=Desugar=sandboxed,local -- //:oppia_dev_kitkat
 
   build_oppia_alpha_aab:
     name: Build Oppia AAB (alpha flavors)
@@ -402,12 +402,12 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_alpha
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_alpha
 
       - name: Build Oppia alpha AAB (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build --compilation_mode=opt -- //:oppia_alpha
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt -- //:oppia_alpha
 
       # Note that caching only works on non-forks.
       - name: Build Oppia alpha KitKat AAB (with caching, non-fork only)
@@ -415,12 +415,12 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_alpha_kitkat
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_alpha_kitkat
 
       - name: Build Oppia alpha KitKat AAB (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build --compilation_mode=opt -- //:oppia_alpha_kitkat
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt -- //:oppia_alpha_kitkat
 
       # Note that caching only works on non-forks.
       - name: Build Oppia alpha Kenya-specific AAB (with caching, non-fork only)
@@ -428,12 +428,12 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_alpha_kenya
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_alpha_kenya
 
       - name: Build Oppia alpha Kenya-specific AAB (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build --compilation_mode=opt -- //:oppia_alpha_kenya
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt -- //:oppia_alpha_kenya
 
   build_oppia_beta_aab:
     name: Build Oppia AAB (beta flavor)
@@ -549,12 +549,12 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_beta
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_beta
 
       - name: Build Oppia beta AAB (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build --compilation_mode=opt -- //:oppia_beta
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt -- //:oppia_beta
 
   build_oppia_ga_aab:
     name: Build Oppia AAB (GA flavor)
@@ -670,9 +670,9 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_ga
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_ga
 
       - name: Build Oppia GA AAB (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build --compilation_mode=opt -- //:oppia_ga
+          bazel build --strategy=Desugar=sandboxed,local --compilation_mode=opt -- //:oppia_ga
