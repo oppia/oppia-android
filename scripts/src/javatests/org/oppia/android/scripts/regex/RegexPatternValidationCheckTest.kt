@@ -1476,7 +1476,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_activityDeclarationInManifest_withConfigChanges_fileContentIsNotCorrect() {
+  fun testFileContent_manifestWithConfigChanges_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <?xml version="1.0" encoding="utf-8"?>
@@ -1509,7 +1509,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_activityDeclarationInManifest_withFirebaseCrashlyticsEnabled_fileContentIsNotCorrect() {
+  fun testFileContent_manifestWithFirebaseCrashlyticsEnabled_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <?xml version="1.0" encoding="utf-8"?>
