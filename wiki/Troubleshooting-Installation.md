@@ -1,5 +1,11 @@
 Here are some general troubleshooting tips for oppia-android. The specific platforms are Linux, Windows and Mac OS.
 
+## Table of Contents
+
+- [General issues](#general-issues)
+- [Bazel issues](#bazel-issues)
+- [Can’t find a particular issue?](#cant-find-a-particular-issue)
+
 ### General issues
 
 1. If you find any error related to `cURL`, please set up cURL on your machine. For Linux, you can use `sudo apt install curl`. No need to set up `cURL` for Windows as you are using git bash command line.<br>

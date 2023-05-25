@@ -1,3 +1,10 @@
+## Table of Contents
+
+- [What is RTL?](#what-is-rtl)
+- [What changes in RTL?](#what-changes-in-rtl)
+- [Testing app for RTL Layouts](#testing-app-for-rtl-layouts)
+- [Reference Documentation](#reference-documentation)
+
 # What is RTL?
 The main difference between left-to-right (LTR) and right-to-left (RTL) language scripts is the direction in which content is displayed:
 
