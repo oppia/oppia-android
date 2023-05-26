@@ -197,4 +197,13 @@ message EphemeralSurveyQuestion {
     // Present if this is the last question in the survey.
     bool terminal_question = 6;
   }
+
+  // Corresponds the index of the current question in the survey, starting at 0. This index is
+  // guaranteed to be unique for a specific question and will be equal to the total question count if
+  // the learner has reached the end of the survey.
+  int32 current_question_index = 7;
+
+  // Corresponds to the number of questions in the survey. This value will never change in the same
+  // survey instance.
+  int32 total_question_count = 8;
 }
