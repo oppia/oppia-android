@@ -13,6 +13,15 @@ class MarketFitItemsViewModel @Inject constructor(
 ) : SurveyAnswerItemViewModel(ViewType.MARKET_FIT_OPTIONS) {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getMarketFitOptions()
 
+  private val selectedItems: MutableList<Int> = mutableListOf()
+
+  override fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
+    optionItems.forEach { item -> item.isAnswerSelected.set(false) }
+    selectedItems.clear()
+    selectedItems += itemIndex
+    return true
+  }
+
   private fun getMarketFitOptions(): ObservableList<MultipleChoiceOptionContentViewModel> {
     val observableList = ObservableArrayList<MultipleChoiceOptionContentViewModel>()
     observableList += MarketFitAnswer.values()

@@ -18,16 +18,18 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:importantForAccessibility="yes"
-    android:minHeight="48dp">
+    android:minHeight="48dp"
+    android:onClick="@{(v) -> viewModel.handleItemClicked()}">
 
     <androidx.appcompat.widget.AppCompatRadioButton
       android:id="@+id/multiple_choice_radio_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:checked="@{viewModel.answerSelected}"
       android:clickable="false"
       android:focusable="false"
       android:labelFor="@id/multiple_choice_content_text_view"
-      app:buttonTint="@color/component_color_shared_radio_button_unchecked_color" />
+      app:buttonTint="@color/component_color_shared_survey_option_selector" />
 
     <TextView
       android:id="@+id/multiple_choice_content_text_view"
@@ -37,6 +39,7 @@
       android:layout_marginEnd="12dp"
       android:layout_toEndOf="@id/multiple_choice_radio_button"
       android:fontFamily="sans-serif"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:text="@{optionContent}"
       android:textSize="16sp" />
   </RelativeLayout>

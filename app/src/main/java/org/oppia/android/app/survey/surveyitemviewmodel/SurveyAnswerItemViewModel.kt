@@ -8,8 +8,8 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
  */
 abstract class SurveyAnswerItemViewModel(val viewType: ViewType) : ObservableViewModel() {
 
-  fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
-    return true // todo add logic
+  open fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
+    return true
   }
 
   /** Corresponds to the type of the view model. */
