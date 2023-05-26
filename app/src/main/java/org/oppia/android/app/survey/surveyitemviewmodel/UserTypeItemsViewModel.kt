@@ -1,11 +1,11 @@
 package org.oppia.android.app.survey.surveyitemviewmodel
 
 import androidx.databinding.ObservableList
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
+import javax.inject.Inject
 
 /** [SurveyAnswerItemViewModel] for providing the type of user question options. */
 class UserTypeItemsViewModel @Inject constructor(
