@@ -19,6 +19,7 @@ import org.oppia.android.app.survey.surveyitemviewmodel.SurveyAnswerItemViewMode
 import org.oppia.android.app.survey.surveyitemviewmodel.UserTypeItemsViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.SurveyFragmentBinding
+import org.oppia.android.databinding.SurveyMarketFitQuestionLayoutBinding
 import org.oppia.android.databinding.SurveyNpsScoreLayoutBinding
 import org.oppia.android.databinding.SurveyUserTypeQuestionLayoutBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -132,6 +133,12 @@ class SurveyFragmentPresenter @Inject constructor(
         setViewModel = SurveyUserTypeQuestionLayoutBinding::setViewModel,
         transformViewModel = { it as UserTypeItemsViewModel }
       )
+      .registerViewDataBinder(
+        viewType = SurveyAnswerItemViewModel.ViewType.MARKET_FIT_OPTIONS,
+        inflateDataBinding = SurveyMarketFitQuestionLayoutBinding::inflate,
+        setViewModel = SurveyMarketFitQuestionLayoutBinding::setViewModel,
+        transformViewModel = { it as MarketFitItemsViewModel }
+      )
       .registerViewBinder(
         viewType = SurveyAnswerItemViewModel.ViewType.NPS_OPTIONS,
         inflateView = { parent ->
@@ -175,20 +182,23 @@ class SurveyFragmentPresenter @Inject constructor(
     val questionName = ephemeralQuestion.question.questionName
     surveyViewModel.itemList.clear()
     when (questionName) {
-      SurveyQuestionName.USER_TYPE -> {
-        surveyViewModel.itemList.add(
-          UserTypeItemsViewModel(
-            resourceHandler
-          )
+      SurveyQuestionName.USER_TYPE -> surveyViewModel.itemList.add(
+        UserTypeItemsViewModel(
+          resourceHandler
         )
-      }
-      SurveyQuestionName.MARKET_FIT -> TODO()
+      )
+      SurveyQuestionName.MARKET_FIT -> surveyViewModel.itemList.add(
+        MarketFitItemsViewModel(
+          resourceHandler
+        )
+      )
       SurveyQuestionName.NPS -> surveyViewModel.itemList.add(NpsOptionsViewModel())
       SurveyQuestionName.PROMOTER_FEEDBACK -> TODO()
       SurveyQuestionName.PASSIVE_FEEDBACK -> TODO()
       SurveyQuestionName.DETRACTOR_FEEDBACK -> TODO()
       else -> {}
     }
+    updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
     updateQuestionText(questionName)
   }
 

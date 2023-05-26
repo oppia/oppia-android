@@ -1,6 +1,5 @@
 package org.oppia.android.domain.survey
 
-import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.SurveyQuestion
 
 /** Tracks the dynamic behavior of the user through a survey session. */
@@ -8,7 +7,7 @@ class SurveyQuestionDeck constructor(
   initialQuestion: SurveyQuestion,
   private val isTopOfDeckTerminalChecker: (SurveyQuestion) -> Boolean
 ) {
-  private val previousQuestions: MutableList<EphemeralSurveyQuestion> = ArrayList()
+  private val viewedQuestionsCount: Int = 0
   private var questionIndex: Int = 0
   private var pendingTopQuestion: SurveyQuestion = initialQuestion
 
@@ -22,17 +21,7 @@ class SurveyQuestionDeck constructor(
 
   /** Navigates to the next question in the deck or fails if it is not possible. */
   fun navigateToNextQuestion() {
-    check(!isCurrentQuestionTopOfDeck()) {
-      "Cannot navigate to next question; This is the most recent question."
-    }
-    val previousQuestion = previousQuestions[questionIndex]
-
     questionIndex++
-
-    if (!previousQuestion.hasNextQuestion) {
-      previousQuestions[questionIndex - 1] =
-        previousQuestion.toBuilder().setHasNextQuestion(true).build()
-    }
   }
 
   /**
@@ -48,28 +37,16 @@ class SurveyQuestionDeck constructor(
    * Returns the number of unique questions that have been viewed so far in the deck
    * (i.e. the size of the deck).
    */
-  fun getViewedQuestionCount(): Int = previousQuestions.size
-
-  /** Returns the current [SurveyQuestion] being viewed by the learner. */
-  fun getCurrentQuestion(): SurveyQuestion {
-    return when {
-      isCurrentQuestionTopOfDeck() -> pendingTopQuestion
-      else -> previousQuestions[questionIndex].question
-    }
-  }
-
-  private fun getPreviousQuestion(): EphemeralSurveyQuestion {
-    return previousQuestions[questionIndex]
-  }
+  fun getViewedQuestionCount(): Int = viewedQuestionsCount
 
   /** Returns whether this is the first question in the survey. */
-  fun isCurrentQuestionInitial(): Boolean {
+  private fun isCurrentQuestionInitial(): Boolean {
     return questionIndex == 0
   }
 
   /** Returns whether this is the most recent question in the survey. */
   fun isCurrentQuestionTopOfDeck(): Boolean {
-    return questionIndex == previousQuestions.size
+    return questionIndex == viewedQuestionsCount
   }
 
   /** Returns whether this is the last question in the survey. */

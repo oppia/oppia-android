@@ -1,8 +1,5 @@
 package org.oppia.android.domain.survey
 
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -21,6 +18,9 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID = "SurveyProgressController.begin_session_result"
 private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =
@@ -81,9 +81,7 @@ class SurveyProgressController @Inject constructor(
       mostRecentCommandQueue = createControllerCommandActor()
     }
     monitoredQuestionListDataProvider.setBaseDataProvider(questionsListDataProvider) {
-      println("Questions for init ${it.size}")
       it.forEach {
-        println("question name: ${it.questionName}")
       }
       maybeSendReceiveQuestionListEvent(mostRecentCommandQueue, it)
     }
@@ -192,7 +190,7 @@ class SurveyProgressController @Inject constructor(
             message.callbackFlow
           )
           is ControllerMessage.RecomputeQuestionAndNotify ->
-            controllerState.recomputeCurrentQuestionAndNotifySync()
+            controllerState.recomputeCurrentQuestionAndNotifyImpl()
           is ControllerMessage.SaveFullCompletion -> TODO()
           is ControllerMessage.SavePartialCompletion -> TODO()
           is ControllerMessage.SubmitAnswer -> TODO()
@@ -245,6 +243,7 @@ class SurveyProgressController @Inject constructor(
   ) {
     tryOperation(beginSessionResultFlow) {
       recomputeCurrentQuestionAndNotifyAsync()
+      progress.advancePlayStageTo(SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION)
     }
   }
 
@@ -373,6 +372,7 @@ class SurveyProgressController @Inject constructor(
       resultFlow.emit(AsyncResult.Success(operation()))
       recomputeCurrentQuestionAndNotifySync()
     } catch (e: Exception) {
+      println("operation failed, ${e.message}")
       exceptionsController.logNonFatalException(e)
       resultFlow.emit(AsyncResult.Failure(e))
     }
@@ -397,7 +397,8 @@ class SurveyProgressController @Inject constructor(
   ) {
     tryOperation(moveToPreviousQuestionResultFlow) {
       check(progress.surveyStage != SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION) {
-        "Cannot navigate to a previous question if the current question is initial." // todo replace with check for question index
+        "Cannot navigate to a previous question if the current question is initial."
+        // todo replace with check for question index
       }
       progress.questionDeck.navigateToPreviousQuestion()
       if (progress.isViewingMostRecentQuestion()) {
@@ -438,20 +439,48 @@ class SurveyProgressController @Inject constructor(
     )
   }
 
-  private suspend fun ControllerState.retrieveCurrentQuestionAsync(
+  private fun ControllerState.retrieveCurrentQuestionAsync(
     questionsList: List<SurveyQuestion>
   ): AsyncResult<EphemeralSurveyQuestion> {
-    return AsyncResult.Success(
-      retrieveEphemeralQuestion(questionsList)
-    )
+    return try {
+      when (progress.surveyStage) {
+        SurveyProgress.SurveyStage.NOT_IN_SURVEY_SESSION -> AsyncResult.Pending()
+        SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION -> {
+          // If the survey hasn't yet been initialized, initialize it
+          // now that a list of questions is available.
+          initializeSurvey(questionsList)
+          progress.advancePlayStageTo(SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION)
+          AsyncResult.Success(
+            retrieveEphemeralQuestion(questionsList)
+          )
+        }
+        SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION -> {
+          AsyncResult.Success(
+            retrieveEphemeralQuestion(questionsList)
+          )
+        }
+        SurveyProgress.SurveyStage.SUBMITTING_ANSWER -> AsyncResult.Pending()
+      }
+    } catch (e: Exception) {
+      exceptionsController.logNonFatalException(e)
+      AsyncResult.Failure(e)
+    }
+  }
+
+  private fun ControllerState.initializeSurvey(questionsList: List<SurveyQuestion>) {
+    check(questionsList.isNotEmpty()) { "Cannot start a survey session with zero questions." }
+    progress.initialize(questionsList)
   }
 
   private fun ControllerState.retrieveEphemeralQuestion(questionsList: List<SurveyQuestion>):
     EphemeralSurveyQuestion {
-    return EphemeralSurveyQuestion.newBuilder()
-      .setQuestion(questionsList[0])
-      .build()
-  }
+      val currentQuestionIndex = progress.getCurrentQuestionIndex()
+      val ephemeralQuestionBuilder = EphemeralSurveyQuestion.newBuilder()
+        .setQuestion(questionsList[currentQuestionIndex])
+        .setCurrentQuestionIndex(currentQuestionIndex)
+        .setTotalQuestionCount(progress.getTotalQuestionCount())
+      return ephemeralQuestionBuilder.build()
+    }
 
   /**
    * Represents the current synchronized state of the controller.
@@ -459,7 +488,7 @@ class SurveyProgressController @Inject constructor(
    * This object's instance is tied directly to a single training session, and it's not thread-safe
    * so all access must be synchronized.
    *
-   * @property progress the [QuestionAssessmentProgress] corresponding to the session
+   * @property progress the [SurveyProgress] corresponding to the session
    * @property sessionId the GUID corresponding to the session
    * @property ephemeralQuestionFlow the [MutableStateFlow] that the updated [EphemeralQuestion] is
    *     delivered to
@@ -475,8 +504,8 @@ class SurveyProgressController @Inject constructor(
      * The list of [SurveyQuestion]s currently being played in the training session.
      *
      * Because this is updated based on [ControllerMessage.ReceiveQuestionList], it may not be
-     * initialized at the beginning of a training session. Callers should check
-     * [isQuestionsListInitialized] prior to accessing this field.
+     * initialized at the beginning of a session. Callers should check [isQuestionsListInitialized]
+     * prior to accessing this field.
      */
     lateinit var questionsList: List<SurveyQuestion>
 

@@ -2,10 +2,10 @@ package org.oppia.android.app.survey.surveyitemviewmodel
 
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
 
 /** [SurveyAnswerItemViewModel] for the market fit question options. */
 class MarketFitItemsViewModel @Inject constructor(

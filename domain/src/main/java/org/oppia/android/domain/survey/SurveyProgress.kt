@@ -1,9 +1,6 @@
 package org.oppia.android.domain.survey
 
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Survey
 import org.oppia.android.app.model.SurveyQuestion
-import org.oppia.android.app.model.SurveyQuestionName
 
 /**
  * Private class that encapsulates the mutable state of a survey progress controller.
@@ -11,37 +8,91 @@ import org.oppia.android.app.model.SurveyQuestionName
  */
 internal class SurveyProgress {
   internal var surveyStage: SurveyStage = SurveyStage.NOT_IN_SURVEY_SESSION
-  private var questionList: List<SurveyQuestion> = listOf()
+  private var questionsList: List<SurveyQuestion> = listOf()
   private var isTopQuestionCompleted: Boolean = false
-
-  internal lateinit var currentQuestion: SurveyQuestion
-  internal lateinit var currentSurvey: Survey
-
-  internal lateinit var currentProfileId: ProfileId
-
-  internal val questionGraph: SurveyQuestionGraph by lazy {
-    val questionsMap = mutableMapOf<SurveyQuestionName, SurveyQuestion>()
-    currentSurvey.questionsList.map { question ->
-      questionsMap.put(question.questionName, question)
-    }
-    SurveyQuestionGraph(questionsMap)
-  }
 
   internal val questionDeck: SurveyQuestionDeck by lazy {
     SurveyQuestionDeck(
-      questionGraph.getQuestion(currentQuestion.questionName),
-      ::isTopQuestionTerminal
+      questionsList.first(), ::isTopQuestionTerminal
     )
   }
 
-   /** Returns whether the learner is currently viewing the most recent question. */
+  /** Initialize the survey with the specified list of questions. */
+  internal fun initialize(questionsList: List<SurveyQuestion>) {
+    advancePlayStageTo(SurveyStage.VIEWING_SURVEY_QUESTION)
+    this.questionsList = questionsList
+    isTopQuestionCompleted = false
+  }
+
+  /** Returns whether the learner is currently viewing the most recent question. */
   internal fun isViewingMostRecentQuestion(): Boolean {
     return questionDeck.isCurrentQuestionTopOfDeck()
+  }
+
+  /** Processes when the current question has just been completed. */
+  internal fun completeCurrentQuestion() {
+    isTopQuestionCompleted = true
   }
 
   /** Processes when a new pending question has been navigated to. */
   internal fun processNavigationToNewQuestion() {
     isTopQuestionCompleted = false
+  }
+
+  /** Returns the index of the current question being viewed. */
+  internal fun getCurrentQuestionIndex(): Int {
+    return questionDeck.getTopQuestionIndex()
+  }
+
+  /** Returns the number of questions in the survey. */
+  internal fun getTotalQuestionCount(): Int {
+    return questionsList.size
+  }
+
+  /**
+   * Advances the current play stage to the specified stage, verifying that the transition is correct.
+   *
+   * Calling code should prevent this method from failing by checking state ahead of calling this method and providing
+   * more useful errors to UI calling code since errors thrown by this method will be more obscure. This method aims to
+   * ensure the internal state of the controller remains correct. This method is not meant to be covered in unit tests
+   * since none of the failures here should ever be exposed to controller callers.
+   */
+  internal fun advancePlayStageTo(nextStage: SurveyStage) {
+    when (nextStage) {
+      SurveyStage.NOT_IN_SURVEY_SESSION -> {
+        // All transitions to NOT_IN_SURVEY_SESSION are valid except itself.
+        check(surveyStage != SurveyStage.NOT_IN_SURVEY_SESSION) {
+          "Cannot transition to NOT_IN_TRAINING_SESSION from NOT_IN_TRAINING_SESSION"
+        }
+        surveyStage = nextStage
+      }
+      SurveyStage.LOADING_SURVEY_SESSION -> {
+        // A session can only begun being loaded when not previously in a session.
+        check(surveyStage == SurveyStage.NOT_IN_SURVEY_SESSION) {
+          "Cannot transition to LOADING_SURVEY_SESSION from $surveyStage"
+        }
+        surveyStage = nextStage
+      }
+      SurveyStage.VIEWING_SURVEY_QUESTION -> {
+        // A question can be viewed after loading a survey session, after viewing another question,
+        // or after submitting an answer. It cannot be viewed without a loaded session.
+        check(
+          surveyStage == SurveyStage.LOADING_SURVEY_SESSION ||
+            surveyStage == SurveyStage.VIEWING_SURVEY_QUESTION ||
+            surveyStage == SurveyStage.SUBMITTING_ANSWER
+        ) {
+          "Cannot transition to VIEWING_SURVEY_QUESTION from $surveyStage"
+        }
+        surveyStage = nextStage
+      }
+      SurveyStage.SUBMITTING_ANSWER -> {
+        // An answer can only be submitted after viewing a stage.
+        check(surveyStage == SurveyStage.VIEWING_SURVEY_QUESTION) {
+          "Cannot transition to SUBMITTING_ANSWER from $surveyStage"
+        }
+        surveyStage = nextStage
+      }
+    }
   }
 
   companion object {
