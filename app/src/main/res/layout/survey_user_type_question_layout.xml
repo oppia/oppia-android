@@ -6,16 +6,12 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.survey.surveyitemviewmodel.UserTypeItemViewModel" />
+      type="org.oppia.android.app.survey.surveyitemviewmodel.UserTypeItemsViewModel" />
   </data>
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/user_type_recyclerView"
+  <org.oppia.android.app.survey.SurveyMultipleChoiceOptionView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:overScrollMode="never"
-    android:scrollbars="none"
-    app:list="@{viewModel.optionItemsViewModelList}"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    app:selectionData="@{viewModel.optionItems}" />
 </layout>

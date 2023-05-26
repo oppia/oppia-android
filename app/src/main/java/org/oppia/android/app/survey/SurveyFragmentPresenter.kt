@@ -7,12 +7,23 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.survey.surveyitemviewmodel.MarketFitItemsViewModel
+import org.oppia.android.app.survey.surveyitemviewmodel.NpsOptionsViewModel
+import org.oppia.android.app.survey.surveyitemviewmodel.SurveyAnswerItemViewModel
+import org.oppia.android.app.survey.surveyitemviewmodel.UserTypeItemsViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.SurveyFragmentBinding
+import org.oppia.android.databinding.SurveyNpsScoreLayoutBinding
+import org.oppia.android.databinding.SurveyUserTypeQuestionLayoutBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.survey.SurveyController
+import org.oppia.android.domain.survey.SurveyProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -24,7 +35,9 @@ class SurveyFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val surveyController: SurveyController,
   private val surveyProgressController: SurveyProgressController,
-  private val surveyViewModel: SurveyViewModel
+  private val surveyViewModel: SurveyViewModel,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
@@ -57,7 +70,19 @@ class SurveyFragmentPresenter @Inject constructor(
       dialogFragment.showNow(fragment.childFragmentManager, TAG_EXIT_SURVEY_CONFIRMATION_DIALOG)
     }
 
-    startSurveySession() // todo maybe move this to the activity
+    binding.surveyAnswersRecyclerView.apply {
+      adapter = createRecyclerViewAdapter()
+    }
+
+    binding.surveyNextButton.setOnClickListener {
+      surveyProgressController.moveToNextQuestion()
+    }
+
+    binding.surveyPreviousButton.setOnClickListener {
+      surveyProgressController.moveToPreviousQuestion()
+    }
+
+    startSurveySession()
 
     return binding.root
   }
@@ -83,6 +108,48 @@ class SurveyFragmentPresenter @Inject constructor(
     )
   }
 
+  private fun createRecyclerViewAdapter(): BindableAdapter<SurveyAnswerItemViewModel> {
+    return multiTypeBuilderFactory
+      .create<SurveyAnswerItemViewModel, SurveyAnswerItemViewModel.ViewType> { viewModel ->
+        when (viewModel) {
+          is MarketFitItemsViewModel -> {
+            SurveyAnswerItemViewModel.ViewType.MARKET_FIT_OPTIONS
+          }
+          is UserTypeItemsViewModel -> {
+            SurveyAnswerItemViewModel.ViewType.USER_TYPE_OPTIONS
+          }
+          is NpsOptionsViewModel -> {
+            SurveyAnswerItemViewModel.ViewType.NPS_OPTIONS
+          }
+          else -> {
+            throw IllegalStateException("Invalid ViewType")
+          }
+        }
+      }
+      .registerViewDataBinder(
+        viewType = SurveyAnswerItemViewModel.ViewType.USER_TYPE_OPTIONS,
+        inflateDataBinding = SurveyUserTypeQuestionLayoutBinding::inflate,
+        setViewModel = SurveyUserTypeQuestionLayoutBinding::setViewModel,
+        transformViewModel = { it as UserTypeItemsViewModel }
+      )
+      .registerViewBinder(
+        viewType = SurveyAnswerItemViewModel.ViewType.NPS_OPTIONS,
+        inflateView = { parent ->
+          SurveyNpsScoreLayoutBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<SurveyNpsScoreLayoutBinding>(view)!!
+          val npsViewModel = viewModel as NpsOptionsViewModel
+          binding.viewModel = npsViewModel
+        }
+      )
+      .build()
+  }
+
   private fun subscribeToCurrentQuestion() {
     surveyProgressController.getCurrentQuestion().toLiveData().observe(
       fragment,
@@ -105,9 +172,24 @@ class SurveyFragmentPresenter @Inject constructor(
   }
 
   private fun processEphemeralQuestion(ephemeralQuestion: EphemeralSurveyQuestion) {
-    // updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
-    updateProgress(1, 4)
-    updateQuestionText(ephemeralQuestion.question.questionName)
+    val questionName = ephemeralQuestion.question.questionName
+    surveyViewModel.itemList.clear()
+    when (questionName) {
+      SurveyQuestionName.USER_TYPE -> {
+        surveyViewModel.itemList.add(
+          UserTypeItemsViewModel(
+            resourceHandler
+          )
+        )
+      }
+      SurveyQuestionName.MARKET_FIT -> TODO()
+      SurveyQuestionName.NPS -> surveyViewModel.itemList.add(NpsOptionsViewModel())
+      SurveyQuestionName.PROMOTER_FEEDBACK -> TODO()
+      SurveyQuestionName.PASSIVE_FEEDBACK -> TODO()
+      SurveyQuestionName.DETRACTOR_FEEDBACK -> TODO()
+      else -> {}
+    }
+    updateQuestionText(questionName)
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {

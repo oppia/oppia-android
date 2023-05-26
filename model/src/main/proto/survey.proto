@@ -126,10 +126,10 @@ enum UserTypeAnswer {
   OTHER = 1;
 
   // Corresponds to a user who is a teacher.
-  TEACHER = 2;
+  PARENT = 2;
 
   // Corresponds to a user who is a parent.
-  PARENT = 3;
+  TEACHER = 3;
 
   // Corresponds to a user who is a learner.
   LEARNER = 4;

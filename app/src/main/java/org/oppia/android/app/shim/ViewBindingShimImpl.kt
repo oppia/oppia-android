@@ -14,6 +14,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.app.survey.surveyitemviewmodel.MultipleChoiceOptionContentViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ComingSoonTopicViewBinding
 import org.oppia.android.databinding.DragDropInteractionItemsBinding
@@ -21,6 +22,7 @@ import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.android.databinding.PromotedStoryCardBinding
+import org.oppia.android.databinding.SurveyMutipleChoiceItemBinding
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
@@ -145,6 +147,28 @@ class ViewBindingShimImpl @Inject constructor(
         translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
         binding.multipleChoiceContentTextView
       )
+    binding.viewModel = viewModel
+  }
+
+  override fun provideMultipleChoiceItemsInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
+    return SurveyMutipleChoiceItemBinding.inflate(
+      LayoutInflater.from(parent.context),
+      parent,
+      false
+    ).root
+  }
+
+  override fun provideMultipleChoiceOptionViewModel(
+    view: View,
+    viewModel: MultipleChoiceOptionContentViewModel
+  ) {
+    val binding =
+      DataBindingUtil.findBinding<SurveyMutipleChoiceItemBinding>(view)!!
+    binding.optionContent = viewModel.optionContent
     binding.viewModel = viewModel
   }
 
