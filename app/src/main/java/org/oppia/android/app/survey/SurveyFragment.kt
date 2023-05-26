@@ -11,7 +11,9 @@ import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 /** Fragment that represents the current state of a survey. */
-class SurveyFragment : InjectableFragment() {
+class SurveyFragment :
+  InjectableFragment(),
+  SelectedAnswerAvailabilityReceiver {
 
   companion object {
     /**
@@ -53,13 +55,14 @@ class SurveyFragment : InjectableFragment() {
       inflater,
       container,
       internalProfileId,
-      topicId
+      topicId,
+      this as SelectedAnswerAvailabilityReceiver
     )
   }
 
   fun handleKeyboardAction() = surveyFragmentPresenter.handleKeyboardAction()
 
-  // override fun onNextButtonClicked() = surveyFragmentPresenter.onNextButtonClicked()
-
-  // override fun onPreviousButtonClicked() = surveyFragmentPresenter.onPreviousButtonClicked()
+  override fun onPendingAnswerAvailabilityCheck(inputAnswerAvailable: Boolean) {
+    surveyFragmentPresenter.updateNextButton(inputAnswerAvailable)
+  }
 }

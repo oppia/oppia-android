@@ -15,6 +15,7 @@ class SurveyViewModel @Inject constructor(
 ) : ObservableViewModel() {
   val itemList: ObservableList<SurveyAnswerItemViewModel> = ObservableArrayList()
   val itemIndex = ObservableField<Int>()
+  private val canMoveToNextQuestion = ObservableField(false)
 
   val progressPercentage = ObservableField(0)
 
@@ -34,6 +35,11 @@ class SurveyViewModel @Inject constructor(
   fun updateQuestionText(questionName: SurveyQuestionName) {
     questionText.set(getQuestionText(questionName))
   }
+
+  fun setCanMoveToNextQuestion(canMoveToNext: Boolean) =
+    this.canMoveToNextQuestion.set(canMoveToNext)
+
+  fun getCanMoveToNextQuestion(): ObservableField<Boolean> = canMoveToNextQuestion
 
   private fun getQuestionText(
     questionName: SurveyQuestionName

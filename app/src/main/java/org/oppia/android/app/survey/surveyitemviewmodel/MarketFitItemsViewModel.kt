@@ -1,15 +1,19 @@
 package org.oppia.android.app.survey.surveyitemviewmodel
 
+import androidx.databinding.Observable
 import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.R
 import org.oppia.android.app.model.MarketFitAnswer
+import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 /** [SurveyAnswerItemViewModel] for the market fit question options. */
 class MarketFitItemsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
+  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
 ) : SurveyAnswerItemViewModel(ViewType.MARKET_FIT_OPTIONS) {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getMarketFitOptions()
 
@@ -19,7 +23,29 @@ class MarketFitItemsViewModel @Inject constructor(
     optionItems.forEach { item -> item.isAnswerSelected.set(false) }
     selectedItems.clear()
     selectedItems += itemIndex
+    updateIsAnswerAvailable()
     return true
+  }
+
+  val isAnswerAvailable = ObservableField(false)
+
+  init {
+    val callback: Observable.OnPropertyChangedCallback =
+      object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+          selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
+            selectedItems.isNotEmpty()
+          )
+        }
+      }
+    isAnswerAvailable.addOnPropertyChangedCallback(callback)
+  }
+
+  private fun updateIsAnswerAvailable() {
+    val wasSelectedItemListEmpty = isAnswerAvailable.get()
+    if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
+      isAnswerAvailable.set(selectedItems.isNotEmpty())
+    }
   }
 
   private fun getMarketFitOptions(): ObservableList<MultipleChoiceOptionContentViewModel> {

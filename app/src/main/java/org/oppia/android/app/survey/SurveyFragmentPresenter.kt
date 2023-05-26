@@ -44,15 +44,18 @@ class SurveyFragmentPresenter @Inject constructor(
   private lateinit var topicId: String
   private lateinit var binding: SurveyFragmentBinding
   private lateinit var surveyToolbar: Toolbar
+  private lateinit var answerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
-    topicId: String
+    topicId: String,
+    answerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
+    this.answerAvailabilityReceiver = answerAvailabilityReceiver
 
     binding = SurveyFragmentBinding.inflate(
       inflater,
@@ -184,12 +187,14 @@ class SurveyFragmentPresenter @Inject constructor(
     when (questionName) {
       SurveyQuestionName.USER_TYPE -> surveyViewModel.itemList.add(
         UserTypeItemsViewModel(
-          resourceHandler
+          resourceHandler,
+          answerAvailabilityReceiver
         )
       )
       SurveyQuestionName.MARKET_FIT -> surveyViewModel.itemList.add(
         MarketFitItemsViewModel(
-          resourceHandler
+          resourceHandler,
+          answerAvailabilityReceiver
         )
       )
       SurveyQuestionName.NPS -> surveyViewModel.itemList.add(NpsOptionsViewModel())
@@ -210,6 +215,14 @@ class SurveyFragmentPresenter @Inject constructor(
 
   private fun updateQuestionText(questionName: SurveyQuestionName) {
     surveyViewModel.updateQuestionText(questionName)
+  }
+
+  /**
+   * Updates whether the 'next' button should be active based on whether an answer to the current
+   * question has been provided.
+   */
+  fun updateNextButton(inputAnswerAvailable: Boolean) {
+    surveyViewModel.setCanMoveToNextQuestion(inputAnswerAvailable)
   }
 
   fun handleKeyboardAction() {
