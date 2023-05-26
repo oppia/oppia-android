@@ -57,7 +57,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.conceptCardToolbar.setNavigationContentDescription(
-      R.string.concept_card_close_icon_description
+      R.string.navigate_up
     )
     binding.conceptCardToolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? ConceptCardListener)?.dismissConceptCard()
@@ -107,7 +107,6 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
     ConceptCardFragment
-      .newInstance(skillId, profileId)
-      .showNow(fragment.childFragmentManager, ConceptCardFragment.CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+      .bringToFrontOrCreateIfNew(skillId, profileId, fragment.parentFragmentManager)
   }
 }

@@ -1,3 +1,8 @@
+## Table of Contents
+
+- [What is Dependency Injection?](#what-is-dependency-injection)
+- [Why do we need it?](#why-do-we-need-it)
+
 # What is Dependency Injection?
 - It's a mechanism to automatically provide dependencies that an object depends on
 - It requires the object receiving dependencies to also be injectable for other dependencies
