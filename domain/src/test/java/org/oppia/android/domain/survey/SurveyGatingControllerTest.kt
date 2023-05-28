@@ -9,6 +9,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,8 +46,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val SESSION_LENGTH_SHORT = 120000L
 private const val SESSION_LENGTH_LONG = 360000L
@@ -502,36 +502,6 @@ class SurveyGatingControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-/*
-
-    @Provides
-    @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return object : PlatformParameterValue<Boolean> {
-        override val value: Boolean = enableFeature
-      }
-    }
-*/
-
-    /*  @Provides
-      @NpsSurveyGracePeriodInDays
-      fun provideNpsSurveyGracePeriodInDays(): PlatformParameterValue<Int> {
-        return PlatformParameterValue.createDefaultParameter(
-          NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
-        )
-      }
-
-      @Provides
-      @NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
-      fun provideNpsSurveyMinimumAggregateLearningTimeInATopicInMinutes():
-        PlatformParameterValue<Int> {
-        return PlatformParameterValue.createDefaultParameter(
-          NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
-        )
-      }*/
   }
 
   @Module
