@@ -1,5 +1,8 @@
 package org.oppia.android.domain.survey
 
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -18,9 +21,6 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.threading.BackgroundDispatcher
-import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID = "SurveyProgressController.begin_session_result"
 private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =
@@ -193,7 +193,9 @@ class SurveyProgressController @Inject constructor(
             controllerState.recomputeCurrentQuestionAndNotifyImpl()
           is ControllerMessage.SaveFullCompletion -> TODO()
           is ControllerMessage.SavePartialCompletion -> TODO()
-          is ControllerMessage.SubmitAnswer -> TODO()
+          is ControllerMessage.SubmitAnswer -> controllerState.submitAnswerImpl(
+            message.callbackFlow
+          )
           is ControllerMessage.ReceiveQuestionList -> controllerState.handleUpdatedQuestionsList(
             message.questionsList
           )
@@ -350,6 +352,24 @@ class SurveyProgressController @Inject constructor(
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
     ) : ControllerMessage<Any?>()
+  }
+
+  private suspend fun ControllerState.submitAnswerImpl(
+    submitAnswerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+
+  ) {
+    // selectedAnswer: SurveySelectedAnswer
+    tryOperation(submitAnswerResultFlow) {
+      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
+        "Cannot submit an answer while another answer is pending."
+      }
+    }
+    // Notify observers that the submitted answer is currently pending.
+    progress.advancePlayStageTo(SurveyProgress.SurveyStage.SUBMITTING_ANSWER)
+    recomputeCurrentQuestionAndNotifyAsync()
+
+    // hold the response ephemerally, so maybe have a queue or an in-memory cache store
+    // update progress and deck, set stage to allow next button click
   }
 
   private suspend fun ControllerState.handleUpdatedQuestionsList(
