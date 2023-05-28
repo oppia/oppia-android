@@ -431,6 +431,38 @@ class SurveyGatingControllerTest {
     assertThat(topic1Result).isTrue()
   }
 
+  @Test
+  fun testGating_criteriaMetOnProfileTwo_afterSurveyShownOnProfileOne_triggersSurveyProfileTwo() {
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_0)
+    )
+
+    // The surveyLastShownTimestamp is updated every time a survey is shown
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+    )
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
+    // more than the grace period days in the past, so no need to explicitly define
+    // surveyLastShownTimestamp here.
+
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_1, TEST_TOPIC_ID_0)
+
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_1, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    assertThat(result).isTrue()
+  }
+
   private fun startAndEndExplorationSession(
     sessionLengthMs: Long,
     profileId: ProfileId,
