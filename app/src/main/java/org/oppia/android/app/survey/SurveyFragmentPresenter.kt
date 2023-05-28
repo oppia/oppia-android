@@ -14,7 +14,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.survey.surveyitemviewmodel.MarketFitItemsViewModel
-import org.oppia.android.app.survey.surveyitemviewmodel.NpsOptionsViewModel
+import org.oppia.android.app.survey.surveyitemviewmodel.NpsItemsViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.SurveyAnswerItemViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.UserTypeItemsViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -122,7 +122,7 @@ class SurveyFragmentPresenter @Inject constructor(
           is UserTypeItemsViewModel -> {
             SurveyAnswerItemViewModel.ViewType.USER_TYPE_OPTIONS
           }
-          is NpsOptionsViewModel -> {
+          is NpsItemsViewModel -> {
             SurveyAnswerItemViewModel.ViewType.NPS_OPTIONS
           }
           else -> {
@@ -153,7 +153,7 @@ class SurveyFragmentPresenter @Inject constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<SurveyNpsScoreLayoutBinding>(view)!!
-          val npsViewModel = viewModel as NpsOptionsViewModel
+          val npsViewModel = viewModel as NpsItemsViewModel
           binding.viewModel = npsViewModel
         }
       )
@@ -197,7 +197,7 @@ class SurveyFragmentPresenter @Inject constructor(
           answerAvailabilityReceiver
         )
       )
-      SurveyQuestionName.NPS -> surveyViewModel.itemList.add(NpsOptionsViewModel())
+      SurveyQuestionName.NPS -> surveyViewModel.itemList.add(NpsItemsViewModel())
       SurveyQuestionName.PROMOTER_FEEDBACK -> TODO()
       SurveyQuestionName.PASSIVE_FEEDBACK -> TODO()
       SurveyQuestionName.DETRACTOR_FEEDBACK -> TODO()
