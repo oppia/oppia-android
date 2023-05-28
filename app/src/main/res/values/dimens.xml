@@ -773,10 +773,10 @@
   <dimen name="survey_progress_text_margin_start">12dp</dimen>
   <dimen name="survey_progress_text_margin_end">20dp</dimen>
   <dimen name="survey_progress_bar_height">12dp</dimen>
-  <dimen name="survey_free_form_text_margin">28dp</dimen>
+  <dimen name="survey_text_margin">28dp</dimen>
   <dimen name="survey_question_text_margin">28dp</dimen>
   <dimen name="survey_question_recycler_view_margin">28dp</dimen>
-  <dimen name="survey_submit_button_margin_top">28dp</dimen>
   <dimen name="survey_navigation_buttons_margin">28dp</dimen>
   <dimen name="survey_shared_corner_radius">4dp</dimen>
+  <dimen name="survey_popup_header_text_size">28sp</dimen>
 </resources>

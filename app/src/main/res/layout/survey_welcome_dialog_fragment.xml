@@ -3,39 +3,59 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <androidx.constraintlayout.widget.ConstraintLayout
-    android:padding="@dimen/survey_question_recycler_view_margin"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
       android:id="@+id/survey_onboarding_title_text"
-      style="@style/TextViewCenter"
+      style="@style/SurveyPopupHeaderStyle"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/survey_free_form_text_margin"
+      android:layout_margin="@dimen/survey_text_margin"
       android:text="@string/survey_onboarding_title_text"
+      android:textSize="@dimen/survey_popup_header_text_size"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/survey_onboarding_title_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.25" />
+
+    <org.oppia.android.app.customview.SurveyOnboardingBackgroundView
+      android:id="@+id/survey_onboarding_background"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/survey_onboarding_title_guide" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/survey_onboarding_center_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.35" />
+
     <TextView
       android:id="@+id/survey_onboarding_text"
       style="@style/TextViewCenter"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/survey_free_form_text_margin"
+      android:layout_margin="@dimen/survey_text_margin"
       android:text="@string/survey_onboarding_message_text"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/survey_onboarding_title_text" />
+      app:layout_constraintTop_toTopOf="@id/survey_onboarding_center_guide" />
 
     <Button
       android:id="@+id/begin_survey_button"
       style="@style/SurveyPrimaryButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/survey_submit_button_margin_top"
+      android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
       android:text="@string/survey_begin_survey_button"
+      app:layout_constraintVertical_chainStyle="packed"
       app:layout_constraintEnd_toEndOf="@id/survey_onboarding_text"
       app:layout_constraintStart_toStartOf="@id/survey_onboarding_text"
       app:layout_constraintTop_toBottomOf="@id/survey_onboarding_text" />
@@ -45,7 +65,7 @@
       style="@style/SurveySecondaryButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/survey_submit_button_margin_top"
+      android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
       android:text="@string/survey_maybe_later_button"
       app:layout_constraintEnd_toEndOf="@id/begin_survey_button"
       app:layout_constraintStart_toStartOf="@id/begin_survey_button"

@@ -9,7 +9,7 @@
     <EditText
       android:id="@+id/free_form_text"
       style="@style/SurveyFreeFormAnswerEditText"
-      android:layout_margin="@dimen/survey_free_form_text_margin"
+      android:layout_margin="@dimen/survey_text_margin"
       android:hint="@string/survey_free_form_text_hint"
       android:inputType="text|textMultiLine"
       app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +20,7 @@
       style="@style/SurveyPrimaryButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/survey_submit_button_margin_top"
+      android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
       android:text="@string/survey_submit_button"
       app:layout_constraintEnd_toEndOf="@id/free_form_text"
       app:layout_constraintStart_toStartOf="@id/free_form_text"
