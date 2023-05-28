@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 const val TAG_SURVEY_WELCOME_DIALOG = "SURVEY_WELCOME_DIALOG"
 
-/** Presenter for [SurveyWelcomeDialogFragment], sets up bindings from ViewModel. */
+/** Presenter for [SurveyWelcomeDialogFragment], sets up bindings. */
 @FragmentScope
 class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment
