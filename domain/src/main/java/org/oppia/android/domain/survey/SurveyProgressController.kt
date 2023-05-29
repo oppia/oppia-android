@@ -1,8 +1,5 @@
 package org.oppia.android.domain.survey
 
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -21,6 +18,9 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID = "SurveyProgressController.begin_session_result"
 private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =

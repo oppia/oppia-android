@@ -78,7 +78,7 @@ class ExplorationActiveTimeController @Inject constructor(
    * @param profileId the ID corresponding to the profile for which progress needs to be stored
    * @param topicId the ID corresponding to the topic for which duration needs to be stored
    * @param sessionDuration the tracked exploration duration between start and pause
-   * @return a [DataProvider] that indicates the success/failure of this record operation
+   * @return a [DataProvider] that indicates the success/failure of this record operation.
    */
   private fun recordAggregateTopicLearningTime(
     profileId: ProfileId,
