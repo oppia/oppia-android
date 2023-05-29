@@ -231,3 +231,62 @@ annotation class EnableInteractionConfigChangeStateRetention
  * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
  */
 const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the [EnableAppAndOsDeprecation] feature flag that controls whether to enable
+ * app and OS deprecation or not.
+ */
+@Qualifier
+annotation class EnableAppAndOsDeprecation
+
+/**
+ * Default value for the feature flag corresponding to [EnableAppAndOsDeprecation].
+ */
+const val ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the platform parameter that contains the version code of the latest available
+ * optional app update, which is used to notify the app that a soft update is available.
+ */
+@Qualifier
+annotation class OptionalAppUpdateVersionCode
+
+/**
+ * Name of the platform parameter that contains the integer version code of the latest available
+ * optional app update.
+ */
+const val OPTIONAL_APP_UPDATE_VERSION_CODE = "optional_app_update_version_code"
+
+/**
+ * Qualifier for the platform parameter that contains the version code of the latest available
+ * forced app update, which is used to notify the app that a mandatory update is available.
+ */
+@Qualifier
+annotation class ForcedAppUpdateVersionCode
+
+/**
+ * Name of the platform parameter that contains the integer version code of the latest available
+ * forced app update.
+ */
+const val FORCED_APP_UPDATE_VERSION_CODE = "forced_app_update_version_code"
+
+/**
+ * Qualifier for the platform parameter that contains an integer indicating the lowest supported
+ * Android API Level.
+ */
+@Qualifier
+annotation class LowestSupportedApiLevel
+
+/**
+ * Name of the platform parameter that contains an integer indicating the lowest supported Android
+ * API Level.
+ */
+const val LOWEST_SUPPORTED_API_LEVEL = "lowest_supported_api_level"
+
+/**
+ * Default value for the platform parameter that contains an integer indicating the lowest
+ * supported Android API Level.
+ *
+ * The current minimum supported API level is 19 (KitKat).
+ */
+const val LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE = 19
