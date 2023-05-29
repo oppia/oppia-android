@@ -16,6 +16,10 @@ import javax.inject.Singleton
 private const val DEPRECATION_PROVIDER_ID = "deprecation_data_provider_id"
 private const val ADD_DEPRECATION_PROVIDER_ID = "add_deprecation_data_provider_id"
 
+/**
+ * Controller for persisting and retrieving the user's deprecation responses. This will be used to
+ * handle deprecations once the user opens the app.
+ */
 @Singleton
 class DeprecationController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
@@ -36,8 +40,16 @@ class DeprecationController @Inject constructor(
    * Enum states for the possible outcomes of a deprecation action.
    */
   private enum class DeprecationActionStatus {
+    /** Indicates that the deprecation operation succeeded. */
     SUCCESS,
+
+    /** Indicates that a deprecation write operation failed. */
     FAILED_TO_STORE_DEPRECATION_RESPONSE,
+
+    /**
+     * Indicates that a deprecation read operation failed. This is usually the result when a
+     * requested [DeprecationResponse] was not found.
+     */
     DEPRECATION_RESPONSE_NOT_FOUND
   }
 
@@ -62,7 +74,7 @@ class DeprecationController @Inject constructor(
     }
   }
 
-  val deprecationDataProvider by lazy { computeDeprecationProvider() }
+  private val deprecationDataProvider by lazy { computeDeprecationProvider() }
 
   private fun computeDeprecationProvider(): DataProvider<DeprecationResponseDatabase> {
     return deprecationStore.transform(DEPRECATION_PROVIDER_ID) { deprecationResponsesDatabase ->
