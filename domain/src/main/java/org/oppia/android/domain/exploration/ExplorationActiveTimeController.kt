@@ -65,9 +65,6 @@ class ExplorationActiveTimeController @Inject constructor(
    * executing, or the app goes to the background.
    */
   fun setExplorationSessionStopped(profileId: ProfileId, topicId: String) {
-    check(startExplorationTimestampMs != 0L) {
-      "Cannot stop a session that was never started"
-    }
     recordAggregateTopicLearningTime(
       profileId = profileId,
       topicId = topicId,
