@@ -67,16 +67,16 @@ class SegmentedCircularProgressView : View {
   }
 
   /** Constructor for creating this view.
-   * @param [Context] **/
+   * @param [Context] */
   constructor(context: Context) : super(context)
   /** Constructor for creating this view.
    * @param [Context]
-   * @param [AttributeSet]**/
+   * @param [AttributeSet] */
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
   /** Constructor for creating this view.
    * @param [Context]
    * @param [AttributeSet]
-   * @param defStyleAttr **/
+   * @param defStyleAttr */
   constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
     context,
     attrs,

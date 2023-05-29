@@ -6,7 +6,7 @@ import org.oppia.android.app.administratorcontrols.ShowLogoutDialogListener
 class AdministratorControlsAccountActionsViewModel(
   private val showLogoutDialogListener: ShowLogoutDialogListener
 ) : AdministratorControlsItemViewModel() {
-  /** Called when user clicks logout on [AdministratorControlsActivity]. **/
+  /** Called when user clicks logout on [AdministratorControlsActivity]. */
   fun onLogOutClicked() {
     showLogoutDialogListener.showLogoutDialog()
   }

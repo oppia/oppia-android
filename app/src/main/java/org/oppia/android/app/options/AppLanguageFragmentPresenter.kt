@@ -76,7 +76,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
     }
   }
 
-  /** Updates selected language when new language is selected. **/
+  /** Updates selected language when new language is selected. */
   fun onLanguageSelected(selectedLanguage: OppiaLanguage) {
     appLanguageSelectionViewModel.selectedLanguage.value = selectedLanguage
     updateAppLanguage(selectedLanguage)

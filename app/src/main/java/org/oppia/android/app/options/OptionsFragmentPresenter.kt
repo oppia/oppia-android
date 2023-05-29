@@ -158,7 +158,7 @@ class OptionsFragmentPresenter @Inject constructor(
     binding.viewModel = model
   }
 
-  /** Sets the selected fragment index in [OptionsControlViewModel]. **/
+  /** Sets the selected fragment index in [OptionsControlViewModel]. */
   fun setSelectedFragment(selectedFragment: String) {
     viewModel.selectedFragmentIndex.set(
       getSelectedFragmentIndex(
@@ -181,11 +181,11 @@ class OptionsFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
-    /** Represents view type for displaying [ReadingTextSize]. **/
+    /** Represents view type for displaying [ReadingTextSize]. */
     VIEW_TYPE_READING_TEXT_SIZE,
-    /** Represents view type for displaying [OppiaLanguage]. **/
+    /** Represents view type for displaying [OppiaLanguage]. */
     VIEW_TYPE_APP_LANGUAGE,
-    /** Represents view type for displaying [AudioLanguage]. **/
+    /** Represents view type for displaying [AudioLanguage]. */
     VIEW_TYPE_AUDIO_LANGUAGE
   }
 

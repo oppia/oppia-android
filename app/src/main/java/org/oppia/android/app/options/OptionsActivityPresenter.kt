@@ -87,26 +87,26 @@ class OptionsActivityPresenter @Inject constructor(
   }
 
   /** Updates [ReadingTextSize] value in
-   * [OptionsFragment] when user selects new value. **/
+   * [OptionsFragment] when user selects new value. */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     getOptionFragment()?.updateReadingTextSize(textSize)
   }
 
   /** Updates [OppiaLanguage] value in
-   * [OptionsFragment] when user selects new value. **/
+   * [OptionsFragment] when user selects new value. */
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     getOptionFragment()?.updateAppLanguage(oppiaLanguage)
   }
 
   /** Updates [AudioLanguage] value in
-   * [OptionsFragment] when user selects new value. **/
+   * [OptionsFragment] when user selects new value. */
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     getOptionFragment()?.updateAudioLanguage(audioLanguage)
   }
 
   /** Creates new instance of [ReadingTextSizeFragment].
    * @param [ReadingTextSize]
-   **/
+   */
   fun loadReadingTextSizeFragment(textSize: ReadingTextSize) {
     val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(textSize)
     activity.supportFragmentManager
@@ -118,7 +118,7 @@ class OptionsActivityPresenter @Inject constructor(
 
   /** Creates new instance of [AppLanguageFragment].
    * @param [OppiaLanguage]
-   **/
+   */
   fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
     val appLanguageFragment =
       AppLanguageFragment.newInstance(appLanguage, profileId = this.profileId!!)
@@ -131,7 +131,7 @@ class OptionsActivityPresenter @Inject constructor(
 
   /** Creates new instance of [AudioLanguageFragment].
    * @param [AudioLanguage]
-   **/
+   */
   fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {
     val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage)
     activity.supportFragmentManager

@@ -13,17 +13,17 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
-/** OnActivity result key to access [ReadingTextSize] result. **/
+/** OnActivity result key to access [ReadingTextSize] result. */
 const val MESSAGE_READING_TEXT_SIZE_RESULTS_KEY = "OptionsFragment.message_reading_text_size"
-/** OnActivity result key to access [OppiaLanguage] result. **/
+/** OnActivity result key to access [OppiaLanguage] result. */
 const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
-/** OnActivity result key to access [AudioLanguage] result. **/
+/** OnActivity result key to access [AudioLanguage] result. */
 const val MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY = "OptionsFragment.message_audio_language"
-/** Request code for [ReadingTextSize] **/
+/** Request code for [ReadingTextSize] */
 const val REQUEST_CODE_TEXT_SIZE = 1
-/** Request code for [OppiaLanguage] **/
+/** Request code for [OppiaLanguage] */
 const val REQUEST_CODE_APP_LANGUAGE = 2
-/** Request code for [AudioLanguage] **/
+/** Request code for [AudioLanguage] */
 const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
 private const val IS_MULTIPANE_EXTRA = "IS_MULTIPANE_EXTRA"
@@ -77,7 +77,7 @@ class OptionsFragment : InjectableFragment() {
   }
 
   /** Updates [ReadingTextSize] value in
-   * [OptionsFragment] when user selects new value. **/
+   * [OptionsFragment] when user selects new value. */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateReadingTextSize(textSize)
@@ -85,7 +85,7 @@ class OptionsFragment : InjectableFragment() {
   }
 
   /** Updates [OppiaLanguage] value in
-   * [OptionsFragment] when user selects new value. **/
+   * [OptionsFragment] when user selects new value. */
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateAppLanguage(oppiaLanguage)
@@ -93,7 +93,7 @@ class OptionsFragment : InjectableFragment() {
   }
 
   /** Updates [AudioLanguage] value in
-   * [OptionsFragment] when user selects new value. **/
+   * [OptionsFragment] when user selects new value. */
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateAudioLanguage(audioLanguage)
