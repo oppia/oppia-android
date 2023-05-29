@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Authors:
+* Alshamiri1
 * Meno25
 * MohamedMedhat
 * Mouradeq
@@ -89,6 +90,7 @@
   <string name="chapter_summary_activity_chapter_completed">تم انهاء الفصل %s الذي يحمل عنوان %s</string>
   <string name="chapter_summary_activity_chapter_in_progress">الفصل %s الذي يحمل عنوان %s ما زال قيد التقدم</string>
   <string name="story_activity_chapter_prerequisite_title_label">قم بإنهاء الفصل %s: %s لكي تفتح هذا الفصل.</string>
+  <string name="chapter_summary_activity_chapter_prerequisite_title_label_without_chapter_title">أكمل الفصل السابق لفتح هذا الفصل.</string>
   <string name="text_input_interaction_item_activity_text_input_default_content_description">أدخل النص.</string>
   <string name="fractions_default_hint_text">أدخل كسر عشري في الصيغة (بسط/مقام)، أو عدد كسري في الصيغة (عدد بسط/مقام).</string>
   <string name="fractions_default_hint_text_no_integer">أدخل كسر عشري في الصيغة بسط/مقام.</string>
