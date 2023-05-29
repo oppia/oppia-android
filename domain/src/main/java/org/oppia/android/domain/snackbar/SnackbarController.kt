@@ -36,8 +36,8 @@ class SnackbarController @Inject constructor(
   }
 
   fun dismissCurrentSnackbar() {
-    notifyPotentialSnackbarChange()
     _snackbarRequestQueue.remove()
+    notifyPotentialSnackbarChange()
   }
 
   fun notifyPotentialSnackbarChange() {
