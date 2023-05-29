@@ -327,5 +327,5 @@ const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES =
  * Default value of the minimum learning time in a topic, in minutes, that indicates a learner has
  * had sufficient interaction with the app to be able to provide informed feedback about their
  * experience with the app.
- * */
+ */
 const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL = 5
