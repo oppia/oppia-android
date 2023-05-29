@@ -23,6 +23,6 @@ class ApplicationLifecycleModule {
   @Provides
   @IntoSet
   fun provideApplicationLifecycleListeners(
-    impl: ExplorationSessionTimerController
-  ): ApplicationLifecycleListener = impl
+    sessionTimerController: ExplorationSessionTimerController
+  ): ApplicationLifecycleListener = sessionTimerController
 }

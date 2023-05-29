@@ -181,7 +181,7 @@ class MachineLocaleImplTest {
   }
 
   @Test
-  fun testGetCurrentTimeOfDay_inMorningHour_returnsMorning() {
+  fun testGetCurrentTimeOfDay_inMidMorningHour_returnsMidMorning() {
     fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val timeOfDay = machineLocale.getCurrentTimeOfDay()
