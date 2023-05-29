@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,6 +23,8 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 const val test_string: Int = 1
 
@@ -45,7 +45,6 @@ class SnackbarControllerTest {
 
   lateinit var request: SnackbarController.SnackbarRequest.ShowSnackbar
   lateinit var request2: SnackbarController.SnackbarRequest.ShowSnackbar
-
 
   @Before
   fun setUp() {
@@ -76,7 +75,7 @@ class SnackbarControllerTest {
   }
 
   @Test
-  fun testAddTwoRequestsReturnsEarliestRequestInTheQueue(){
+  fun testAddTwoRequestsReturnsEarliestRequestInTheQueue() {
     snackbarController.enqueueSnackbar(request)
     snackbarController.enqueueSnackbar(request2)
 
@@ -128,5 +127,4 @@ class SnackbarControllerTest {
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
-
 }
