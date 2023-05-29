@@ -20,7 +20,9 @@ class ExplorationSessionTimerController @Inject constructor(
 
   override fun onAppInForeground() {
     this.isAppInForeground = true
-    startSessionTimer()
+    if (explorationStarted) {
+      startSessionTimer()
+    }
   }
 
   override fun onAppInBackground() {
@@ -35,19 +37,18 @@ class ExplorationSessionTimerController @Inject constructor(
     this.profileId = profileId
     this.topicId = topicId
 
-    startSessionTimer()
+    if (isAppInForeground) {
+      startSessionTimer()
+    }
   }
 
   override fun onExplorationEnded(profileId: ProfileId, topicId: String) {
     this.explorationStarted = false
-
     stopSessionTimer(profileId, topicId)
   }
 
   private fun startSessionTimer() {
-    if (isAppInForeground && explorationStarted) {
-      explorationActiveTimeController.setExplorationSessionStarted()
-    }
+    explorationActiveTimeController.setExplorationSessionStarted()
   }
 
   private fun stopSessionTimer(profileId: ProfileId, topicId: String) {
