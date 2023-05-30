@@ -52,20 +52,10 @@
     <item name="android:textColorPrimary">@color/component_color_shared_primary_dark_text_color</item>
   </style>
 
-  <style name="AlertDialogBackgroundPositiveButtonTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
+  <style name="DeprecationAlertDialogTheme" parent="OppiaAlertDialogTheme">
     <item name="android:paddingBottom">3dp</item>
     <item name="android:color">@color/component_color_shared_dialogs_radio_button_unchecked_color</item>
-    <item name="buttonBarPositiveButtonStyle">@style/AlertDialogPositiveButtonBackgroundTheme</item>
-  </style>
-
-  <style name="AlertDialogPositiveButtonBackgroundTheme">
-    <item name="android:background">@drawable/positive_button_rounded_border_solid_color_primary</item>
-    <item name="android:textColor">@color/color_palette_white_text_color</item>
-    <item name="android:layout_marginStart">24dp</item>
-    <item name="android:layout_marginEnd">10dp</item>
-    <item name="android:paddingEnd">20dp</item>
-    <item name="android:paddingStart">20dp</item>
-    <item name="android:radius">10dp</item>
+    <item name="buttonBarPositiveButtonStyle">@style/DeprecationAlertDialogPositiveButton</item>
   </style>
 
   <style name="OppiaActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
