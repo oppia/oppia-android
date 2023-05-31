@@ -537,16 +537,30 @@
     <item name="android:textSize">14sp</item>
   </style>
 
-
   <!-- Survey Previous Button -->
   <style name="SurveyPreviousButton" parent="BorderlessMaterialButton">
     <item name="android:paddingEnd">12dp</item>
     <item name="android:paddingStart">12dp</item>
     <item name="android:minWidth">144dp</item>
+    <item name="android:layout_margin">@dimen/survey_navigation_buttons_margin</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
     <item name="android:textColor">@color/component_color_shared_secondary_button_background_trim_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- Survey Next Button -->
+  <style name="SurveyNextButton" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:paddingEnd">12dp</item>
+    <item name="android:paddingStart">12dp</item>
+    <item name="android:minWidth">144dp</item>
+    <item name="android:layout_margin">@dimen/survey_navigation_buttons_margin</item>
+    <item name="android:background">@drawable/state_button_primary_background</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">true</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
 

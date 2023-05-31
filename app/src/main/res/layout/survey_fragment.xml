@@ -124,7 +124,7 @@
 
         <Button
           android:id="@+id/survey_next_button"
-          style="@style/SurveyPrimaryButton"
+          style="@style/SurveyNextButton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@{viewModel.canMoveToNextQuestion ? @color/component_color_shared_secondary_button_background_trim_color : @color/component_color_survey_disabled_button_color}"
