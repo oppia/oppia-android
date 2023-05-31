@@ -1,12 +1,11 @@
 package org.oppia.android.app.onboarding
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.domain.onboarding.AppStartupStateController
-import javax.inject.Inject
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import javax.inject.Inject
 
 /** [ViewModel] for final slide in onboarding flow. */
 class OnboardingSlideFinalViewModel @Inject constructor(

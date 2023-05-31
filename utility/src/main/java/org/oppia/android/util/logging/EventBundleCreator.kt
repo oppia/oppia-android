@@ -12,6 +12,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
@@ -79,7 +80,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_ONBOARDING
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
