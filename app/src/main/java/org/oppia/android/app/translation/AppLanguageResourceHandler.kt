@@ -8,6 +8,7 @@ import org.oppia.android.R
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.util.locale.OppiaLocale
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -152,17 +153,12 @@ class AppLanguageResourceHandler @Inject constructor(
    */
   fun computeLocalizedDisplayName(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
-      AudioLanguage.HINDI_AUDIO_LANGUAGE ->
-        resources.getString(R.string.hindi_localized_language_name)
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE ->
-        resources.getString(R.string.french_localized_language_name)
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE ->
-        resources.getString(R.string.chinese_localized_language_name)
-      AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE ->
-        resources.getString(R.string.brazilian_portuguese_localized_language_name)
+      AudioLanguage.HINDI_AUDIO_LANGUAGE -> getLocalizedDisplayName("hi")
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> getLocalizedDisplayName("fr")
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> getLocalizedDisplayName("zh")
+      AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> getLocalizedDisplayName("pt", "BR")
       AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED,
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE ->
-        resources.getString(R.string.english_localized_language_name)
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> getLocalizedDisplayName("en")
     }
   }
 
@@ -185,5 +181,11 @@ class AppLanguageResourceHandler @Inject constructor(
       OppiaLanguage.ARABIC -> resources.getString(R.string.arabic_localized_language_name)
       OppiaLanguage.HINGLISH -> resources.getString(R.string.hinglish_localized_language_name)
     }
+  }
+
+  private fun getLocalizedDisplayName(languageCode: String, regionCode: String = ""): String {
+    // TODO(#3791): Remove this dependency.
+    val locale = Locale(languageCode, regionCode)
+    return locale.getDisplayLanguage(locale).capitalize(locale)
   }
 }

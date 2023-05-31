@@ -105,7 +105,4 @@
   <string name="portuguese_localized_language_name" translatable="false">Português</string>
   <string name="brazilian_portuguese_localized_language_name" translatable="false">Português</string>
   <string name="swahili_localized_language_name" translatable="false">Kiswahili</string>
-  <!--These are names of languages localized to that particular audio language. -->
-  <string name="chinese_localized_language_name" translatable="false">中文</string>
-  <string name="french_localized_language_name" translatable="false">Français</string>
 </resources>

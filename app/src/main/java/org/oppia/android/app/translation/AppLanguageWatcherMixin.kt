@@ -37,7 +37,7 @@ class AppLanguageWatcherMixin @Inject constructor(
    * called before interacting with the locale handler to avoid inadvertent crashes in such
    * situations.
    *
-   * @param [Boolean] if shouldOnlyUseSystemLanguage or also user selected language.
+   * @param shouldOnlyUseSystemLanguage whether only the system language should be used
    */
   fun initialize(shouldOnlyUseSystemLanguage: Boolean) {
     if (!appLanguageLocaleHandler.isInitialized()) {

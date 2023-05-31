@@ -145,13 +145,7 @@ class TranslationController @Inject constructor(
    * the underlying configured selection.
    */
   fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> {
-    val languageSelectionStore = retrieveLanguageContentCacheStore(profileId)
-    languageSelectionStore.readDataAsync().invokeOnCompletion { exception ->
-      oppiaLogger.e(
-        "TranslationController", "Failed reading language: $exception"
-      )
-    }
-    return languageSelectionStore
+    return retrieveLanguageContentCacheStore(profileId)
   }
 
   /**

@@ -20,11 +20,11 @@ class AppVersionViewModel @Inject constructor(
   private val versionName: String = context.getVersionName()
   private val lastUpdateDateTime = context.getLastUpdateTime()
 
-  /** Computes localized versionName displayed on [AppVersionActivity]. */
+  /** Returns a localized, human-readable app version name. */
   fun computeVersionNameText(): String =
     resourceHandler.getStringInLocaleWithWrapping(R.string.app_version_name, versionName)
 
-  /** Computes localized lastupdateddate displayed on [AppVersionActivity]. */
+  /** Returns a localized, human-readable lastUpdateDateTime. */
   fun computeLastUpdatedDateText(): String =
     resourceHandler.getStringInLocaleWithWrapping(
       R.string.app_last_update_date, getDateTime(lastUpdateDateTime)

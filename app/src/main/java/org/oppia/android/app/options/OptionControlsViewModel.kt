@@ -70,7 +70,7 @@ class OptionControlsViewModel @Inject constructor(
     }
   }
 
-  /** Set's the user ProfileId value in this ViewModel. */
+  /** Sets the user's ProfileId value in this ViewModel. */
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }
@@ -112,6 +112,13 @@ class OptionControlsViewModel @Inject constructor(
 
     optionsReadingTextSizeViewModel.readingTextSize.set(optionsPair.first.readingTextSize)
 
+    val optionsAppLanguageViewModel =
+      OptionsAppLanguageViewModel(
+        routeToAppLanguageListListener,
+        loadAppLanguageListListener, optionsPair.second,
+        resourceHandler.computeLocalizedDisplayName(optionsPair.second)
+      )
+
     val optionAudioViewViewModel =
       OptionsAudioLanguageViewModel(
         routeToAudioLanguageListListener,
@@ -121,18 +128,10 @@ class OptionControlsViewModel @Inject constructor(
       )
 
     itemsList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
-    itemsList.add(optionAudioViewViewModel as OptionsItemViewModel)
-
-    val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel(
-        routeToAppLanguageListListener,
-        loadAppLanguageListListener, optionsPair.second,
-        resourceHandler.computeLocalizedDisplayName(optionsPair.second)
-      )
-
     if (enableLanguageSelectionUi.value) {
-      itemsList.add(1, optionsAppLanguageViewModel as OptionsItemViewModel)
+      itemsList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
     }
+    itemsList.add(optionAudioViewViewModel as OptionsItemViewModel)
 
     // Loading the initial options in the sub-options container
     if (isMultipane.get()!! && isFirstOpen) {
@@ -144,7 +143,7 @@ class OptionControlsViewModel @Inject constructor(
   }
 
   /**
-   * Set's [isFirstOpen] value which controls the loading of the initial extra-option fragment
+   * Sets [isFirstOpen] value which controls the loading of the initial extra-option fragment
    * in the case of multipane.
    */
   fun isFirstOpen(isFirstOpen: Boolean) {

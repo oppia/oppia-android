@@ -56,22 +56,19 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   @Inject
   lateinit var machineLocale: OppiaLocale.MachineLocale
 
-  /** Sets the entityId of viewModel item being displayed.
-   * @param entityId */
+  /** Sets the entityId of the current [LessonThumbnailImageView] being displayed. */
   fun setEntityId(entityId: String) {
     this.entityId = entityId
     checkIfLoadingIsPossible()
   }
 
-  /** Sets the entityType of viewModel item being displayed.
-   * @param entityType */
+  /** Sets the entityType of the current [LessonThumbnailImageView] being displayed. */
   fun setEntityType(entityType: String) {
     this.entityType = entityType
     checkIfLoadingIsPossible()
   }
 
-  /** Sets the [LessonThumbnail] of viewModel item being displayed.
-   * @param [LessonThumbnail] */
+  /** Sets the [LessonThumbnail] of the current [LessonThumbnailImageView] being displayed. */
   fun setLessonThumbnail(lessonThumbnail: LessonThumbnail?) {
     if (lessonThumbnail != null) {
       this.lessonThumbnail = lessonThumbnail
@@ -79,8 +76,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     }
   }
 
-  /** Sets isBlurred [Boolean] state of the item being displayed.
-   * @param isBlurred */
+  /** Sets whether the current [LessonThumbnailImageView] being displayed should be blurred. */
   fun setIsBlurred(isBlurred: Boolean) {
     this.isBlurred = isBlurred
   }

@@ -191,7 +191,8 @@ class OptionsFragmentPresenter @Inject constructor(
 
   /** Updates [ReadingTextSize] value in [OptionsFragment] when user selects new value
    * and notifies the adapter to refresh after the changes.
-   * @param [ReadingTextSize]
+   *
+   * @param textSize new textSize to be set as current
    */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     profileManagementController.updateReadingTextSize(profileId, textSize).toLiveData().observe(
@@ -212,7 +213,8 @@ class OptionsFragmentPresenter @Inject constructor(
 
   /** Updates [OppiaLanguage] value in [OptionsFragment] when user selects new value
    * and notifies the adapter to refresh after the changes.
-   * @param [OppiaLanguage]
+   *
+   * @param oppiaLanguage new oppiaLanguage to be set as current
    */
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
@@ -241,15 +243,17 @@ class OptionsFragmentPresenter @Inject constructor(
 
   /** Updates [AudioLanguage] value in [OptionsFragment] when user selects new value
    * and notifies the adapter to refresh after the changes.
-   * @param [AudioLanguage]
+   *
+   * @param audioLanguage new audioLanguage to be set as current
    */
-  fun updateAudioLanguage(language: AudioLanguage) {
-    val updateLanguageResult = profileManagementController.updateAudioLanguage(profileId, language)
+  fun updateAudioLanguage(audioLanguage: AudioLanguage) {
+    val updateLanguageResult =
+      profileManagementController.updateAudioLanguage(profileId, audioLanguage)
     updateLanguageResult.toLiveData().observe(fragment) {
       when (it) {
-        is AsyncResult.Success -> audioLanguage = language
+        is AsyncResult.Success -> this.audioLanguage = audioLanguage
         is AsyncResult.Failure ->
-          oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: $language", it.error)
+          oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: $audioLanguage", it.error)
         is AsyncResult.Pending -> {} // Wait for a result.
       }
     }

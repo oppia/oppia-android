@@ -45,10 +45,7 @@ class SegmentedCircularProgressView : View {
   private var chaptersInProgress: Int = 0
   private var totalChapters: Int = 0
 
-  /** Sets the StoryChapterDetails.
-   * @param totalChaptersCount total chapters covered
-   * @param chaptersFinishedCount total finished chapters
-   * @param chaptersInProgressCount chapters in progress count **/
+  /** Sets StoryChapterDetails to this view for displaying and finally initialises the view. */
   fun setStoryChapterDetails(
     totalChaptersCount: Int,
     chaptersFinishedCount: Int,
@@ -66,16 +63,16 @@ class SegmentedCircularProgressView : View {
     }
   }
 
-  /** Constructor for creating this view.
-   * @param [Context] */
+  /** Constructor for creating an instance of this view.
+   * @param context */
   constructor(context: Context) : super(context)
-  /** Constructor for creating this view.
-   * @param [Context]
-   * @param [AttributeSet] */
+  /** Constructor for creating an instance of this view.
+   * @param context
+   * @param attrs */
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-  /** Constructor for creating this view.
-   * @param [Context]
-   * @param [AttributeSet]
+  /** Constructor for creating an instance of this view.
+   * @param context
+   * @param attrs
    * @param defStyleAttr */
   constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
     context,

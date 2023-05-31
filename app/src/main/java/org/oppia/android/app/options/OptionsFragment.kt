@@ -77,7 +77,8 @@ class OptionsFragment : InjectableFragment() {
   }
 
   /** Updates [ReadingTextSize] value in
-   * [OptionsFragment] when user selects new value. */
+   * [OptionsFragment] when user selects new value.
+   */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateReadingTextSize(textSize)
@@ -85,7 +86,8 @@ class OptionsFragment : InjectableFragment() {
   }
 
   /** Updates [OppiaLanguage] value in
-   * [OptionsFragment] when user selects new value. */
+   * [OptionsFragment] when user selects new value.
+   */
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateAppLanguage(oppiaLanguage)
@@ -93,7 +95,8 @@ class OptionsFragment : InjectableFragment() {
   }
 
   /** Updates [AudioLanguage] value in
-   * [OptionsFragment] when user selects new value. */
+   * [OptionsFragment] when user selects new value.
+   */
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateAudioLanguage(audioLanguage)
@@ -103,7 +106,8 @@ class OptionsFragment : InjectableFragment() {
   /**
    * Used to fix the race condition that happens when the presenter tries to call a function before
    * [handleCreateView] is completely executed.
-   * @param action what to execute after the UI is initialized.
+   *
+   * @param selectedLanguage tag for the fragment to be set as currently selected
    */
   fun setSelectedFragment(selectedLanguage: String) {
     optionsFragmentPresenter.runAfterUIInitialization {
