@@ -514,11 +514,12 @@
     <item name="android:paddingEnd">12dp</item>
     <item name="android:paddingStart">12dp</item>
     <item name="android:minWidth">144dp</item>
-    <item name="android:background">@drawable/state_button_primary_background</item>
+    <item name="android:layout_margin">@dimen/survey_popup_button_margin</item>
+    <item name="android:background">@drawable/rounded_button_white_background_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:textColor">@color/component_color_begin_survey_button_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
 
@@ -527,13 +528,15 @@
     <item name="android:paddingEnd">12dp</item>
     <item name="android:paddingStart">12dp</item>
     <item name="android:minWidth">144dp</item>
-    <item name="android:background">@drawable/survey_button_secondary_background</item>
+    <item name="android:layout_margin">@dimen/survey_popup_button_margin</item>
+    <item name="android:background">@drawable/rounded_button_white_outline_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:textColor">@color/component_color_shared_secondary_button_background_trim_color</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
+
 
   <!-- Survey Previous Button -->
   <style name="SurveyPreviousButton" parent="BorderlessMaterialButton">
@@ -567,9 +570,21 @@
     <item name="android:textSize">20sp</item>
   </style>
 
-  <style name="SurveyPopupHeaderStyle" parent="TextViewCenter">
+  <style name="SurveyPopupHeaderStyle" parent="TextViewCenterHorizontal">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/component_color_shared_active_text_color</item>
     <item name="android:layout_margin">@dimen/survey_text_margin</item>
+    <item name="android:textSize">@dimen/survey_popup_header_text_size</item>
+    <item name="android:fontFamily">sans-serif</item>
+  </style>
+
+  <style name="SurveyPopupMessageStyle" parent="TextViewStart">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:layout_margin">@dimen/survey_popup_message_margin</item>
+    <item name="android:textSize">@dimen/survey_popup_message_text_size</item>
     <item name="android:fontFamily">sans-serif</item>
 
   </style>
