@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -92,6 +94,8 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var helpIndex: HelpIndex
   private var forceAnnouncedForHintsBar = false
+  private var savedState: Bundle? = null
+  private var savedStateRestored = false
 
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
@@ -99,6 +103,10 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private var explorationCheckpointState: CheckpointState = CheckpointState.CHECKPOINT_UNSAVED
+
+  fun handleCreate(savedState: Bundle?) {
+    this.savedState = savedState
+  }
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -162,6 +170,18 @@ class StateFragmentPresenter @Inject constructor(
 
     subscribeToCurrentState()
     return binding.root
+  }
+
+  fun onSaveInstanceState(outState: Bundle) {
+    if (!savedStateRestored) {
+      if (savedState != null) {
+        outState.putAll(savedState)
+      }
+      return
+    }
+    val newAnswerState = Bundle()
+    pendingAnswerItem()?.saveState(newAnswerState)
+    outState.putBundle(SAVED_STATE_BUNDLE_KEY, newAnswerState)
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
@@ -324,6 +344,11 @@ class StateFragmentPresenter @Inject constructor(
     viewModel.rightItemList.clear()
     viewModel.rightItemList += dataPair.second
 
+    savedState?.getBundle(SAVED_STATE_BUNDLE_KEY)?.let {
+      pendingAnswerItem()?.restoreState(it)
+    }
+    savedStateRestored = true
+
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
         0,
@@ -331,6 +356,11 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
   }
+
+  /** Gets the one and only [InteractionAnswerHandler], if any. */
+  private fun pendingAnswerItem() =
+    viewModel.itemList.filterIsInstance<InteractionAnswerHandler>().singleOrNull()
+      ?: viewModel.rightItemList.filterIsInstance<InteractionAnswerHandler>().singleOrNull()
 
   /** Subscribes to the result of requesting to show a hint or solution. */
   private fun subscribeToHintSolution(resultDataProvider: DataProvider<Any?>) {
@@ -544,5 +574,9 @@ class StateFragmentPresenter @Inject constructor(
         bounceInterpolator.getInterpolation(1f - input * 2f)
       } else bounceInterpolator.getInterpolation(input * 2f - 1f)
     }
+  }
+
+  companion object {
+    private const val SAVED_STATE_BUNDLE_KEY = "saved_state_bundle_key"
   }
 }

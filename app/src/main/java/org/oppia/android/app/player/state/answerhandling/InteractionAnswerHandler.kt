@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.answerhandling
 
+import android.os.Bundle
 import org.oppia.android.app.model.UserAnswer
 
 /**
@@ -25,6 +26,14 @@ interface InteractionAnswerHandler {
   /** Return the current answer that is ready for handling. */
   fun getPendingAnswer(): UserAnswer? {
     return null
+  }
+
+  /** Save the state that should survive view configuration changes, like rotation. */
+  fun saveState(outState: Bundle) {
+  }
+
+  /** Restores the state lost after a view configuration change, like rotation. */
+  fun restoreState(savedState: Bundle) {
   }
 }
 

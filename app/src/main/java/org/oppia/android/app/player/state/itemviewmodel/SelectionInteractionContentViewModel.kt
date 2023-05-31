@@ -8,11 +8,11 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 class SelectionInteractionContentViewModel(
   val htmlContent: SubtitledHtml,
   val hasConversationView: Boolean,
-  private val itemIndex: Int,
+  val itemIndex: Int,
   private val selectionInteractionViewModel: SelectionInteractionViewModel,
   val isEnabled: ObservableBoolean
 ) : ObservableViewModel() {
-  var isAnswerSelected = ObservableBoolean()
+  val isAnswerSelected = ObservableBoolean()
 
   fun handleItemClicked() {
     val isCurrentlySelected = isAnswerSelected.get()

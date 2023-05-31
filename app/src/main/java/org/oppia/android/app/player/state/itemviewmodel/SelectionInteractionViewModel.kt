@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import android.os.Bundle
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -112,6 +113,24 @@ class SelectionInteractionViewModel private constructor(
     }
     writtenTranslationContext = translationContext
   }.build()
+
+  override fun saveState(outState: Bundle) {
+    outState.putIntArray("state", selectedItems.toIntArray())
+  }
+
+  override fun restoreState(savedState: Bundle) {
+    savedState.getIntArray("state")?.let {
+      selectedItems.clear()
+      selectedItems.addAll(it.toList())
+    }
+    updateIsAnswerAvailable()
+    updateSelectionText()
+    updateItemSelectability()
+
+    for (item in choiceItems) {
+      item.isAnswerSelected.set(item.itemIndex in selectedItems)
+    }
+  }
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String {

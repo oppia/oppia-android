@@ -69,6 +69,11 @@ class StateFragment :
     (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    stateFragmentPresenter.handleCreate(savedInstanceState)
+  }
+
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -118,6 +123,11 @@ class StateFragment :
     inputAnswerAvailable: Boolean
   ) {
     stateFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    stateFragmentPresenter.onSaveInstanceState(outState)
   }
 
   fun setAudioBarVisibility(visibility: Boolean) =
