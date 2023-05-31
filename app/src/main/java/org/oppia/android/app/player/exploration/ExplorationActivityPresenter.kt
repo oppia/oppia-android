@@ -523,12 +523,16 @@ class ExplorationActivityPresenter @Inject constructor(
                 "Failed to retrieve gating decision",
                 gatingResult.error
               )
+              backPressActivitySelector()
             }
             is AsyncResult.Success -> {
               if (gatingResult.value) {
-                val dialogFragment = SurveyWelcomeDialogFragment
-                  .newInstance(profileId, topicId)
-                dialogFragment.showNow(activity.supportFragmentManager, TAG_SURVEY_WELCOME_DIALOG)
+                val dialogFragment = SurveyWelcomeDialogFragment.newInstance(profileId, topicId)
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .addToBackStack(null)
+                  .commit()
               } else {
                 backPressActivitySelector()
               }

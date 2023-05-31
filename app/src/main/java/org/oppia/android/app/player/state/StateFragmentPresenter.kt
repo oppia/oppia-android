@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import javax.inject.Inject
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -52,7 +53,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
-import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -542,12 +542,17 @@ class StateFragmentPresenter @Inject constructor(
                 "Failed to retrieve gating decision",
                 gatingResult.error
               )
+              (activity as StopStatePlayingSessionWithSavedProgressListener)
+                .deleteCurrentProgressAndStopSession(isCompletion = true)
             }
             is AsyncResult.Success -> {
               if (gatingResult.value) {
-                SurveyWelcomeDialogFragment
-                  .newInstance(profileId, topicId)
-                  .showNow(fragment.childFragmentManager, TAG_SURVEY_WELCOME_DIALOG)
+                val dialogFragment = SurveyWelcomeDialogFragment.newInstance(profileId, topicId)
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .addToBackStack(null)
+                  .commit()
               } else {
                 (activity as StopStatePlayingSessionWithSavedProgressListener)
                   .deleteCurrentProgressAndStopSession(isCompletion = true)

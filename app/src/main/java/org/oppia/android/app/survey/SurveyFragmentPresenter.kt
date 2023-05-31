@@ -23,7 +23,6 @@ import org.oppia.android.databinding.SurveyMarketFitQuestionLayoutBinding
 import org.oppia.android.databinding.SurveyNpsScoreLayoutBinding
 import org.oppia.android.databinding.SurveyUserTypeQuestionLayoutBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.survey.SurveyController
 import org.oppia.android.domain.survey.SurveyProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -34,7 +33,6 @@ class SurveyFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val surveyController: SurveyController,
   private val surveyProgressController: SurveyProgressController,
   private val surveyViewModel: SurveyViewModel,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
@@ -86,30 +84,9 @@ class SurveyFragmentPresenter @Inject constructor(
       surveyProgressController.moveToPreviousQuestion()
     }
 
-    startSurveySession()
+    subscribeToCurrentQuestion()
 
     return binding.root
-  }
-
-  private fun startSurveySession() {
-    val startDataProvider = surveyController.startSurveySession()
-    startDataProvider.toLiveData().observe(
-      activity,
-      {
-        when (it) {
-          is AsyncResult.Pending ->
-            oppiaLogger.d("SurveyFragment", "Starting survey session")
-          is AsyncResult.Failure -> {
-            oppiaLogger.e("SurveyFragment", "Failed to start survey session", it.error)
-            activity.finish() // Can't recover from the session failing to start.
-          }
-          is AsyncResult.Success -> {
-            oppiaLogger.d("SurveyFragment", "Successfully started survey session")
-            subscribeToCurrentQuestion()
-          }
-        }
-      }
-    )
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<SurveyAnswerItemViewModel> {
