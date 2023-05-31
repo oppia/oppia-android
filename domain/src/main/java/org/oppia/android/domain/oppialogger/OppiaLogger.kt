@@ -72,6 +72,11 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     consoleLogger.e(tag, msg, tr)
   }
 
+  /* Returns the context of the event indicating that the user completed onboarding. */
+  fun createOnboardingContext(): EventLog.Context {
+    return EventLog.Context.newBuilder().setCompleteOnboarding(true).build()
+  }
+
   /** Returns the context of the event indicating that the user opened the home activity. */
   fun createOpenHomeContext(): EventLog.Context {
     return EventLog.Context.newBuilder().setOpenHome(true).build()

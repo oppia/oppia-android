@@ -57,6 +57,7 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE -> "click_switch_language_in_lesson"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "ERROR_internal_logging_failure"
+      ActivityContextCase.COMPLETE_ONBOARDING -> "complete_onboarding"
     }
   }
 }

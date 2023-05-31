@@ -79,6 +79,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_ONBOARDING
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
@@ -205,6 +206,7 @@ class EventBundleCreator @Inject constructor(
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
+      COMPLETE_ONBOARDING -> EmptyContext(activityName)
     }
   }
 

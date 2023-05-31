@@ -158,6 +158,10 @@ message EventLog {
       // Indicates that something went wrong when trying to log a learner analytics even for the
       // device corresponding to the specified device ID.
       string install_id_for_failed_analytics_log = 33;
+
+      // The event being logged is related to the completion of onboarding. The boolean value here
+      // has no importance and is always 'true'.
+      bool complete_onboarding = 38;
     }
   }
 
