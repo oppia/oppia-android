@@ -451,6 +451,16 @@ file_content_checks {
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
 }
 file_content_checks {
+  file_path_regex: "app/src/main/AndroidManifest.xml"
+  required_content_regex: "\\s*<meta-data\\s*android:name\\s*=\\s*\"firebase_analytics_collection_deactivated\"\\s*android:value\\s*=\\s*\"true\"\\s*/>\\s*"
+  failure_message: "Firebase analytics collection should always be explicitly deactivated in develop."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/AndroidManifest.xml"
+  required_content_regex: "\\s*<meta-data\\s*android:name\\s*=\\s*\"firebase_crashlytics_collection_enabled\"\\s*android:value\\s*=\\s*\"false\"\\s*/>\\s*"
+  failure_message: "Firebase crashlytics collection should always be explicitly deactivated in develop."
+}
+file_content_checks {
   file_path_regex: ".+?\\.kt$"
   prohibited_content_regex: "\\/\\*\\*[^\\*\\/]+?$"
   failure_message: "Badly formatted KDoc. KDocs should either fit entirely on one line, e.g. \"/** My KDoc. */\" or on multiple lines with the \"/**\" by itself. See other KDocs in the codebase for references."
