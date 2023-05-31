@@ -14,7 +14,7 @@
 
 
 
----================================= MODULES ================================---
+# ---=============================== MODULES ==============================--- #
 
 
 
@@ -30,7 +30,7 @@
 /app/src/main/res/**/*.xml @oppia/android-frontend-reviewers
 
 # Exemptions to resource shrinking.
-app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructure-reviewers
 
 ################################################################################
 #                                  data module                                 #
@@ -38,6 +38,9 @@ app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructu
 
 # All data module code.
 /data/**/*.kt @oppia/android-app-infrastructure-reviewers
+
+# Test networking assets.
+/data/src/test/assets/ @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
 #                                 domain module                                #
@@ -47,7 +50,7 @@ app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructu
 /domain/**/*.kt @oppia/android-app-infrastructure-reviewers
 
 # Lesson assets.
-/domain/src/main/assets/ @owners/android-app-infrastructure-reviewers
+/domain/src/main/assets/ @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
 #                                Instrumentation                               #
@@ -55,6 +58,7 @@ app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructu
 
 # End-to-end test utilities and modules (experimental currently).
 /instrumentation/**/*.kt @oppia/android-developer-infrastructure-reviewers
+/instrumentation/src/*/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
 
 ################################################################################
 #                                 model module                                 #
@@ -144,13 +148,14 @@ app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructu
 /utility/src/*/java/org/oppia/android/util/parser/math @oppia/android-app-infrastructure-reviewers
 /utility/src/*/java/org/oppia/android/util/parser/svg @oppia/android-app-infrastructure-reviewers
 /utility/src/*/java/org/oppia/android/util/profile/ @oppia/android-app-infrastructure-reviewers
+/utility/src/test/res/values/strings.xml @oppia/android-app-infrastructure-reviewers
 
 # Utilities that are primarily used for frontend/UI purposes.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/statusbar/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/extensions/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/parser/html @oppia/android-frontend-reviewers
-/utility/src/main/res/**/*.xml @oppia/android-frontend-reviewers
+/utility/src/*/res/**/*.xml @oppia/android-frontend-reviewers
 
 ################################################################################
 #                                     Wiki                                     #
@@ -161,7 +166,7 @@ app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructu
 
 
 
----======================== REPOSITORY CONFIGURATIONS =======================---
+# ---====================== REPOSITORY CONFIGURATIONS =====================--- #
 
 
 
@@ -170,7 +175,7 @@ app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructu
 ################################################################################
 
 # Top-level GitHub and Git configuration files.
-.gitignore @oppia/owners
+/.gitignore @oppia/owners
 /.github/*.md @oppia/owners
 /.github/ISSUE_TEMPLATE @oppia/owners
 /.github/DISCUSSION_TEMPLATE/q-a-installation.yml @oppia/owners
@@ -203,33 +208,17 @@ app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructu
 ################################################################################
 
 # Configurations for Buf (Protobuf linter).
-buf.yaml @oppia/android-developer-infrastructure-reviewers
+/buf.yaml @oppia/android-developer-infrastructure-reviewers
 
 # IDEA IDE configuration.
-.editorconfig @oppia/android-developer-infrastructure-reviewers
+/.editorconfig @oppia/android-developer-infrastructure-reviewers
 /.idea/ @oppia/android-developer-infrastructure-reviewers
 
 
 
----============================ GLOBAL OVERRIDES ============================---
+# ---========================== GLOBAL OVERRIDES ==========================--- #
 
 
-
-################################################################################
-#                             Gradle infrastructure                            #
-################################################################################
-
-# Gradle build files.
-*.gradle @oppia/android-app-infrastructure-reviewers
-gradle.properties @oppia/android-app-infrastructure-reviewers
-gradlew @oppia/android-app-infrastructure-reviewers
-gradlew.bat @oppia/android-app-infrastructure-reviewers
-/gradle/ @oppia/android-app-infrastructure-reviewers
-
-# Configuration files only used by Gradle builds.
-proguard-rules.pro @oppia/android-app-infrastructure-reviewers
-*.properties @oppia/android-app-infrastructure-reviewers
-/data/src/main/AndroidManifest.xml
 
 ################################################################################
 #                             Bazel infrastructure                             #
@@ -243,35 +232,63 @@ WORKSPACE @oppia/android-app-infrastructure-reviewers
 .bazelversion @oppia/android-app-infrastructure-reviewers
 /tools/android/ @oppia/android-app-infrastructure-reviewers
 
-# Proguard configurations for Bazel builds.
-*.pro @oppia/android-developer-infrastructure-reviewers
-
 # Configurations for Bazel-built Android App Bundles.
-bundle_config.pb.json @oppia/android-developer-infrastructure-reviewers
+/bundle_config.pb.json @oppia/android-developer-infrastructure-reviewers
+
+# Proguard configurations for Bazel builds.
+/config/proguard/ @oppia/android-developer-infrastructure-reviewers
 
 # Configuration for KitKat-specific curated builds.
-config/kitkat_main_dex_class_list.txt @oppia/android-developer-infrastructure-reviewers
+/config/kitkat_main_dex_class_list.txt @oppia/android-developer-infrastructure-reviewers
 
 # Specific manifest files specifically required for Bazel builds.
+/app/src/main/AppAndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/DatabindingAdaptersManifest.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/DatabindingResourcesManifest.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/RecyclerviewAdaptersManifest.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/ViewModelManifest.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/ViewModelsManifest.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/ViewsManifest.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/test/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
+/config/src/java/org/oppia/android/config/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
 /data/src/test/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
 /domain/src/*/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
 /testing/src/test/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
 /utility/src/*/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
 
 ################################################################################
+#                             Gradle infrastructure                            #
+################################################################################
+
+# Gradle build files.
+*.gradle @oppia/android-app-infrastructure-reviewers
+gradle.properties @oppia/android-app-infrastructure-reviewers
+/gradlew @oppia/android-app-infrastructure-reviewers
+/gradlew.bat @oppia/android-app-infrastructure-reviewers
+/gradle/ @oppia/android-app-infrastructure-reviewers
+
+# Configuration files only used by Gradle builds.
+/app/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
+/data/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
+/domain/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
+/utility/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
+*.properties @oppia/android-app-infrastructure-reviewers
+/data/src/main/AndroidManifest.xml
+
+################################################################################
 #                           Sensitive file ownership                           #
 ################################################################################
 
 # Codeowners ownership (for adding/changing/removing code owners).
-.github/CODEOWNERS @oppia/owners
+/.github/CODEOWNERS @oppia/owners
 
 # Git secret files & related configurations.
 /.gitsecret/ @oppia/owners
 *.secret @oppia/owners
 
 # Code license & notice.
-LICENSE @oppia/owners
-NOTICE @oppia/owners
+/LICENSE @oppia/owners
+/NOTICE @oppia/owners
 
 # Binary files (which should rarely be introduced to help minimize repo size).
 *.png @oppia/owners
@@ -280,9 +297,13 @@ NOTICE @oppia/owners
 /app/google-services.json @oppia/owners
 
 # Configurations for the languages supported by the app.
-config/**/alllanguages/*.textproto @oppia/owners
-config/**/productionlanguages/*.textproto @oppia/owners
+/config/**/alllanguages/*.textproto @oppia/owners
+/config/**/productionlanguages/*.textproto @oppia/owners
+
+# Primary app manifest. Eventually, this will be split up so that only the
+# sensitive portions require owners approval.
+/app/src/main/AndroidManifest.xml @oppia/owners
 
 # Top-level user-facing major/minor versions, and the version codes used to
 # ensure users receive the correct build when installing it from Play Store.
-version.bzl @oppia/owners
+/version.bzl @oppia/owners
