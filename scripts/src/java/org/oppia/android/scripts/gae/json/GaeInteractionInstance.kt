@@ -40,8 +40,20 @@ data class GaeInteractionInstance(
     @ToJson
     fun convertToJson(
       jsonWriter: JsonWriter,
-      gaeInteractionInstance: GaeInteractionInstance
-    ): Unit = error("Conversion to JSON is not supported.")
+      gaeInteractionInstance: GaeInteractionInstance,
+      parsableInteractionInstanceAdapter: JsonAdapter<ParsableInteractionInstance>
+    ) {
+      val parsable = ParsableInteractionInstance(
+        id = gaeInteractionInstance.id,
+        customizationArgs = gaeInteractionInstance.customizationArgs,
+        answerGroups = gaeInteractionInstance.answerGroups,
+        defaultOutcome = gaeInteractionInstance.defaultOutcome,
+        confirmedUnclassifiedAnswers = gaeInteractionInstance.confirmedUnclassifiedAnswers,
+        hints = gaeInteractionInstance.hints,
+        solution = gaeInteractionInstance.solution
+      )
+      parsableInteractionInstanceAdapter.toJson(jsonWriter, parsable)
+    }
   }
 
   @JsonClass(generateAdapter = true)

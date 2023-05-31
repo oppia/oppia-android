@@ -192,7 +192,10 @@ class JsonToProtoConverter(
       localizationTracker.trackContainerText(containerId, DESCRIPTION, story.description)
 
       for (storyNode in story.storyContents.nodes) {
-        val nodeContainerId = LocalizationTracker.ContainerId.createFrom(story, storyNode)
+        val nodeContainerId =
+          checkNotNull(LocalizationTracker.ContainerId.createFrom(story, storyNode)) {
+            "Story node doesn't have an exploration ID: $storyNode. Cannot convert to proto."
+          }
         localizationTracker.initializeContainer(nodeContainerId, defaultLanguage)
         localizationTracker.trackThumbnail(
           nodeContainerId,
@@ -212,10 +215,6 @@ class JsonToProtoConverter(
       val defaultLanguage = exploration.languageCode.resolveLanguageCode()
       localizationTracker.initializeContainer(containerId, defaultLanguage)
       localizationTracker.trackContainerText(containerId, TITLE, exploration.title)
-
-      for (state in exploration.states.values) {
-        localizationTracker.trackVoiceovers(containerId, state.recordedVoiceovers)
-      }
 
       // Track all subtitled text in each state of the exploration.
       exploration.states.values.flatMap { state ->
@@ -237,6 +236,12 @@ class JsonToProtoConverter(
           state.interaction.solution?.explanation
         )
       }.forEach { localizationTracker.trackContainerText(containerId, it) }
+
+      // Voiceovers are only tracked after their corresponding content IDs have already been
+      // properly defaulted.
+      for (state in exploration.states.values) {
+        localizationTracker.trackVoiceovers(containerId, state.recordedVoiceovers)
+      }
 
       // Track all translatable answer inputs.
       exploration.states.values.flatMap { state ->
@@ -516,7 +521,10 @@ class JsonToProtoConverter(
     defaultLanguage: LanguageType
   ): ChapterSummaryDto {
     return ChapterSummaryDto.newBuilder().apply {
-      val containerId = LocalizationTracker.ContainerId.createFrom(containingStory, this@toProto)
+      val containerId =
+        checkNotNull(LocalizationTracker.ContainerId.createFrom(containingStory, this@toProto)) {
+          "Story node doesn't have an exploration ID: $containingStory. Cannot convert to proto."
+        }
       this.title = localizationTracker.convertContainerText(containerId, TITLE)
       this.description = localizationTracker.convertContainerText(containerId, DESCRIPTION)
       this.explorationId = matchingExploration.exploration.id

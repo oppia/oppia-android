@@ -27,6 +27,15 @@ sealed class GaeParamCustomizationArgs {
     fun convertToJson(
       jsonWriter: JsonWriter,
       gaeParamCustomizationArgs: GaeParamCustomizationArgs
-    ): Unit = error("Conversion to JSON is not supported.")
+    ) {
+      when (gaeParamCustomizationArgs) {
+        is SingleString -> jsonWriter.value(gaeParamCustomizationArgs.value)
+        is StringList -> {
+          jsonWriter.beginArray().also {
+            gaeParamCustomizationArgs.value.forEach(it::value)
+          }.endArray()
+        }
+      }
+    }
   }
 }

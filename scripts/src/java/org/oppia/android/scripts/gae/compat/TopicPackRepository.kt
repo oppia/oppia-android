@@ -11,6 +11,7 @@ import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.Compat
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityResult
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityResult.Compatible
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityResult.Incompatible
+import org.oppia.android.scripts.gae.compat.TopicPackRepository.MetricCallbacks.DataGroupType
 import org.oppia.android.scripts.gae.json.AndroidActivityHandlerService
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeSkill
@@ -48,7 +49,9 @@ class TopicPackRepository(
   private val cachedStructures = mutableMapOf<StructureId, VersionStructureMap>()
 
   // TODO: We need to be able to retrieve assets irrespective of schemas...
-  fun downloadConstructedCompleteTopicAsync(topicId: String): Deferred<CompleteTopicPack> {
+  fun downloadConstructedCompleteTopicAsync(
+    topicId: String, metricCallbacks: MetricCallbacks
+  ): Deferred<CompleteTopicPack> {
     // TODO:
     // Algorithm: pick the newest transitive closure of a topic & its dependencies such that all
     // structures within the closure are compatible with the app.
@@ -64,7 +67,7 @@ class TopicPackRepository(
     //   previous version.
     // - If no version of the topic has a compatible closure, the topic is wholly incompatible.
     return CoroutineScope(coroutineDispatcher).async {
-      when (val result = tryCreateCompatiblePack(topicId)) {
+      when (val result = tryCreateCompatiblePack(topicId, metricCallbacks)) {
         is LoadResult.Pending -> error("Pack result should not be pending for topic: $topicId.")
         is LoadResult.Success -> result.value
         is LoadResult.Failure -> {
@@ -77,24 +80,27 @@ class TopicPackRepository(
     }
   }
 
-  private suspend fun tryCreateCompatiblePack(topicId: String): LoadResult<CompleteTopicPack> {
+  private suspend fun tryCreateCompatiblePack(
+    topicId: String, metricCallbacks: MetricCallbacks
+  ): LoadResult<CompleteTopicPack> {
     // Attempt to load a completely internally consistent topic pack for the latest topic version.
     // If that fails, try the next previous version of the topic and continue until either no
     // versions remain or one is found to be able to be loaded.
-    val result = tryCreatePackForLatestTrackedTopicVersion(topicId)
+    val result = tryCreatePackForLatestTrackedTopicVersion(topicId, metricCallbacks)
     if (result is LoadResult.Failure) {
       val structureId = StructureId.Topic(topicId)
       val structureMap = cachedStructures.getValue(structureId)
+      metricCallbacks.resetAllGroupItemCounts()
       if (structureMap.size > 1) {
         structureMap.invalidateVersion(structureMap.findMostRecent(structureId))
-        return tryCreateCompatiblePack(topicId) // Try again for the next version.
+        return tryCreateCompatiblePack(topicId, metricCallbacks) // Try again for the next version.
       }
     }
     return result // The result either passed, or there are no more topics to try.
   }
 
   private suspend fun tryCreatePackForLatestTrackedTopicVersion(
-    topicId: String
+    topicId: String, metricCallbacks: MetricCallbacks
   ): LoadResult<CompleteTopicPack> {
     // TODO:
     // Algorithm:
@@ -105,20 +111,23 @@ class TopicPackRepository(
     // First, try to create a complete topic. All structures must be available at at least one
     // version.
     return tryLoadTopic(topicId).transformAsync { gaeTopic ->
-      tryLoadPackFragments(gaeTopic).combine(TopicPackFragment::combineWith)
+      tryLoadPackFragments(gaeTopic, metricCallbacks).combine(TopicPackFragment::combineWith)
     }.transform(TopicPackFragment::toTopicPack)
   }
 
   private suspend fun tryLoadPackFragments(
-    gaeTopic: GaeTopic
+    gaeTopic: GaeTopic, metricCallbacks: MetricCallbacks
   ): List<LoadResult<TopicPackFragment>> {
-    val subtopicsResult = tryLoadSubtopics(gaeTopic.id, gaeTopic.computeContainedSubtopicMap())
-    val storiesResult = tryLoadStories(gaeTopic.computeReferencedStoryIds())
+    // TODO: Batch different results?
+    val subtopicsResult =
+      tryLoadSubtopics(gaeTopic.id, gaeTopic.computeContainedSubtopicMap(), metricCallbacks)
+    val storiesResult = tryLoadStories(gaeTopic.computeReferencedStoryIds(), metricCallbacks)
     val explorationsResult = storiesResult.transformAsync { storiesPack ->
       tryLoadExplorations(
         expIds = storiesPack.expectedStories.values.flatSet {
           it.computeReferencedExplorationIds()
-        }
+        },
+        metricCallbacks
       )
     }
     return listOf(
@@ -126,7 +135,9 @@ class TopicPackRepository(
       subtopicsResult,
       storiesResult,
       explorationsResult,
-      tryLoadSkillsClosureAsFragment(gaeTopic, subtopicsResult, storiesResult, explorationsResult),
+      tryLoadSkillsClosureAsFragment(
+        gaeTopic, subtopicsResult, storiesResult, explorationsResult, metricCallbacks
+      ),
       LoadResult.Success(
         TopicPackFragment(defaultLanguage = gaeTopic.languageCode.resolveLanguageCode())
       )
@@ -134,36 +145,52 @@ class TopicPackRepository(
   }
 
   private suspend fun tryLoadSubtopics(
-    topicId: String,
-    subtopics: Map<Int, GaeSubtopic>
+    topicId: String, subtopics: Map<Int, GaeSubtopic>, metricCallbacks: MetricCallbacks
   ): LoadResult<TopicPackFragment> {
+    metricCallbacks.reportGroupItemCount(DataGroupType.SUBTOPIC, subtopics.size)
     return subtopics.keys.map { subtopicIndex ->
       SubtopicPageIdDto.newBuilder().apply {
         this.topicId = topicId
         this.subtopicIndex = subtopicIndex
       }.build()
-    }.map { subtopicId ->
+    }.mapIndexed { index, subtopicId ->
       CoroutineScope(coroutineDispatcher).async {
         tryLoadSubtopicPage(
           subtopicId.topicId, subtopicId.subtopicIndex, subtopics.getValue(subtopicId.subtopicIndex)
-        ).transform { subtopicId to it }
+        ).transform { subtopicId to it }.also {
+          metricCallbacks.reportItemDownloaded(DataGroupType.SUBTOPIC, index)
+        }
       }
     }.awaitAll().combine { subtopicPages ->
       TopicPackFragment(subtopicPages = subtopicPages.toMap())
     }
   }
 
-  private suspend fun tryLoadStories(storyIds: Set<String>): LoadResult<TopicPackFragment> {
-    return storyIds.map { storyId ->
-      CoroutineScope(coroutineDispatcher).async { tryLoadStory(storyId) }
+  private suspend fun tryLoadStories(
+    storyIds: Set<String>, metricCallbacks: MetricCallbacks
+  ): LoadResult<TopicPackFragment> {
+    metricCallbacks.reportGroupItemCount(DataGroupType.STORY, storyIds.size)
+    return storyIds.mapIndexed { index, storyId ->
+      CoroutineScope(coroutineDispatcher).async {
+        tryLoadStory(storyId).also {
+          metricCallbacks.reportItemDownloaded(DataGroupType.STORY, index)
+        }
+      }
     }.awaitAll().combine { stories ->
       TopicPackFragment(stories = stories.associateBy(GaeStory::id))
     }
   }
 
-  private suspend fun tryLoadExplorations(expIds: Set<String>): LoadResult<TopicPackFragment> {
-    return expIds.map { expId ->
-      CoroutineScope(coroutineDispatcher).async { tryLoadExploration(expId) }
+  private suspend fun tryLoadExplorations(
+    expIds: Set<String>, metricCallbacks: MetricCallbacks
+  ): LoadResult<TopicPackFragment> {
+    metricCallbacks.reportGroupItemCount(DataGroupType.EXPLORATION, expIds.size)
+    return expIds.mapIndexed { index, expId ->
+      CoroutineScope(coroutineDispatcher).async {
+        tryLoadExploration(expId).also {
+          metricCallbacks.reportItemDownloaded(DataGroupType.EXPLORATION, index)
+        }
+      }
     }.awaitAll().combine { explorations ->
       TopicPackFragment(explorations = explorations.associateBy { it.exploration.id })
     }
@@ -173,7 +200,8 @@ class TopicPackRepository(
     gaeTopic: GaeTopic,
     subtopicsResult: LoadResult<TopicPackFragment>,
     storiesResult: LoadResult<TopicPackFragment>,
-    explorationsResult: LoadResult<TopicPackFragment>
+    explorationsResult: LoadResult<TopicPackFragment>,
+    metricCallbacks: MetricCallbacks
   ): LoadResult<TopicPackFragment> {
     // Use the topic & all loaded subtopics/stories/explorations to determine the initial set of
     // skill IDs, then retrieve a complete skills list closure before constructing and returning a
@@ -189,26 +217,36 @@ class TopicPackRepository(
           val expSkillIds =
             explorationsFragment.expectedExplorations.values.flatSet { it.collectSkillIds() }
           val initialSkillIds = topicSkillIds + subtopicSkillIds + storySkillIds + expSkillIds
-          tryLoadSkillsClosure(initialSkillIds)
+          tryLoadSkillsClosure(initialSkillIds, metricCallbacks)
         }
       }
     }.transform { TopicPackFragment(referencedSkills = it.associateBy(GaeSkill::id)) }
   }
 
-  private suspend fun tryLoadSkillsClosure(skillIds: Set<String>): LoadResult<List<GaeSkill>> {
+  private suspend fun tryLoadSkillsClosure(
+    skillIds: Set<String>, metricCallbacks: MetricCallbacks
+  ): LoadResult<List<GaeSkill>> {
     // Load skills in a loop until all known skills are loaded (since concept cards may themselves
     // reference other skills not referenced elsewhere in a topic).
-    return tryLoadSkills(skillIds).transformAsync { skills ->
+    metricCallbacks.reportGroupItemCount(DataGroupType.SKILL, skillIds.size)
+    return tryLoadSkills(skillIds, metricCallbacks).transformAsync { skills ->
       val allReferencedSkillIds = skillIds + skills.flatSet { it.collectSkillIds() }
       if (allReferencedSkillIds != skillIds) {
-        tryLoadSkillsClosure(allReferencedSkillIds)
+        metricCallbacks.resetGroupItemCount(DataGroupType.SKILL)
+        tryLoadSkillsClosure(allReferencedSkillIds, metricCallbacks)
       } else LoadResult.Success(skills)
     }
   }
 
-  private suspend fun tryLoadSkills(skillIds: Set<String>): LoadResult<List<GaeSkill>> {
-    return skillIds.map { skillId ->
-      CoroutineScope(coroutineDispatcher).async { tryLoadSkill(skillId) }
+  private suspend fun tryLoadSkills(
+    skillIds: Set<String>, metricCallbacks: MetricCallbacks
+  ): LoadResult<List<GaeSkill>> {
+    return skillIds.mapIndexed { index, skillId ->
+      CoroutineScope(coroutineDispatcher).async {
+        tryLoadSkill(skillId).also {
+          metricCallbacks.reportItemDownloaded(DataGroupType.SKILL, index)
+        }
+      }
     }.awaitAll().flatten()
   }
 
@@ -281,8 +319,12 @@ class TopicPackRepository(
   ): GenericLoadResult {
     return when (val result = versionStructureMap.getValue(reference)) {
       is LoadResult.Pending -> {
-        reference.loadVersioned(androidService, compatibilityChecker).also {
-          versionStructureMap[reference] = it
+        reference.loadVersioned(
+          androidService, compatibilityChecker
+        ).forEach(versionStructureMap::put)
+        // This should be present now.
+        versionStructureMap.getValue(reference).also {
+          check(it !is LoadResult.Pending) { "Expected reference to be loaded: $it." }
         }
       }
       is LoadResult.Success, is LoadResult.Failure -> result
@@ -329,6 +371,29 @@ class TopicPackRepository(
 
   private fun GaeSkill.collectSkillIds(): Set<String> =
     textCollector.collectSubtitles(this).extractSkillIds() + computeDirectlyReferencedSkillIds()
+
+  // TODO: Document that the item count can be reported multiple times for the same type. It will
+  //  only go up except when a new structure is found (which means reset will be called first). If
+  //  the length increases, old indexes won't be passed to reportGroupItemDownloaded.
+  // TODO: Document that the string passed for types are meant to be GUIDs among all structures, but
+  //  this invariant is not ensured.
+  data class MetricCallbacks(
+    val resetAllGroupItemCounts: () -> Unit,
+    val resetGroupItemCount: (DataGroupType) -> Unit,
+    val reportGroupItemCount: (DataGroupType, Int) -> Unit,
+    private val reportGroupItemDownloaded: suspend (DataGroupType, String) -> Unit
+  ) {
+    suspend fun reportItemDownloaded(type: DataGroupType, index: Int) {
+      reportGroupItemDownloaded(type, "${type.name}-$index")
+    }
+
+    enum class DataGroupType {
+      STORY,
+      SUBTOPIC,
+      EXPLORATION,
+      SKILL,
+    }
+  }
 
   private data class TopicPackFragment(
     val topic: GaeTopic? = null,
@@ -457,13 +522,19 @@ private sealed class LoadResult<out T> {
   }
 }
 
+private interface VersionedStructureFetcher<I : StructureId, S : VersionedStructure> {
+  fun fetchLatestFromRemoteAsync(id: I, service: AndroidActivityHandlerService): Deferred<S>
+
+  fun fetchMultiFromRemoteAsync(
+    id: I, versions: List<Int>, service: AndroidActivityHandlerService
+  ): Deferred<List<S>>
+}
+
 private sealed class VersionedStructureReference<I : StructureId, S : VersionedStructure> {
+  val defaultVersionFetchCount: Int = 1 // TODO: Try 50 or a higher number once multi-version fetching works on Oppia web (see https://github.com/oppia/oppia/issues/18241).
   abstract val structureId: I
   abstract val version: Int
-
-  abstract fun fetchLatestFromRemoteAsync(service: AndroidActivityHandlerService): Deferred<S>
-
-  abstract fun fetchVersionedFromRemoteAsync(service: AndroidActivityHandlerService): Deferred<S>
+  abstract val fetcher: VersionedStructureFetcher<I, S>
 
   abstract fun checkCompatibility(
     checker: StructureCompatibilityChecker,
@@ -478,21 +549,41 @@ private sealed class VersionedStructureReference<I : StructureId, S : VersionedS
   suspend fun loadLatest(
     service: AndroidActivityHandlerService,
     checker: StructureCompatibilityChecker
-  ): Pair<S, LoadResult<S>> =
-    fetchLatestFromRemoteAsync(service).let { it.await() to it.toLoadResult(checker) }
+  ): Pair<S, LoadResult<S>> {
+    val result = fetcher.fetchLatestFromRemoteAsync(structureId, service)
+    return result.await() to result.toLoadResult(checker)
+  }
 
   suspend fun loadVersioned(
     service: AndroidActivityHandlerService,
     checker: StructureCompatibilityChecker
-  ): LoadResult<S> = fetchVersionedFromRemoteAsync(service).toLoadResult(checker)
+  ): Map<VersionedStructureReference<I, S>, LoadResult<S>> {
+    val oldestVersionToRequest = (version - defaultVersionFetchCount).coerceAtLeast(1)
+    val versionsToRequest = (oldestVersionToRequest until version).toList()
+    val structures = fetcher.fetchMultiFromRemoteAsync(
+      structureId, versionsToRequest, service
+    ).toLoadResult(checker)
+    return versionsToRequest.zip(structures).toMap().mapKeys { (version, _) ->
+      toNewVersion(version)
+    }
+  }
 
   private suspend fun Deferred<S>.toLoadResult(
     checker: StructureCompatibilityChecker
-  ): LoadResult<S> {
-    val structure = await()
-    return when (val compatibilityResult = checkCompatibility(checker, structure)) {
-      Compatible -> LoadResult.Success(structure)
-      is Incompatible -> LoadResult.Failure(compatibilityResult.failures)
+  ): LoadResult<S> = await().toLoadResult(checker)
+
+  @JvmName("listToLoadResult")
+  private suspend fun Deferred<List<S>>.toLoadResult(
+    checker: StructureCompatibilityChecker
+  ): List<LoadResult<S>> = await().map { it.toLoadResult(checker) }
+
+  private fun S.toLoadResult(checker: StructureCompatibilityChecker): LoadResult<S> {
+    return when (val compatibilityResult = checkCompatibility(checker, this)) {
+      Compatible -> LoadResult.Success(this)
+      is Incompatible -> LoadResult.Failure<S>(compatibilityResult.failures).also {
+        // TODO: Remove.
+        error("Failed to load: $it.")
+      }
     }
   }
 
@@ -500,11 +591,7 @@ private sealed class VersionedStructureReference<I : StructureId, S : VersionedS
     override val structureId: StructureId.Topic,
     override val version: Int
   ) : VersionedStructureReference<StructureId.Topic, GaeTopic>() {
-    override fun fetchLatestFromRemoteAsync(service: AndroidActivityHandlerService) =
-      service.fetchLatestTopicAsync(structureId.id)
-
-    override fun fetchVersionedFromRemoteAsync(service: AndroidActivityHandlerService) =
-      service.fetchTopicByVersionAsync(structureId.id, version)
+    override val fetcher by lazy { TopicFetcher() }
 
     override fun toNewVersion(newVersion: Int) = copy(version = newVersion)
 
@@ -517,16 +604,7 @@ private sealed class VersionedStructureReference<I : StructureId, S : VersionedS
     override val version: Int,
     val correspondingGaeSubtopic: GaeSubtopic
   ) : VersionedStructureReference<StructureId.Subtopic, GaeSubtopicPage>() {
-    override fun fetchLatestFromRemoteAsync(service: AndroidActivityHandlerService) =
-      service.fetchLatestRevisionCardAsync(structureId.topicId, structureId.subtopicIndex)
-
-    override fun fetchVersionedFromRemoteAsync(
-      service: AndroidActivityHandlerService
-    ): Deferred<GaeSubtopicPage> {
-      return service.fetchRevisionCardByVersionAsync(
-        structureId.topicId, structureId.subtopicIndex, version
-      )
-    }
+    override val fetcher by lazy { SubtopicFetcher() }
 
     override fun toNewVersion(newVersion: Int) = copy(version = newVersion)
 
@@ -540,11 +618,7 @@ private sealed class VersionedStructureReference<I : StructureId, S : VersionedS
     override val structureId: StructureId.Story,
     override val version: Int
   ) : VersionedStructureReference<StructureId.Story, GaeStory>() {
-    override fun fetchLatestFromRemoteAsync(service: AndroidActivityHandlerService) =
-      service.fetchLatestStoryAsync(structureId.id)
-
-    override fun fetchVersionedFromRemoteAsync(service: AndroidActivityHandlerService) =
-      service.fetchStoryByVersionAsync(structureId.id, version)
+    override val fetcher by lazy { StoryFetcher() }
 
     override fun toNewVersion(newVersion: Int) = copy(version = newVersion)
 
@@ -558,21 +632,7 @@ private sealed class VersionedStructureReference<I : StructureId, S : VersionedS
     private val coroutineDispatcher: CoroutineDispatcher,
     private val compatibilityConstraints: StructureCompatibilityChecker.CompatibilityConstraints
   ) : VersionedStructureReference<StructureId.Exploration, CompleteExploration>() {
-    override fun fetchLatestFromRemoteAsync(
-      service: AndroidActivityHandlerService
-    ): Deferred<CompleteExploration> {
-      return CoroutineScope(coroutineDispatcher).async {
-        service.downloadExploration(service.fetchLatestExplorationAsync(structureId.id))
-      }
-    }
-
-    override fun fetchVersionedFromRemoteAsync(
-      service: AndroidActivityHandlerService
-    ): Deferred<CompleteExploration> {
-      return CoroutineScope(coroutineDispatcher).async {
-        service.downloadExploration(service.fetchExplorationByVersionAsync(structureId.id, version))
-      }
-    }
+    override val fetcher by lazy { ExplorationFetcher(coroutineDispatcher) }
 
     override fun toNewVersion(newVersion: Int) = copy(version = newVersion)
 
@@ -580,31 +640,13 @@ private sealed class VersionedStructureReference<I : StructureId, S : VersionedS
       checker: StructureCompatibilityChecker,
       structure: CompleteExploration
     ) = checker.isExplorationItselfCompatible(structure)
-
-    private suspend fun AndroidActivityHandlerService.downloadExploration(
-      gaeExploration: Deferred<GaeExploration>
-    ): CompleteExploration {
-      val exploration = gaeExploration.await()
-      val translations = VALID_LANGUAGE_TYPES.map { languageType ->
-        fetchExplorationTranslationsAsync(
-          structureId.id, exploration.version, languageType.toContentLanguageCode()
-        )
-      }.awaitAll()
-      return CompleteExploration(
-        exploration, translations.associateBy { it.languageCode.resolveLanguageCode() }
-      )
-    }
   }
 
   data class Skill(
     override val structureId: StructureId.Skill,
     override val version: Int
   ) : VersionedStructureReference<StructureId.Skill, GaeSkill>() {
-    override fun fetchLatestFromRemoteAsync(service: AndroidActivityHandlerService) =
-      service.fetchLatestConceptCardAsync(structureId.id)
-
-    override fun fetchVersionedFromRemoteAsync(service: AndroidActivityHandlerService) =
-      service.fetchConceptCardByVersionAsync(structureId.id, version)
+    override val fetcher by lazy { SkillFetcher() }
 
     override fun toNewVersion(newVersion: Int) = copy(version = newVersion)
 
@@ -614,6 +656,84 @@ private sealed class VersionedStructureReference<I : StructureId, S : VersionedS
 
   companion object {
     const val INVALID_VERSION = 0
+  }
+}
+
+private class TopicFetcher: VersionedStructureFetcher<StructureId.Topic, GaeTopic> {
+  override fun fetchLatestFromRemoteAsync(
+    id: StructureId.Topic, service: AndroidActivityHandlerService
+  ): Deferred<GaeTopic> = service.fetchLatestTopicAsync(id.id)
+
+  override fun fetchMultiFromRemoteAsync(
+    id: StructureId.Topic, versions: List<Int>, service: AndroidActivityHandlerService
+  ): Deferred<List<GaeTopic>> = service.fetchTopicByVersionsAsync(id.id, versions)
+}
+
+private class StoryFetcher: VersionedStructureFetcher<StructureId.Story, GaeStory> {
+  override fun fetchLatestFromRemoteAsync(
+    id: StructureId.Story, service: AndroidActivityHandlerService
+  ): Deferred<GaeStory> = service.fetchLatestStoryAsync(id.id)
+
+  override fun fetchMultiFromRemoteAsync(
+    id: StructureId.Story, versions: List<Int>, service: AndroidActivityHandlerService
+  ): Deferred<List<GaeStory>> = service.fetchStoryByVersionsAsync(id.id, versions)
+}
+
+private class SubtopicFetcher: VersionedStructureFetcher<StructureId.Subtopic, GaeSubtopicPage> {
+  override fun fetchLatestFromRemoteAsync(
+    id: StructureId.Subtopic, service: AndroidActivityHandlerService
+  ): Deferred<GaeSubtopicPage> = service.fetchLatestRevisionCardAsync(id.topicId, id.subtopicIndex)
+
+  override fun fetchMultiFromRemoteAsync(
+    id: StructureId.Subtopic, versions: List<Int>, service: AndroidActivityHandlerService
+  ): Deferred<List<GaeSubtopicPage>> =
+    service.fetchRevisionCardByVersionsAsync(id.topicId, id.subtopicIndex, versions)
+}
+
+private class SkillFetcher: VersionedStructureFetcher<StructureId.Skill, GaeSkill> {
+  override fun fetchLatestFromRemoteAsync(
+    id: StructureId.Skill, service: AndroidActivityHandlerService
+  ): Deferred<GaeSkill> = service.fetchLatestConceptCardAsync(id.id)
+
+  override fun fetchMultiFromRemoteAsync(
+    id: StructureId.Skill, versions: List<Int>, service: AndroidActivityHandlerService
+  ): Deferred<List<GaeSkill>> = service.fetchConceptCardByVersionsAsync(id.id, versions)
+}
+
+private class ExplorationFetcher(
+  private val coroutineDispatcher: CoroutineDispatcher
+): VersionedStructureFetcher<StructureId.Exploration, CompleteExploration> {
+  override fun fetchLatestFromRemoteAsync(
+    id: StructureId.Exploration, service: AndroidActivityHandlerService
+  ): Deferred<CompleteExploration> {
+    return CoroutineScope(coroutineDispatcher).async {
+      service.downloadExploration(id, service.fetchLatestExplorationAsync(id.id).await())
+    }
+  }
+
+  override fun fetchMultiFromRemoteAsync(
+    id: StructureId.Exploration, versions: List<Int>, service: AndroidActivityHandlerService
+  ): Deferred<List<CompleteExploration>> {
+    return CoroutineScope(coroutineDispatcher).async {
+      service.fetchExplorationByVersionsAsync(id.id, versions).await().map {
+        service.downloadExploration(id, it)
+      }
+    }
+  }
+
+  private companion object {
+    private suspend fun AndroidActivityHandlerService.downloadExploration(
+      id: StructureId.Exploration, exploration: GaeExploration
+    ): CompleteExploration {
+      val translations = VALID_LANGUAGE_TYPES.map { languageType ->
+        fetchExplorationTranslationsAsync(
+          id.id, exploration.version, languageType.toContentLanguageCode()
+        )
+      }.awaitAll()
+      return CompleteExploration(
+        exploration, translations.associateBy { it.languageCode.resolveLanguageCode() }
+      )
+    }
 
     private fun LanguageType.toContentLanguageCode(): String {
       return when (this) {

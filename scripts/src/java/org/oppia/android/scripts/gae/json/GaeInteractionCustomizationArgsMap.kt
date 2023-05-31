@@ -35,7 +35,18 @@ data class GaeInteractionCustomizationArgsMap(
     @ToJson
     fun convertToJson(
       jsonWriter: JsonWriter,
-      gaeInteractionCustomizationArgsMap: GaeInteractionCustomizationArgsMap
-    ): Unit = error("Conversion to JSON is not supported.")
+      gaeInteractionCustomizationArgsMap: GaeInteractionCustomizationArgsMap,
+      customizationArgValueAdapter: JsonAdapter<GaeCustomizationArgValue>
+    ) {
+      jsonWriter.beginObject()
+      gaeInteractionCustomizationArgsMap.customizationArgs.forEach { (key, arg) ->
+        jsonWriter.name(key)
+        jsonWriter.beginObject()
+        jsonWriter.name("value")
+        customizationArgValueAdapter.toJson(jsonWriter, arg)
+        jsonWriter.endObject()
+      }
+      jsonWriter.endObject()
+    }
   }
 }

@@ -28,6 +28,14 @@ class ImageDownloader(
     }
   }
 
+  fun retrieveImageContentAsync(
+    entityType: GcsService.EntityType,
+    imageType: GcsService.ImageType,
+    entityId: String,
+    filename: String
+  ): Deferred<ByteArray> =
+    gcsService.fetchImageContentDataAsync(entityType, imageType, entityId, filename)
+
   private data class ImageId(
     val entityType: GcsService.EntityType,
     val entityId: String,

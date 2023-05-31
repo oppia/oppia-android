@@ -28,8 +28,14 @@ data class GaeRuleSpec(
     }
 
     @ToJson
-    fun convertToJson(jsonWriter: JsonWriter, gaeRuleSpec: GaeRuleSpec): Unit =
-      error("Conversion to JSON is not supported.")
+    fun convertToJson(
+      jsonWriter: JsonWriter,
+      gaeRuleSpec: GaeRuleSpec,
+      parsableRuleSpecAdapter: JsonAdapter<ParsableRuleSpec>
+    ) {
+      val parsable = ParsableRuleSpec(ruleType = gaeRuleSpec.ruleType, inputs = gaeRuleSpec.inputs)
+      parsableRuleSpecAdapter.toJson(jsonWriter, parsable)
+    }
 
     @GaeInteractionObject.RuleInput
     @FromJson
@@ -47,8 +53,16 @@ data class GaeRuleSpec(
     fun convertRuleInputToJson(
       jsonWriter: JsonWriter,
       @GaeInteractionObject.RuleInput
-      inputs: Map<String, @JvmSuppressWildcards GaeInteractionObject>
-    ): Unit = error("Conversion to JSON is not supported.")
+      inputs: Map<String, @JvmSuppressWildcards GaeInteractionObject>,
+      @GaeInteractionObject.RuleInput inputAdapter: JsonAdapter<GaeInteractionObject>
+    ) {
+      jsonWriter.beginObject()
+      inputs.forEach { (inputName, input) ->
+        jsonWriter.name(inputName)
+        inputAdapter.toJson(jsonWriter, input)
+      }
+      jsonWriter.endObject()
+    }
 
     @JsonClass(generateAdapter = true)
     data class ParsableRuleSpec(

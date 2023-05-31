@@ -16,7 +16,7 @@ import org.oppia.android.scripts.gae.json.GaeTranslatableContentFormat.UNICODE_S
 data class GaeTranslatedContent(
   val contentValue: Translation,
   val contentFormat: GaeTranslatableContentFormat,
-  @Json(name = "needs_update") val needsUpdate: Boolean
+  val needsUpdate: Boolean
 ) {
   @JsonClass(generateAdapter = false)
   sealed class Translation {
@@ -35,8 +35,13 @@ data class GaeTranslatedContent(
       }
 
       @ToJson
-      fun convertToJson(jsonWriter: JsonWriter, translation: Translation): Unit =
-        error("Conversion to JSON is not supported.")
+      fun convertToJson(jsonWriter: JsonWriter, translation: Translation) {
+        when (translation) {
+          is SingleString -> jsonWriter.value(translation.value)
+          is StringList ->
+            jsonWriter.beginArray().also { translation.value.forEach(jsonWriter::value) }.endArray()
+        }
+      }
     }
   }
 
@@ -65,8 +70,18 @@ data class GaeTranslatedContent(
     }
 
     @ToJson
-    fun convertToJson(jsonWriter: JsonWriter, gaeTranslatedContent: GaeTranslatedContent): Unit =
-      error("Conversion to JSON is not supported.")
+    fun convertToJson(
+      jsonWriter: JsonWriter,
+      gaeTranslatedContent: GaeTranslatedContent,
+      parsableGaeTranslatedContentAdapter: JsonAdapter<ParsableGaeTranslatedContent>
+    ) {
+      val parsable = ParsableGaeTranslatedContent(
+        contentValue = gaeTranslatedContent.contentValue,
+        contentFormat = gaeTranslatedContent.contentFormat,
+        needsUpdate = gaeTranslatedContent.needsUpdate
+      )
+      parsableGaeTranslatedContentAdapter.toJson(jsonWriter, parsable)
+    }
   }
 
   private companion object {

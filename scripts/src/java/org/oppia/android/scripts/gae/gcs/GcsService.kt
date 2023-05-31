@@ -46,7 +46,7 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
       imageFilename
     ).resolveAsync { request, response ->
       checkNotNull(response.body()) { "Failed to receive body for request: $request." }.use {
-        it.byteStream().use { inputStream -> inputStream.readBytes() }
+        it.byteStream().readBytes()
       }
     }
   }

@@ -29,6 +29,14 @@ enum class GaeTranslatableContentFormat {
     fun convertToJson(
       jsonWriter: JsonWriter,
       gaeTranslatableContentFormat: GaeTranslatableContentFormat
-    ): Unit = error("Conversion to JSON is not supported.")
+    ) {
+      val textRepresentation = when (gaeTranslatableContentFormat) {
+        HTML -> "html"
+        UNICODE_STRING -> "unicode"
+        SET_OF_NORMALIZED_STRING -> "set_of_normalized_string"
+        SET_OF_UNICODE_STRING -> "set_of_unicode_string"
+      }
+      jsonWriter.value(textRepresentation)
+    }
   }
 }

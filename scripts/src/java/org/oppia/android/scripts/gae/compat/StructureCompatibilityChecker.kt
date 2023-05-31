@@ -13,6 +13,7 @@ import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.Compat
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.ThumbnailHasInvalidColor
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.ThumbnailHasInvalidImageFormat
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.TopicHasNoKnownDependencies
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.TranslatedTextHasInvalidTags
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.UnsupportedDefaultLanguageCode
 import org.oppia.android.scripts.gae.compat.SubtitledHtmlCollector.SubtitledText
 import org.oppia.android.scripts.gae.json.GaeAnswerGroup
@@ -97,7 +98,7 @@ class StructureCompatibilityChecker(
         gaeStory.languageCode.checkDefaultLanguageCode(containerId) +
         checkHasRequiredWebTranslationsFor(containerId, defaultLanguage, TITLE, DESCRIPTION) +
         gaeStory.storyContents.nodes.flatMap {
-          checkStoryNodeCompatibility(gaeStory, it, defaultLanguage)
+          checkStoryNodeCompatibility(gaeStory, it, defaultLanguage, containerId)
         }
     }
   }
@@ -105,14 +106,16 @@ class StructureCompatibilityChecker(
   private fun checkStoryNodeCompatibility(
     gaeStory: GaeStory,
     gaeStoryNode: GaeStoryNode,
-    defaultLanguage: LanguageType
+    defaultLanguage: LanguageType,
+    storyContainerId: ContainerId
   ): List<CompatibilityFailure> {
-    val containerId = ContainerId.createFrom(gaeStory, gaeStoryNode)
-    return gaeStoryNode.title.checkTitleOrDescTextForHtml(containerId) +
-      gaeStoryNode.outline.checkTitleOrDescTextForHtml(containerId) +
-      gaeStoryNode.thumbnailFilename.checkThumbnailFilename(containerId) +
-      gaeStoryNode.thumbnailBgColor.checkBackgroundHexColor(containerId) +
-      checkHasRequiredWebTranslationsFor(containerId, defaultLanguage, TITLE, DESCRIPTION)
+    return ContainerId.createFrom(gaeStory, gaeStoryNode)?.let { containerId ->
+      return gaeStoryNode.title.checkTitleOrDescTextForHtml(containerId) +
+        gaeStoryNode.description.checkTitleOrDescTextForHtml(containerId) +
+        gaeStoryNode.thumbnailFilename.checkThumbnailFilename(containerId) +
+        gaeStoryNode.thumbnailBgColor.checkBackgroundHexColor(containerId) +
+        checkHasRequiredWebTranslationsFor(containerId, defaultLanguage, TITLE, DESCRIPTION)
+    } ?: listOf(CompatibilityFailure.StoryIsMissingExplorationId(gaeStory.id, storyContainerId))
   }
 
   fun isSubtopicPageItselfCompatible(
@@ -272,7 +275,10 @@ class StructureCompatibilityChecker(
       gaeWrittenTranslations.translationsMapping[it]?.keys ?: setOf()
     }
     return gaeWrittenTranslations.translationsMapping.flatMap { (contentId, contentMap) ->
-      contentMap.values.flatMap { checkWrittenTranslationCompatibility(origin, contentId, it) }
+      contentMap.entries.flatMap { (languageCode, translation) ->
+        val languageType = languageCode.resolveLanguageCode()
+        checkWrittenTranslationCompatibility(origin, contentId, languageType, translation)
+      }
     } + contentIdLanguages.flatMap { (contentId, languageCodes) ->
       languageCodes.checkHasRequiredTranslations(origin, contentId, defaultLanguage)
     }
@@ -281,13 +287,14 @@ class StructureCompatibilityChecker(
   private fun checkWrittenTranslationCompatibility(
     origin: ContainerId,
     contentId: String,
+    languageType: LanguageType,
     gaeWrittenTranslation: GaeWrittenTranslation
   ): List<CompatibilityFailure> {
     return when (val translation = gaeWrittenTranslation.translation) {
       is GaeWrittenTranslation.Translation.SingleString ->
-        translation.value.checkHasValidHtml(origin, contentId)
+        translation.value.checkHasValidHtml(origin, contentId, languageType)
       is GaeWrittenTranslation.Translation.StringList ->
-        translation.value.flatMap { it.checkHasValidHtml(origin, contentId) }
+        translation.value.flatMap { it.checkHasValidHtml(origin, contentId, languageType) }
     }
   }
 
@@ -313,8 +320,8 @@ class StructureCompatibilityChecker(
         contentId in entityTranslation.translations
       }.keys
     }
-    return translations.values.flatMap {
-      checkEntityTranslationCompatibility(origin, it)
+    return translations.flatMap { (languageType, translation) ->
+      checkEntityTranslationCompatibility(origin, languageType, translation)
     } + contentIdLanguages.flatMap { (contentId, languageCodes) ->
       languageCodes.checkHasRequiredTranslations(origin, contentId, defaultLanguage)
     }
@@ -322,23 +329,25 @@ class StructureCompatibilityChecker(
 
   private fun checkEntityTranslationCompatibility(
     origin: ContainerId,
+    languageType: LanguageType,
     gaeEntityTranslation: GaeEntityTranslation
   ): List<CompatibilityFailure> {
     return gaeEntityTranslation.translations.flatMap { (contentId, translatedContent) ->
-      checkTranslatedContentCompatibility(origin, contentId, translatedContent)
+      checkTranslatedContentCompatibility(origin, contentId, languageType, translatedContent)
     }
   }
 
   private fun checkTranslatedContentCompatibility(
     origin: ContainerId,
     contentId: String,
+    languageType: LanguageType,
     gaeTranslatedContent: GaeTranslatedContent
   ): List<CompatibilityFailure> {
     return when (val translation = gaeTranslatedContent.contentValue) {
       is GaeTranslatedContent.Translation.SingleString ->
-        translation.value.checkHasValidHtml(origin, contentId)
+        translation.value.checkHasValidHtml(origin, contentId, languageType)
       is GaeTranslatedContent.Translation.StringList ->
-        translation.value.flatMap { it.checkHasValidHtml(origin, contentId) }
+        translation.value.flatMap { it.checkHasValidHtml(origin, contentId, languageType) }
     }
   }
 
@@ -388,6 +397,13 @@ class StructureCompatibilityChecker(
     data class TextHasInvalidTags(
       val contentId: String,
       val invalidTagNames: Set<String>,
+      override val origin: ContainerId
+    ) : CompatibilityFailure()
+
+    data class TranslatedTextHasInvalidTags(
+      val contentId: String,
+      val invalidTagNames: Set<String>,
+      val languageType: LanguageType,
       override val origin: ContainerId
     ) : CompatibilityFailure()
 
@@ -448,6 +464,11 @@ class StructureCompatibilityChecker(
     data class StateHasInvalidInteractionId(
       val stateName: String,
       val interactionId: String?,
+      override val origin: ContainerId
+    ) : CompatibilityFailure()
+
+    data class StoryIsMissingExplorationId(
+      val storyId: String,
       override val origin: ContainerId
     ) : CompatibilityFailure()
   }
@@ -547,7 +568,7 @@ class StructureCompatibilityChecker(
   }
 
   private fun GaeSubtitledHtml.checkHasValidHtml(origin: ContainerId): List<CompatibilityFailure> =
-    text.checkHasValidHtml(origin, contentId)
+    text.checkHasValidHtml(origin, contentId, languageType = null)
 
   private fun GaeSubtitledUnicode.checkHasNoValidHtml(
     origin: ContainerId
@@ -555,11 +576,15 @@ class StructureCompatibilityChecker(
 
   private fun String.checkHasValidHtml(
     origin: ContainerId,
-    contentId: String
+    contentId: String,
+    languageType: LanguageType?
   ): List<CompatibilityFailure> {
     val extraTags = extractHtmlTags() - constraints.supportedHtmlTags
     val tagFailures = if (extraTags.isNotEmpty()) {
-      listOf(TextHasInvalidTags(contentId, extraTags, origin))
+      val failure = languageType?.let {
+        TranslatedTextHasInvalidTags(contentId, extraTags, it, origin)
+      } ?: TextHasInvalidTags(contentId, extraTags, origin)
+      listOf(failure)
     } else emptyList()
     return tagFailures + checkHasValidImageReferences(origin, contentId)
   }
@@ -596,7 +621,7 @@ class StructureCompatibilityChecker(
   private companion object {
     private val HTML_PRESENCE_REGEX = "</?.+?>".toRegex()
     // This regex is a simplification of the standard: https://www.w3.org/TR/xml/#NT-NameStartChar.
-    private val HTML_TAG_REGEX = "<\\s*([\\w:_\\-.x]+).+?>".toRegex()
+    private val HTML_TAG_REGEX = "<\\s*([^\\s/>]+)[^>]*?>".toRegex()
     private val IMAGE_TAG_REGEX = "<\\s*oppia-noninteractive-image.+?>".toRegex()
     private val IMAGE_FILE_PATH_REGEX = "filepath-with-value\\s*=\\s*\"(.+?)\"".toRegex()
 

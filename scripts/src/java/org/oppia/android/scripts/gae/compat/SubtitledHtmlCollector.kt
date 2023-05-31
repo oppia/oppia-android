@@ -78,14 +78,15 @@ class SubtitledHtmlCollector(private val localizationTracker: LocalizationTracke
     ).translationsToSubtitles()
   }
 
-  private fun GaeStoryNode.collectSubtitles(containingStory: GaeStory): Set<SubtitledText> {
-    val localId = LocalizationTracker.ContainerId.createFrom(containingStory, this)
+  private fun GaeStoryNode.collectSubtitles(story: GaeStory): Set<SubtitledText> {
     val title = setOf(title.titleToSubtitle())
     val description = setOf(description.descriptionToSubtitle())
-    val titleXlations = localizationTracker.computeAvailableWebTranslations(localId, TITLE)
-    val descXlations = localizationTracker.computeAvailableWebTranslations(localId, DESCRIPTION)
-    return title + description + titleXlations.translationsToSubtitles() +
-      descXlations.translationsToSubtitles()
+    val xlations = LocalizationTracker.ContainerId.createFrom(story, this)?.let { localId ->
+      val titleXlations = localizationTracker.computeAvailableWebTranslations(localId, TITLE)
+      val descXlations = localizationTracker.computeAvailableWebTranslations(localId, DESCRIPTION)
+      return@let titleXlations + descXlations
+    } ?: emptyMap()
+    return title + description + xlations.translationsToSubtitles()
   }
 
   private fun GaeExploration.collectSubtitles(): Set<SubtitledText> {

@@ -25,19 +25,14 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.T
 
 @JsonClass(generateAdapter = false)
 sealed class GaeInteractionObject {
-  @JsonClass(generateAdapter = false)
   data class NormalizedString(val value: String) : GaeInteractionObject()
 
-  @JsonClass(generateAdapter = false)
   data class MathExpression(val value: String) : GaeInteractionObject()
 
-  @JsonClass(generateAdapter = false)
   data class SignedInt(val value: Int) : GaeInteractionObject()
 
-  @JsonClass(generateAdapter = false)
   data class NonNegativeInt(val value: Int) : GaeInteractionObject()
 
-  @JsonClass(generateAdapter = false)
   data class Real(val value: Double) : GaeInteractionObject()
 
   @JsonClass(generateAdapter = false)
@@ -51,7 +46,9 @@ sealed class GaeInteractionObject {
       fun convertToJson(
         jsonWriter: JsonWriter,
         translatableHtmlContentId: TranslatableHtmlContentId
-      ): Unit = error("Conversion to JSON is not supported.")
+      ) {
+        jsonWriter.value(translatableHtmlContentId.contentId)
+      }
     }
   }
 
@@ -74,8 +71,15 @@ sealed class GaeInteractionObject {
       @ToJson
       fun convertToJson(
         jsonWriter: JsonWriter,
-        setOfXlatableContentIds: SetOfXlatableContentIds
-      ): Unit = error("Conversion to JSON is not supported.")
+        setOfXlatableContentIds: SetOfXlatableContentIds,
+        translatableHtmlContentIdAdapter: JsonAdapter<TranslatableHtmlContentId>
+      ) {
+        jsonWriter.beginArray()
+        setOfXlatableContentIds.contentIds.forEach {
+          translatableHtmlContentIdAdapter.toJson(jsonWriter, it)
+        }
+        jsonWriter.endArray()
+      }
     }
   }
 
@@ -112,8 +116,15 @@ sealed class GaeInteractionObject {
       @ToJson
       fun convertToJson(
         jsonWriter: JsonWriter,
-        setsOfXlatableContentIds: SetsOfXlatableContentIds
-      ): Unit = error("Conversion to JSON is not supported.")
+        setsOfXlatableContentIds: SetsOfXlatableContentIds,
+        setOfXlatableContentIdsAdapter: JsonAdapter<SetOfXlatableContentIds>
+      ) {
+        jsonWriter.beginArray()
+        setsOfXlatableContentIds.sets.forEach {
+          setOfXlatableContentIdsAdapter.toJson(jsonWriter, it)
+        }
+        jsonWriter.endArray()
+      }
     }
   }
 
@@ -125,8 +136,11 @@ sealed class GaeInteractionObject {
         RatioExpression(jsonReader.nextArray(jsonReader::nextInt))
 
       @ToJson
-      fun convertToJson(jsonWriter: JsonWriter, ratioExpression: RatioExpression): Unit =
-        error("Conversion to JSON is not supported.")
+      fun convertToJson(jsonWriter: JsonWriter, ratioExpression: RatioExpression) {
+        jsonWriter.beginArray()
+        ratioExpression.ratioComponents.forEach { jsonWriter.value(it.toLong()) }
+        jsonWriter.endArray()
+      }
     }
   }
 
@@ -175,8 +189,32 @@ sealed class GaeInteractionObject {
     @ToJson
     fun convertRuleInputToJson(
       jsonWriter: JsonWriter,
-      @RuleInput gaeInteractionObject: GaeInteractionObject
-    ): Unit = error("Conversion to JSON is not supported.")
+      @RuleInput gaeInteractionObject: GaeInteractionObject,
+      setOfXlatableHtmlContentIdsAdapter: JsonAdapter<SetOfXlatableContentIds>,
+      fractionAdapter: JsonAdapter<Fraction>,
+      listSetsOfXlatableIdsAdapter: JsonAdapter<SetsOfXlatableContentIds>,
+      ratioExpressionAdapter: JsonAdapter<RatioExpression>,
+      translatableStrSetAdapter: JsonAdapter<TranslatableSetOfNormalizedString>,
+      translatableHtmlContentIdAdapter: JsonAdapter<TranslatableHtmlContentId>
+    ) {
+      when (gaeInteractionObject) {
+        is Fraction -> fractionAdapter.toJson(jsonWriter, gaeInteractionObject)
+        is MathExpression -> jsonWriter.value(gaeInteractionObject.value)
+        is NonNegativeInt -> jsonWriter.value(gaeInteractionObject.value.toLong())
+        is NormalizedString -> jsonWriter.value(gaeInteractionObject.value)
+        is RatioExpression -> ratioExpressionAdapter.toJson(jsonWriter, gaeInteractionObject)
+        is Real -> jsonWriter.value(gaeInteractionObject.value)
+        is SetOfXlatableContentIds ->
+          setOfXlatableHtmlContentIdsAdapter.toJson(jsonWriter, gaeInteractionObject)
+        is SetsOfXlatableContentIds ->
+          listSetsOfXlatableIdsAdapter.toJson(jsonWriter, gaeInteractionObject)
+        is SignedInt -> jsonWriter.value(gaeInteractionObject.value.toLong())
+        is TranslatableHtmlContentId ->
+          translatableHtmlContentIdAdapter.toJson(jsonWriter, gaeInteractionObject)
+        is TranslatableSetOfNormalizedString ->
+          translatableStrSetAdapter.toJson(jsonWriter, gaeInteractionObject)
+      }
+    }
 
     @SolutionInteractionAnswer
     @FromJson
@@ -205,8 +243,9 @@ sealed class GaeInteractionObject {
     @ToJson
     fun convertInteractionAnswerToJson(
       jsonWriter: JsonWriter,
-      @SolutionInteractionAnswer gaeInteractionObject: GaeInteractionObject
-    ): Unit = error("Conversion to JSON is not supported.")
+      @SolutionInteractionAnswer gaeInteractionObject: GaeInteractionObject,
+      @RuleInput ruleInputObjectAdapter: JsonAdapter<GaeInteractionObject>
+    ) = ruleInputObjectAdapter.toJson(jsonWriter, gaeInteractionObject)
 
     @SolutionInteractionAnswer
     @FromJson
@@ -221,8 +260,13 @@ sealed class GaeInteractionObject {
     fun convertSolutionListToJson(
       jsonWriter: JsonWriter,
       @SolutionInteractionAnswer
-      gaeInteractionObjects: List<@JvmSuppressWildcards GaeInteractionObject>
-    ): Unit = error("Conversion to JSON is not supported.")
+      gaeInteractionObjects: List<@JvmSuppressWildcards GaeInteractionObject>,
+      @SolutionInteractionAnswer solutionAdapter: JsonAdapter<GaeInteractionObject>
+    ) {
+      jsonWriter.beginArray()
+      gaeInteractionObjects.forEach { solutionAdapter.toJson(jsonWriter, it) }
+      jsonWriter.endArray()
+    }
 
     private fun parseDragAndDropSortInputJson(
       jsonReader: JsonReader,

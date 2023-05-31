@@ -62,7 +62,7 @@ sealed class GaeCustomizationArgValue {
   data class GaeImageWithRegions(
     @Json(name = "imagePath") val imagePath: String,
     @Json(name = "labeledRegions") val labeledRegions: List<GaeLabeledRegion>
-  ) : GaeCustomizationArgValue() {
+  ): GaeCustomizationArgValue() {
     override val valueType = CustomizationArgValue.ValueTypeCase.IMAGE_WITH_REGIONS_DTO
 
     @JsonClass(generateAdapter = true)
@@ -96,7 +96,16 @@ sealed class GaeCustomizationArgValue {
           fun convertToJson(
             jsonWriter: JsonWriter,
             gaeNormalizedRectangle2d: GaeNormalizedRectangle2d
-          ): Unit = error("Conversion to JSON is not supported.")
+          ) {
+            val (upperLeftPoint, lowerRightPoint) = gaeNormalizedRectangle2d.items
+            val (upperLeftX, upperLeftY) = upperLeftPoint
+            val (lowerRightX, lowerRightY) = lowerRightPoint
+
+            jsonWriter.beginArray()
+            jsonWriter.beginArray().value(upperLeftX).value(upperLeftY).endArray()
+            jsonWriter.beginArray().value(lowerRightX).value(lowerRightY).endArray()
+            jsonWriter.endArray()
+          }
         }
       }
     }
@@ -134,7 +143,7 @@ sealed class GaeCustomizationArgValue {
           else -> null
         }
         NUMERIC_INPUT -> when (key) {
-          "requireNonnegativeInput", "useFractionForDivision" -> jsonReader.nextBooleanArgValue()
+          "requireNonnegativeInput" -> jsonReader.nextBooleanArgValue()
           else -> null
         }
         TEXT_INPUT -> when (key) {
@@ -165,7 +174,7 @@ sealed class GaeCustomizationArgValue {
         }
         NUMERIC_EXPRESSION_INPUT -> when (key) {
           "placeholder" -> jsonReader.nextSubtitledUnicodeArgValue(subtitledUnicodeAdapter)
-          "requireNonnegativeInput" -> jsonReader.nextBooleanArgValue()
+          "useFractionForDivision" -> jsonReader.nextBooleanArgValue()
           else -> null
         }
         END_EXPLORATION -> when (key) {
@@ -182,8 +191,20 @@ sealed class GaeCustomizationArgValue {
     @ToJson
     fun convertToJson(
       jsonWriter: JsonWriter,
-      gaeCustomizationArgValue: GaeCustomizationArgValue
-    ): Unit = error("Conversion to JSON is not supported.")
+      gaeCustomizationArgValue: GaeCustomizationArgValue,
+      subtitledUnicodeAdapter: JsonAdapter<GaeSubtitledUnicode>,
+      subtitledHtmlAdapter: JsonAdapter<GaeSubtitledHtml>,
+      imageWithRegionsAdapter: JsonAdapter<GaeImageWithRegions>
+    ) {
+      when (gaeCustomizationArgValue) {
+        is GaeImageWithRegions -> jsonWriter.value(gaeCustomizationArgValue, imageWithRegionsAdapter)
+        is SingleBoolean -> jsonWriter.value(gaeCustomizationArgValue)
+        is SingleInteger -> jsonWriter.value(gaeCustomizationArgValue)
+        is StringList -> jsonWriter.value(gaeCustomizationArgValue)
+        is SubtitledTextList -> jsonWriter.value(gaeCustomizationArgValue, subtitledHtmlAdapter)
+        is SubtitledUnicode -> jsonWriter.value(gaeCustomizationArgValue, subtitledUnicodeAdapter)
+      }
+    }
 
     private companion object {
       private fun JsonReader.nextBooleanArgValue() = SingleBoolean(nextBoolean())
@@ -203,6 +224,37 @@ sealed class GaeCustomizationArgValue {
       ) = nextCustomValue(imageWithRegionsAdapter)
 
       private fun JsonReader.nextStringList() = StringList(nextArray(::nextString))
+
+      private fun JsonWriter.value(boolean: SingleBoolean): JsonWriter = value(boolean.value)
+
+      private fun JsonWriter.value(int: SingleInteger): JsonWriter = value(int.value.toLong())
+
+      private fun JsonWriter.value(
+        subtitledUnicode: SubtitledUnicode,
+        subtitledUnicodeAdapter: JsonAdapter<GaeSubtitledUnicode>
+      ): JsonWriter = this.also { subtitledUnicodeAdapter.toJson(it, subtitledUnicode.value) }
+
+      private fun JsonWriter.value(
+        subtitledHtml: GaeSubtitledHtml,
+        subtitledHtmlAdapter: JsonAdapter<GaeSubtitledHtml>
+      ): JsonWriter = this.also { subtitledHtmlAdapter.toJson(it, subtitledHtml) }
+
+      private fun JsonWriter.value(
+        subtitledTextList: SubtitledTextList,
+        subtitledHtmlAdapter: JsonAdapter<GaeSubtitledHtml>
+      ): JsonWriter {
+        return beginArray().also {
+          subtitledTextList.value.forEach { value(it, subtitledHtmlAdapter) }
+        }.endArray()
+      }
+
+      private fun JsonWriter.value(
+        imageWithRegions: GaeImageWithRegions,
+        imageWithRegionsAdapter: JsonAdapter<GaeImageWithRegions>
+      ): JsonWriter = this.also { imageWithRegionsAdapter.toJson(it, imageWithRegions) }
+
+      private fun JsonWriter.value(strs: StringList): JsonWriter =
+        beginArray().also { strs.value.forEach(::value) }.endArray()
     }
   }
 }

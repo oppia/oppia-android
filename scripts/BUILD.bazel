@@ -234,6 +234,8 @@ kt_jvm_binary(
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/assets:download_lessons_lib",
     ],
+    # Hide warnings that come from https://github.com/square/retrofit/issues/3341.
+    jvm_flags = ["--add-opens", "java.base/java.lang.invoke=ALL-UNNAMED"],
 )
 
 # Note that this & the other binaries below are intentionally not test-only since they're used by

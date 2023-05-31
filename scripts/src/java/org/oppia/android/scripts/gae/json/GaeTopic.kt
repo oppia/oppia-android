@@ -7,8 +7,8 @@ import com.squareup.moshi.JsonClass
 data class GaeTopic(
   @Json(name = "id") val id: String,
   @Json(name = "name") val name: String,
-  @Json(name = "abbreviated_name") val abbreviatedName: String,
-  @Json(name = "url_fragment") val urlFragment: String,
+  @Json(name = "abbreviated_name") val abbreviatedName: String?,
+  @Json(name = "url_fragment") val urlFragment: String?,
   @Json(name = "thumbnail_filename") val thumbnailFilename: String?,
   @Json(name = "thumbnail_bg_color") val thumbnailBgColor: String?,
   @Json(name = "thumbnail_size_in_bytes") val thumbnailSizeInBytes: Int?,
@@ -24,7 +24,7 @@ data class GaeTopic(
   @Json(name = "story_reference_schema_version") val storyReferenceSchemaVersion: Int,
   @Json(name = "meta_tag_content") val metaTagContent: String,
   @Json(name = "practice_tab_is_displayed") val practiceTabIsDisplayed: Boolean,
-  @Json(name = "page_title_fragment_for_web") val pageTitleFragmentForWeb: String,
+  @Json(name = "page_title_fragment_for_web") val pageTitleFragmentForWeb: String?,
   @Json(name = "skill_ids_for_diagnostic_test") val skillIdsForDiagnosticTest: List<String>
 ) : VersionedStructure {
   fun computeContainedSubtopicMap(): Map<Int, GaeSubtopic> = subtopics.associateBy { it.id }

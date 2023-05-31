@@ -1,17 +1,24 @@
 package org.oppia.android.scripts.gae
 
+import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.withIndex
 import org.oppia.android.scripts.gae.compat.CompleteExploration
 import org.oppia.android.scripts.gae.compat.CompleteTopicPack
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityConstraints
 import org.oppia.android.scripts.gae.compat.TopicPackRepository
-import org.oppia.android.scripts.gae.gcs.GcsService
+import org.oppia.android.scripts.gae.compat.TopicPackRepository.MetricCallbacks.DataGroupType
 import org.oppia.android.scripts.gae.json.AndroidActivityHandlerService
-import org.oppia.android.scripts.gae.json.GaeClassroom
 import org.oppia.android.scripts.gae.json.GaeSkill
 import org.oppia.android.scripts.gae.json.GaeStory
 import org.oppia.android.scripts.gae.json.GaeSubtopic
@@ -55,19 +62,31 @@ import org.oppia.proto.v1.structure.SubtopicPageIdDto
 class GaeAndroidEndpointJsonImpl(
   apiSecret: String,
   gaeBaseUrl: String,
-  gcsBaseUrl: String,
-  gcsBucket: String,
+  cacheDir: File?,
+  forceCacheLoad: Boolean,
   private val coroutineDispatcher: CoroutineDispatcher,
-  private val topicDependencies: Map<String, Set<String>>
+  private val topicDependencies: Map<String, Set<String>>,
+  private val imageDownloader: ImageDownloader
 ) : GaeAndroidEndpoint {
-  private val activityService by lazy { AndroidActivityHandlerService(apiSecret, gaeBaseUrl) }
-  private val gcsService by lazy { GcsService(gcsBaseUrl, gcsBucket) }
+  private val activityService by lazy {
+    AndroidActivityHandlerService(
+      apiSecret, gaeBaseUrl, cacheDir, forceCacheLoad, coroutineDispatcher
+    )
+  }
   private val converterInitializer by lazy {
-    ConverterInitializer(activityService, gcsService, coroutineDispatcher, topicDependencies)
+    ConverterInitializer(
+      activityService, coroutineDispatcher, topicDependencies, imageDownloader
+    )
   }
   private val contentCache by lazy { ContentCache() }
 
-  override fun fetchTopicListAsync(request: TopicListRequestDto): Deferred<TopicListResponseDto> {
+  // TODO: Document that reportProgress's total can change over time (since it starts as an
+  // estimate which might over-estimate).
+  // TODO: It would be easier to track progress by using some sort of task management & collation
+  //  system (which could also account for task weights and better control over estimation).
+  override fun fetchTopicListAsync(
+    request: TopicListRequestDto, reportProgress: (Int, Int) -> Unit
+  ): Deferred<TopicListResponseDto> {
     return CoroutineScope(coroutineDispatcher).async {
       // First, verify the request proto version.
       check(request.protoVersion.version == createLatestTopicListProtoVersion().version) {
@@ -80,6 +99,12 @@ class GaeAndroidEndpointJsonImpl(
       // TODO: Add support for additional languages in summaries.
       val defaultLanguage = request.requestedDefaultLanguage
       val additionalLanguages = request.requiredAdditionalLanguagesList.toSet()
+      val tracker =
+        DownloadProgressTracker.createTracker(
+          DownloadCountEstimator(classroomCount = SUPPORTED_CLASSROOMS.size),
+          coroutineDispatcher,
+          reportProgress
+        )
       val constraints =
         CompatibilityConstraints(
           supportedInteractionIds = SUPPORTED_INTERACTION_IDS,
@@ -95,22 +120,30 @@ class GaeAndroidEndpointJsonImpl(
       val jsonConverter = converterInitializer.getJsonToProtoConverter()
       val topicRepository = converterInitializer.getTopicPackRepository(constraints)
 
-      val topicIds = fetchAllClassroomTopicIds()
-      val availableTopicPacks = topicIds.map { topicId ->
-        topicRepository.downloadConstructedCompleteTopicAsync(topicId)
+      val topicIds = fetchAllClassroomTopicIdsAsync(tracker).await()
+      val topicCountsTracker = TopicCountsTracker.createFrom(tracker, topicIds)
+
+      val availableTopicPacks = topicIds.mapIndexed { index, topicId ->
+        topicRepository.downloadConstructedCompleteTopicAsync(
+          topicId, topicCountsTracker.topicStructureCountMap.getValue(topicId).metricsCallbacks
+        ).also { tracker.reportDownloaded("${topicId}_$index") }
       }.awaitAll().associateBy { it.topic.id }
+
+      val missingTopicIds = topicIds - availableTopicPacks.keys
+      val futureTopics = missingTopicIds.map { topicId ->
+        activityService.fetchLatestTopicAsync(topicId)
+      }.awaitAll().associateBy { it.id }
+
       contentCache.addPacks(availableTopicPacks)
       jsonConverter.trackTopicTranslations(contentCache.topics)
       jsonConverter.trackStoryTranslations(contentCache.stories)
       jsonConverter.trackExplorationTranslations(contentCache.explorations)
       jsonConverter.trackConceptCardTranslations(contentCache.skills)
       jsonConverter.trackRevisionCardTranslations(contentCache.subtopics.values.toList())
-
-      val missingTopicIds = topicIds - availableTopicPacks.keys
-      val futureTopics = missingTopicIds.map { topicId ->
-        activityService.fetchLatestTopicAsync(topicId)
-      }.awaitAll().associateBy { it.id }
       jsonConverter.trackTopicTranslations(futureTopics)
+
+      tracker.reportDownloaded("data_conversion_finished")
+      tracker.reportDownloadsFinished()
 
       return@async TopicListResponseDto.newBuilder().apply {
         protoVersion = createLatestTopicListProtoVersion()
@@ -146,27 +179,53 @@ class GaeAndroidEndpointJsonImpl(
   }
 
   override fun fetchTopicContentAsync(
-    request: TopicContentRequestDto
+    request: TopicContentRequestDto, reportProgress: (Int, Int) -> Unit
   ): Deferred<TopicContentResponseDto> {
+    val progressChannel = Channel<Int>()
+    progressChannel.consumeAsFlow().withIndex().onEach { (index, _) ->
+      reportProgress(index + 1, request.identifiersCount)
+    }.launchIn(CoroutineScope(coroutineDispatcher))
+
     return CoroutineScope(coroutineDispatcher).async {
       check(request.protoVersion.version <= createLatestTopicContentProtoVersion().version) {
         "Unsupported request version encountered: ${request.protoVersion}."
+      }
+
+      // Parallelize the structure assembly to better utilize multi-core machines.
+      val delegatedScope = CoroutineScope(coroutineDispatcher)
+      val results = request.identifiersList.mapIndexed { index, id ->
+        delegatedScope.async {
+          // Fetch the structure at this index and report when it's completed.
+          fetchStructure(id).also { progressChannel.send(index) }
+        }
       }
 
       // Ignore the requested max payload size for local emulation. Proper error responses are also
       // not supported.
       TopicContentResponseDto.newBuilder().apply {
         protoVersion = createLatestTopicContentProtoVersion()
-        addAllDownloadResults(request.identifiersList.map { fetchStructure(it) })
+        addAllDownloadResults(results.awaitAll().also { progressChannel.close() })
       }.build()
     }
   }
 
-  private suspend fun fetchAllClassroomTopicIds(): List<String> {
-    return CLASSROOMS.map(activityService::fetchLatestClassroomAsync)
-      .awaitAll()
-      .flatMap(GaeClassroom::topicIds)
-      .distinct()
+  private fun fetchAllClassroomTopicIdsAsync(
+    tracker: DownloadProgressTracker
+  ): Deferred<List<String>> {
+    // TODO: Revert the temp change once all classrooms are supported in the new format.
+    // TODO: Double check the language verification (since sWBXKH4PZcK6 Swahili isn't 100%).
+    return CoroutineScope(coroutineDispatcher).async {
+      listOf(
+        "iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm", "5g0nxGUmx5J5"
+      ).also {
+        tracker.countEstimator.setTopicCount(it.size)
+        tracker.reportDownloaded("math")
+      }
+      // return CLASSROOMS.map(activityService::fetchLatestClassroomAsync)
+      //   .awaitAll()
+      //   .flatMap(GaeClassroom::topicIds)
+      //   .distinct()
+    }
   }
 
   private suspend fun fetchStructure(
@@ -198,6 +257,245 @@ class GaeAndroidEndpointJsonImpl(
         resultBuilder = this
       )
     }.build()
+  }
+
+  private class TopicStructureCountTracker(
+    private val topicId: String,
+    private val notifyItemCountChanged: (DataGroupType) -> Unit,
+    private val notifyItemDownloaded: suspend (String) -> Unit,
+    private val currentNeededStoryCount: AtomicInteger = AtomicInteger(),
+    private val currentNeededChapterCount: AtomicInteger = AtomicInteger(),
+    private val currentNeededRevisionCardCount: AtomicInteger = AtomicInteger(),
+    private val currentNeededConceptCardCount: AtomicInteger = AtomicInteger()
+  ) {
+    val metricsCallbacks by lazy {
+      TopicPackRepository.MetricCallbacks(
+        resetAllGroupItemCounts = this::resetAllItemCounts,
+        resetGroupItemCount = this::resetGroupItemCount,
+        reportGroupItemCount = this::reportGroupItemCount,
+        reportGroupItemDownloaded = this::reportGroupItemDownloaded
+      )
+    }
+
+    val neededStoryCount: Int get() = offsetStoryCount.get() + currentNeededStoryCount.get()
+    val neededChapterCount: Int get() = offsetChapterCount.get() + currentNeededChapterCount.get()
+    val neededRevisionCardCount: Int get() =
+      offsetRevisionCardCount.get() + currentNeededRevisionCardCount.get()
+    val neededConceptCardCount: Int get() =
+      offsetConceptCardCount.get() + currentNeededConceptCardCount.get()
+
+    private val offsetStoryCount = AtomicInteger()
+    private val offsetChapterCount = AtomicInteger()
+    private val offsetRevisionCardCount = AtomicInteger()
+    private val offsetConceptCardCount = AtomicInteger()
+    private val downloadedStoryCount = AtomicInteger()
+    private val downloadedChapterCount = AtomicInteger()
+    private val downloadedRevisionCardCount = AtomicInteger()
+    private val downloadedConceptCardCount = AtomicInteger()
+    
+    private fun resetAllItemCounts() {
+      DataGroupType.values().forEach(::resetGroupItemCount)
+    }
+
+    private fun resetGroupItemCount(dataGroupType: DataGroupType) {
+      val currentNeededCount = when (dataGroupType) {
+        DataGroupType.STORY -> currentNeededStoryCount
+        DataGroupType.SUBTOPIC -> currentNeededRevisionCardCount
+        DataGroupType.EXPLORATION -> currentNeededChapterCount
+        DataGroupType.SKILL -> currentNeededConceptCardCount
+      }
+      val downloadedCount = when (dataGroupType) {
+        DataGroupType.STORY -> downloadedStoryCount
+        DataGroupType.SUBTOPIC -> downloadedRevisionCardCount
+        DataGroupType.EXPLORATION -> downloadedChapterCount
+        DataGroupType.SKILL -> downloadedConceptCardCount
+      }
+      val offsetCount = when (dataGroupType) {
+        DataGroupType.STORY -> offsetStoryCount
+        DataGroupType.SUBTOPIC -> offsetRevisionCardCount
+        DataGroupType.EXPLORATION -> offsetChapterCount
+        DataGroupType.SKILL -> offsetConceptCardCount
+      }
+
+      // Reset means a whole new list of items will be reported. However, since previous items were
+      // already reported, keep track of how many there were so that the counts don't become off.
+      currentNeededCount.set(0)
+      offsetCount.addAndGet(downloadedCount.getAndSet(0))
+    }
+
+    private fun reportGroupItemCount(dataGroupType: DataGroupType, count: Int) {
+      val atomicToUpdate = when (dataGroupType) {
+        DataGroupType.STORY -> currentNeededStoryCount
+        DataGroupType.SUBTOPIC -> currentNeededRevisionCardCount
+        DataGroupType.EXPLORATION -> currentNeededChapterCount
+        DataGroupType.SKILL -> currentNeededConceptCardCount
+      }
+      atomicToUpdate.set(count)
+      notifyItemCountChanged(dataGroupType)
+    }
+
+    private suspend fun reportGroupItemDownloaded(dataGroupType: DataGroupType, itemId: String) {
+      val neededCount = when (dataGroupType) {
+        DataGroupType.STORY -> currentNeededStoryCount.get()
+        DataGroupType.SUBTOPIC -> currentNeededRevisionCardCount.get()
+        DataGroupType.EXPLORATION -> currentNeededChapterCount.get()
+        DataGroupType.SKILL -> currentNeededConceptCardCount.get()
+      }
+      val atomicToUpdate = when (dataGroupType) {
+        DataGroupType.STORY -> downloadedStoryCount
+        DataGroupType.SUBTOPIC -> downloadedRevisionCardCount
+        DataGroupType.EXPLORATION -> downloadedChapterCount
+        DataGroupType.SKILL -> downloadedConceptCardCount
+      }
+      atomicToUpdate.incrementAndGet()
+
+      // Ensure the item is unique by prefixing it both with the topic and with current expected
+      // count of the item category (in case it gets reported again later).
+      notifyItemDownloaded("$topicId-$itemId-of-$neededCount")
+    }
+  }
+
+  private class TopicCountsTracker private constructor(
+    private val downloadProgressTracker: DownloadProgressTracker,
+    private val topicIds: List<String>
+  ) {
+    val topicStructureCountMap by lazy {
+      topicIds.associateWith {
+        TopicStructureCountTracker(
+          it,
+          notifyItemCountChanged = this::notifyItemCountChanged,
+          notifyItemDownloaded = this::notifyItemDownloaded
+        )
+      }
+    }
+
+    private val totalStoryCount: Int get() =
+      topicStructureCountMap.values.sumOf { it.neededStoryCount }
+    private val totalChapterCount: Int get() =
+      topicStructureCountMap.values.sumOf { it.neededChapterCount }
+    private val totalRevisionCardCount: Int get() =
+      topicStructureCountMap.values.sumOf { it.neededRevisionCardCount }
+    private val totalConceptCardCount: Int get() =
+      topicStructureCountMap.values.sumOf { it.neededConceptCardCount }
+
+    private fun notifyItemCountChanged(dataGroupType: DataGroupType) {
+      when (dataGroupType) {
+        DataGroupType.STORY -> downloadProgressTracker.countEstimator.setStoryCount(totalStoryCount)
+        DataGroupType.SUBTOPIC ->
+          downloadProgressTracker.countEstimator.setSubtopicCount(totalRevisionCardCount)
+        DataGroupType.EXPLORATION ->
+          downloadProgressTracker.countEstimator.setChapterCount(totalChapterCount)
+        DataGroupType.SKILL ->
+          downloadProgressTracker.countEstimator.setSkillCount(totalConceptCardCount)
+      }
+    }
+
+    private suspend fun notifyItemDownloaded(uniqueItemId: String) =
+      downloadProgressTracker.reportDownloaded(uniqueItemId)
+
+    companion object {
+      fun createFrom(
+        downloadProgressTracker: DownloadProgressTracker, topicIds: List<String>
+      ): TopicCountsTracker = TopicCountsTracker(downloadProgressTracker, topicIds)
+    }
+  }
+
+  // TODO: Document that this tracker isn't estimating or tracking multiple versions (versions
+  //  should be consolidated such that all versions for a particular ID needs to be resolved for
+  //  that 'ID' to be done).
+  private class DownloadProgressTracker private constructor(
+    val countEstimator: DownloadCountEstimator,
+    private val channel: SendChannel<String>
+  ) {
+    suspend fun reportDownloaded(contentGuid: String) = channel.send(contentGuid)
+
+    fun reportDownloadsFinished() = channel.close()
+
+    companion object {
+      fun createTracker(
+        countEstimator: DownloadCountEstimator,
+        coroutineDispatcher: CoroutineDispatcher,
+        reportProgress: (Int, Int) -> Unit
+      ): DownloadProgressTracker {
+        val progressChannel = Channel<String>().also {
+          it.consumeAsFlow().withIndex().onEach { (index, _) ->
+            // Note the extra '+1' for the download count is to account for data conversion.
+            reportProgress(index + 1, countEstimator.estimatedDownloadCount + 1)
+          }.launchIn(CoroutineScope(coroutineDispatcher))
+        }
+        return DownloadProgressTracker(countEstimator, progressChannel)
+      }
+    }
+  }
+
+  private class DownloadCountEstimator(classroomCount: Int) {
+    // TODO: Add actual computations.
+    private val classroomCount by lazy { MetricEstimator.Constant(classroomCount) }
+    private val topicCount by lazy {
+      MetricEstimator.Derived(ESTIMATED_AVERAGE_TOPICS_PER_CLASSROOM, this.classroomCount)
+    }
+    private val storyCount by lazy {
+      MetricEstimator.Derived(ESTIMATED_AVERAGE_STORIES_PER_TOPIC, topicCount)
+    }
+    private val chapterCount by lazy {
+      MetricEstimator.Derived(ESTIMATED_AVERAGE_CHAPTERS_PER_STORY, storyCount)
+    }
+    private val subtopicCount by lazy {
+      MetricEstimator.Derived(ESTIMATED_AVERAGE_SUBTOPICS_PER_TOPIC, topicCount)
+    }
+    private val revisionCardCount by lazy { MetricEstimator.Alias(subtopicCount) }
+    private val skillCount by lazy {
+      MetricEstimator.Derived(ESTIMATED_AVERAGE_SKILLS_PER_SUBTOPIC, subtopicCount)
+    }
+    private val conceptCardCount by lazy { MetricEstimator.Alias(skillCount) }
+
+    private val completeContentCount by lazy {
+      MetricEstimator.Aggregate(
+        listOf(
+          this.classroomCount, topicCount, storyCount, chapterCount, revisionCardCount,
+          conceptCardCount
+        )
+      )
+    }
+
+    val estimatedDownloadCount: Int get() = completeContentCount.currentValue
+
+    fun setTopicCount(count: Int) = topicCount.setActualCount(count)
+    fun setStoryCount(count: Int) = storyCount.setActualCount(count)
+    fun setChapterCount(count: Int) = chapterCount.setActualCount(count)
+    fun setSubtopicCount(count: Int) = subtopicCount.setActualCount(count)
+    fun setSkillCount(count: Int) = skillCount.setActualCount(count)
+
+    private sealed class MetricEstimator {
+      abstract val currentValue: Int
+
+      data class Constant(override val currentValue: Int): MetricEstimator()
+
+      data class Derived(val estimatedRate: Int, val base: MetricEstimator): MetricEstimator() {
+        private var actualCount: Int? = null
+        override val currentValue: Int get() = actualCount ?: (estimatedRate * base.currentValue)
+
+        fun setActualCount(actualCount: Int) {
+          this.actualCount = actualCount
+        }
+      }
+
+      data class Alias(val delegate: MetricEstimator): MetricEstimator() {
+        override val currentValue: Int get() = delegate.currentValue
+      }
+
+      data class Aggregate(val metrics: List<MetricEstimator>): MetricEstimator() {
+        override val currentValue: Int get() = metrics.sumOf(MetricEstimator::currentValue)
+      }
+    }
+
+    private companion object {
+      private const val ESTIMATED_AVERAGE_TOPICS_PER_CLASSROOM = 10
+      private const val ESTIMATED_AVERAGE_STORIES_PER_TOPIC = 1
+      private const val ESTIMATED_AVERAGE_CHAPTERS_PER_STORY = 10
+      private const val ESTIMATED_AVERAGE_SUBTOPICS_PER_TOPIC = 10
+      private const val ESTIMATED_AVERAGE_SKILLS_PER_SUBTOPIC = 3
+    }
   }
 
   private sealed class StructureFetcher {
@@ -360,17 +658,14 @@ class GaeAndroidEndpointJsonImpl(
 
   private class ConverterInitializer(
     private val activityService: AndroidActivityHandlerService,
-    private val gcsService: GcsService,
     private val coroutineDispatcher: CoroutineDispatcher,
-    private val topicDependencies: Map<String, Set<String>>
+    private val topicDependencies: Map<String, Set<String>>,
+    private val imageDownloader: ImageDownloader
   ) {
-    private var imageDownloader: ImageDownloader? = null
     private var localizationTracker: LocalizationTracker? = null
     private var jsonToProtoConverter: JsonToProtoConverter? = null
     private var topicPackRepositories =
       mutableMapOf<CompatibilityConstraints, TopicPackRepository>()
-
-    fun getImageDownloader(): ImageDownloader = imageDownloader ?: initializeImageDownloader()
 
     suspend fun getLocalizationTracker(): LocalizationTracker =
       localizationTracker ?: initializeLocalizationTracker()
@@ -381,17 +676,8 @@ class GaeAndroidEndpointJsonImpl(
     suspend fun getTopicPackRepository(constraints: CompatibilityConstraints): TopicPackRepository =
       topicPackRepositories.getOrPut(constraints) { constructTopicPackRepository(constraints) }
 
-    private fun initializeImageDownloader(): ImageDownloader {
-      return ImageDownloader(gcsService, coroutineDispatcher).also {
-        this.imageDownloader = it
-      }
-    }
-
-    private suspend fun initializeLocalizationTracker(): LocalizationTracker {
-      return LocalizationTracker.createTracker(getImageDownloader()).also {
-        this.localizationTracker = it
-      }
-    }
+    private suspend fun initializeLocalizationTracker(): LocalizationTracker =
+      LocalizationTracker.createTracker(imageDownloader).also { this.localizationTracker = it }
 
     private suspend fun initializeJsonToProtoConverter(): JsonToProtoConverter {
       return JsonToProtoConverter(getLocalizationTracker(), topicDependencies).also {
@@ -468,7 +754,7 @@ class GaeAndroidEndpointJsonImpl(
   }
 
   private companion object {
-    private val CLASSROOMS = setOf("math")
+    private val SUPPORTED_CLASSROOMS = setOf("math")
 
     private val SUPPORTED_INTERACTION_IDS =
       setOf(
@@ -478,7 +764,8 @@ class GaeAndroidEndpointJsonImpl(
         "AlgebraicExpressionInput", "MathEquationInput"
       )
 
-    private val SUPPORTED_IMAGE_FORMATS = setOf("png", "webp", "svg", "svgz")
+    // TODO: Remove gif.
+    private val SUPPORTED_IMAGE_FORMATS = setOf("png", "webp", "svg", "svgz", "gif")
 
     private val SUPPORTED_AUDIO_FORMATS = setOf("mp3", "ogg")
 
@@ -486,13 +773,16 @@ class GaeAndroidEndpointJsonImpl(
     // Oppia versions that should be used, instead:
     // https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java#784.
     private val ANDROID_SUPPORTED_HTML_TAGS = setOf(
-      "br", "p", "ul", "li", "div", "span", "strong", "b", "em", "cite", "dfn", "i", "big", "small",
-      "font", "blockquote", "tt", "a", "u", "del", "s", "strike", "sup", "sub", "h1", "h2", "h3",
-      "h4", "h5", "h6"
+      "br", "p", "ul", "ol", "li", "div", "span", "strong", "b", "em", "cite", "dfn", "i", "big",
+      "small", "font", "blockquote", "tt", "a", "u", "del", "s", "strike", "sup", "sub", "h1", "h2",
+      "h3", "h4", "h5", "h6", "pre"
     )
 
     private val SUPPORTED_OPPIA_HTML_TAGS = setOf(
-      "oppia-noninteractive-image", "oppia-noninteractive-math", "oppia-noninteractive-skillreview"
+      "oppia-noninteractive-image",
+      "oppia-noninteractive-math",
+      "oppia-noninteractive-skillreview",
+      "oppia-noninteractive-link" // TODO: This shouldn't be present.
     )
 
     private val SUPPORTED_HTML_TAGS = ANDROID_SUPPORTED_HTML_TAGS + SUPPORTED_OPPIA_HTML_TAGS

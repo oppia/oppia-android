@@ -2,13 +2,34 @@ package org.oppia.android.scripts.gae.json
 
 import org.oppia.proto.v1.structure.InteractionInstanceDto
 
-data class TypeResolutionContext(
-  var currentInteractionType: InteractionInstanceDto.InteractionTypeCase? = null,
-  var currentCustomizationArgKeyName: String? = null,
-  var currentRuleTypeName: String? = null,
-  var currentRuleInputName: String? = null,
-  var currentContentFormat: GaeTranslatableContentFormat? = null
-) {
+class TypeResolutionContext {
+  private val currentInteractionTypeStore =
+    createThreadLocal<InteractionInstanceDto.InteractionTypeCase>()
+  private val currentCustomizationArgKeyNameStore = createThreadLocal<String>()
+  private val currentRuleTypeNameStore = createThreadLocal<String>()
+  private val currentRuleInputNameStore = createThreadLocal<String>()
+  private val currentContentFormatStore = createThreadLocal<GaeTranslatableContentFormat>()
+
+  var currentInteractionType: InteractionInstanceDto.InteractionTypeCase?
+    get() = currentInteractionTypeStore.get()
+    set(value) = currentInteractionTypeStore.set(value)
+
+  var currentCustomizationArgKeyName: String?
+    get() = currentCustomizationArgKeyNameStore.get()
+    set(value) = currentCustomizationArgKeyNameStore.set(value)
+
+  var currentRuleTypeName: String?
+    get() = currentRuleTypeNameStore.get()
+    set(value) = currentRuleTypeNameStore.set(value)
+
+  var currentRuleInputName: String?
+    get() = currentRuleInputNameStore.get()
+    set(value) = currentRuleInputNameStore.set(value)
+
+  var currentContentFormat: GaeTranslatableContentFormat?
+    get() = currentContentFormatStore.get()
+    set(value) = currentContentFormatStore.set(value)
+
   val expectedInteractionType: InteractionInstanceDto.InteractionTypeCase
     get() {
       return checkNotNull(currentInteractionType) {
@@ -43,4 +64,9 @@ data class TypeResolutionContext(
         "Expected to parse this object within a translation context."
       }
     }
+
+  private companion object {
+    private fun <T: Any> createThreadLocal(defaultValue: T? = null): ThreadLocal<T?> =
+      ThreadLocal.withInitial { defaultValue }
+  }
 }

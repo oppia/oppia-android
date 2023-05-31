@@ -10,4 +10,6 @@ data class GaeClassroom(
   @Json(name = "topic_ids") val topicIds: List<String>,
   @Json(name = "course_details") val courseDetails: String,
   @Json(name = "topic_list_intro") val topicListIntro: String
-)
+): VersionedStructure {
+  override val version: Int = 0 // Classroom versions aren't exposed in the API.
+}

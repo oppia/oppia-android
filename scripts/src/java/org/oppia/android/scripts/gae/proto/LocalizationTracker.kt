@@ -95,9 +95,9 @@ class LocalizationTracker private constructor(
     getExpectedContainer(id).recordDefaultText(subtitledText)
   }
 
-  fun trackContainerText(id: ContainerId, context: ContentContext, text: String) {
+  fun trackContainerText(id: ContainerId, context: ContentContext, defaultText: String) {
     val container = getExpectedContainer(id)
-    container.recordDefaultText(context, text)
+    container.recordDefaultText(context, defaultText)
 
     // Also, add Oppia web-tied translations of this text.
     val xlationId = checkNotNull(container.id.webTranslatableActivityId) {
@@ -106,8 +106,12 @@ class LocalizationTracker private constructor(
     }
     val contentId = context.assumedContentId
     val translations = oppiaWebTranslationExtractor.retrieveTranslations(xlationId, contentId)
+    val defaultLanguage = container.defaultLanguage
     translations.forEach { (language, text) ->
-      container.recordSingleTranslation(language, contentId, text)
+      // TODO: Figure out which text should be used. It seems that the English translations on web
+      //  sometimes don't match the default text within the structures (such as for topic
+      //  iX9kYCjnouWN).
+      if (language != defaultLanguage) container.recordSingleTranslation(language, contentId, text)
     }
   }
 
@@ -134,11 +138,13 @@ class LocalizationTracker private constructor(
     writtenTranslations.translationsMapping.forEach { (contentId, languageTranslations) ->
       languageTranslations.forEach { (languageCode, writtenTranslation) ->
         val language = languageCode.resolveLanguageCode()
-        when (val translation = writtenTranslation.translation) {
-          is GaeWrittenTranslation.Translation.SingleString ->
-            container.recordSingleTranslation(language, contentId, translation.value)
-          is GaeWrittenTranslation.Translation.StringList ->
-            container.recordMultiTranslation(language, contentId, translation.value)
+        if (language.isValid()) {
+          when (val translation = writtenTranslation.translation) {
+            is GaeWrittenTranslation.Translation.SingleString ->
+              container.recordSingleTranslation(language, contentId, translation.value)
+            is GaeWrittenTranslation.Translation.StringList ->
+              container.recordMultiTranslation(language, contentId, translation.value)
+          }
         }
       }
     }
@@ -147,6 +153,7 @@ class LocalizationTracker private constructor(
   fun trackTranslations(id: ContainerId, entityTranslations: GaeEntityTranslation) {
     val container = getExpectedContainer(id)
     val language = entityTranslations.languageCode.resolveLanguageCode()
+    if (!language.isValid()) return
     entityTranslations.translations.forEach { (contentId, translatedContent) ->
       when (val translation = translatedContent.contentValue) {
         is GaeTranslatedContent.Translation.SingleString ->
@@ -162,7 +169,7 @@ class LocalizationTracker private constructor(
     recordedVoiceovers.voiceoversMapping.forEach { (contentId, languageVoiceovers) ->
       languageVoiceovers.forEach { (languageCode, voiceover) ->
         val language = languageCode.resolveLanguageCode()
-        container.recordVoiceover(language, contentId, voiceover.toProto())
+        if (language.isValid()) container.recordVoiceover(language, contentId, voiceover.toProto())
       }
     }
   }
@@ -300,8 +307,11 @@ class LocalizationTracker private constructor(
       fun createFrom(gaeStory: GaeStory): ContainerId =
         Story(gaeStory.correspondingTopicId, gaeStory.id)
 
-      fun createFrom(gaeStory: GaeStory, gaeStoryNode: GaeStoryNode): ContainerId =
-        Chapter(gaeStory.correspondingTopicId, gaeStory.id, gaeStoryNode.expectedExplorationId)
+      fun createFrom(gaeStory: GaeStory, gaeStoryNode: GaeStoryNode): ContainerId? {
+        return gaeStoryNode.explorationId?.let {
+          Chapter(gaeStory.correspondingTopicId, gaeStory.id, it)
+        }
+      }
 
       fun createFrom(gaeSkill: GaeSkill): ContainerId = ConceptCard(gaeSkill.id)
 

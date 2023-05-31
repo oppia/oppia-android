@@ -35,8 +35,13 @@ data class GaeWrittenTranslation(
       }
 
       @ToJson
-      fun convertToJson(jsonWriter: JsonWriter, translation: Translation): Unit =
-        error("Conversion to JSON is not supported.")
+      fun convertToJson(jsonWriter: JsonWriter, translation: Translation) {
+        when (translation) {
+          is SingleString -> jsonWriter.value(translation.value)
+          is StringList ->
+            jsonWriter.beginArray().also { translation.value.forEach(jsonWriter::value) }.endArray()
+        }
+      }
     }
   }
 
@@ -67,8 +72,16 @@ data class GaeWrittenTranslation(
     @ToJson
     fun convertToJson(
       jsonWriter: JsonWriter,
-      gaeWrittenTranslation: GaeWrittenTranslation
-    ): Unit = error("Conversion to JSON is not supported.")
+      gaeWrittenTranslation: GaeWrittenTranslation,
+      parsableWrittenTranslationAdapter: JsonAdapter<ParsableWrittenTranslation>
+    ) {
+      val parsable = ParsableWrittenTranslation(
+        dataFormat = gaeWrittenTranslation.dataFormat,
+        translation = gaeWrittenTranslation.translation,
+        needsUpdate = gaeWrittenTranslation.needsUpdate
+      )
+      parsableWrittenTranslationAdapter.toJson(jsonWriter, parsable)
+    }
   }
 
   private companion object {

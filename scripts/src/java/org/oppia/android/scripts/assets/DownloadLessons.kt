@@ -1,6 +1,8 @@
 package org.oppia.android.scripts.assets
 
 import com.google.protobuf.Message
+import com.google.protobuf.TextFormat
+import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -25,18 +27,86 @@ import org.oppia.proto.v1.structure.SubtopicSummaryDto
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.withIndex
+import kotlinx.coroutines.withContext
+import org.oppia.android.scripts.gae.gcs.GcsService
+import org.oppia.android.scripts.gae.gcs.GcsService.EntityType
+import org.oppia.android.scripts.gae.gcs.GcsService.ImageType
+import org.oppia.android.scripts.gae.proto.ImageDownloader
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.Builder as DownloadReqStructIdDtoBuilder
+import org.oppia.proto.v1.api.TopicContentResponseDto
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.CONCEPT_CARD
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.CONCEPT_CARD_LANGUAGE_PACK
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.EXPLORATION
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.EXPLORATION_LANGUAGE_PACK
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.QUESTION
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.QUESTION_ID_LIST
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.QUESTION_LANGUAGE_PACK
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.RESULTTYPE_NOT_SET
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.REVISION_CARD
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.REVISION_CARD_LANGUAGE_PACK
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.TOPIC_SUMMARY
+import org.oppia.proto.v1.structure.ChapterSummaryDto
+import org.oppia.proto.v1.structure.ConceptCardDto
+import org.oppia.proto.v1.structure.ConceptCardLanguagePackDto
+import org.oppia.proto.v1.structure.ContentLocalizationDto
+import org.oppia.proto.v1.structure.ContentLocalizationsDto
+import org.oppia.proto.v1.structure.ExplorationDto
+import org.oppia.proto.v1.structure.ExplorationLanguagePackDto
+import org.oppia.proto.v1.structure.QuestionDto
+import org.oppia.proto.v1.structure.QuestionLanguagePackDto
+import org.oppia.proto.v1.structure.ReferencedImageDto
+import org.oppia.proto.v1.structure.ReferencedImageListDto
+import org.oppia.proto.v1.structure.RevisionCardDto
+import org.oppia.proto.v1.structure.RevisionCardLanguagePackDto
+import org.oppia.proto.v1.structure.SkillSummaryDto
+import org.oppia.proto.v1.structure.StorySummaryDto
+import org.oppia.proto.v1.structure.ThumbnailDto
 
 // TODO: hook up to language configs for prod/dev language restrictions.
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
 fun main(vararg args: String) {
-  check(args.size >= 4) {
+  check(args.size >= 6) {
     "Expected use: bazel run //scripts:download_lessons <base_url> <gcs_base_url> <gcs_bucket>" +
-      " <api_secret> [test,topic,ids]"
+      " <api_secret> </output/dir> <cache_mode=none/lazy/force> [/cache/dir] [test,topic,ids]"
   }
-  val (baseUrl, gcsBaseUrl, gcsBucket, apiSecret) = args
-  val testTopicIds = args.getOrNull(4)?.split(',')?.toSet() ?: setOf()
-  DownloadLessons(baseUrl, gcsBaseUrl, gcsBucket, apiSecret, testTopicIds).downloadLessons()
+
+  val baseUrl = args[0]
+  val gcsBaseUrl = args[1]
+  val gcsBucket = args[2]
+  val apiSecret = args[3]
+  val outputDirPath = args[4]
+  val cacheModeLine = args[5]
+  val (cacheDirPath, force) = when (val cacheMode = cacheModeLine.removePrefix("cache_mode=")) {
+    "none" -> null to false
+    "lazy" -> args[6] to false
+    "force" -> args[6] to true
+    else -> error("Invalid cache_mode: $cacheMode.")
+  }
+  val cacheDir = cacheDirPath?.let {
+    File(cacheDirPath).absoluteFile.normalize().also {
+      check(it.exists() && it.isDirectory) { "Expected cache directory to exist: $cacheDirPath." }
+    }
+  }
+  val outputDir = File(outputDirPath).absoluteFile.normalize().also {
+    check(it.exists() && it.isDirectory) { "Expected output directory to exist: $outputDirPath." }
+  }
+
+  val baseArgCount = if (cacheDirPath == null) 6 else 7
+  val testTopicIds = args.getOrNull(baseArgCount)?.split(',')?.toSet() ?: setOf()
+  val downloader =
+    DownloadLessons(baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, force, testTopicIds)
+  downloader.downloadLessons(outputDir)
 }
 
 class DownloadLessons(
@@ -44,25 +114,31 @@ class DownloadLessons(
   gcsBaseUrl: String,
   gcsBucket: String,
   apiSecret: String,
+  private val cacheDir: File?,
+  private val forceCacheLoad: Boolean,
   testTopicIds: Set<String>
 ) {
-  private val threadPool by lazy { Executors.newCachedThreadPool() }
+  private val threadPool by lazy {
+    Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+  }
   private val coroutineDispatcher by lazy { threadPool.asCoroutineDispatcher() }
+  private val gcsService by lazy { GcsService(gcsBaseUrl, gcsBucket) }
+  private val imageDownloader by lazy { ImageDownloader(gcsService, coroutineDispatcher) }
   private val androidEndpoint: GaeAndroidEndpoint by lazy {
     GaeAndroidEndpointJsonImpl(
       apiSecret,
       gaeBaseUrl,
-      gcsBaseUrl,
-      gcsBucket,
+      cacheDir,
+      forceCacheLoad,
       coroutineDispatcher,
-      topicDependencies = topicDependenciesTable + testTopicIds.associateWith { setOf() }
+      topicDependencies = topicDependenciesTable + testTopicIds.associateWith { setOf() },
+      imageDownloader
     )
   }
+  private val textFormat by lazy { TextFormat.printer() }
 
-  fun downloadLessons() {
-    // TODO: Add destination (for writing, and maybe caching check?)
-
-    val downloadJob = CoroutineScope(coroutineDispatcher).launch { downloadAllLessons() }
+  fun downloadLessons(outputDir: File) {
+    val downloadJob = CoroutineScope(coroutineDispatcher).launch { downloadAllLessons(outputDir) }
     runBlocking {
       try {
         downloadJob.join()
@@ -72,7 +148,17 @@ class DownloadLessons(
     }
   }
 
-  private suspend fun downloadAllLessons() {
+  private suspend fun downloadAllLessons(outputDir: File) {
+    when {
+      cacheDir == null -> println("Config: Not using a local disk directory for asset caching.")
+      !forceCacheLoad -> println("Config: Using ${cacheDir.path}/ for caching assets across runs.")
+      else -> {
+        println(
+          "Config: Using ${cacheDir.path}/ for caching assets across runs, with no latest updating."
+        )
+      }
+    }
+
     val defaultLanguage = LanguageType.ENGLISH
     val supportedLanguages =
       LanguageType.values().filterNot { it in INVALID_LANGUAGE_TYPES || it == defaultLanguage }
@@ -85,8 +171,20 @@ class DownloadLessons(
       addAllSupportedAdditionalLanguages(supportedLanguages)
     }.build()
 
-    println("Sending topic list download request:\n$listRequest.")
-    val listResponse = androidEndpoint.fetchTopicListAsync(listRequest).await()
+    println()
+    val listContentMessage = "Sending topic list download request"
+    val extraDotsThatCanFitForList = CONSOLE_COLUMN_COUNT - listContentMessage.length
+    var lastDotCount = 0
+    print(listContentMessage)
+    val listResponse =
+      androidEndpoint.fetchTopicListAsync(listRequest) { finishCount, totalCount ->
+        val dotCount = (extraDotsThatCanFitForList * finishCount) / totalCount
+        val dotsToAdd = dotCount - lastDotCount
+        if (dotsToAdd > 0) {
+          print(".".repeat(dotsToAdd))
+          lastDotCount = dotCount
+        }
+      }.await()
     val downloadableTopics = listResponse.availableTopicsList.filter { availableTopic ->
       availableTopic.availabilityTypeCase == DOWNLOADABLE_TOPIC
     }.map { it.downloadableTopic.topicSummary }
@@ -98,19 +196,92 @@ class DownloadLessons(
         " ${futureTopicIds.size} topics will later be available, IDs: $futureTopicIds."
     )
 
+    println()
     val contentRequest =
       createDownloadContentRequest(downloadableTopics, defaultLanguage, supportedLanguages)
-    println("Requesting to download ${contentRequest.identifiersCount} content items...")
-    val contentResponse = androidEndpoint.fetchTopicContentAsync(contentRequest).await()
+    val contentMessage = "Requesting to download ${contentRequest.identifiersCount} content items"
+    val extraDotsThatCanFitForContent = CONSOLE_COLUMN_COUNT - contentMessage.length
+    lastDotCount = 0
+    print(contentMessage)
+    val contentResponse =
+      androidEndpoint.fetchTopicContentAsync(contentRequest) { finishCount, totalCount ->
+        val dotCount = (extraDotsThatCanFitForContent * finishCount) / totalCount
+        val dotsToAdd = dotCount - lastDotCount
+        if (dotsToAdd > 0) {
+          print(".".repeat(dotsToAdd))
+          lastDotCount = dotCount
+        }
+      }.await()
+    println()
 
     val successfulResults = contentResponse.downloadResultsList.filter {
       it.resultTypeCase != SKIPPED_FROM_FAILURE && it.resultTypeCase != SKIPPED_SHOULD_RETRY
     }
-    println(
-      "Received content response with ${contentResponse.downloadResultsCount} results," +
-        " ${successfulResults.size} succeeded. Successes:" +
-        "\n${successfulResults.map { it.resultTypeCase }}"
-    )
+    println("${successfulResults.size}/${contentResponse.downloadResultsCount} succeeded.")
+
+    println()
+    println("Writing successful results to: ${outputDir.path}/...")
+    val protoV2Dir = File(outputDir, "protov2").also { it.mkdir() }
+    val textProtoV2Dir = File(protoV2Dir, "textproto").also { it.mkdir() }
+    val binaryProtoV2Dir = File(protoV2Dir, "binary").also { it.mkdir() }
+    // NOTE: The 'protov2' values written here are not exactly the app's protov2 definitions (since
+    // those haven't been defined yet). They're just exact copies of the emulated server's
+    // responses.
+    val writeAsyncResults = successfulResults.map { result ->
+      when (result.resultTypeCase) {
+        TOPIC_SUMMARY ->
+          writeProtosAsync(protoV2Dir, result.topicSummary.id, result.topicSummary)
+        REVISION_CARD ->
+          writeProtosAsync(protoV2Dir, result.revisionCard.id.collapse(), result.revisionCard)
+        CONCEPT_CARD ->
+          writeProtosAsync(protoV2Dir, result.conceptCard.skillId, result.conceptCard)
+        EXPLORATION ->
+          writeProtosAsync(protoV2Dir, result.exploration.id, result.exploration)
+        REVISION_CARD_LANGUAGE_PACK -> {
+          writeProtosAsync(
+            protoV2Dir,
+            result.revisionCardLanguagePack.id.collapse(),
+            result.revisionCardLanguagePack
+          )
+        }
+        CONCEPT_CARD_LANGUAGE_PACK -> {
+          writeProtosAsync(
+            protoV2Dir, result.conceptCardLanguagePack.id.collapse(), result.conceptCardLanguagePack
+          )
+        }
+        EXPLORATION_LANGUAGE_PACK -> {
+          writeProtosAsync(
+            protoV2Dir, result.explorationLanguagePack.id.collapse(), result.explorationLanguagePack
+          )
+        }
+        QUESTION_ID_LIST, QUESTION, QUESTION_LANGUAGE_PACK ->
+          error("Questions aren't yet supported.")
+        SKIPPED_SHOULD_RETRY, SKIPPED_FROM_FAILURE, RESULTTYPE_NOT_SET, null ->
+          error("Encountered unexpected result: $result.")
+      }
+    }
+    writeAsyncResults.awaitAll() // Wait for all proto writes to finish.
+    println("Written proto locations:")
+    println("- Proto v2 text protos can be found in: ${textProtoV2Dir.path}")
+    println("- Proto v2 binary protos can be found in: ${binaryProtoV2Dir.path}")
+
+    println()
+    val imagesDir = File(outputDir, "images").also { it.mkdir() }
+    val imageReferences = contentResponse.collectImageReferences().distinct()
+    val baseImageMessage = "Downloading ${imageReferences.size} images"
+    val extraDotsThatCanFitForImages = CONSOLE_COLUMN_COUNT - baseImageMessage.length
+    lastDotCount = 0
+    print(baseImageMessage)
+    imageReferences.downloadAllAsync(imagesDir) { finishCount, totalCount ->
+      val dotCount = (extraDotsThatCanFitForImages * finishCount) / totalCount
+      val dotsToAdd = dotCount - lastDotCount
+      if (dotsToAdd > 0) {
+        print(".".repeat(dotsToAdd))
+        lastDotCount = dotCount
+      }
+    }.await()
+    println()
+    println("Images downloaded to: ${imagesDir.path}/.")
   }
 
   private fun createDownloadContentRequest(
@@ -222,10 +393,70 @@ class DownloadLessons(
     } + createLocalizedId(id, defaultLanguage).toStructureIdentifier(contentVersion, setIdForStruct)
   }
 
+  private fun writeProtosAsync(
+    protoV2Dir: File, baseName: String, message: Message
+  ): Deferred<Any> {
+    val textProtoV2Dir = File(protoV2Dir, "textproto")
+    val binaryProtoV2Dir = File(protoV2Dir, "binary")
+    return CoroutineScope(coroutineDispatcher).async {
+      writeTextProto(textProtoV2Dir, baseName, message)
+      writeBinaryProto(binaryProtoV2Dir, baseName, message)
+    }
+  }
+
+  private suspend fun writeTextProto(destDir: File, baseName: String, message: Message) {
+    withContext(Dispatchers.IO) {
+      File(destDir, "$baseName.textproto").also {
+        check(!it.exists()) { "Destination file already exists: ${it.path}." }
+      }.outputStream().bufferedWriter().use { textFormat.print(message, it) }
+    }
+  }
+
+  private suspend fun writeBinaryProto(destDir: File, baseName: String, message: Message) {
+    withContext(Dispatchers.IO) {
+      File(destDir, "$baseName.pb").also {
+        check(!it.exists()) { "Destination file already exists: ${it.path}." }
+      }.outputStream().use(message::writeTo)
+    }
+  }
+
+  private fun Collection<ImageReference>.downloadAllAsync(
+    destDir: File, reportProgress: (Int, Int) -> Unit
+  ): Deferred<Any> {
+    val totalCount = size
+    val channel = Channel<Int>()
+    channel.consumeAsFlow().withIndex().onEach { (index, _) ->
+      reportProgress(index + 1, totalCount)
+    }.launchIn(CoroutineScope(coroutineDispatcher))
+    return CoroutineScope(coroutineDispatcher).async {
+      mapIndexed { index, reference -> reference.downloadAsync(destDir, index, channel) }.awaitAll()
+      channel.close()
+    }
+  }
+
+  private fun ImageReference.downloadAsync(
+    destDir: File, index: Int, reportProgressChannel: SendChannel<Int>
+  ): Deferred<Any> {
+    return CoroutineScope(coroutineDispatcher).async {
+      val imageData =
+        imageDownloader.retrieveImageContentAsync(
+          container.entityType, imageType, container.entityId, filename
+        ).await()
+      reportProgressChannel.send(index)
+      withContext(Dispatchers.IO) { File(destDir, filename).writeBytes(imageData) }
+    }
+  }
+
   private fun shutdownBlocking() {
     coroutineDispatcher.close()
     threadPool.tryShutdownFully(timeout = 5, unit = TimeUnit.SECONDS)
   }
+
+  private data class ImageContainer(val entityType: EntityType, val entityId: String)
+
+  private data class ImageReference(
+    val container: ImageContainer, val imageType: ImageType, val filename: String
+  )
 
   private companion object {
     private val INVALID_LANGUAGE_TYPES =
@@ -234,6 +465,7 @@ class DownloadLessons(
       appVersionName = checkNotNull(DownloadLessons::class.qualifiedName)
       appVersionCode = 0
     }.build()
+    private const val CONSOLE_COLUMN_COUNT = 80
 
     private fun ExecutorService.tryShutdownFully(timeout: Long, unit: TimeUnit) {
       // Try to fully shutdown the executor service per https://stackoverflow.com/a/33690603 and
@@ -294,6 +526,8 @@ class DownloadLessons(
       }.build()
     }
 
+    private fun SubtopicPageIdDto.collapse(): String = "${topicId}_$subtopicIndex"
+
     private fun createLocalizedRevisionCardId(
       id: SubtopicPageIdDto,
       language: LanguageType
@@ -303,6 +537,9 @@ class DownloadLessons(
         this.language = language
       }.build()
     }
+
+    private fun LocalizedRevisionCardIdDto.collapse(): String =
+      "${id.collapse()}_${language.collapse()}"
 
     private fun createLocalizedExplorationId(
       explorationId: String,
@@ -314,6 +551,9 @@ class DownloadLessons(
       }.build()
     }
 
+    private fun LocalizedExplorationIdDto.collapse(): String =
+      "${explorationId}_${language.collapse()}"
+
     private fun createLocalizedConceptCardId(
       skillId: String,
       language: LanguageType
@@ -322,6 +562,21 @@ class DownloadLessons(
         this.skillId = skillId
         this.language = language
       }.build()
+    }
+
+    private fun LocalizedConceptCardIdDto.collapse(): String = "${skillId}_${language.collapse()}"
+
+    private fun LanguageType.collapse(): String {
+      return when (this) {
+        LanguageType.ENGLISH -> "en"
+        LanguageType.ARABIC -> "ar"
+        LanguageType.HINDI -> "hi"
+        LanguageType.HINGLISH -> "hi-en"
+        LanguageType.BRAZILIAN_PORTUGUESE -> "pt-br"
+        LanguageType.SWAHILI -> "sw"
+        LanguageType.LANGUAGE_CODE_UNSPECIFIED, LanguageType.UNRECOGNIZED ->
+          error("Invalid language type: $this.")
+      }
     }
 
     private fun <T : Message> T.toStructureIdentifier(
@@ -333,5 +588,114 @@ class DownloadLessons(
         this.setValue(this@toStructureIdentifier)
       }.build()
     }
+
+    private fun TopicContentResponseDto.collectImageReferences(): List<ImageReference> =
+      downloadResultsList.flatMap { it.collectImageReferences() }
+
+    private fun DownloadResultDto.collectImageReferences(): List<ImageReference> {
+      return when (resultTypeCase) {
+        SKIPPED_SHOULD_RETRY, SKIPPED_FROM_FAILURE -> emptyList()
+        TOPIC_SUMMARY -> topicSummary.collectImageReferences()
+        REVISION_CARD -> revisionCard.collectImageReferences()
+        CONCEPT_CARD -> conceptCard.collectImageReferences()
+        EXPLORATION -> exploration.collectImageReferences()
+        QUESTION_ID_LIST -> emptyList() // No translations for a question ID list.
+        QUESTION -> question.collectImageReferences()
+        REVISION_CARD_LANGUAGE_PACK -> revisionCardLanguagePack.collectImageReferences()
+        CONCEPT_CARD_LANGUAGE_PACK -> conceptCardLanguagePack.collectImageReferences()
+        EXPLORATION_LANGUAGE_PACK -> explorationLanguagePack.collectImageReferences()
+        QUESTION_LANGUAGE_PACK -> questionLanguagePack.collectImageReferences()
+        RESULTTYPE_NOT_SET, null -> error("Encountered invalid result: $this.")
+      }
+    }
+
+    private fun DownloadableTopicSummaryDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.TOPIC, entityId = id)
+      return localizations.collectImageReferences(container) +
+        storySummariesList.flatMap { it.collectImageReferences() } +
+        referencedSkillsList.flatMap { it.collectImageReferences() }
+    }
+
+    private fun RevisionCardDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.REVISION_CARD, entityId = id.topicId)
+      return defaultLocalization.collectImageReferences(container)
+    }
+
+    private fun ConceptCardDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.CONCEPT_CARD, entityId = skillId)
+      return defaultLocalization.collectImageReferences(container)
+    }
+
+    private fun ExplorationDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.EXPLORATION, entityId = id)
+      return defaultLocalization.collectImageReferences(container)
+    }
+
+    private fun QuestionDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.QUESTION, entityId = id)
+      return defaultLocalization.collectImageReferences(container)
+    }
+
+    private fun RevisionCardLanguagePackDto.collectImageReferences(): List<ImageReference> {
+      val container =
+        ImageContainer(entityType = EntityType.REVISION_CARD, entityId = id.id.topicId)
+      return localization.collectImageReferences(container)
+    }
+
+    private fun ConceptCardLanguagePackDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.CONCEPT_CARD, entityId = id.skillId)
+      return localization.collectImageReferences(container)
+    }
+
+    private fun ExplorationLanguagePackDto.collectImageReferences(): List<ImageReference> {
+      val container =
+        ImageContainer(entityType = EntityType.EXPLORATION, entityId = id.explorationId)
+      return localization.collectImageReferences(container)
+    }
+
+    private fun QuestionLanguagePackDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.QUESTION, entityId = id.questionId)
+      return localization.collectImageReferences(container)
+    }
+
+    private fun StorySummaryDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.STORY, entityId = id)
+      return localizations.collectImageReferences(container) +
+        chaptersList.flatMap { it.collectImageReferences() }
+    }
+
+    private fun ChapterSummaryDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.CHAPTER, entityId = explorationId)
+      return localizations.collectImageReferences(container)
+    }
+
+    private fun SkillSummaryDto.collectImageReferences(): List<ImageReference> {
+      val container = ImageContainer(entityType = EntityType.SKILL, entityId = id)
+      return localizations.collectImageReferences(container)
+    }
+
+    private fun ContentLocalizationsDto.collectImageReferences(
+      container: ImageContainer
+    ): List<ImageReference> {
+      return defaultMapping.collectImageReferences(container) +
+        localizationsList.flatMap { it.collectImageReferences(container) }
+    }
+
+    private fun ContentLocalizationDto.collectImageReferences(
+      container: ImageContainer
+    ): List<ImageReference> {
+      return localizedImageList.collectImageReferences(container) +
+        (thumbnail.takeIf { hasThumbnail() }?.collectImageReferences(container) ?: emptyList())
+    }
+
+    private fun ReferencedImageListDto.collectImageReferences(container: ImageContainer) =
+      referencedImagesList.map { it.convertToImageReference(container) }
+
+    private fun ThumbnailDto.collectImageReferences(container: ImageContainer) =
+      listOf(referencedImage.convertToImageReference(container, imageType = ImageType.THUMBNAIL))
+
+    private fun ReferencedImageDto.convertToImageReference(
+      container: ImageContainer, imageType: ImageType = ImageType.HTML_IMAGE
+    ): ImageReference = ImageReference(container, imageType, filename)
   }
 }
