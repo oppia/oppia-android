@@ -56,7 +56,11 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
           is AsyncResult.Pending ->
             oppiaLogger.d("SurveyWelcomeDialogFragment", "Starting a survey session")
           is AsyncResult.Failure -> {
-            oppiaLogger.e("SurveyWelcomeDialogFragment", "Failed to start a survey session", it.error)
+            oppiaLogger.e(
+              "SurveyWelcomeDialogFragment",
+              "Failed to start a survey session",
+              it.error
+            )
             activity.finish() // Can't recover from the session failing to start.
           }
           is AsyncResult.Success -> {

@@ -18,3 +18,57 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )
+
+kt_android_library(
+    name = "survey_controller",
+    srcs = [
+        "SurveyController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":survey_progress_controller",
+        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+kt_android_library(
+    name = "survey_progress_controller",
+    srcs = [
+        "SurveyProgressController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":survey_progress",
+        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:survey_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+kt_android_library(
+    name = "survey_progress",
+    srcs = [
+        "SurveyProgress.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":survey_question_deck",
+        "//model/src/main/proto:survey_java_proto_lite"
+    ],
+)
+
+kt_android_library(
+    name = "survey_question_deck",
+    srcs = [
+        "SurveyQuestionDeck.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = ["//model/src/main/proto:survey_java_proto_lite"],
+)

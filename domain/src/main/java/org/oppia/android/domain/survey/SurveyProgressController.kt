@@ -71,7 +71,7 @@ class SurveyProgressController @Inject constructor(
    * Begins a survey session based on a set of questions and returns a [DataProvider] indicating
    * whether the start was successful.
    */
-  internal fun beginSurveySession(
+  fun beginSurveySession(
     questionsListDataProvider: DataProvider<List<SurveyQuestion>>
   ): DataProvider<Any?> {
     val ephemeralQuestionFlow = createAsyncResultStateFlow<EphemeralSurveyQuestion>()

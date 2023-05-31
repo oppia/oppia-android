@@ -6,46 +6,46 @@ import org.oppia.android.app.model.SurveyQuestion
  * Private class that encapsulates the mutable state of a survey progress controller.
  * This class is not thread-safe, so owning classes should ensure synchronized access.
  */
-internal class SurveyProgress {
-  internal var surveyStage: SurveyStage = SurveyStage.NOT_IN_SURVEY_SESSION
+class SurveyProgress {
+  var surveyStage: SurveyStage = SurveyStage.NOT_IN_SURVEY_SESSION
   private var questionsList: List<SurveyQuestion> = listOf()
   private var isTopQuestionCompleted: Boolean = false
 
-  internal val questionDeck: SurveyQuestionDeck by lazy {
+  val questionDeck: SurveyQuestionDeck by lazy {
     SurveyQuestionDeck(
       questionsList.first(), ::isTopQuestionTerminal
     )
   }
 
   /** Initialize the survey with the specified list of questions. */
-  internal fun initialize(questionsList: List<SurveyQuestion>) {
+  fun initialize(questionsList: List<SurveyQuestion>) {
     advancePlayStageTo(SurveyStage.VIEWING_SURVEY_QUESTION)
     this.questionsList = questionsList
     isTopQuestionCompleted = false
   }
 
   /** Returns whether the learner is currently viewing the most recent question. */
-  internal fun isViewingMostRecentQuestion(): Boolean {
+  fun isViewingMostRecentQuestion(): Boolean {
     return questionDeck.isCurrentQuestionTopOfDeck()
   }
 
   /** Processes when the current question has just been completed. */
-  internal fun completeCurrentQuestion() {
+  fun completeCurrentQuestion() {
     isTopQuestionCompleted = true
   }
 
   /** Processes when a new pending question has been navigated to. */
-  internal fun processNavigationToNewQuestion() {
+  fun processNavigationToNewQuestion() {
     isTopQuestionCompleted = false
   }
 
   /** Returns the index of the current question being viewed. */
-  internal fun getCurrentQuestionIndex(): Int {
+  fun getCurrentQuestionIndex(): Int {
     return questionDeck.getTopQuestionIndex()
   }
 
   /** Returns the number of questions in the survey. */
-  internal fun getTotalQuestionCount(): Int {
+  fun getTotalQuestionCount(): Int {
     return questionsList.size
   }
 
@@ -57,7 +57,7 @@ internal class SurveyProgress {
    * ensure the internal state of the controller remains correct. This method is not meant to be covered in unit tests
    * since none of the failures here should ever be exposed to controller callers.
    */
-  internal fun advancePlayStageTo(nextStage: SurveyStage) {
+  fun advancePlayStageTo(nextStage: SurveyStage) {
     when (nextStage) {
       SurveyStage.NOT_IN_SURVEY_SESSION -> {
         // All transitions to NOT_IN_SURVEY_SESSION are valid except itself.
