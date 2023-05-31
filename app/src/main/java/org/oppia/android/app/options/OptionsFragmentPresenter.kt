@@ -29,7 +29,7 @@ import java.security.InvalidParameterException
 import javax.inject.Inject
 
 private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
-private const val APP_LANGUAGE_TAG = "AppLanguage"
+private const val APP_LANGUAGE_TAG = "OptionsFragmentPresenter"
 private const val AUDIO_LANGUAGE_TAG = "AudioLanguage"
 private const val READING_TEXT_SIZE_ERROR =
   "Something went wrong while updating the reading text size"
@@ -189,8 +189,9 @@ class OptionsFragmentPresenter @Inject constructor(
     VIEW_TYPE_AUDIO_LANGUAGE
   }
 
-  /** Updates [ReadingTextSize] value in [OptionsFragment] when user selects new value
-   * and notifies the adapter to refresh after the changes.
+  /**
+   * Updates [ReadingTextSize] value in [OptionsFragment] when user selects new value and notifies
+   * the adapter to refresh after the changes.
    *
    * @param textSize new textSize to be set as current
    */
@@ -211,38 +212,33 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter.notifyItemChanged(0)
   }
 
-  /** Updates [OppiaLanguage] value in [OptionsFragment] when user selects new value
-   * and notifies the adapter to refresh after the changes.
+  /**
+   * Updates [OppiaLanguage] value in [OptionsFragment] when user selects new value and notifies the
+   * adapter to refresh after the changes.
    *
    * @param oppiaLanguage new oppiaLanguage to be set as current
    */
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
-    val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
+    val selection = AppLanguageSelection.newBuilder().apply {
       selectedLanguage = oppiaLanguage
       selectedLanguageValue = oppiaLanguage.number
     }.build()
 
-    translationController.updateAppLanguage(
-      profileId, appLanguageSelection
-    ).toLiveData().observe(
-      fragment,
-      {
-        when (it) {
-          is AsyncResult.Success -> {
-            appLanguage = oppiaLanguage
-          }
-          is AsyncResult.Failure ->
-            oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR", it.error)
-          is AsyncResult.Pending -> {} // Wait for a result.
-        }
+    translationController.updateAppLanguage(profileId, selection).toLiveData().observe(fragment) {
+      when (it) {
+        is AsyncResult.Success -> appLanguage = oppiaLanguage
+        is AsyncResult.Failure ->
+          oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: $oppiaLanguage.", it.error)
+        is AsyncResult.Pending -> {} // Wait for a result.
       }
-    )
+    }
 
     recyclerViewAdapter.notifyItemChanged(1)
   }
 
-  /** Updates [AudioLanguage] value in [OptionsFragment] when user selects new value
-   * and notifies the adapter to refresh after the changes.
+  /**
+   * Updates [AudioLanguage] value in [OptionsFragment] when user selects new value and notifies the
+   * adapter to refresh after the changes.
    *
    * @param audioLanguage new audioLanguage to be set as current
    */
@@ -264,6 +260,7 @@ class OptionsFragmentPresenter @Inject constructor(
   /**
    * Used to fix the race condition that happens when the presenter tries to call a function before
    * [handleCreateView] is completely executed.
+   *
    * @param action what to execute after the UI is initialized.
    */
   fun runAfterUIInitialization(action: () -> Unit) {

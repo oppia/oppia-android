@@ -25,6 +25,9 @@ import javax.inject.Inject
 /** [ViewModel] for [OptionsFragment]. */
 private const val OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID =
   "OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID"
+
+// TODO: Finish redoing viewmodel.
+
 /** Options settings view model for the recycler view in [OptionsFragment]. */
 @FragmentScope
 class OptionControlsViewModel @Inject constructor(
@@ -43,7 +46,8 @@ class OptionControlsViewModel @Inject constructor(
   private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
   private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
   private var isFirstOpen = true
-  /** Holds [Boolean] value showing if UI is initialized.  */
+
+  /** Holds [Boolean] value showing if UI is initialized. */
   val uiLiveData = MutableLiveData<Boolean>()
   /** Holds the index for the currently selected fragment. */
   val selectedFragmentIndex = ObservableField<Int>()

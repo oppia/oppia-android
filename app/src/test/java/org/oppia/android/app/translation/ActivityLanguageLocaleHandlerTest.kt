@@ -326,10 +326,7 @@ class ActivityLanguageLocaleHandlerTest {
     fun inject(activityLanguageLocaleHandlerTest: ActivityLanguageLocaleHandlerTest)
   }
 
-  class TestApplication :
-    Application(),
-    ActivityComponentFactory,
-    ApplicationInjectorProvider {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerActivityLanguageLocaleHandlerTest_TestApplicationComponent.builder()
         .setApplication(this)

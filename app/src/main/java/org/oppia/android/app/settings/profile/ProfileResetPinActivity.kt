@@ -13,7 +13,7 @@ import javax.inject.Inject
 const val PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY =
   "ProfileResetPinActivity.profile_reset_pin_profile_id"
 
-/**Argument key for confirming profile is admin. */
+/** Argument key for confirming profile is admin. */
 const val PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY =
   "ProfileResetPinActivity.profile_reset_pin_is_admin"
 

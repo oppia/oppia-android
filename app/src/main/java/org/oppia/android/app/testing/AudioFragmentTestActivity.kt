@@ -10,7 +10,7 @@ import javax.inject.Inject
 const val AUDIO_FRAGMENT_TEST_PROFILE_ID_ARGUMENT_KEY =
   "AudioFragmentTestActivity.audio_fragment_test_profile_id"
 
-/** Test Activity used for testing AudioFragment */
+/** Test Activity used for testing AudioFragment. */
 class AudioFragmentTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   @Inject

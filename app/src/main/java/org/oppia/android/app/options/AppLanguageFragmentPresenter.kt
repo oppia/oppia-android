@@ -25,7 +25,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var appLanguage: OppiaLanguage
-  private var profileId: Int? = -1
+  private lateinit var profileId: ProfileId
 
   /** Initializes and creates the views for [AppLanguageFragment]. */
   fun handleOnCreateView(
@@ -40,7 +40,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     this.appLanguage = prefSummaryValue
-    this.profileId = profileId
+    this.profileId = ProfileId.newBuilder().apply { internalId = profileId }.build()
     appLanguageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.viewModel = appLanguageSelectionViewModel
     binding.lifecycleOwner = fragment
@@ -84,26 +84,22 @@ class AppLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun updateAppLanguageSelection(oppiaLanguage: OppiaLanguage) {
-    val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
+    val selection = AppLanguageSelection.newBuilder().apply {
       selectedLanguage = oppiaLanguage
     }.build()
 
-    val userProfileId = ProfileId.newBuilder().apply { internalId = profileId!! }.build()
-
-    translationController.updateAppLanguage(
-      userProfileId, appLanguageSelection
-    ).toLiveData().observe(
-      fragment,
-      {
-        when (it) {
-          is AsyncResult.Success -> {
-            appLanguage = oppiaLanguage
-          }
-          is AsyncResult.Failure ->
-            oppiaLogger.e("APP_LANGUAGE_TAG", it.error.toString())
-          is AsyncResult.Pending -> {} // Wait for a result.
+    translationController.updateAppLanguage(profileId, selection).toLiveData().observe(fragment) {
+      when (it) {
+        is AsyncResult.Success -> appLanguage = oppiaLanguage
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "AppLanguageFragmentPresenter",
+            "Failed to update language to: $oppiaLanguage.",
+            it.error
+          )
         }
+        is AsyncResult.Pending -> {} // Wait for a result.
       }
-    )
+    }
   }
 }

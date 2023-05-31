@@ -144,9 +144,8 @@ class TranslationController @Inject constructor(
    * Note that providing the returned selection to [updateAppLanguage] should result in no change to
    * the underlying configured selection.
    */
-  fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> {
-    return retrieveLanguageContentCacheStore(profileId)
-  }
+  fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> =
+    retrieveLanguageContentCacheStore(profileId)
 
   /**
    * Updates the language to be used by the specified user for app string translations. Note that
@@ -157,22 +156,17 @@ class TranslationController @Inject constructor(
    * best-effort basis for translating strings for system languages (generally if the system
    * language matches a supported language, otherwise the app defaults to English).
    *
-   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails
-   * . The payload of the data provider is the *current* selection
-   *     state.
+   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails. The
+   *     payload of the data provider is the *current* selection state.
    */
   fun updateAppLanguage(
     profileId: ProfileId,
     selection: AppLanguageSelection
   ): DataProvider<AppLanguageSelection> {
     val cacheStore = retrieveLanguageContentCacheStore(profileId)
-    val deferred = cacheStore.storeDataAsync(updateInMemoryCache = true) {
-      selection
-    }
+    val deferred = cacheStore.storeDataAsync(updateInMemoryCache = true) { selection }
 
-    return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID
-    ) {
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID) {
       deferred.await()
       AsyncResult.Success(cacheStore.readDataAsync().await())
     }

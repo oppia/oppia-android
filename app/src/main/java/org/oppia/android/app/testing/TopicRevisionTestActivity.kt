@@ -8,7 +8,7 @@ import org.oppia.android.app.topic.revision.TopicRevisionFragment
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
 
-/** Test Activity used for testing [TopicRevisionFragment] */
+/** Test Activity used for testing [TopicRevisionFragment]. */
 class TopicRevisionTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   RouteToRevisionCardListener {
