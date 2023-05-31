@@ -273,7 +273,7 @@ gradle.properties @oppia/android-app-infrastructure-reviewers
 /domain/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
 /utility/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
 *.properties @oppia/android-app-infrastructure-reviewers
-/data/src/main/AndroidManifest.xml
+/data/src/main/AndroidManifest.xml @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
 #                           Sensitive file ownership                           #
