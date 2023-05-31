@@ -115,11 +115,11 @@ class SelectionInteractionViewModel private constructor(
   }.build()
 
   override fun saveState(outState: Bundle) {
-    outState.putIntArray("state", selectedItems.toIntArray())
+    outState.putIntArray(SELECTED_ITEMS_BUNDLE_KEY, selectedItems.toIntArray())
   }
 
   override fun restoreState(savedState: Bundle) {
-    savedState.getIntArray("state")?.let {
+    savedState.getIntArray(SELECTED_ITEMS_BUNDLE_KEY)?.let {
       selectedItems.clear()
       selectedItems.addAll(it.toList())
     }
@@ -275,5 +275,7 @@ class SelectionInteractionViewModel private constructor(
       }
       return observableList
     }
+
+    private const val SELECTED_ITEMS_BUNDLE_KEY = "selected_items_bundle_key"
   }
 }
