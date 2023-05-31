@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.databinding.SurveyWelcomeDialogFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.survey.SurveyController
@@ -43,9 +42,6 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
 
     binding.maybeLaterButton.setOnClickListener {
       fragment.parentFragmentManager.popBackStack()
-      val intent =
-        TopicActivity.createTopicActivityIntent(fragment.activity!!, profileId.internalId, topicId)
-      fragment.startActivity(intent)
     }
 
     return binding.root
