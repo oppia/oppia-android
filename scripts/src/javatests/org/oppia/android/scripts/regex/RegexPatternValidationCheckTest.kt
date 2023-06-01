@@ -106,6 +106,10 @@ class RegexPatternValidationCheckTest {
     "Never explicitly handle configuration changes. Instead, use saved instance states for" +
       " retaining state across rotations. For other types of configuration changes, follow up" +
       " with the developer mailing list with how to proceed if you think this is a legitimate case."
+  private val androidManifestFirebaseAnalyticsEnabledErrorMessage =
+    "Firebase analytics collection should always be explicitly deactivated in develop."
+  private val androidManifestFirebaseCrashlyticsEnabledErrorMessage =
+    "Firebase crashlytics collection should always be explicitly deactivated in develop."
   private val nonCompatDrawableUsedErrorMessage =
     "Drawable start/end/top/bottom & image source should use the compat versions, instead, e.g.:" +
       " app:drawableStartCompat or app:srcCompat, to ensure that vector drawables can load" +
@@ -1480,6 +1484,8 @@ class RegexPatternValidationCheckTest {
         <?xml version="1.0" encoding="utf-8"?>
         <manifest package="org.oppia.android">
           <application android:name=".app.application.OppiaApplication">
+            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+            <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
             <activity
               android:name=".app.ExampleActivity"
               android:configChanges="orientation" />
@@ -1498,7 +1504,67 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:6: $androidActivityConfigChangesErrorMessage
+        $stringFilePath:8: $androidActivityConfigChangesErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_manifestWithFirebaseCrashlyticsEnabled_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <?xml version="1.0" encoding="utf-8"?>
+        <manifest package="org.oppia.android">
+          <application android:name=".app.application.OppiaApplication">
+            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="true" />
+            <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+          </application>
+        </manifest>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $androidManifestFirebaseCrashlyticsEnabledErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_manifestWithFirebaseAnalyticsEnabled_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <?xml version="1.0" encoding="utf-8"?>
+        <manifest package="org.oppia.android">
+          <application android:name=".app.application.OppiaApplication">
+            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+            <meta-data android:name="firebase_analytics_collection_deactivated" android:value="false" />
+          </application>
+        </manifest>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $androidManifestFirebaseAnalyticsEnabledErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
