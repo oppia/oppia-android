@@ -1,8 +1,8 @@
 ################################################################################
 #                        IMPORTANT NOTES FOR CODEOWNERS:                       #
 #                                                                              #
-# - If you will be unavailable for more than 24 hours, please do the all of    #
-#   the following:                                                             #
+# - If you will be unavailable for more than 24 hours, please do all of the    #
+#   following:                                                                 #
 #   (a) Make sure there are other folks on your codeowner team.                #
 #   (b) Send a note to them and make sure they can cover your reviews while    #
 #     absent, and tell them when you'll be back. Please include @BenHenning,   #
@@ -179,10 +179,12 @@
 #                           Git/GitHub configurations                          #
 ################################################################################
 
-# Top-level Git configuration files that should be carefully changed.
+# Top-level Git configuration files that should only be changed after careful
+# consideration.
 /.gitignore @oppia/owners
 
-# Repository-wide configurations and documentation that should be carefully
+# Repository-wide configurations and documentation that should only be changed
+# after careful consideration.
 # changed.
 /.github/CODE_OF_CONDUCT.md @oppia/owners
 /.github/CONTRIBUTING.md @oppia/owners
