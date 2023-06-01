@@ -56,6 +56,12 @@ java_lite_proto_library(
     deps = [":event_logger_proto"],
 )
 
+java_proto_library(
+    name = "event_logger_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":event_logger_proto"],
+)
+
 oppia_proto_library(
     name = "performance_metrics_event_logger_proto",
     srcs = ["performance_metrics.proto"],
