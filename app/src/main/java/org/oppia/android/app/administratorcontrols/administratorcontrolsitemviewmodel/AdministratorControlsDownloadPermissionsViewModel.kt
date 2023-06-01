@@ -18,7 +18,9 @@ class AdministratorControlsDownloadPermissionsViewModel(
   private val userProfileId: ProfileId,
   deviceSettings: DeviceSettings
 ) : AdministratorControlsItemViewModel() {
-  /** [Boolean] observable value showing if topic downloads and updates should happen only on Wifi. */
+  /**
+   * [Boolean] observable value showing if topic downloads and updates should happen only on Wifi.
+   */
   val isTopicWifiUpdatePermission =
     ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
   /** [Boolean] observable value showing if topic updates should happen automatically. */

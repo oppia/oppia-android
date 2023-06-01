@@ -21,8 +21,6 @@ const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_langu
 const val MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY = "OptionsFragment.message_audio_language"
 /** Request code for [ReadingTextSize]. */
 const val REQUEST_CODE_TEXT_SIZE = 1
-/** Request code for [OppiaLanguage]. */
-const val REQUEST_CODE_APP_LANGUAGE = 2
 /** Request code for [AudioLanguage]. */
 const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 

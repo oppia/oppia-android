@@ -1,6 +1,5 @@
 package org.oppia.android.app.options
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
@@ -12,7 +11,7 @@ import javax.inject.Inject
 /** The presenter for [AppLanguageActivity]. */
 @ActivityScope
 class AppLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  private lateinit var oppiaLangauge: OppiaLanguage
+  private lateinit var oppiaLanguage: OppiaLanguage
 
   /** Initializes and creates the views for [AppLanguageActivity]. */
   fun handleOnCreate(oppiaLanguage: OppiaLanguage, profileId: Int) {
@@ -20,13 +19,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
       activity,
       R.layout.app_language_activity,
     )
-    binding.appLanguageToolbar.setNavigationOnClickListener {
-      val intent = Intent().apply {
-        putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, oppiaLanguage)
-      }
-      (activity as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)
-      activity.finish()
-    }
+    binding.appLanguageToolbar.setNavigationOnClickListener { activity.finish() }
     setLanguageSelected(oppiaLanguage)
     if (getAppLanguageFragment() == null) {
       val appLanguageFragment = AppLanguageFragment.newInstance(oppiaLanguage, profileId)
@@ -37,13 +30,11 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
 
   /** Set the selected language for this Activity. */
   fun setLanguageSelected(oppiaLanguage: OppiaLanguage) {
-    this.oppiaLangauge = oppiaLanguage
+    this.oppiaLanguage = oppiaLanguage
   }
 
   /** Return's the selected language for this Activity. */
-  fun getLanguageSelected(): OppiaLanguage {
-    return oppiaLangauge
-  }
+  fun getLanguageSelected(): OppiaLanguage = oppiaLanguage
 
   private fun getAppLanguageFragment(): AppLanguageFragment? {
     return activity.supportFragmentManager

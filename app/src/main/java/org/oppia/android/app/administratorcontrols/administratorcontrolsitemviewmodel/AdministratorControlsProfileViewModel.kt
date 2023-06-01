@@ -9,7 +9,7 @@ class AdministratorControlsProfileViewModel(
   private val loadProfileListListener: LoadProfileListListener
 ) : AdministratorControlsItemViewModel() {
 
-  /** Called when user clicks on EditProfiles in [AdministratorControlsActivity]. */
+  /** Called when a user clicks on EditProfiles in [AdministratorControlsActivity]. */
   fun onEditProfilesClicked() {
     if (isMultipane.get()!!) {
       loadProfileListListener.loadProfileList()
