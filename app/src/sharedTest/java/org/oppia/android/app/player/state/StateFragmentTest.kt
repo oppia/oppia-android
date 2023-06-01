@@ -4826,7 +4826,7 @@ class StateFragmentTest {
     }
   }
 
-  /*** Returns a matcher that matches view based on non-zero width and height.*/
+  /** Returns a matcher that matches view based on non-zero width and height. */
   private class WithNonZeroDimensionsMatcher : TypeSafeMatcher<View>() {
 
     override fun matchesSafely(target: View): Boolean {

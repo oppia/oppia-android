@@ -10,7 +10,7 @@ import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.databinding.SpotlightFragmentTestActivityBinding
 import javax.inject.Inject
 
-/** The presenter for [SpotlightFragmentTestActivity] */
+/** The presenter for [SpotlightFragmentTestActivity]. */
 @ActivityScope
 class SpotlightFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity

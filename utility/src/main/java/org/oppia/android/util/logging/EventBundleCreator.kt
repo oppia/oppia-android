@@ -489,7 +489,7 @@ class EventBundleCreator @Inject constructor(
     }
   }
 
-  /*** Represents an [OppiaMetricLog] loggable metric (denoted by [LoggableMetricTypeCase]).*/
+  /** Represents an [OppiaMetricLog] loggable metric (denoted by [LoggableMetricTypeCase]). */
   private sealed class PerformanceMetricsLoggableMetricType<T>(
     val metricName: String,
     private val value: T

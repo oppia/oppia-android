@@ -15,7 +15,10 @@ import org.oppia.android.app.model.Translation
 import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.locale.LanguageConfigRetriever
 import org.oppia.android.domain.locale.LocaleController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -53,6 +56,9 @@ private const val AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
   "audio_translation_content_selection"
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
+private const val APP_LANGUAGE_CONTENT_DATABASE = "app_language_content_database"
+private const val RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID =
+  "retrieved_content_language_data_provider_id"
 
 /**
  * Domain controller for performing operations corresponding to translations.
@@ -66,23 +72,22 @@ class TranslationController @Inject constructor(
   private val dataProviders: DataProviders,
   private val localeController: LocaleController,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val languageConfigRetriever: LanguageConfigRetriever,
+  private val cacheStoreFactory: PersistentCacheStore.Factory,
+  private val oppiaLogger: OppiaLogger,
 ) {
-  // TODO(#52): Finish this implementation. The implementation below doesn't actually save/restore
-  //  settings from the local filesystem since the UI has been currently disabled as part of #20.
-  //  Also, there should be a proper default locale for pre-profile selection (either a default
-  //  app-wide setting determined by the administrator, or the last locale used by a profile)--more
-  //  product & UX thought is needed here. Further, extra work is likely needed to handle the case
-  //  when the user switches between a system & non-system language since the existing system
-  //  defaulting behavior breaks down when the system locale is overwritten (such as when a
-  //  different language is selected).
+  // TODO(#4938): Finish this implementation. The implementation below saves/restores per-profile app
+  //  language, but not audio language.
 
   private val dataLock = ReentrantLock()
-  private val appLanguageSettings = mutableMapOf<ProfileId, AppLanguageSelection>()
   private val writtenTranslationLanguageSettings =
     mutableMapOf<ProfileId, WrittenTranslationLanguageSelection>()
   private val audioVoiceoverLanguageSettings =
     mutableMapOf<ProfileId, AudioTranslationLanguageSelection>()
+
+  private val cacheStoreMap =
+    mutableMapOf<ProfileId, PersistentCacheStore<AppLanguageSelection>>()
 
   /**
    * Returns a data provider for an app string [OppiaLocale.DisplayLocale] corresponding to the
@@ -103,6 +108,17 @@ class TranslationController @Inject constructor(
   fun getAppLanguage(profileId: ProfileId): DataProvider<OppiaLanguage> {
     return getAppLanguageLocale(profileId).transform(APP_LANGUAGE_DATA_PROVIDER_ID) { locale ->
       locale.getCurrentLanguage()
+    }
+  }
+
+  /**
+   * Returns a data provider for a list of [OppiaLanguage] which can be passed to [updateAppLanguage].
+   */
+  fun getSupportedAppLanguages(): DataProvider<List<OppiaLanguage>> {
+    return dataProviders.createInMemoryDataProvider(RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID) {
+      languageConfigRetriever.loadSupportedLanguages().languageDefinitionsList.filter {
+        it.hasAppStringId()
+      }.map { it.language }
     }
   }
 
@@ -128,12 +144,8 @@ class TranslationController @Inject constructor(
    * Note that providing the returned selection to [updateAppLanguage] should result in no change to
    * the underlying configured selection.
    */
-  fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> {
-    val providerId = APP_LANGUAGE_SELECTION_DATA_PROVIDER_ID
-    return dataProviders.createInMemoryDataProvider(providerId) {
-      retrieveAppLanguageSelection(profileId)
-    }
-  }
+  fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> =
+    retrieveLanguageContentCacheStore(profileId)
 
   /**
    * Updates the language to be used by the specified user for app string translations. Note that
@@ -144,16 +156,19 @@ class TranslationController @Inject constructor(
    * best-effort basis for translating strings for system languages (generally if the system
    * language matches a supported language, otherwise the app defaults to English).
    *
-   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
-   *     result is ever provided). The payload of the data provider is the *previous* selection
-   *     state.
+   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails. The
+   *     payload of the data provider is the *current* selection state.
    */
   fun updateAppLanguage(
     profileId: ProfileId,
     selection: AppLanguageSelection
   ): DataProvider<AppLanguageSelection> {
+    val cacheStore = retrieveLanguageContentCacheStore(profileId)
+    val deferred = cacheStore.storeDataAsync(updateInMemoryCache = true) { selection }
+
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID) {
-      AsyncResult.Success(updateAppLanguageSelection(profileId, selection))
+      deferred.await()
+      AsyncResult.Success(cacheStore.readDataAsync().await())
     }
   }
 
@@ -400,20 +415,29 @@ class TranslationController @Inject constructor(
     }
   }
 
-  private fun retrieveAppLanguageSelection(profileId: ProfileId) =
-    dataLock.withLock {
-      appLanguageSettings[profileId] ?: AppLanguageSelection.getDefaultInstance()
+  private fun retrieveLanguageContentCacheStore(
+    profileId: ProfileId
+  ): PersistentCacheStore<AppLanguageSelection> {
+    return cacheStoreMap.getOrPut(profileId) {
+      cacheStoreFactory.createPerProfile(
+        APP_LANGUAGE_CONTENT_DATABASE,
+        AppLanguageSelection.getDefaultInstance(),
+        profileId
+      ).also<PersistentCacheStore<AppLanguageSelection>> {
+        it.primeInMemoryAndDiskCacheAsync(
+          updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
+          publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+        ).invokeOnCompletion { throwable ->
+          throwable?.let { error ->
+            oppiaLogger.e(
+              "TranslationController",
+              "Failed to prime cache ahead of data retrieval for TranslationController.",
+              error
+            )
+          }
+        }
+      }
     }
-
-  private suspend fun updateAppLanguageSelection(
-    profileId: ProfileId,
-    selection: AppLanguageSelection
-  ): AppLanguageSelection {
-    return dataLock.withLock {
-      appLanguageSettings.put(profileId, selection)
-    }.also {
-      asyncDataSubscriptionManager.notifyChange(APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID)
-    } ?: AppLanguageSelection.getDefaultInstance()
   }
 
   private fun retrieveWrittenTranslationContentLanguageSelection(
