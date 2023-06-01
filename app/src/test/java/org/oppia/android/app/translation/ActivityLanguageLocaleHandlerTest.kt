@@ -125,17 +125,10 @@ class ActivityLanguageLocaleHandlerTest {
       TestActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
 
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
@@ -164,10 +157,29 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   @Test
-  fun testUpdateLocale_initialized_sameLocale_returnsFalse() {
-    val isUpdated = appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+  fun testUpdateLocale_initialized_sameLocaleAsApp_returnsFalse() {
+    appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+
+    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
+    val isUpdated = activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+
     // The locale never changed, so there's nothing to update.
     assertThat(isUpdated).isFalse()
+  }
+
+  @Test
+  fun testUpdateLocale_initialized_differentLocaleFromApp_appChangedElsewhere_returnsTrue() {
+    appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
+    appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE))
+
+    val isUpdated =
+      activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE))
+
+    // Since the app language changed, the request to change the activity language should succeed.
+    // This ensures cases like a newer activity in the stack changing the language results in an
+    // older activity correctly being recreated due to it now having a new language configuration.
+    assertThat(isUpdated).isTrue()
   }
 
   @Test
@@ -326,10 +338,7 @@ class ActivityLanguageLocaleHandlerTest {
     fun inject(activityLanguageLocaleHandlerTest: ActivityLanguageLocaleHandlerTest)
   }
 
-  class TestApplication :
-    Application(),
-    ActivityComponentFactory,
-    ApplicationInjectorProvider {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerActivityLanguageLocaleHandlerTest_TestApplicationComponent.builder()
         .setApplication(this)

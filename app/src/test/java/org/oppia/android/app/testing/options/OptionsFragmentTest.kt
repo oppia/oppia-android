@@ -133,7 +133,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is ReadingTextSizeFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(ReadingTextSizeFragment::class.java)
       }
     }
   }
@@ -154,7 +154,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is ReadingTextSizeFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(ReadingTextSizeFragment::class.java)
       }
     }
   }
@@ -194,7 +194,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is AppLanguageFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(AppLanguageFragment::class.java)
       }
     }
   }
@@ -215,7 +215,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is AudioLanguageFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(AudioLanguageFragment::class.java)
       }
     }
   }

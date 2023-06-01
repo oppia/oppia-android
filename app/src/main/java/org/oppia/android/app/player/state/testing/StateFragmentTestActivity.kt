@@ -32,7 +32,7 @@ internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
 internal const val TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_should_save_partial_progress"
 
-/** Test Activity used for testing StateFragment */
+/** Test Activity used for testing StateFragment. */
 class StateFragmentTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   StopStatePlayingSessionWithSavedProgressListener,

@@ -12,7 +12,7 @@ import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.databinding.ImageRegionSelectionTestFragmentBinding
 import javax.inject.Inject
 
-/** The presenter for [ImageRegionSelectionTestActivity] */
+/** The presenter for [ImageRegionSelectionTestActivity]. */
 class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {

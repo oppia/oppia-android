@@ -7,7 +7,7 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 
-/** Test Activity used for testing [ClickableAreasImage] functionality */
+/** Test Activity used for testing [ClickableAreasImage] functionality. */
 class ImageRegionSelectionTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {

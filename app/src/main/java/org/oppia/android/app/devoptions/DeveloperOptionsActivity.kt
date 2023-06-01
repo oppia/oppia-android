@@ -80,7 +80,7 @@ class DeveloperOptionsActivity :
   }
 
   companion object {
-    /** Function to create intent for DeveloperOptionsActivity */
+    /** Function to create intent for DeveloperOptionsActivity. */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)

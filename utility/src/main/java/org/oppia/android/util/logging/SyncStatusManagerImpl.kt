@@ -22,7 +22,7 @@ import javax.inject.Singleton
 private const val SYNC_STATUS_PROVIDER_ID = "SyncStatusManagerImpl.sync_status"
 private const val DEFAULT_EVENT_LOG_PROVIDER_ID = "SyncStatusManagerImpl.default_event_logs"
 
-/** Manager for handling the sync status of the device during log upload to the remote service.*/
+/** Manager for handling the sync status of the device during log upload to the remote service. */
 @Singleton
 class SyncStatusManagerImpl @Inject constructor(
   private val dataProviders: DataProviders,

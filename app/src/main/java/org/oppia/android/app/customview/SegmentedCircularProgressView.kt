@@ -25,7 +25,11 @@ private const val STROKE_DASH_GAP_IN_DEGREE = 12
  *
  * Reference: // https://stackoverflow.com/a/39210676
  */
-class SegmentedCircularProgressView : View {
+class SegmentedCircularProgressView @JvmOverloads constructor(
+  context: Context,
+  attrs: AttributeSet? = null,
+  defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
@@ -62,23 +66,6 @@ class SegmentedCircularProgressView : View {
       initialise()
     }
   }
-
-  /** Constructor for creating an instance of this view.
-   * @param context */
-  constructor(context: Context) : super(context)
-  /** Constructor for creating an instance of this view.
-   * @param context
-   * @param attrs */
-  constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-  /** Constructor for creating an instance of this view.
-   * @param context
-   * @param attrs
-   * @param defStyleAttr */
-  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-    context,
-    attrs,
-    defStyleAttr
-  )
 
   private fun initialise() {
     chaptersNotStarted = totalChapters - chaptersFinished - chaptersInProgress

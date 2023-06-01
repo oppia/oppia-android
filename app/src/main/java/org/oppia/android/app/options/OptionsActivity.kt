@@ -8,7 +8,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.model.AppLanguageActivityResultBundle
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.OppiaLanguage
@@ -111,13 +110,6 @@ class OptionsActivity :
         )
         optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
       }
-      REQUEST_CODE_APP_LANGUAGE -> {
-        val oppiaLanguage = data.getProtoExtra(
-          MESSAGE_APP_LANGUAGE_ARGUMENT_KEY,
-          AppLanguageActivityResultBundle.getDefaultInstance()
-        ).oppiaLanguage
-        optionActivityPresenter.updateAppLanguage(oppiaLanguage)
-      }
       REQUEST_CODE_AUDIO_LANGUAGE -> {
         val audioLanguage = data.getProtoExtra(
           MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, AudioLanguageActivityResultBundle.getDefaultInstance()
@@ -128,13 +120,12 @@ class OptionsActivity :
   }
 
   override fun routeAppLanguageList(oppiaLanguage: OppiaLanguage) {
-    startActivityForResult(
+    startActivity(
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
         oppiaLanguage,
         profileId!!
-      ),
-      REQUEST_CODE_APP_LANGUAGE
+      )
     )
   }
 

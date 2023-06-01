@@ -7,7 +7,6 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.AppLanguageActivityParams
-import org.oppia.android.app.model.AppLanguageActivityResultBundle
 import org.oppia.android.app.model.AppLanguageActivityStateBundle
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ScreenName.APP_LANGUAGE_ACTIVITY
@@ -67,16 +66,7 @@ class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
     }
   }
 
-  override fun onBackPressed() {
-    val resultBundle = AppLanguageActivityResultBundle.newBuilder().apply {
-      oppiaLanguage = appLanguageActivityPresenter.getLanguageSelected()
-    }.build()
-    val intent = Intent().apply {
-      putProtoExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, resultBundle)
-    }
-    setResult(REQUEST_CODE_APP_LANGUAGE, intent)
-    finish()
-  }
+  override fun onBackPressed() = finish()
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)

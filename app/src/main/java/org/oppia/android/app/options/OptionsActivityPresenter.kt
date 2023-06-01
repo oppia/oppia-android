@@ -86,27 +86,25 @@ class OptionsActivityPresenter @Inject constructor(
       ) as OptionsFragment?
   }
 
-  /** Updates [ReadingTextSize] value in
-   * [OptionsFragment] when user selects new value. */
+  /** Updates [ReadingTextSize] value in [OptionsFragment] when user selects new value. */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     getOptionFragment()?.updateReadingTextSize(textSize)
   }
 
-  /** Updates [OppiaLanguage] value in
-   * [OptionsFragment] when user selects new value. */
+  /** Updates [OppiaLanguage] value in [OptionsFragment] when user selects new value. */
   fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     getOptionFragment()?.updateAppLanguage(oppiaLanguage)
   }
 
-  /** Updates [AudioLanguage] value in
-   * [OptionsFragment] when user selects new value. */
+  /** Updates [AudioLanguage] value in [OptionsFragment] when user selects new value. */
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     getOptionFragment()?.updateAudioLanguage(audioLanguage)
   }
 
-  /** Returns a new instance of [ReadingTextSizeFragment].
+  /**
+   * Returns a new instance of [ReadingTextSizeFragment].
    *
-   * @param [ReadingTextSize] the initially selected reading text size
+   * @param textSize the initially selected reading text size
    */
   fun loadReadingTextSizeFragment(textSize: ReadingTextSize) {
     val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(textSize)
@@ -117,7 +115,8 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.setSelectedFragment(READING_TEXT_SIZE_FRAGMENT)
   }
 
-  /** Returns a new instance of [AppLanguageFragment].
+  /**
+   * Returns a new instance of [AppLanguageFragment].
    *
    * @param appLanguage the initially selected App language
    */
@@ -131,7 +130,8 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.setSelectedFragment(APP_LANGUAGE_FRAGMENT)
   }
 
-  /** Returns a new instance of [AudioLanguageFragment].
+  /**
+   * Returns a new instance of [AudioLanguageFragment].
    *
    * @param audioLanguage the initially selected audio language
    */

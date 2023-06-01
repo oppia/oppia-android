@@ -10,7 +10,7 @@ import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-/** [ViewModel] for [AppVersionFragment] */
+/** [ViewModel] for [AppVersionFragment]. */
 @FragmentScope
 class AppVersionViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
