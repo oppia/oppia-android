@@ -43,7 +43,6 @@ class OptionControlsViewModel @Inject constructor(
   private val loadReadingTextSizeListener = activity as LoadReadingTextSizeListener
   private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
   private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
-  private var isFirstOpen = true
 
   private val optionsItemViewModelProvider by lazy { createOptionsItemViewModelProvider() }
 
@@ -109,15 +108,7 @@ class OptionControlsViewModel @Inject constructor(
   private fun createReadingTextSizeViewModel(profile: Profile): OptionsReadingTextSizeViewModel {
     return OptionsReadingTextSizeViewModel(
       routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
-    ).apply {
-      readingTextSize.set(profile.readingTextSize)
-
-      // Loading the initial options in the sub-options container
-      if (isMultipane.get()!! && isFirstOpen) {
-        loadReadingTextSizeFragment()
-        isFirstOpen = false
-      }
-    }
+    ).also { it.readingTextSize.set(profile.readingTextSize) }
   }
 
   private fun createAppLanguageViewModel(language: OppiaLanguage): OptionsAppLanguageViewModel? {
@@ -137,13 +128,5 @@ class OptionControlsViewModel @Inject constructor(
       profile.audioLanguage,
       resourceHandler.computeLocalizedDisplayName(profile.audioLanguage)
     )
-  }
-
-  /**
-   * Sets [isFirstOpen] value which controls the loading of the initial extra-option fragment in the
-   * case of multipane.
-   */
-  fun isFirstOpen(isFirstOpen: Boolean) {
-    this.isFirstOpen = isFirstOpen
   }
 }

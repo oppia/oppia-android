@@ -66,7 +66,6 @@ class OptionsFragmentPresenter @Inject constructor(
     selectedFragment: String
   ): View? {
     viewModel.isUIInitialized(false)
-    viewModel.isFirstOpen(isFirstOpen)
     viewModel.isMultipane.set(isMultipane)
     binding = OptionsFragmentBinding.inflate(
       inflater,
@@ -89,6 +88,19 @@ class OptionsFragmentPresenter @Inject constructor(
     }
     setSelectedFragment(selectedFragment)
     viewModel.isUIInitialized(true)
+
+    var hasDefaultInitializedFragment = false
+    viewModel.optionsListLiveData.observe(fragment) { viewModels ->
+      if (!hasDefaultInitializedFragment) {
+        viewModels.filterIsInstance<OptionsReadingTextSizeViewModel>().singleOrNull()?.let {
+          if (isMultipane && isFirstOpen) {
+            it.loadReadingTextSizeFragment()
+          }
+          hasDefaultInitializedFragment = true
+        }
+      }
+    }
+
     return binding.root
   }
 
@@ -112,26 +124,22 @@ class OptionsFragmentPresenter @Inject constructor(
         }
         else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
-    }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_READING_TEXT_SIZE,
-        inflateDataBinding = OptionStoryTextSizeBinding::inflate,
-        setViewModel = this::bindReadingTextSize,
-        transformViewModel = { it as OptionsReadingTextSizeViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_APP_LANGUAGE,
-        inflateDataBinding = OptionAppLanguageBinding::inflate,
-        setViewModel = this::bindAppLanguage,
-        transformViewModel = { it as OptionsAppLanguageViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_AUDIO_LANGUAGE,
-        inflateDataBinding = OptionAudioLanguageBinding::inflate,
-        setViewModel = this::bindAudioLanguage,
-        transformViewModel = { it as OptionsAudioLanguageViewModel }
-      )
-      .build()
+    }.registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_READING_TEXT_SIZE,
+      inflateDataBinding = OptionStoryTextSizeBinding::inflate,
+      setViewModel = this::bindReadingTextSize,
+      transformViewModel = { it as OptionsReadingTextSizeViewModel }
+    ).registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_APP_LANGUAGE,
+      inflateDataBinding = OptionAppLanguageBinding::inflate,
+      setViewModel = this::bindAppLanguage,
+      transformViewModel = { it as OptionsAppLanguageViewModel }
+    ).registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_AUDIO_LANGUAGE,
+      inflateDataBinding = OptionAudioLanguageBinding::inflate,
+      setViewModel = this::bindAudioLanguage,
+      transformViewModel = { it as OptionsAudioLanguageViewModel }
+    ).build()
   }
 
   private fun bindReadingTextSize(
