@@ -164,11 +164,11 @@
   <string name="number_error_starting_with_floating_point">Abeg start your ansa with nomba (e.g.,”0” for 0.5).</string>
   <string name="number_error_invalid_format">Abeg put correct nomba.</string>
   <string name="number_error_larger_than_fifteen_characters">Di ansa fit get at most 15 digits (0–9) or sign (. or -).</string>
-  <string name="ratio_error_invalid_chars">\n    Abeg write a ratio wey get nomba separated by colons (e.g. 1:2 or 1:2:3).</string>
-  <string name="ratio_error_invalid_format">\n    Abge enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
-  <string name="ratio_error_invalid_colons">\n    Your ansa get two colons (:) next to each other.</string>
-  <string name="ratio_error_invalid_size">\n    Nomba of terms no dey equal to di required terms.</string>
-  <string name="ratio_error_includes_zero">\n    Ratios no suppose get 0 for inside.</string>
+  <string name="ratio_error_invalid_chars">Abeg write a ratio wey get nomba separated by colons (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_format">Abeg enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_colons">Your ansa get two colons (:) next to each other.</string>
+  <string name="ratio_error_invalid_size">Nomba of terms no dey equal to di required terms.</string>
+  <string name="ratio_error_includes_zero">Ratios no suppose get 0 as an element.</string>
   <string name="unknown_size">Size wey dey no know</string>
   <string name="size_bytes">%s Bytes</string>
   <string name="size_kb">%s KB</string>
@@ -177,30 +177,30 @@
   <string name="correct">You get am!</string>
   <string name="topic_prefix">Topic: %s</string>
   <plurals name="chapter_count">
-    <item quantity="one">1 Chapter\n    </item>
-    <item quantity="other">\n      %s Chapters\n    </item>
+    <item quantity="one">1 Chapter</item>
+    <item quantity="other">%s Chapters</item>
   </plurals>
   <plurals name="story_count">
-    <item quantity="one">1 Story\n    </item>
-    <item quantity="other">\n      %s Stories\n    </item>
+    <item quantity="one">1 Story</item>
+    <item quantity="other">%s Stories</item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="one">%s of %s Chapter Completed</item>
     <item quantity="other">%s of %s Chapters Completed</item>
   </plurals>
   <plurals name="lesson_count">
-    <item quantity="one">1 Lesson\n    </item>
-    <item quantity="other">\n      %s Lessons\n    </item>
+    <item quantity="one">1 Lesson</item>
+    <item quantity="other">%s Lessons</item>
   </plurals>
   <plurals name="completed_story_count">
-    <item quantity="one">1 Story Completed\n    </item>
-    <item quantity="zero">%s Stories Completed\n    </item>
-    <item quantity="other">\n      %s Stories Completed\n    </item>
+    <item quantity="one">1 Story Completed</item>
+    <item quantity="zero">%s Stories Completed</item>
+    <item quantity="other">%s Stories Completed</item>
   </plurals>
   <plurals name="ongoing_topic_count">
-    <item quantity="one">1 Topic in Progress\n    </item>
-    <item quantity="zero">%s Topics in Progress\n    </item>
-    <item quantity="other">\n      %s Topics in Progress\n    </item>
+    <item quantity="one">1 Topic in Progress</item>
+    <item quantity="zero">%s Topics in Progress</item>
+    <item quantity="other">%s Topics in Progress</item>
   </plurals>
   <string name="profile_chooser_activity_label">Page to select profile</string>
   <string name="profile_chooser_admin">Administrator</string>
@@ -242,7 +242,7 @@
   <string name="add_profile_error_image_failed_store">We fail to save your avatar image. Abeg try again.</string>
   <string name="add_profile_error_name_not_unique">Anoda profile don already dey use dis name.</string>
   <string name="add_profile_error_name_empty">Abeg put valid name for dis profile.</string>
-  <string name="add_profile_error_name_only_letters">Abge choose profile name wey no get nombas or symbols.</string>
+  <string name="add_profile_error_name_only_letters">Abeg choose profile name wey no get nombas or symbols.</string>
   <string name="add_profile_error_pin_length">Your PIN suppose dey 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Abeg make sure sey di two PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
@@ -434,9 +434,9 @@
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">Abeg select all di correct choices.</string>
-  <string name="unsupported_app_version_dialog_title">\n    Unsupported app version</string>
-  <string name="unsupported_app_version_dialog_message">\n    Dis version of di app no longer dey supported. Abeg update am from di Play Store.</string>
-  <string name="unsupported_app_version_dialog_close_button_text">\n    Close app</string>
+  <string name="unsupported_app_version_dialog_title">Unsupported app version</string>
+  <string name="unsupported_app_version_dialog_message">Dis version of di app no longer dey supported. Abeg update am from di Play Store.</string>
+  <string name="unsupported_app_version_dialog_close_button_text">Close app</string>
   <string name="splash_screen_developer_label">Developer Build</string>
   <string name="splash_screen_alpha_label">Alpha</string>
   <string name="splash_screen_beta_label">Beta</string>
@@ -448,8 +448,8 @@
   <string name="general_availability_notice_dialog_message">Hello! Your app don dey update to di General Availability version. If you experience any problems while you dey use di app, or get any questions, abeg contact us at android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">No show dis message again</string>
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
-  <string name="ratio_content_description_separator">\n     to</string>
-  <string name="ratio_default_hint_text">\n    Enter a ratio in di form x:y.</string>
+  <string name="ratio_content_description_separator">to</string>
+  <string name="ratio_default_hint_text">Enter a ratio in di form x:y.</string>
   <string name="text_input_default_hint_text">Tap here to put text.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
