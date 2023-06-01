@@ -9,7 +9,7 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import javax.inject.Inject
 
-/** The presenter for [ConceptCardFragmentTestActivity] */
+/** The presenter for [ConceptCardFragmentTestActivity]. */
 class ConceptCardFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {

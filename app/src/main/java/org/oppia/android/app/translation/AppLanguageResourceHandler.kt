@@ -4,7 +4,9 @@ import androidx.annotation.ArrayRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import org.oppia.android.R
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
 import javax.inject.Inject
@@ -157,6 +159,27 @@ class AppLanguageResourceHandler @Inject constructor(
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> getLocalizedDisplayName("pt", "BR")
       AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED,
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> getLocalizedDisplayName("en")
+    }
+  }
+
+  /**
+   * Returns a human-readable, localized representation of the specified [OppiaLanguage].
+   * Note that the returned string is not expected to be localized to the user's current locale.
+   * Instead, it will be localized for that specific language (i.e. each language will be
+   * represented within that language to make it easier to identify when choosing a language).
+   */
+  fun computeLocalizedDisplayName(oppiaLanguage: OppiaLanguage): String {
+    return when (oppiaLanguage) {
+      OppiaLanguage.HINDI -> resources.getString(R.string.hindi_localized_language_name)
+      OppiaLanguage.PORTUGUESE ->
+        resources.getString(R.string.portuguese_localized_language_name)
+      OppiaLanguage.SWAHILI -> resources.getString(R.string.swahili_localized_language_name)
+      OppiaLanguage.BRAZILIAN_PORTUGUESE ->
+        resources.getString(R.string.brazilian_portuguese_localized_language_name)
+      OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED,
+      OppiaLanguage.ENGLISH -> resources.getString(R.string.english_localized_language_name)
+      OppiaLanguage.ARABIC -> resources.getString(R.string.arabic_localized_language_name)
+      OppiaLanguage.HINGLISH -> resources.getString(R.string.hinglish_localized_language_name)
     }
   }
 

@@ -8,7 +8,6 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Deferred
-import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.Profile
@@ -265,7 +264,6 @@ class ProfileManagementController @Inject constructor(
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
         numberOfLogins = 0
 
@@ -579,36 +577,6 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_READING_TEXT_SIZE_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
-    }
-  }
-
-  /**
-   * Updates the app language of the profile.
-   *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @param appLanguage New app language for the profile being updated.
-   * @return a [DataProvider] that indicates the success/failure of this update operation.
-   */
-  fun updateAppLanguage(profileId: ProfileId, appLanguage: AppLanguage): DataProvider<Any?> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
-      updateInMemoryCache = true
-    ) {
-      val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
-          it,
-          ProfileActionStatus.PROFILE_NOT_FOUND
-        )
-      val updatedProfile = profile.toBuilder().setAppLanguage(appLanguage).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
-        updatedProfile
-      )
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-    }
-    return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_APP_LANGUAGE_PROVIDER_ID
-    ) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }
