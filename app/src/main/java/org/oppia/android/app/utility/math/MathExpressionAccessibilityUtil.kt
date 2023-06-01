@@ -39,6 +39,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 
 /**
  * Utility for computing an accessibility string for screenreaders to be able to read out parsed
@@ -72,8 +73,8 @@ class MathExpressionAccessibilityUtil @Inject constructor(
   ): String? {
     return when (language) {
       ENGLISH -> expression.toHumanReadableEnglishString(divAsFraction)
-      ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, SWAHILI, LANGUAGE_UNSPECIFIED,
-      UNRECOGNIZED -> null
+      ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN,
+      LANGUAGE_UNSPECIFIED, UNRECOGNIZED -> null
     }
   }
 
@@ -91,8 +92,8 @@ class MathExpressionAccessibilityUtil @Inject constructor(
   ): String? {
     return when (language) {
       ENGLISH -> equation.toHumanReadableEnglishString(divAsFraction)
-      ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, SWAHILI, LANGUAGE_UNSPECIFIED,
-      UNRECOGNIZED -> null
+      ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN,
+      LANGUAGE_UNSPECIFIED, UNRECOGNIZED -> null
     }
   }
 

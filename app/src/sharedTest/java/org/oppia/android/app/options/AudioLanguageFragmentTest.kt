@@ -98,6 +98,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 
 /** Tests for [AudioLanguageFragment]. */
 // Function name: test names are conventionally named with underscores.
@@ -109,6 +110,8 @@ class AudioLanguageFragmentTest {
   private companion object {
     private const val ENGLISH_BUTTON_INDEX = 0
     private const val PORTUGUESE_BUTTON_INDEX = 4
+    private const val ARABIC_BUTTON_INDEX = 5
+    private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 6
   }
 
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -135,6 +138,20 @@ class AudioLanguageFragmentTest {
   fun testOpenFragment_withPortuguese_selectedLanguageIsPortuguese() {
     launchActivityWithLanguage(BRAZILIAN_PORTUGUESE_LANGUAGE).use {
       verifyPortugueseIsSelected()
+    }
+  }
+
+  @Test
+  fun testOpenFragment_withArabic_selectedLanguageIsArabic() {
+    launchActivityWithLanguage(NIGERIAN_PIDGIN_LANGUAGE).use {
+      verifyArabicIsSelected()
+    }
+  }
+
+  @Test
+  fun testOpenFragment_withNigerianPidgin_selectedLanguageIsNaija() {
+    launchActivityWithLanguage(NIGERIAN_PIDGIN_LANGUAGE).use {
+      verifyNigerianPidginIsSelected()
     }
   }
 
@@ -241,6 +258,15 @@ class AudioLanguageFragmentTest {
 
   private fun verifyPortugueseIsSelected() {
     verifyLanguageIsSelected(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
+  }
+
+  private fun verifyArabicIsSelected() {
+    // TODO: Figure out why the correct language isn't showing up.
+    verifyLanguageIsSelected(index = ARABIC_BUTTON_INDEX, expectedLanguageName = "العربية")
+  }
+
+  private fun verifyNigerianPidginIsSelected() {
+    verifyLanguageIsSelected(index = NIGERIAN_PIDGIN_BUTTON_INDEX, expectedLanguageName = "Naijá")
   }
 
   private fun verifyLanguageIsSelected(index: Int, expectedLanguageName: String) {

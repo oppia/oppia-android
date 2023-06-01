@@ -155,6 +155,8 @@ class AppLanguageResourceHandler @Inject constructor(
       AudioLanguage.FRENCH_AUDIO_LANGUAGE -> getLocalizedDisplayName("fr")
       AudioLanguage.CHINESE_AUDIO_LANGUAGE -> getLocalizedDisplayName("zh")
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> getLocalizedDisplayName("pt", "BR")
+      AudioLanguage.ARABIC_LANGUAGE -> getLocalizedDisplayName("ar", "EG")
+      AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> "Naijá" // TODO: Replace this with version introduced in language picker.
       AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED,
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> getLocalizedDisplayName("en")
     }

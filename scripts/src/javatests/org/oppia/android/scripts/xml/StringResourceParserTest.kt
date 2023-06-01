@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
+import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.NIGERIAN_PIDGIN
 
 /** Tests for [StringResourceParser]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -44,6 +45,11 @@ class StringResourceParserTest {
     private val SWAHILI_STRINGS = mapOf(
       "shared_string" to "Kicheza Ugunduzi",
       "swahili_only_string" to "Badili Wasifu"
+    )
+
+    private val NIGERIAN_PIDGIN_STRINGS = mapOf(
+      "shared_string" to "Pause di audio",
+      "nigerian_pidgin_only_string" to "Abeg select all di correct choices."
     )
   }
 
@@ -79,6 +85,7 @@ class StringResourceParserTest {
     populateArabicTranslations()
     populateBrazilianPortugueseTranslations()
     populateSwahiliTranslations()
+    populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
     val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
@@ -93,6 +100,7 @@ class StringResourceParserTest {
     populateBrazilianPortugueseTranslations()
     populateEnglishTranslations()
     populateSwahiliTranslations()
+    populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
     val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
@@ -107,6 +115,7 @@ class StringResourceParserTest {
     populateArabicTranslations()
     populateEnglishTranslations()
     populateSwahiliTranslations()
+    populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
     val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
@@ -121,6 +130,7 @@ class StringResourceParserTest {
     populateArabicTranslations()
     populateBrazilianPortugueseTranslations()
     populateEnglishTranslations()
+    populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
     val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
@@ -128,6 +138,21 @@ class StringResourceParserTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Missing translation strings for language(s): SWAHILI")
+  }
+
+  @Test
+  fun testRetrieveBaseStringFile_noNigerianPidginStrings_throwsException() {
+    populateArabicTranslations()
+    populateBrazilianPortugueseTranslations()
+    populateEnglishTranslations()
+    populateSwahiliTranslations()
+    val parser = StringResourceParser(tempFolder.root)
+
+    val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Missing translation strings for language(s): NIGERIAN_PIDGIN")
   }
 
   @Test
@@ -151,6 +176,7 @@ class StringResourceParserTest {
     populateArabicTranslations()
     populateBrazilianPortugueseTranslations()
     populateSwahiliTranslations()
+    populateNigerianPidginTranslations()
     populateTranslations(utilityResources, "values", mapOf())
     val parser = StringResourceParser(tempFolder.root)
 
@@ -167,6 +193,7 @@ class StringResourceParserTest {
     populateArabicTranslations()
     populateBrazilianPortugueseTranslations()
     populateSwahiliTranslations()
+    populateNigerianPidginTranslations()
     writeTranslationsFile(appResources, "values", "<bad XML>")
     val parser = StringResourceParser(tempFolder.root)
 
@@ -203,10 +230,11 @@ class StringResourceParserTest {
 
     val nonEnglishTranslations = parser.retrieveAllNonEnglishTranslations()
 
-    assertThat(nonEnglishTranslations).hasSize(3)
+    assertThat(nonEnglishTranslations).hasSize(4)
     assertThat(nonEnglishTranslations).containsKey(ARABIC)
     assertThat(nonEnglishTranslations).containsKey(BRAZILIAN_PORTUGUESE)
     assertThat(nonEnglishTranslations).containsKey(SWAHILI)
+    assertThat(nonEnglishTranslations).containsKey(NIGERIAN_PIDGIN)
     assertThat(nonEnglishTranslations).doesNotContainKey(ENGLISH) // Only non-English are included.
     val arFile = nonEnglishTranslations[ARABIC]
     assertThat(arFile?.language).isEqualTo(ARABIC)
@@ -223,6 +251,11 @@ class StringResourceParserTest {
     assertThat(swFile?.file?.toRelativeString(tempFolder.root))
       .isEqualTo("app/src/main/res/values-sw/strings.xml")
     assertThat(swFile?.strings).containsExactlyEntriesIn(SWAHILI_STRINGS)
+    val pcmFile = nonEnglishTranslations[NIGERIAN_PIDGIN]
+    assertThat(pcmFile?.language).isEqualTo(NIGERIAN_PIDGIN)
+    assertThat(pcmFile?.file?.toRelativeString(tempFolder.root))
+      .isEqualTo("app/src/main/res/values-pcm/strings.xml")
+    assertThat(pcmFile?.strings).containsExactlyEntriesIn(NIGERIAN_PIDGIN_STRINGS)
   }
 
   private fun populateAllAppTranslations() {
@@ -230,6 +263,7 @@ class StringResourceParserTest {
     populateBrazilianPortugueseTranslations()
     populateEnglishTranslations()
     populateSwahiliTranslations()
+    populateNigerianPidginTranslations()
   }
 
   private fun populateArabicTranslations() {
@@ -246,6 +280,10 @@ class StringResourceParserTest {
 
   private fun populateSwahiliTranslations() {
     populateTranslations(appResources, "values-sw", SWAHILI_STRINGS)
+  }
+
+  private fun populateNigerianPidginTranslations() {
+    populateTranslations(appResources, "values-pcm", NIGERIAN_PIDGIN_STRINGS)
   }
 
   private fun populateTranslations(

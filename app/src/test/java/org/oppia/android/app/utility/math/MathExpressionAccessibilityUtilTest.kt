@@ -114,6 +114,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 
 /**
  * Tests for [MathExpressionAccessibilityUtil].
@@ -175,6 +176,7 @@ class MathExpressionAccessibilityUtilTest {
     Iteration("PORTUGUESE", "language=PORTUGUESE"),
     Iteration("BRAZILIAN_PORTUGUESE", "language=BRAZILIAN_PORTUGUESE"),
     Iteration("SWAHILI", "language=SWAHILI"),
+    Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN"),
     Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   )
   fun testConvertToString_constExp_unsupportedLanguage_returnsNull() {
@@ -193,6 +195,7 @@ class MathExpressionAccessibilityUtilTest {
     Iteration("PORTUGUESE", "language=PORTUGUESE"),
     Iteration("BRAZILIAN_PORTUGUESE", "language=BRAZILIAN_PORTUGUESE"),
     Iteration("SWAHILI", "language=SWAHILI"),
+    Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN"),
     Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   )
   fun testConvertToString_constEq_unsupportedLanguage_returnsNull() {
@@ -211,7 +214,7 @@ class MathExpressionAccessibilityUtilTest {
       .asList()
       .containsExactly(
         LANGUAGE_UNSPECIFIED, ENGLISH, ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE,
-        SWAHILI, UNRECOGNIZED
+        SWAHILI, NIGERIAN_PIDGIN, UNRECOGNIZED
       )
   }
 

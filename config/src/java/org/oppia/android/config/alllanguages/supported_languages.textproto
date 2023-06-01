@@ -138,3 +138,26 @@ language_definitions {
     }
   }
 }
+language_definitions {
+  language: NIGERIAN_PIDGIN
+  fallback_macro_language: ENGLISH
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pcm"
+    }
+    android_resources_language_id {
+      language_code: "pcm"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pcm"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pcm"
+    }
+  }
+}

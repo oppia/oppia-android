@@ -30,6 +30,10 @@ enum OppiaLanguage {
 
   // Corresponds to the Swahili (Kiswahili) macro language. IETF BCP 47 language tag: sw.
   SWAHILI = 7;
+
+  // Corresponds to the Nigerian English-based creole (Naijá) language (a pidgin language).
+  // IETF BCP 47 language tag: pcm (as of RFC 5646 since pcm was introduced in ISO 639-3).
+  NIGERIAN_PIDGIN = 8;
 }
 
 // The list of regions explicitly supported natively by the Android app. Note that the app is not
@@ -57,6 +61,10 @@ enum OppiaRegion {
 
   // Corresponds to Kenya (Jamhuri ya Kenya). IETF BCP 47 region tag: KE.
   KENYA = 4;
+
+  // Corresponds to Nigeria (Jamhuriyar Tarayyar Najeriya / Ọ̀hàńjíkọ̀ Ọ̀hànézè Naìjíríyà / Orílẹ̀-èdè
+  // Olómìniira Àpapọ̀ Nàìjíríà). IETF BCP 47 region tag: NG (per ISO 3166).
+  NIGERIA = 5;
 }
 
 // Defines the list of supported languages in the app.

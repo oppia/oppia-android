@@ -283,7 +283,8 @@ class EventBundleCreatorTest {
     Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish"),
     Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese"),
     Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese"),
-    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili")
+    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili"),
+    Iteration("pcm", "inLang=NIGERIAN_PIDGIN", "expLang=Nigerian Pidgin")
   )
   fun testFillEventBundle_eventWithSelectedAppLanguage_savesCorrectAppLanguageInBundle() {
     setUpTestApplicationComponent()
@@ -323,7 +324,8 @@ class EventBundleCreatorTest {
     Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish"),
     Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese"),
     Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese"),
-    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili")
+    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili"),
+    Iteration("pcm", "inLang=NIGERIAN_PIDGIN", "expLang=Nigerian Pidgin")
   )
   fun testFillEventBundle_eventWithSelectedWrittenTranslationsLanguage_savesCorrectWrittenLang() {
     setUpTestApplicationComponent()
@@ -361,7 +363,8 @@ class EventBundleCreatorTest {
     Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish"),
     Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese"),
     Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese"),
-    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili")
+    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili"),
+    Iteration("pcm", "inLang=NIGERIAN_PIDGIN", "expLang=Nigerian Pidgin")
   )
   fun testFillEventBundle_eventWithSelectedAudioTranslationsLanguage_savesCorrectAudioLang() {
     setUpTestApplicationComponent()

@@ -151,6 +151,9 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN_VALUE
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -1782,6 +1785,79 @@ class HomeActivityTest {
     }
   }
 
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
+    appStringIetfTag = "pcm",
+    appStringAndroidLanguageId = "pcm",
+    appStringAndroidRegionId = "NG"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
+  fun testHomeActivity_initialNigerianPidginContext_displayStringsInNaija() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 0)
+
+      // TODO: Find home screen text that's in pcm to verify.
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Bom dia,"
+      )
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
+    appStringIetfTag = "pcm",
+    appStringAndroidLanguageId = "pcm",
+    appStringAndroidRegionId = "NG"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
+  fun testHomeActivity_initialNigerianPidginContext_isInLtrLayout() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val layoutDirection = displayLocale.getLayoutDirection()
+      assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
+    }
+  }
+
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
+    appStringIetfTag = "pcm",
+    appStringAndroidLanguageId = "pcm",
+    appStringAndroidRegionId = "NG"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testHomeActivity_initialNigerianPidginContext_hasNaijaDisplayLocale() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the display locale is set up correctly (for string formatting).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val localeContext = displayLocale.localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(NIGERIAN_PIDGIN)
+    }
+  }
+
   private fun markSpotlightSeen(profileId: ProfileId) {
     spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.PROMOTED_STORIES)
     testCoroutineDispatchers.runCurrent()
@@ -1966,5 +2042,6 @@ class HomeActivityTest {
   private companion object {
     private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
     private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val NIGERIA_NAIJA_LOCALE = Locale("pcm", "NG")
   }
 }
