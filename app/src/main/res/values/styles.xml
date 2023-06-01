@@ -499,6 +499,7 @@
     <item name="android:layout_marginEnd">10dp</item>
     <item name="android:paddingEnd">20dp</item>
     <item name="android:paddingStart">20dp</item>
-    <item name="android:radius">10dp</item>
+    <item name="android:paddingTop">4dp</item>
+    <item name="android:paddingBottom">4dp</item>
   </style>
 </resources>

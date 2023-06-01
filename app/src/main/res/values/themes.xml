@@ -53,8 +53,8 @@
   </style>
 
   <style name="DeprecationAlertDialogTheme" parent="OppiaAlertDialogTheme">
-    <item name="android:paddingBottom">3dp</item>
-    <item name="android:color">@color/component_color_shared_dialogs_radio_button_unchecked_color</item>
+    <item name="android:paddingBottom">4dp</item>
+    <item name="android:color">@color/component_color_shared_secondary_2_text_color</item>
     <item name="buttonBarPositiveButtonStyle">@style/DeprecationAlertDialogPositiveButton</item>
   </style>
 
