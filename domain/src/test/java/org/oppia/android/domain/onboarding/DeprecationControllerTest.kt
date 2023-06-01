@@ -89,7 +89,7 @@ class DeprecationControllerTest {
     executeInPreviousAppInstance { testComponent ->
       val appDeprecationResponse = DeprecationResponse.newBuilder().apply {
         deprecatedVersion = 5
-        deprecationNoticeType = DeprecationNoticeType.DEPRECATION_NOTICE_TYPE_APP_UPDATE
+        deprecationNoticeType = DeprecationNoticeType.APP_DEPRECATION
       }.build()
 
       testComponent.getDeprecationController().setDeprecationResponse(appDeprecationResponse)
@@ -109,7 +109,7 @@ class DeprecationControllerTest {
       .isEqualTo(
         DeprecationResponse.newBuilder().apply {
           deprecatedVersion = 5
-          deprecationNoticeType = DeprecationNoticeType.DEPRECATION_NOTICE_TYPE_APP_UPDATE
+          deprecationNoticeType = DeprecationNoticeType.APP_DEPRECATION
         }.build()
       )
   }
@@ -119,7 +119,7 @@ class DeprecationControllerTest {
     executeInPreviousAppInstance { testComponent ->
       val osDeprecationResponse = DeprecationResponse.newBuilder().apply {
         deprecatedVersion = 5
-        deprecationNoticeType = DeprecationNoticeType.DEPRECATION_NOTICE_TYPE_OS_UPDATE
+        deprecationNoticeType = DeprecationNoticeType.OS_DEPRECATION
       }.build()
 
       testComponent.getDeprecationController().setDeprecationResponse(osDeprecationResponse)
@@ -139,7 +139,7 @@ class DeprecationControllerTest {
       .isEqualTo(
         DeprecationResponse.newBuilder().apply {
           deprecatedVersion = 5
-          deprecationNoticeType = DeprecationNoticeType.DEPRECATION_NOTICE_TYPE_OS_UPDATE
+          deprecationNoticeType = DeprecationNoticeType.OS_DEPRECATION
         }.build()
       )
   }
