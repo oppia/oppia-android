@@ -78,9 +78,9 @@ private class FilterPerLanguageResources {
     val removedLanguageCodes = allReferencedLanguageCodes - supportedLanguageCodes
     val updatedResourceTable = resourceTable.recompute(supportedLanguageCodes)
     println(
-      "${removedLanguageCodes.size} resources are being removed that are tied to unsupported" +
-        " languages: $removedLanguageCodes (size reduction:" +
-        " ${resourceTable.serializedSize - updatedResourceTable.serializedSize} bytes)."
+      "${resourceTable.countResources() - updatedResourceTable.countResources()} resources are" +
+        " being removed that are tied to unsupported languages: $removedLanguageCodes (size" +
+        " reduction: ${resourceTable.serializedSize - updatedResourceTable.serializedSize} bytes)."
     )
 
     ZipOutputStream(outputModuleZip.outputStream()).use { outputStream ->
@@ -95,6 +95,8 @@ private class FilterPerLanguageResources {
     }
   }
 
+  private fun ResourceTable.countResources(): Int = packageList.sumOf { it.countResources() }
+
   private fun ResourceTable.recompute(allowedLanguageCodes: Set<String>): ResourceTable {
     val updatedPackages = packageList.mapNotNull { it.recompute(allowedLanguageCodes) }
     return toBuilder().apply {
@@ -102,6 +104,8 @@ private class FilterPerLanguageResources {
       addAllPackage(updatedPackages)
     }.build()
   }
+
+  private fun Package.countResources(): Int = typeList.sumOf { it.countResources() }
 
   private fun Package.recompute(allowedLanguageCodes: Set<String>): Package? {
     val updatedTypes = typeList.mapNotNull { it.recompute(allowedLanguageCodes) }
@@ -112,6 +116,8 @@ private class FilterPerLanguageResources {
       }.build()
     } else null
   }
+
+  private fun Type.countResources(): Int = entryList.sumOf { it.configValueCount }
 
   private fun Type.recompute(allowedLanguageCodes: Set<String>): Type? {
     val updatedEntries = entryList.mapNotNull { it.recompute(allowedLanguageCodes) }

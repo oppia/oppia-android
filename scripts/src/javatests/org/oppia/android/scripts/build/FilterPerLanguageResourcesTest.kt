@@ -232,7 +232,7 @@ class FilterPerLanguageResourcesTest {
     val outputLine = readStandardOutputLines().single()
     assertThat(outputLine)
       .isEqualTo(
-        "3 resources are being removed that are tied to unsupported languages: [pcm, pt-BR, sw]" +
+        "4 resources are being removed that are tied to unsupported languages: [pcm, pt-BR, sw]" +
           " (size reduction: 99 bytes)."
       )
   }
