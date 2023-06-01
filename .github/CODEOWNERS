@@ -185,7 +185,6 @@
 
 # Repository-wide configurations and documentation that should only be changed
 # after careful consideration.
-# changed.
 /.github/CODE_OF_CONDUCT.md @oppia/owners
 /.github/CONTRIBUTING.md @oppia/owners
 /.github/README.md @oppia/owners
