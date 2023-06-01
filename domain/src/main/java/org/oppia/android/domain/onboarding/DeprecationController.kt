@@ -102,7 +102,7 @@ class DeprecationController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val deprecationBuilder = if (deprecationResponse.deprecationNoticeType
-        == DeprecationNoticeType.DEPRECATION_NOTICE_TYPE_APP_UPDATE
+        == DeprecationNoticeType.APP_DEPRECATION
       ) {
         it.toBuilder()
           .setAppDeprecationResponse(deprecationResponse)

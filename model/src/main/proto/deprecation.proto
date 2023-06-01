@@ -7,36 +7,43 @@ import "version.proto";
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
-// Top-level proto used to store deprecation messages
+
+// Top-level proto used to store deprecation responses. This proto is used to store the response to
+// a dialog notifying the user of an optional update, as well as the response to a dialog notifying
+// the user of an OS deprecation.
 message DeprecationResponseDatabase {
-    // Stores the response to a request for an optional update.
+    // Stores the response to a dialog notifying the user that an optional update is available for
+    // download.
     DeprecationResponse app_deprecation_response = 1;
 
-    // Stores the response to a dialog notifying the user of an OS deprecation.
+    // Stores the response to a dialog notifying the user that their OS is deprecated.
     DeprecationResponse os_deprecation_response = 2;
 }
 
-// Stores the response to a request for an optional or OS update.
+// Holds the response to a dialog notifying the user that an optional update is available for
+// download, or that their OS is deprecated.
 message DeprecationResponse {
-    // The version code of the app in which the user has skipped.
+    // The app version of the latest available update at the time the user dismissed a deprecation
+    // notice dialog.
     int32 deprecated_version = 1;
 
-    // The number of milliseconds since epoch corresponding to the date that the user has dismissed
-    // the update notice dialog.
-    uint64 date_skipped_timestamp_millis = 2;
+    // The timestamp in milliseconds since epoch corresponding to the date and time that the user
+    // dismissed the deprecation notice dialog.
+    uint64 notice_dismissed_timestamp_millis = 2;
 
-    // The type of deprecation notice to be displayed to the user.
+    // The [DeprecationNoticeType] of the dialog that the user has dismissed. This can
+    // either be unspecified, an app deprecation or an OS deprecation notice.
     DeprecationNoticeType deprecation_notice_type = 3;
 }
 
-// Distinguishes between the different deprecation notices to be displayed to the user.
+// An enum object that represents the different deprecation notices that can be shown to the user.
 enum DeprecationNoticeType {
-    // Unspecified notice type
+    // Unspecified notice type.
     DEPRECATION_NOTICE_TYPE_UNSPECIFIED = 0;
 
-    // App update notice
-    DEPRECATION_NOTICE_TYPE_APP_UPDATE = 1;
+    // App update notice type.
+    APP_DEPRECATION = 1;
 
-    // OS update notice
-    DEPRECATION_NOTICE_TYPE_OS_UPDATE = 2;
+    // OS deprecation notice type.
+    OS_DEPRECATION = 2;
 }
