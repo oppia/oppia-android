@@ -1,10 +1,15 @@
 ################################################################################
 #                        IMPORTANT NOTES FOR CODEOWNERS:                       #
 #                                                                              #
-# - If you will be unavailable for more than 24 hours, please replace your     #
-#   ownership with a delegate, file an issue, and update your membership in    #
-#   your group's settings to exempt you from code reviews. Please make sure to #
-#   restore ownership after you're able to continue reviews.                   #
+# - If you will be unavailable for more than 24 hours, please do the all of    #
+#   the following:                                                             #
+#   (a) Make sure there are other folks on your codeowner team.                #
+#   (b) Send a note to them and make sure they can cover your reviews while    #
+#     absent, and tell them when you'll be back. Please include @BenHenning,   #
+#     @seanlip, and @adhiamboperes on that note.                               #
+#   (c) Update your GitHub status to "busy" to make sure you don't get         #
+#     reviews.                                                                 #
+#   (d) When you're back, change your status back so that you get new reviews. #
 #                                                                              #
 # - The order of ownership below matters. The later line always takes          #
 #   precedence, so broad ownership (e.g. directory-based) should be listed     #
@@ -30,7 +35,7 @@
 /app/src/main/res/**/*.xml @oppia/android-frontend-reviewers
 
 # Exemptions to resource shrinking.
-/app/src/main/res/raw/shrink_exemptions.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/res/raw/shrink_exemptions.xml @oppia/android-dev-workflow-reviewers
 
 ################################################################################
 #                                  data module                                 #
@@ -57,8 +62,8 @@
 ################################################################################
 
 # End-to-end test utilities and modules (experimental currently).
-/instrumentation/**/*.kt @oppia/android-developer-infrastructure-reviewers
-/instrumentation/src/*/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
+/instrumentation/**/*.kt @oppia/android-dev-workflow-reviewers
+/instrumentation/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 
 ################################################################################
 #                                 model module                                 #
@@ -72,18 +77,18 @@
 ################################################################################
 
 # All general-purpose shared test infrastructure.
-/testing/src/main/java/org/oppia/android/testing/AssertionHelpers.kt @oppia/android-developer-infrastructure-reviewers
-/testing/src/main/java/org/oppia/android/testing/OppiaTestAnnotations.kt @oppia/android-developer-infrastructure-reviewers
-/testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt @oppia/android-developer-infrastructure-reviewers
-/testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt @oppia/android-developer-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/data/ @oppia/android-developer-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/environment/ @oppia/android-developer-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/junit/ @oppia/android-developer-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/mockito/ @oppia/android-developer-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/platformparameter/ @oppia/android-developer-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/robolectric/ @oppia/android-developer-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/threading/ @oppia/android-developer-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/time/ @oppia/android-developer-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/AssertionHelpers.kt @oppia/android-dev-workflow-reviewers
+/testing/src/main/java/org/oppia/android/testing/OppiaTestAnnotations.kt @oppia/android-dev-workflow-reviewers
+/testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt @oppia/android-dev-workflow-reviewers
+/testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/data/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/environment/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/junit/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/mockito/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/platformparameter/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/robolectric/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/threading/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/time/ @oppia/android-dev-workflow-reviewers
 
 # All domain and utility-specific shared test infrastructure.
 /testing/src/main/java/org/oppia/android/testing/FakeAnalyticsEventLogger.kt @oppia/android-app-infrastructure-reviewers
@@ -118,23 +123,23 @@
 
 # Covers all scripts in the codebase which are used for developer infrastructure,
 # build infrastructure, CI checks, and more.
-/scripts/ @oppia/android-developer-infrastructure-reviewers
+/scripts/ @oppia/android-dev-workflow-reviewers
 
 ################################################################################
 #                              third_party module                              #
 ################################################################################
 
 # Third-party configurations and infrastructure (not covered elsewhere).
-/third_party/ @oppia/android-developer-infrastructure-reviewers
+/third_party/ @oppia/android-dev-workflow-reviewers
 
 ################################################################################
 #                                utility module                                #
 ################################################################################
 
 # Utilities that support central developer workflow infrastructure.
-/utility/src/*/java/org/oppia/android/util/platformparameter/ @oppia/android-developer-infrastructure-reviewers
-/utility/src/*/java/org/oppia/android/util/system/ @oppia/android-developer-infrastructure-reviewers
-/utility/src/*/java/org/oppia/android/util/threading/ @oppia/android-developer-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/platformparameter/ @oppia/android-dev-workflow-reviewers
+/utility/src/*/java/org/oppia/android/util/system/ @oppia/android-dev-workflow-reviewers
+/utility/src/*/java/org/oppia/android/util/threading/ @oppia/android-dev-workflow-reviewers
 
 # Utilities needed by the domain layer of the app.
 /utility/src/*/java/org/oppia/android/util/caching/ @oppia/android-app-infrastructure-reviewers
@@ -162,7 +167,7 @@
 ################################################################################
 
 # Wiki pages are shared among all owners.
-/wiki/ @oppia/owners @oppia/android-app-infrastructure-reviewers @oppia/android-developer-infrastructure-reviewers @oppia/android-frontend-reviewers
+/wiki/ @oppia/owners @oppia/android-app-infrastructure-reviewers @oppia/android-dev-workflow-reviewers @oppia/android-frontend-reviewers
 
 
 
@@ -174,20 +179,28 @@
 #                           Git/GitHub configurations                          #
 ################################################################################
 
-# Top-level GitHub and Git configuration files.
+# Top-level Git configuration files that should be carefully changed.
 /.gitignore @oppia/owners
-/.github/*.md @oppia/owners
-/.github/ISSUE_TEMPLATE @oppia/owners
-/.github/DISCUSSION_TEMPLATE/q-a-installation.yml @oppia/owners
+
+# Repository-wide configurations and documentation that should be carefully
+# changed.
+/.github/CODE_OF_CONDUCT.md @oppia/owners
+/.github/CONTRIBUTING.md @oppia/owners
+/.github/README.md @oppia/owners
+
+# Top-level GitHub configuration files.
+/.github/PULL_REQUEST_TEMPLATE.md @oppia/android-dev-workflow-reviewers
+/.github/DISCUSSION_TEMPLATE/ @oppia/android-dev-workflow-reviewers
+/.github/ISSUE_TEMPLATE/ @oppia/android-dev-workflow-reviewers
 
 ################################################################################
 #                     Continuous integration configurations                    #
 ################################################################################
 
-/.github/actions/ @oppia/android-developer-infrastructure-reviewers
-/.github/workflows/ @oppia/android-developer-infrastructure-reviewers
-/.github/stale.yml @oppia/android-developer-infrastructure-reviewers
-/.devbots/ @oppia/android-developer-infrastructure-reviewers
+/.github/actions/ @oppia/android-dev-workflow-reviewers
+/.github/workflows/ @oppia/android-dev-workflow-reviewers
+/.github/stale.yml @oppia/android-dev-workflow-reviewers
+/.devbots/ @oppia/android-dev-workflow-reviewers
 
 ################################################################################
 #              Third-party dependencies & licenses configurations              #
@@ -201,18 +214,18 @@
 
 # Extracted license texts. This file should never change since it's only
 # generated during build time.
-/app/src/main/res/values/third_party_dependencies.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/res/values/third_party_dependencies.xml @oppia/android-dev-workflow-reviewers
 
 ################################################################################
 #                         Linter & IDE configurations                          #
 ################################################################################
 
 # Configurations for Buf (Protobuf linter).
-/buf.yaml @oppia/android-developer-infrastructure-reviewers
+/buf.yaml @oppia/android-dev-workflow-reviewers
 
 # IDEA IDE configuration.
-/.editorconfig @oppia/android-developer-infrastructure-reviewers
-/.idea/ @oppia/android-developer-infrastructure-reviewers
+/.editorconfig @oppia/android-dev-workflow-reviewers
+/.idea/ @oppia/android-dev-workflow-reviewers
 
 
 
@@ -233,28 +246,28 @@ WORKSPACE @oppia/android-app-infrastructure-reviewers
 /tools/android/ @oppia/android-app-infrastructure-reviewers
 
 # Configurations for Bazel-built Android App Bundles.
-/bundle_config.pb.json @oppia/android-developer-infrastructure-reviewers
+/bundle_config.pb.json @oppia/android-dev-workflow-reviewers
 
 # Proguard configurations for Bazel builds.
-/config/proguard/ @oppia/android-developer-infrastructure-reviewers
+/config/proguard/ @oppia/android-dev-workflow-reviewers
 
 # Configuration for KitKat-specific curated builds.
-/config/kitkat_main_dex_class_list.txt @oppia/android-developer-infrastructure-reviewers
+/config/kitkat_main_dex_class_list.txt @oppia/android-dev-workflow-reviewers
 
 # Specific manifest files specifically required for Bazel builds.
-/app/src/main/AppAndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
-/app/src/main/DatabindingAdaptersManifest.xml @oppia/android-developer-infrastructure-reviewers
-/app/src/main/DatabindingResourcesManifest.xml @oppia/android-developer-infrastructure-reviewers
-/app/src/main/RecyclerviewAdaptersManifest.xml @oppia/android-developer-infrastructure-reviewers
-/app/src/main/ViewModelManifest.xml @oppia/android-developer-infrastructure-reviewers
-/app/src/main/ViewModelsManifest.xml @oppia/android-developer-infrastructure-reviewers
-/app/src/main/ViewsManifest.xml @oppia/android-developer-infrastructure-reviewers
-/app/src/test/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
-/config/src/java/org/oppia/android/config/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
-/data/src/test/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
-/domain/src/*/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
-/testing/src/test/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
-/utility/src/*/AndroidManifest.xml @oppia/android-developer-infrastructure-reviewers
+/app/src/main/AppAndroidManifest.xml @oppia/android-dev-workflow-reviewers
+/app/src/main/DatabindingAdaptersManifest.xml @oppia/android-dev-workflow-reviewers
+/app/src/main/DatabindingResourcesManifest.xml @oppia/android-dev-workflow-reviewers
+/app/src/main/RecyclerviewAdaptersManifest.xml @oppia/android-dev-workflow-reviewers
+/app/src/main/ViewModelManifest.xml @oppia/android-dev-workflow-reviewers
+/app/src/main/ViewModelsManifest.xml @oppia/android-dev-workflow-reviewers
+/app/src/main/ViewsManifest.xml @oppia/android-dev-workflow-reviewers
+/app/src/test/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+/config/src/java/org/oppia/android/config/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+/data/src/test/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+/domain/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+/testing/src/test/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+/utility/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 
 ################################################################################
 #                             Gradle infrastructure                            #
