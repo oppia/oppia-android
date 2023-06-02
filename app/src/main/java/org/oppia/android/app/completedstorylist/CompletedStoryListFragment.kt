@@ -13,7 +13,9 @@ import javax.inject.Inject
 class CompletedStoryListFragment : InjectableFragment() {
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    /** Key for accessing [CompletedStoryListFragment]. */
     const val COMPLETED_STORY_LIST_FRAGMENT_TAG = "COMPLETED_STORY_LIST_FRAGMENT_TAG"
+    /** [String] key for mapping internalProfileId in [Bundle]. */
     internal const val COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY =
       "CompletedStoryListFragment.profile_id"
 
