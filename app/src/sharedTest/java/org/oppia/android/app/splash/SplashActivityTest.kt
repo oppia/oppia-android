@@ -48,6 +48,7 @@ import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.ScreenName
@@ -132,8 +133,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 
 /**
  * Tests for [SplashActivity]. For context on the activity test rule setup see:

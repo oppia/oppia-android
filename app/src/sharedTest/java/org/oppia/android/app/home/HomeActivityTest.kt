@@ -63,6 +63,8 @@ import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN_VALUE
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
@@ -151,9 +153,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
-import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN_VALUE
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000

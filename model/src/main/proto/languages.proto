@@ -151,17 +151,27 @@ message LanguageSupportDefinition {
   // details on how IETF language tags are formed: https://www.unfoldingword.org/ietf. Current tag
   // registry: http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry.
   // Note that the list above will contain languages not supported on all Android platforms.
+  //
+  // Note that this ID type might also be used to represent IETF BCP 47-recognized creole languages
+  // (which are those that derive a languages into a simpler and mixed form, often a pidgin, e.g.
+  // Nigerian Pidgin which is derived largely from English). See:
+  // https://en.wikipedia.org/wiki/Creole_language.
+  //
+  // Note that these largely differs from macaronic languages in that rather than combining two
+  // separate languages into a mixed language, these are primarily derived from a single language
+  // and often highly localized to a particular region (even though there may be multiple creole
+  // varieties in near proximity).
   message IetfBcp47LanguageId {
     // The language tag according to the IETF BCP 47 standard.
     string ietf_language_tag = 1;
   }
 
   // An identifier representation for macaronic languages (which are languages which combine two
-  // others, e.g.: Hinglish).
+  // others, e.g.: Hinglish). See: https://en.wikipedia.org/wiki/Macaronic_language.
   message MacaronicLanguageId {
     // The combined language code for this macaronic language (e.g. 'hi-en' for Hinglish). Note that
     // the constituent parts of the language may not necessarily correspond to ISO 639-1 language
-    // codes. It's also expected that order matters here: hi-en and en_hi would not correspond to
+    // codes. It's also expected that order matters here: hi-en and en-hi would not correspond to
     // the same macaronic language.
     string combined_language_code = 1;
   }

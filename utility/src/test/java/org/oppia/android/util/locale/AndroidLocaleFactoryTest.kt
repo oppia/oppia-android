@@ -49,6 +49,8 @@ class AndroidLocaleFactoryTest {
     setUpTestApplicationComponent()
   }
 
+  // TODO: Revisit all tests in this suite given the new selection algorithm.
+
   @Test
   fun testCreateLocale_default_throwsException() {
     val exception = assertThrows(IllegalStateException::class) {

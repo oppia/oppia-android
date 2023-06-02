@@ -8,7 +8,7 @@ import java.util.Locale
  * A profile to represent an Android [Locale] object which can be used to easily compare different
  * locales (based on the properties the app cares about), or reconstruct a [Locale] object.
  *
- * @property languageCode the IETF BCP 47 or ISO 639-2 language code
+ * @property languageCode the IETF BCP 47 or ISO 639-2/3 language code
  * @property regionCode the IETF BCP 47 or ISO 3166 alpha-2 region code
  */
 data class AndroidLocaleProfile(val languageCode: String, val regionCode: String) {
@@ -93,9 +93,7 @@ data class AndroidLocaleProfile(val languageCode: String, val regionCode: String
      * it's malformed. Macaronic IDs are always expected to include language and region components,
      * so both fields are guaranteed to be populated in a returned [AndroidLocaleProfile].
      */
-    fun createFromMacaronicLanguage(
-      languageId: LanguageId
-    ): AndroidLocaleProfile? {
+    fun createFromMacaronicLanguage(languageId: LanguageId): AndroidLocaleProfile? {
       if (!languageId.hasMacaronicId()) return null
       val (languageCode, regionCode) =
         languageId.macaronicId.combinedLanguageCode.divide("-") ?: return null

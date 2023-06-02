@@ -8,6 +8,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.ARABIC
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.ENGLISH
+import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.SWAHILI
 import org.oppia.android.testing.assertThrows
 import org.w3c.dom.Document
@@ -18,7 +19,6 @@ import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
-import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.NIGERIAN_PIDGIN
 
 /** Tests for [StringResourceParser]. */
 // FunctionName: test names are conventionally named with underscores.

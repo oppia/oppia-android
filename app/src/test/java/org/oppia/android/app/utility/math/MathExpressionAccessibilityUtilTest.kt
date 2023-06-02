@@ -37,6 +37,7 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
 import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
@@ -114,7 +115,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
-import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 
 /**
  * Tests for [MathExpressionAccessibilityUtil].

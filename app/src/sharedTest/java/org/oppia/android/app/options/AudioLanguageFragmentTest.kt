@@ -35,6 +35,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -98,7 +99,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 
 /** Tests for [AudioLanguageFragment]. */
 // Function name: test names are conventionally named with underscores.

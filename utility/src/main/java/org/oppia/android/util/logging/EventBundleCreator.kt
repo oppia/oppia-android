@@ -3,7 +3,6 @@ package org.oppia.android.util.logging
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import java.util.concurrent.atomic.AtomicInteger
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
@@ -76,6 +75,7 @@ import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLogga
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
@@ -128,7 +128,7 @@ class EventBundleCreator @Inject constructor(
     bundle.putInt("event_type", eventLog.context.activityContextCase.number)
     bundle.putInt("android_sdk", androidSdkVersion)
     bundle.putString("app_version_name", appVersionName)
-    bundle.putInt("app_version_code", appVersionCode) // TODO: Add tests.
+    bundle.putInt("app_version_code", appVersionCode)
     bundle.putInt("dbg_event_count_since_app_open", eventCount.incrementAndGet())
     bundle.putString("oppia_app_lang", eventLog.appLanguageSelection.toAnalyticsText())
     bundle.putString(

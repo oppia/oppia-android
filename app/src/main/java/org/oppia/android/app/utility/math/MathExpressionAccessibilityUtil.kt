@@ -28,6 +28,7 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
 import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
@@ -39,7 +40,6 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
-import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 
 /**
  * Utility for computing an accessibility string for screenreaders to be able to read out parsed
