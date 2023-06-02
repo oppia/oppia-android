@@ -48,13 +48,13 @@ class AndroidLocaleFactory @Inject constructor(
   private fun computePotentialLanguageProfiles(
     localeContext: OppiaLocaleContext,
     languageId: LanguageId
-  ): List<AndroidLocaleProfile> =
+  ): List<ProfileProposal> =
     computeLanguageProfiles(localeContext, localeContext.languageDefinition, languageId)
 
   private fun computePotentialFallbackLanguageProfiles(
     localeContext: OppiaLocaleContext,
     fallbackLanguageId: LanguageId
-  ): List<AndroidLocaleProfile> {
+  ): List<ProfileProposal> {
     return computeLanguageProfiles(
       localeContext, localeContext.fallbackLanguageDefinition, fallbackLanguageId
     )
@@ -64,17 +64,19 @@ class AndroidLocaleFactory @Inject constructor(
     localeContext: OppiaLocaleContext,
     definition: LanguageSupportDefinition,
     languageId: LanguageId
-  ): List<AndroidLocaleProfile> {
+  ): List<ProfileProposal> {
     return if (definition.minAndroidSdkVersion <= Build.VERSION.SDK_INT) {
       listOfNotNull(
         languageId.computeLocaleProfileFromAndroidId(),
-        AndroidLocaleProfile.createFromIetfDefinitions(languageId, localeContext.regionDefinition),
-        AndroidLocaleProfile.createFromMacaronicLanguage(languageId)
+        AndroidLocaleProfile.createFromIetfDefinitions(
+          languageId, localeContext.regionDefinition
+        )?.let(::ProfileProposal),
+        AndroidLocaleProfile.createFromMacaronicLanguage(languageId)?.let(::ProfileProposal)
       )
     } else listOf()
   }
 
-  private fun LanguageId.computeLocaleProfileFromAndroidId(): AndroidLocaleProfile? {
+  private fun LanguageId.computeLocaleProfileFromAndroidId(): ProfileProposal? {
     return if (hasAndroidResourcesLanguageId()) {
       androidResourcesLanguageId.run {
         // Empty region codes are allowed for Android resource IDs since they should always be used
@@ -118,20 +120,30 @@ class AndroidLocaleFactory @Inject constructor(
   private fun maybeConstructProfileWithWildcardSupport(
     languageCode: String,
     regionCode: String
-  ): AndroidLocaleProfile? {
+  ): ProfileProposal? {
     return if (languageCode.isNotEmpty()) {
       val adjustedRegionCode = if (regionCode.isEmpty()) {
         AndroidLocaleProfile.REGION_WILDCARD
       } else regionCode
-      AndroidLocaleProfile(languageCode, adjustedRegionCode)
+      ProfileProposal(AndroidLocaleProfile(languageCode, adjustedRegionCode), hasPriority = true)
     } else null
   }
 
-  private fun List<AndroidLocaleProfile>.findFirstSupported(): AndroidLocaleProfile? = find {
-    availableLocaleProfiles.any { availableProfile ->
-      availableProfile.matches(machineLocale, it)
-    }
+  // TODO: Add tests for prioritization.
+  private fun List<ProfileProposal>.findFirstSupported(): AndroidLocaleProfile? {
+    return find { proposal ->
+      // A proposal with priority means that it should always be considered first since explicit
+      // Android locales are always correct to pick, even if they don't match available system
+      // locales.
+      proposal.hasPriority || availableLocaleProfiles.any { availableProfile ->
+        availableProfile.matches(machineLocale, proposal.androidLocaleProfile)
+      }
+    }?.androidLocaleProfile
   }
+
+  private data class ProfileProposal(
+    val androidLocaleProfile: AndroidLocaleProfile, val hasPriority: Boolean = false
+  )
 
   private companion object {
     private val availableLocaleProfiles by lazy {

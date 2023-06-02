@@ -1793,33 +1793,6 @@ class HomeActivityTest {
     appStringAndroidRegionId = "NG"
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
-  fun testHomeActivity_initialNigerianPidginContext_displayStringsInNaija() {
-    // Ensure the system locale matches the initial locale context.
-    forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(position = 0)
-
-      // TODO: Find home screen text that's in pcm to verify.
-      verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Bom dia,"
-      )
-    }
-  }
-
-  @Test
-  @DefineAppLanguageLocaleContext(
-    oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
-    appStringIetfTag = "pcm",
-    appStringAndroidLanguageId = "pcm",
-    appStringAndroidRegionId = "NG"
-  )
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialNigerianPidginContext_isInLtrLayout() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(NIGERIA_NAIJA_LOCALE)

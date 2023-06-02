@@ -142,13 +142,6 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testOpenFragment_withArabic_selectedLanguageIsArabic() {
-    launchActivityWithLanguage(NIGERIAN_PIDGIN_LANGUAGE).use {
-      verifyArabicIsSelected()
-    }
-  }
-
-  @Test
   fun testOpenFragment_withNigerianPidgin_selectedLanguageIsNaija() {
     launchActivityWithLanguage(NIGERIAN_PIDGIN_LANGUAGE).use {
       verifyNigerianPidginIsSelected()
@@ -258,11 +251,6 @@ class AudioLanguageFragmentTest {
 
   private fun verifyPortugueseIsSelected() {
     verifyLanguageIsSelected(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
-  }
-
-  private fun verifyArabicIsSelected() {
-    // TODO: Figure out why the correct language isn't showing up.
-    verifyLanguageIsSelected(index = ARABIC_BUTTON_INDEX, expectedLanguageName = "العربية")
   }
 
   private fun verifyNigerianPidginIsSelected() {

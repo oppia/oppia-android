@@ -29,7 +29,7 @@ private const val OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID =
 /** Options settings view model for the recycler view in [OptionsFragment]. */
 @FragmentScope
 class OptionControlsViewModel @Inject constructor(
-  val activity: AppCompatActivity,
+  activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   @EnableLanguageSelectionUi private val enableLanguageSelectionUi: PlatformParameterValue<Boolean>,

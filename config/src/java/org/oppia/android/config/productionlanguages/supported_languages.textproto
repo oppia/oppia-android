@@ -111,6 +111,7 @@ language_definitions {
     }
     android_resources_language_id {
       language_code: "pcm"
+      region_code: "NG"
     }
   }
   content_string_id {
@@ -124,4 +125,3 @@ language_definitions {
     }
   }
 }
-

@@ -198,7 +198,7 @@ class StringResourceValidationCheckTest {
       """
       1 language(s) were found with string consistency errors.
       
-      2 consistency error(s) were found for NIGERIAN_PIDGIN strings (file: app/src/main/res/values-pcm/strings.xml):
+      2 consistency error(s) were found for NIGERIAN_PIDGIN strings (file: app/src/main/res/values-pcm-rNG/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
       """.trimIndent().trim()
@@ -244,7 +244,7 @@ class StringResourceValidationCheckTest {
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
       
-      2 consistency error(s) were found for NIGERIAN_PIDGIN strings (file: app/src/main/res/values-pcm/strings.xml):
+      2 consistency error(s) were found for NIGERIAN_PIDGIN strings (file: app/src/main/res/values-pcm-rNG/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
       """.trimIndent().trim()
@@ -270,7 +270,7 @@ class StringResourceValidationCheckTest {
   }
 
   private fun populateNigerianPidginTranslations(strings: Map<String, String>) {
-    populateTranslations(appResources, "values-pcm", strings)
+    populateTranslations(appResources, "values-pcm-rNG", strings)
   }
 
   private fun populateTranslations(

@@ -32,7 +32,8 @@ enum OppiaLanguage {
   SWAHILI = 7;
 
   // Corresponds to the Nigerian English-based creole (Naijá) language (a pidgin language).
-  // IETF BCP 47 language tag: pcm (as of RFC 5646 since pcm was introduced in ISO 639-3).
+  // IETF BCP 47 language tag: pcm (as of RFC 5646 since pcm was introduced in ISO 639-3). However,
+  // since Android doesn't support pcm natively the app uses pcm-NG for app string translations.
   NIGERIAN_PIDGIN = 8;
 }
 

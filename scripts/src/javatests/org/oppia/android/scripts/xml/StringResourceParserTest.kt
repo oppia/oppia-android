@@ -254,7 +254,7 @@ class StringResourceParserTest {
     val pcmFile = nonEnglishTranslations[NIGERIAN_PIDGIN]
     assertThat(pcmFile?.language).isEqualTo(NIGERIAN_PIDGIN)
     assertThat(pcmFile?.file?.toRelativeString(tempFolder.root))
-      .isEqualTo("app/src/main/res/values-pcm/strings.xml")
+      .isEqualTo("app/src/main/res/values-pcm-rNG/strings.xml")
     assertThat(pcmFile?.strings).containsExactlyEntriesIn(NIGERIAN_PIDGIN_STRINGS)
   }
 
@@ -283,7 +283,7 @@ class StringResourceParserTest {
   }
 
   private fun populateNigerianPidginTranslations() {
-    populateTranslations(appResources, "values-pcm", NIGERIAN_PIDGIN_STRINGS)
+    populateTranslations(appResources, "values-pcm-rNG", NIGERIAN_PIDGIN_STRINGS)
   }
 
   private fun populateTranslations(

@@ -524,7 +524,8 @@ class AppLanguageResourceHandlerTest {
     Iteration("hi-en", "lang=HINGLISH", "expectedDisplayText=हिन्दी"),
     Iteration("pt", "lang=PORTUGUESE", "expectedDisplayText=Português"),
     Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE", "expectedDisplayText=Português"),
-    Iteration("sw", "lang=SWAHILI", "expectedDisplayText=Kiswahili")
+    Iteration("sw", "lang=SWAHILI", "expectedDisplayText=Kiswahili"),
+    Iteration("pcm", "lang=NIGERIAN_PIDGIN", "expectedDisplayText=Naijá")
   )
   fun testComputeLocalizedDisplayName_englishLocale_forAllDisplayLanguages_hasTheExpectedOutput() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)

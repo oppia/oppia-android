@@ -279,7 +279,7 @@ class StringLanguageTranslationCheckTest {
   }
 
   private fun populateNigerianPidginTranslations(strings: Map<String, String>) {
-    populateTranslations(appResources, "values-pcm", strings)
+    populateTranslations(appResources, "values-pcm-rNG", strings)
   }
 
   private fun populateTranslations(
