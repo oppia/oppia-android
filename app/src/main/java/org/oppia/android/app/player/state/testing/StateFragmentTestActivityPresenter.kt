@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
 
-/** The presenter for [StateFragmentTestActivity] */
+/** The presenter for [StateFragmentTestActivity]. */
 @ActivityScope
 class StateFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
