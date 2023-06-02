@@ -199,6 +199,7 @@
   <color name="color_palette_slide_drawer_open_status_bar_color">@color/color_def_root_beer_blue</color>
   <color name="color_palette_navbar_header_background_color">@color/color_def_japanese_indigo</color>
   <color name="color_palette_shared_spotlight_hint_background_color">@color/color_def_oppia_light_yellow</color>
+  <color name="color_palette_shared_spotlight_overlay_background_color">@color/color_def_black_24</color>
   <color name="color_palette_shared_close_spotlight_button_color">@color/color_def_black</color>
   <color name="color_palette_shared_spotlight_overlay_arrow_color">@color/color_def_white</color>
   <color name="color_palette_color_palette_walkthrough_status_bar_color">@color/color_def_grey</color>

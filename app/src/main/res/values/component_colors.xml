@@ -82,6 +82,7 @@
   <color name="component_color_shared_navbar_header_background_color">@color/color_palette_navbar_header_background_color</color>
   <color name="component_color_shared_icon_white_color">@color/color_palette_icon_white_color</color>
   <color name="component_color_shared_icon_color">@color/color_palette_icon_color</color>
+  <color name="component_color_shared_spotlight_overlay_background_color">@color/color_def_black_87</color>
   <color name="component_color_shared_spotlight_hint_background_color">@color/color_palette_shared_spotlight_hint_background_color</color>
   <color name="component_color_shared_close_spotlight_button_color">@color/color_palette_shared_close_spotlight_button_color</color>
   <color name="component_color_shared_spotlight_overlay_arrow_color">@color/color_palette_shared_spotlight_overlay_arrow_color</color>

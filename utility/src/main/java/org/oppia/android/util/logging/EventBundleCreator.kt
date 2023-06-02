@@ -3,6 +3,7 @@ package org.oppia.android.util.logging
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import java.util.concurrent.atomic.AtomicInteger
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
@@ -114,6 +115,7 @@ class EventBundleCreator @Inject constructor(
   private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
   private val appVersionCode by lazy { context.getVersionCode() }
   private val appVersionName by lazy { context.getVersionName() }
+  private val eventCount by lazy { AtomicInteger() }
 
   /**
    * Fills the specified [bundle] with a logging-ready representation of [eventLog] and returns a
@@ -126,7 +128,8 @@ class EventBundleCreator @Inject constructor(
     bundle.putInt("event_type", eventLog.context.activityContextCase.number)
     bundle.putInt("android_sdk", androidSdkVersion)
     bundle.putString("app_version_name", appVersionName)
-    bundle.putInt("app_version_code", appVersionCode)
+    bundle.putInt("app_version_code", appVersionCode) // TODO: Add tests.
+    bundle.putInt("dbg_event_count_since_app_open", eventCount.incrementAndGet())
     bundle.putString("oppia_app_lang", eventLog.appLanguageSelection.toAnalyticsText())
     bundle.putString(
       "oppia_content_lang", eventLog.writtenTranslationLanguageSelection.toAnalyticsText()
