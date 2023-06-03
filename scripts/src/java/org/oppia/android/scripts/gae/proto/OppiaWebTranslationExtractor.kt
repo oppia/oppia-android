@@ -102,6 +102,7 @@ class OppiaWebTranslationExtractor private constructor(
         LanguageType.HINDI, LanguageType.HINGLISH -> "hi" // No Hinglish-specific translations.
         LanguageType.BRAZILIAN_PORTUGUESE -> "pt-br"
         LanguageType.SWAHILI -> "sw"
+        LanguageType.NIGERIAN_PIDGIN -> "en" // No Naija-specific translations.
         LanguageType.LANGUAGE_CODE_UNSPECIFIED, LanguageType.UNRECOGNIZED ->
           error("Language is not available in Oppia web's frontend localization strings: $this.")
       }

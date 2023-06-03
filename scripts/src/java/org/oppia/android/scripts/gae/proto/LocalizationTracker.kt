@@ -575,6 +575,7 @@ class LocalizationTracker private constructor(
         "hi-en" -> LanguageType.HINGLISH
         "pt", "pt-br" -> LanguageType.BRAZILIAN_PORTUGUESE
         "sw" -> LanguageType.SWAHILI
+        "pcm" -> LanguageType.NIGERIAN_PIDGIN
         else -> LanguageType.UNRECOGNIZED
       }
     }

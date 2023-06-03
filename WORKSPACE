@@ -18,9 +18,9 @@ android_sdk_repository(
 # Oppia's backend proto API definitions.
 git_repository(
     name = "oppia_proto_api",
-    commit = "7f766e18a4cd25612415f8274230a46b334b583e",
+    commit = "8bcb631e43134afd78b47c9bdd13c076eb550cac",
     remote = "https://github.com/oppia/oppia-proto-api",
-    shallow_since = "1677550783 -0800",
+    shallow_since = "1685758701 -0700",
 )
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")

@@ -744,6 +744,7 @@ private class ExplorationFetcher(
         // Note: Oppia web doesn't support pt-br specific content translations yet.
         LanguageType.BRAZILIAN_PORTUGUESE -> "pt"
         LanguageType.SWAHILI -> "sw"
+        LanguageType.NIGERIAN_PIDGIN -> "pcm"
         LanguageType.LANGUAGE_CODE_UNSPECIFIED, LanguageType.UNRECOGNIZED ->
           error("Unsupported language type: $this.")
       }

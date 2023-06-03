@@ -78,13 +78,13 @@ import org.oppia.proto.v1.structure.ThumbnailDto
 fun main(vararg args: String) {
   check(args.size >= 6) {
     "Expected use: bazel run //scripts:download_lessons <base_url> <gcs_base_url> <gcs_bucket>" +
-      " <api_secret> </output/dir> <cache_mode=none/lazy/force> [/cache/dir] [test,topic,ids]"
+      " </path/to/api/secret.file> </output/dir> <cache_mode=none/lazy/force> [/cache/dir] [test,topic,ids]"
   }
 
   val baseUrl = args[0]
   val gcsBaseUrl = args[1]
   val gcsBucket = args[2]
-  val apiSecret = args[3]
+  val apiSecretPath = args[3]
   val outputDirPath = args[4]
   val cacheModeLine = args[5]
   val (cacheDirPath, force) = when (val cacheMode = cacheModeLine.removePrefix("cache_mode=")) {
@@ -104,6 +104,10 @@ fun main(vararg args: String) {
 
   val baseArgCount = if (cacheDirPath == null) 6 else 7
   val testTopicIds = args.getOrNull(baseArgCount)?.split(',')?.toSet() ?: setOf()
+  val apiSecretFile = File(apiSecretPath).absoluteFile.normalize().also {
+    check(it.exists() && it.isFile) { "Expected API secret file to exist: $apiSecretPath." }
+  }
+  val apiSecret = apiSecretFile.readText().trim()
   val downloader =
     DownloadLessons(baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, force, testTopicIds)
   downloader.downloadLessons(outputDir)
@@ -574,6 +578,7 @@ class DownloadLessons(
         LanguageType.HINGLISH -> "hi-en"
         LanguageType.BRAZILIAN_PORTUGUESE -> "pt-br"
         LanguageType.SWAHILI -> "sw"
+        LanguageType.NIGERIAN_PIDGIN -> "pcm"
         LanguageType.LANGUAGE_CODE_UNSPECIFIED, LanguageType.UNRECOGNIZED ->
           error("Invalid language type: $this.")
       }

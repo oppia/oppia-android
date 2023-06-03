@@ -782,7 +782,8 @@ class GaeAndroidEndpointJsonImpl(
       "oppia-noninteractive-image",
       "oppia-noninteractive-math",
       "oppia-noninteractive-skillreview",
-      "oppia-noninteractive-link" // TODO: This shouldn't be present.
+      "oppia-noninteractive-link", // TODO: This shouldn't be present.
+      "oppia-noninteractive-tabs", // TODO: This shouldn't be present.
     )
 
     private val SUPPORTED_HTML_TAGS = ANDROID_SUPPORTED_HTML_TAGS + SUPPORTED_OPPIA_HTML_TAGS
