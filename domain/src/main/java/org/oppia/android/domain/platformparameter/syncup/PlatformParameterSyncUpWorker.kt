@@ -92,7 +92,9 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
-  /** Synchronously executes the network request to get platform parameters from the Oppia backend */
+  /**
+   * Synchronously executes the network request to get platform parameters from the Oppia backend.
+   */
   private fun makeNetworkCallForPlatformParameters(): Optional<Response<Map<String, Any>>?> {
     return platformParameterService.transform { service ->
       service?.getPlatformParametersByVersion(
@@ -101,7 +103,7 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
-  /** Extracts platform parameters from the remote service and stores them in the cache store */
+  /** Extracts platform parameters from the remote service and stores them in the cache store. */
   private suspend fun refreshPlatformParameters(): Result {
     return try {
       val optionalResponse = makeNetworkCallForPlatformParameters()

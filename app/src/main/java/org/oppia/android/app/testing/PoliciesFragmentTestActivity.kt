@@ -12,7 +12,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
-/** Test Activity used for testing [PoliciesFragment] */
+/** Test Activity used for testing [PoliciesFragment]. */
 class PoliciesFragmentTestActivity : TestActivity(), RouteToPoliciesListener {
 
   @Inject

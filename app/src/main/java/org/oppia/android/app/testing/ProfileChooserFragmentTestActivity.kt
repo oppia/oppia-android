@@ -2,11 +2,11 @@ package org.oppia.android.app.testing
 
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import javax.inject.Inject
 
-/** Test Activity used for testing [ProfileChooserFragment] */
-class ProfileChooserFragmentTestActivity : InjectableAppCompatActivity() {
+/** Test Activity used for testing [ProfileChooserFragment]. */
+class ProfileChooserFragmentTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   @Inject
   lateinit var profileChooserFragmentTestActivityPresenter:
