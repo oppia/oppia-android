@@ -65,8 +65,8 @@ data class AndroidLocaleProfile(val languageCode: String, val regionCode: String
       languageId: LanguageId,
       regionDefinition: RegionSupportDefinition?
     ): AndroidLocaleProfile? {
-      if (!languageId.hasIetfBcp47Id()) return null
       return when {
+        !languageId.hasIetfBcp47Id() -> null
         "-" in languageId.ietfBcp47Id.ietfLanguageTag -> {
           val (languageCode, regionCode) =
             languageId.ietfBcp47Id.ietfLanguageTag.divide("-") ?: return null

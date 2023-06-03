@@ -39,6 +39,9 @@ class AndroidLocaleFactory @Inject constructor(
    * [LanguageUsageMode.APP_STRINGS] usage since prioritizing Android ID matching only affects
    * resource selection (and is based on the [Locale] used).
    *
+   * The returned [Locale] will never match a supported app language that is not supported on the
+   * current running version of Android (from a rendering perspective).
+   *
    * 'Forced locale' means an app-constructed [Locale] is used instead of one of the available
    * system [Locale]s. Using this [Locale] will have one of two effects depending on how it's used:
    * - For resource selection, Android will respect the custom [Locale] iff it includes a region
@@ -142,6 +145,10 @@ class AndroidLocaleFactory @Inject constructor(
     private val definition: LanguageSupportDefinition,
     private val languageId: LanguageId
   ) {
+    private val regionDefinition by lazy {
+      localeContext.regionDefinition.takeIf { localeContext.hasRegionDefinition() }
+    }
+
     /**
      * Returns all [LocaleProfileProposal]s which require matching against system locales for
      * viability (see [LocaleProfileProposal.SystemProposal]) for this source's configured language
@@ -197,7 +204,7 @@ class AndroidLocaleFactory @Inject constructor(
     }
 
     private fun createIetfProfile(): AndroidLocaleProfile? =
-      AndroidLocaleProfile.createFromIetfDefinitions(languageId, localeContext.regionDefinition)
+      AndroidLocaleProfile.createFromIetfDefinitions(languageId, regionDefinition)
 
     private fun createMacaronicProfile(): AndroidLocaleProfile? =
       AndroidLocaleProfile.createFromMacaronicLanguage(languageId)
@@ -231,16 +238,6 @@ class AndroidLocaleFactory @Inject constructor(
       }
     }
   }
-
-  // Locale is always computed based on the Android resource app string identifier if that's
-  // defined. If it isn't, the routine falls back to app language & region country codes (which also
-  // provides interoperability with system-derived contexts). Android-compatible IDs will result in
-  // a guaranteed forced locale since it's assumed that compatibility will have the desired behavior
-  // (but only for app strings). Note that if either identifier is missing for the primary language,
-  // the fallback is used instead (if available), except that IETF BCP 47 tags from the primary
-  // language are used before Android resource codes from the fallback. Thus, the order of this list
-  // is important. Finally, a basic check is done here to make sure this version of Android can
-  // actually render the target language.
 
   /**
    * A chooser for finding [LocaleProfileProposal]s that best matches a specific
