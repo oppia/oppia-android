@@ -166,7 +166,7 @@ class LanguageConfigRetrieverProductionTest {
     assertThat(definition.fallbackMacroLanguage).isEqualTo(OppiaLanguage.ENGLISH)
     assertThat(definition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("pcm")
     assertThat(definition.appStringId.androidResourcesLanguageId.languageCode).isEqualTo("pcm")
-    assertThat(definition.appStringId.androidResourcesLanguageId.regionCode).isEmpty()
+    assertThat(definition.appStringId.androidResourcesLanguageId.regionCode).isEqualTo("NG")
     assertThat(definition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("pcm")
     assertThat(definition.audioTranslationId.ietfBcp47Id.ietfLanguageTag).isEqualTo("pcm")
   }
