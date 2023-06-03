@@ -84,14 +84,7 @@
               "html": "PI can be approximated to 6 correct digits by computing 355/113."
             }
           }],
-          "solution": {
-            "answer_is_exclusive": false,
-            "correct_answer": "",
-            "explanation": {
-              "content_id": "",
-              "html": ""
-            }
-          }
+          "solution": null
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {

@@ -4,6 +4,7 @@
 * Eduardoaddad
 * Jfalarini
 * Leosls
+* Re demz
 * Seanlip
 * Svjatysberega
 * YuriNikolai
@@ -36,7 +37,6 @@
   <string name="cellular_data_alert_dialog_description">O streaming de áudio pode usar muitos dados móveis.</string>
   <string name="cellular_data_alert_dialog_checkbox">Não mostre esta mensagem novamente</string>
   <string name="concept_card_toolbar_title">Cartão de Conceito</string>
-  <string name="concept_card_close_icon_description">Clicar aqui fechará o cartão de conceito.</string>
   <string name="revision_card_toolbar_title">Cartão de Revisão</string>
   <string name="unsaved_exploration_dialog_title">Pretende ir para a página do tópico?</string>
   <string name="unsaved_exploration_dialog_description">Seu progresso não será salvo.</string>
@@ -171,7 +171,6 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Correto!</string>
   <string name="topic_prefix">Tópico: %s</string>
-  <string name="chapter_count_with_story_name">%1$s em %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Capítulo\n    </item>
     <item quantity="other">\n      %s Capítulos\n    </item>
@@ -384,11 +383,11 @@
   <string name="hints_andSolution_close_icon_description">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
   <string name="show_solution" fuzzy="true">Exibir</string>
-  <string name="reveal_solution">Revelar Solução</string>
+  <string name="reveal_solution" fuzzy="true">Revelar Solução</string>
   <string name="reveal_hint">Revelar Dica</string>
-  <string name="the_only_solution_is">A única solução é :</string>
+  <string name="hints_list_exclusive_solution_text">A única solução é: %s</string>
   <string name="this_will_reveal_the_solution">Isso revelará a solução. Tem certeza?</string>
-  <string name="reveal">Revelar</string>
+  <string name="reveal" fuzzy="true">Revelar</string>
   <string name="just_now">Agora</string>
   <string name="last_logged_in_recently">recentemente</string>
   <string name="time_ago">%s atrás</string>
@@ -488,4 +487,7 @@
   <string name="faq_answer_9">&lt;p&gt;Se você não consegue encontrar sua pergunta ou gostaria de relatar um problema, entre em contato conosco em admin@oppia.org.&lt;/p&gt;</string>
   <string name="profile_edit_fragment_test_activity_label">Atividade de Teste de Fragmento de Edição de Perfil</string>
   <string name="administrator_controls_fragment_test_activity_label">Controle Administrativo da Atividade de Teste de Fragmento</string>
+  <string name="state_fragment_item_selection_no_items_selected_hint_text">Por favor, selecione todas as alternativas corretas.</string>
+  <string name="state_fragment_item_selection_some_items_selected_hint_text">Pode selecionar outras opções.</string>
+  <string name="state_fragment_item_selection_max_items_selected_hint_text">Mais do que %s opções podem ser selecionadas.</string>
 </resources>

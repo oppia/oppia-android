@@ -1,4 +1,26 @@
 language_definitions {
+  language: ARABIC
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "ar"
+    }
+    android_resources_language_id {
+      language_code: "ar"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "ar"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "ar"
+    }
+  }
+}
+language_definitions {
   language: ENGLISH
   min_android_sdk_version: 1
   app_string_id {
@@ -54,6 +76,52 @@ language_definitions {
   audio_translation_id {
     ietf_bcp47_id {
       ietf_language_tag: "pt-BR"
+    }
+  }
+}
+language_definitions {
+  language: SWAHILI
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "sw"
+    }
+    android_resources_language_id {
+      language_code: "sw"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "sw"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "sw"
+    }
+  }
+}
+language_definitions {
+  language: NIGERIAN_PIDGIN
+  fallback_macro_language: ENGLISH
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pcm"
+    }
+    android_resources_language_id {
+      language_code: "pcm"
+      region_code: "NG"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pcm"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pcm"
     }
   }
 }

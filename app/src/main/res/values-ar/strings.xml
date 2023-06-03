@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Authors:
+* Alshamiri1
 * Meno25
 * MohamedMedhat
 * Mouradeq
@@ -33,7 +34,6 @@
   <string name="cellular_data_alert_dialog_description">تشغيل الصوت عبر الإنترنت قد يستخدم الكثير من بيانات الهاتف.</string>
   <string name="cellular_data_alert_dialog_checkbox">لا تُظهِر هذه الرسالة مُجددًا</string>
   <string name="concept_card_toolbar_title">بطاقة المفهوم</string>
-  <string name="concept_card_close_icon_description">الضغط هنا سوف يغلق بطاقة المفهوم</string>
   <string name="revision_card_toolbar_title">بطاقة المراجعة</string>
   <string name="unsaved_exploration_dialog_title">هل تريد المغادرة إلى صفحة الموضوع؟</string>
   <string name="unsaved_exploration_dialog_description">لن يتم حفظ تقدمك.</string>
@@ -94,6 +94,7 @@
   <string name="chapter_completed">تم انهاء الفصل %s الذي يحمل عنوان %s</string>
   <string name="chapter_in_progress">الفصل %s الذي يحمل عنوان %s ما زال قيد التقدم</string>
   <string name="chapter_prerequisite_title_label">قم بإنهاء الفصل %s: %s لكي تفتح هذا الفصل.</string>
+  <string name="chapter_prerequisite_title_label_without_chapter_title">أكمل الفصل السابق لفتح هذا الفصل.</string>
   <string name="text_input_default_content_description">أدخل النص.</string>
   <string name="fractions_default_hint_text">أدخل كسر عشري في الصيغة (بسط/مقام)، أو عدد كسري في الصيغة (عدد بسط/مقام).</string>
   <string name="fractions_default_hint_text_no_integer">أدخل كسر عشري في الصيغة بسط/مقام.</string>
@@ -178,7 +179,6 @@
   <string name="size_gb">%s ج.ب</string>
   <string name="correct">صحيح!</string>
   <string name="topic_prefix">الموضوع: %s</string>
-  <string name="chapter_count_with_story_name">%1$s في %2$s</string>
   <plurals name="chapter_count">
     <item quantity="zero">و لا فصل</item>
     <item quantity="one">فصلًا واحدًا</item>
@@ -327,10 +327,14 @@
   <string name="promoted_story_spotlight_hint">من الآن يمكنك مشاهدة الدروس المقترحة لك هنا.</string>
   <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="profile_list_activity_title">الملفات الشخصية</string>
+  <string name="profile_edit_activity_title">تعديل الملفات الشخصية</string>
   <string name="profile_edit_created">تم الإنشاء في %s</string>
   <string name="profile_last_used">آخر استخدام</string>
   <string name="profile_edit_rename">تغيير الاسم</string>
   <string name="profile_edit_reset">إعادة ضبط رقم التعريف الشخصي</string>
+  <string name="profile_edit_mark_chapter_completion">علم الفصول المكتملة</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_label">شغل مبدل اللغات السريع</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_explanation">السماح لهذا المستخدم بالتبديل بسرعة بين اللغة الإنجليزية والسواحيلية ضمن درس.</string>
   <string name="profile_edit_delete">حذف الملف الشخصي</string>
   <string name="profile_edit_delete_dialog_title">هل تريد حذف هذا الملف الشخصي نهائيًا؟</string>
   <string name="profile_edit_delete_dialog_message">سيتم حذف كل التقدم ولن تتمكن من استعادته.</string>
@@ -417,10 +421,12 @@
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="show_solution">عرض الحل</string>
   <string name="reveal_solution">عرض الحل</string>
+  <string name="hint_list_solution_title">الحل</string>
   <string name="reveal_hint">عرض الملاحظة</string>
   <string name="hide_hint">إخفاء تلميح</string>
   <string name="hide_solution">إخفاء الحل</string>
-  <string name="the_only_solution_is">الحل الوحيد هو :</string>
+  <string name="hints_list_exclusive_solution_text">الحل الوحيد هو :%s</string>
+  <string name="hints_list_possible_solution_text">أحد الاجابات هي : %s</string>
   <string name="this_will_reveal_the_solution">سوف يتم إظهار الحل. هل أنت متأكد؟</string>
   <string name="reveal">إظهار</string>
   <string name="just_now">الآن</string>
@@ -536,4 +542,7 @@
   <string name="administrator_controls_fragment_test_activity_label">يتحكم المسؤول في نشاط اختبار التجزئة</string>
   <string name="revision_navigation_cards_header">أكمل دراستك</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">انتقل إلى الجزء السفلي من الشاشة للحصول على تلميح.</string>
+  <string name="state_fragment_item_selection_no_items_selected_hint_text">اختر كل الإجابات الصحيحة من فضلك.</string>
+  <string name="state_fragment_item_selection_some_items_selected_hint_text">يمكنك أن تختار المزيد من الخيارات</string>
+  <string name="state_fragment_item_selection_max_items_selected_hint_text">لا يمكنك اختيار أكثر من %s خيار.</string>
 </resources>

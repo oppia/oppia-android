@@ -91,9 +91,11 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -130,6 +132,8 @@ private const val LESSON_TAB_POSITION_EXTRA_TABS_DISABLED = 0
 private const val REVISION_TAB_POSITION_EXTRA_TABS_DISABLED = 1
 
 /** Tests for [TopicFragment]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -137,39 +141,30 @@ private const val REVISION_TAB_POSITION_EXTRA_TABS_DISABLED = 1
   qualifiers = "port-xxhdpi"
 )
 class TopicFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var spotlightStateController: SpotlightStateController
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var spotlightStateController: SpotlightStateController
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
 
   private val internalProfileId = 0
-
   private val TOPIC_NAME = "Fractions"
 
   @Before
   fun setUp() {
     Intents.init()
+    TestPlatformParameterModule.reset()
   }
 
   @After
@@ -697,7 +692,6 @@ class TopicFragmentTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
-      testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
       matchStringOnListItem(
@@ -715,6 +709,100 @@ class TopicFragmentTest {
         targetViewId = R.id.master_skills_text_view,
         stringToMatch = "Master These Skills"
       )
+    }
+  }
+
+  @Test
+  fun testOpenFragment_lessonsTabDefaulted_logsLessonsTabOpen() {
+    initializeApplicationComponent(enableExtraTabsUi = false)
+    markAllSpotlightsSeen()
+    launchTopicPlayStoryActivityIntent(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ).use {
+      assertThat(fakeAnalyticsEventLogger.getMostRecentEvent())
+        .hasOpenLessonsTabContextThat()
+        .hasTopicIdThat()
+        .isEqualTo(FRACTIONS_TOPIC_ID)
+    }
+  }
+
+  @Test
+  fun testOpenFragment_lessonsTabDefaulted_switchToRevisionTab_logsRevisionTabOpen() {
+    initializeApplicationComponent(enableExtraTabsUi = false)
+    markAllSpotlightsSeen()
+    launchTopicPlayStoryActivityIntent(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ).use {
+      clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
+      testCoroutineDispatchers.runCurrent()
+
+      assertThat(fakeAnalyticsEventLogger.getMostRecentEvent())
+        .hasOpenRevisionTabContextThat()
+        .hasTopicIdThat()
+        .isEqualTo(FRACTIONS_TOPIC_ID)
+    }
+  }
+
+  @Test
+  fun testOpenFragment_lessonsTabDefaulted_switchToRevisionTabThenBack_logsLessonsTabOpenAgain() {
+    initializeApplicationComponent(enableExtraTabsUi = false)
+    markAllSpotlightsSeen()
+    launchTopicPlayStoryActivityIntent(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ).use {
+      clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
+      testCoroutineDispatchers.runCurrent()
+      clickTabAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
+      testCoroutineDispatchers.runCurrent()
+
+      assertThat(fakeAnalyticsEventLogger.getMostRecentEvent())
+        .hasOpenLessonsTabContextThat()
+        .hasTopicIdThat()
+        .isEqualTo(FRACTIONS_TOPIC_ID)
+    }
+  }
+
+  @Test
+  fun testOpenFragment_extraTabs_openInfoTab_logsInfoTabOpen() {
+    initializeApplicationComponent(enableExtraTabsUi = true)
+    markAllSpotlightsSeen()
+    launchTopicPlayStoryActivityIntent(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ).use {
+      clickTabAtPosition(position = INFO_TAB_POSITION)
+      testCoroutineDispatchers.runCurrent()
+
+      assertThat(fakeAnalyticsEventLogger.getMostRecentEvent())
+        .hasOpenInfoTabContextThat()
+        .hasTopicIdThat()
+        .isEqualTo(FRACTIONS_TOPIC_ID)
+    }
+  }
+
+  @Test
+  fun testOpenFragment_extraTabs_openQuestionsTab_logsInfoQuestionsOpen() {
+    initializeApplicationComponent(enableExtraTabsUi = true)
+    markAllSpotlightsSeen()
+    launchTopicPlayStoryActivityIntent(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ).use {
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      testCoroutineDispatchers.runCurrent()
+
+      assertThat(fakeAnalyticsEventLogger.getMostRecentEvent())
+        .hasOpenPracticeTabContextThat()
+        .hasTopicIdThat()
+        .isEqualTo(FRACTIONS_TOPIC_ID)
     }
   }
 
@@ -762,7 +850,9 @@ class TopicFragmentTest {
     topicId: String,
     storyId: String
   ): ActivityScenario<TopicActivity> {
-    return launch(createTopicPlayStoryActivityIntent(internalProfileId, topicId, storyId))
+    return launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(internalProfileId, topicId, storyId)
+    ).also { testCoroutineDispatchers.runCurrent() }
   }
 
   private fun clickTabAtPosition(position: Int) {

@@ -23,6 +23,7 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
 
   private lateinit var binding: CompletedStoryListFragmentBinding
 
+  /** Initializes and creates the views for [CompletedStoryListFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,

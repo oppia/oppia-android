@@ -1,8 +1,4 @@
 todo_open_exemption {
-  exempted_file_path: ".github/CODEOWNERS"
-  line_number: 9
-}
-todo_open_exemption {
   exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoOpenCheckTest.kt"
   line_number: 67
   line_number: 68
@@ -289,4 +285,25 @@ todo_open_exemption {
 todo_open_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/model/Todo.kt"
   line_number: 10
+}
+
+todo_open_exemption {
+  exempted_file_path: "wiki/Coding-style-guide.md"
+  line_number: 43
+}
+
+todo_open_exemption {
+  exempted_file_path: "wiki/Static-Analysis-Checks.md"
+  line_number: 169
+  line_number: 177
+  line_number: 182
+  line_number: 186
+  line_number: 190
+  line_number: 192
+  line_number: 207
+  line_number: 217
+  line_number: 220
+  line_number: 223
+  line_number: 226
+  line_number: 229
 }

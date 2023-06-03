@@ -1,82 +1,72 @@
 package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Logger that handles general-purpose logging throughout the domain & UI layers. */
-class OppiaLogger @Inject constructor(
-  private val analyticsController: AnalyticsController,
-  private val consoleLogger: ConsoleLogger,
-  private val oppiaClock: OppiaClock
-) {
-  /** Logs high-priority events. See [AnalyticsController.logImportantEvent] for more context. */
-  fun logImportantEvent(eventContext: EventLog.Context) {
-    analyticsController.logImportantEvent(oppiaClock.getCurrentTimeMs(), eventContext)
-  }
-
-  /** Logs a verbose message with the specified tag. See [ConsoleLogger.v] for more context */
+class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) {
+  /** Logs a verbose message with the specified tag. See [ConsoleLogger.v] for more context. */
   fun v(tag: String, msg: String) {
     consoleLogger.v(tag, msg)
   }
 
   /**
    * Logs a verbose message with the specified tag, message and exception. See [ConsoleLogger.v]
-   * for more context
+   * for more context.
    */
   fun v(tag: String, msg: String, tr: Throwable) {
     consoleLogger.v(tag, msg, tr)
   }
 
-  /** Logs a debug message with the specified tag. See [ConsoleLogger.d] for more context */
+  /** Logs a debug message with the specified tag. See [ConsoleLogger.d] for more context. */
   fun d(tag: String, msg: String) {
     consoleLogger.d(tag, msg)
   }
 
   /**
    * Logs a debug message with the specified tag, message and exception. See [ConsoleLogger.d] for
-   * more context
+   * more context.
    */
   fun d(tag: String, msg: String, tr: Throwable) {
     consoleLogger.d(tag, msg, tr)
   }
 
-  /** Logs an info message with the specified tag. See [ConsoleLogger.i] for more context */
+  /** Logs an info message with the specified tag. See [ConsoleLogger.i] for more context. */
   fun i(tag: String, msg: String) {
     consoleLogger.i(tag, msg)
   }
 
   /**
    * Logs an info message with the specified tag, message and exception. See [ConsoleLogger.i] for
-   * more context
+   * more context.
    */
   fun i(tag: String, msg: String, tr: Throwable) {
     consoleLogger.i(tag, msg, tr)
   }
 
-  /** Logs a warn message with the specified tag. See [ConsoleLogger.w] for more context */
+  /** Logs a warn message with the specified tag. See [ConsoleLogger.w] for more context. */
   fun w(tag: String, msg: String) {
     consoleLogger.w(tag, msg)
   }
 
   /**
    * Logs a warn message with the specified tag, message and exception. See [ConsoleLogger.w] for
-   * more context
+   * more context.
    */
   fun w(tag: String, msg: String, tr: Throwable) {
     consoleLogger.w(tag, msg, tr)
   }
 
-  /** Logs an error message with the specified tag. See [ConsoleLogger.e] for more context */
+  /** Logs an error message with the specified tag. See [ConsoleLogger.e] for more context. */
   fun e(tag: String, msg: String) {
     consoleLogger.e(tag, msg)
   }
 
   /**
    * Logs an error message with the specified tag, message and exception. See [ConsoleLogger.e] for
-   * more context
+   * more context.
    */
   fun e(tag: String, msg: String, tr: Throwable?) {
     consoleLogger.e(tag, msg, tr)
@@ -87,7 +77,9 @@ class OppiaLogger @Inject constructor(
     return EventLog.Context.newBuilder().setOpenHome(true).build()
   }
 
-  /** Returns the context of the event indicating that the user opened the profile chooser activity. */
+  /**
+   * Returns the context of the event indicating that the user opened the profile chooser activity.
+   */
   fun createOpenProfileChooserContext(): EventLog.Context {
     return EventLog.Context.newBuilder().setOpenProfileChooser(true).build()
   }
@@ -204,18 +196,24 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of the event indicating that the user opened the revision card. */
-  fun createOpenRevisionCardContext(
-    topicId: String,
-    subTopicId: Int
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setOpenRevisionCard(
-        EventLog.RevisionCardContext.newBuilder()
-          .setTopicId(topicId)
-          .setSubTopicId(subTopicId)
-          .build()
-      )
-      .build()
+  /** Returns the context of the event indicating that the user opened a revision card. */
+  fun createOpenRevisionCardContext(topicId: String, subtopicIndex: Int): EventLog.Context {
+    return EventLog.Context.newBuilder().apply {
+      openRevisionCard = createRevisionCardContext(topicId, subtopicIndex)
+    }.build()
+  }
+
+  /** Returns the context of the event indicating that the user closed a revision card. */
+  fun createCloseRevisionCardContext(topicId: String, subtopicIndex: Int): EventLog.Context {
+    return EventLog.Context.newBuilder().apply {
+      closeRevisionCard = createRevisionCardContext(topicId, subtopicIndex)
+    }.build()
+  }
+
+  private fun createRevisionCardContext(topicId: String, subtopicIndex: Int): RevisionCardContext {
+    return RevisionCardContext.newBuilder().apply {
+      this.topicId = topicId
+      this.subTopicId = subtopicIndex
+    }.build()
   }
 }

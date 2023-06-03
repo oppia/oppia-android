@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
@@ -30,7 +30,7 @@ const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
 class ExplorationActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   StopStatePlayingSessionWithSavedProgressListener,
   StateKeyboardButtonListener,
   AudioButtonListener,
@@ -45,7 +45,6 @@ class ExplorationActivity :
   RequestVoiceOverIconSpotlightListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
-
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
 
@@ -53,7 +52,7 @@ class ExplorationActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val params = intent.getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
+    val params = intent.extractParams()
     explorationActivityPresenter.handleOnCreate(
       this,
       params.profileId,
@@ -103,6 +102,9 @@ class ExplorationActivity :
         decorateWithScreenName(EXPLORATION_ACTIVITY)
       }
     }
+
+    private fun Intent.extractParams() =
+      getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
   }
 
   override fun onBackPressed() {

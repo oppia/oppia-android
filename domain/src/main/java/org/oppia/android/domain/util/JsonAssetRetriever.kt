@@ -8,7 +8,7 @@ import javax.inject.Inject
 /** Utility that retrieves JSON assets and converts them to JSON objects. */
 class JsonAssetRetriever @Inject constructor(private val assetRepository: AssetRepository) {
 
-  /** Loads the JSON string from an asset and converts it to a JSONObject */
+  /** Loads the JSON string from an asset and converts it to a JSONObject. */
   fun loadJsonFromAsset(assetName: String): JSONObject? {
     return JSONObject(assetRepository.loadTextFileFromLocalAssets(assetName))
   }
