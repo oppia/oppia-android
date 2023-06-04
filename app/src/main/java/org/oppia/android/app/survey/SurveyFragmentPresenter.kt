@@ -13,12 +13,14 @@ import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.survey.surveyitemviewmodel.FreeFormItemsViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.MarketFitItemsViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.NpsItemsViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.SurveyAnswerItemViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.UserTypeItemsViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.SurveyFragmentBinding
+import org.oppia.android.databinding.SurveyFreeFormLayoutBinding
 import org.oppia.android.databinding.SurveyMarketFitQuestionLayoutBinding
 import org.oppia.android.databinding.SurveyNpsScoreLayoutBinding
 import org.oppia.android.databinding.SurveyUserTypeQuestionLayoutBinding
@@ -102,6 +104,9 @@ class SurveyFragmentPresenter @Inject constructor(
           is NpsItemsViewModel -> {
             SurveyAnswerItemViewModel.ViewType.NPS_OPTIONS
           }
+          is FreeFormItemsViewModel -> {
+            SurveyAnswerItemViewModel.ViewType.FREE_FORM_ANSWER
+          }
           else -> {
             throw IllegalStateException("Invalid ViewType")
           }
@@ -133,6 +138,12 @@ class SurveyFragmentPresenter @Inject constructor(
           val npsViewModel = viewModel as NpsItemsViewModel
           binding.viewModel = npsViewModel
         }
+      )
+      .registerViewDataBinder(
+        viewType = SurveyAnswerItemViewModel.ViewType.FREE_FORM_ANSWER,
+        inflateDataBinding = SurveyFreeFormLayoutBinding::inflate,
+        setViewModel = SurveyFreeFormLayoutBinding::setViewModel,
+        transformViewModel = { it as FreeFormItemsViewModel }
       )
       .build()
   }
@@ -175,9 +186,9 @@ class SurveyFragmentPresenter @Inject constructor(
         )
       )
       SurveyQuestionName.NPS -> surveyViewModel.itemList.add(NpsItemsViewModel())
-      SurveyQuestionName.PROMOTER_FEEDBACK -> TODO()
-      SurveyQuestionName.PASSIVE_FEEDBACK -> TODO()
-      SurveyQuestionName.DETRACTOR_FEEDBACK -> TODO()
+      SurveyQuestionName.PROMOTER_FEEDBACK -> surveyViewModel.itemList.add(FreeFormItemsViewModel())
+      SurveyQuestionName.PASSIVE_FEEDBACK -> surveyViewModel.itemList.add(FreeFormItemsViewModel())
+      SurveyQuestionName.DETRACTOR_FEEDBACK -> surveyViewModel.itemList.add(FreeFormItemsViewModel())
       else -> {}
     }
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)

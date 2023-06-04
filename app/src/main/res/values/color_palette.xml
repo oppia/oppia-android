@@ -250,4 +250,5 @@
   <color name="color_palette_survey_disabled_button_color">@color/color_def_survey_disabled_button_grey</color>
   <color name="color_palette_survey_disabled_button_text_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_button_text_color">@color/color_def_persian_green</color>
+  <color name="color_palette_edit_text_unselected_color">@color/color_def_grey</color>
 </resources>
