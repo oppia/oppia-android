@@ -16,7 +16,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
-  /** Handles onCreate() method of the [ResumeLessonActivity] */
+  /** Handles onCreate() method of the [ResumeLessonActivity]. */
   fun handleOnCreate(
     profileId: ProfileId,
     topicId: String,

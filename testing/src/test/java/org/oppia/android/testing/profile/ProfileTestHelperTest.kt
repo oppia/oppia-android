@@ -2,7 +2,6 @@ package org.oppia.android.testing.profile
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,16 +10,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -35,7 +26,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -57,17 +47,11 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileTestHelperTest.TestApplication::class)
 class ProfileTestHelperTest {
-  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Mock lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
-
-  @Captor lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Before
   fun setUp() {
@@ -80,12 +64,11 @@ class ProfileTestHelperTest {
 
   @Test
   fun testInitializeProfiles_initializeProfiles_checkProfilesAreAddedAndCurrentIsSet() {
-    profileTestHelper.initializeProfiles().observeForever(mockUpdateResultObserver)
+    val initializationResult = profileTestHelper.initializeProfiles()
     val profilesProvider = profileManagementController.getProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value).isSuccess()
+    assertThat(initializationResult).isSuccess()
     val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
     assertThat(profiles[0].name).isEqualTo("Admin")
     assertThat(profiles[0].isAdmin).isTrue()
@@ -96,12 +79,11 @@ class ProfileTestHelperTest {
 
   @Test
   fun testInitializeProfiles_addOnlyAdminProfile_checkProfileIsAddedAndCurrentIsSet() {
-    profileTestHelper.addOnlyAdminProfile().observeForever(mockUpdateResultObserver)
+    val initializationResult = profileTestHelper.addOnlyAdminProfile()
     val profilesProvider = profileManagementController.getProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value).isSuccess()
+    assertThat(initializationResult).isSuccess()
     val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
     assertThat(profiles.size).isEqualTo(1)
     assertThat(profiles[0].name).isEqualTo("Admin")
