@@ -73,7 +73,7 @@ import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLogga
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.NetworkUsageLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StartupLatencyLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -109,8 +109,8 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
 class EventBundleCreator @Inject constructor(
   private val context: Context,
   private val eventTypeNameConverter: EventTypeToHumanReadableNameConverter,
-  @EnableLearnerStudyAnalytics
-  private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @EnableLoggingLearnerStudyIds
+  private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>
 ) {
   private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
   private val appVersionCode by lazy { context.getVersionCode() }
@@ -142,7 +142,7 @@ class EventBundleCreator @Inject constructor(
       eventContext.storeValue(
         PropertyStore(
           bundle,
-          allowUserIds = enableLearnerStudyAnalytics.value
+          allowUserIds = enableLoggingLearnerStudyIds.value
         )
       )
     }.activityName

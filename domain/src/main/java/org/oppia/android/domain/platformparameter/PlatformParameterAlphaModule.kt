@@ -21,15 +21,20 @@ import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableFastInLessonLanguageSwitching
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.FAST_IN_LESSON_LANGUAGE_SWITCHING
+import org.oppia.android.util.platformparameter.FAST_IN_LESSON_LANGUAGE_SWITCHING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
+import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
@@ -104,7 +109,29 @@ class PlatformParameterAlphaModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
-      ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
+      ?: PlatformParameterValue.createDefaultParameter(true)
+  }
+
+  @Provides
+  @EnableFastInLessonLanguageSwitching
+  fun provideFastInLessonLanguageSwitching(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    // Turn on fast language switching functionality by default.
+    return platformParameterSingleton.getBooleanPlatformParameter(FAST_IN_LESSON_LANGUAGE_SWITCHING)
+      ?: PlatformParameterValue.createDefaultParameter(
+        FAST_IN_LESSON_LANGUAGE_SWITCHING_DEFAULT_VALUE
+      )
+  }
+
+  @Provides
+  @EnableLoggingLearnerStudyIds
+  fun provideLoggingLearnerStudyIds(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    // Turn on fast language switching functionality by default.
+    return platformParameterSingleton.getBooleanPlatformParameter(LOGGING_LEARNER_STUDY_IDS)
+      ?: PlatformParameterValue.createDefaultParameter(LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE)
   }
 
   @Provides

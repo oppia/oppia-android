@@ -102,12 +102,63 @@ class DecodeUserStudyEventString {
     private const val CARRIAGE_RETURN = '\r'.toInt()
     private const val NEW_LINE = '\n'.toInt()
     private const val SPACE = ' '.toInt()
+    private val base64Decoder by lazy { Base64.getDecoder() }
 
     private inline fun <reified M : Message> InputStream.fromCompressedBase64(baseMessage: M): M {
-      return GZIPInputStream(Base64.getDecoder().wrap(WhitespaceStrippingInputStream(this))).use {
-        baseMessage.newBuilderForType().mergeFrom(it).build() as M
-      }
+      println("[1/5] Reading file...")
+      val rawData = readBytes()
+
+      println("[2/5] Stripping whitespace...")
+      val stripped = rawData.tryTransform(::WhitespaceStrippingInputStream)
+
+      println("[3/5] Decoding Base64...")
+      val decoded = stripped.tryTransform(base64Decoder::wrap)
+
+      println("[4/5] Decompressing using GZIP...")
+      val inflated = decoded.tryTransform(::GZIPInputStream)
+
+      println("[5/5] Reading binary proto...")
+      return baseMessage.newBuilderForType().also {
+        try {
+          it.mergeFrom(inflated)
+        } catch (e: Exception) {
+          println("Failed to deflate all data in the protocol buffer.")
+          e.printStackTrace(System.out)
+        }
+      }.build() as M
     }
+
+    private fun ByteArray.tryTransform(inputFactory: (InputStream) -> InputStream): ByteArray {
+      val byteStream = inputStream()
+      return inputFactory(byteStream).use { it.recoverAsManyBytesAsPossible() }.also {
+        if (it.exception != null) {
+          val byteCount = size - byteStream.available()
+          println(
+            "Encountered failure during stage: $byteCount/$size bytes were read, producing" +
+              " ${it.data.size} bytes for the next stage."
+          )
+          it.exception.printStackTrace(System.out)
+          println()
+        }
+      }.data
+    }
+
+    private fun InputStream.recoverAsManyBytesAsPossible(): RecoveryResult {
+      val bytes = mutableListOf<Byte>()
+      var nextByte: Int
+      do {
+        nextByte = when (val latestRead = tryRead()) {
+          is ReadResult.HasByte -> latestRead.value
+          is ReadResult.HasFailure ->
+            return RecoveryResult(bytes.toByteArray(), latestRead.exception)
+        }
+        if (nextByte != -1) bytes += nextByte.toByte()
+      } while (nextByte != -1)
+      return RecoveryResult(bytes.toByteArray(), exception = null)
+    }
+
+    private fun InputStream.tryRead(): ReadResult =
+      try { ReadResult.HasByte(read()) } catch (e: Exception) { ReadResult.HasFailure(e) }
 
     private fun Message.convertToText(): String =
       TextFormat.printer().escapingNonAscii(false).printToString(this)
@@ -134,6 +185,33 @@ class DecodeUserStudyEventString {
       }
 
       override fun close() = base.close()
+    }
+
+    /**
+     * The result of attempting to decode/translate data.
+     *
+     * @property data the resulting data (which should contain as much sequential data that could be
+     *     recovered as was possible)
+     * @property exception the failure which resulted in no more data being collected, or ``null``
+     *     if the transfer succeeded without data loss
+     */
+    private class RecoveryResult(val data: ByteArray, val exception: Exception?)
+
+    /** The result of trying to read a single byte from an [InputStream]. */
+    private sealed class ReadResult {
+      /**
+       * A [ReadResult] that indicates the read was successful.
+       *
+       * @property value the single byte value that was successfully read
+       */
+      data class HasByte(val value: Int) : ReadResult()
+
+      /**
+       * A [ReadResult] that indicates the read was a failure.
+       *
+       * @property exception the [Exception] that was encountered when trying to read a byte
+       */
+      data class HasFailure(val exception: Exception) : ReadResult()
     }
   }
 }

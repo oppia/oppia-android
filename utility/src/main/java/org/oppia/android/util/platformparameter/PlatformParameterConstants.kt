@@ -111,6 +111,37 @@ const val LEARNER_STUDY_ANALYTICS = "learner_study_analytics"
 const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = false
 
 /**
+ * Qualifier for a feature flag that controls whether learners may be allowed (via an
+ * admin-controlled setting) to use a special in-lesson button for quickly switching between content
+ * languages.
+ *
+ * This is generally expected to only be used in tandem with [EnableLearnerStudyAnalytics].
+ */
+@Qualifier annotation class EnableFastInLessonLanguageSwitching
+
+/** The platform parameter name corresponding to [EnableFastInLessonLanguageSwitching]. */
+const val FAST_IN_LESSON_LANGUAGE_SWITCHING = "fast_in_lesson_language_switching"
+
+/**
+ * The default enabled state for the feature corresponding to [EnableFastInLessonLanguageSwitching].
+ */
+const val FAST_IN_LESSON_LANGUAGE_SWITCHING_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for a feature flag that controls whether learner study IDs should be generated and
+ * logged with outgoing events.
+ *
+ * This is generally expected to only be used in tandem with [EnableLearnerStudyAnalytics].
+ */
+@Qualifier annotation class EnableLoggingLearnerStudyIds
+
+/** The platform parameter name corresponding to [EnableLoggingLearnerStudyIds]. */
+const val LOGGING_LEARNER_STUDY_IDS = "logging_learner_study_ids"
+
+/** The default enabled state for the feature corresponding to [EnableLoggingLearnerStudyIds]. */
+const val LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE = false
+
+/**
  * Qualifier for the platform parameter that controls whether to cache LaTeX rendering using Glide.
  */
 @Qualifier
