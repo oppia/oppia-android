@@ -21,10 +21,14 @@ class MarketFitItemsViewModel @Inject constructor(
 
   override fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
     optionItems.forEach { item -> item.isAnswerSelected.set(false) }
-    selectedItems.clear()
-    selectedItems += itemIndex
+    if (!selectedItems.contains(itemIndex)) {
+      selectedItems.clear()
+      selectedItems += itemIndex
+    } else {
+      selectedItems.clear()
+    }
     updateIsAnswerAvailable()
-    return true
+    return selectedItems.isNotEmpty()
   }
 
   val isAnswerAvailable = ObservableField(false)
