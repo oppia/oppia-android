@@ -354,8 +354,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_studyOff_doesNotHaveEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+  fun testProfileEdit_featureOff_doesNotHaveEnableQuickSwitchingSwitch() {
+    TestPlatformParameterModule.forceEnableFastInLessonLanguageSwitching(false)
 
     // Without the study feature enabled, the switch should not be visible.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -365,8 +365,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_studyOn_hasEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+  fun testProfileEdit_featureOn_hasEnableQuickSwitchingSwitch() {
+    TestPlatformParameterModule.forceEnableFastInLessonLanguageSwitching(true)
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_container))
@@ -376,8 +376,8 @@ class ProfileEditFragmentTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testProfileEdit_studyOn_landscape_hasEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+  fun testProfileEdit_featureOn_landscape_hasEnableQuickSwitchingSwitch() {
+    TestPlatformParameterModule.forceEnableFastInLessonLanguageSwitching(true)
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -392,8 +392,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_studyOn_doNotHaveSwitchingPermission_enableLanguageSwitchingIsOff() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+  fun testProfileEdit_featureOn_doNotHaveSwitchingPermission_enableLanguageSwitchingIsOff() {
+    TestPlatformParameterModule.forceEnableFastInLessonLanguageSwitching(true)
 
     // Without the permission to switch languages, the setting should be off by default.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -403,8 +403,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_studyOn_hasSwitchingPermission_enableLanguageSwitchingIsOn() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+  fun testProfileEdit_featureOn_hasSwitchingPermission_enableLanguageSwitchingIsOn() {
+    TestPlatformParameterModule.forceEnableFastInLessonLanguageSwitching(true)
 
     val updateLangProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
       profileId = ProfileId.newBuilder().apply { internalId = 0 }.build(),
@@ -420,8 +420,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_studyOn_doNotClickEnableLanguageSwitching_doesNotHaveSwitchingPermission() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+  fun testProfileEdit_featureOn_doNotClickEnableLanguageSwitching_doesNotHaveSwitchingPermission() {
+    TestPlatformParameterModule.forceEnableFastInLessonLanguageSwitching(true)
     // Open the UI, but don't interact with it.
     launchFragmentTestActivity(internalProfileId = 0).use {}
 
@@ -437,7 +437,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_studyOn_clickEnableLanguageSwitching_hasSwitchingPermission() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableFastInLessonLanguageSwitching(true)
 
     // Enable language switching in the UI.
     launchFragmentTestActivity(internalProfileId = 0).use {

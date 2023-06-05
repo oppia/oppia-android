@@ -61,7 +61,7 @@ class LanguageConfigRetrieverProductionTest {
     // Change detector test to ensure changes to the configuration are reflected in tests since
     // changes to the configuration can have a major impact on the app (and may require additional
     // work to be done to support the changes).
-    assertThat(supportedLanguages.languageDefinitionsCount).isEqualTo(6)
+    assertThat(supportedLanguages.languageDefinitionsCount).isEqualTo(5)
   }
 
   @Test
@@ -140,19 +140,11 @@ class LanguageConfigRetrieverProductionTest {
   }
 
   @Test
-  fun testLoadSupportedLangs_swahili_isSupportedForAppContentAudioTranslations() {
+  fun testLoadSupportedLanguages_swahili_isNotSupported() {
     val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
 
-    val definition = supportedLanguages.lookUpLanguage(OppiaLanguage.SWAHILI)
-    assertThat(definition.hasAppStringId()).isTrue()
-    assertThat(definition.hasContentStringId()).isTrue()
-    assertThat(definition.hasAudioTranslationId()).isTrue()
-    assertThat(definition.fallbackMacroLanguage).isEqualTo(OppiaLanguage.LANGUAGE_UNSPECIFIED)
-    assertThat(definition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("sw")
-    assertThat(definition.appStringId.androidResourcesLanguageId.languageCode).isEqualTo("sw")
-    assertThat(definition.appStringId.androidResourcesLanguageId.regionCode).isEmpty()
-    assertThat(definition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("sw")
-    assertThat(definition.audioTranslationId.ietfBcp47Id.ietfLanguageTag).isEqualTo("sw")
+    val allLanguages = supportedLanguages.languageDefinitionsList.map { it.language }
+    assertThat(allLanguages).doesNotContain(OppiaLanguage.SWAHILI)
   }
 
   @Test
