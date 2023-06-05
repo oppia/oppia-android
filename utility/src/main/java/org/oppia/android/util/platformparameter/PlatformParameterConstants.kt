@@ -117,15 +117,15 @@ const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = false
  *
  * This is generally expected to only be used in tandem with [EnableLearnerStudyAnalytics].
  */
-@Qualifier annotation class EnableFastInLessonLanguageSwitching
+@Qualifier annotation class EnableFastLanguageSwitchingInLesson
 
-/** The platform parameter name corresponding to [EnableFastInLessonLanguageSwitching]. */
-const val FAST_IN_LESSON_LANGUAGE_SWITCHING = "fast_in_lesson_language_switching"
+/** The platform parameter name corresponding to [EnableFastLanguageSwitchingInLesson]. */
+const val FAST_LANGUAGE_SWITCHING_IN_LESSON = "fast_language_switching_in_lesson"
 
 /**
- * The default enabled state for the feature corresponding to [EnableFastInLessonLanguageSwitching].
+ * The default enabled state for the feature corresponding to [EnableFastLanguageSwitchingInLesson].
  */
-const val FAST_IN_LESSON_LANGUAGE_SWITCHING_DEFAULT_VALUE = false
+const val FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE = false
 
 /**
  * Qualifier for a feature flag that controls whether learner study IDs should be generated and

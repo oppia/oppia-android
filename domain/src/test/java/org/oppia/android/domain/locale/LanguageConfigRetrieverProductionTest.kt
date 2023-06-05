@@ -55,7 +55,7 @@ class LanguageConfigRetrieverProductionTest {
   }
 
   @Test
-  fun testLoadSupportedLanguages_hasSixSupportedLanguages() {
+  fun testLoadSupportedLanguages_hasFiveSupportedLanguages() {
     val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
 
     // Change detector test to ensure changes to the configuration are reflected in tests since

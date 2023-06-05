@@ -4720,12 +4720,12 @@ class StateFragmentTest {
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOn() {
-    TestPlatformParameterModule.forceEnableFastInLessonLanguageSwitching(true)
+    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
     setUpTest()
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOff() {
-    TestPlatformParameterModule.forceEnableFastInLessonLanguageSwitching(false)
+    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(false)
     setUpTest()
   }
 
