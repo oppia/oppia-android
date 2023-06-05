@@ -187,11 +187,31 @@ class DecodeUserStudyEventString {
       override fun close() = base.close()
     }
 
+    /**
+     * The result of attempting to decode/translate data.
+     *
+     * @property data the resulting data (which should contain as much sequential data that could be
+     *     recovered as was possible)
+     * @property exception the failure which resulted in no more data being collected, or ``null``
+     *     if the transfer succeeded without data loss
+     */
     private class RecoveryResult(val data: ByteArray, val exception: Exception?)
 
+    /** The result of trying to read a single byte from an [InputStream]. */
     private sealed class ReadResult {
-      data class HasByte(val value: Int): ReadResult()
-      data class HasFailure(val exception: Exception): ReadResult()
+      /**
+       * A [ReadResult] that indicates the read was successful.
+       *
+       * @property value the single byte value that was successfully read
+       */
+      data class HasByte(val value: Int) : ReadResult()
+
+      /**
+       * A [ReadResult] that indicates the read was a failure.
+       *
+       * @property exception the [Exception] that was encountered when trying to read a byte
+       */
+      data class HasFailure(val exception: Exception) : ReadResult()
     }
   }
 }

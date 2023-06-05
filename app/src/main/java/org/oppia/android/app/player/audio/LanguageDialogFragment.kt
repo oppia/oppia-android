@@ -8,11 +8,11 @@ import androidx.appcompat.view.ContextThemeWrapper
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import javax.inject.Inject
-import kotlin.collections.ArrayList
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 private const val LANGUAGE_LIST_ARGUMENT_KEY = "LanguageDialogFragment.language_list"
 private const val SELECTED_INDEX_ARGUMENT_KEY = "LanguageDialogFragment.selected_index"
@@ -73,7 +73,9 @@ class LanguageDialogFragment : InjectableDialogFragment() {
       if (languageCode == "hi-en") {
         languageNameArrayList.add("Hinglish")
       } else {
-        languageNameArrayList.add(appLanguageResourceHandler.computeLocalizedDisplayName(audioLanguage))
+        languageNameArrayList.add(
+          appLanguageResourceHandler.computeLocalizedDisplayName(audioLanguage)
+        )
       }
     }
 

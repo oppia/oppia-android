@@ -29,6 +29,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
@@ -82,6 +83,8 @@ class ProfileManagementController @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @EnableLearnerStudyAnalytics
   private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  @EnableLoggingLearnerStudyIds
+  private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>,
   private val profileNameValidator: ProfileNameValidator
 ) {
   private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
@@ -267,7 +270,7 @@ class ProfileManagementController @Inject constructor(
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
         numberOfLogins = 0
 
-        if (enableLearnerStudyAnalytics.value) {
+        if (enableLoggingLearnerStudyIds.value) {
           // Only set a learner ID if there's an ongoing user study.
           learnerId = loggingIdentifierController.createLearnerId()
         }
@@ -599,7 +602,7 @@ class ProfileManagementController @Inject constructor(
       val updatedProfile = profile.toBuilder().apply {
         learnerId = when {
           // There should be no learner ID if no ongoing study.
-          !enableLearnerStudyAnalytics.value -> ""
+          !enableLoggingLearnerStudyIds.value -> ""
           learnerId.isEmpty() -> loggingIdentifierController.createLearnerId() // Generate new ID.
           else -> learnerId // Keep it unchanged.
         }
