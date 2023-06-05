@@ -14,30 +14,37 @@ class ImageDownloader(
   private val imageLengths = ConcurrentHashMap<ImageId, Long>()
 
   fun <T> retrieveImageLengthAsync(
-    entityType: GcsService.EntityType,
+    imageContainerType: GcsService.ImageContainerType,
     imageType: GcsService.ImageType,
     entityId: String,
     filename: String,
     transform: (Int) -> T
   ): Deferred<T> {
     return CoroutineScope(coroutineDispatcher).async {
-      val length = imageLengths.getOrPut(ImageId(entityType, entityId, imageType, filename)) {
-        gcsService.fetchImageContentLengthAsync(entityType, imageType, entityId, filename).await()
+      val length = imageLengths.getOrPut(ImageId(imageContainerType, entityId, imageType, filename)) {
+        gcsService.fetchImageContentLengthAsync(imageContainerType, imageType, entityId, filename).await()
       }
       return@async transform(length.toInt())
     }
   }
 
   fun retrieveImageContentAsync(
-    entityType: GcsService.EntityType,
+    imageContainerType: GcsService.ImageContainerType,
     imageType: GcsService.ImageType,
     entityId: String,
     filename: String
-  ): Deferred<ByteArray> =
-    gcsService.fetchImageContentDataAsync(entityType, imageType, entityId, filename)
+  ): Deferred<ByteArray?> =
+    gcsService.fetchImageContentDataAsync(imageContainerType, imageType, entityId, filename)
+
+  fun computeImageUrl(
+    imageContainerType: GcsService.ImageContainerType,
+    imageType: GcsService.ImageType,
+    entityId: String,
+    filename: String
+  ): String = gcsService.computeImageUrl(imageContainerType, imageType, entityId, filename)
 
   private data class ImageId(
-    val entityType: GcsService.EntityType,
+    val imageContainerType: GcsService.ImageContainerType,
     val entityId: String,
     val imageType: GcsService.ImageType,
     val filename: String

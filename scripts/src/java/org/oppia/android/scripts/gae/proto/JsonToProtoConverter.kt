@@ -306,6 +306,12 @@ class JsonToProtoConverter(
       localizationTracker.initializeContainer(containerId, defaultLanguage)
       localizationTracker.trackContainerText(containerId, TITLE, subtopic.title)
       localizationTracker.trackContainerText(containerId, pageContents.subtitledHtml)
+      localizationTracker.trackThumbnail(
+        containerId,
+        subtopic.thumbnailFilename,
+        subtopic.thumbnailBgColor,
+        subtopic.thumbnailSizeInBytes
+      )
 
       // Track translations after all default strings have been established.
       localizationTracker.trackTranslations(containerId, pageContents.writtenTranslations)
@@ -1457,7 +1463,7 @@ class JsonToProtoConverter(
           }.build()
         }
         "HasSpecificTermEqualTo" -> {
-          RatioHasSpecificTermEqualToSpec.newBuilder().apply {
+          this.hasSpecificTermEqualTo = RatioHasSpecificTermEqualToSpec.newBuilder().apply {
             this.inputTermIndex = inputMap.getNonNegativeIntInput(name = "x", containerId)
             this.inputExpectedTermValue = inputMap.getNonNegativeIntInput(name = "y", containerId)
           }.build()

@@ -210,24 +210,24 @@ class LocalizationTracker private constructor(
 
   sealed class ContainerId {
     abstract val webTranslatableActivityId: TranslatableActivityId?
-    abstract val gcsEntityType: GcsService.EntityType
+    abstract val gcsImageContainerType: GcsService.ImageContainerType
     abstract val gcsEntityId: String
 
     data class Exploration(val id: String) : ContainerId() {
       override val webTranslatableActivityId by lazy { TranslatableActivityId.Exploration(id) }
-      override val gcsEntityType = GcsService.EntityType.EXPLORATION
+      override val gcsImageContainerType = GcsService.ImageContainerType.EXPLORATION
       override val gcsEntityId = id
     }
 
     data class Question(val id: String) : ContainerId() {
       override val webTranslatableActivityId = null
-      override val gcsEntityType = GcsService.EntityType.QUESTION
+      override val gcsImageContainerType = GcsService.ImageContainerType.SKILL
       override val gcsEntityId = id
     }
 
     data class ConceptCard(val skillId: String) : ContainerId() {
       override val webTranslatableActivityId = null
-      override val gcsEntityType = GcsService.EntityType.CONCEPT_CARD
+      override val gcsImageContainerType = GcsService.ImageContainerType.SKILL
       override val gcsEntityId = skillId
     }
 
@@ -238,25 +238,25 @@ class LocalizationTracker private constructor(
       override val webTranslatableActivityId by lazy {
         TranslatableActivityId.Subtopic(subtopicPageIdDto.topicId, webUrlFragment)
       }
-      override val gcsEntityType = GcsService.EntityType.REVISION_CARD
+      override val gcsImageContainerType = GcsService.ImageContainerType.TOPIC
       override val gcsEntityId: String = subtopicPageIdDto.topicId
     }
 
     data class Topic(val id: String) : ContainerId() {
       override val webTranslatableActivityId by lazy { TranslatableActivityId.Topic(id) }
-      override val gcsEntityType = GcsService.EntityType.TOPIC
+      override val gcsImageContainerType = GcsService.ImageContainerType.TOPIC
       override val gcsEntityId = id
     }
 
     data class Story(val topicId: String, val storyId: String) : ContainerId() {
       override val webTranslatableActivityId by lazy { TranslatableActivityId.Story(storyId) }
-      override val gcsEntityType = GcsService.EntityType.STORY
+      override val gcsImageContainerType = GcsService.ImageContainerType.STORY
       override val gcsEntityId = storyId
     }
 
     data class Skill(val skillId: String) : ContainerId() {
       override val webTranslatableActivityId by lazy { TranslatableActivityId.Skill(skillId) }
-      override val gcsEntityType = GcsService.EntityType.SKILL
+      override val gcsImageContainerType = GcsService.ImageContainerType.SKILL
       override val gcsEntityId = skillId
     }
 
@@ -268,7 +268,7 @@ class LocalizationTracker private constructor(
       override val webTranslatableActivityId by lazy {
         TranslatableActivityId.Exploration(explorationId)
       }
-      override val gcsEntityType = GcsService.EntityType.CHAPTER
+      override val gcsImageContainerType = GcsService.ImageContainerType.STORY
       override val gcsEntityId = storyId
     }
 
@@ -392,7 +392,7 @@ class LocalizationTracker private constructor(
           " ${getSupportedLanguages()}."
       }
       return languages.getValue(language).convertToContentLocalization(
-        id.gcsEntityType, id.gcsEntityId, imageDownloader
+        id.gcsImageContainerType, id.gcsEntityId, imageDownloader
       )
     }
 
@@ -478,7 +478,7 @@ class LocalizationTracker private constructor(
     }
 
     suspend fun convertToContentLocalization(
-      entityType: GcsService.EntityType,
+      imageContainerType: GcsService.ImageContainerType,
       entityId: String,
       imageDownloader: ImageDownloader
     ): ContentLocalizationDto {
@@ -498,7 +498,7 @@ class LocalizationTracker private constructor(
       // Batch all of the image requests together so that they can run in parallel.
       val imageSizes = referencedImageFilenames.map { filename ->
         imageDownloader.retrieveImageLengthAsync(
-          entityType, GcsService.ImageType.HTML_IMAGE, entityId, filename
+          imageContainerType, GcsService.ImageType.HTML_IMAGE, entityId, filename
         ) { filename to it }
       }.awaitAll().toMap()
       val referencedImages = referencedImageFilenames.map { filename ->

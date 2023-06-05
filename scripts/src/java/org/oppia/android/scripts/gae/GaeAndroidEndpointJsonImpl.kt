@@ -13,12 +13,15 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.withIndex
+import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl.StructureFetcher.RevisionCard.fetchAndSet
+import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl.StructureFetcher.RevisionCard.setSkippedFromFailure
 import org.oppia.android.scripts.gae.compat.CompleteExploration
 import org.oppia.android.scripts.gae.compat.CompleteTopicPack
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityConstraints
 import org.oppia.android.scripts.gae.compat.TopicPackRepository
 import org.oppia.android.scripts.gae.compat.TopicPackRepository.MetricCallbacks.DataGroupType
 import org.oppia.android.scripts.gae.json.AndroidActivityHandlerService
+import org.oppia.android.scripts.gae.json.GaeClassroom
 import org.oppia.android.scripts.gae.json.GaeSkill
 import org.oppia.android.scripts.gae.json.GaeStory
 import org.oppia.android.scripts.gae.json.GaeSubtopic
@@ -27,6 +30,7 @@ import org.oppia.android.scripts.gae.json.GaeTopic
 import org.oppia.android.scripts.gae.proto.ImageDownloader
 import org.oppia.android.scripts.gae.proto.JsonToProtoConverter
 import org.oppia.android.scripts.gae.proto.LocalizationTracker
+import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolveLanguageCode
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestConceptCardProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestExplorationProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestImageProtoVersion
@@ -221,10 +225,15 @@ class GaeAndroidEndpointJsonImpl(
         tracker.countEstimator.setTopicCount(it.size)
         tracker.reportDownloaded("math")
       }
-      // return CLASSROOMS.map(activityService::fetchLatestClassroomAsync)
-      //   .awaitAll()
-      //   .flatMap(GaeClassroom::topicIds)
-      //   .distinct()
+//       SUPPORTED_CLASSROOMS.map { classroomName ->
+//         CoroutineScope(coroutineDispatcher).async {
+//           activityService.fetchLatestClassroomAsync(classroomName).await().also {
+//             tracker.reportDownloaded(classroomName)
+//           }
+//         }
+//       }.awaitAll().flatMap(GaeClassroom::topicIds).distinct().also {
+//         tracker.countEstimator.setTopicCount(it.size)
+//       }
     }
   }
 
@@ -233,6 +242,7 @@ class GaeAndroidEndpointJsonImpl(
   ): DownloadResultDto {
     return DownloadResultDto.newBuilder().apply {
       val fetcher = when (identifier.structureTypeCase) {
+        TOPIC_SUMMARY_ID -> StructureFetcher.TopicSummary
         REVISION_CARD -> StructureFetcher.RevisionCard
         CONCEPT_CARD -> StructureFetcher.ConceptCard
         EXPLORATION -> StructureFetcher.Exploration
@@ -240,10 +250,7 @@ class GaeAndroidEndpointJsonImpl(
         CONCEPT_CARD_LANGUAGE_PACK -> StructureFetcher.ConceptCardLanguagePack
         EXPLORATION_LANGUAGE_PACK -> StructureFetcher.ExplorationLanguagePack
         // Questions aren't yet available from Oppia web & the functionality is disabled in the app.
-        // Also, topic summary isn't supported explicitly since it's receivable entirely through the
-        // list request.
-        TOPIC_SUMMARY_ID, QUESTION_LIST_SKILL_ID, QUESTION, QUESTION_LANGUAGE_PACK ->
-          StructureFetcher.Unsupported
+        QUESTION_LIST_SKILL_ID, QUESTION, QUESTION_LANGUAGE_PACK -> StructureFetcher.Unsupported
         STRUCTURETYPE_NOT_SET, null ->
           error("Encountered invalid request identifier: ${identifier.structureTypeCase}.")
       }
@@ -529,6 +536,41 @@ class GaeAndroidEndpointJsonImpl(
       localizationTracker: LocalizationTracker,
       contentCache: ContentCache
     ): Int
+
+    object TopicSummary : StructureFetcher() {
+      override suspend fun DownloadResultDto.Builder.fetchAndSet(
+        identifier: DownloadRequestStructureIdentifierDto,
+        jsonConverter: JsonToProtoConverter,
+        localizationTracker: LocalizationTracker,
+        contentCache: ContentCache
+      ): Int {
+        val topic = contentCache.topics.getValue(identifier.topicSummaryId)
+        val containerId = LocalizationTracker.ContainerId.createFrom(topic)
+        val defaultLanguage = topic.languageCode.resolveLanguageCode()
+        val subtopicIds = topic.subtopics.map { subtopic ->
+          SubtopicPageIdDto.newBuilder().apply {
+            this.topicId = topic.id
+            this.subtopicIndex = subtopic.id
+          }.build()
+        }
+
+        val storyIds = topic.computeReferencedStoryIds()
+        val subtopicPages = subtopicIds.associateWith { contentCache.subtopics.getValue(it).second }
+        val stories = storyIds.associateWith { contentCache.stories.getValue(it) }
+        val expIds = stories.values.flatMap { it.computeReferencedExplorationIds() }
+        val explorations = expIds.associateWith { contentCache.explorations.getValue(it) }
+
+        val skillIds = topic.computeDirectlyReferencedSkillIds() +
+          stories.values.flatMap { it.computeDirectlyReferencedSkillIds() }
+        val referencedSkills = skillIds.associateWith { contentCache.skills.getValue(it) }
+
+        return if (localizationTracker.isLanguageSupported(containerId, defaultLanguage)) {
+          jsonConverter.convertToDownloadableTopicSummary(
+            topic, defaultLanguage, subtopicPages, stories, explorations, referencedSkills
+          ).also { this@fetchAndSet.topicSummary = it }.contentVersion
+        } else setSkippedFromFailure(identifier)
+      }
+    }
 
     object RevisionCard : StructureFetcher() {
       override suspend fun DownloadResultDto.Builder.fetchAndSet(
