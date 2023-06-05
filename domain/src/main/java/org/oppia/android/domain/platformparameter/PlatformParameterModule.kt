@@ -119,7 +119,6 @@ class PlatformParameterModule {
   fun provideFastInLessonLanguageSwitching(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    // Turn on fast language switching functionality by default.
     return platformParameterSingleton.getBooleanPlatformParameter(FAST_IN_LESSON_LANGUAGE_SWITCHING)
       ?: PlatformParameterValue.createDefaultParameter(
         FAST_IN_LESSON_LANGUAGE_SWITCHING_DEFAULT_VALUE
@@ -131,7 +130,6 @@ class PlatformParameterModule {
   fun provideLoggingLearnerStudyIds(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    // Turn on fast language switching functionality by default.
     return platformParameterSingleton.getBooleanPlatformParameter(LOGGING_LEARNER_STUDY_IDS)
       ?: PlatformParameterValue.createDefaultParameter(LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE)
   }
