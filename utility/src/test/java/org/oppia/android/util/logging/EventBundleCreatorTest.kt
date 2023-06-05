@@ -88,8 +88,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -165,7 +165,7 @@ class EventBundleCreatorTest {
 
   @After
   fun tearDown() {
-    TestModule.enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+    TestModule.enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
   }
 
   @Test
@@ -2363,12 +2363,12 @@ class EventBundleCreatorTest {
     ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = false
+    TestModule.enableLoggingLearnerStudyIds = false
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = true
+    TestModule.enableLoggingLearnerStudyIds = true
     setUpTestApplicationComponent()
   }
 
@@ -2397,7 +2397,7 @@ class EventBundleCreatorTest {
     internal companion object {
       // This is expected to be off by default, so this helps the tests above confirm that the
       // feature's default value is, indeed, off.
-      var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+      var enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
     }
 
     @Provides
@@ -2410,10 +2410,10 @@ class EventBundleCreatorTest {
     // within the same application instance.
     @Provides
     @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideEnableLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+    @EnableLoggingLearnerStudyIds
+    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
+      val enableFeature = enableLoggingLearnerStudyIds
       return object : PlatformParameterValue<Boolean> {
         override val value: Boolean = enableFeature
       }
