@@ -782,4 +782,6 @@
   <dimen name="survey_popup_message_text_size">14sp</dimen>
   <dimen name="survey_popup_message_margin">32dp</dimen>
   <dimen name="survey_popup_button_margin">32dp</dimen>
+  <dimen name="survey_nps_options_margin">8dp</dimen>
+  <dimen name="survey_nps_hint_text_margin">16dp</dimen>
 </resources>

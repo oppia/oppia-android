@@ -615,6 +615,17 @@
 
   </style>
 
+  <style name="SurveyNpsHintTextStyle">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+    <item name="android:layout_marginTop">@dimen/survey_nps_hint_text_margin</item>
+    <item name="android:layout_marginBottom">@dimen/survey_nps_hint_text_margin</item>
+    <item name="android:textSize">@dimen/survey_popup_message_text_size</item>
+    <item name="android:textStyle">italic</item>
+    <item name="android:fontFamily">sans-serif-light</item>
+  </style>
+
   <!-- Survey Welcome Dialog -->
   <style name="SurveyWelcomeDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">false</item>

@@ -3,6 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.survey.surveyitemviewmodel.NpsItemsViewModel" />
@@ -10,160 +11,28 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
       android:id="@+id/not_likely_text_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/SurveyNpsHintTextStyle"
       android:fontFamily="sans-serif-light"
       android:text="@string/survey_nps_not_at_all_likely_label"
-      android:textSize="14sp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.flexbox.FlexboxLayout
+    <org.oppia.android.app.survey.SurveyNpsItemOptionView
       android:id="@+id/survey_nps_buttons_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      app:flexDirection="row"
-      app:flexWrap="wrap"
-      app:justifyContent="center"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/not_likely_text_view">
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="0"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="1"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="2"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="3"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="4"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="5"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="6"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp"
-        app:layout_wrapBefore="true" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="7"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="8"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="9"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-
-      <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/survey_nps_radio_unselected_background"
-        android:button="@null"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="10"
-        android:textColor="@color/component_color_shared_active_text_color"
-        android:textSize="18sp" />
-    </com.google.android.flexbox.FlexboxLayout>
+      android:layout_margin="@dimen/survey_nps_options_margin"
+      app:layout_constraintTop_toBottomOf="@id/not_likely_text_view"
+      app:selectionData="@{viewModel.optionItems}" />
 
     <TextView
       android:id="@+id/extremely_likely_text_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:fontFamily="sans-serif-light"
+      style="@style/SurveyNpsHintTextStyle"
       android:text="@string/survey_nps_extremely_likely_label"
-      android:textSize="14sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@id/survey_nps_buttons_container" />
   </androidx.constraintlayout.widget.ConstraintLayout>
