@@ -23,6 +23,7 @@ import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.android.databinding.PromotedStoryCardBinding
 import org.oppia.android.databinding.SurveyMutipleChoiceItemBinding
+import org.oppia.android.databinding.SurveyNpsItemBinding
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
@@ -169,6 +170,28 @@ class ViewBindingShimImpl @Inject constructor(
     val binding =
       DataBindingUtil.findBinding<SurveyMutipleChoiceItemBinding>(view)!!
     binding.optionContent = viewModel.optionContent
+    binding.viewModel = viewModel
+  }
+
+  override fun provideNpsItemsInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
+    return SurveyNpsItemBinding.inflate(
+      LayoutInflater.from(parent.context),
+      parent,
+      false
+    ).root
+  }
+
+  override fun provideNpsItemsViewModel(
+    view: View,
+    viewModel: MultipleChoiceOptionContentViewModel
+  ) {
+    val binding =
+      DataBindingUtil.findBinding<SurveyNpsItemBinding>(view)!!
+    binding.scoreContent = viewModel.optionContent
     binding.viewModel = viewModel
   }
 

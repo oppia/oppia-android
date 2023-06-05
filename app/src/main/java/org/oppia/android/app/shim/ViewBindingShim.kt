@@ -187,4 +187,23 @@ interface ViewBindingShim {
     view: View,
     viewModel: MultipleChoiceOptionContentViewModel
   )
+
+  /**
+   * Handles binding inflation for [SurveyNpsItemOptionView]'s MultipleChoiceOption and
+   * returns the binding's view.
+   */
+  fun provideNpsItemsInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View
+
+  /**
+   * Handles binding inflation for [SurveyNpsItemOptionView]'s MultipleChoiceOption and
+   * returns the binding's view model.
+   */
+  fun provideNpsItemsViewModel(
+    view: View,
+    viewModel: MultipleChoiceOptionContentViewModel
+  )
 }

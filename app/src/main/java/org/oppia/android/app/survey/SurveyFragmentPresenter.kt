@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
@@ -137,6 +140,12 @@ class SurveyFragmentPresenter @Inject constructor(
           val binding = DataBindingUtil.findBinding<SurveyNpsScoreLayoutBinding>(view)!!
           val npsViewModel = viewModel as NpsItemsViewModel
           binding.viewModel = npsViewModel
+
+          val flexLayoutManager = FlexboxLayoutManager(activity)
+          flexLayoutManager.flexDirection = FlexDirection.ROW
+          flexLayoutManager.justifyContent = JustifyContent.CENTER
+
+          binding.surveyNpsButtonsContainer.layoutManager = flexLayoutManager
         }
       )
       .registerViewDataBinder(
@@ -147,6 +156,15 @@ class SurveyFragmentPresenter @Inject constructor(
       )
       .build()
   }
+
+/*
+  .registerViewDataBinder(
+  viewType = SurveyAnswerItemViewModel.ViewType.NPS_OPTIONS,
+  inflateDataBinding = SurveyNpsScoreLayoutBinding::inflate,
+  setViewModel = SurveyNpsScoreLayoutBinding::setViewModel,
+  transformViewModel = { it as NpsItemsViewModel }
+  )
+*/
 
   private fun subscribeToCurrentQuestion() {
     surveyProgressController.getCurrentQuestion().toLiveData().observe(
@@ -185,10 +203,16 @@ class SurveyFragmentPresenter @Inject constructor(
           answerAvailabilityReceiver
         )
       )
-      SurveyQuestionName.NPS -> surveyViewModel.itemList.add(NpsItemsViewModel())
+      SurveyQuestionName.NPS -> surveyViewModel.itemList.add(
+        NpsItemsViewModel(
+          answerAvailabilityReceiver
+        )
+      )
       SurveyQuestionName.PROMOTER_FEEDBACK -> surveyViewModel.itemList.add(FreeFormItemsViewModel())
       SurveyQuestionName.PASSIVE_FEEDBACK -> surveyViewModel.itemList.add(FreeFormItemsViewModel())
-      SurveyQuestionName.DETRACTOR_FEEDBACK -> surveyViewModel.itemList.add(FreeFormItemsViewModel())
+      SurveyQuestionName.DETRACTOR_FEEDBACK -> surveyViewModel.itemList.add(
+        FreeFormItemsViewModel()
+      )
       else -> {}
     }
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
