@@ -53,7 +53,6 @@ Team leads should do an audit every week to categorise new issues in their GitHu
 
 ## PM contacts for each team
 - **CLaM**:
-    - Lead: Ben Henning (@BenHenning)
-    - Mentor: Adhiambo Peres (@adhiamboperes)
+    - Lead: Sean Lip (@seanlip)
 - **Dev workflow**:
-    - Ben Henning (@BenHenning)
+    - Lead: Ben Henning (@BenHenning)
