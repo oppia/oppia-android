@@ -171,6 +171,7 @@ class ProfileAndDeviceIdFragmentTest {
   fun setUp() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
@@ -785,6 +786,11 @@ class ProfileAndDeviceIdFragmentTest {
         - Uploading learner events: 1
         - Uploaded learner events: 2
       Current sync status: Waiting to schedule data uploading worker….
+      Event log encoding integrity checks:
+      - First 40 chars of encoded string: H4sIAAAAAAAAAOPSlGBUUj3FqMTFX5JaXBKfk5pY
+      - Last 40 chars of encoded string: BzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA
+      - SHA-1 hash (unwrapped event string): 76f7a26348b4034787982f9505c6b5697efc6567
+      - Total event string length (unwrapped): 140
       Encoded event logs:
       H4sIAAAAAAAAAOPSlGBUUj3FqMTFX5JaXBKfk5pYlJdaFJ+ZIgQRyMwrLknMyQEKcBkSrVSLwYjBisGJ
       gU5ajEnVwsTBSDdNTELEBzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA

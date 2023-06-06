@@ -396,7 +396,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun setUpTestApplicationWithLearnerStudy() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 
