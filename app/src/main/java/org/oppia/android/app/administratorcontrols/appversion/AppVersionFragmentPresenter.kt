@@ -17,6 +17,7 @@ class AppVersionFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: AppVersionFragmentBinding
 
+  /** Initializes and creates the views for the [AppVersionFragment]. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = AppVersionFragmentBinding.inflate(
       inflater,

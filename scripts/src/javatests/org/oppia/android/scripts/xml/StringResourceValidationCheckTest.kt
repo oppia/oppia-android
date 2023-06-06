@@ -35,6 +35,10 @@ class StringResourceValidationCheckTest {
     private const val SW_STRING_NO_NEWLINES = "Msaada"
     private const val SW_STRING_ONE_NEWLINE = "\\nMsaada"
     private const val SW_STRING_TWO_NEWLINES = "\\nMsaada\\n"
+
+    private const val PCM_STRING_NO_NEWLINES = "Pause di audio"
+    private const val PCM_STRING_ONE_NEWLINE = "\\nPause di audio"
+    private const val PCM_STRING_TWO_NEWLINES = "\\nPause di audio\\n"
   }
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -82,6 +86,7 @@ class StringResourceValidationCheckTest {
     populateBrazilianPortugueseTranslations(mapOf("str1" to PT_BR_STRING_ONE_NEWLINE))
     populateEnglishTranslations(mapOf("str1" to EN_STRING_ONE_NEWLINE))
     populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
+    populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
     runScript(tempFolder.root.absolutePath)
 
@@ -98,6 +103,7 @@ class StringResourceValidationCheckTest {
       mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE)
     )
     populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
+    populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
     val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
 
@@ -125,6 +131,7 @@ class StringResourceValidationCheckTest {
       mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE)
     )
     populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
+    populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
     val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
 
@@ -152,6 +159,7 @@ class StringResourceValidationCheckTest {
     populateSwahiliTranslations(
       mapOf("str1" to SW_STRING_NO_NEWLINES, "str2" to SW_STRING_TWO_NEWLINES)
     )
+    populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
     val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
 
@@ -163,6 +171,34 @@ class StringResourceValidationCheckTest {
       1 language(s) were found with string consistency errors.
       
       2 consistency error(s) were found for SWAHILI strings (file: app/src/main/res/values-sw/strings.xml):
+      - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
+      - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
+      """.trimIndent().trim()
+    )
+  }
+
+  @Test
+  fun testScript_inconsistentLines_nigerianPidgin_failsWithFindings() {
+    populateArabicTranslations(mapOf("str1" to AR_STRING_ONE_NEWLINE))
+    populateBrazilianPortugueseTranslations(mapOf("str1" to PT_BR_STRING_ONE_NEWLINE))
+    populateEnglishTranslations(
+      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE)
+    )
+    populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
+    populateNigerianPidginTranslations(
+      mapOf("str1" to PCM_STRING_NO_NEWLINES, "str2" to PCM_STRING_TWO_NEWLINES)
+    )
+
+    val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
+
+    // This output check also inadvertently verifies that the script doesn't care about missing
+    // strings in translated string files.
+    assertThat(exception).hasMessageThat().contains("STRING RESOURCE VALIDATION CHECKS FAILED")
+    assertThat(outContent.asString().trim()).isEqualTo(
+      """
+      1 language(s) were found with string consistency errors.
+      
+      2 consistency error(s) were found for NIGERIAN_PIDGIN strings (file: app/src/main/res/values-pcm-rNG/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
       """.trimIndent().trim()
@@ -183,6 +219,9 @@ class StringResourceValidationCheckTest {
     populateSwahiliTranslations(
       mapOf("str1" to SW_STRING_NO_NEWLINES, "str2" to SW_STRING_TWO_NEWLINES)
     )
+    populateNigerianPidginTranslations(
+      mapOf("str1" to PCM_STRING_NO_NEWLINES, "str2" to PCM_STRING_TWO_NEWLINES)
+    )
 
     val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
 
@@ -191,7 +230,7 @@ class StringResourceValidationCheckTest {
     assertThat(exception).hasMessageThat().contains("STRING RESOURCE VALIDATION CHECKS FAILED")
     assertThat(outContent.asString().trim()).isEqualTo(
       """
-      3 language(s) were found with string consistency errors.
+      4 language(s) were found with string consistency errors.
       
       2 consistency error(s) were found for ARABIC strings (file: app/src/main/res/values-ar/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
@@ -202,6 +241,10 @@ class StringResourceValidationCheckTest {
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
       
       2 consistency error(s) were found for SWAHILI strings (file: app/src/main/res/values-sw/strings.xml):
+      - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
+      - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
+      
+      2 consistency error(s) were found for NIGERIAN_PIDGIN strings (file: app/src/main/res/values-pcm-rNG/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
       """.trimIndent().trim()
@@ -224,6 +267,10 @@ class StringResourceValidationCheckTest {
 
   private fun populateSwahiliTranslations(strings: Map<String, String>) {
     populateTranslations(appResources, "values-sw", strings)
+  }
+
+  private fun populateNigerianPidginTranslations(strings: Map<String, String>) {
+    populateTranslations(appResources, "values-pcm-rNG", strings)
   }
 
   private fun populateTranslations(

@@ -10,7 +10,7 @@ import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.app.player.audio.AudioFragment
 import javax.inject.Inject
 
-/** The presenter for [AudioFragmentTestActivity] */
+/** The presenter for [AudioFragmentTestActivity]. */
 @ActivityScope
 class AudioFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity

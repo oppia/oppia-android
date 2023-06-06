@@ -36,10 +36,10 @@ interface InteractionAnswerReceiver {
   fun onAnswerReadyForSubmission(answer: UserAnswer)
 }
 
-/** Categories of errors that can be inferred from a pending answer.  */
+/** Categories of errors that can be inferred from a pending answer. */
 enum class AnswerErrorCategory {
-  /** Corresponds to errors that may be found while the user is trying to input an answer.  */
+  /** Corresponds to errors that may be found while the user is trying to input an answer. */
   REAL_TIME,
-  /** Corresponds to errors that may be found only when a user tries to submit an answer.  */
+  /** Corresponds to errors that may be found only when a user tries to submit an answer. */
   SUBMIT_TIME
 }
