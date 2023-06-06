@@ -16,7 +16,6 @@ import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
@@ -34,7 +33,6 @@ import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSO
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
@@ -60,9 +58,9 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 
-/** Dagger module that provides bindings for platform parameters. */
+/** Dagger module that provides bindings for platform parameters for the alpha app builds. */
 @Module
-class PlatformParameterModule {
+class PlatformParameterAlphaModule {
   @Provides
   @EnableDownloadsSupport
   fun provideEnableDownloadsSupport(): PlatformParameterValue<Boolean> =
@@ -111,7 +109,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
-      ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
+      ?: PlatformParameterValue.createDefaultParameter(true)
   }
 
   @Provides
@@ -193,11 +191,8 @@ class PlatformParameterModule {
 
   @Provides
   @EnableSpotlightUi
-  fun provideEnableSpotlightUi(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
-      ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
-    )
-  }
+  fun provideEnableSpotlightUi(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(true) // Enable spotlights for alpha users.
 
   @Provides
   @EnableExtraTopicTabsUi
