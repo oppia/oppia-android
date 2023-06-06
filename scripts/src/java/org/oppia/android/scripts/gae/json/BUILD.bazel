@@ -3,7 +3,7 @@ Library for providing the JSON model definitions & endpoint details for Oppia we
 Engine Android-specific endpoints, particularly for lesson downloads.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 # TODO: Split this up.
 kt_jvm_library(

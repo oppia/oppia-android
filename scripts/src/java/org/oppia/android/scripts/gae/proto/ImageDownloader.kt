@@ -22,7 +22,9 @@ class ImageDownloader(
   ): Deferred<T> {
     return CoroutineScope(coroutineDispatcher).async {
       val length = imageLengths.getOrPut(ImageId(imageContainerType, entityId, imageType, filename)) {
-        gcsService.fetchImageContentLengthAsync(imageContainerType, imageType, entityId, filename).await()
+        gcsService.fetchImageContentLengthAsync(
+          imageContainerType, imageType, entityId, filename
+        ).await() ?: -1
       }
       return@async transform(length.toInt())
     }

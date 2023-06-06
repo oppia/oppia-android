@@ -26,8 +26,9 @@ sealed class AndroidActivityRequests {
 
   class Adapter {
     @FromJson
-    fun parseFromJson(jsonReader: JsonReader): AndroidActivityRequests =
-      error("Conversion from JSON is not supported.")
+    fun parseFromJson(
+      @Suppress("UNUSED_PARAMETER") jsonReader: JsonReader
+    ): AndroidActivityRequests = error("Conversion from JSON is not supported.")
 
     @ToJson
     fun convertToJson(
@@ -61,7 +62,7 @@ sealed class AndroidActivityRequests {
 
     class Adapter {
       @FromJson
-      fun parseFromJson(jsonReader: JsonReader): ActivityRequest =
+      fun parseFromJson(@Suppress("UNUSED_PARAMETER") jsonReader: JsonReader): ActivityRequest =
         error("Conversion from JSON is not supported.")
 
       @ToJson

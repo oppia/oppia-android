@@ -168,9 +168,8 @@ class DownloadLessons(
   fun downloadLessons(outputDir: File) {
     val downloadJob = CoroutineScope(coroutineDispatcher).launch { downloadAllLessons(outputDir) }
     runBlocking {
-      try {
-        downloadJob.join()
-      } finally {
+      downloadJob.invokeOnCompletion { exception ->
+        exception?.printStackTrace()
         shutdownBlocking()
       }
     }
@@ -558,7 +557,7 @@ class DownloadLessons(
             reference.container.entityId,
             reference.filename
           )
-        val language = reference.container.language ?: "<default structure>"
+        val language = reference.container.language
         when (status) {
           ImageDownloadStatus.SUCCEEDED -> {} // Nothing to report.
           ImageDownloadStatus.FAILED_COULD_NOT_FIND -> {
@@ -777,7 +776,7 @@ class DownloadLessons(
     threadPool.tryShutdownFully(timeout = 5, unit = TimeUnit.SECONDS)
   }
 
-  private data class ImageContainer(val imageContainerType: ImageContainerType, val entityId: String, val language: LanguageType?)
+  private data class ImageContainer(val imageContainerType: ImageContainerType, val entityId: String, val language: LanguageType)
 
   private data class ImageReference(
     val container: ImageContainer, val imageType: ImageType, val filename: String
@@ -1815,30 +1814,30 @@ class DownloadLessons(
     }
 
     private fun DownloadableTopicSummaryDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.TOPIC, entityId = id, language = null)
+      val container = ImageContainer(imageContainerType = ImageContainerType.TOPIC, entityId = id, language = localizations.defaultMapping.language)
       return localizations.collectImageReferences(container) +
-        storySummariesList.flatMap { it.collectImageReferences() } +
+        storySummariesList.flatMap { it.collectImageReferences(localizations.defaultMapping.language) } +
         referencedSkillsList.flatMap { it.collectImageReferences() }
     }
 
     private fun RevisionCardDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.TOPIC, entityId = id.topicId, language = null)
+      val container = ImageContainer(imageContainerType = ImageContainerType.TOPIC, entityId = id.topicId, language = defaultLocalization.language)
       return defaultLocalization.collectImageReferences(container)
     }
 
     private fun ConceptCardDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = skillId, language = null)
+      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = skillId, language = defaultLocalization.language)
       return defaultLocalization.collectImageReferences(container)
     }
 
     private fun ExplorationDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.EXPLORATION, entityId = id, language = null)
+      val container = ImageContainer(imageContainerType = ImageContainerType.EXPLORATION, entityId = id, language = defaultLocalization.language)
       return defaultLocalization.collectImageReferences(container)
     }
 
     private fun QuestionDto.collectImageReferences(): List<ImageReference> {
       // TODO: Should be using skill ID here?
-      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = id, language = null)
+      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = id, language = defaultLocalization.language)
       return defaultLocalization.collectImageReferences(container)
     }
 
@@ -1865,19 +1864,19 @@ class DownloadLessons(
       return localization.collectImageReferences(container)
     }
 
-    private fun StorySummaryDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.STORY, entityId = id, language = null)
+    private fun StorySummaryDto.collectImageReferences(defaultLanguage: LanguageType): List<ImageReference> {
+      val container = ImageContainer(imageContainerType = ImageContainerType.STORY, entityId = id, language = defaultLanguage)
       return localizations.collectImageReferences(container) +
-        chaptersList.flatMap { it.collectImageReferences(this@collectImageReferences.id) }
+        chaptersList.flatMap { it.collectImageReferences(this@collectImageReferences.id, defaultLanguage) }
     }
 
-    private fun ChapterSummaryDto.collectImageReferences(storyId: String): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.STORY, entityId = storyId, language = null)
+    private fun ChapterSummaryDto.collectImageReferences(storyId: String, defaultLanguage: LanguageType): List<ImageReference> {
+      val container = ImageContainer(imageContainerType = ImageContainerType.STORY, entityId = storyId, language = defaultLanguage)
       return localizations.collectImageReferences(container)
     }
 
     private fun SkillSummaryDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = id, language = null)
+      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = id, language = localizations.defaultMapping.language)
       return localizations.collectImageReferences(container)
     }
 

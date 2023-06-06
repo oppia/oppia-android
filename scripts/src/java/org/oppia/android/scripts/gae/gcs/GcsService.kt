@@ -18,7 +18,7 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
     imageType: ImageType,
     entityId: String,
     imageFilename: String
-  ): Deferred<Long> {
+  ): Deferred<Long?> {
     return apiService.fetchImageData(
       gcsBucket,
       imageContainerType.httpRepresentation,
@@ -31,9 +31,10 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
           "Failed to receive body for request: $request."
         }.use { it.contentLength() }
       },
-      default = { request, response ->
-        error("Failed to call: $request. Encountered failure:\n$response")
-      }
+      default = { _, _, -> null }
+//      default = { request, response ->
+//        error("Failed to call: $request. Encountered failure:\n$response")
+//      }
     )
   }
 
@@ -55,9 +56,10 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
           it.byteStream().readBytes()
         }
       },
-      default = { request, response -> null
+      default = { _, _ -> null }
+//      default = { request, response ->
 //        error("Failed to call: $request. Encountered failure:\n$response")
-      }
+//      }
     )
   }
 
@@ -83,7 +85,6 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
     THUMBNAIL(httpRepresentation = "thumbnail")
   }
 
-  private companion object {
     private fun <I, O> Call<I>.resolveAsync(
       transform: (Request, Response<I>) -> O, default: (Request, Response<I>) -> O
     ): Deferred<O> {
@@ -96,5 +97,4 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
         } else default(request(), result)
       }
     }
-  }
 }

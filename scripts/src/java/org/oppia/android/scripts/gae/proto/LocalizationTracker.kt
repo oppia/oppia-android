@@ -568,7 +568,7 @@ class LocalizationTracker private constructor(
       LocalizationTracker(OppiaWebTranslationExtractor.createExtractor(), imageDownloader)
 
     fun String.resolveLanguageCode(): LanguageType {
-      return when (toLowerCase(Locale.US)) {
+      return when (lowercase(Locale.US)) {
         "en", "en_us", "en-us" -> LanguageType.ENGLISH
         "ar" -> LanguageType.ARABIC
         "hi" -> LanguageType.HINDI
@@ -588,7 +588,7 @@ class LocalizationTracker private constructor(
 
     private fun String.isHexString(): Boolean = all { it.isHex() }
 
-    private fun Char.isHex(): Boolean = toLowerCase() in HEX_CHARACTERS
+    private fun Char.isHex(): Boolean = lowercaseChar() in HEX_CHARACTERS
 
     fun LanguageType.isValid(): Boolean =
       this != LanguageType.LANGUAGE_CODE_UNSPECIFIED && this != LanguageType.UNRECOGNIZED
