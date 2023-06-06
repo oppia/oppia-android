@@ -69,20 +69,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/resume_lesson_chapter_title_text_view" />
 
-      <androidx.constraintlayout.widget.ConstraintLayout
+      <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="28dp"
+        app:alignContent="flex_start"
+        app:alignItems="center"
+        app:flexDirection="row"
+        app:flexWrap="wrap"
+        app:justifyContent="space_evenly"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/resume_lesson_chapter_description_text_view">
 
         <com.google.android.material.button.MaterialButton
+          android:layout_margin="8dp"
           android:id="@+id/resume_lesson_start_over_button"
-          android:layout_width="0dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/secondary_button_background"
           android:gravity="center"
@@ -92,22 +98,16 @@
           android:textAllCaps="true"
           android:textColor="@color/component_color_shared_secondary_button_background_trim_color"
           android:textSize="14sp"
-          android:layout_marginEnd="8dp"
           android:text="@string/start_over_lesson_button"
           app:backgroundTint="@null"
           app:icon="@drawable/ic_start_over_24dp"
           app:iconTint="@color/component_color_shared_secondary_button_background_trim_color"
-          app:iconGravity="textStart"
-          app:layout_constraintHorizontal_weight="1"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toStartOf="@+id/resume_lesson_continue_button"
-          app:layout_constraintHorizontal_chainStyle="spread"
-          app:layout_constraintStart_toStartOf="parent" />
+          app:iconGravity="textStart" />
 
 
         <com.google.android.material.button.MaterialButton
           android:id="@+id/resume_lesson_continue_button"
-          android:layout_width="0dp"
+          android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:minWidth="144dp"
           android:gravity="center"
@@ -118,15 +118,10 @@
           android:textAllCaps="true"
           android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="14sp"
-          android:layout_marginStart="8dp"
           android:text="@string/resume_lesson_button"
           app:iconGravity="textEnd"
-          app:layout_constraintHorizontal_weight="1"
-          app:icon="@drawable/ic_arrow_right_alt_24dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toEndOf="@id/resume_lesson_start_over_button" />
-      </androidx.constraintlayout.widget.ConstraintLayout>
+          app:icon="@drawable/ic_arrow_right_alt_24dp" />
+      </com.google.android.flexbox.FlexboxLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>
