@@ -15,8 +15,6 @@ import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-private const val GET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
-  "get_survey_last_shown_timestamp_provider_id"
 private const val GET_TOPIC_LEARNING_TIME_PROVIDER_ID =
   "get_topic_learning_time_provider_id"
 private const val GATING_RESULT_PROVIDER_ID =
@@ -77,12 +75,8 @@ class SurveyGatingController @Inject constructor(
       showNextCalendar == currentCalendar
   }
 
-  private fun retrieveSurveyLastShownDate(profileId: ProfileId): DataProvider<Long> {
-    return profileManagementController.retrieveSurveyLastShownTimestamp(profileId)
-      .transformAsync(GET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID) { lastShownTimestampMs ->
-        AsyncResult.Success(lastShownTimestampMs)
-      }
-  }
+  private fun retrieveSurveyLastShownDate(profileId: ProfileId) =
+    profileManagementController.retrieveSurveyLastShownTimestamp(profileId)
 
   private fun hasReachedMinimumTopicLearningThreshold(topicLearningTimeMs: Long): Boolean {
     return topicLearningTimeMs >= minimumLearningTimeForGatingMillis
