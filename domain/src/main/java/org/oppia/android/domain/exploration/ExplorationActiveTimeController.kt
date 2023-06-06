@@ -9,7 +9,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -78,7 +78,7 @@ class ExplorationActiveTimeController @Inject constructor(
    * @param profileId the ID corresponding to the profile for which progress needs to be stored
    * @param topicId the ID corresponding to the topic for which duration needs to be stored
    * @param sessionDuration the tracked exploration duration between start and pause
-   * @return a [DataProvider] that indicates the success/failure of this record operation.
+   * @return a [DataProvider] that indicates the success/failure of this record operation
    */
   private fun recordAggregateTopicLearningTime(
     profileId: ProfileId,
@@ -88,31 +88,16 @@ class ExplorationActiveTimeController @Inject constructor(
     val deferred = retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) { topicLearningTimeDatabase ->
-
-      val previousAggregateLearningTime =
-        topicLearningTimeDatabase.aggregateTopicLearningTimeMap[topicId]
-
-      val topicLearningTimeBuilder = if (previousAggregateLearningTime != null) {
-        previousAggregateLearningTime.toBuilder()
-      } else {
-        TopicLearningTime.newBuilder()
-          .setTopicId(topicId)
-          .setLastUpdatedTimeMs(oppiaClock.getCurrentTimeMs())
-      }
-
-      if (isLastUpdatedTimestampStale(topicLearningTimeBuilder.lastUpdatedTimeMs)
-      ) {
-        topicLearningTimeBuilder.topicLearningTimeMs = sessionDuration
-      } else {
-        topicLearningTimeBuilder.topicLearningTimeMs += sessionDuration
-      }
-      topicLearningTimeBuilder.lastUpdatedTimeMs = oppiaClock.getCurrentTimeMs()
-
-      val topicLearningTime = topicLearningTimeBuilder.build()
-
-      val topicLearningTimeDatabaseBuilder = topicLearningTimeDatabase.toBuilder()
-        .putAggregateTopicLearningTime(topicId, topicLearningTime)
-      Pair(topicLearningTimeDatabaseBuilder.build(), TopicLearningTimeActionStatus.SUCCESS)
+      topicLearningTimeDatabase.toBuilder().apply {
+        val topicLearningTime =
+          aggregateTopicLearningTimeMap.getOrDefault(topicId).toBuilder().apply {
+            topicLearningTimeMs = if (isLastUpdatedTimestampStale(lastUpdatedTimeMs)) {
+              sessionDuration
+            } else topicLearningTimeMs + sessionDuration
+            lastUpdatedTimeMs = oppiaClock.getCurrentTimeMs()
+          }.build()
+        putAggregateTopicLearningTime(topicId, topicLearningTime)
+      }.build() to TopicLearningTimeActionStatus.SUCCESS
     }
     return dataProviders.createInMemoryDataProviderAsync(
       RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID
@@ -133,11 +118,9 @@ class ExplorationActiveTimeController @Inject constructor(
     topicId: String
   ): DataProvider<TopicLearningTime> {
     return retrieveCacheStore(profileId)
-      .transformAsync(RETRIEVE_AGGREGATE_LEARNING_TIME_PROVIDER_ID) { learningTimeDb ->
-        return@transformAsync AsyncResult.Success(
-          learningTimeDb.aggregateTopicLearningTimeMap[topicId]
-            ?: TopicLearningTime.getDefaultInstance()
-        )
+      .transform(RETRIEVE_AGGREGATE_LEARNING_TIME_PROVIDER_ID) { learningTimeDb ->
+        learningTimeDb.aggregateTopicLearningTimeMap[topicId]
+          ?: TopicLearningTime.getDefaultInstance()
       }
   }
 
@@ -152,31 +135,25 @@ class ExplorationActiveTimeController @Inject constructor(
   private fun retrieveCacheStore(
     profileId: ProfileId
   ): PersistentCacheStore<TopicLearningTimeDatabase> {
-    val cacheStore = if (profileId in cacheStoreMap) {
-      cacheStoreMap[profileId]!!
-    } else {
-      val cacheStore =
-        cacheStoreFactory.createPerProfile(
-          CACHE_NAME,
-          TopicLearningTimeDatabase.getDefaultInstance(),
-          profileId
-        )
-      cacheStoreMap[profileId] = cacheStore
-      cacheStore
-    }
-
-    cacheStore.primeInMemoryAndDiskCacheAsync(
-      updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
-      publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
-    ).invokeOnCompletion {
-      if (it != null) {
-        oppiaLogger.e(
-          "ExplorationActiveTimeController",
-          "Failed to prime cache ahead of data retrieval.",
-          it
-        )
+    return cacheStoreMap.getOrPut(profileId) {
+      cacheStoreFactory.createPerProfile(
+        CACHE_NAME,
+        TopicLearningTimeDatabase.getDefaultInstance(),
+        profileId
+      ).also { cacheStore ->
+        cacheStore.primeInMemoryAndDiskCacheAsync(
+          updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
+          publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+        ).invokeOnCompletion {
+          if (it != null) {
+            oppiaLogger.e(
+              "ExplorationActiveTimeController",
+              "Failed to prime cache ahead of data retrieval.",
+              it
+            )
+          }
+        }
       }
     }
-    return cacheStore
   }
 }
