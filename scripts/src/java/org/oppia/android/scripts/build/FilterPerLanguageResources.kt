@@ -85,7 +85,7 @@ private class FilterPerLanguageResources {
         " being removed that are tied to unsupported languages: ${removedLanguageCodes.map {
           it.androidBcp47QualifiedCode
         } } (size reduction: ${
-          resourceTable.serializedSize - updatedResourceTable.serializedSize
+        resourceTable.serializedSize - updatedResourceTable.serializedSize
         } bytes)."
     )
 
