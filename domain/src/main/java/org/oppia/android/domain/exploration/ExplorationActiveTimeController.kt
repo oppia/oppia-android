@@ -6,6 +6,7 @@ import org.oppia.android.app.model.TopicLearningTime
 import org.oppia.android.app.model.TopicLearningTimeDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleListener
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -29,7 +30,12 @@ class ExplorationActiveTimeController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger
-) {
+) : ExplorationProgressListener, ApplicationLifecycleListener {
+  private var isAppInForeground: Boolean = false
+  private var explorationStarted: Boolean = false
+  private var profileId: ProfileId? = null
+  private var topicId: String? = null
+
   /**
    * Statuses correspond to the exceptions such that if the deferred contains an error state,
    * a corresponding exception will be passed to a failed AsyncResult.
@@ -44,6 +50,41 @@ class ExplorationActiveTimeController @Inject constructor(
 
   private var startExplorationTimestampMs: Long = 0L
 
+  override fun onExplorationStarted(profileId: ProfileId, topicId: String) {
+    this.explorationStarted = true
+    this.profileId = profileId
+    this.topicId = topicId
+
+    if (isAppInForeground) {
+      startSessionTimer()
+    }
+  }
+
+  override fun onExplorationEnded(profileId: ProfileId, topicId: String) {
+    this.explorationStarted = false
+    stopSessionTimer(profileId, topicId)
+  }
+
+  override fun onAppInForeground() {
+    this.isAppInForeground = true
+    if (explorationStarted) {
+      startSessionTimer()
+    }
+  }
+
+  override fun onAppInBackground() {
+    this.isAppInForeground = false
+    if (profileId != null && topicId != null) {
+      stopSessionTimer(profileId!!, topicId!!)
+    }
+  }
+
+  private fun stopSessionTimer(profileId: ProfileId, topicId: String) {
+    if ((!isAppInForeground && explorationStarted) || !explorationStarted) {
+      setExplorationSessionStopped(profileId, topicId)
+    }
+  }
+
   /**
    * Begin tracking the active learning time in an exploration.
    *
@@ -54,7 +95,7 @@ class ExplorationActiveTimeController @Inject constructor(
    * executing successfully, or when the app comes back to the foreground after being previously
    * backgrounded.
    */
-  fun setExplorationSessionStarted() {
+  fun startSessionTimer() {
     this.startExplorationTimestampMs = oppiaClock.getCurrentTimeMs()
   }
 

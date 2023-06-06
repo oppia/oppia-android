@@ -1,7 +1,5 @@
 package org.oppia.android.domain.survey
 
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicLearningTime
 import org.oppia.android.domain.exploration.ExplorationActiveTimeController
@@ -14,6 +12,8 @@ import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
 import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 private const val GET_TOPIC_LEARNING_TIME_PROVIDER_ID =
   "get_topic_learning_time_provider_id"

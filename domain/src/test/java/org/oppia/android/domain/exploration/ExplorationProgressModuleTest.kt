@@ -46,8 +46,8 @@ class ExplorationProgressModuleTest {
   }
 
   @Test
-  fun testExplorationProgressListenerInjection_includesExplorationSessionTimerController() {
-    assertThat(progressListeners.any { it is ExplorationSessionTimerController }).isTrue()
+  fun testExplorationProgressListenerInjection_includesExplorationActiveTimeController() {
+    assertThat(progressListeners.any { it is ExplorationActiveTimeController }).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -63,7 +63,7 @@ class ExplorationProgressModuleTest {
     @Binds
     @IntoSet
     fun bindExplorationProgressListener(
-      explorationSessionTimerController: ExplorationSessionTimerController
+      activeTimeController: ExplorationActiveTimeController
     ): ExplorationProgressListener
   }
 
