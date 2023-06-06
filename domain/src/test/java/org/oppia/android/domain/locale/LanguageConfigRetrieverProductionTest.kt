@@ -55,21 +55,29 @@ class LanguageConfigRetrieverProductionTest {
   }
 
   @Test
-  fun testLoadSupportedLanguages_hasThreeSupportedLanguages() {
+  fun testLoadSupportedLanguages_hasFiveSupportedLanguages() {
     val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
 
     // Change detector test to ensure changes to the configuration are reflected in tests since
     // changes to the configuration can have a major impact on the app (and may require additional
     // work to be done to support the changes).
-    assertThat(supportedLanguages.languageDefinitionsCount).isEqualTo(3)
+    assertThat(supportedLanguages.languageDefinitionsCount).isEqualTo(5)
   }
 
   @Test
-  fun testLoadSupportedLanguages_arabic_isNotSupported() {
+  fun testLoadSupportedLanguages_arabic_isSupportedForAppContentAudioTranslations() {
     val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
 
-    val allLanguages = supportedLanguages.languageDefinitionsList.map { it.language }
-    assertThat(allLanguages).doesNotContain(OppiaLanguage.ARABIC)
+    val definition = supportedLanguages.lookUpLanguage(OppiaLanguage.ARABIC)
+    assertThat(definition.hasAppStringId()).isTrue()
+    assertThat(definition.hasContentStringId()).isTrue()
+    assertThat(definition.hasAudioTranslationId()).isTrue()
+    assertThat(definition.fallbackMacroLanguage).isEqualTo(OppiaLanguage.LANGUAGE_UNSPECIFIED)
+    assertThat(definition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("ar")
+    assertThat(definition.appStringId.androidResourcesLanguageId.languageCode).isEqualTo("ar")
+    assertThat(definition.appStringId.androidResourcesLanguageId.regionCode).isEmpty()
+    assertThat(definition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("ar")
+    assertThat(definition.audioTranslationId.ietfBcp47Id.ietfLanguageTag).isEqualTo("ar")
   }
 
   @Test
@@ -132,11 +140,27 @@ class LanguageConfigRetrieverProductionTest {
   }
 
   @Test
-  fun testLoadSupportedLangs_swahili_isNotSupported() {
+  fun testLoadSupportedLanguages_swahili_isNotSupported() {
     val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
 
     val allLanguages = supportedLanguages.languageDefinitionsList.map { it.language }
     assertThat(allLanguages).doesNotContain(OppiaLanguage.SWAHILI)
+  }
+
+  @Test
+  fun testLoadSupportedLangs_nigerianPidgin_isSupportedForAppContentAudioTranslations() {
+    val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
+
+    val definition = supportedLanguages.lookUpLanguage(OppiaLanguage.NIGERIAN_PIDGIN)
+    assertThat(definition.hasAppStringId()).isTrue()
+    assertThat(definition.hasContentStringId()).isTrue()
+    assertThat(definition.hasAudioTranslationId()).isTrue()
+    assertThat(definition.fallbackMacroLanguage).isEqualTo(OppiaLanguage.ENGLISH)
+    assertThat(definition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("pcm")
+    assertThat(definition.appStringId.androidResourcesLanguageId.languageCode).isEqualTo("pcm")
+    assertThat(definition.appStringId.androidResourcesLanguageId.regionCode).isEqualTo("NG")
+    assertThat(definition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("pcm")
+    assertThat(definition.audioTranslationId.ietfBcp47Id.ietfLanguageTag).isEqualTo("pcm")
   }
 
   @Test
@@ -147,13 +171,13 @@ class LanguageConfigRetrieverProductionTest {
   }
 
   @Test
-  fun testLoadSupportedRegions_hasThreeSupportedRegions() {
+  fun testLoadSupportedRegions_hasFourSupportedRegions() {
     val supportedRegions = languageConfigRetriever.loadSupportedRegions()
 
     // Change detector test to ensure changes to the configuration are reflected in tests since
     // changes to the configuration can have a major impact on the app (and may require additional
     // work to be done to support the changes).
-    assertThat(supportedRegions.regionDefinitionsCount).isEqualTo(3)
+    assertThat(supportedRegions.regionDefinitionsCount).isEqualTo(4)
   }
 
   @Test
@@ -189,7 +213,18 @@ class LanguageConfigRetrieverProductionTest {
 
     val definition = supportedRegions.lookUpRegion(OppiaRegion.KENYA)
     assertThat(definition.regionId.ietfRegionTag).isEqualTo("KE")
-    assertThat(definition.languagesList).containsExactly(OppiaLanguage.ENGLISH)
+    assertThat(definition.languagesList)
+      .containsExactly(OppiaLanguage.ENGLISH, OppiaLanguage.SWAHILI)
+  }
+
+  @Test
+  fun testLoadSupportedRegions_nigerianPidgin_hasCorrectRegionIdAndSupportedLanguages() {
+    val supportedRegions = languageConfigRetriever.loadSupportedRegions()
+
+    val definition = supportedRegions.lookUpRegion(OppiaRegion.NIGERIA)
+    assertThat(definition.regionId.ietfRegionTag).isEqualTo("NG")
+    assertThat(definition.languagesList)
+      .containsExactly(OppiaLanguage.ENGLISH, OppiaLanguage.NIGERIAN_PIDGIN)
   }
 
   private fun SupportedLanguages.lookUpLanguage(
