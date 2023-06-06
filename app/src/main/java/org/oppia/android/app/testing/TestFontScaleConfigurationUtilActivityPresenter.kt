@@ -7,7 +7,7 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import javax.inject.Inject
 
-/** The presenter for [TestFontScaleConfigurationUtilActivity] */
+/** The presenter for [TestFontScaleConfigurationUtilActivity]. */
 @ActivityScope
 class TestFontScaleConfigurationUtilActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,

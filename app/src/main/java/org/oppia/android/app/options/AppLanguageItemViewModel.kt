@@ -2,6 +2,7 @@ package org.oppia.android.app.options
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /**
@@ -13,9 +14,10 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
  *     selected by the user
  */
 class AppLanguageItemViewModel(
-  val language: String,
-  private val currentSelectedLanguage: LiveData<String>,
-  val appLanguageRadioButtonListener: AppLanguageRadioButtonListener
+  val language: OppiaLanguage,
+  val languageDisplayName: String,
+  private val currentSelectedLanguage: LiveData<OppiaLanguage>,
+  val appLanguageRadioButtonListener: AppLanguageRadioButtonListener,
 ) : ObservableViewModel() {
   /**
    * Indicates whether the language corresponding to this view model is _currently_ selected in the

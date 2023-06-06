@@ -110,6 +110,7 @@ package_group(
         multidex = apk_flavor_metadata["multidex"],
         deps = [
             "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
     )
     for apk_flavor_metadata in [

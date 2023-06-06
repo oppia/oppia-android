@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
@@ -30,7 +30,7 @@ const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
 class ExplorationActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   StopStatePlayingSessionWithSavedProgressListener,
   StateKeyboardButtonListener,
   AudioButtonListener,
@@ -164,8 +164,7 @@ class ExplorationActivity :
         explorationId,
         state,
         helpIndex,
-        writtenTranslationContext,
-        intent.extractParams().profileId
+        writtenTranslationContext
       )
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }

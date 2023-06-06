@@ -1,6 +1,6 @@
 package org.oppia.android.app.onboarding
 
-/** Listener for buttons in OnboardingFragment */
+/** Listener for buttons in OnboardingFragment. */
 interface OnboardingNavigationListener {
 
   /** Skips onboarding slide. */
