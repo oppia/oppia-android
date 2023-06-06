@@ -422,9 +422,6 @@
     <item name="android:textColor">@color/component_color_shared_secondary_button_background_trim_color</item>
     <item name="android:textSize">14sp</item>
   </style>
-  <style name="StartOverLessonButton" parent="SecondaryButton">
-    <item name="drawableStartCompat">@drawable/ic_start_over_24dp</item>
-  </style>
 
   <style name="BorderlessMaterialButton" parent="Widget.AppCompat.Button.Borderless" />
 
