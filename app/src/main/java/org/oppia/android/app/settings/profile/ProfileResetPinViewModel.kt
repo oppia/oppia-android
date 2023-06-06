@@ -20,11 +20,12 @@ class ProfileResetPinViewModel @Inject constructor() : ObservableViewModel() {
   /** The new pin inputted by the user. */
   val inputPin = ObservableField("")
 
-  /** The second PIN inputted by the user
-   *  (is expected to be the same as [inputPin] to confirm the user knows this new number).
+  /**
+   * The second PIN inputted by the user (is expected to be the same as [inputPin] to confirm the
+   * user knows this new number).
    */
   val inputConfirmPin = ObservableField("")
 
-  /** Whether the save pin button is enabled (i.e. there is no issue with the inputted PINs.) */
+  /** Whether the save pin button is enabled (i.e. there is no issue with the inputted PINs.). */
   val isButtonActive = ObservableField(false)
 }
