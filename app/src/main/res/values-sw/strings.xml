@@ -29,7 +29,6 @@
   <string name="cellular_data_alert_dialog_description">Kutiririsha sauti kunaweza kutumia data nyingi ya mtandao wa simu.</string>
   <string name="cellular_data_alert_dialog_checkbox">Usionyeshe ujumbe huu tena</string>
   <string name="concept_card_toolbar_title">Kadi ya Dhana</string>
-  <string name="concept_card_close_icon_description">Kubofya kwenye hii kutafunga kadi ya dhana.</string>
   <string name="revision_card_toolbar_title">Kadi ya Marudio</string>
   <string name="unsaved_exploration_dialog_title">Je, ungependa kwenda kwenye Ukurasa wa Mada?</string>
   <string name="unsaved_exploration_dialog_description">Maendeleo yako hayatahifadhiwa.</string>

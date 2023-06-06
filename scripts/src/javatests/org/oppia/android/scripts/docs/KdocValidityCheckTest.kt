@@ -43,7 +43,7 @@ class KdocValidityCheckTest {
   fun testKdoc_function_withKdoc_checkShouldPass() {
     val testContent =
       """
-      /** 
+      /**
        * Returns the string corresponding to this error's string resources, or null if there 
        * is none.
        */

@@ -191,11 +191,17 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
+    /** Represents [View] for the general section. */
     VIEW_TYPE_GENERAL,
+    /** Represents [View] for the profile section. */
     VIEW_TYPE_PROFILE,
+    /** Represents [View] for the download permissions section. */
     VIEW_TYPE_DOWNLOAD_PERMISSIONS,
+    /** Represents [View] for the app information section. */
     VIEW_TYPE_APP_INFORMATION,
+    /** Represents [View] for the account actions section. */
     VIEW_TYPE_ACCOUNT_ACTIONS,
+    /** Represents [View] for the learner analytics section. */
     VIEW_TYPE_LEARNER_ANALYTICS
   }
 }

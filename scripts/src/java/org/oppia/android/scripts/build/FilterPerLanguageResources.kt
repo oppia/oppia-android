@@ -81,9 +81,12 @@ private class FilterPerLanguageResources {
       }
     val updatedResourceTable = resourceTable.recompute(supportedLanguageLocales)
     println(
-      "${removedLanguageCodes.size} resources are being removed that are tied to unsupported" +
-        " languages: ${removedLanguageCodes.map { it.androidBcp47QualifiedCode }} (size" +
-        " reduction: ${resourceTable.serializedSize - updatedResourceTable.serializedSize} bytes)."
+      "${resourceTable.countResources() - updatedResourceTable.countResources()} resources are" +
+        " being removed that are tied to unsupported languages: ${removedLanguageCodes.map {
+          it.androidBcp47QualifiedCode
+        } } (size reduction: ${
+          resourceTable.serializedSize - updatedResourceTable.serializedSize
+        } bytes)."
     )
 
     ZipOutputStream(outputModuleZip.outputStream()).use { outputStream ->
@@ -106,6 +109,8 @@ private class FilterPerLanguageResources {
     }.build()
   }
 
+  private fun ResourceTable.countResources(): Int = packageList.sumOf { it.countResources() }
+
   private fun Package.recompute(allowedLanguageLocales: Set<LanguageLocale>): Package? {
     val updatedTypes = typeList.mapNotNull { it.recompute(allowedLanguageLocales) }
     return if (updatedTypes.isNotEmpty()) {
@@ -116,6 +121,8 @@ private class FilterPerLanguageResources {
     } else null
   }
 
+  private fun Package.countResources(): Int = typeList.sumOf { it.countResources() }
+
   private fun Type.recompute(allowedLanguageLocales: Set<LanguageLocale>): Type? {
     val updatedEntries = entryList.mapNotNull { it.recompute(allowedLanguageLocales) }
     return if (updatedEntries.isNotEmpty()) {
@@ -125,6 +132,8 @@ private class FilterPerLanguageResources {
       }.build()
     } else null
   }
+
+  private fun Type.countResources(): Int = entryList.sumOf { it.configValueCount }
 
   private fun Entry.recompute(allowedLanguageLocales: Set<LanguageLocale>): Entry? {
     val updatedConfigValues = configValueList.filter { it.isKept(allowedLanguageLocales) }

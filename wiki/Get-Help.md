@@ -100,9 +100,9 @@ paste a screenshot
 
 ### Before you ask a general question
 
-* We expect that you have already **set up Oppia on your machine**, and it is successfully running. (If not, kindly do that first!)
-* Prepare a debugging doc following [this template](https://docs.google.com/document/d/1OBAio60bchrNCpIrPBY2ResjeR11ekcN0w5kNJ0DHw8). For more information on how to prepare a debugging doc, follow the guidelines provided on [this wiki page](https://github.com/oppia/oppia-android/wiki/Frequent-Errors-and-Solutions#how-to-write-a-debugging-doc).
-* If there are **checks** on your PR, and you haven’t done any changes in that direction, kindly understand that sometimes they just fail due to flakiness. You should request for a re-run of those only when it’s preventing your PR from getting merged.
+- We expect that you have already **set up Oppia on your machine**, and it is successfully running. (If not, kindly do that first!)
+- The guidelines provided on the [Debugging Docs wiki page](https://github.com/oppia/oppia-android/wiki/Debugging-Docs).
+- If there are **failing checks** on your PR, and you haven't done any changes that might cause them, kindly understand that sometimes they just fail due to flakiness. You should request for a re-run of those only when it’s preventing your PR from getting merged.
 
 ### How to ask a general question
 

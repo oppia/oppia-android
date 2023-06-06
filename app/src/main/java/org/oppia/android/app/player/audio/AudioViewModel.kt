@@ -44,7 +44,7 @@ class AudioViewModel @Inject constructor(
   var selectedLanguageUnavailable = ObservableBoolean()
   var selectedLanguageName = ObservableField<String>("")
 
-  /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
+  /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state. */
   enum class UiAudioPlayStatus {
     FAILED,
     LOADING,
@@ -123,7 +123,7 @@ class AudioViewModel @Inject constructor(
     }
   }
 
-  /** Sets language code for data binding and changes data source to correct audio */
+  /** Sets language code for data binding and changes data source to correct audio. */
   fun setAudioLanguageCode(languageCode: String) {
     selectedLanguageCode = languageCode
     currentLanguageCode.set(languageCode)
@@ -132,7 +132,7 @@ class AudioViewModel @Inject constructor(
     )
   }
 
-  /** Plays or pauses AudioController depending on passed in state */
+  /** Plays or pauses AudioController depending on passed in state. */
   fun togglePlayPause(type: UiAudioPlayStatus?) {
     if (type == UiAudioPlayStatus.PLAYING) {
       audioPlayerController.pause(isFromExplicitUserAction = true)

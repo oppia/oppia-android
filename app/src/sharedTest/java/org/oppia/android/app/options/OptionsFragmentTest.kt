@@ -47,8 +47,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AppLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -86,8 +88,11 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -478,6 +483,7 @@ class OptionsFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun openOptionsActivity_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -493,12 +499,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.app_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AppLanguageActivityParams.newBuilder().apply {
+        oppiaLanguage = OppiaLanguage.ENGLISH
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
-            "English"
-          ),
+          hasProtoExtra("AppLanguageActivity.params", expectedParams),
           hasComponent(AppLanguageActivity::class.java.name)
         )
       )
@@ -506,6 +513,7 @@ class OptionsFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun openOptionsActivity_configChange_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -521,12 +529,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.app_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AppLanguageActivityParams.newBuilder().apply {
+        oppiaLanguage = OppiaLanguage.ENGLISH
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
-            "English"
-          ),
+          hasProtoExtra("AppLanguageActivity.params", expectedParams),
           hasComponent(AppLanguageActivity::class.java.name)
         )
       )

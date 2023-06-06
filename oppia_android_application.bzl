@@ -38,7 +38,7 @@ def _convert_module_aab_to_structured_zip_impl(ctx):
     command = """
     # Extract AAB to working directory.
     WORKING_DIR=$(mktemp -d)
-    unzip -d $WORKING_DIR {0}
+    unzip -q -d $WORKING_DIR {0}
 
     # Create the expected directory structure for an app bundle.
     # Reference for copying all other files to root: https://askubuntu.com/a/951768.
@@ -52,7 +52,7 @@ def _convert_module_aab_to_structured_zip_impl(ctx):
     # passed via arguments (necessitating changing into the working directory).
     DEST_FILE_PATH="$(pwd)/{1}"
     cd $WORKING_DIR
-    zip -r $DEST_FILE_PATH .
+    zip -q -r $DEST_FILE_PATH .
     """.format(input_file.path, output_file.path)
 
     # Reference: https://docs.bazel.build/versions/main/skylark/lib/actions.html#run_shell.
@@ -140,7 +140,7 @@ def _package_metadata_into_deployable_aab_impl(ctx):
     $ Repackage the AAB file into the destination.
     DEST_FILE_PATH="$(pwd)/{2}"
     cd $WORKING_DIR
-    zip -Dur temp.aab BUNDLE-METADATA || exit 255
+    zip -q -Dur temp.aab BUNDLE-METADATA || exit 255
     cp temp.aab $DEST_FILE_PATH || exit 255
     """.format(input_aab_file.path, proguard_map_file.path, output_aab_file.path)
 

@@ -48,6 +48,7 @@ import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.ScreenName
@@ -326,6 +327,21 @@ class SplashActivityTest {
       val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       val context = displayLocale.localeContext
       assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testSplashActivity_nigerianPidginLocale_initializesLocaleHandlerNaijaContext() {
+    initializeTestApplication()
+    forceDefaultLocale(NIGERIAN_PIDGIN_LOCALE)
+
+    launchSplashActivityFully {
+      // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
+      // that the correct display locale is defined per the system locale.
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val context = displayLocale.localeContext
+      assertThat(context.languageDefinition.language).isEqualTo(NIGERIAN_PIDGIN)
     }
   }
 
@@ -1257,6 +1273,7 @@ class SplashActivityTest {
   private companion object {
     private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
     private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
+    private val NIGERIAN_PIDGIN_LOCALE = Locale("pcm", "NG")
     private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
 
     private fun onDialogView(matcher: Matcher<View>) = onView(matcher).inRoot(isDialog())

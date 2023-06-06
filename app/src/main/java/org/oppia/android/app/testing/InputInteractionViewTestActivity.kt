@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.customview.interaction.FractionInputInteractionView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
@@ -42,7 +42,7 @@ import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractio
  * It contains [FractionInputInteractionView], [NumericInputInteractionView],and [TextInputInteractionView].
  */
 class InputInteractionViewTestActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   StateKeyboardButtonListener,
   InteractionAnswerErrorOrAvailabilityCheckReceiver,
   InteractionAnswerReceiver {

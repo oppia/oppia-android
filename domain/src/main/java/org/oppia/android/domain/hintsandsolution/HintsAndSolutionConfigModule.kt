@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import java.util.concurrent.TimeUnit
 
-/** Production module for providing configurations for hints & solutions */
+/** Production module for providing configurations for hints & solutions. */
 @Module
 class HintsAndSolutionConfigModule {
   @Provides

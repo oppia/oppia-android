@@ -184,7 +184,7 @@ class ConceptCardFragmentTest {
       onView(withId(R.id.open_dialog_0)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withContentDescription(R.string.concept_card_close_icon_description))
+      onView(withContentDescription(R.string.navigate_up))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()

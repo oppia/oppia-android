@@ -1,8 +1,8 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: ''
-labels: 'Type: Improvement, Status: Not started'
+title: '[Feature Request]: '
+labels: 'triage needed, enhancement'
 assignees: ''
 
 ---

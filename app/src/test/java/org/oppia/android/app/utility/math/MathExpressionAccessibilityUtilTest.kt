@@ -37,6 +37,7 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
 import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
@@ -173,6 +174,7 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("PORTUGUESE", "language=PORTUGUESE")
   @Iteration("BRAZILIAN_PORTUGUESE", "language=BRAZILIAN_PORTUGUESE")
   @Iteration("SWAHILI", "language=SWAHILI")
+  @Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN")
   @Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   fun testConvertToString_constExp_unsupportedLanguage_returnsNull() {
     val exp = parseAlgebraicExpression("2")
@@ -189,6 +191,7 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("PORTUGUESE", "language=PORTUGUESE")
   @Iteration("BRAZILIAN_PORTUGUESE", "language=BRAZILIAN_PORTUGUESE")
   @Iteration("SWAHILI", "language=SWAHILI")
+  @Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN")
   @Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   fun testConvertToString_constEq_unsupportedLanguage_returnsNull() {
     val eq = parseAlgebraicEquation("x=2")
@@ -206,7 +209,7 @@ class MathExpressionAccessibilityUtilTest {
       .asList()
       .containsExactly(
         LANGUAGE_UNSPECIFIED, ENGLISH, ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE,
-        SWAHILI, UNRECOGNIZED
+        SWAHILI, NIGERIAN_PIDGIN, UNRECOGNIZED
       )
   }
 

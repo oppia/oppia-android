@@ -2,9 +2,9 @@ package org.oppia.android.app.translation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -23,8 +23,11 @@ class AppLanguageWatcherMixin @Inject constructor(
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
   private val localeController: LocaleController,
   private val oppiaLogger: OppiaLogger,
-  private val activityRecreator: ActivityRecreator
+  private val activityRecreator: ActivityRecreator,
+  private val profileManagementController: ProfileManagementController,
+  private val activityLanguageLocaleHandler: ActivityLanguageLocaleHandler
 ) {
+
   /**
    * Initializes this mixin by starting language monitoring. This method should only ever be called
    * once for the lifetime of the current activity.
@@ -33,8 +36,10 @@ class AppLanguageWatcherMixin @Inject constructor(
    * initialized if previous bootstrapping was lost (e.g. due to process death), so it must be
    * called before interacting with the locale handler to avoid inadvertent crashes in such
    * situations.
+   *
+   * @param shouldOnlyUseSystemLanguage whether only the system language should be used
    */
-  fun initialize() {
+  fun initialize(shouldOnlyUseSystemLanguage: Boolean) {
     if (!appLanguageLocaleHandler.isInitialized()) {
       /* The handler might have been de-initialized since bootstrapping. This can generally happen
        * in two cases:
@@ -61,10 +66,15 @@ class AppLanguageWatcherMixin @Inject constructor(
       appLanguageLocaleHandler.initializeLocale(defaultDisplayLocale)
     }
 
-    // TODO(#52): Hook this up properly to profiles, and handle the non-profile activity cases.
-    val profileId = ProfileId.getDefaultInstance()
-    val appLanguageLocaleDataProvider = translationController.getAppLanguageLocale(profileId)
-    val liveData = appLanguageLocaleDataProvider.toLiveData()
+    val currentUserProfileId = profileManagementController.getCurrentProfileId()
+
+    val activityLanguageLocaleDataProvider = when {
+      shouldOnlyUseSystemLanguage -> translationController.getSystemLanguageLocale()
+      currentUserProfileId == null -> translationController.getSystemLanguageLocale()
+      else -> translationController.getAppLanguageLocale(currentUserProfileId)
+    }
+
+    val liveData = activityLanguageLocaleDataProvider.toLiveData()
     liveData.observe(
       activity,
       object : Observer<AsyncResult<OppiaLocale.DisplayLocale>> {
@@ -73,7 +83,7 @@ class AppLanguageWatcherMixin @Inject constructor(
             is AsyncResult.Success -> {
               // Only recreate the activity if the locale actually changed (to avoid an infinite
               // recreation loop).
-              if (appLanguageLocaleHandler.updateLocale(localeResult.value)) {
+              if (activityLanguageLocaleHandler.updateLocale(localeResult.value)) {
                 // Recreate the activity to apply the latest locale state. Note that in some cases
                 // this may result in 2 recreations for the user: one to notify that there's a new
                 // system locale, and a second to actually apply that locale. This is due to a

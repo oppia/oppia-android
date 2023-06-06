@@ -1,16 +1,4 @@
 todo_open_exemption {
-  exempted_file_path: ".github/CODEOWNERS"
-  line_number: 9
-}
-todo_open_exemption {
-  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/TodoCollector.kt"
-  line_number: 79
-}
-todo_open_exemption {
-  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/model/Todo.kt"
-  line_number: 12
-}
-todo_open_exemption {
   exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoCollectorTest.kt"
   line_number: 31
   line_number: 32

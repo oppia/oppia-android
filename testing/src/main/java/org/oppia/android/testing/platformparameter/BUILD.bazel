@@ -34,5 +34,6 @@ kt_android_library(
         ":test_constants",
         "//:dagger",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
