@@ -104,6 +104,7 @@ class ProfileManagementControllerTest {
     private const val DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING = false
     private const val DEFAULT_AVATAR_COLOR_RGB = -10710042
     private const val DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS = 0L
+    private const val CURRENT_TIMESTAMP = 1556094120000
   }
 
   @After
@@ -1116,6 +1117,7 @@ class ProfileManagementControllerTest {
   fun testFetchSurveyLastShownTime_updateLastShownTimeFunctionCalled_returnsCurrentTime() {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(CURRENT_TIMESTAMP)
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
@@ -1133,12 +1135,14 @@ class ProfileManagementControllerTest {
       )
     )
 
-    assertThat(lastShownTimeMs).isEqualTo(oppiaClock.getCurrentTimeMs())
+    assertThat(lastShownTimeMs).isEqualTo(CURRENT_TIMESTAMP)
   }
 
   @Test
   fun testFetchSurveyLastShownTime_updateLastShownTime_inOneProfile_doesNotUpdateOtherProfiles() {
     setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(CURRENT_TIMESTAMP)
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
