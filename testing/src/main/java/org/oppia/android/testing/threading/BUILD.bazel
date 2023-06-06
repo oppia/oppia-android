@@ -4,8 +4,7 @@ Package for test-only threading utilities, including classes to coordinate cross
 in a way that can improve test reliability, correctness, and performance.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "annotations",
@@ -93,6 +92,7 @@ kt_android_library(
     deps = [
         "//third_party:androidx_annotation_annotation",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
     ],
 )
 
@@ -105,11 +105,9 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":annotations",
-        ":dagger",
         ":espresso_impl",
         ":robolectric_impl",
+        "//:dagger",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
-
-dagger_rules()

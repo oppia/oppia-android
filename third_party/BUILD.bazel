@@ -12,6 +12,7 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_import", "kt_jvm_library")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
@@ -78,7 +79,6 @@ java_library(
     visibility = ["//visibility:public"],
     exports = [
         "//third_party:com_squareup_moshi_moshi-kotlin",
-        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )
 
@@ -103,6 +103,66 @@ java_library(
     exports = [
         "@oppia_proto_api//:android_java_protos",
     ],
+)
+
+# Creates an alias for Guava Android to support maven_install's override of Guava. This ensures that
+# Guava-Android is always used in builds, even if dependencies request a newer version of Guava-JRE.
+android_library(
+    name = "com_google_guava_guava",
+    visibility = ["//visibility:public"],
+    exports = [
+        "//third_party:com_google_errorprone_error_prone_annotations",
+        "//third_party:com_google_guava_failureaccess",
+        "//third_party:com_google_j2objc_j2objc-annotations",
+        "//third_party:org_checkerframework_checker-compat-qual",
+        "//third_party:org_checkerframework_checker-qual",
+        "@guava_android//jar",
+    ],
+)
+
+# Note that the output from kt_jvm_import needs to be wrapped in a kt_jvm_library in order to work
+# with the Bazel IntelliJ plugin correctly (since kt_jvm_library provides the expected IDE output
+# for syncing).
+kt_jvm_import(
+    name = "_kotlinx-coroutines-core-jvm_import_do_not_depend",
+    jars = ["@kotlinx-coroutines-core-jvm//jar:file"],
+    tags = ["no-ide"],
+    deps = [
+        ":_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
+    ],
+)
+
+kt_jvm_library(
+    name = "kotlinx-coroutines-core-jvm",
+    visibility = [
+        "//:oppia_api_visibility",
+        "@maven//:__subpackages__",
+    ],
+    exports = [":_kotlinx-coroutines-core-jvm_import_do_not_depend"],
+)
+
+# This solution is based on https://github.com/Bencodes/bazel_issue_13553 for Bazel issue:
+# https://github.com/bazelbuild/bazel/issues/13553.
+genrule(
+    name = "_generate_stopgap_files_for_kotlinx_coroutines_desugar",
+    outs = [
+        "sun/misc/Signal.java",
+        "sun/misc/SignalHandler.java",
+    ],
+    cmd = """
+    echo "package sun.misc; public final class Signal {}" > $(location sun/misc/Signal.java)
+    echo "package sun.misc; public interface SignalHandler {}" > $(location sun/misc/SignalHandler.java)
+    """,
+)
+
+java_library(
+    name = "_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
+    srcs = [
+        "sun/misc/Signal.java",
+        "sun/misc/SignalHandler.java",
+    ],
+    neverlink = True,
 )
 
 # Define a separate target for the Glide annotation processor compiler. Unfortunately, this library

@@ -49,7 +49,6 @@ If you want to introduce a new feature or any change to the existing WorkManager
       ...
       @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
     ) : ListenableWorker(context, params) {
-        @ExperimentalCoroutinesApi
         override fun startWork(): ListenableFuture<Result> {
           val backgroundScope = CoroutineScope(backgroundDispatcher)
           val result = backgroundScope.async {...}

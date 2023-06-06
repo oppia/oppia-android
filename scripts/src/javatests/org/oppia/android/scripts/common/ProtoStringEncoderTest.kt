@@ -16,9 +16,7 @@ import java.util.zip.ZipException
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class ProtoStringEncoderTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Test
   fun testEncode_defaultProto_producesString() {

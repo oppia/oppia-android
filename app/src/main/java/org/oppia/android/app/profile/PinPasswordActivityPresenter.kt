@@ -12,7 +12,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.PinPasswordActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
@@ -28,12 +27,9 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val viewModelProvider: ViewModelProvider<PinPasswordViewModel>,
+  private val pinViewModel: PinPasswordViewModel,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  private val pinViewModel by lazy {
-    getPinPasswordViewModel()
-  }
   private var profileId = -1
   private lateinit var alertDialog: AlertDialog
   private var confirmedDeletion = false
@@ -160,10 +156,6 @@ class PinPasswordActivityPresenter @Inject constructor(
     showSuccessDialog()
   }
 
-  private fun getPinPasswordViewModel(): PinPasswordViewModel {
-    return viewModelProvider.getForActivity(activity, PinPasswordViewModel::class.java)
-  }
-
   private fun showAdminForgotPin() {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
@@ -206,15 +198,12 @@ class PinPasswordActivityPresenter @Inject constructor(
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { dialog, _ ->
-        profileManagementController.deleteAllProfiles().toLiveData().observe(
-          activity,
-          {
-            // Regardless of the result of the operation, always restart the app.
-            confirmedDeletion = true
-            activity.finishAffinity()
-          }
-        )
+      .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
+        profileManagementController.deleteAllProfiles().toLiveData().observe(activity) {
+          // Regardless of the result of the operation, always restart the app.
+          confirmedDeletion = true
+          activity.finishAffinity()
+        }
       }.create()
     alertDialog.setCanceledOnTouchOutside(false)
     alertDialog.show()

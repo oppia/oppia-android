@@ -592,14 +592,10 @@ class TopicController @Inject constructor(
   private fun createSubtopicListFromJsonArray(subtopicJsonArray: JSONArray?): List<Subtopic> {
     val subtopicList = mutableListOf<Subtopic>()
     for (i in 0 until subtopicJsonArray!!.length()) {
-      val skillIdList = ArrayList<String>()
-
       val currentSubtopicJsonObject = subtopicJsonArray.optJSONObject(i)
-      val skillJsonArray = currentSubtopicJsonObject.optJSONArray("skill_ids")
-
-      for (j in 0 until skillJsonArray.length()) {
-        skillIdList.add(skillJsonArray.optString(j))
-      }
+      val skillIdList = currentSubtopicJsonObject.optJSONArray("skill_ids")?.let { skillJsonArray ->
+        (0 until skillJsonArray.length()).map(skillJsonArray::optString)
+      } ?: listOf()
       val subtopicTitle = SubtitledHtml.newBuilder().apply {
         contentId = "title"
         html = currentSubtopicJsonObject.getRemovableOptionalString("title") ?: ""
@@ -618,13 +614,13 @@ class TopicController @Inject constructor(
   private fun computeTopicSizeBytes(constituentFiles: List<String>): Int {
     // TODO(#169): Compute this based on protos & the combined topic package.
     // TODO(#169): Incorporate image files in this computation.
-    return constituentFiles.map { file ->
+    return constituentFiles.sumOf { file ->
       if (loadLessonProtosFromAssets) {
         assetRepository.getLocalAssetProtoSize(file)
       } else {
         jsonAssetRetriever.getAssetSize(file)
       }
-    }.sum()
+    }
   }
 
   private fun getProtoAssetFileNameList(topicId: String): List<String> {
@@ -645,36 +641,32 @@ class TopicController @Inject constructor(
   }
 
   internal fun getJsonAssetFileNameList(topicId: String): List<String> {
-    val assetFileNameList = mutableListOf<String>()
-    assetFileNameList.add("questions.json")
-    assetFileNameList.add("skills.json")
-    assetFileNameList.add("$topicId.json")
+    val topicJsonObject = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")
+    val storyFileNames = topicJsonObject?.optJSONArray("canonical_story_dicts")?.let { storyArray ->
+      (0 until storyArray.length()).mapNotNull(storyArray::optJSONObject)
+        .mapNotNull { it.optString("id") }
+        .map { "$it.json" }
+    } ?: listOf()
 
-    val topicJsonObject = jsonAssetRetriever
-      .loadJsonFromAsset("$topicId.json")!!
-    val storySummaryJsonArray = topicJsonObject
-      .optJSONArray("canonical_story_dicts")
-    for (i in 0 until storySummaryJsonArray.length()) {
-      val storySummaryJsonObject = storySummaryJsonArray.optJSONObject(i)
-      val storyId = storySummaryJsonObject.optString("id")
-      assetFileNameList.add("$storyId.json")
+    val chapterFileNames = storyFileNames.flatMap { storyFileName ->
+      val storyJson = jsonAssetRetriever.loadJsonFromAsset(storyFileName)
+      storyJson?.optJSONArray("story_nodes")?.let { storyNodeJsonArray ->
+        (0 until storyNodeJsonArray.length()).mapNotNull(storyNodeJsonArray::optJSONObject)
+          .mapNotNull { it.optString("exploration_id") }
+          .map { "$it.json" }
+      } ?: listOf()
+    }
 
-      val storyJsonObject = jsonAssetRetriever
-        .loadJsonFromAsset("$storyId.json")!!
-      val storyNodeJsonArray = storyJsonObject.optJSONArray("story_nodes")
-      for (j in 0 until storyNodeJsonArray.length()) {
-        val storyNodeJsonObject = storyNodeJsonArray.optJSONObject(j)
-        val explorationId = storyNodeJsonObject.optString("exploration_id")
-        assetFileNameList.add("$explorationId.json")
-      }
-    }
-    val subtopicJsonArray = topicJsonObject.optJSONArray("subtopics")
-    for (i in 0 until subtopicJsonArray.length()) {
-      val subtopicJsonObject = subtopicJsonArray.optJSONObject(i)
-      val subtopicId = subtopicJsonObject.optInt("id")
-      assetFileNameList.add(topicId + "_" + subtopicId + ".json")
-    }
-    return assetFileNameList
+    val subtopicFileNames = topicJsonObject?.optJSONArray("subtopics")?.let { subtopicJsonArray ->
+      (0 until subtopicJsonArray.length()).mapNotNull(subtopicJsonArray::optJSONObject)
+        .mapNotNull { it.optInt("id", /* fallback = */ -1).takeIf { num -> num != -1 } }
+        .map { "${topicId}_$it.json" }
+    } ?: listOf()
+
+    return listOf("questions.json", "skills.json", "$topicId.json") +
+      storyFileNames +
+      chapterFileNames +
+      subtopicFileNames
   }
 
   /**

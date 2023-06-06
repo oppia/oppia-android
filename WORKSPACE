@@ -4,7 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
+load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
@@ -42,20 +42,22 @@ http_archive(
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 http_archive(
     name = "io_bazel_rules_kotlin",
+    patches = ["//tools/kotlin:add_kotlinc_optin_support.patch"],
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
     urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
-# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
-load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
 
-kt_download_local_dev_dependencies()
+# Use the 1.6 compiler since rules_kotlin 1.5 defaults to the 1.5 compiler.
+kotlin_repositories(
+    compiler_release = kotlinc_version(
+        release = "1.6.21",
+        sha256 = "632166fed89f3f430482f5aa07f2e20b923b72ef688c8f5a7df3aa1502c6d8ba",
+    ),
+)
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
-
-kotlin_repositories()
-
-kt_register_toolchains()
+register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
 
 # The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 # module while helping us avoid the unnecessary compilation of protoc. Referecences:
@@ -112,8 +114,9 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    strip_prefix = "robolectric-bazel-4.5",
-    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.5.tar.gz"],
+    sha256 = HTTP_DEPENDENCY_VERSIONS["robolectric"]["sha"],
+    strip_prefix = "robolectric-bazel-%s" % HTTP_DEPENDENCY_VERSIONS["robolectric"]["version"],
+    urls = ["https://github.com/robolectric/robolectric-bazel/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["robolectric"]["version"]],
 )
 
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
@@ -125,6 +128,7 @@ git_repository(
     name = "tools_android",
     commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
     remote = "https://github.com/bazelbuild/tools_android",
+    shallow_since = "1594238320 -0400",
 )
 
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
@@ -135,6 +139,7 @@ git_repository(
     name = "circularimageview",
     commit = "35d08ba88a4a22e6e9ac96bdc5a68be27b55d09f",
     remote = "https://github.com/oppia/CircularImageview",
+    shallow_since = "1622148929 -0700",
 )
 
 # A custom version of Android SVG is needed since custom changes needed to be added to the library
@@ -148,18 +153,18 @@ git_repository(
 
 git_repository(
     name = "android-spotlight",
-    commit = "ebde38335bfb56349eae57e705b611ead9addb15",
+    commit = "cc23499d37dc8533a2876e45b5063e981a4583f4",
     remote = "https://github.com/oppia/android-spotlight",
-    shallow_since = "1668824029 -0800",
+    shallow_since = "1680147372 -0700",
 )
 
 # A custom fork of KotliTeX that removes resources artifacts that break the build, and updates the
 # min target SDK version to be compatible with Oppia.
 git_repository(
     name = "kotlitex",
-    commit = "43139c140833c7120f351d63d74b42c253d2b213",
+    commit = "ccdf4170817fa3b48b8e1e452772dd58ecb71cf2",
     remote = "https://github.com/oppia/kotlitex",
-    shallow_since = "1647554845 -0700",
+    shallow_since = "1679426649 -0700",
 )
 
 bind(
@@ -169,6 +174,7 @@ bind(
 
 http_archive(
     name = "protobuf_tools",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["sha"],
     strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
 )
@@ -200,16 +206,41 @@ http_jar(
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    duplicate_version_warning = "error",
     fail_if_repin_required = True,
-    fetch_sources = True,
     maven_install_json = "//third_party:maven_install.json",
-    repositories = DAGGER_REPOSITORIES + [
-        "https://maven.fabric.io/public",
-        "https://maven.google.com",
-        "https://repo1.maven.org/maven2",
-    ],
+    override_targets = {
+        "com.google.guava:guava": "@//third_party:com_google_guava_guava",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "@//third_party:kotlinx-coroutines-core-jvm",
+    },
+    repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
+    strict_visibility = True,
 )
 
 load("@maven//:defs.bzl", "pinned_maven_install")
 
 pinned_maven_install()
+
+http_jar(
+    name = "guava_android",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["guava_android"]["sha"],
+    urls = [
+        "{0}/com/google/guava/guava/{1}-android/guava-{1}-android.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["guava_android"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+    ],
+)
+
+http_jar(
+    name = "kotlinx-coroutines-core-jvm",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["sha"],
+    urls = [
+        "{0}/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{1}/kotlinx-coroutines-core-jvm-{1}.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+    ],
+)

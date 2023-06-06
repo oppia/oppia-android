@@ -1,12 +1,14 @@
 package org.oppia.android.scripts.testing
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.CommandResult
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.testing.assertThrows
 import java.io.File
 import java.util.UUID
@@ -31,11 +33,15 @@ import java.util.UUID
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class TestGitRepositoryTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
-  private val commandExecutorInterceptor by lazy { CommandExecutorInterceptor() }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val commandExecutorInterceptor by lazy { CommandExecutorInterceptor(scriptBgDispatcher) }
+
+  @After
+  fun restoreStreams() {
+    scriptBgDispatcher.close()
+  }
 
   @Test
   fun testCreateTestUtility_doesNotImmediatelyCreateAnyFiles() {
@@ -52,7 +58,7 @@ class TestGitRepositoryTest {
 
     testGitRepository.init()
 
-    assertThat(tempFolder.root.list().toList()).containsExactly(".git")
+    assertThat(tempFolder.root.list()?.toList()).containsExactly(".git")
   }
 
   @Test
@@ -476,9 +482,11 @@ class TestGitRepositoryTest {
     return file
   }
 
-  private class CommandExecutorInterceptor : CommandExecutor {
+  private class CommandExecutorInterceptor(
+    scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  ) : CommandExecutor {
     private val commandResults = mutableListOf<CommandResult>()
-    private val realCommandExecutor by lazy { CommandExecutorImpl() }
+    private val realCommandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
 
     override fun executeCommand(
       workingDir: File,

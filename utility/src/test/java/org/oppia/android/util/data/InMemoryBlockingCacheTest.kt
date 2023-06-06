@@ -11,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import org.junit.Before
@@ -667,7 +668,7 @@ class InMemoryBlockingCacheTest {
    * Waits for the specified deferred to execute after advancing test dispatcher. Without this
    * function, results cannot be observed from cache operations.
    */
-  @Suppress("EXPERIMENTAL_API_USAGE")
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun <T> awaitCompletion(deferred: Deferred<T>): T {
     testCoroutineDispatchers.runCurrent()
     return deferred.getCompleted()

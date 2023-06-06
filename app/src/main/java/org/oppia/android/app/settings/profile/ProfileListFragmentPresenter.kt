@@ -9,7 +9,6 @@ import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileListFragmentBinding
 import org.oppia.android.databinding.ProfileListProfileViewBinding
 import javax.inject.Inject
@@ -19,7 +18,7 @@ import javax.inject.Inject
 class ProfileListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ProfileListViewModel>,
+  private val profileListViewModel: ProfileListViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
@@ -42,7 +41,7 @@ class ProfileListFragmentPresenter @Inject constructor(
       (activity as ProfileListActivity).finish()
     }
     binding.apply {
-      viewModel = getProfileListViewModel()
+      viewModel = profileListViewModel
       lifecycleOwner = fragment
     }
 
@@ -76,9 +75,5 @@ class ProfileListFragmentPresenter @Inject constructor(
         loadProfileEditListener.loadProfileEdit(profile.id.internalId, profile.name)
       }
     }
-  }
-
-  private fun getProfileListViewModel(): ProfileListViewModel {
-    return viewModelProvider.getForFragment(fragment, ProfileListViewModel::class.java)
   }
 }

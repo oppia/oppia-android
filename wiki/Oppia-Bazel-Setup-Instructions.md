@@ -108,7 +108,7 @@ Example of Dependencies
 **[Loading an extension](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L13)**<br>
 Bazel extensions are files ending in .bzl. Use the load statement to import a symbol from an extension.<br>
 ```
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 ```
 Here, we are loading `kotlin.bzl` and we are going to use it with a symbol name `kt_android_library`.
 Arguments to the load function must be string literals. load statements must appear at top-level in the file.

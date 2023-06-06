@@ -62,7 +62,6 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-
     val oppiaLanguage =
       checkNotNull(
         savedInstanceState?.retrieveLanguageFromSavedState()

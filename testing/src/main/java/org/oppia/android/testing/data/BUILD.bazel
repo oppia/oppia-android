@@ -3,8 +3,7 @@
 Package for common test utilities corresponding to data processing & data providers.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "async_result_subject",
@@ -29,7 +28,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/mockito",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
@@ -39,5 +37,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],
 )
-
-dagger_rules()

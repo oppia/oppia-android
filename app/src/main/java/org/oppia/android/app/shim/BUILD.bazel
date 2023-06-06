@@ -3,8 +3,7 @@ Temporary shims for providing indirection in the Bazel build graph to unblock mo
 parts of the app layer.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 IMPL_FILES = [
     "IntentFactoryShimImpl.kt",
@@ -59,7 +58,6 @@ kt_android_library(
     name = "impl",
     srcs = UPDATED_IMPL_FILES,
     deps = [
-        ":dagger",
         ":intent_factory_shim",
         ":view_binding_shim",
         "//app:databinding_resources",
@@ -76,11 +74,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":impl",
         ":intent_factory_shim",
         ":view_binding_shim",
     ],
 )
-
-dagger_rules()

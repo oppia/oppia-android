@@ -501,7 +501,7 @@ class StoryFragmentTest {
           position = 2,
           targetViewId = R.id.chapter_thumbnail
         )
-      ).check { view, noViewFoundException ->
+      ).check { view, _ ->
         var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
           R.id.chapter_thumbnail
         )
@@ -963,7 +963,9 @@ class StoryFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(storyFragmentTest: StoryFragmentTest)
   }

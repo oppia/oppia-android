@@ -74,7 +74,7 @@ class StateFragmentPresenter @Inject constructor(
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
   private val oppiaClock: OppiaClock,
-  private val viewModel: StateViewModel,
+  private val stateViewModel: StateViewModel,
   private val accessibilityService: AccessibilityService,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
@@ -112,7 +112,7 @@ class StateFragmentPresenter @Inject constructor(
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
-    viewModel.initializeProfile(profileId)
+    stateViewModel.initializeProfile(profileId)
 
     binding = StateFragmentBinding.inflate(
       inflater,
@@ -137,7 +137,7 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAdapter = stateRecyclerViewAdapter
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = this.viewModel
+      it.viewModel = stateViewModel
     }
 
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
@@ -170,7 +170,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun onContinueButtonClicked() {
-    viewModel.setHintBulbVisibility(false)
+    stateViewModel.setHintBulbVisibility(false)
     hideKeyboard()
     moveToNextState()
   }
@@ -198,11 +198,13 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
+    handleSubmitAnswer(
+      stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+    )
   }
 
   fun onResponsesHeaderClicked() {
-    recyclerViewAssembler.togglePreviousAnswers(viewModel.itemList)
+    recyclerViewAssembler.togglePreviousAnswers(stateViewModel.itemList)
     recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
@@ -210,8 +212,10 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleKeyboardAction() {
     hideKeyboard()
-    if (viewModel.getCanSubmitAnswer().get() == true) {
-      handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
+    if (stateViewModel.getCanSubmitAnswer().get() == true) {
+      handleSubmitAnswer(
+        stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+      )
     }
   }
 
@@ -231,7 +235,7 @@ class StateFragmentPresenter @Inject constructor(
       .hasConversationView(hasConversationView)
       .addContentSupport()
       .addFeedbackSupport()
-      .addInteractionSupport(viewModel.getCanSubmitAnswer())
+      .addInteractionSupport(stateViewModel.getCanSubmitAnswer())
       .addPastAnswersSupport()
       .addWrongAnswerCollapsingSupport()
       .addBackwardNavigationSupport()
@@ -248,7 +252,7 @@ class StateFragmentPresenter @Inject constructor(
       )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
-        explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
+        explorationId, stateViewModel.currentStateName, stateViewModel.isAudioBarVisible,
         this::getAudioUiManager
       )
       .addConceptCardSupport()
@@ -298,11 +302,11 @@ class StateFragmentPresenter @Inject constructor(
     explorationCheckpointState = ephemeralState.checkpointState
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
-      viewModel.isSplitView.set(true)
-      viewModel.centerGuidelinePercentage.set(0.5f)
+      stateViewModel.isSplitView.set(true)
+      stateViewModel.centerGuidelinePercentage.set(0.5f)
     } else {
-      viewModel.isSplitView.set(false)
-      viewModel.centerGuidelinePercentage.set(1f)
+      stateViewModel.isSplitView.set(false)
+      stateViewModel.centerGuidelinePercentage.set(1f)
     }
 
     val isInNewState =
@@ -319,10 +323,10 @@ class StateFragmentPresenter @Inject constructor(
       shouldSplit
     )
 
-    viewModel.itemList.clear()
-    viewModel.itemList += dataPair.first
-    viewModel.rightItemList.clear()
-    viewModel.rightItemList += dataPair.second
+    stateViewModel.itemList.clear()
+    stateViewModel.itemList += dataPair.first
+    stateViewModel.rightItemList.clear()
+    stateViewModel.rightItemList += dataPair.second
 
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
@@ -368,7 +372,7 @@ class StateFragmentPresenter @Inject constructor(
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.showCelebrationOnCorrectAnswer(result.feedback)
           } else {
-            viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+            stateViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }
           recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
         }
@@ -408,7 +412,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
-    viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+    stateViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     explorationProgressController.moveToNextState().toLiveData().observe(
       fragment,
       Observer {
@@ -426,7 +430,7 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  fun setAudioBarVisibility(visibility: Boolean) = viewModel.setAudioBarVisibility(visibility)
+  fun setAudioBarVisibility(visibility: Boolean) = stateViewModel.setAudioBarVisibility(visibility)
 
   fun scrollToTop() {
     binding.stateRecyclerView.smoothScrollToPosition(0)
@@ -435,9 +439,9 @@ class StateFragmentPresenter @Inject constructor(
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
     if (inputAnswerAvailable) {
-      viewModel.setCanSubmitAnswer(pendingAnswerError == null)
+      stateViewModel.setCanSubmitAnswer(pendingAnswerError == null)
     } else {
-      viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+      stateViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     }
   }
 
@@ -459,35 +463,35 @@ class StateFragmentPresenter @Inject constructor(
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
       setHintOpenedAndUnRevealed(false)
-      viewModel.setHintBulbVisibility(false)
+      stateViewModel.setHintBulbVisibility(false)
     } else {
       when (helpIndex.indexTypeCase) {
         HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX -> {
-          viewModel.setHintBulbVisibility(true)
+          stateViewModel.setHintBulbVisibility(true)
           setHintOpenedAndUnRevealed(true)
         }
         HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
-          viewModel.setHintBulbVisibility(true)
+          stateViewModel.setHintBulbVisibility(true)
           setHintOpenedAndUnRevealed(false)
         }
         HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-          viewModel.setHintBulbVisibility(true)
+          stateViewModel.setHintBulbVisibility(true)
           setHintOpenedAndUnRevealed(true)
         }
         HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
           setHintOpenedAndUnRevealed(false)
-          viewModel.setHintBulbVisibility(true)
+          stateViewModel.setHintBulbVisibility(true)
         }
         else -> {
           setHintOpenedAndUnRevealed(false)
-          viewModel.setHintBulbVisibility(false)
+          stateViewModel.setHintBulbVisibility(false)
         }
       }
     }
   }
 
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
-    viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
+    stateViewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
     if (isHintUnrevealed) {
 
       val hintBulbAnimation = AnimationUtils.loadAnimation(
@@ -499,7 +503,7 @@ class StateFragmentPresenter @Inject constructor(
       // cases like configuration changes, or returning from a saved checkpoint.
       lifecycleSafeTimerFactory.run {
         activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
-          return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
+          return@runPeriodically stateViewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
             if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
             // Make a forced announcement when the hint bar becomes visible so that the non sighted
             // users know about the availability of hints. Instead of suddenly changing the focus of

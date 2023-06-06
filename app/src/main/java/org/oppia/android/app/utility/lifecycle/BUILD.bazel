@@ -2,8 +2,7 @@
 Constructs for setting up lifecycle safe timer factory for injection in the Dagger graph.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "lifecycle_safe_timer_factory",
@@ -18,5 +17,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
-
-dagger_rules()

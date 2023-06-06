@@ -10,8 +10,7 @@ order to build with Bazel.
 - All binding adapters must be written in Java.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
@@ -617,7 +616,6 @@ kt_android_library(
     srcs = LISTENERS,
     custom_package = "org.oppia.android.app",
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/audio:cellular_audio_dialog_controller",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//model/src/main/proto:question_java_proto_lite",
@@ -662,7 +660,6 @@ kt_android_library(
     srcs = ANNOTATIONS,
     custom_package = "org.oppia.android.app",
     deps = [
-        ":dagger",
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
     ],
@@ -680,7 +677,6 @@ kt_android_library(
     ],
     deps = [
         ":annotations",
-        ":dagger",
         ":listeners",
         ":resources",
         "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
@@ -688,7 +684,6 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
-        "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
         "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
@@ -724,7 +719,6 @@ android_library(
     enable_data_binding = True,
     manifest = "src/main/DatabindingAdaptersManifest.xml",
     deps = [
-        ":dagger",
         ":resources",
         ":view_models",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector_provider",
@@ -763,11 +757,11 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         ":binding_adapters",
-        ":dagger",
         ":databinding_resources",
         ":resources",
         ":view_models",
         ":views",
+        "//:dagger",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_auto_localized_app_compat_activity",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_system_localized_app_compat_activity",
@@ -841,9 +835,9 @@ kt_android_library(
 # keep sorted
 TEST_DEPS = [
     ":app",
-    ":dagger",
     ":resources",
     ":test_deps",
+    "//:dagger",
     "//app/src/main/java/org/oppia/android/app/application:application_component",
     "//app/src/main/java/org/oppia/android/app/application:application_injector",
     "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
@@ -996,11 +990,8 @@ crashlytics_android_library(
 android_library(
     name = "crashlytics_deps",
     exports = [
-        "//third_party:com_crashlytics_sdk_android_crashlytics",
         "//third_party:com_google_firebase_firebase-analytics",
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:io_fabric_sdk_android_fabric",
     ],
 )
-
-dagger_rules()

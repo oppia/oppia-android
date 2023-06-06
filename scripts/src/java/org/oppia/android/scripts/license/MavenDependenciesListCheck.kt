@@ -1,8 +1,10 @@
 package org.oppia.android.scripts.license
 
 import com.google.protobuf.TextFormat
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.MavenDependency
 
 /**
@@ -24,18 +26,20 @@ import org.oppia.android.scripts.proto.MavenDependency
  *   third_party/maven_install.json scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
-  MavenDependenciesListCheck(LicenseFetcherImpl()).main(args)
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    MavenDependenciesListCheck(MavenArtifactPropertyFetcherImpl(), scriptBgDispatcher).main(args)
+  }
 }
 
 /**
- * Wrapper class to pass [LicenseFetcher] and [CommandExecutor] to be utilized by the the main
+ * Wrapper class to pass [MavenArtifactPropertyFetcher] and [CommandExecutor] to be utilized by the the main
  * method.
  */
 class MavenDependenciesListCheck(
-  private val licenseFetcher: LicenseFetcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
-
   /**
    * Verifies that the list of third-party maven dependencies in maven_dependnecies.textproto is
    * up-to-date.
@@ -44,16 +48,31 @@ class MavenDependenciesListCheck(
     val pathToRoot = args[0]
     val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesPb = args[2]
+    ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+      runBlocking {
+        checkMavenDependenciesList(
+          pathToRoot, pathToMavenInstallJson, pathToMavenDependenciesPb, scriptBgDispatcher
+        )
+      }
+    }
+  }
 
+  private suspend fun checkMavenDependenciesList(
+    pathToRoot: String,
+    pathToMavenInstallJson: String,
+    pathToMavenDependenciesPb: String,
+    scriptBackgroundCoroutineDispatcher: ScriptBackgroundCoroutineDispatcher
+  ) {
     val mavenDependenciesRetriever = MavenDependenciesRetriever(
       pathToRoot,
-      licenseFetcher,
+      mavenArtifactPropertyFetcher,
+      scriptBackgroundCoroutineDispatcher,
       commandExecutor
     )
 
     val bazelQueryDepsList =
       mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
-    val mavenInstallDepsList = mavenDependenciesRetriever.getDependencyListFromMavenInstall(
+    val mavenInstallDepsList = mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
       pathToMavenInstallJson,
       bazelQueryDepsList
     )
@@ -166,16 +185,12 @@ class MavenDependenciesListCheck(
   private fun findRedundantDependencies(
     dependenciesList: List<MavenDependency>,
     updatedDependenciesList: List<MavenDependency>
-  ): List<MavenDependency> {
-    return updatedDependenciesList - dependenciesList
-  }
+  ): List<MavenDependency> = updatedDependenciesList - dependenciesList.toSet()
 
   private fun findMissingDependencies(
     dependenciesList: List<MavenDependency>,
     updatedDependenciesList: List<MavenDependency>
-  ): List<MavenDependency> {
-    return dependenciesList - updatedDependenciesList
-  }
+  ): List<MavenDependency> = dependenciesList - updatedDependenciesList.toSet()
 
   private fun printDependenciesList(dependencyList: List<MavenDependency>) {
     dependencyList.forEach { dep ->

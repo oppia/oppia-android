@@ -72,7 +72,6 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -493,19 +492,17 @@ class AppLanguageResourceHandlerTest {
   // testing functionality that's expected to go away with later language selection work.
   // TODO(#3793): Remove this once OppiaLanguage is used as the source of truth.
   @Test
-  @RunParameterized(
-    Iteration("hi", "lang=HINDI_AUDIO_LANGUAGE", "expectedDisplayText=हिन्दी"),
-    Iteration("fr", "lang=FRENCH_AUDIO_LANGUAGE", "expectedDisplayText=Français"),
-    Iteration("zh", "lang=CHINESE_AUDIO_LANGUAGE", "expectedDisplayText=中文"),
-    Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE_LANGUAGE", "expectedDisplayText=Português"),
-    Iteration("ar", "lang=ARABIC_LANGUAGE", "expectedDisplayText=العربية"),
-    Iteration("pcm", "lang=NIGERIAN_PIDGIN_LANGUAGE", "expectedDisplayText=Naijá"),
-    Iteration("unsp", "lang=AUDIO_LANGUAGE_UNSPECIFIED", "expectedDisplayText=English"),
-    Iteration("none", "lang=NO_AUDIO", "expectedDisplayText=English"),
-    Iteration("unknown", "lang=UNRECOGNIZED", "expectedDisplayText=English"),
-    Iteration("en", "lang=ENGLISH_AUDIO_LANGUAGE", "expectedDisplayText=English")
-  )
-  fun testComputeLocalizedDisplayName_englishLocale_forAllAudioLanguages_hasTheExpectedOutput() {
+  @Iteration("hi", "lang=HINDI_AUDIO_LANGUAGE", "expectedDisplayText=हिन्दी")
+  @Iteration("fr", "lang=FRENCH_AUDIO_LANGUAGE", "expectedDisplayText=Français")
+  @Iteration("zh", "lang=CHINESE_AUDIO_LANGUAGE", "expectedDisplayText=中文")
+  @Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE_LANGUAGE", "expectedDisplayText=Português")
+  @Iteration("ar", "lang=ARABIC_LANGUAGE", "expectedDisplayText=العربية")
+  @Iteration("pcm", "lang=NIGERIAN_PIDGIN_LANGUAGE", "expectedDisplayText=Naijá")
+  @Iteration("unsp", "lang=AUDIO_LANGUAGE_UNSPECIFIED", "expectedDisplayText=English")
+  @Iteration("none", "lang=NO_AUDIO", "expectedDisplayText=English")
+  @Iteration("unknown", "lang=UNRECOGNIZED", "expectedDisplayText=English")
+  @Iteration("en", "lang=ENGLISH_AUDIO_LANGUAGE", "expectedDisplayText=English")
+  fun testComputeLocalizedDisplayName_englishLocale_forAllLanguages_hasTheExpectedOutput() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 

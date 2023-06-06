@@ -20,7 +20,7 @@ import org.oppia.android.util.system.OppiaClockInjectorProvider;
 public final class TextViewBindingAdapters {
 
   /** Binds date text with relative time. */
-  @BindingAdapter("profile:created")
+  @BindingAdapter("profileCreatedTime")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
     String time = resourceHandler.computeDateString(timestamp);
@@ -31,7 +31,7 @@ public final class TextViewBindingAdapters {
   }
 
   /** Binds last used with relative timestamp. */
-  @BindingAdapter("profile:lastVisited")
+  @BindingAdapter("profileLastVisitedTime")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
     String profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_last_used);
@@ -46,7 +46,7 @@ public final class TextViewBindingAdapters {
 
   // TODO(#4345): Add test for this method.
   /** Binds an AndroidX KitKat-compatible drawable top to the specified text view. */
-  @BindingAdapter("app:drawableTopCompat")
+  @BindingAdapter("drawableTopCompat")
   public static void setDrawableTopCompat(
       @NonNull TextView imageView,
       Drawable drawable
@@ -57,7 +57,7 @@ public final class TextViewBindingAdapters {
   }
 
   /** Binds an AndroidX KitKat-compatible drawable end to the specified text view. */
-  @BindingAdapter("app:drawableEndCompat")
+  @BindingAdapter("drawableEndCompat")
   public static void setDrawableEndCompat(
       @NonNull TextView imageView,
       Drawable drawable
