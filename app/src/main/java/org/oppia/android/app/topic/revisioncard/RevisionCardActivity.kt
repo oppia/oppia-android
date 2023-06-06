@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.REVISION_CARD_ACTIVITY
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
 import org.oppia.android.app.topic.RouteToRevisionCardListener
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 /** Activity for revision card. */
 class RevisionCardActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   ReturnToTopicClickListener,
   ConceptCardListener,
   RouteToRevisionCardListener,

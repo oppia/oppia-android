@@ -9,6 +9,8 @@ import javax.inject.Inject
 /** The presenter for [AppVersionActivity]. */
 @ActivityScope
 class AppVersionActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+
+  /** Initializes the [AppVersionActivity] views and binds [AppVersionFragment]. */
   fun handleOnCreate() {
     activity.setContentView(R.layout.app_version_activity)
     setToolbar()
