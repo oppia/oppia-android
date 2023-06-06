@@ -11,8 +11,7 @@ import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.translation.AppLanguageActivityInjector
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider
-import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
-
+import org.oppia.android.app.translation.AppLanguageWatcherMixin
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent
  * fragments that extend [org.oppia.android.app.fragment.InjectableFragment].
@@ -31,7 +30,7 @@ abstract class InjectableAppCompatActivity :
       "Expected attached Context to have an application context defined."
     }
     onInitializeActivityComponent(applicationContext)
-    val newConfiguration = onInitializeLocalization(applicationContext, newBase)
+    val newConfiguration = onInitializeLocalization(newBase)
     super.attachBaseContext(newBase?.createConfigurationContext(newConfiguration))
   }
 
@@ -58,7 +57,6 @@ abstract class InjectableAppCompatActivity :
   }
 
   private fun onInitializeLocalization(
-    applicationContext: Context,
     newBase: Context?
   ): Configuration {
     // Given how DataProviders work (i.e. by resolving data races using eventual consistency), it's
@@ -66,17 +64,25 @@ abstract class InjectableAppCompatActivity :
     // to prevent these data races unless they're actually hit by users. It shouldn't, in practice,
     // be possible since it requires changing the system language between activity transitions, and
     // in most cases that should result in an activity recreation by the mixin, anyway.
-    val appLanguageAppInjectorProvider =
-      applicationContext as AppLanguageApplicationInjectorProvider
-    val appLanguageAppInjector = appLanguageAppInjectorProvider.getAppLanguageApplicationInjector()
-    val appLanguageActivityInjector = activityComponent as AppLanguageActivityInjector
-    val appLanguageLocaleHandler = appLanguageAppInjector.getAppLanguageHandler()
-    val appLanguageWatcherMixin = appLanguageActivityInjector.getAppLanguageWatcherMixin()
-    appLanguageWatcherMixin.initialize()
+    val activityLanguageInjectorProvider = this as AppLanguageActivityInjectorProvider
+    val activityLanguageActivityInjector =
+      activityLanguageInjectorProvider.getAppLanguageActivityInjector()
+    val activityLanguageLocaleHandler =
+      activityLanguageActivityInjector.getActivityLanguageHandler()
+
+    val appLanguageWatcherMixin = activityLanguageActivityInjector.getAppLanguageWatcherMixin()
+    initializeMixin(appLanguageWatcherMixin)
+
     return Configuration(newBase?.resources?.configuration).also { newConfiguration ->
-      appLanguageLocaleHandler.initializeLocaleForActivity(newConfiguration)
+      activityLanguageLocaleHandler.initializeLocaleForActivity(newConfiguration)
     }
   }
+
+  /**
+   * Initializes [appLanguageWatcherMixin] based on the localization requirements of the implementation.
+   * This should never be directly implemented by non-abstract activity classes.
+   */
+  abstract fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin)
 
   private fun ensureLayoutDirection() {
     // Ensure the root decor view has the correct layout direct setup per the base context. In some

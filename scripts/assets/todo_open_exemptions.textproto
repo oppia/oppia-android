@@ -1,8 +1,4 @@
 todo_open_exemption {
-  exempted_file_path: ".github/CODEOWNERS"
-  line_number: 9
-}
-todo_open_exemption {
   exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoOpenCheckTest.kt"
   line_number: 67
   line_number: 68

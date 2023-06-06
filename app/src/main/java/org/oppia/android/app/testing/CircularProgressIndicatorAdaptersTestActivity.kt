@@ -7,11 +7,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.databinding.CircularProgressIndicatorAdaptersTestActivityBinding
 
 /** Test activity for [org.oppia.android.app.databinding.CircularProgressIndicatorAdaptersTest]. */
-class CircularProgressIndicatorAdaptersTestActivity : InjectableAppCompatActivity() {
+class CircularProgressIndicatorAdaptersTestActivity : InjectableSystemLocalizedAppCompatActivity() {
   /** View model to use in data-bound circular progress indicators in XML. */
   val viewModel by lazy { CircularProgressIndicatorAdaptersTestViewModel() }
 

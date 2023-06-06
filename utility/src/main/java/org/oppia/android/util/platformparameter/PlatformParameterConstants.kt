@@ -79,9 +79,8 @@ const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12
 @Qualifier
 annotation class EnableLanguageSelectionUi
 
-// TODO(#52): Enable this feature by default once it's completed.
 /** Default value for the feature flag corresponding to [EnableLanguageSelectionUi]. */
-const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = false
+const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = true
 
 /**
  * Qualifier for the feature flag corresponding to enabling the extra topic tabs: practice and info.
@@ -110,6 +109,37 @@ const val LEARNER_STUDY_ANALYTICS = "learner_study_analytics"
  * and working of learner study related analytics logging.
  */
 const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = true
+
+/**
+ * Qualifier for a feature flag that controls whether learners may be allowed (via an
+ * admin-controlled setting) to use a special in-lesson button for quickly switching between content
+ * languages.
+ *
+ * This is generally expected to only be used in tandem with [EnableLearnerStudyAnalytics].
+ */
+@Qualifier annotation class EnableFastLanguageSwitchingInLesson
+
+/** The platform parameter name corresponding to [EnableFastLanguageSwitchingInLesson]. */
+const val FAST_LANGUAGE_SWITCHING_IN_LESSON = "fast_language_switching_in_lesson"
+
+/**
+ * The default enabled state for the feature corresponding to [EnableFastLanguageSwitchingInLesson].
+ */
+const val FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for a feature flag that controls whether learner study IDs should be generated and
+ * logged with outgoing events.
+ *
+ * This is generally expected to only be used in tandem with [EnableLearnerStudyAnalytics].
+ */
+@Qualifier annotation class EnableLoggingLearnerStudyIds
+
+/** The platform parameter name corresponding to [EnableLoggingLearnerStudyIds]. */
+const val LOGGING_LEARNER_STUDY_IDS = "logging_learner_study_ids"
+
+/** The default enabled state for the feature corresponding to [EnableLoggingLearnerStudyIds]. */
+const val LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE = false
 
 /**
  * Qualifier for the platform parameter that controls whether to cache LaTeX rendering using Glide.
@@ -231,3 +261,62 @@ annotation class EnableInteractionConfigChangeStateRetention
  * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
  */
 const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the [EnableAppAndOsDeprecation] feature flag that controls whether to enable
+ * app and OS deprecation or not.
+ */
+@Qualifier
+annotation class EnableAppAndOsDeprecation
+
+/**
+ * Default value for the feature flag corresponding to [EnableAppAndOsDeprecation].
+ */
+const val ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the platform parameter that contains the version code of the latest available
+ * optional app update, which is used to notify the app that a soft update is available.
+ */
+@Qualifier
+annotation class OptionalAppUpdateVersionCode
+
+/**
+ * Name of the platform parameter that contains the integer version code of the latest available
+ * optional app update.
+ */
+const val OPTIONAL_APP_UPDATE_VERSION_CODE = "optional_app_update_version_code"
+
+/**
+ * Qualifier for the platform parameter that contains the version code of the latest available
+ * forced app update, which is used to notify the app that a mandatory update is available.
+ */
+@Qualifier
+annotation class ForcedAppUpdateVersionCode
+
+/**
+ * Name of the platform parameter that contains the integer version code of the latest available
+ * forced app update.
+ */
+const val FORCED_APP_UPDATE_VERSION_CODE = "forced_app_update_version_code"
+
+/**
+ * Qualifier for the platform parameter that contains an integer indicating the lowest supported
+ * Android API Level.
+ */
+@Qualifier
+annotation class LowestSupportedApiLevel
+
+/**
+ * Name of the platform parameter that contains an integer indicating the lowest supported Android
+ * API Level.
+ */
+const val LOWEST_SUPPORTED_API_LEVEL = "lowest_supported_api_level"
+
+/**
+ * Default value for the platform parameter that contains an integer indicating the lowest
+ * supported Android API Level.
+ *
+ * The current minimum supported API level is 19 (KitKat).
+ */
+const val LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE = 19
