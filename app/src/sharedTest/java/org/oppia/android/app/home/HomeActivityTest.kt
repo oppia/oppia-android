@@ -63,6 +63,8 @@ import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN_VALUE
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
@@ -1790,6 +1792,52 @@ class HomeActivityTest {
     }
   }
 
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
+    appStringIetfTag = "pcm",
+    appStringAndroidLanguageId = "pcm",
+    appStringAndroidRegionId = "NG"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
+  fun testHomeActivity_initialNigerianPidginContext_isInLtrLayout() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val layoutDirection = displayLocale.getLayoutDirection()
+      assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
+    }
+  }
+
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
+    appStringIetfTag = "pcm",
+    appStringAndroidLanguageId = "pcm",
+    appStringAndroidRegionId = "NG"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testHomeActivity_initialNigerianPidginContext_hasNaijaDisplayLocale() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the display locale is set up correctly (for string formatting).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val localeContext = displayLocale.localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(NIGERIAN_PIDGIN)
+    }
+  }
+
   private fun markSpotlightSeen(profileId: ProfileId) {
     spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.PROMOTED_STORIES)
     testCoroutineDispatchers.runCurrent()
@@ -1974,5 +2022,6 @@ class HomeActivityTest {
   private companion object {
     private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
     private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val NIGERIA_NAIJA_LOCALE = Locale("pcm", "NG")
   }
 }

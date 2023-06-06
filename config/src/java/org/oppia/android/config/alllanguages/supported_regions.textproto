@@ -29,3 +29,11 @@ region_definitions {
   languages: ENGLISH
   languages: SWAHILI
 }
+region_definitions {
+  region: NIGERIA
+  region_id {
+    ietf_region_tag: "NG"
+  }
+  languages: ENGLISH
+  languages: NIGERIAN_PIDGIN
+}

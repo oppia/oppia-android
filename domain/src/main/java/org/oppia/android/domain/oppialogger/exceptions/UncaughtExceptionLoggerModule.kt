@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.multibindings.IntoSet
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
-/** Binds [UncaughtExceptionLoggerStartupListener] as an [ApplicationStartupListener] */
+/** Binds [UncaughtExceptionLoggerStartupListener] as an [ApplicationStartupListener]. */
 @Module
 interface UncaughtExceptionLoggerModule {
 

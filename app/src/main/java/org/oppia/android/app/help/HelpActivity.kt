@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
@@ -36,7 +36,7 @@ const val LICENSE_TEXT_FRAGMENT_TAG = "LicenseTextFragment.tag"
 
 /** The help page activity for FAQs, third-party dependencies and policies page. */
 class HelpActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToFAQListListener,
   RouteToFAQSingleListener,
   RouteToPoliciesListener,

@@ -67,8 +67,7 @@ class HintsAndSolutionDialogFragment :
       id: String,
       state: State,
       helpIndex: HelpIndex,
-      writtenTranslationContext: WrittenTranslationContext,
-      profileId: ProfileId
+      writtenTranslationContext: WrittenTranslationContext
     ): HintsAndSolutionDialogFragment {
       return HintsAndSolutionDialogFragment().apply {
         arguments = Bundle().apply {
@@ -76,7 +75,6 @@ class HintsAndSolutionDialogFragment :
           putProto(STATE_KEY, state)
           putProto(HELP_INDEX_KEY, helpIndex)
           putProto(WRITTEN_TRANSLATION_CONTEXT_KEY, writtenTranslationContext)
-          putProto(PROFILE_ID_KEY, profileId)
         }
       }
     }

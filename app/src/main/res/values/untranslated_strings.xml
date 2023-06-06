@@ -117,4 +117,13 @@
   <string name="topic_activity_topic_page_label_text" translatable="false">Topic page</string>
   <!-- WalkthroughActivity -->
   <string name="walkthrough_activity_label_text" translatable="false">App walkthrough</string>
+  <!-- Human-readable names of languages localized to that particular language. -->
+  <string name="hinglish_localized_language_name" translatable="false">हिन्दी</string>
+  <string name="arabic_localized_language_name" translatable="false">العربية</string>
+  <string name="english_localized_language_name" translatable="false">English</string>
+  <string name="hindi_localized_language_name" translatable="false">हिन्दी</string>
+  <string name="portuguese_localized_language_name" translatable="false">Português</string>
+  <string name="brazilian_portuguese_localized_language_name" translatable="false">Português</string>
+  <string name="swahili_localized_language_name" translatable="false">Kiswahili</string>
+  <string name="nigerian_pidgin_localized_language_name" translatable="false">Naijá</string>
 </resources>

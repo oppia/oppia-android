@@ -56,7 +56,7 @@ enum class TopicTab(
       ) { "No tab corresponding to position: $position" }
     }
 
-    /** Returns the number of active tabs considering [enableExtraTopicTabsUi] */
+    /** Returns the number of active tabs considering [enableExtraTopicTabsUi]. */
     fun getTabCount(enableExtraTopicTabsUi: Boolean) =
       if (enableExtraTopicTabsUi) values().size else values().size - 2
   }

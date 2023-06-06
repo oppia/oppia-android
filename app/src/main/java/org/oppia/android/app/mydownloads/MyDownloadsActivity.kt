@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ScreenName.MY_DOWNLOADS_ACTIVITY
@@ -12,7 +12,7 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** The activity for displaying [MyDownloadsFragment]. */
-class MyDownloadsActivity : InjectableAppCompatActivity() {
+class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var myDownloadsActivityPresenter: MyDownloadsActivityPresenter
   private var internalProfileId: Int = -1

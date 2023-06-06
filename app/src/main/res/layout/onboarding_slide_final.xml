@@ -94,7 +94,7 @@
         android:layout_marginEnd="48dp"
         android:fontFamily="sans-serif"
         android:textColor="@color/component_color_shared_primary_text_color"
-        android:textColorLink="@color/component_color_shared_primary_text_color"
+        android:textColorLink="@color/component_color_shared_link_text_color"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

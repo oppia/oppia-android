@@ -10,7 +10,7 @@ import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-/** [ViewModel] for [AppVersionFragment]*/
+/** [ViewModel] for [AppVersionFragment]. */
 @FragmentScope
 class AppVersionViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
@@ -20,11 +20,13 @@ class AppVersionViewModel @Inject constructor(
   private val versionName: String = context.getVersionName()
   private val lastUpdateDateTime = context.getLastUpdateTime()
 
+  /** Returns a localized, human-readable app version name. */
   fun computeVersionNameText(): String =
     resourceHandler.getStringInLocaleWithWrapping(
       R.string.administrator_controls_app_version_activity_app_version_name, versionName
     )
 
+  /** Returns a localized, human-readable lastUpdateDateTime. */
   fun computeLastUpdatedDateText(): String =
     resourceHandler.getStringInLocaleWithWrapping(
       R.string.administrator_controls_app_version_activity_app_last_update_date,

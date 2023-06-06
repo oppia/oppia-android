@@ -14,8 +14,10 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 class LogoutDialogFragment : InjectableDialogFragment() {
 
   companion object {
+    /** [String] key to access [LogoutDialogFragment]. */
     const val TAG_LOGOUT_DIALOG_FRAGMENT = "TAG_LOGOUT_DIALOG_FRAGMENT"
 
+    /** Returns a new [LogoutDialogFragment] instance. */
     fun newInstance(): LogoutDialogFragment {
       return LogoutDialogFragment()
     }

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   ForceCrashButtonClickListener,
   RouteToMarkChaptersCompletedListener,
   RouteToMarkStoriesCompletedListener,
@@ -80,7 +80,7 @@ class DeveloperOptionsActivity :
   }
 
   companion object {
-    /** Function to create intent for DeveloperOptionsActivity */
+    /** Function to create intent for DeveloperOptionsActivity. */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
