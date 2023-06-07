@@ -36,7 +36,6 @@ import kotlin.concurrent.withLock
 private const val SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "system_language_locale"
 private const val APP_LANGUAGE_DATA_PROVIDER_ID = "app_language"
 private const val APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "app_language_locale"
-private const val APP_LANGUAGE_SELECTION_DATA_PROVIDER_ID = "app_language_selection"
 private const val UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID = "update_app_language"
 private const val WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID = "written_translation_content"
 private const val WRITTEN_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID =
