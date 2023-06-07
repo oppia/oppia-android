@@ -2,7 +2,8 @@ package org.oppia.android.domain.exploration
 
 import org.oppia.android.app.model.ProfileId
 
-/** Listener for when an exploration has started or ended.
+/**
+ * Listener for when an exploration has started or ended.
  *
  * This listener is not safe to use across multiple threads and should only be accessed via the main
  * thread.
