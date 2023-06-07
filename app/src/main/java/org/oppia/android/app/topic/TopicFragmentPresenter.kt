@@ -1,8 +1,10 @@
 package org.oppia.android.app.topic
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -44,6 +46,7 @@ class TopicFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
+    context: Context?,
     internalProfileId: Int,
     topicId: String,
     storyId: String,
@@ -61,12 +64,18 @@ class TopicFragmentPresenter @Inject constructor(
     this.internalProfileId = internalProfileId
     this.topicId = topicId
 
-    binding.topicToolbar.setNavigationOnClickListener {
+    binding.topicToolbar.getChildAt(0).setOnClickListener {
       (activity as TopicActivity).finish()
     }
 
-    binding.topicToolbar.setOnClickListener {
-      binding.topicToolbarTitle.isSelected = true
+    context?.let {
+      val accessibilityManager = context.applicationContext.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+      val isAccessibilityManager = accessibilityManager!!.isEnabled
+      if(!isAccessibilityManager){
+        binding.topicToolbar.setOnClickListener {
+          binding.topicToolbarTitle.isSelected = true
+        }
+      }
     }
 
     viewModel.setInternalProfileId(internalProfileId)
