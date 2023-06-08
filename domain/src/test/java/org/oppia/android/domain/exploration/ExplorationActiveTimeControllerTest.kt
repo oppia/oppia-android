@@ -40,6 +40,7 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -96,13 +97,175 @@ class ExplorationActiveTimeControllerTest {
   private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
 
   @Test
-  fun testSetExplorationSessionPaused_previousAggregateTimeIsNull_setsCurrentSessionLength() {
+  fun testSessionTimer_explorationStartedCallbackReceived_startsSessionTimer() {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
-    explorationActiveTimeController.startSessionTimer()
+    applicationLifecycleObserver.onAppInForeground()
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+    )
+
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
+
+    stopExploration()
+
+    val retrieveAggregateTimeProvider =
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        firstTestProfile, TEST_TOPIC_ID_0
+      )
+    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
+    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1)
+  }
+
+  @Test
+  fun testSessionTimer_explorationStarted_appInBackground_pausesSessionTimer() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+
+    applicationLifecycleObserver.onAppInForeground()
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+    )
+
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+
+    applicationLifecycleObserver.onAppInBackground()
+
+    val retrieveAggregateTimeProvider =
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        firstTestProfile, TEST_TOPIC_ID_0
+      )
+    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
+    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1)
+  }
+
+  @Test
+  fun testSessionTimer_explorationStarted_appInBackground_thenInForeground_resumesSessionTimer() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+
+    explorationActiveTimeController.onAppInForeground()
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+    )
+
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+
+    explorationActiveTimeController.onAppInBackground()
+    testCoroutineDispatchers.runCurrent()
+
+    // App spends time in the background.
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_3)
+
+    explorationActiveTimeController.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+
+    // Additional active time in an exploration.
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
+
+    stopExploration()
+
+    val retrieveAggregateTimeProvider =
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        firstTestProfile, TEST_TOPIC_ID_0
+      )
+    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
+    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(
+      SESSION_LENGTH_1 + SESSION_LENGTH_2
+    )
+  }
+
+  @Test
+  fun testSessionTimer_explorationNotStarted_appInForeground_doesNotStartSessionTimer() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+
+    applicationLifecycleObserver.onAppInForeground()
+
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+
+    val retrieveAggregateTimeProvider =
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        firstTestProfile, TEST_TOPIC_ID_0
+      )
+    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
+    assertThat(aggregateTime.lastUpdatedTimeMs).isEqualTo(0L)
+  }
+
+  @Test
+  fun testSessionTimer_explorationStopped_appInForeground_doesNotStartSessionTimer() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+
+    applicationLifecycleObserver.onAppInForeground()
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+    )
+
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+
+    stopExploration()
+
+    // Some more time has passed after the exploration was ended.
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
+
+    val retrieveAggregateTimeProvider =
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        firstTestProfile, TEST_TOPIC_ID_0
+      )
+    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
+
+    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1)
+  }
+
+  @Test
+  fun testStopTimer_beforeStarting_isFailure() {
+    setUpTestApplicationComponent()
+
+    val exception = assertThrows(IllegalStateException::class) {
+      explorationActiveTimeController.onExplorationEnded()
+    }
+    testCoroutineDispatchers.runCurrent()
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testSessionTimer_explorationNotStarted_onAppInBackground_doesNotStartSessionTimer() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+
+    applicationLifecycleObserver.onAppInBackground()
+
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+
+    val retrieveAggregateTimeProvider =
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        firstTestProfile, TEST_TOPIC_ID_0
+      )
+    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
+
+    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(0L)
+  }
+
+  @Test
+  fun testTimerStopped_previousAggregateTimeIsNull_setsCurrentSessionLength() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+
+    explorationActiveTimeController.onAppInForeground()
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
+    )
+
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+
+    stopExploration()
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -116,24 +279,32 @@ class ExplorationActiveTimeControllerTest {
   }
 
   @Test
-  fun testSetSessionPaused_previousAggregateNotStale_incrementsOldAggregateByCurrentLength() {
+  fun testTimerStopped_previousAggregateNotStale_incrementsOldAggregateByCurrentLength() {
     // Simulate previous app already has some topic learning time recorded
     executeInPreviousAppInstance { testComponent ->
       testComponent.getOppiaClock().setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-      testComponent.getExplorationActiveTimeController().startSessionTimer()
-      testComponent.getTestCoroutineDispatchers().advanceTimeBy(SESSION_LENGTH_1)
+      testComponent.getExplorationActiveTimeController().onAppInForeground()
       testComponent.getExplorationActiveTimeController()
-        .setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
+        .onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
+      testComponent.getTestCoroutineDispatchers().advanceTimeBy(SESSION_LENGTH_1)
+      testComponent.getExplorationActiveTimeController().onExplorationEnded()
     }
 
     // Create the application after previous arrangement to simulate a re-creation.
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.DAYS.toMillis(1))
-    explorationActiveTimeController.startSessionTimer()
+
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
+    )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
+
+    stopExploration()
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -148,24 +319,32 @@ class ExplorationActiveTimeControllerTest {
   }
 
   @Test
-  fun testSetExplorationSessionPaused_previousAggregateIsStale_overwritesOldAggregateTime() {
+  fun testTimerStopped_previousAggregateIsStale_overwritesOldAggregateTime() {
     // Simulate previous app already has some topic learning time recorded
     executeInPreviousAppInstance { testComponent ->
       testComponent.getOppiaClock().setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-      testComponent.getExplorationActiveTimeController().startSessionTimer()
-      testComponent.getTestCoroutineDispatchers().advanceTimeBy(SESSION_LENGTH_1)
+      testComponent.getExplorationActiveTimeController().onAppInForeground()
       testComponent.getExplorationActiveTimeController()
-        .setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
+        .onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
+      testComponent.getTestCoroutineDispatchers().advanceTimeBy(SESSION_LENGTH_1)
+      testComponent.getExplorationActiveTimeController().onExplorationEnded()
     }
 
     // Create the application after previous arrangement to simulate a re-creation.
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.DAYS.toMillis(10))
-    explorationActiveTimeController.startSessionTimer()
+    applicationLifecycleObserver.onAppInForeground()
+
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
+    )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
+
+    stopExploration()
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -179,17 +358,28 @@ class ExplorationActiveTimeControllerTest {
   }
 
   @Test
-  fun testSetSessionPaused_multipleOngoingTopics_correctTopicLearningTimeUpdated() {
+  fun testTimerStopped_multipleOngoingTopics_correctTopicLearningTimeUpdated() {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    applicationLifecycleObserver.onAppInForeground()
 
-    explorationActiveTimeController.startSessionTimer()
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
+    )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
+    stopExploration()
 
-    explorationActiveTimeController.startSessionTimer()
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
+    )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_1)
+    stopExploration()
 
     val retrieveTopic0AggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -214,14 +404,25 @@ class ExplorationActiveTimeControllerTest {
   fun testSetSessionPaused_multipleProfiles_sameTopicId_learningTimeUpdatedInCorrectProfile() {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    applicationLifecycleObserver.onAppInForeground()
 
-    explorationActiveTimeController.startSessionTimer()
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
+    )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
+    stopExploration()
 
-    explorationActiveTimeController.startSessionTimer()
+    startPlayingNewExploration(
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      secondTestProfile
+    )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-    explorationActiveTimeController.setExplorationSessionStopped(secondTestProfile, TEST_TOPIC_ID_0)
+    stopExploration()
 
     val retrieveFirstTestProfileAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -242,157 +443,22 @@ class ExplorationActiveTimeControllerTest {
     assertThat(secondTestProfileAggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_2)
   }
 
-  @Test
-  fun testSessionTimer_explorationStarted_onAppInForeground_startsSessionTimer() {
-    setUpTestApplicationComponent()
-    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-
-    applicationLifecycleObserver.onAppInForeground()
-
-    explorationDataController.startPlayingNewExploration(
-      firstTestProfile.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-
-    explorationDataController.stopPlayingExploration(isCompletion = false)
-
-    val retrieveAggregateTimeProvider =
-      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+  private fun startPlayingNewExploration(
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    profileId: ProfileId
+  ) {
+    val startPlayingProvider =
+      explorationDataController.startPlayingNewExploration(
+        profileId.internalId, topicId, storyId, explorationId
       )
-    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
-
-    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1)
+    monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
 
-  @Test
-  fun testSessionTimer_explorationStarted_onAppInBackground_stopsSessionTimer() {
-    setUpTestApplicationComponent()
-    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-
-    applicationLifecycleObserver.onAppInForeground()
-    explorationDataController.startPlayingNewExploration(
-      firstTestProfile.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-
-    applicationLifecycleObserver.onAppInBackground()
-
-    val retrieveAggregateTimeProvider =
-      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
-      )
-    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
-
-    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1)
-  }
-
-  @Test
-  fun testSessionTimer_explorationStopped_onAppInForeground_stopsSessionTimer() {
-    setUpTestApplicationComponent()
-    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-
-    applicationLifecycleObserver.onAppInForeground()
-
-    explorationDataController.startPlayingNewExploration(
-      firstTestProfile.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-
-    explorationDataController.stopPlayingExploration(isCompletion = false)
-    testCoroutineDispatchers.runCurrent()
-
-    // Some more time has passed after the exploration was ended.
-    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-
-    val retrieveAggregateTimeProvider =
-      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
-      )
-    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
-
-    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1)
-  }
-
-  @Test
-  fun testSessionTimer_explorationNotStarted_onAppInBackground_doesNotStartSessionTimer() {
-    setUpTestApplicationComponent()
-    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-
-    applicationLifecycleObserver.onAppInBackground()
-
-    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-
-    val retrieveAggregateTimeProvider =
-      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
-      )
-    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
-
-    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(0L)
-  }
-
-  @Test
-  fun testSessionTimer_explorationStarted_onAppInBackground_thenInForeground_resumesTimer() {
-    setUpTestApplicationComponent()
-    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-
-    applicationLifecycleObserver.onAppInForeground()
-    explorationDataController.startPlayingNewExploration(
-      firstTestProfile.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-
-    applicationLifecycleObserver.onAppInBackground()
-
-    // App spends time in the background.
-    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_3)
-
-    applicationLifecycleObserver.onAppInForeground()
-
-    // Additional active time in an exploration.
-    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
-
-    explorationActiveTimeController.setExplorationSessionStopped(firstTestProfile, TEST_TOPIC_ID_0)
-
-    val retrieveAggregateTimeProvider =
-      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
-      )
-    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
-
-    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(
-      SESSION_LENGTH_1 + SESSION_LENGTH_2
-    )
-  }
-
-  @Test
-  fun testSessionTimer_onAppInForeground_explorationNeverStarted_doesNotStartTimer() {
-    setUpTestApplicationComponent()
-    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-
-    applicationLifecycleObserver.onAppInForeground()
-
-    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
-
-    // Stop the timer.
-    applicationLifecycleObserver.onAppInBackground()
-
-    val retrieveAggregateTimeProvider =
-      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
-      )
-    val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
-
-    assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(0L)
+  private fun stopExploration(isCompletion: Boolean = true) {
+    val stopProvider = explorationDataController.stopPlayingExploration(isCompletion)
+    monitorFactory.waitForNextSuccessfulResult(stopProvider)
   }
 
   private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {

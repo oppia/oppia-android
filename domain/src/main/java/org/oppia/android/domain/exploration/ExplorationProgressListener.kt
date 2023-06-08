@@ -15,5 +15,5 @@ interface ExplorationProgressListener {
   fun onExplorationStarted(profileId: ProfileId, topicId: String)
 
   /** Called when an exploration has ended. */
-  fun onExplorationEnded(profileId: ProfileId, topicId: String)
+  fun onExplorationEnded()
 }
