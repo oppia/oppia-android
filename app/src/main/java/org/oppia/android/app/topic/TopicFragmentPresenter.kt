@@ -69,9 +69,9 @@ class TopicFragmentPresenter @Inject constructor(
     }
 
     context?.let {
-      val accessibilityManager = context.applicationContext.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+      val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
       val isAccessibilityManager = accessibilityManager!!.isEnabled
-      if(!isAccessibilityManager){
+      if (!isAccessibilityManager) {
         binding.topicToolbar.setOnClickListener {
           binding.topicToolbarTitle.isSelected = true
         }
