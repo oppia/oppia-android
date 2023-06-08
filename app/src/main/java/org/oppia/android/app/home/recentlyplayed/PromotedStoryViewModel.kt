@@ -39,8 +39,9 @@ class PromotedStoryViewModel(
     )
   }
 
-  /** Starts [ResumeLessonActivity] if a saved exploration is selected
-   *  or [ExplorationActivity] if an un-started recommended story is selected.
+  /**
+   * Starts [ResumeLessonActivity] if a saved exploration is selected or [ExplorationActivity] if an
+   * un-started recommended story is selected.
    */
   fun clickOnPromotedStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
     promotedStoryClickListener.promotedStoryClicked(promotedStory)

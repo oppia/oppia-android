@@ -7,4 +7,7 @@ interface AppLanguageActivityInjector {
 
   /** Returns an [AppLanguageResourceHandler] from the Dagger graph. */
   fun getAppLanguageResourceHandler(): AppLanguageResourceHandler
+
+  /** Returns an [ActivityLanguageLocaleHandler] from the Dagger graph. */
+  fun getActivityLanguageHandler(): ActivityLanguageLocaleHandler
 }
