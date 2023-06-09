@@ -74,8 +74,9 @@ import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLogga
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.NetworkUsageLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StartupLatencyLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
@@ -109,12 +110,13 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
 class EventBundleCreator @Inject constructor(
   private val context: Context,
   private val eventTypeNameConverter: EventTypeToHumanReadableNameConverter,
-  @EnableLearnerStudyAnalytics
-  private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @EnableLoggingLearnerStudyIds
+  private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>
 ) {
   private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
   private val appVersionCode by lazy { context.getVersionCode() }
   private val appVersionName by lazy { context.getVersionName() }
+  private val eventCount by lazy { AtomicInteger() }
 
   /**
    * Fills the specified [bundle] with a logging-ready representation of [eventLog] and returns a
@@ -128,6 +130,7 @@ class EventBundleCreator @Inject constructor(
     bundle.putInt("android_sdk", androidSdkVersion)
     bundle.putString("app_version_name", appVersionName)
     bundle.putInt("app_version_code", appVersionCode)
+    bundle.putInt("dbg_event_count_since_app_open", eventCount.incrementAndGet())
     bundle.putString("oppia_app_lang", eventLog.appLanguageSelection.toAnalyticsText())
     bundle.putString(
       "oppia_content_lang", eventLog.writtenTranslationLanguageSelection.toAnalyticsText()
@@ -140,7 +143,7 @@ class EventBundleCreator @Inject constructor(
       eventContext.storeValue(
         PropertyStore(
           bundle,
-          allowUserIds = enableLearnerStudyAnalytics.value
+          allowUserIds = enableLoggingLearnerStudyIds.value
         )
       )
     }.activityName
@@ -491,7 +494,7 @@ class EventBundleCreator @Inject constructor(
     }
   }
 
-  /*** Represents an [OppiaMetricLog] loggable metric (denoted by [LoggableMetricTypeCase]).*/
+  /** Represents an [OppiaMetricLog] loggable metric (denoted by [LoggableMetricTypeCase]). */
   private sealed class PerformanceMetricsLoggableMetricType<T>(
     val metricName: String,
     private val value: T
@@ -704,6 +707,7 @@ class EventBundleCreator @Inject constructor(
       OppiaLanguage.PORTUGUESE -> "Portuguese"
       OppiaLanguage.BRAZILIAN_PORTUGUESE -> "Brazilian Portuguese"
       OppiaLanguage.SWAHILI -> "Swahili"
+      OppiaLanguage.NIGERIAN_PIDGIN -> "Nigerian Pidgin"
       OppiaLanguage.UNRECOGNIZED -> "unrecognized_language"
     }
   }

@@ -18,7 +18,7 @@ import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
-/** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
+/** Presenter for [ConceptCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
 class ConceptCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
