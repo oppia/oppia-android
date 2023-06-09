@@ -46,6 +46,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     private val isRtl by lazy {
       displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
     }
+    private val clipBounds by lazy { Rect() }
 
     override fun drawLeadingMargin(
       canvas: Canvas,
@@ -69,8 +70,14 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
         val bulletDrawRadius = bulletRadius.toFloat()
 
         val indentedX = parentAbsoluteLeadingMargin + spacingBeforeBullet
-        val bulletStartX = (if (isRtl) canvas.width - indentedX - 1 else indentedX).toFloat()
-        val bulletCenterX = bulletStartX + bulletDrawRadius
+        val bulletCenterLtrX = indentedX + bulletDrawRadius
+        val bulletCenterX = if (isRtl) {
+          // See https://stackoverflow.com/a/21845993/3689782 for 'right' property exclusivity.
+          val maxDrawX = if (canvas.getClipBounds(clipBounds)) {
+            clipBounds.right - 1
+          } else canvas.width - 1
+          maxDrawX - bulletCenterLtrX
+        } else bulletCenterLtrX
         val bulletCenterY = (top + bottom) / 2f
         when (indentationLevel) {
           0 -> {
@@ -90,7 +97,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
             val rectSize = bulletDiameter.toFloat()
             canvas.drawRect(
               RectF().apply {
-                left = bulletStartX
+                left = bulletCenterX
                 right = left + rectSize
                 this.top = bulletCenterY - bulletDrawRadius
                 this.bottom = this.top + rectSize
