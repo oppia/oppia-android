@@ -55,6 +55,21 @@ private const val IMAGE_TAG_WITHOUT_ALT_VALUE_MARKUP =
   "<oppia-noninteractive-image caption-with-value=\"&amp;quot;&amp;quot;\" " +
     "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
 
+private const val IMAGE_TAG_WITH_EMPTY_ALT_VALUE_MARKUP =
+  "<oppia-noninteractive-image alt-with-value=\"\" " +
+    "caption-with-value=\"&amp;quot;&amp;quot;\" " +
+    "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
+
+private const val IMAGE_TAG_WITH_EMPTY_STRING_ALT_VALUE_MARKUP =
+  "<oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;quot;\" " +
+    "caption-with-value=\"&amp;quot;&amp;quot;\" " +
+    "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
+
+private const val IMAGE_TAG_WITH_SPACE_ONLY_ALT_VALUE_MARKUP =
+  "<oppia-noninteractive-image alt-with-value=\"&amp;quot;  &amp;quot;\" " +
+    "caption-with-value=\"&amp;quot;&amp;quot;\" " +
+    "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
+
 /** Tests for [ImageTagHandler]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -136,6 +151,51 @@ class ImageTagHandlerTest {
     // Check whether parsed html has correct alt-with-value text or not.
     assertThat(parsedHtml.toString()).isEqualTo("alt text 1")
     assertThat(parsedHtml.first().isObjectReplacementCharacter()).isFalse()
+  }
+
+  @Test
+  fun testParseHtml_withEmptyImageCardMarkup_hasNoReadableText() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = IMAGE_TAG_WITH_EMPTY_ALT_VALUE_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithImageTagSupport
+      )
+
+    // If the alt text is present but empty, then only the image control character should show.
+    val parsedHtmlStr = parsedHtml.toString()
+    assertThat(parsedHtmlStr).hasLength(1)
+    assertThat(parsedHtmlStr.first().isObjectReplacementCharacter()).isTrue()
+  }
+
+  @Test
+  fun testParseHtml_withEmptyImageCardMarkupString_hasNoReadableText() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = IMAGE_TAG_WITH_EMPTY_STRING_ALT_VALUE_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithImageTagSupport
+      )
+
+    // If the alt text is present but empty, then only the image control character should show.
+    val parsedHtmlStr = parsedHtml.toString()
+    assertThat(parsedHtmlStr).hasLength(1)
+    assertThat(parsedHtmlStr.first().isObjectReplacementCharacter()).isTrue()
+  }
+
+  @Test
+  fun testParseHtml_withSpaceOnlyImageCardMarkup_hasNoReadableText() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = IMAGE_TAG_WITH_SPACE_ONLY_ALT_VALUE_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithImageTagSupport
+      )
+
+    // If the alt text is present but only spaces, then the image control character should show.
+    val parsedHtmlStr = parsedHtml.toString()
+    assertThat(parsedHtmlStr).hasLength(1)
+    assertThat(parsedHtmlStr.first().isObjectReplacementCharacter()).isTrue()
   }
 
   @Test
