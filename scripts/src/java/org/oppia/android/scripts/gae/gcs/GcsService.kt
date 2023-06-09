@@ -85,6 +85,7 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
     THUMBNAIL(httpRepresentation = "thumbnail")
   }
 
+  private companion object {
     private fun <I, O> Call<I>.resolveAsync(
       transform: (Request, Response<I>) -> O, default: (Request, Response<I>) -> O
     ): Deferred<O> {
@@ -97,4 +98,5 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
         } else default(request(), result)
       }
     }
+  }
 }

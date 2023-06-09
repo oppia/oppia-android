@@ -109,44 +109,51 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  fun DownloadableTopicSummaryDto.convertToTopicRecord(): TopicRecord {
+  fun DownloadableTopicSummaryDto.convertToTopicRecord(
+    imageReferenceReplacements: Map<String, String>
+  ): TopicRecord {
     val dto = this
     return TopicRecord.newBuilder().apply {
       this.id = dto.id
-      putAllWrittenTranslations(dto.localizations.toTranslationMappings())
+      putAllWrittenTranslations(dto.localizations.toTranslationMappings(imageReferenceReplacements))
       this.translatableTitle = dto.localizations.extractDefaultSubtitledHtml(dto.name)
       this.translatableDescription = dto.localizations.extractDefaultSubtitledHtml(dto.description)
       addAllCanonicalStoryIds(dto.storySummariesList.map { it.id })
       addAllSubtopicIds(dto.subtopicSummariesList.map { it.index })
       this.isPublished = true
-      this.topicThumbnail = dto.localizations.extractDefaultThumbnail()
+      this.topicThumbnail = dto.localizations.extractDefaultThumbnail(imageReferenceReplacements)
     }.build()
   }
 
-  fun UpcomingTopicSummaryDto.convertToTopicRecord(): TopicRecord {
+  fun UpcomingTopicSummaryDto.convertToTopicRecord(
+    imageReferenceReplacements: Map<String, String>
+  ): TopicRecord {
     val dto = this
     return TopicRecord.newBuilder().apply {
       this.id = dto.id
-      putAllWrittenTranslations(dto.localizations.toTranslationMappings())
+      putAllWrittenTranslations(dto.localizations.toTranslationMappings(imageReferenceReplacements))
       this.translatableTitle = dto.localizations.extractDefaultSubtitledHtml(dto.name)
       this.translatableDescription = dto.localizations.extractDefaultSubtitledHtml(dto.description)
       this.isPublished = false
-      this.topicThumbnail = dto.localizations.extractDefaultThumbnail()
+      this.topicThumbnail = dto.localizations.extractDefaultThumbnail(imageReferenceReplacements)
     }.build()
   }
 
-  fun StorySummaryDto.convertToStoryRecord(): StoryRecord {
+  fun StorySummaryDto.convertToStoryRecord(
+    imageReferenceReplacements: Map<String, String>
+  ): StoryRecord {
     val dto = this
     return StoryRecord.newBuilder().apply {
       this.storyId = dto.id
-      putAllWrittenTranslations(dto.localizations.toTranslationMappings())
+      putAllWrittenTranslations(dto.localizations.toTranslationMappings(imageReferenceReplacements))
       this.translatableStoryName = dto.localizations.extractDefaultSubtitledHtml(dto.title)
-      this.storyThumbnail = dto.localizations.extractDefaultThumbnail()
-      addAllChapters(dto.chaptersList.map { it.convertToChapterRecord() })
+      this.storyThumbnail = dto.localizations.extractDefaultThumbnail(imageReferenceReplacements)
+      addAllChapters(dto.chaptersList.map { it.convertToChapterRecord(imageReferenceReplacements) })
     }.build()
   }
 
   fun RevisionCardDto.convertToSubtopicRecord(
+    imageReferenceReplacements: Map<String, String>,
     subtopicSummaryDto: SubtopicSummaryDto,
     languagePackDtos: List<RevisionCardLanguagePackDto>
   ): SubtopicRecord {
@@ -156,23 +163,29 @@ object DtoProtoToLegacyProtoConverter {
       this.title = defaultLocalization.extractSubtitledHtml(dto.title)
       this.pageContents = defaultLocalization.extractSubtitledHtml(dto.content)
       putAllRecordedVoiceover(localizations.toVoiceoverMappings())
-      putAllWrittenTranslation(localizations.toTranslationMappings())
+      putAllWrittenTranslation(localizations.toTranslationMappings(imageReferenceReplacements))
       addAllSkillIds(subtopicSummaryDto.referencedSkillIdsList)
-      this.subtopicThumbnail = dto.defaultLocalization.extractThumbnail()
+      this.subtopicThumbnail = dto.defaultLocalization.extractThumbnail(imageReferenceReplacements)
     }.build()
   }
 
   fun convertToConceptCardList(
+    allImageReferenceReplacements: Map<String, Map<String, String>>,
     conceptCardDtos: List<Pair<ConceptCardDto, List<ConceptCardLanguagePackDto>>>
   ): ConceptCardList {
     return ConceptCardList.newBuilder().apply {
       addAllConceptCards(
-        conceptCardDtos.map { (conceptCard, packs) -> conceptCard.convertToConceptCard(packs) }
+        conceptCardDtos.map { (conceptCard, packs) ->
+          val imageReferenceReplacements =
+            allImageReferenceReplacements.getValue(conceptCard.skillId)
+          conceptCard.convertToConceptCard(imageReferenceReplacements, packs)
+        }
       )
     }.build()
   }
 
   fun ExplorationDto.convertToExploration(
+    imageReferenceReplacements: Map<String, String>,
     languagePackDtos: List<ExplorationLanguagePackDto>
   ): Exploration {
     val dto = this
@@ -183,30 +196,37 @@ object DtoProtoToLegacyProtoConverter {
       this.id = dto.id
       putAllStates(
         dto.statesMap.mapValues { (name, stateDto) ->
-          stateDto.convertToState(name, dto.defaultLocalization, localizations)
+          stateDto.convertToState(
+            name, dto.defaultLocalization, localizations, imageReferenceReplacements
+          )
         }
       )
       this.initStateName = dto.initStateName
       this.languageCode = dto.defaultLocalization.language.toLegacyLanguageCode()
       this.version = dto.contentVersion
       this.translatableTitle = contentIdTracker.extractSubtitledHtml(dto.title)
-      putAllWrittenTranslations(localizations.toTranslationMappings(contentIdTracker.contentIds))
+      putAllWrittenTranslations(
+        localizations.toTranslationMappings(imageReferenceReplacements, contentIdTracker.contentIds)
+      )
       // Correctness feedback, description, param changes, and param specs aren't used.
     }.build()
   }
 
-  private fun ChapterSummaryDto.convertToChapterRecord(): ChapterRecord {
+  private fun ChapterSummaryDto.convertToChapterRecord(
+    imageReferenceReplacements: Map<String, String>
+  ): ChapterRecord {
     val dto = this
     return ChapterRecord.newBuilder().apply {
       this.explorationId = dto.explorationId
-      this.chapterThumbnail = dto.localizations.extractDefaultThumbnail()
-      putAllWrittenTranslations(dto.localizations.toTranslationMappings())
+      this.chapterThumbnail = dto.localizations.extractDefaultThumbnail(imageReferenceReplacements)
+      putAllWrittenTranslations(dto.localizations.toTranslationMappings(imageReferenceReplacements))
       this.translatableTitle = dto.localizations.extractDefaultSubtitledHtml(dto.title)
       this.translatableDescription = dto.localizations.extractDefaultSubtitledHtml(dto.description)
     }.build()
   }
 
   private fun ConceptCardDto.convertToConceptCard(
+    imageReferenceReplacements: Map<String, String>,
     languagePackDtos: List<ConceptCardLanguagePackDto>
   ): ConceptCard {
     val dto = this
@@ -223,14 +243,15 @@ object DtoProtoToLegacyProtoConverter {
         dto.workedExamplesList.map { dto.defaultLocalization.extractSubtitledHtml(it.explanation) }
       )
       putAllRecordedVoiceover(localizations.toVoiceoverMappings())
-      putAllWrittenTranslation(localizations.toTranslationMappings())
+      putAllWrittenTranslation(localizations.toTranslationMappings(imageReferenceReplacements))
     }.build()
   }
 
   private fun StateDto.convertToState(
     name: String,
     defaultLocalizationDto: ContentLocalizationDto,
-    localizations: List<ContentLocalizationDto>
+    localizations: List<ContentLocalizationDto>,
+    imageReferenceReplacements: Map<String, String>
   ): State {
     val dto = this
     // The content IDs associated with translations and voiceovers for a state should only
@@ -242,7 +263,9 @@ object DtoProtoToLegacyProtoConverter {
       this.content = contentIdTracker.extractSubtitledHtml(dto.content)
       this.interaction = dto.interaction.convertToInteraction(contentIdTracker)
       putAllRecordedVoiceovers((localizations + defaultLocalizationDto).toVoiceoverMappings(contentIdTracker.contentIds))
-      putAllWrittenTranslations(localizations.toTranslationMappings(contentIdTracker.contentIds))
+      putAllWrittenTranslations(
+        localizations.toTranslationMappings(imageReferenceReplacements, contentIdTracker.contentIds)
+      )
       // Param changes, linked skill ID, classifier model ID, and answer soliciting aren't used.
     }.build()
   }
@@ -1290,10 +1313,13 @@ object DtoProtoToLegacyProtoConverter {
   private fun ContentLocalizationsDto.extractDefaultSubtitledHtml(text: SubtitledTextDto) =
     defaultMapping.extractSubtitledHtml(text)
 
-  private fun ContentLocalizationsDto.extractDefaultThumbnail() = defaultMapping.extractThumbnail()
+  private fun ContentLocalizationsDto.extractDefaultThumbnail(
+    imageReferenceReplacements: Map<String, String>
+  ) = defaultMapping.extractThumbnail(imageReferenceReplacements)
 
-  private fun ContentLocalizationsDto.toTranslationMappings(): Map<String, TranslationMapping> =
-    localizationsList.toTranslationMappings()
+  private fun ContentLocalizationsDto.toTranslationMappings(
+    imageReferenceReplacements: Map<String, String>
+  ) = localizationsList.toTranslationMappings(imageReferenceReplacements)
 
   private fun ContentLocalizationDto.extractSubtitledHtml(text: SubtitledTextDto): SubtitledHtml =
     localizableTextContentMappingMap.getValue(text.contentId).toSubtitledHtml(text.contentId)
@@ -1305,7 +1331,9 @@ object DtoProtoToLegacyProtoConverter {
   private fun ContentLocalizationDto.extractStringList(contentId: String) =
     localizableTextContentMappingMap.getValue(contentId).toStringList()
 
-  private fun ContentLocalizationDto.extractThumbnail(): LessonThumbnail = thumbnail.toThumbnail()
+  private fun ContentLocalizationDto.extractThumbnail(
+    imageReferenceReplacements: Map<String, String>
+  ): LessonThumbnail = thumbnail.toThumbnail(imageReferenceReplacements)
 
   private fun ContentIdTracker.extractSubtitledHtml(text: SubtitledTextDto): SubtitledHtml =
     localizationDto.extractSubtitledHtml(text).also { trackContentId(text.contentId) }
@@ -1316,10 +1344,12 @@ object DtoProtoToLegacyProtoConverter {
   private fun ContentIdTracker.extractStringList(contentId: String) =
     localizationDto.extractStringList(contentId).also { trackContentId(contentId) }
 
-  private fun List<ContentLocalizationDto>.toTranslationMappings() =
-    toTranslationMappings(filterContentIds = null)
+  private fun List<ContentLocalizationDto>.toTranslationMappings(
+    imageReferenceReplacements: Map<String, String>
+  ) = toTranslationMappings(imageReferenceReplacements, filterContentIds = null)
 
   private fun List<ContentLocalizationDto>.toTranslationMappings(
+    imageReferenceReplacements: Map<String, String>,
     filterContentIds: Set<String>?
   ): Map<String, TranslationMapping> {
     return associateUniquely(
@@ -1327,7 +1357,7 @@ object DtoProtoToLegacyProtoConverter {
       valueSelector = {
         it.localizableTextContentMappingMap.filterKeys { contentId ->
           filterContentIds == null || contentId in filterContentIds
-        }.mapValues { (_, dto) -> dto.toTranslation() }
+        }.mapValues { (_, dto) -> dto.toTranslation(imageReferenceReplacements) }
       }
     ).flipMapping().mapValues { (_, languageMap) -> languageMap.toTranslationMapping() }
   }
@@ -1379,15 +1409,19 @@ object DtoProtoToLegacyProtoConverter {
     return dto.setOfLocalizableText.textList
   }
 
-  private fun LocalizableTextDto.toTranslation(): Translation {
+  private fun LocalizableTextDto.toTranslation(
+    imageReferenceReplacements: Map<String, String>
+  ): Translation {
     val dto = this
     return Translation.newBuilder().apply {
       when (dto.dataFormatCase) {
         LocalizableTextDto.DataFormatCase.SINGLE_LOCALIZABLE_TEXT ->
-          this.html = dto.singleLocalizableText.text
+          this.html = dto.singleLocalizableText.text.fixImageReferences(imageReferenceReplacements)
         LocalizableTextDto.DataFormatCase.SET_OF_LOCALIZABLE_TEXT -> {
           this.htmlList = HtmlTranslationList.newBuilder().apply {
-            addAllHtml(dto.setOfLocalizableText.textList)
+            addAllHtml(
+              dto.setOfLocalizableText.textList.fixImageReferences(imageReferenceReplacements)
+            )
           }.build()
         }
         LocalizableTextDto.DataFormatCase.DATAFORMAT_NOT_SET, null ->
@@ -1404,10 +1438,13 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun ThumbnailDto.toThumbnail(): LessonThumbnail {
+  private fun ThumbnailDto.toThumbnail(
+    imageReferenceReplacements: Map<String, String>
+  ): LessonThumbnail {
     val dto = this
+    val oldFilename = dto.referencedImage.filename
     return LessonThumbnail.newBuilder().apply {
-      this.thumbnailFilename = dto.referencedImage.filename
+      this.thumbnailFilename = imageReferenceReplacements[oldFilename] ?: oldFilename
       this.backgroundColorRgb = dto.backgroundColorRgb
     }.build()
   }
@@ -1553,8 +1590,13 @@ object DtoProtoToLegacyProtoConverter {
   private fun SubtitledUnicode.wrap(): SchemaObject =
     SchemaObject.newBuilder().apply { this.subtitledUnicode = this@wrap }.build()
 
-  private fun SubtitledHtml.wrap(): SchemaObject =
-    SchemaObject.newBuilder().apply { this.subtitledHtml = this@wrap }.build()
+  private fun SubtitledHtml.wrap(): SchemaObject {
+    return SchemaObject.newBuilder().apply {
+      this.customSchemaValue = CustomSchemaValue.newBuilder().apply {
+        this.subtitledHtml = this@wrap
+      }.build()
+    }.build()
+  }
 
   private fun Boolean.wrap(): SchemaObject =
     SchemaObject.newBuilder().apply { this.boolValue = this@wrap }.build()
@@ -1579,6 +1621,59 @@ object DtoProtoToLegacyProtoConverter {
         addAllSchemaObject(this@wrap)
       }.build()
     }.build()
+  }
+
+  private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
+  private const val CUSTOM_MATH_TAG = "oppia-noninteractive-math"
+
+  private fun String.fixImageReferences(imageReferenceReplacements: Map<String, String>): String =
+    fixImageTags(imageReferenceReplacements).fixMathTags(imageReferenceReplacements)
+
+  private fun Iterable<String>.fixImageReferences(
+    imageReferenceReplacements: Map<String, String>
+  ): List<String> = map { it.fixImageReferences(imageReferenceReplacements) }
+
+  private fun String.fixImageTags(imageReferenceReplacements: Map<String, String>): String =
+    fixTags(CUSTOM_IMG_TAG, imageReferenceReplacements)
+
+  private fun String.fixMathTags(imageReferenceReplacements: Map<String, String>): String =
+    fixTags(CUSTOM_MATH_TAG, imageReferenceReplacements)
+
+  private fun String.fixTags(tag: String, imageReferenceReplacements: Map<String, String>): String {
+    // Replace tags in reverse order to avoid invalidating ranges.
+    return findTags(tag).reversed().fold(this) { updatedStr, nextElementRange ->
+      updatedStr.replaceReferences(nextElementRange, imageReferenceReplacements)
+    }
+  }
+
+  private fun String.replaceReferences(
+    placement: IntRange, imageReferenceReplacements: Map<String, String>
+  ): String {
+    return substring(placement).let { element ->
+      // This could be done much more efficiently by extracting the image reference.
+      imageReferenceReplacements.entries.find { (needle, _) ->
+        needle in element
+      }?.let { (needle, replacement) -> element.replace(needle, replacement) }
+    }?.let { replaceRange(placement, it) } ?: this
+  }
+
+  private fun String.findTags(tag: String): List<IntRange> {
+    return generateSequence(findNextTag(tag, startFrom = 0)) { previousTagRange ->
+      findNextTag(tag, previousTagRange.last + 1)
+    }.toList()
+  }
+
+  private fun String.findNextTag(tag: String, startFrom: Int): IntRange? {
+    val startTagIndex = indexOf("<$tag", startFrom).takeIf { it != -1 } ?: return null
+    val endTagIndex1 = indexOf("/>", startTagIndex).takeIf { it != -1 }
+    val endTagIndex2 = indexOf("</$tag", startTagIndex).takeIf { it != -1 }
+    val endTagIndex = when {
+      endTagIndex1 != null && endTagIndex2 != null -> endTagIndex1.coerceAtMost(endTagIndex2)
+      endTagIndex1 != null -> endTagIndex1
+      endTagIndex2 != null -> endTagIndex2
+      else -> return null
+    }
+    return startTagIndex until endTagIndex
   }
 
   private fun <T, K, V> Iterable<T>.associateUniquely(

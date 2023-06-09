@@ -234,6 +234,7 @@ java_binary(
     jvm_flags = [
         "--add-opens",
         "java.base/java.lang.invoke=ALL-UNNAMED",
+        "-Xmx16g",  # Image conversion can require a lot of RAM.
     ],
     main_class = "org.oppia.android.scripts.assets.DownloadLessonsKt",
     runtime_deps = [

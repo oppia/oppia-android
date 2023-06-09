@@ -11,6 +11,7 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":dto_proto_to_legacy_proto_converter",
+        ":image_repairer",
         "//scripts/src/java/org/oppia/android/scripts/gae",
         "//scripts/src/java/org/oppia/android/scripts/gae:gae_json_impl",
         "//scripts/src/java/org/oppia/android/scripts/gae/proto:proto_version_provider",
@@ -21,7 +22,6 @@ kt_jvm_library(
     name = "dto_proto_to_legacy_proto_converter",
     testonly = True,
     srcs = ["DtoProtoToLegacyProtoConverter.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//model/src/main/proto:exploration_java_proto",
         "//model/src/main/proto:interaction_object_java_proto",
@@ -31,4 +31,11 @@ kt_jvm_library(
         "//model/src/main/proto:translation_java_proto",
         "//third_party:oppia_proto_api_java_protos",
     ],
+)
+
+kt_jvm_library(
+    name = "image_repairer",
+    testonly = True,
+    srcs = ["ImageRepairer.kt"],
+    deps = ["//third_party:com_github_weisj_jsvg"],
 )

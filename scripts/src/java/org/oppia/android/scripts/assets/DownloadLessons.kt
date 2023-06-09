@@ -3,6 +3,7 @@ package org.oppia.android.scripts.assets
 import com.google.protobuf.Message
 import com.google.protobuf.TextFormat
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -150,6 +151,9 @@ class DownloadLessons(
     Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
   }
   private val coroutineDispatcher by lazy { threadPool.asCoroutineDispatcher() }
+  private val blockingDispatcher by lazy {
+    Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+  }
   private val gcsService by lazy { GcsService(gcsBaseUrl, gcsBucket) }
   private val imageDownloader by lazy { ImageDownloader(gcsService, coroutineDispatcher) }
   private val androidEndpoint: GaeAndroidEndpoint by lazy {
@@ -164,6 +168,9 @@ class DownloadLessons(
     )
   }
   private val textFormat by lazy { TextFormat.printer() }
+  private val imageRepairer by lazy { ImageRepairer() }
+  // TODO: Convert ByteArray to DownloadedImage for better analysis?
+  private val memoizedLoadedImageData by lazy { ConcurrentHashMap<File, ByteArray>() }
 
   fun downloadLessons(outputDir: File) {
     val downloadJob = CoroutineScope(coroutineDispatcher).launch { downloadAllLessons(outputDir) }
@@ -424,46 +431,6 @@ class DownloadLessons(
       valueTransform = { it.explorationLanguagePack }
     )
 
-    val writeProtoV1AsyncResults = topicSummaries.map { (topicId, topicSummary) ->
-      writeProtosAsync(protoV1Dir, topicId, topicSummary.convertToTopicRecord())
-    } + upcomingTopics.map { upcomingTopic ->
-      writeProtosAsync(protoV1Dir, upcomingTopic.id, upcomingTopic.convertToTopicRecord())
-    } + storySummaries.map { storySummary ->
-      writeProtosAsync(protoV1Dir, storySummary.id, storySummary.convertToStoryRecord())
-    } + revisionCards.map { revisionCard ->
-      val topicSummary = topicSummaries.getValue(revisionCard.id.topicId)
-      val subtopicSummary =
-        topicSummary.subtopicSummariesList.find { it.index == revisionCard.id.subtopicIndex }
-          ?: error("Could not find subtopic summary for revision card: ${revisionCard.id}.")
-      // TODO: The listOf() default here allows cards to have no translations.
-      val packs = revisionCardPacks[revisionCard.id] ?: listOf()
-      writeProtosAsync(
-        protoV1Dir,
-        revisionCard.id.collapse(),
-        revisionCard.convertToSubtopicRecord(subtopicSummary, packs)
-      )
-    } + writeProtosAsync(
-      protoV1Dir,
-      baseName = "skills",
-      convertToConceptCardList(
-        // TODO: The listOf() default here allows cards to have no translations.
-        conceptCards.map { it to (conceptCardPacks[it.skillId] ?: listOf()) }
-      )
-    ) + explorations.map { exp ->
-      val packs = explorationPacks.getValue(exp.id)
-      writeProtosAsync(protoV1Dir, exp.id, exp.convertToExploration(packs))
-    } + writeProtosAsync(
-      protoV1Dir, baseName = "topics", topicSummaries.values.convertToTopicIdList()
-    )
-
-    // Wait for all proto writes to finish.
-    (writeProtoV2AsyncResults + writeProtoV1AsyncResults).awaitAll()
-    println("Written proto locations:")
-    println("- Proto v2 text protos can be found in: ${textProtoV2Dir.path}")
-    println("- Proto v2 binary protos can be found in: ${binaryProtoV2Dir.path}")
-    println("- Proto v1 text protos can be found in: ${textProtoV1Dir.path}")
-    println("- Proto v1 binary protos can be found in: ${binaryProtoV1Dir.path}")
-
     println()
     val imagesDir = File(outputDir, "images").also { it.mkdir() }
     val imageReferences = contentResponse.collectImageReferences().distinct()
@@ -481,9 +448,132 @@ class DownloadLessons(
     }.await()
     println()
     println("Images downloaded to: ${imagesDir.path}/.")
+    println()
 
-    val imageSuccessCount = images.values.count { it == ImageDownloadStatus.SUCCEEDED }
+    val imageSuccessCount = images.values.count { it is DownloadedImage.Succeeded }
+    val imageDuplicationCount = images.values.count { it is DownloadedImage.Duplicated }
+    val renamedImages = images.values.filterIsInstance<DownloadedImage.Renamed>()
+    val convertedImages = images.values.filterIsInstance<DownloadedImage.ConvertedSvgToPng>()
     println("$imageSuccessCount/${images.size} images successfully downloaded.")
+    println("$imageDuplicationCount/${images.size} images were de-duplicated.")
+    println("${renamedImages.size}/${images.size} images required renaming due to conflicts.")
+    println("${convertedImages.size}/${images.size} images required repairing from SVG to PNG.")
+    println()
+
+    if (renamedImages.isNotEmpty()) {
+      println("Please manually verify the following renamed images:")
+      val destDir by lazy { File(outputDir, "image_renames").also { it.mkdir() } }
+      renamedImages.forEach { renamedImage ->
+        val oldFilename = renamedImage.oldFilename
+        val newFilename = renamedImage.newFilename
+        val resolutionDir = File(destDir, oldFilename.substringBeforeLast('.'))
+        val beforeDir = File(resolutionDir, "before").also { it.mkdirs() }
+        val afterDir = File(resolutionDir, "after").also { it.mkdirs() }
+        val newFile = File(imagesDir, newFilename)
+        val beforeFile = File(beforeDir, oldFilename)
+        val afterFile = File(afterDir, newFilename)
+        val oldFileData = renamedImage.readOriginalFileData()
+        beforeFile.writeBytes(oldFileData)
+        newFile.copyTo(afterFile, overwrite = true)
+        val imageUrl =
+          imageDownloader.computeImageUrl(
+            renamedImage.imageRef.container.imageContainerType,
+            renamedImage.imageRef.imageType,
+            renamedImage.imageRef.container.entityId,
+            renamedImage.imageRef.filename
+          )
+        println("- Image $oldFilename required repairing via renaming:")
+        println("  - Before: ${beforeFile.path} (${oldFileData.size} bytes)")
+        println("  - After: ${afterFile.path} (${newFile.length()} bytes)")
+        println("  - Image URL: $imageUrl")
+        println("  - Language: ${renamedImage.imageRef.container.language}")
+      }
+      println()
+    }
+
+    if (convertedImages.isNotEmpty()) {
+      println("Please manually verify the following converted images:")
+      val destDir by lazy { File(outputDir, "image_conversions").also { it.mkdir() } }
+      convertedImages.forEach { convertedImage ->
+        val oldFilename = convertedImage.imageRef.filename
+        val newFilename = convertedImage.newFilename
+        val resolutionDir = File(destDir, oldFilename.substringBeforeLast('.'))
+        val beforeDir = File(resolutionDir, "before").also { it.mkdirs() }
+        val afterDir = File(resolutionDir, "after").also { it.mkdirs() }
+        val beforeImageData = convertedImage.downloadedImageData.toByteArray()
+        val afterImageData = convertedImage.convertedImageData.toByteArray()
+        val beforeFile = File(beforeDir, oldFilename).also { it.writeBytes(beforeImageData) }
+        val afterFile = File(afterDir, newFilename).also { it.writeBytes(afterImageData) }
+        val imageUrl =
+          imageDownloader.computeImageUrl(
+            convertedImage.imageRef.container.imageContainerType,
+            convertedImage.imageRef.imageType,
+            convertedImage.imageRef.container.entityId,
+            convertedImage.imageRef.filename
+          )
+        println("- Image $oldFilename required repairing via conversion:")
+        println("  - Before: ${beforeFile.path} (${beforeImageData.size} bytes)")
+        println("  - After: ${afterFile.path} (${afterImageData.size} bytes)")
+        println("  - Image URL: $imageUrl")
+        println("  - Language: ${convertedImage.imageRef.container.language}")
+        println("  - Rendered resolution: ${convertedImage.width}x${convertedImage.height}")
+      }
+      println()
+    }
+
+    val conceptCardImageReplacements = conceptCards.associate { dto ->
+      dto.skillId to images.computeReplacements(ImageContainerType.SKILL, dto.skillId)
+    }
+    val writeProtoV1AsyncResults = topicSummaries.map { (topicId, topicSummary) ->
+      val imageReplacements = images.computeReplacements(ImageContainerType.TOPIC, topicId)
+      writeProtosAsync(protoV1Dir, topicId, topicSummary.convertToTopicRecord(imageReplacements))
+    } + upcomingTopics.map { upcomingTopic ->
+      val imageReplacements = images.computeReplacements(ImageContainerType.TOPIC, upcomingTopic.id)
+      writeProtosAsync(
+        protoV1Dir, upcomingTopic.id, upcomingTopic.convertToTopicRecord(imageReplacements)
+      )
+    } + storySummaries.map { storySummary ->
+      val imageReplacements = images.computeReplacements(ImageContainerType.STORY, storySummary.id)
+      writeProtosAsync(
+        protoV1Dir, storySummary.id, storySummary.convertToStoryRecord(imageReplacements)
+      )
+    } + revisionCards.map { revisionCard ->
+      val imageReplacements =
+        images.computeReplacements(ImageContainerType.TOPIC, revisionCard.id.topicId)
+      val topicSummary = topicSummaries.getValue(revisionCard.id.topicId)
+      val subtopicSummary =
+        topicSummary.subtopicSummariesList.find { it.index == revisionCard.id.subtopicIndex }
+          ?: error("Could not find subtopic summary for revision card: ${revisionCard.id}.")
+      // TODO: The listOf() default here allows cards to have no translations.
+      val packs = revisionCardPacks[revisionCard.id] ?: listOf()
+      writeProtosAsync(
+        protoV1Dir,
+        revisionCard.id.collapse(),
+        revisionCard.convertToSubtopicRecord(imageReplacements, subtopicSummary, packs)
+      )
+    } + writeProtosAsync(
+      protoV1Dir,
+      baseName = "skills",
+      convertToConceptCardList(
+        conceptCardImageReplacements,
+        // TODO: The listOf() default here allows cards to have no translations.
+        conceptCards.map { it to (conceptCardPacks[it.skillId] ?: listOf()) }
+      )
+    ) + explorations.map { exp ->
+      val imageReplacements = images.computeReplacements(ImageContainerType.EXPLORATION, exp.id)
+      val packs = explorationPacks.getValue(exp.id)
+      writeProtosAsync(protoV1Dir, exp.id, exp.convertToExploration(imageReplacements, packs))
+    } + writeProtosAsync(
+      protoV1Dir, baseName = "topics", topicSummaries.values.convertToTopicIdList()
+    )
+
+    // Wait for all proto writes to finish.
+    (writeProtoV2AsyncResults + writeProtoV1AsyncResults).awaitAll()
+    println("Written proto locations:")
+    println("- Proto v2 text protos can be found in: ${textProtoV2Dir.path}")
+    println("- Proto v2 binary protos can be found in: ${binaryProtoV2Dir.path}")
+    println("- Proto v1 text protos can be found in: ${textProtoV1Dir.path}")
+    println("- Proto v1 binary protos can be found in: ${binaryProtoV1Dir.path}")
 
     val analyzer = CompatibilityAnalyzer(requestedLanguages + setOf(defaultLanguage))
     topicSummaries.values.forEach(analyzer::track)
@@ -546,10 +636,12 @@ class DownloadLessons(
       }
     }
 
-    if (imageSuccessCount != images.size) {
+    val imageDownloadFailures = images.values.filterIsInstance<DownloadedImage.FailedCouldNotFind>()
+    if (imageDownloadFailures.isNotEmpty()) {
       println()
       println("Images that failed to download:")
-      images.forEach { (reference, status) ->
+      imageDownloadFailures.forEach { downloadedImage ->
+        val reference = downloadedImage.imageRef
         val imageUrl =
           imageDownloader.computeImageUrl(
             reference.container.imageContainerType,
@@ -558,16 +650,13 @@ class DownloadLessons(
             reference.filename
           )
         val language = reference.container.language
-        when (status) {
-          ImageDownloadStatus.SUCCEEDED -> {} // Nothing to report.
-          ImageDownloadStatus.FAILED_COULD_NOT_FIND -> {
-            println("- Image failed to download (could not find image, language: $language): $imageUrl")
-          }
-          ImageDownloadStatus.FAILED_SVG_CONTAINS_EMBEDDED_PNG -> {
-            println("- Image failed to download (image contains embedded PNG, language: $language): $imageUrl")
-          }
-        }
+        println("- Image failed to download (could not find image, language: $language): $imageUrl")
       }
+    }
+
+    if (renamedImages.isNotEmpty() || convertedImages.isNotEmpty()) {
+      println("WARNING: Images needed to be auto-fixed. Please verify that they are correct")
+      println("(look at above output for specific images that require verification).")
     }
 
 //    val translationMetrics = analyzer.computeTranslationsUsageReport()
@@ -733,7 +822,10 @@ class DownloadLessons(
 
   private fun Collection<ImageReference>.downloadAllAsync(
     destDir: File, reportProgress: (Int, Int) -> Unit
-  ): Deferred<Map<ImageReference, ImageDownloadStatus>> {
+  ): Deferred<Map<ImageReference, DownloadedImage>> {
+    check(destDir.deleteRecursively() && destDir.mkdir()) {
+      "Failed to clear & recreate image destination dir: ${destDir.path}."
+    }
     val totalCount = size
     val channel = Channel<Int>()
     channel.consumeAsFlow().withIndex().onEach { (index, _) ->
@@ -742,33 +834,132 @@ class DownloadLessons(
     return CoroutineScope(coroutineDispatcher).async {
       mapIndexed { index, reference ->
         reference.downloadAsync(destDir, index, channel)
-      }.awaitAll().toMap().also { channel.close() }
+      }.awaitAll().groupBy { it.imageRef }.mapValues { (_, matches) ->
+        matches.single()
+      }.also { channel.close() }
     }
   }
 
   private fun ImageReference.downloadAsync(
     destDir: File, index: Int, reportProgressChannel: SendChannel<Int>
-  ): Deferred<Pair<ImageReference, ImageDownloadStatus>> {
+  ): Deferred<DownloadedImage> {
     val reference = this
     return CoroutineScope(coroutineDispatcher).async {
       imageDownloader.retrieveImageContentAsync(
         container.imageContainerType, imageType, container.entityId, filename
       ).await()?.let { imageData ->
-        reference to withContext(Dispatchers.IO) {
-          if (filename.endsWith("svg") && "data:image/png;base64" in imageData.decodeToString()) {
-            return@withContext ImageDownloadStatus.FAILED_SVG_CONTAINS_EMBEDDED_PNG
+        withContext(Dispatchers.IO) {
+          when (val conv = imageRepairer.convertToPng(filename, imageData.decodeToString())) {
+            ImageRepairer.RepairedImage.NoRepairNeeded -> {
+              val imageFile = File(destDir, filename)
+              when {
+                !imageFile.exists() -> {
+                  memoizedLoadedImageData[imageFile] = imageData
+                  imageFile.writeBytes(imageData)
+                  DownloadedImage.Succeeded(reference)
+                }
+                imageFile.isImageFileSameAs(imageData) -> DownloadedImage.Duplicated(reference)
+                else -> {
+                  val newFile = computeNewUniqueFile(destDir, imageFile)
+                  memoizedLoadedImageData[newFile] = imageData
+                  newFile.writeBytes(imageData)
+                  DownloadedImage.Renamed.ExistingFile(
+                    reference, oldFile = imageFile, newFilename = newFile.name
+                  )
+                }
+              }
+            }
+            is ImageRepairer.RepairedImage.RenderedSvg -> {
+              val nameWithoutExt = filename.substringBeforeLast('.')
+              val expectedNewImageFile = File(destDir, "$nameWithoutExt.png")
+              val newImageFile = if (expectedNewImageFile.exists()) {
+                if (expectedNewImageFile.isImageFileSameAs(conv.pngContents.toByteArray())) {
+                  // This is a rename since the original file is being converted from SVG.
+                  return@withContext DownloadedImage.Renamed.ConvertedFile(
+                    reference,
+                    oldFilename = filename,
+                    oldFileData = imageData.toList(),
+                    newFilename = expectedNewImageFile.name
+                  )
+                } else computeNewUniqueFile(destDir, expectedNewImageFile)
+              } else expectedNewImageFile
+              val newImageData = conv.pngContents.toByteArray()
+              memoizedLoadedImageData[newImageFile] = newImageData
+              newImageFile.writeBytes(newImageData)
+              DownloadedImage.ConvertedSvgToPng(
+                reference,
+                newFilename = newImageFile.name,
+                imageData.toList(),
+                conv.pngContents,
+                conv.width,
+                conv.height
+              )
+            }
           }
-          File(destDir, filename).writeBytes(imageData)
-          return@withContext ImageDownloadStatus.SUCCEEDED
         }
-      }.also { reportProgressChannel.send(index) } ?: (reference to ImageDownloadStatus.FAILED_COULD_NOT_FIND)
+      }.also { reportProgressChannel.send(index) } ?: DownloadedImage.FailedCouldNotFind(reference)
     }
   }
 
-  private enum class ImageDownloadStatus {
-    SUCCEEDED,
-    FAILED_COULD_NOT_FIND,
-    FAILED_SVG_CONTAINS_EMBEDDED_PNG
+  private fun File.isImageFileSameAs(imageData: ByteArray): Boolean {
+    val imageDataToCheck = memoizedLoadedImageData.getValue(this)
+
+    // First, perform a byte-equality check.
+    if (imageDataToCheck.toList() == imageData.toList()) return true
+
+    // Second, perform an image-equality check (exact match).
+    return imageRepairer.areEqualImages(extension, imageDataToCheck, imageData)
+  }
+
+  private fun computeNewUniqueFile(destDir: File, imageFile: File): File {
+    val imageBaseFilename = imageFile.nameWithoutExtension
+    val copyCount = destDir.listFiles()?.count {
+      it.nameWithoutExtension.startsWith(imageBaseFilename)
+    }?.plus(1) ?: 0 // Zero shouldn't actually happen in practice.
+    val newFilename = "${imageBaseFilename}_$copyCount.${imageFile.extension}"
+    return File(destDir, newFilename)
+  }
+
+  private sealed class DownloadedImage {
+    abstract val imageRef: ImageReference
+
+    data class Succeeded(override val imageRef: ImageReference): DownloadedImage()
+
+    data class Duplicated(override val imageRef: ImageReference): DownloadedImage()
+
+    sealed class Renamed: DownloadedImage() {
+      abstract val oldFilename: String
+      abstract val newFilename: String
+
+      abstract fun readOriginalFileData(): ByteArray
+
+      data class ExistingFile(
+        override val imageRef: ImageReference, val oldFile: File, override val newFilename: String
+      ): Renamed() {
+        override val oldFilename: String get() = oldFile.name
+        override fun readOriginalFileData(): ByteArray = oldFile.readBytes()
+      }
+
+      data class ConvertedFile(
+        override val imageRef: ImageReference,
+        override val oldFilename: String,
+        val oldFileData: List<Byte>,
+        override val newFilename: String
+      ): Renamed() {
+        override fun readOriginalFileData(): ByteArray = oldFileData.toByteArray()
+      }
+    }
+
+    data class ConvertedSvgToPng(
+      override val imageRef: ImageReference,
+      val newFilename: String,
+      val downloadedImageData: List<Byte>,
+      val convertedImageData: List<Byte>,
+      val width: Int,
+      val height: Int
+    ): DownloadedImage()
+
+    data class FailedCouldNotFind(override val imageRef: ImageReference): DownloadedImage()
   }
 
   private fun shutdownBlocking() {
@@ -776,11 +967,39 @@ class DownloadLessons(
     threadPool.tryShutdownFully(timeout = 5, unit = TimeUnit.SECONDS)
   }
 
-  private data class ImageContainer(val imageContainerType: ImageContainerType, val entityId: String, val language: LanguageType)
+  private data class ImageContainer(
+    val imageContainerType: ImageContainerType, val entityId: String, val language: LanguageType
+  )
 
   private data class ImageReference(
     val container: ImageContainer, val imageType: ImageType, val filename: String
   )
+
+  private fun Map<ImageReference, DownloadedImage>.computeReplacements(
+    imageContainerType: ImageContainerType, entityId: String
+  ): Map<String, String> {
+    return filterKeys { ref ->
+      ref.container.imageContainerType == imageContainerType && ref.container.entityId == entityId
+    }.mapValues { (_, image) ->
+      when (image) {
+        is DownloadedImage.ConvertedSvgToPng -> image.imageRef.filename to image.newFilename
+        is DownloadedImage.Renamed -> image.oldFilename to image.newFilename
+        is DownloadedImage.Duplicated, is DownloadedImage.FailedCouldNotFind,
+        is DownloadedImage.Succeeded -> null
+      }
+    }.values.filterNotNull().groupBy { (oldFilename, _) ->
+      oldFilename
+    }.mapValues { (oldFilename, matches) ->
+      val uniqueReplacements = matches.mapTo(mutableSetOf()) { (_, replacement) -> replacement }
+      uniqueReplacements.singleOrNull()
+        ?: error("Multiple files correspond to image: $oldFilename: $uniqueReplacements.")
+    }.also { imageReplacements ->
+      val cyclicKeys = imageReplacements.keys.filter { it in imageReplacements.values }
+      check(cyclicKeys.isEmpty()) {
+        "Cycle(s) found in image replacements map: $cyclicKeys."
+      }
+    }
+  }
 
   private class CompatibilityAnalyzer(private val expectedLanguages: Set<LanguageType>) {
     private val texts by lazy { mutableListOf<TextReference>() }
