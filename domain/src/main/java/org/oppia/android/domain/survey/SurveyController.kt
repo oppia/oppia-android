@@ -1,6 +1,5 @@
 package org.oppia.android.domain.survey
 
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Survey
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
@@ -17,10 +16,11 @@ private const val CREATE_SURVEY_PROVIDER_ID = "create_survey_provider_id"
 private const val START_SURVEY_SESSION_PROVIDER_ID = "start_survey_session_provider_id"
 private const val CREATE_QUESTIONS_LIST_PROVIDER_ID = "create_questions_list_provider_id"
 
-/** Controller for creating and retrieving all attributes of a survey.
+/**
+ * Controller for creating and retrieving all attributes of a survey.
  *
  * Only one survey is shown at a time, and its progress is controlled by the
- * [SurveyProgressController]
+ * [SurveyProgressController].
  */
 @Singleton
 class SurveyController @Inject constructor(
@@ -41,7 +41,7 @@ class SurveyController @Inject constructor(
   /**
    * Starts a new survey session with a list of questions.
    *
-   * @return a [DataProvider] indicating whether the session start was successful.
+   * @return a [DataProvider] indicating whether the session start was successful
    */
   fun startSurveySession(): DataProvider<Any?> {
     return try {
@@ -67,21 +67,21 @@ class SurveyController @Inject constructor(
   private fun createSurveyQuestions(): List<SurveyQuestion> {
     return SurveyQuestionName.values()
       .filter { it.isValid() }
-      .map { questionName ->
+      .mapIndexed { index, questionName ->
         createSurveyQuestion(
-          questionName,
-          OppiaLanguage.ENGLISH // todo pass app language
+          index.toString(),
+          questionName
         )
       }
   }
 
   private fun createSurveyQuestion(
-    questionName: SurveyQuestionName,
-    language: OppiaLanguage
+    questionId: String,
+    questionName: SurveyQuestionName
   ): SurveyQuestion {
     return SurveyQuestion.newBuilder()
+      .setQuestionId(questionId)
       .setQuestionName(questionName)
-      .setLanguage(language)
       .build()
   }
 

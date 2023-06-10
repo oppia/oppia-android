@@ -2,7 +2,10 @@ package org.oppia.android.domain.survey
 
 import org.oppia.android.app.model.SurveyQuestion
 
-/** Tracks the dynamic behavior of the user through a survey session. */
+/**
+ * Tracks the dynamic behavior of the user through a survey session. This class
+ * treats the survey progress like a deck of cards to simplify forward/backward navigation.
+ */
 class SurveyQuestionDeck constructor(
   initialQuestion: SurveyQuestion,
   private val isTopOfDeckTerminalChecker: (SurveyQuestion) -> Boolean

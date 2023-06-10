@@ -81,8 +81,6 @@ class SurveyProgressController @Inject constructor(
       mostRecentCommandQueue = createControllerCommandActor()
     }
     monitoredQuestionListDataProvider.setBaseDataProvider(questionsListDataProvider) {
-      it.forEach {
-      }
       maybeSendReceiveQuestionListEvent(mostRecentCommandQueue, it)
     }
     val beginSessionResultFlow = createAsyncResultStateFlow<Any?>()
@@ -91,7 +89,7 @@ class SurveyProgressController @Inject constructor(
         ephemeralQuestionFlow, sessionId, beginSessionResultFlow
       )
     sendCommandForOperation(initializeMessage) {
-      "Failed to schedule command for initializing the question assessment progress controller."
+      "Failed to schedule command for initializing the survey progress controller."
     }
     return beginSessionResultFlow.convertToSessionProvider(BEGIN_SESSION_RESULT_PROVIDER_ID)
   }
@@ -416,14 +414,14 @@ class SurveyProgressController @Inject constructor(
     moveToPreviousQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
   ) {
     tryOperation(moveToPreviousQuestionResultFlow) {
-      check(progress.surveyStage != SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION) {
-        "Cannot navigate to a previous question if the current question is initial."
-        // todo replace with check for question index
+      check(progress.surveyStage != SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION) {
+        "Cannot navigate to a previous question if a session is being loaded."
+      }
+      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
+        "Cannot navigate to a previous question if an answer submission is pending."
       }
       progress.questionDeck.navigateToPreviousQuestion()
-      if (progress.isViewingMostRecentQuestion()) {
-        progress.processNavigationToNewQuestion() // todo retrieve previous selected answer
-      }
+      // todo retrieve previous selected answer
     }
   }
 
