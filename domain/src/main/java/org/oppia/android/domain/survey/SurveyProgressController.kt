@@ -7,7 +7,6 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveySelectedAnswer
@@ -112,10 +111,10 @@ class SurveyProgressController @Inject constructor(
    * method is only called when it's possible to navigate forward.
    *
    * @return a [DataProvider] indicating whether the movement to the next question was successful,
-   * or a failure if question navigation was attempted at an invalid time (such as if the current
-   * question is pending or terminal). It's recommended that calling code only listen to this result
-   * for failures, and instead rely on [getCurrentQuestion] for observing a successful transition to
-   * another question.
+   *     or a failure if question navigation was attempted at an invalid time (such as if the
+   *     current question is pending or terminal). It's recommended that calling code only listen
+   *     to this result for failures, and instead rely on [getCurrentQuestion] for observing a
+   *     successful transition to another question.
    */
   fun moveToNextQuestion(): DataProvider<Any?> {
     val moveResultFlow = createAsyncResultStateFlow<Any?>()
@@ -127,14 +126,15 @@ class SurveyProgressController @Inject constructor(
   }
 
   /**
-   * Navigates to the previous question in the survey. Calling code is responsible for ensuring this
-   * method is only called when it's possible to navigate forward.
+   * Navigates to the previous question in the survey. If the user is currently on the initial
+   * question, this method will throw an exception. Calling code is responsible for ensuring this
+   * method is only called when it's possible to navigate backward.
    *
    * @return a [DataProvider] indicating whether the movement to the previous question was
-   * successful, or a failure if question navigation was attempted at an invalid time (such as if
-   * the current question is pending or terminal). It's recommended that calling code only listen
-   * to this result for failures, and instead rely on [getCurrentQuestion] for observing a
-   * successful transition to another question.
+   *     successful, or a failure if question navigation was attempted at an invalid time
+   *     (such as if the user is viewing the first question in the survey). It's recommended that
+   *     calling code only listen to this result for failures, and instead rely on
+   *     [getCurrentQuestion] for observing a successful transition to another question.
    */
   fun moveToPreviousQuestion(): DataProvider<Any?> {
     val moveResultFlow = createAsyncResultStateFlow<Any?>()
@@ -355,7 +355,7 @@ class SurveyProgressController @Inject constructor(
   private suspend fun ControllerState.submitAnswerImpl(
     submitAnswerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
 
-  ) {
+    ) {
     // selectedAnswer: SurveySelectedAnswer
     tryOperation(submitAnswerResultFlow) {
       check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
@@ -492,13 +492,13 @@ class SurveyProgressController @Inject constructor(
 
   private fun ControllerState.retrieveEphemeralQuestion(questionsList: List<SurveyQuestion>):
     EphemeralSurveyQuestion {
-      val currentQuestionIndex = progress.getCurrentQuestionIndex()
-      val ephemeralQuestionBuilder = EphemeralSurveyQuestion.newBuilder()
-        .setQuestion(questionsList[currentQuestionIndex])
-        .setCurrentQuestionIndex(currentQuestionIndex)
-        .setTotalQuestionCount(progress.getTotalQuestionCount())
-      return ephemeralQuestionBuilder.build()
-    }
+    val currentQuestionIndex = progress.getCurrentQuestionIndex()
+    return EphemeralSurveyQuestion.newBuilder()
+      .setQuestion(questionsList[currentQuestionIndex])
+      .setCurrentQuestionIndex(currentQuestionIndex)
+      .setTotalQuestionCount(progress.getTotalQuestionCount())
+      .build()
+  }
 
   /**
    * Represents the current synchronized state of the controller.
@@ -508,8 +508,8 @@ class SurveyProgressController @Inject constructor(
    *
    * @property progress the [SurveyProgress] corresponding to the session
    * @property sessionId the GUID corresponding to the session
-   * @property ephemeralQuestionFlow the [MutableStateFlow] that the updated [EphemeralQuestion] is
-   *     delivered to
+   * @property ephemeralQuestionFlow the [MutableStateFlow] that the updated
+   *     [EphemeralSurveyQuestion] is delivered to.
    * @property commandQueue the actor command queue executing all messages that change this state
    */
   private class ControllerState(

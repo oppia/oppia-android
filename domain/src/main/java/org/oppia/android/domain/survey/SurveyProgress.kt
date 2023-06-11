@@ -97,6 +97,7 @@ class SurveyProgress {
 
   companion object {
     internal fun isTopQuestionTerminal(question: SurveyQuestion): Boolean {
+      // if current question index == survey question count
       return true // todo do some comparison here
     }
   }
