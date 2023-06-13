@@ -110,6 +110,13 @@ class HintHandlerProdImplTest {
       )
     }
   }
+  private val expWithSolutionMissingExplanation by lazy {
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_solution_missing_explanation"
+      )
+    }
+  }
 
   @Before
   fun setUp() {
@@ -2006,6 +2013,28 @@ class HintHandlerProdImplTest {
         everythingRevealed = true
       }.build()
     )
+  }
+
+  @Test
+  fun testGetCurrentHelpIndex_onlySolution_missingExplanation_isEmpty() {
+    val state = expWithSolutionMissingExplanation.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
+
+    assertThat(helpIndex).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetCurrentHelpIndex_onlySolution_missingExplanation_twoWrongAnswers_isEmpty() {
+    val state = expWithSolutionMissingExplanation.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
+
+    val helpIndex = hintHandler.getCurrentHelpIndex().value
+
+    assertThat(helpIndex).isEqualToDefaultInstance()
   }
 
   private fun HintHandler.startWatchingForHintsInNewStateSync(
