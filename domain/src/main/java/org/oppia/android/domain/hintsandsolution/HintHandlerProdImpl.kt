@@ -1,5 +1,6 @@
 package org.oppia.android.domain.hintsandsolution
 
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -12,9 +13,9 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
+import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.util.threading.BackgroundDispatcher
-import javax.inject.Inject
 
 /**
  * Production implementation of [HintHandler] that implements hints & solutions in parity with the
@@ -355,7 +356,11 @@ class HintHandlerProdImpl private constructor(
 }
 
 /** Returns whether this state has a solution to show. */
-private fun State.hasSolution(): Boolean = interaction.hasSolution()
+private fun State.hasSolution(): Boolean =
+  interaction.hasSolution() && !interaction.solution.isEmpty()
+
+/** Returns whether this solution has an explanation. */
+private fun Solution.isEmpty(): Boolean = explanation.html.isNullOrBlank()
 
 /** Returns whether this state has help that the user can see. */
 internal fun State.offersHelp(): Boolean = interaction.hintList.isNotEmpty() || hasSolution()
