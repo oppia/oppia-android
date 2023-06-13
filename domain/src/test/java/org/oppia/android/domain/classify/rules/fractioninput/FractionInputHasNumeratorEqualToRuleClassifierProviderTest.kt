@@ -24,9 +24,13 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
 
-  private val NON_NEGATIVE_VALUE_TEST_0 =
+  private val NON_NEGATIVE_VALUE_TEST_1 =
     InteractionObjectTestBuilder.createNonNegativeInt(
-      value = 0
+      value = 1
+    )
+  private val NON_NEGATIVE_VALUE_TEST_2 =
+    InteractionObjectTestBuilder.createNonNegativeInt(
+      value = 2
     )
   private val WHOLE_NUMBER_VALUE_TEST_123 =
     InteractionObjectTestBuilder.createWholeNumber(
@@ -49,10 +53,6 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createSignedInt(
       value = 1
     )
-  private val SIGNED_INT_VALUE_TEST_2 =
-    InteractionObjectTestBuilder.createSignedInt(
-      value = 2
-    )
   private val SIGNED_INT_NEGATIVE_VALUE_TEST_2 =
     InteractionObjectTestBuilder.createSignedInt(
       value = -2
@@ -72,78 +72,46 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNumeratorEquals_negativeNumerators_bothValuesMatch() {
+  fun testNumeratorEquals_negativeNumerators_throwsException() {
     val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_VALUE_TEST_2)
 
-    val matches =
+    val exception = assertThrows(IllegalStateException::class) {
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_NEGATIVE_2_OVER_4,
         inputs = inputs,
         classificationContext = ClassificationContext()
       )
+    }
 
-    assertThat(matches).isTrue()
+    assertThat(exception)
+      .hasMessageThat()
+      .contains(
+        "Expected input value to be of type NON_NEGATIVE_INT not SIGNED_INT"
+      )
   }
 
   @Test
-  fun testNumeratorEquals_wholeNumber123Answer_withSignedInt1Input_bothValuesDoNotMatch() {
+  fun testNumeratorEquals_wholeNumber123Answer_withSignedInt1Input_throwsException() {
     val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_1)
 
-    val matches =
+    val exception = assertThrows(IllegalStateException::class) {
       numeratorIsEqualClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
         classificationContext = ClassificationContext()
       )
+    }
 
-    assertThat(matches).isFalse()
+    assertThat(exception)
+      .hasMessageThat()
+      .contains(
+        "Expected input value to be of type NON_NEGATIVE_INT not SIGNED_INT"
+      )
   }
 
   @Test
-  fun testNumeratorEquals_fraction2Over4Answer_withSignedInt1Input_bothValuesDoNotMatch() {
+  fun testNumeratorEquals_fraction2Over4Answer_withSignedInt1Input_throwsException() {
     val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_1)
-
-    val matches =
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testNumeratorEquals_fraction2Over4Answer_withSignedIntNegative2Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_VALUE_TEST_2)
-
-    val matches =
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testNumeratorEquals_fraction2Over4Answer_withSignedInt2Input_bothValuesMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_2)
-
-    val matches =
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testNumeratorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
       numeratorIsEqualClassifierProvider.matches(
@@ -156,7 +124,59 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected input value to be of type SIGNED_INT not NON_NEGATIVE_INT"
+        "Expected input value to be of type NON_NEGATIVE_INT not SIGNED_INT"
+      )
+  }
+
+  @Test
+  fun testNumeratorEquals_fraction2Over4Answer_withSignedIntNegative2Input_throwsException() {
+    val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_VALUE_TEST_2)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      numeratorIsEqualClassifierProvider.matches(
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains(
+        "Expected input value to be of type NON_NEGATIVE_INT not SIGNED_INT"
+      )
+  }
+
+  @Test
+  fun testNumeratorEquals_fraction2Over4Answer_withNonNegative2Input_bothValuesMatch() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_2)
+
+    val matches =
+      numeratorIsEqualClassifierProvider.matches(
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNumeratorEquals_SignedIntInput_inputWithIncorrectType_throwsException() {
+    val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_VALUE_TEST_2)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      numeratorIsEqualClassifierProvider.matches(
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains(
+        "Expected input value to be of type NON_NEGATIVE_INT not SIGNED_INT"
       )
   }
 
@@ -175,6 +195,19 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
+  }
+
+  @Test
+  fun testNumeratorEquals_wholeNumber123Answer_withNoneNegative1Input_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_1)
+
+    val matches = numeratorIsEqualClassifierProvider.matches(
+      answer = WHOLE_NUMBER_VALUE_TEST_123,
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    assertThat(matches).isFalse()
   }
 
   private fun setUpTestApplicationComponent() {
