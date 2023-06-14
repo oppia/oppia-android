@@ -288,7 +288,7 @@ class UrlImageParser private constructor(
           val maxContentItemPadding =
             context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
           val maximumImageSize = maxAvailableWidth - maxContentItemPadding
-          if (drawableWidth >= maximumImageSize) {
+          if (drawableWidth >= maximumImageSize || drawableHeight >= maximumImageSize) {
             // The multipleFactor value is used to make sure that the aspect ratio of the image
             // remains the same. Example: Height is 420, width is 440 and maximumImageSize is 200.
             // Then multipleFactor will be (200/440). The new height will be 191 and new width will
