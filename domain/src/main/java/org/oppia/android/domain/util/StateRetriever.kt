@@ -312,7 +312,7 @@ class StateRetriever @Inject constructor() {
     return when (ruleType) {
       "HasNumeratorEqualTo" ->
         InteractionObject.newBuilder()
-          .setSignedInt(inputJson.getInt(keyName))
+          .setNonNegativeInt(inputJson.getInt(keyName))
           .build()
       "HasDenominatorEqualTo" ->
         InteractionObject.newBuilder()
