@@ -87,7 +87,7 @@ class OptionsFragmentPresenter @Inject constructor(
     optionControlsViewModel.isUIInitialized(true)
 
     var hasDefaultInitializedFragment = false
-    viewModel.optionsListLiveData.observe(fragment) { viewModels ->
+    optionControlsViewModel.optionsListLiveData.observe(fragment) { viewModels ->
       if (!hasDefaultInitializedFragment) {
         viewModels.filterIsInstance<OptionsReadingTextSizeViewModel>().singleOrNull()?.let {
           if (isMultipane && isFirstOpen) {
