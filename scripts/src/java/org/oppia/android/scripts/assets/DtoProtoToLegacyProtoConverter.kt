@@ -313,7 +313,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "FractionInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      dto.solution.takeIf {
+        dto.hasSolution()
+      }?.convertToSolution(contentIdTracker)?.let { this.solution = it }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
@@ -322,7 +324,7 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun FractionInputInstanceDto.SolutionDto.convertToSolution(
     contentIdTracker: ContentIdTracker
-  ): Solution {
+  ): Solution? {
     val dto = this
     return Solution.newBuilder().apply {
       if (dto.baseSolution.hasExplanation()) {
@@ -330,7 +332,7 @@ object DtoProtoToLegacyProtoConverter {
       }
       this.correctAnswer = dto.correctAnswer.convertToInteractionObject()
       // Whether the answer is exclusive isn't used.
-    }.build()
+    }.build().takeIf { it != Solution.getDefaultInstance() }
   }
 
   private fun FractionInputInstanceDto.AnswerGroupDto.convertToAnswerGroup(
@@ -587,7 +589,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "NumericInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      dto.solution.takeIf {
+        dto.hasSolution()
+      }?.convertToSolution(contentIdTracker)?.let { this.solution = it }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
     }.build()
@@ -595,7 +599,7 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun NumericInputInstanceDto.SolutionDto.convertToSolution(
     contentIdTracker: ContentIdTracker
-  ): Solution {
+  ): Solution? {
     val dto = this
     return Solution.newBuilder().apply {
       if (dto.baseSolution.hasExplanation()) {
@@ -603,7 +607,7 @@ object DtoProtoToLegacyProtoConverter {
       }
       this.correctAnswer = dto.correctAnswer.convertToInteractionObject()
       // Whether the answer is exclusive isn't used.
-    }.build()
+    }.build().takeIf { it != Solution.getDefaultInstance() }
   }
 
   private fun NumericInputInstanceDto.AnswerGroupDto.convertToAnswerGroup(
@@ -704,7 +708,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "TextInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      dto.solution.takeIf {
+        dto.hasSolution()
+      }?.convertToSolution(contentIdTracker)?.let { this.solution = it }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
@@ -713,7 +719,7 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun TextInputInstanceDto.SolutionDto.convertToSolution(
     contentIdTracker: ContentIdTracker
-  ): Solution {
+  ): Solution? {
     val dto = this
     return Solution.newBuilder().apply {
       if (dto.baseSolution.hasExplanation()) {
@@ -721,7 +727,7 @@ object DtoProtoToLegacyProtoConverter {
       }
       this.correctAnswer = dto.correctAnswer.convertToNormalizedStringObject()
       // Whether the answer is exclusive isn't used.
-    }.build()
+    }.build().takeIf { it != Solution.getDefaultInstance() }
   }
 
   private fun TextInputInstanceDto.AnswerGroupDto.convertToAnswerGroup(
@@ -808,7 +814,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "DragAndDropSortInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      dto.solution.takeIf {
+        dto.hasSolution()
+      }?.convertToSolution(contentIdTracker)?.let { this.solution = it }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
@@ -817,7 +825,7 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun DragAndDropSortInputInstanceDto.SolutionDto.convertToSolution(
     contentIdTracker: ContentIdTracker
-  ): Solution {
+  ): Solution? {
     val dto = this
     return Solution.newBuilder().apply {
       if (dto.baseSolution.hasExplanation()) {
@@ -825,7 +833,7 @@ object DtoProtoToLegacyProtoConverter {
       }
       this.correctAnswer = dto.correctAnswer.convertToInteractionObject()
       // Whether the answer is exclusive isn't used.
-    }.build()
+    }.build().takeIf { it != Solution.getDefaultInstance() }
   }
 
   private fun DragAndDropSortInputInstanceDto.AnswerGroupDto.convertToAnswerGroup(
@@ -950,7 +958,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "RatioExpressionInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      dto.solution.takeIf {
+        dto.hasSolution()
+      }?.convertToSolution(contentIdTracker)?.let { this.solution = it }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
@@ -959,7 +969,7 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun RatioExpressionInputInstanceDto.SolutionDto.convertToSolution(
     contentIdTracker: ContentIdTracker
-  ): Solution {
+  ): Solution? {
     val dto = this
     return Solution.newBuilder().apply {
       if (dto.baseSolution.hasExplanation()) {
@@ -967,7 +977,7 @@ object DtoProtoToLegacyProtoConverter {
       }
       this.correctAnswer = dto.correctAnswer.convertToInteractionObject()
       // Whether the answer is exclusive isn't used.
-    }.build()
+    }.build().takeIf { it != Solution.getDefaultInstance() }
   }
 
   private fun RatioExpressionInputInstanceDto.AnswerGroupDto.convertToAnswerGroup(
@@ -1044,7 +1054,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "AlgebraicExpressionInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      dto.solution.takeIf {
+        dto.hasSolution()
+      }?.convertToSolution(contentIdTracker)?.let { this.solution = it }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap())
@@ -1053,7 +1065,7 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun AlgebraicExpressionInputInstanceDto.SolutionDto.convertToSolution(
     contentIdTracker: ContentIdTracker
-  ): Solution {
+  ): Solution? {
     val dto = this
     return Solution.newBuilder().apply {
       if (dto.baseSolution.hasExplanation()) {
@@ -1061,7 +1073,7 @@ object DtoProtoToLegacyProtoConverter {
       }
       this.correctAnswer = dto.correctAnswer.convertToMathExpressionObject()
       // Whether the answer is exclusive isn't used.
-    }.build()
+    }.build().takeIf { it != Solution.getDefaultInstance() }
   }
 
   private fun AlgebraicExpressionInputInstanceDto.AnswerGroupDto.convertToAnswerGroup(
@@ -1126,7 +1138,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "MathEquationInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      dto.solution.takeIf {
+        dto.hasSolution()
+      }?.convertToSolution(contentIdTracker)?.let { this.solution = it }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap())
@@ -1135,7 +1149,7 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun MathEquationInputInstanceDto.SolutionDto.convertToSolution(
     contentIdTracker: ContentIdTracker
-  ): Solution {
+  ): Solution? {
     val dto = this
     return Solution.newBuilder().apply {
       if (dto.baseSolution.hasExplanation()) {
@@ -1143,7 +1157,7 @@ object DtoProtoToLegacyProtoConverter {
       }
       this.correctAnswer = dto.correctAnswer.convertToMathExpressionObject()
       // Whether the answer is exclusive isn't used.
-    }.build()
+    }.build().takeIf { it != Solution.getDefaultInstance() }
   }
 
   private fun MathEquationInputInstanceDto.AnswerGroupDto.convertToAnswerGroup(
@@ -1208,7 +1222,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "NumericExpressionInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      dto.solution.takeIf {
+        dto.hasSolution()
+      }?.convertToSolution(contentIdTracker)?.let { this.solution = it }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
@@ -1217,7 +1233,7 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun NumericExpressionInputInstanceDto.SolutionDto.convertToSolution(
     contentIdTracker: ContentIdTracker
-  ): Solution {
+  ): Solution? {
     val dto = this
     return Solution.newBuilder().apply {
       if (dto.baseSolution.hasExplanation()) {
@@ -1225,7 +1241,7 @@ object DtoProtoToLegacyProtoConverter {
       }
       this.correctAnswer = dto.correctAnswer.convertToMathExpressionObject()
       // Whether the answer is exclusive isn't used.
-    }.build()
+    }.build().takeIf { it != Solution.getDefaultInstance() }
   }
 
   private fun NumericExpressionInputInstanceDto.AnswerGroupDto.convertToAnswerGroup(
@@ -1512,7 +1528,7 @@ object DtoProtoToLegacyProtoConverter {
     InteractionObject.newBuilder().setNormalizedString(this).build()
 
   private fun Int.convertToSignedInteractionObject(): InteractionObject =
-    InteractionObject.newBuilder().setNonNegativeInt(this).build()
+    InteractionObject.newBuilder().setSignedInt(this).build()
 
   private fun Int.convertToNonNegativeInteractionObject(): InteractionObject =
     InteractionObject.newBuilder().setNonNegativeInt(this).build()
