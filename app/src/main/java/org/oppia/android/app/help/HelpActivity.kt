@@ -6,7 +6,6 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity

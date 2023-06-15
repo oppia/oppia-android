@@ -10,6 +10,9 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
@@ -40,6 +43,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -385,7 +389,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_studyOff_doesNotHaveMarkChaptersCompletedButton() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button))
         .check(matches(not(isDisplayed())))
     }
@@ -394,7 +398,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_studyOn_hasMarkChaptersCompletedButton() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
     }
   }
@@ -403,7 +407,7 @@ class ProfileEditFragmentTest {
   @Config(qualifiers = "land")
   fun testProfileEdit_studyOn_landscape_hasMarkChaptersCompletedButton() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
     }
@@ -412,7 +416,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_studyOn_clickMarkChapsCompleted_opensMarkCompleteActivityForProfile() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
       intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
@@ -426,7 +430,7 @@ class ProfileEditFragmentTest {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(false)
 
     // Without the study feature enabled, the switch should not be visible.
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_container))
         .check(matches(not(isDisplayed())))
     }
@@ -436,7 +440,7 @@ class ProfileEditFragmentTest {
   fun testProfileEdit_featureOn_hasEnableQuickSwitchingSwitch() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_container))
         .check(matches(isDisplayed()))
     }
@@ -447,7 +451,7 @@ class ProfileEditFragmentTest {
   fun testProfileEdit_featureOn_landscape_hasEnableQuickSwitchingSwitch() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
@@ -464,7 +468,7 @@ class ProfileEditFragmentTest {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     // Without the permission to switch languages, the setting should be off by default.
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_switch))
         .check(matches(not(isChecked())))
     }
@@ -481,7 +485,7 @@ class ProfileEditFragmentTest {
     monitorFactory.waitForNextSuccessfulResult(updateLangProvider)
 
     // With the permission to switch languages, the setting should be on by default.
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_switch))
         .check(matches(isChecked()))
     }
@@ -491,7 +495,7 @@ class ProfileEditFragmentTest {
   fun testProfileEdit_featureOn_doNotClickEnableLanguageSwitching_doesNotHaveSwitchingPermission() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
     // Open the UI, but don't interact with it.
-    launchFragmentTestActivity(internalProfileId = 0).use {}
+    launchFragmentTestActivity(profileIdZero).use {}
 
     // The user should not have permission to switch languages (since the switch wasn't toggled).
     val profileProvider =
@@ -508,7 +512,7 @@ class ProfileEditFragmentTest {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     // Enable language switching in the UI.
-    launchFragmentTestActivity(internalProfileId = 0).use {
+    launchFragmentTestActivity(profileIdZero).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_container))
         .perform(click())
     }
@@ -522,7 +526,6 @@ class ProfileEditFragmentTest {
     assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()
   }
 
-  private fun launchFragmentTestActivity(internalProfileId: Int) =
   fun testProfileEdit_createIntentWithProfileId_verifyProfileIdInBundle() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     launch<ProfileEditFragmentTestActivity>(
@@ -542,6 +545,14 @@ class ProfileEditFragmentTest {
       }
     }
   }
+
+  private fun launchFragmentTestActivity(profileId: ProfileId) =
+    launch<ProfileEditFragmentTestActivity>(
+      ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
+        context,
+        profileId
+      )
+    ).also { testCoroutineDispatchers.runCurrent() }
 
   @Singleton
   @Component(

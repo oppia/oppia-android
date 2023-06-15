@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -44,7 +44,7 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
-    fun createMarkTopicsCompletedIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkTopicsCompletedIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, MarkTopicsCompletedActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(MARK_TOPICS_COMPLETED_ACTIVITY)

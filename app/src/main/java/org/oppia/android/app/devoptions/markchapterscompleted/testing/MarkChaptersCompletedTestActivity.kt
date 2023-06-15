@@ -12,11 +12,10 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The activity for testing [MarkChaptersCompletedFragment]. */
-class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
+class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActivity() {
 
   private lateinit var profileId: ProfileId
 
-class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)

@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle

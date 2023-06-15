@@ -35,8 +35,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule

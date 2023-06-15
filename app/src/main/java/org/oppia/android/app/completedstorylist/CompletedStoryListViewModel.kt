@@ -47,6 +47,7 @@ class CompletedStoryListViewModel @Inject constructor(
   /** Sets ProfileId to this ViewModel. */
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
+  }
 
   private fun processCompletedStoryListResult(
     completedStoryListResult: AsyncResult<CompletedStoryList>

@@ -11,6 +11,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
 
@@ -21,7 +22,7 @@ class OptionsActivityPresenter @Inject constructor(
 ) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
   private lateinit var toolbar: Toolbar
-  private var profileId: Int? = -1
+  private lateinit var profileId: ProfileId
 
   /** Initializes and creates the views for [OptionsActivity]. */
   fun handleOnCreate(
@@ -29,7 +30,7 @@ class OptionsActivityPresenter @Inject constructor(
     extraOptionsTitle: String?,
     isFirstOpen: Boolean,
     selectedFragment: String,
-    profileId: Int
+    profileId: ProfileId
   ) {
     if (isFromNavigationDrawer) {
       activity.setContentView(R.layout.option_activity)
@@ -122,7 +123,7 @@ class OptionsActivityPresenter @Inject constructor(
    */
   fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
     val appLanguageFragment =
-      AppLanguageFragment.newInstance(appLanguage, profileId = this.profileId!!)
+      AppLanguageFragment.newInstance(appLanguage, profileId = this.profileId)
     activity.supportFragmentManager
       .beginTransaction()
       .replace(R.id.multipane_options_container, appLanguageFragment)

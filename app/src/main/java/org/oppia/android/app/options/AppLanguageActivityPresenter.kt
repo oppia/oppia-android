@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.AppLanguageActivityBinding
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
   private lateinit var oppiaLanguage: OppiaLanguage
 
   /** Initializes and creates the views for [AppLanguageActivity]. */
-  fun handleOnCreate(oppiaLanguage: OppiaLanguage, profileId: Int) {
+  fun handleOnCreate(oppiaLanguage: OppiaLanguage, profileId: ProfileId) {
     val binding: AppLanguageActivityBinding = DataBindingUtil.setContentView(
       activity,
       R.layout.app_language_activity,

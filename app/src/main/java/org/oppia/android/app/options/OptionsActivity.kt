@@ -7,11 +7,10 @@ import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName.OPTIONS_ACTIVITY
@@ -79,7 +78,7 @@ class OptionsActivity :
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
-   if (savedInstanceState != null) {
+    if (savedInstanceState != null) {
       isFirstOpen = false
     }
     selectedFragment = if (savedInstanceState == null) {
@@ -96,7 +95,7 @@ class OptionsActivity :
       extraOptionsTitle,
       isFirstOpen,
       selectedFragment,
-      profileId!!
+      profileId
     )
     title = resourceHandler.getStringInLocale(R.string.menu_options)
   }
@@ -127,8 +126,8 @@ class OptionsActivity :
     startActivity(
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
-        oppiaLanguage,
-        profileId!!
+        profileId,
+        oppiaLanguage
       )
     )
   }

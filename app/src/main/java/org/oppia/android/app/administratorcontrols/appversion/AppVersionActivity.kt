@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.APP_VERSION_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -31,9 +31,8 @@ class AppVersionActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    fun createAppVersionActivityIntent(context: Context, profileId: ProfileId): Intent {
     /** Returns an [Intent] to start this activity. */
-    fun createAppVersionActivityIntent(context: Context): Intent {
+    fun createAppVersionActivityIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, AppVersionActivity::class.java).apply {
         decorateWithScreenName(APP_VERSION_ACTIVITY)
         decorateWithUserProfileId(profileId)
