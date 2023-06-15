@@ -1512,7 +1512,7 @@ object DtoProtoToLegacyProtoConverter {
     InteractionObject.newBuilder().setNormalizedString(this).build()
 
   private fun Int.convertToSignedInteractionObject(): InteractionObject =
-    InteractionObject.newBuilder().setNonNegativeInt(this).build()
+    InteractionObject.newBuilder().setSignedInt(this).build()
 
   private fun Int.convertToNonNegativeInteractionObject(): InteractionObject =
     InteractionObject.newBuilder().setNonNegativeInt(this).build()
