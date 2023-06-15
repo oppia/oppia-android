@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
@@ -32,9 +32,9 @@ internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
 internal const val TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_should_save_partial_progress"
 
-/** Test Activity used for testing StateFragment */
+/** Test Activity used for testing StateFragment. */
 class StateFragmentTestActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   StopStatePlayingSessionWithSavedProgressListener,
   StateKeyboardButtonListener,
   AudioButtonListener,
@@ -116,8 +116,7 @@ class StateFragmentTestActivity :
           explorationId,
           state,
           helpIndex,
-          writtenTranslationContext,
-          profileId
+          writtenTranslationContext
         )
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }

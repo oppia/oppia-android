@@ -6,7 +6,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
@@ -27,7 +28,7 @@ private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToQuestionPlayerListener,
   RouteToStoryListener,
   RouteToExplorationListener,

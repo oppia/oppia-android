@@ -92,7 +92,7 @@ _FLAVOR_METADATA = {
         "target_sdk_version": 31,
         "multidex": "manual_main_dex",
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
-        "proguard_specs": [],  # TODO(#3886): Re-add Proguard support to alpha_kitkat.
+        "proguard_specs": [],
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",

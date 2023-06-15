@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName.OPTIONS_ACTIVITY
@@ -23,13 +25,16 @@ import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
 private const val SELECTED_FRAGMENT_SAVED_KEY = "OptionsActivity.selected_fragment"
+/** [String] key for mapping to [ReadingTextSizeFragment]. */
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
+/** [String] key for mapping to [AppLanguageFragment]. */
 const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
+/** [String] key for mapping to [AudioLanguageFragment]. */
 const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
 
 /** The activity for setting user preferences. */
 class OptionsActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToAppLanguageListListener,
   RouteToAudioLanguageListListener,
   RouteToReadingTextSizeListener,
@@ -49,9 +54,11 @@ class OptionsActivity :
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    /** [Boolean] indicating whether user is navigating from Drawer. */
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
       "OptionsActivity.bool_is_from_navigation_drawer_extra_key"
 
+    /** Returns an [Intent] to start this activity. */
     fun createOptionsActivity(
       context: Context,
       profileId: ProfileId,
@@ -72,7 +79,7 @@ class OptionsActivity :
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
-    if (savedInstanceState != null) {
+   if (savedInstanceState != null) {
       isFirstOpen = false
     }
     selectedFragment = if (savedInstanceState == null) {
@@ -88,7 +95,8 @@ class OptionsActivity :
       isFromNavigationDrawer,
       extraOptionsTitle,
       isFirstOpen,
-      selectedFragment
+      selectedFragment,
+      profileId!!
     )
     title = resourceHandler.getStringInLocale(R.string.menu_options)
   }
@@ -106,10 +114,6 @@ class OptionsActivity :
         )
         optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
       }
-      REQUEST_CODE_APP_LANGUAGE -> {
-        val appLanguage = data.getStringExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY) as String
-        optionActivityPresenter.updateAppLanguage(appLanguage)
-      }
       REQUEST_CODE_AUDIO_LANGUAGE -> {
         val audioLanguage = data.getProtoExtra(
           MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, AudioLanguageActivityResultBundle.getDefaultInstance()
@@ -119,15 +123,13 @@ class OptionsActivity :
     }
   }
 
-  override fun routeAppLanguageList(appLanguage: String?) {
-    startActivityForResult(
+  override fun routeAppLanguageList(oppiaLanguage: OppiaLanguage) {
+    startActivity(
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
-        APP_LANGUAGE,
-        appLanguage,
-        profileId
-      ),
-      REQUEST_CODE_APP_LANGUAGE
+        oppiaLanguage,
+        profileId!!
+      )
     )
   }
 
@@ -153,7 +155,7 @@ class OptionsActivity :
     optionActivityPresenter.loadReadingTextSizeFragment(textSize)
   }
 
-  override fun loadAppLanguageFragment(appLanguage: String) {
+  override fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
     selectedFragment = APP_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
       resourceHandler.getStringInLocale(R.string.app_language)

@@ -12,6 +12,9 @@ class CompletedStoryListActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   fun handleOnCreate(profileId: ProfileId) {
+
+  /** Initializes views for [CompletedStoryListActivity] and binds [CompletedStoryListFragment]. */
+  fun handleOnCreate(internalProfileId: Int) {
     activity.setContentView(R.layout.completed_story_list_activity)
     if (getCompletedStoryListFragment() == null) {
       activity

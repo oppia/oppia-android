@@ -2,7 +2,7 @@ package org.oppia.android.app.testing
 
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 /** The test activity for [TopicFragment] to test displaying story by storyId. */
 class TopicTestActivityForStory :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToQuestionPlayerListener,
   RouteToStoryListener,
   RouteToResumeLessonListener,

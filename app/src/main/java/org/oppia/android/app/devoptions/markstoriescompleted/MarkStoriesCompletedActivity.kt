@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.MARK_STORIES_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -16,7 +16,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import javax.inject.Inject
 
 /** Activity for Mark Stories Completed. */
-class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
+class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   @Inject
   lateinit var markStoriesCompletedActivityPresenter: MarkStoriesCompletedActivityPresenter
@@ -42,8 +42,9 @@ class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-
     fun createMarkStoriesCompletedIntent(context: Context, profileId: ProfileId): Intent {
+    /** Returns an [Intent] to start this activity. */
+    fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, MarkStoriesCompletedActivity::class.java).apply {
         decorateWithScreenName(MARK_STORIES_COMPLETED_ACTIVITY)
         decorateWithUserProfileId(profileId)

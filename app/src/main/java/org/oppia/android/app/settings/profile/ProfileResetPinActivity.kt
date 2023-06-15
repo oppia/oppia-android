@@ -4,19 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_RESET_PIN_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /**Argument key for confirming profile is admin. */
+/** Argument key for the ID of the profile resetting their pin. */
+const val PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY =
+  "ProfileResetPinActivity.profile_reset_pin_profile_id"
+
+/** Argument key for confirming profile is admin. */
 const val PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY =
   "ProfileResetPinActivity.profile_reset_pin_is_admin"
 
 /** Activity that allows user to change a profile's PIN. */
-class ProfileResetPinActivity : InjectableAppCompatActivity() {
+class ProfileResetPinActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var profileResetPinActivityPresenter: ProfileResetPinActivityPresenter
 

@@ -6,12 +6,12 @@ package org.oppia.android.app.hintsandsolution
  */
 interface ExpandedHintListIndexListener {
 
-  /** Manage expanded list icon */
+  /** Manage expanded list icon. */
   fun onExpandListIconClicked(expandedItemsList: ArrayList<Int>)
 
-  /** Manage reveal hint button visibility while orientation change */
+  /** Manage reveal hint button visibility while orientation change. */
   fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?)
 
-  /** Manage reveal solution button visibility while orientation change */
+  /** Manage reveal solution button visibility while orientation change. */
   fun onRevealSolutionClicked(solutionIndex: Int?, isSolutionRevealed: Boolean?)
 }

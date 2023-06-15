@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.home.HomeActivityPresenter
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
@@ -22,7 +22,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import javax.inject.Inject
 
 class NavigationDrawerTestActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
   RouteToRecentlyPlayedListener {

@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
@@ -23,7 +23,7 @@ private const val ACTIVITY_PARAMS_KEY = "ReadingTextSizeActivity.params"
 private const val ACTIVITY_SAVED_STATE_KEY = "ReadingTextSizeActivity.saved_state"
 
 /** The activity to change the text size of the reading content in the app. */
-class ReadingTextSizeActivity : InjectableAppCompatActivity() {
+class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   @Inject
   lateinit var readingTextSizeActivityPresenter: ReadingTextSizeActivityPresenter

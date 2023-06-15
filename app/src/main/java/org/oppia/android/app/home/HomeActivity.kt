@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
 class HomeActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
   RouteToRecentlyPlayedListener {

@@ -5,14 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Activity for testing [MarkStoriesCompletedFragment]. */
-class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
+class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   private lateinit var profileId: ProfileId
 
@@ -40,7 +40,6 @@ class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
     fun createMarkStoriesCompletedTestIntent(context: Context, profileId: ProfileId): Intent {
       val intent = Intent(context, MarkStoriesCompletedTestActivity::class.java)

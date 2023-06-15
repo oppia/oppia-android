@@ -11,6 +11,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -21,7 +22,9 @@ class ProfileEditViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
   @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
-  @EnableLearnerStudyAnalytics private val enableLearnerStudy: PlatformParameterValue<Boolean>
+  @EnableLearnerStudyAnalytics private val enableLearnerStudy: PlatformParameterValue<Boolean>,
+  @EnableFastLanguageSwitchingInLesson
+  private val enableFastLanguageSwitchingInLesson: PlatformParameterValue<Boolean>
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
@@ -29,7 +32,8 @@ class ProfileEditViewModel @Inject constructor(
   val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudy.value
 
   /** Whether the admin can allow learners to quickly switch content languages within a lesson. */
-  val isAllowedToEnableQuickLessonLanguageSwitching: Boolean = enableLearnerStudy.value
+  val isAllowedToEnableQuickLessonLanguageSwitching: Boolean =
+    enableFastLanguageSwitchingInLesson.value
 
   /** List of all the current profiles registered in the app [ProfileListFragment]. */
   val profile: LiveData<Profile> by lazy {

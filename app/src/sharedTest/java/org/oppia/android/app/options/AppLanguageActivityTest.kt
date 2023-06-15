@@ -27,6 +27,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -111,8 +112,6 @@ class AppLanguageActivityTest {
   @Inject
   lateinit var context: Context
 
-  private val summaryValue = "English"
-
   private lateinit var profileId: ProfileId
 
   @Before
@@ -127,8 +126,8 @@ class AppLanguageActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createAppLanguageActivityIntent(summaryValue).extractCurrentAppScreenName()
-
+    val screenName =
+      createAppLanguageActivityIntent(OppiaLanguage.ENGLISH).extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.APP_LANGUAGE_ACTIVITY)
   }
 
@@ -142,9 +141,7 @@ class AppLanguageActivityTest {
   @Test
   fun testAppLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
-      createAppLanguageActivityIntent(
-        summaryValue
-      )
+      createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)
     )
     val title = activityTestRule.activity.title
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -152,12 +149,13 @@ class AppLanguageActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.app_language_activity_title))
   }
 
-  private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
+  private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
     return AppLanguageActivity.createAppLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
       APP_LANGUAGE,
       summaryValue,
       profileId
+      oppiaLanguage
     )
   }
 

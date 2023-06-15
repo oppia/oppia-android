@@ -39,13 +39,14 @@ class CompletedStoryListViewModel @Inject constructor(
     Transformations.map(completedStoryListResultLiveData, ::processCompletedStoryListResult)
   }
 
+  /** [LiveData] list displayed to user on [CompletedStoryListFragment]. */
   val completedStoryListLiveData: LiveData<List<CompletedStoryItemViewModel>> by lazy {
     Transformations.map(completedStoryLiveData, ::processCompletedStoryList)
   }
 
+  /** Sets ProfileId to this ViewModel. */
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
-  }
 
   private fun processCompletedStoryListResult(
     completedStoryListResult: AsyncResult<CompletedStoryList>

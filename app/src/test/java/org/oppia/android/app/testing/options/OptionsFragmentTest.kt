@@ -73,6 +73,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -109,6 +110,9 @@ class OptionsFragmentTest {
 
   private lateinit var profileId: ProfileId
 
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
@@ -118,6 +122,7 @@ class OptionsFragmentTest {
     setUpTestApplicationComponent()
     profileId = ProfileId.getDefaultInstance()
     testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
@@ -132,7 +137,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is ReadingTextSizeFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(ReadingTextSizeFragment::class.java)
       }
     }
   }
@@ -153,7 +158,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is ReadingTextSizeFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(ReadingTextSizeFragment::class.java)
       }
     }
   }
@@ -193,7 +198,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is AppLanguageFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(AppLanguageFragment::class.java)
       }
     }
   }
@@ -214,7 +219,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is AudioLanguageFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(AudioLanguageFragment::class.java)
       }
     }
   }

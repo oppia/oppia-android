@@ -101,9 +101,9 @@ class AudioFragment :
   override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) =
     audioFragmentPresenter.handleDisableAudio(saveUserChoice)
 
-  /** Used in data binding to know if user is touching SeekBar */
+  /** Used in data binding to know if user is touching SeekBar. */
   override fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
 
-  /** Used in data binding to know position of user's touch */
+  /** Used in data binding to know position of user's touch. */
   override fun getUserPosition() = audioFragmentPresenter.userProgress
 }

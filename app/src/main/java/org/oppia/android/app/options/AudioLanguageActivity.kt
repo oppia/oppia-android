@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityStateBundle
@@ -19,7 +19,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import javax.inject.Inject
 
 /** The activity to change the Default Audio language of the app. */
-class AudioLanguageActivity : InjectableAppCompatActivity() {
+class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject lateinit var audioLanguageActivityPresenter: AudioLanguageActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {

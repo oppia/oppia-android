@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -16,6 +16,7 @@ class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
 
   private lateinit var profileId: ProfileId
 
+class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)

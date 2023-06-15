@@ -84,7 +84,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     }
   }
 
-  /** Action for onOptionsItemSelected */
+  /** Action for onOptionsItemSelected. */
   fun handleOnOptionsItemSelected(itemId: Int): Boolean {
     return when (itemId) {
       R.id.action_options -> {
