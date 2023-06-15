@@ -313,7 +313,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "FractionInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      if (dto.hasSolution() && dto.solution.hasExplanation()) {
+        this.solution = dto.solution.convertToSolution(contentIdTracker)
+      }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
@@ -587,7 +589,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "NumericInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      if (dto.hasSolution() && dto.solution.hasExplanation()) {
+        this.solution = dto.solution.convertToSolution(contentIdTracker)
+      }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
     }.build()
@@ -704,7 +708,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "TextInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      if (dto.hasSolution() && dto.solution.hasExplanation()) {
+        this.solution = dto.solution.convertToSolution(contentIdTracker)
+      }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
@@ -808,7 +814,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "DragAndDropSortInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      if (dto.hasSolution() && dto.solution.hasExplanation()) {
+        this.solution = dto.solution.convertToSolution(contentIdTracker)
+      }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
@@ -950,7 +958,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "RatioExpressionInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      if (dto.hasSolution() && dto.solution.hasExplanation()) {
+        this.solution = dto.solution.convertToSolution(contentIdTracker)
+      }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
@@ -1044,7 +1054,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "AlgebraicExpressionInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      if (dto.hasSolution() && dto.solution.hasExplanation()) {
+        this.solution = dto.solution.convertToSolution(contentIdTracker)
+      }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap())
@@ -1126,7 +1138,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "MathEquationInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      if (dto.hasSolution() && dto.solution.hasExplanation()) {
+        this.solution = dto.solution.convertToSolution(contentIdTracker)
+      }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap())
@@ -1208,7 +1222,9 @@ object DtoProtoToLegacyProtoConverter {
     return Interaction.newBuilder().apply {
       this.id = "NumericExpressionInput"
       addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
-      this.solution = dto.solution.convertToSolution(contentIdTracker)
+      if (dto.hasSolution() && dto.solution.hasExplanation()) {
+        this.solution = dto.solution.convertToSolution(contentIdTracker)
+      }
       addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
       this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
       putAllCustomizationArgs(dto.customizationArgs.convertToArgsMap(contentIdTracker))
