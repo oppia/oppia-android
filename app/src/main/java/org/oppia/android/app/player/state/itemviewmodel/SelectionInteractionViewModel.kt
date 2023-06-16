@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.os.Bundle
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -11,6 +10,7 @@ import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
+import org.oppia.android.app.model.UiState
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -88,12 +88,23 @@ class SelectionInteractionViewModel private constructor(
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     val translationContext = this@SelectionInteractionViewModel.writtenTranslationContext
-    val selectedItemSubtitledHtmls = selectedItems.map(choiceItems::get).map { it.htmlContent }
-    val itemHtmls = selectedItemSubtitledHtmls.map { subtitledHtml ->
-      translationController.extractString(subtitledHtml, translationContext)
+    val selectedItemSubtitledHtmls = selectedItemSubtitledHtmls()
+    createAnswer(selectedItemSubtitledHtmls)?.let {
+      answer = it
+      val itemHtmls = selectedItemSubtitledHtmls.map { subtitledHtml ->
+        translationController.extractString(subtitledHtml, translationContext)
+      }
+      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
     }
+    writtenTranslationContext = translationContext
+  }.build()
+
+  private fun selectedItemSubtitledHtmls() =
+    selectedItems.map(choiceItems::get).map { it.htmlContent }
+
+  private fun createAnswer(selectedItemSubtitledHtmls: List<SubtitledHtml>): InteractionObject? {
     if (interactionId == "ItemSelectionInput") {
-      answer = InteractionObject.newBuilder().apply {
+      return InteractionObject.newBuilder().apply {
         setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
           addAllContentIds(
             selectedItemSubtitledHtmls.map { subtitledHtml ->
@@ -104,25 +115,37 @@ class SelectionInteractionViewModel private constructor(
           )
         }.build()
       }.build()
-      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
-    } else if (selectedItems.size == 1) {
-      answer = InteractionObject.newBuilder().apply {
+    }
+    if (selectedItems.size == 1) {
+      return InteractionObject.newBuilder().apply {
         nonNegativeInt = selectedItems.first()
       }.build()
-      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
     }
-    writtenTranslationContext = translationContext
-  }.build()
-
-  override fun saveState(outState: Bundle) {
-    outState.putIntArray(SELECTED_ITEMS_BUNDLE_KEY, selectedItems.toIntArray())
+    return null
   }
 
-  override fun restoreState(savedState: Bundle) {
-    savedState.getIntArray(SELECTED_ITEMS_BUNDLE_KEY)?.let {
-      selectedItems.clear()
-      selectedItems.addAll(it.toList())
+  override fun saveState() =
+    UiState.newBuilder().apply { savedState = createAnswer(selectedItemSubtitledHtmls()) }.build()
+
+  override fun restoreState(savedState: UiState) {
+    if (!savedState.hasSavedState()) {
+      return
     }
+    val interactionObject = savedState.savedState
+    selectedItems.clear()
+    if (interactionId == "ItemSelectionInput") {
+      val selectedContentIds =
+        interactionObject.setOfTranslatableHtmlContentIds.contentIdsList.map { it.contentId }
+          .toSet()
+      for (item in choiceItems) {
+        if (item.htmlContent.contentId in selectedContentIds) {
+          selectedItems.add(item.itemIndex)
+        }
+      }
+    } else {
+      selectedItems.add(interactionObject.nonNegativeInt)
+    }
+
     updateIsAnswerAvailable()
     updateSelectionText()
     updateItemSelectability()
@@ -275,7 +298,5 @@ class SelectionInteractionViewModel private constructor(
       }
       return observableList
     }
-
-    private const val SELECTED_ITEMS_BUNDLE_KEY = "selected_items_bundle_key"
   }
 }

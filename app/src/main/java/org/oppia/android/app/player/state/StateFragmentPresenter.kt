@@ -26,6 +26,7 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.UiState
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
@@ -52,6 +53,8 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -179,9 +182,9 @@ class StateFragmentPresenter @Inject constructor(
       }
       return
     }
-    val newAnswerState = Bundle()
-    pendingAnswerItem()?.saveState(newAnswerState)
-    outState.putBundle(SAVED_STATE_BUNDLE_KEY, newAnswerState)
+    pendingAnswerItem()?.saveState()?.let{
+      outState.putProto(SAVED_STATE_BUNDLE_KEY, it)
+    }
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
@@ -344,7 +347,7 @@ class StateFragmentPresenter @Inject constructor(
     viewModel.rightItemList.clear()
     viewModel.rightItemList += dataPair.second
 
-    savedState?.getBundle(SAVED_STATE_BUNDLE_KEY)?.let {
+    savedState?.getProto(SAVED_STATE_BUNDLE_KEY, UiState.getDefaultInstance())?.let {
       pendingAnswerItem()?.restoreState(it)
     }
     savedStateRestored = true
@@ -430,6 +433,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
+    savedState = null
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
   }
 

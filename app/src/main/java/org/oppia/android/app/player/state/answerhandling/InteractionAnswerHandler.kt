@@ -1,6 +1,6 @@
 package org.oppia.android.app.player.state.answerhandling
 
-import android.os.Bundle
+import org.oppia.android.app.model.UiState
 import org.oppia.android.app.model.UserAnswer
 
 /**
@@ -29,11 +29,10 @@ interface InteractionAnswerHandler {
   }
 
   /** Save the state that should survive view configuration changes, like rotation. */
-  fun saveState(outState: Bundle) {
-  }
+  fun saveState() = UiState.getDefaultInstance()
 
   /** Restores the state lost after a view configuration change, like rotation. */
-  fun restoreState(savedState: Bundle) {
+  fun restoreState(savedState: UiState) {
   }
 }
 

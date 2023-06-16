@@ -287,6 +287,15 @@ message PendingState {
   HelpIndex help_index = 3;
 }
 
+// And answer that has not yet been submitted. Used to temporarily store, and then recover, edited
+// values on app configuration changes, like rotation.
+message UiState {
+
+  // TODO: Most interactions should be covered by reusing the same InteractionObject as when
+  //  submitting an answer, but it may not always be the case.
+  InteractionObject saved_state = 1;
+}
+
 // Corresponds to an exploration state that the learner has previous completed.
 message CompletedState {
   // The list of answers and responses that were used to finish this state. These answers are in the order that the
