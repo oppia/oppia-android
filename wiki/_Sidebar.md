@@ -37,6 +37,7 @@
     * [Accessibility Guide](https://github.com/oppia/oppia-android/wiki/Accessibility-A11y-Guide)
     * [Debugging](https://github.com/oppia/oppia-android/wiki/Debugging)
       * [How do I find the root cause of a bug?](https://github.com/oppia/oppia-android/wiki/Debugging#How-do-I-find-the-root-cause-of-a-bug)
+      * [Debugging Docs](https://github.com/oppia/oppia-android/wiki/Debugging-Docs)
   * [Background Processing](https://github.com/oppia/oppia-android/wiki/Background-Processing)
     * [Kotlin Coroutines](https://github.com/oppia/oppia-android/wiki/Kotlin-Coroutines)
     * [DataProvider & LiveData](https://github.com/oppia/oppia-android/wiki/DataProvider-&-LiveData)

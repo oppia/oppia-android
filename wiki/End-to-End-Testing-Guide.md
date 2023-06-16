@@ -1,3 +1,13 @@
+## Table of Contents
+
+- [Overview](#overview)
+- [How it works.](#how-it-works)
+- [How to run an End-to-End test](#how-to-run-an-end-to-end-test)
+  - [Prerequisites](#prerequisites)
+  - [Steps to run the tests](#steps-to-run-the-tests)
+- [Best practices when writing End-to-End tests](#best-practices-when-writing-end-to-end-tests)
+- [Writing E2E tests](#writing-e2e-tests)
+
 ## Overview
 
 End-to-End tests test the app from an end user’s experience by simulating the real user scenario and validating the system under test and its components for integration and data integrity. 

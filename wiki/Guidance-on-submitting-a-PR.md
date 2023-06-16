@@ -10,6 +10,20 @@ Here are the steps for making a PR to the Oppia Android codebase:
 
 Note: If your change involves more than around 500 lines of code, we recommend first creating a [design doc](https://github.com/oppia/oppia/wiki/Writing-design-docs). This helps avoid duplication of effort, and allows us to offer advice and suggestions on the implementation approach.
 
+## Table of Contents
+
+- [Step 1: Making a local code change](#step-1-making-a-local-code-change)
+    - [Making a local code change using the terminal](#making-a-local-code-change-using-the-terminal)
+    - [Making a local code change using Android Studio's UI-based Github workflow](#making-a-local-code-change-using-android-studios-ui-based-github-workflow)
+- [Step 2: Create a PR on GitHub](#step-2-create-a-pr-on-github)
+    - [Important Points to Keep in Mind](#important-points-to-keep-in-mind)
+    - [Clarification regarding **Assignees** and **Reviewers** section.](#clarification-regarding-assignees-and-reviewers-section)    
+- [Step 3: Address review comments until all reviewers give LGTM](#step-3-address-review-comments-until-all-reviewers-give-lgtm)
+    - [Tips for getting your PR submitted](#tips-for-getting-your-pr-submitted)
+    - [Appendix: Resolving merge conflicts using the terminal](#appendix-resolving-merge-conflicts-using-the-terminal)
+    - [Appendix: Resolving merge conflicts using Android Studio](#appendix-resolving-merge-conflicts-using-android-studio)
+- [Step 4: Tidy up and celebrate!](#step-4-tidy-up-and-celebrate-confetti_ball)
+
 ## Step 1: Making a local code change
 
 Before you make a PR, you'll need to make and test the changes locally. To do this, please follow the following instructions carefully! Otherwise, your code review may be delayed.
