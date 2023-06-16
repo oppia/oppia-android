@@ -8,10 +8,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.core.view.marginBottom
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
-import androidx.core.view.marginTop
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -37,8 +35,10 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginBottom
 import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginEnd
 import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginStart
+import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginTop
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -98,11 +98,9 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowLooper
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginBottom
-import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginTop
-import org.robolectric.shadows.ShadowLooper
 
 private const val TOLERANCE = 1e-5f
 
