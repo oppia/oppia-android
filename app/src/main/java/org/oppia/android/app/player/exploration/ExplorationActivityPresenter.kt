@@ -2,6 +2,7 @@ package org.oppia.android.app.player.exploration
 
 import android.content.Context
 import android.view.View
+import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -98,8 +99,16 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationToolbarTitle = binding.explorationToolbarTitle
     activity.setSupportActionBar(explorationToolbar)
 
-    binding.explorationToolbarTitle.setOnClickListener {
-      binding.explorationToolbarTitle.isSelected = true
+    activity.applicationContext?.let {
+      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
+        as AccessibilityManager?
+      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
+
+      if (!isAccessibilityManagerEnabled) {
+        binding.explorationToolbarTitle.setOnClickListener {
+          binding.explorationToolbarTitle.isSelected = true
+        }
+      }
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {

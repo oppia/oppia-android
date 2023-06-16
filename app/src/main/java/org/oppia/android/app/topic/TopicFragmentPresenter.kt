@@ -46,7 +46,6 @@ class TopicFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    context: Context?,
     internalProfileId: Int,
     topicId: String,
     storyId: String,
@@ -68,12 +67,12 @@ class TopicFragmentPresenter @Inject constructor(
       (activity as TopicActivity).finish()
     }
 
-    context?.let {
-      val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE)
+    activity.applicationContext?.let {
+      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
         as AccessibilityManager?
-      val isAccessibilityManager = accessibilityManager!!.isEnabled
+      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
 
-      if (!isAccessibilityManager) {
+      if (!isAccessibilityManagerEnabled) {
         binding.topicToolbar.setOnClickListener {
           binding.topicToolbarTitle.isSelected = true
         }

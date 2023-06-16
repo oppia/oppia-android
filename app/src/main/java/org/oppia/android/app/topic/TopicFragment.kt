@@ -33,7 +33,6 @@ class TopicFragment : InjectableFragment() {
     return topicFragmentPresenter.handleCreateView(
       inflater,
       container,
-      context,
       internalProfileId,
       topicId,
       storyId,

@@ -1,5 +1,7 @@
 package org.oppia.android.app.topic.revisioncard
 
+import android.content.Context
+import android.view.accessibility.AccessibilityManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -66,9 +68,18 @@ class RevisionCardActivityPresenter @Inject constructor(
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
     }
-    binding.revisionCardToolbarTitle.setOnClickListener {
-      binding.revisionCardToolbarTitle.isSelected = true
+    activity.applicationContext?.let {
+      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
+        as AccessibilityManager?
+      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
+
+      if (!isAccessibilityManagerEnabled) {
+        binding.revisionCardToolbarTitle.setOnClickListener {
+          binding.revisionCardToolbarTitle.isSelected = true
+        }
+      }
     }
+
     subscribeToSubtopicTitle()
 
     binding.actionBottomSheetOptionsMenu.setOnClickListener {

@@ -1,5 +1,6 @@
 package org.oppia.android.app.story
 
+import android.content.Context
 import android.content.res.Resources
 import android.text.SpannableString
 import android.text.Spanned
@@ -12,6 +13,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -90,8 +92,16 @@ class StoryFragmentPresenter @Inject constructor(
       (activity as StoryActivity).finish()
     }
 
-    binding.storyToolbarTitle.setOnClickListener {
-      binding.storyToolbarTitle.isSelected = true
+    activity.applicationContext?.let {
+      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
+        as AccessibilityManager?
+      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
+
+      if (!isAccessibilityManagerEnabled) {
+        binding.storyToolbarTitle.setOnClickListener {
+          binding.storyToolbarTitle.isSelected = true
+        }
+      }
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)

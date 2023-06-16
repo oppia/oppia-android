@@ -1,5 +1,7 @@
 package org.oppia.android.app.help.thirdparty
 
+import android.content.Context
+import android.view.accessibility.AccessibilityManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
@@ -44,9 +46,18 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       (activity as LicenseTextViewerActivity).finish()
     }
 
-    binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
-      binding.licenseTextViewerActivityToolbarTitle.isSelected = true
+    activity.applicationContext?.let {
+      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
+        as AccessibilityManager?
+      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
+
+      if (!isAccessibilityManagerEnabled) {
+        binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
+          binding.licenseTextViewerActivityToolbarTitle.isSelected = true
+        }
+      }
     }
+
 
     if (getLicenseTextViewerFragment() == null) {
       val licenseTextViewerFragment =
