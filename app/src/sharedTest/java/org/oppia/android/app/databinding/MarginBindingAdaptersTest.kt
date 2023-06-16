@@ -4,11 +4,14 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.view.marginBottom
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
+import androidx.core.view.marginTop
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -97,6 +100,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginBottom
+import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginTop
+import org.robolectric.shadows.ShadowLooper
 
 private const val TOLERANCE = 1e-5f
 
@@ -132,6 +138,22 @@ class MarginBindingAdaptersTest {
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  @Test
+  fun testMarginBindableAdapters_topAndBottomIsCorrect() {
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginBottom(textView, /* marginBottom= */ 24f)
+      setLayoutMarginTop(textView, /* marginTop= */ 40f)
+
+      ShadowLooper.idleMainLooper()
+
+      val computedTopMargin = textView.y
+      val computedBottomMargin = (textView.parent as View).height - textView.y - textView.height
+      assertThat(computedTopMargin).isWithin(TOLERANCE).of(40f)
+      assertThat(computedBottomMargin).isWithin(TOLERANCE).of(24f)
+    }
   }
 
   @Config(qualifiers = "port")
