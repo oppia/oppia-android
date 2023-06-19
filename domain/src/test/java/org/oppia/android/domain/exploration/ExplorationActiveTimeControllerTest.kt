@@ -224,9 +224,8 @@ class ExplorationActiveTimeControllerTest {
     setUpTestApplicationComponent()
 
     val exception = assertThrows(IllegalStateException::class) {
-      explorationActiveTimeController.onExplorationEnded()
+      stopExploration()
     }
-    testCoroutineDispatchers.runCurrent()
     assertThat(exception)
       .hasMessageThat()
       .contains("Session isn't initialized yet.")
@@ -412,7 +411,7 @@ class ExplorationActiveTimeControllerTest {
   }
 
   @Test
-  fun testSetSessionPaused_multipleProfiles_sameTopicId_learningTimeUpdatedInCorrectProfile() {
+  fun testSessionStopped_multipleProfiles_sameTopicId_learningTimeUpdatedInCorrectProfile() {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     applicationLifecycleObserver.onAppInForeground()
