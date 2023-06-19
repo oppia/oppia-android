@@ -587,12 +587,7 @@ class ExplorationProgressController @Inject constructor(
     checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
-      explorationProgressListeners.forEach {
-        it.onExplorationEnded(
-          profileId = profileId,
-          topicId = explorationProgress.currentTopicId
-        )
-      }
+      explorationProgressListeners.forEach(ExplorationProgressListener::onExplorationEnded)
     }
 
     // The only way to be sure of an exploration completion is if the user clicks the 'Return to

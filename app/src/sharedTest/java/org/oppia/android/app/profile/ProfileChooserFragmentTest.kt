@@ -168,7 +168,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -206,13 +206,10 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_afterVisitingHomeActivity_showsJustNowText() {
-    val data = profileTestHelper.initializeProfiles()
+    // Note that the auto-log in here is simulating HomeActivity having been visited before (i.e.
+    // that a profile was previously logged in).
+    profileTestHelper.initializeProfiles(autoLogIn = true)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      // Note that this wait is needed to simulate HomeActivity being
-      // visited by ensuring a profile was previously logged in.
-      it.onActivity {
-        profileTestHelper.waitForOperationToComplete(data)
-      }
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -231,13 +228,10 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_afterVisitingHomeActivity_changeConfiguration_showsJustNowText() {
-    val data = profileTestHelper.initializeProfiles()
+    // Note that the auto-log in here is simulating HomeActivity having been visited before (i.e.
+    // that a profile was previously logged in).
+    profileTestHelper.initializeProfiles(autoLogIn = true)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      // Note that this wait is needed to simulate HomeActivity being
-      // visited by ensuring a profile was previously logged in.
-      it.onActivity {
-        profileTestHelper.waitForOperationToComplete(data)
-      }
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(
@@ -257,7 +251,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     profileTestHelper.addMoreProfiles(8)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -326,7 +320,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickProfile_checkOpensPinPasswordActivity() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -427,7 +421,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_multipleProfiles_checkText_addProfileIsVisible() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       verifyTextOnProfileListItemAtPosition(
@@ -440,7 +434,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_multipleProfiles_checkDescriptionText_isDisplayed() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -455,7 +449,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickAdminControls_opensAdminAuthActivity() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
@@ -466,7 +460,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickAddProfile_opensAdminAuthActivity() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(

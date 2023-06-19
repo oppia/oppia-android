@@ -172,6 +172,7 @@ class ProfileAndDeviceIdFragmentTest {
   fun setUp() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
@@ -209,7 +210,7 @@ class ProfileAndDeviceIdFragmentTest {
   fun testFragment_hasDeviceId() {
     initializeActivityAndAddFragment()
 
-    onDeviceIdLabelAt(position = 0).check(matches(withText(containsString("c85606ca6390"))))
+    onDeviceIdLabelAt(position = 0).check(matches(withText(containsString("0347439ebe8b"))))
   }
 
   @Test
@@ -229,7 +230,7 @@ class ProfileAndDeviceIdFragmentTest {
     val clipData = getCurrentClipData()
     assertThat(clipData?.description?.label).isEqualTo("Oppia installation ID")
     assertThat(clipData?.itemCount).isEqualTo(1)
-    assertThat(clipData?.getItemAt(0)?.text).isEqualTo("c85606ca6390")
+    assertThat(clipData?.getItemAt(0)?.text).isEqualTo("0347439ebe8b")
   }
 
   @Test
@@ -310,7 +311,7 @@ class ProfileAndDeviceIdFragmentTest {
 
     // The second profile has a different learner ID.
     onLearnerIdAt(position = 1).check(matches(withText("a9fe66ab")))
-    onLearnerIdAt(position = 2).check(matches(withText("c368b501")))
+    onLearnerIdAt(position = 2).check(matches(withText("6e563e2f")))
   }
 
   @Test
@@ -325,7 +326,7 @@ class ProfileAndDeviceIdFragmentTest {
     val clipData = getCurrentClipData()
     assertThat(clipData?.description?.label).isEqualTo("A's learner ID")
     assertThat(clipData?.itemCount).isEqualTo(1)
-    assertThat(clipData?.getItemAt(0)?.text).isEqualTo("c368b501")
+    assertThat(clipData?.getItemAt(0)?.text).isEqualTo("6e563e2f")
   }
 
   @Test
@@ -773,19 +774,24 @@ class ProfileAndDeviceIdFragmentTest {
 
     val expectedShareText =
       """
-      Oppia app installation ID: 1216f42c89ec
+      Oppia app installation ID: 932459768f39
       - Profile name: Admin, learner ID: a9fe66ab
         - Uploading learner events: 3
         - Uploaded learner events: 2
         - Uploading uncategorized events: 1
         - Uploaded uncategorized events: 4
-      - Profile name: A, learner ID: c368b501
+      - Profile name: A, learner ID: 6e563e2f
         - Uploading learner events: 2
         - Uploaded learner events: 1
-      - Profile name: B, learner ID: 74facac7
+      - Profile name: B, learner ID: 5c0710a2
         - Uploading learner events: 1
         - Uploaded learner events: 2
       Current sync status: Waiting to schedule data uploading worker….
+      Event log encoding integrity checks:
+      - First 40 chars of encoded string: H4sIAAAAAAAAAOPSlGBUUj3FqMTFX5JaXBKfk5pY
+      - Last 40 chars of encoded string: BzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA
+      - SHA-1 hash (unwrapped event string): 76f7a26348b4034787982f9505c6b5697efc6567
+      - Total event string length (unwrapped): 140
       Encoded event logs:
       H4sIAAAAAAAAAOPSlGBUUj3FqMTFX5JaXBKfk5pYlJdaFJ+ZIgQRyMwrLknMyQEKcBkSrVSLwYjBisGJ
       gU5ajEnVwsTBSDdNTELEBzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA

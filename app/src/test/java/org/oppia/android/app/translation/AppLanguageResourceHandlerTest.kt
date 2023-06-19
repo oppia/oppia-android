@@ -132,6 +132,7 @@ class AppLanguageResourceHandlerTest {
   @Parameter lateinit var expectedDisplayText: String
 
   private val audioLanguage by lazy { AudioLanguage.valueOf(lang) }
+  private val oppiaLanguage by lazy { OppiaLanguage.valueOf(lang) }
 
   @Before
   fun setUp() {
@@ -498,18 +499,41 @@ class AppLanguageResourceHandlerTest {
     Iteration("fr", "lang=FRENCH_AUDIO_LANGUAGE", "expectedDisplayText=Français"),
     Iteration("zh", "lang=CHINESE_AUDIO_LANGUAGE", "expectedDisplayText=中文"),
     Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE_LANGUAGE", "expectedDisplayText=Português"),
+    Iteration("ar", "lang=ARABIC_LANGUAGE", "expectedDisplayText=العربية"),
+    Iteration("pcm", "lang=NIGERIAN_PIDGIN_LANGUAGE", "expectedDisplayText=Naijá"),
     Iteration("unsp", "lang=AUDIO_LANGUAGE_UNSPECIFIED", "expectedDisplayText=English"),
     Iteration("none", "lang=NO_AUDIO", "expectedDisplayText=English"),
     Iteration("unknown", "lang=UNRECOGNIZED", "expectedDisplayText=English"),
     Iteration("en", "lang=ENGLISH_AUDIO_LANGUAGE", "expectedDisplayText=English")
   )
-  fun testComputeLocalizedDisplayName_englishLocale_forAllLanguages_hasTheExpectedOutput() {
+  fun testComputeLocalizedDisplayName_englishLocale_forAllAudioLanguages_hasTheExpectedOutput() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
     val displayText = handler.computeLocalizedDisplayName(audioLanguage)
 
     // The display name is localized to that language rather than the current locale (English).
+    assertThat(displayText).isEqualTo(expectedDisplayText)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("unknown", "lang=LANGUAGE_UNSPECIFIED", "expectedDisplayText=English"),
+    Iteration("ar", "lang=ARABIC", "expectedDisplayText=العربية"),
+    Iteration("en", "lang=ENGLISH", "expectedDisplayText=English"),
+    Iteration("hi", "lang=HINDI", "expectedDisplayText=हिन्दी"),
+    Iteration("hi-en", "lang=HINGLISH", "expectedDisplayText=हिन्दी"),
+    Iteration("pt", "lang=PORTUGUESE", "expectedDisplayText=Português"),
+    Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE", "expectedDisplayText=Português"),
+    Iteration("sw", "lang=SWAHILI", "expectedDisplayText=Kiswahili"),
+    Iteration("pcm", "lang=NIGERIAN_PIDGIN", "expectedDisplayText=Naijá")
+  )
+  fun testComputeLocalizedDisplayName_englishLocale_forAllDisplayLanguages_hasTheExpectedOutput() {
+    updateAppLanguageTo(OppiaLanguage.ENGLISH)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val displayText = handler.computeLocalizedDisplayName(oppiaLanguage)
+
     assertThat(displayText).isEqualTo(expectedDisplayText)
   }
 

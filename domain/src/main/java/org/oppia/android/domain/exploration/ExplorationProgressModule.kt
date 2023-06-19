@@ -10,6 +10,6 @@ interface ExplorationProgressModule {
   @Binds
   @IntoSet
   fun provideExplorationProgressListener(
-    explorationSessionTimerController: ExplorationSessionTimerController
+    activeTimeController: ExplorationActiveTimeController
   ): ExplorationProgressListener
 }

@@ -480,7 +480,9 @@ class ViewEventLogsFragmentTest {
     }
   }
 
-  /** Logs multiple event logs so that the recyclerview in [ViewEventLogsFragment] gets populated */
+  /**
+   * Logs multiple event logs so that the recyclerview in [ViewEventLogsFragment] gets populated.
+   */
   private fun logMultipleEvents() {
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
     analyticsController.logImportantEvent(

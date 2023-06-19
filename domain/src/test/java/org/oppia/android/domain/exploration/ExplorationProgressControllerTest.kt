@@ -108,6 +108,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -152,6 +153,7 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -2594,6 +2596,31 @@ class ExplorationProgressControllerTest {
     }
   }
 
+  @Test
+  fun testStartExp_thenEndExp_callsExplorationStartedListener_andCallsExplorationEndedListener() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    explorationActiveTimeController.onAppInForeground()
+
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_4)
+
+    val sessionTime = TimeUnit.MINUTES.toMillis(5)
+
+    testCoroutineDispatchers.advanceTimeBy(sessionTime)
+
+    endExploration()
+
+    assertThat(getAggregateTopicTime()).isEqualTo(sessionTime)
+  }
+
+  private fun getAggregateTopicTime(): Long {
+    return monitorFactory.waitForNextSuccessfulResult(
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        this.profileId,
+        TEST_TOPIC_ID_0
+      )
+    ).topicLearningTimeMs
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -3153,6 +3180,13 @@ class ExplorationProgressControllerTest {
     @EnableLearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       // Enable the study by default in tests.
+      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
+    }
+
+    @Provides
+    @EnableLoggingLearnerStudyIds
+    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
+      // Enable study IDs by default in tests.
       return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
   }
