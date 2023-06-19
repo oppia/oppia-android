@@ -355,7 +355,7 @@ class SurveyProgressController @Inject constructor(
   private suspend fun ControllerState.submitAnswerImpl(
     submitAnswerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
 
-    ) {
+  ) {
     // selectedAnswer: SurveySelectedAnswer
     tryOperation(submitAnswerResultFlow) {
       check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
@@ -492,13 +492,13 @@ class SurveyProgressController @Inject constructor(
 
   private fun ControllerState.retrieveEphemeralQuestion(questionsList: List<SurveyQuestion>):
     EphemeralSurveyQuestion {
-    val currentQuestionIndex = progress.getCurrentQuestionIndex()
-    return EphemeralSurveyQuestion.newBuilder()
-      .setQuestion(questionsList[currentQuestionIndex])
-      .setCurrentQuestionIndex(currentQuestionIndex)
-      .setTotalQuestionCount(progress.getTotalQuestionCount())
-      .build()
-  }
+      val currentQuestionIndex = progress.getCurrentQuestionIndex()
+      return EphemeralSurveyQuestion.newBuilder()
+        .setQuestion(questionsList[currentQuestionIndex])
+        .setCurrentQuestionIndex(currentQuestionIndex)
+        .setTotalQuestionCount(progress.getTotalQuestionCount())
+        .build()
+    }
 
   /**
    * Represents the current synchronized state of the controller.

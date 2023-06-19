@@ -26,7 +26,8 @@ private const val CREATE_QUESTIONS_LIST_PROVIDER_ID = "create_questions_list_pro
 class SurveyController @Inject constructor(
   private val dataProviders: DataProviders,
   private val surveyProgressController: SurveyProgressController,
-  private val exceptionsController: ExceptionsController
+  private val exceptionsController: ExceptionsController,
+  @TotalQuestionCount private val totalQuestionCount: Int
 ) {
   private val surveyId = UUID.randomUUID().toString()
 
@@ -72,7 +73,7 @@ class SurveyController @Inject constructor(
           index.toString(),
           questionName
         )
-      }
+      }.take(totalQuestionCount)
   }
 
   private fun createSurveyQuestion(
