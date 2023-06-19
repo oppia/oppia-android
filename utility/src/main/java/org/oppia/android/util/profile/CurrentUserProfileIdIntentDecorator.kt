@@ -22,8 +22,10 @@ object CurrentUserProfileIdIntentDecorator {
     putProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId)
   }
 
-  /** Returns the [ProfileId] packed in [this] intent or default
-   * instance if there is no profile ID bundled via [decorateWithUserProfileId]. */
+  /**
+   * Returns the [ProfileId] packed in [this] intent or default
+   * instance if there is no profile ID bundled via [decorateWithUserProfileId].
+   */
   fun Intent.extractCurrentUserProfileId(): ProfileId {
     return getProtoExtra(
       PROFILE_ID_INTENT_DECORATOR,
@@ -39,9 +41,10 @@ object CurrentUserProfileIdIntentDecorator {
     putProto(PROFILE_ID_BUNDLE_DECORATOR, profileId)
   }
 
-  /** Returns the [ProfileId] packed in [this] bundle or default
+  /**
+   * Returns the [ProfileId] packed in [this] bundle or default
    * instance if there is no profile ID bundled via [decorateWithUserProfileId].
-   * */
+   */
   fun Bundle.extractCurrentUserProfileId(): ProfileId {
     return getProto(
       PROFILE_ID_BUNDLE_DECORATOR,

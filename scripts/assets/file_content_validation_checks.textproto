@@ -467,6 +467,8 @@ file_content_checks {
   file_path_regex: ".+?Activity.kt"
   failure_message: "Please wrap ProfileId into this activity. To do this, pass ProfileId value to Intent.decorateWithUserProfileId(ProfileId) on the activity creation intent."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableSystemLocalizedAppCompatActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingActivity.kt"
