@@ -153,6 +153,7 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -2593,6 +2594,31 @@ class ExplorationProgressControllerTest {
       hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.SWAHILI)
       hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.ENGLISH)
     }
+  }
+
+  @Test
+  fun testStartExp_thenEndExp_callsExplorationStartedListener_andCallsExplorationEndedListener() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    explorationActiveTimeController.onAppInForeground()
+
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_4)
+
+    val sessionTime = TimeUnit.MINUTES.toMillis(5)
+
+    testCoroutineDispatchers.advanceTimeBy(sessionTime)
+
+    endExploration()
+
+    assertThat(getAggregateTopicTime()).isEqualTo(sessionTime)
+  }
+
+  private fun getAggregateTopicTime(): Long {
+    return monitorFactory.waitForNextSuccessfulResult(
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        this.profileId,
+        TEST_TOPIC_ID_0
+      )
+    ).topicLearningTimeMs
   }
 
   private fun setUpTestApplicationComponent() {
