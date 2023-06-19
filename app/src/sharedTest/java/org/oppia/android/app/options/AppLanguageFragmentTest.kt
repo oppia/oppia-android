@@ -278,9 +278,9 @@ class AppLanguageFragmentTest {
 
   private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
     return AppLanguageActivity.createAppLanguageActivityIntent(
+      context,
       profileId,
-      oppiaLanguage,
-      context
+      oppiaLanguage
     )
   }
 

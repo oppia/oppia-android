@@ -1829,7 +1829,7 @@ class HomeActivityTest {
     forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
@@ -1852,7 +1852,7 @@ class HomeActivityTest {
     forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the display locale is set up correctly (for string formatting).

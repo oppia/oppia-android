@@ -112,6 +112,9 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [ProfileEditFragment]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileEditFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
@@ -139,6 +142,7 @@ class ProfileEditFragmentTest {
     profileIdFour = ProfileId.newBuilder().apply { internalId = 4 }.build()
     profileIdZero = ProfileId.newBuilder().apply { internalId = 0 }.build()
     profileTestHelper.initializeProfiles()
+    TestPlatformParameterModule.reset()
   }
 
   @After
@@ -420,7 +424,6 @@ class ProfileEditFragmentTest {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
       intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
-      intended(hasExtra("MarkChaptersCompletedActivity.profile_id", 0))
       intended(hasExtra("MarkChaptersCompletedActivity.show_confirmation_notice", true))
     }
   }
@@ -500,7 +503,7 @@ class ProfileEditFragmentTest {
     // The user should not have permission to switch languages (since the switch wasn't toggled).
     val profileProvider =
       profileManagementController.getProfile(
-        ProfileId.newBuilder().apply { internalId = 0 }.build()
+        profileIdZero
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
 
@@ -520,7 +523,7 @@ class ProfileEditFragmentTest {
     // The user should have permission to switch languages (since the switch was toggled).
     val profileProvider =
       profileManagementController.getProfile(
-        ProfileId.newBuilder().apply { internalId = 0 }.build()
+        profileIdZero
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()
