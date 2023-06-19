@@ -468,9 +468,9 @@ class SurveyGatingControllerTest {
     profileId: ProfileId,
     topicId: String
   ) {
-    explorationActiveTimeController.startSessionTimer()
+    explorationActiveTimeController.onExplorationStarted(profileId, topicId)
     testCoroutineDispatchers.advanceTimeBy(sessionLengthMs)
-    explorationActiveTimeController.setExplorationSessionStopped(profileId, topicId)
+    explorationActiveTimeController.onExplorationEnded()
   }
 
   private fun setUpTestApplicationComponent() {
