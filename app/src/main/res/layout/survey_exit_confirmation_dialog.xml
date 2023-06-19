@@ -4,7 +4,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
       android:id="@+id/exit_survey_confirmation_text"
@@ -13,33 +13,23 @@
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/survey_question_text_margin"
       android:text="@string/survey_exit_confirmation_text"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintVertical_chainStyle="packed"
-      app:layout_constraintBottom_toTopOf="@id/continue_survey_button"
-      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
     <Button
       android:id="@+id/continue_survey_button"
-      style="@style/SurveyPrimaryButton"
-      android:layout_width="0dp"
+      style="@style/SurveyNextButton"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
-      android:layout_marginStart="@dimen/survey_navigation_buttons_margin"
-      android:layout_marginEnd="@dimen/survey_navigation_buttons_margin"
       android:text="@string/survey_continue_survey_button"
-      app:layout_constraintVertical_chainStyle="packed"
-      app:layout_constraintBottom_toTopOf="@id/exit_survey_button"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/exit_survey_confirmation_text" />
 
     <Button
       android:id="@+id/exit_survey_button"
-      style="@style/SurveySecondaryButton"
-      android:layout_width="0dp"
+      style="@style/SurveyPrimaryButton"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/survey_navigation_buttons_margin"
       android:text="@string/survey_exit_button"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

@@ -560,10 +560,10 @@
     <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
-    <item name="android:windowIsFloating">false</item>
+    <item name="android:windowIsFloating">true</item>
     <!-- This is important! Don't forget to set window background -->
     <item name="android:windowIsTranslucent">false</item>
-    <item name="android:windowBackground">@color/color_palette_transparent_background_color</item>
+    <item name="android:windowBackground">@drawable/survey_confirmation_dialog_background</item>
     <!-- Additionally if you want animations when dialog opening -->
     <item name="android:windowEnterAnimation">@anim/slide_up</item>
     <item name="android:windowExitAnimation">@anim/slide_down</item>
@@ -572,6 +572,7 @@
   <style name="SurveyQuestionTextStyle" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">20sp</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="SurveyPopupHeaderStyle" parent="TextViewCenterHorizontal">
