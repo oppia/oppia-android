@@ -20,6 +20,6 @@ internal class TimerSessionState {
   /** Indicates whether the app is in the foreground. */
   internal var isAppInForeground: Boolean = false
 
-  /**Indicates whether an exploration session is active. */
+  /** Indicates whether an exploration session is active. */
   internal var isExplorationStarted: Boolean = false
 }
