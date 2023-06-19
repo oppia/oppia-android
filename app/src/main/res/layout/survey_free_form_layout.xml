@@ -3,6 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.survey.surveyitemviewmodel.FreeFormItemsViewModel" />
@@ -17,11 +18,13 @@
       style="@style/SurveyFreeFormAnswerEditText"
       android:hint="@string/survey_free_form_text_hint"
       android:inputType="text|textMultiLine"
-      app:layout_constraintStart_toStartOf="parent"
       android:minLines="4"
       android:overScrollMode="never"
+      android:text="@={viewModel.answerText}"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:textChangedListener="@{viewModel.answerTextWatcher}" />
 
     <Button
       android:id="@+id/submit_button"
@@ -29,7 +32,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
+      android:enabled="@{viewModel.isAnswerAvailable()}"
       android:text="@string/survey_submit_button"
+      android:textColor="@{viewModel.isAnswerAvailable() ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"
       app:layout_constraintTop_toBottomOf="@id/free_form_text" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
