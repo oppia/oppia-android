@@ -157,15 +157,6 @@ class SurveyFragmentPresenter @Inject constructor(
       .build()
   }
 
-/*
-  .registerViewDataBinder(
-  viewType = SurveyAnswerItemViewModel.ViewType.NPS_OPTIONS,
-  inflateDataBinding = SurveyNpsScoreLayoutBinding::inflate,
-  setViewModel = SurveyNpsScoreLayoutBinding::setViewModel,
-  transformViewModel = { it as NpsItemsViewModel }
-  )
-*/
-
   private fun subscribeToCurrentQuestion() {
     surveyProgressController.getCurrentQuestion().toLiveData().observe(
       fragment,
@@ -208,10 +199,18 @@ class SurveyFragmentPresenter @Inject constructor(
           answerAvailabilityReceiver
         )
       )
-      SurveyQuestionName.PROMOTER_FEEDBACK -> surveyViewModel.itemList.add(FreeFormItemsViewModel())
-      SurveyQuestionName.PASSIVE_FEEDBACK -> surveyViewModel.itemList.add(FreeFormItemsViewModel())
+      SurveyQuestionName.PROMOTER_FEEDBACK -> surveyViewModel.itemList.add(
+        FreeFormItemsViewModel(
+          answerAvailabilityReceiver
+        )
+      )
+      SurveyQuestionName.PASSIVE_FEEDBACK -> surveyViewModel.itemList.add(
+        FreeFormItemsViewModel(
+          answerAvailabilityReceiver
+        )
+      )
       SurveyQuestionName.DETRACTOR_FEEDBACK -> surveyViewModel.itemList.add(
-        FreeFormItemsViewModel()
+        FreeFormItemsViewModel(answerAvailabilityReceiver)
       )
       else -> {}
     }
