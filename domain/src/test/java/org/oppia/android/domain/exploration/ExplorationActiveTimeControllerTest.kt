@@ -284,10 +284,16 @@ class ExplorationActiveTimeControllerTest {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getOppiaClock().setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
       testComponent.getExplorationActiveTimeController().onAppInForeground()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+
       testComponent.getExplorationActiveTimeController()
         .onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+
       testComponent.getTestCoroutineDispatchers().advanceTimeBy(SESSION_LENGTH_1)
+
       testComponent.getExplorationActiveTimeController().onExplorationEnded()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
     // Create the application after previous arrangement to simulate a re-creation.
@@ -324,10 +330,15 @@ class ExplorationActiveTimeControllerTest {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getOppiaClock().setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
       testComponent.getExplorationActiveTimeController().onAppInForeground()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+
       testComponent.getExplorationActiveTimeController()
         .onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+
       testComponent.getTestCoroutineDispatchers().advanceTimeBy(SESSION_LENGTH_1)
       testComponent.getExplorationActiveTimeController().onExplorationEnded()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
     // Create the application after previous arrangement to simulate a re-creation.

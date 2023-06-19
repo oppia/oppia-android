@@ -495,9 +495,10 @@ class ExplorationActiveTimeController @Inject constructor(
             topicId,
             TopicLearningTime.newBuilder().setTopicId(topicId).build()
           ).toBuilder().apply {
-            topicLearningTimeMs = if (isLastUpdatedTimestampStale(lastUpdatedTimeMs)) {
+            topicLearningTimeMs = if (isLastUpdatedTimestampStale(lastUpdatedTimeMs))
               sessionDuration
-            } else topicLearningTimeMs + sessionDuration
+            else
+              topicLearningTimeMs + sessionDuration
             lastUpdatedTimeMs = oppiaClock.getCurrentTimeMs()
           }.build()
         putAggregateTopicLearningTime(topicId, topicLearningTime)
