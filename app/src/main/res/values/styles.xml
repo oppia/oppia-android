@@ -604,8 +604,8 @@
     <item name="android:fontFamily">sans-serif-light</item>
   </style>
 
-  <!-- Survey Welcome Dialog -->
-  <style name="SurveyWelcomeDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
+  <!-- Survey On-boarding Dialog -->
+  <style name="SurveyOnboardingDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">false</item>
     <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
     <!-- Set this to true if you want Full Screen without status bar -->

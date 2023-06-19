@@ -49,7 +49,7 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setStyle(STYLE_NORMAL, R.style.SurveyWelcomeDialogStyle)
+    setStyle(STYLE_NORMAL, R.style.SurveyOnboardingDialogStyle)
   }
 
   override fun onCreateView(
@@ -75,6 +75,6 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
 
   override fun onStart() {
     super.onStart()
-    dialog?.window?.setWindowAnimations(R.style.SurveyWelcomeDialogStyle)
+    dialog?.window?.setWindowAnimations(R.style.SurveyOnboardingDialogStyle)
   }
 }
