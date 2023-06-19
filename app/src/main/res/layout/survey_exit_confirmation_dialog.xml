@@ -17,7 +17,7 @@
 
     <Button
       android:id="@+id/continue_survey_button"
-      style="@style/SurveyNextButton"
+      style="@style/SurveySecondaryButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/survey_continue_survey_button"
