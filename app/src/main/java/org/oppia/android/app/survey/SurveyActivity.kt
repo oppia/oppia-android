@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.SurveyActivityParams
@@ -14,7 +14,7 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** The activity for showing a survey. */
-class SurveyActivity : InjectableAppCompatActivity() {
+class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject lateinit var surveyActivityPresenter: SurveyActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
