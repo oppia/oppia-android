@@ -60,6 +60,7 @@ oppia_android_test(
         "//config/src/java/org/oppia/android/config:all_languages_config",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",

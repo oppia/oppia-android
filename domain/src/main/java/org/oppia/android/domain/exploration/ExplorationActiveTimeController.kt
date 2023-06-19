@@ -1,5 +1,13 @@
 package org.oppia.android.domain.exploration
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicLearningTime
 import org.oppia.android.app.model.TopicLearningTimeDatabase
@@ -17,14 +25,6 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 private const val CACHE_NAME = "topic_learning_time_database"
 private const val RECORD_AGGREGATE_LEARNING_TIME_PROVIDER_ID =
@@ -346,18 +346,6 @@ class ExplorationActiveTimeController @Inject constructor(
         this.isAppInForeground = isAppInForeground
       }
     }
-  }
-
-  /**
-   * Private class that encapsulates the mutable state of an [ExplorationActiveTimeController].
-   * This class is not thread-safe, so owning classes should ensure synchronized access.
-   */
-  internal class TimerSessionState {
-    internal var sessionStartTime: Long = 0L
-    internal lateinit var currentProfileId: ProfileId
-    internal lateinit var currentTopicId: String
-    internal var isAppInForeground: Boolean = false
-    internal var isExplorationStarted: Boolean = false
   }
 
   /**
