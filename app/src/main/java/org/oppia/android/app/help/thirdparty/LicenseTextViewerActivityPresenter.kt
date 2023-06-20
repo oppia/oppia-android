@@ -58,7 +58,6 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       }
     }
 
-
     if (getLicenseTextViewerFragment() == null) {
       val licenseTextViewerFragment =
         LicenseTextViewerFragment.newInstance(dependencyIndex, licenseIndex)
