@@ -374,8 +374,8 @@ class TopicLessonsFragmentTest {
         .check(
           matches(
             withContentDescription(
-              "Chapter 2: What is a Ratio? is currently locked. Please complete chapter 1: " +
-                "Exploration to unlock this chapter."
+              "Chapter 2: Order is important is currently locked. Please complete chapter 1: " +
+                "What is a Ratio? to unlock this chapter."
             )
           )
         )
