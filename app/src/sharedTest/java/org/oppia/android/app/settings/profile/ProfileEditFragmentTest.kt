@@ -138,10 +138,10 @@ class ProfileEditFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     profileIdFour = ProfileId.newBuilder().apply { internalId = 4 }.build()
     profileIdZero = ProfileId.newBuilder().apply { internalId = 0 }.build()
-    profileTestHelper.initializeProfiles()
     TestPlatformParameterModule.reset()
   }
 
@@ -552,8 +552,7 @@ class ProfileEditFragmentTest {
   private fun launchFragmentTestActivity(profileId: ProfileId) =
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
-        context,
-        profileId
+        context, profileId
       )
     ).also { testCoroutineDispatchers.runCurrent() }
 
