@@ -222,6 +222,7 @@ class SurveyFragmentPresenter @Inject constructor(
     surveyViewModel.updateQuestionProgress(
       progressPercentage = (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt()
     )
+    toggleNavigationButtonVisibility(currentQuestionIndex, questionCount)
   }
 
   private fun updateQuestionText(questionName: SurveyQuestionName) {
@@ -234,6 +235,23 @@ class SurveyFragmentPresenter @Inject constructor(
    */
   fun updateNextButton(inputAnswerAvailable: Boolean) {
     surveyViewModel.setCanMoveToNextQuestion(inputAnswerAvailable)
+  }
+
+  private fun toggleNavigationButtonVisibility(questionIndex: Int, questionCount: Int) {
+    when (questionIndex) {
+      0 -> {
+        binding.surveyNextButton.visibility = View.VISIBLE
+        binding.surveyPreviousButton.visibility = View.GONE
+      }
+      (questionCount - 1) -> {
+        binding.surveyNextButton.visibility = View.GONE
+        binding.surveyPreviousButton.visibility = View.VISIBLE
+      }
+      else -> {
+        binding.surveyNextButton.visibility = View.VISIBLE
+        binding.surveyPreviousButton.visibility = View.VISIBLE
+      }
+    }
   }
 
   fun handleKeyboardAction() {

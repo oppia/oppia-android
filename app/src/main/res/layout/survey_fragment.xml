@@ -119,8 +119,6 @@
           android:layout_height="wrap_content"
           android:text="@string/survey_previous_button"
           app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toStartOf="@id/survey_next_button"
-          app:layout_constraintHorizontal_chainStyle="spread_inside"
           app:layout_constraintStart_toStartOf="parent" />
 
         <Button
@@ -134,8 +132,7 @@
           android:text="@string/next"
           android:textColor="@{viewModel.canMoveToNextQuestion ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"
           app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toEndOf="@id/survey_previous_button" />
+          app:layout_constraintEnd_toEndOf="parent" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
