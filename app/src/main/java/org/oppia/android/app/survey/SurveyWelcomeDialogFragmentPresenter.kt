@@ -41,7 +41,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     }
 
     binding.maybeLaterButton.setOnClickListener {
-      fragment.parentFragmentManager.popBackStack()
+      activity.supportFragmentManager.popBackStack()
     }
 
     return binding.root

@@ -29,11 +29,18 @@ class ExitSurveyConfirmationDialogFragmentPresenter @Inject constructor(
     binding.lifecycleOwner = fragment
 
     binding.continueSurveyButton.setOnClickListener {
-      // TODO: dismiss dialog
+      fragment.parentFragmentManager.beginTransaction()
+        .remove(fragment)
+        .commitNow()
     }
 
     binding.exitSurveyButton.setOnClickListener {
-      // TODO: submit survey if applicable and return to topic
+      binding.continueSurveyButton.setOnClickListener {
+        fragment.parentFragmentManager.beginTransaction()
+          .remove(fragment)
+          .commitNow()
+      }
+      fragment.activity?.finish()
     }
 
     return binding.root
