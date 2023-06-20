@@ -16,7 +16,7 @@ Oppia Android is written using Kotlin and Java, and leverages Bazel, databinding
 
 ## Installation
 
-Please refer to the [installation wiki page](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android) for full instructions.
+Please refer to the [Installing Oppia Android](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android) page for full instructions on how to install Oppia-Android on your local machine.
 
 ## Contributing
 
