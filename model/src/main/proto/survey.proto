@@ -122,17 +122,17 @@ enum UserTypeAnswer {
   // User type unknown.
   USER_TYPE_UNSPECIFIED = 0;
 
-  // Corresponds to an unspecified or unknown type of user.
-  OTHER = 1;
-
-  // Corresponds to a user who is a teacher.
-  PARENT = 2;
+  // Corresponds to a user who is a learner.
+  LEARNER = 1;
 
   // Corresponds to a user who is a parent.
-  TEACHER = 3;
+  TEACHER = 2;
 
-  // Corresponds to a user who is a learner.
-  LEARNER = 4;
+  // Corresponds to a user who is a teacher.
+  PARENT = 3;
+
+  // Corresponds to an unspecified or unknown type of user.
+  OTHER = 4;
 }
 
 // Represents general opinion of the user about the Oppia android app.
