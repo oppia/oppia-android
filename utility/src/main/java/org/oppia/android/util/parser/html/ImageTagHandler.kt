@@ -48,12 +48,12 @@ class ImageTagHandler(
         )
       }
     } else consoleLogger.e("ImageTagHandler", "Failed to parse image tag")
-    if (contentDescription != null) {
+    if (!contentDescription.isNullOrBlank()) {
       val spannableBuilder = SpannableStringBuilder(contentDescription)
       spannableBuilder.setSpan(
         contentDescription,
-        /* start= */ 0,
-        /* end= */ contentDescription.length,
+        /* start = */ 0,
+        /* end = */ contentDescription.length,
         Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
       output.replace(openIndex, output.length, spannableBuilder)

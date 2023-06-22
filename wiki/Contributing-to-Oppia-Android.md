@@ -18,6 +18,8 @@ If you run into any problems along the way, we're here to help! Check out our [w
 
 ## How to find information on this wiki
 
+Please see the animated image below for guidance:
+
 <img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/235522765-3d17617e-1f3b-4531-b84c-33af94885863.gif">
 
 ## Onboarding instructions
@@ -45,7 +47,7 @@ We suggest choosing your first issue from the [list of good first issues](https:
 
 When you've found an issue you'd like to tackle:
 
-- Leave a comment that describes in detail how you'll tackle it (e.g. explain which file(s) you would modify and what changes you would make), and @-mention the team lead (typically **@BenHenning**). If your explanation makes sense, we'll assign the issue to you. 
+- Leave a comment that describes in detail how you'll tackle it (e.g. explain which file(s) you would modify and what changes you would make), and @-mention the team lead (typically **@BenHenning**). If your explanation makes sense, we'll assign the issue to you.
 - Submit a PR, following the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). (Consider bookmarking this guide in your browser for easy reference. We also suggest bookmarking the ["my issues" page](https://github.com/issues/assigned) so that you can keep track of the issues assigned to you.)
 - If you run into any problems, feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community, or [request a mentor](https://forms.gle/udsRP4WQgLcez9Zm8) if you'd like individual support.
 

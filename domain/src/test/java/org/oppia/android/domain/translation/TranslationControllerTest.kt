@@ -25,6 +25,7 @@ import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
@@ -1794,9 +1795,10 @@ class TranslationControllerTest {
     val languageListProvider = translationController.getSupportedAppLanguages()
     val languageListData = monitorFactory.waitForNextSuccessfulResult(languageListProvider)
 
-    assertThat(languageListData[0].name).isEqualTo(ARABIC.name)
-    assertThat(languageListData[4].name).isEqualTo(SWAHILI.name)
-    assertThat(languageListData).hasSize(5)
+    // All developer languages should be available. This is a change detector test to ensure that
+    // the language selection system provides exactly the list of intended languages.
+    assertThat(languageListData)
+      .containsExactly(ARABIC, ENGLISH, HINDI, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN)
   }
 
   private fun setUpTestApplicationComponent() {
