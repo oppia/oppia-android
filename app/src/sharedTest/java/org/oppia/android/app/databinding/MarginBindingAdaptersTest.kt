@@ -81,6 +81,7 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -98,7 +99,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowLooper
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -112,8 +112,8 @@ class MarginBindingAdaptersTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -131,27 +131,25 @@ class MarginBindingAdaptersTest {
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
+  @Config(qualifiers = "land")
   @Test
-  fun testMarginBindableAdapters_topAndBottomIsCorrect() {
-    activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setLayoutMarginBottom(textView, /* marginBottom= */ 24f)
-      setLayoutMarginTop(textView, /* marginTop= */ 40f)
+  fun testMarginBindableAdapters_landscape_topAndBottomIsCorrect() {
+    testMarginBindableAdapters_topAndBottomIsCorrect()
+  }
 
-      ShadowLooper.idleMainLooper()
-
-      val computedTopMargin = textView.y
-      val computedBottomMargin = (textView.parent as View).height - textView.y - textView.height
-      assertThat(computedTopMargin).isWithin(TOLERANCE).of(40f)
-      assertThat(computedBottomMargin).isWithin(TOLERANCE).of(24f)
-    }
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testMarginBindableAdapters_landscapeWide_topAndBottomIsCorrect() {
+    testMarginBindableAdapters_topAndBottomIsCorrect()
   }
 
   @Config(qualifiers = "port")
@@ -292,6 +290,21 @@ class MarginBindingAdaptersTest {
      */
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
+  }
+
+  private fun testMarginBindableAdapters_topAndBottomIsCorrect() {
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginBottom(textView, /* marginBottom= */ 24f)
+      setLayoutMarginTop(textView, /* marginTop= */ 40f)
+
+      testCoroutineDispatchers.runCurrent()
+
+      val computedTopMargin = textView.y
+      val computedBottomMargin = (textView.parent as View).height - textView.y - textView.height
+      assertThat(computedTopMargin).isWithin(TOLERANCE).of(40f)
+      assertThat(computedBottomMargin).isWithin(TOLERANCE).of(24f)
+    }
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
