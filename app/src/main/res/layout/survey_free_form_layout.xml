@@ -32,7 +32,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
+      android:clickable="@{viewModel.isAnswerAvailable()}"
       android:enabled="@{viewModel.isAnswerAvailable()}"
+      android:onClick="@{(v) ->viewModel.handleSubmitButtonClicked()}"
       android:text="@string/survey_submit_button"
       android:textColor="@{viewModel.isAnswerAvailable() ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"
       app:layout_constraintTop_toBottomOf="@id/free_form_text" />

@@ -113,6 +113,9 @@ message SurveySelectedAnswer {
 
     // The integer value representing the nps score selected by the user.
     int32 nps_score = 5;
+
+    // The string value representing the free text answer entered by a user.
+    string free_form_answer = 6;
   }
 }
 

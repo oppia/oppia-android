@@ -3,12 +3,16 @@ package org.oppia.android.app.survey.surveyitemviewmodel
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
+import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
+import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import javax.inject.Inject
 
 class NpsItemsViewModel @Inject constructor(
-  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
+  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
+  private val answerHandler: SelectedAnswerHandler
 ) : SurveyAnswerItemViewModel(ViewType.NPS_OPTIONS) {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getNpsOptions()
 
@@ -35,6 +39,7 @@ class NpsItemsViewModel @Inject constructor(
           selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
             selectedItems.isNotEmpty()
           )
+          getPendingAnswer()
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
@@ -44,6 +49,17 @@ class NpsItemsViewModel @Inject constructor(
     val wasSelectedItemListEmpty = isAnswerAvailable.get()
     if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
+    }
+  }
+
+  private fun getPendingAnswer() {
+    if (selectedItems.isNotEmpty()) {
+      val npsScore = selectedItems.first()
+      val answer = SurveySelectedAnswer.newBuilder()
+        .setQuestionName(SurveyQuestionName.NPS)
+        .setNpsScore(npsScore)
+        .build()
+      answerHandler.getPendingAnswer(answer)
     }
   }
 

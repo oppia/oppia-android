@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.SurveyQuestion
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
@@ -34,6 +35,8 @@ private const val MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID =
   "SurveyProgressController.move_to_next_question_result"
 private const val MOVE_TO_PREVIOUS_QUESTION_RESULT_PROVIDER_ID =
   "SurveyProgressController.move_to_previous_question_result"
+private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
+  "SurveyProgressController.submit_answer_result"
 
 /**
  * A default session ID to be used before a session has been initialized.
@@ -43,9 +46,7 @@ private const val MOVE_TO_PREVIOUS_QUESTION_RESULT_PROVIDER_ID =
  */
 private const val DEFAULT_SESSION_ID = "default_session_id"
 
-/**
- * Controller for tracking the non-persisted progress of a survey.
- */
+/** Controller for tracking the non-persisted progress of a survey. */
 @Singleton
 class SurveyProgressController @Inject constructor(
   private val dataProviders: DataProviders,
@@ -106,6 +107,13 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
+  fun submitAnswer(selectedAnswer: SurveySelectedAnswer): DataProvider<Any?> {
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.SubmitAnswer(selectedAnswer, activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for answer submission." }
+    return submitResultFlow.convertToSessionProvider(SUBMIT_ANSWER_RESULT_PROVIDER_ID)
+  }
+
   /**
    * Navigates to the next question in the survey. Calling code is responsible for ensuring this
    * method is only called when it's possible to navigate forward.
@@ -116,7 +124,7 @@ class SurveyProgressController @Inject constructor(
    *     to this result for failures, and instead rely on [getCurrentQuestion] for observing a
    *     successful transition to another question.
    */
-  fun moveToNextQuestion(): DataProvider<Any?> {
+  private fun moveToNextQuestion(): DataProvider<Any?> {
     val moveResultFlow = createAsyncResultStateFlow<Any?>()
     val message = ControllerMessage.MoveToNextQuestion(activeSessionId, moveResultFlow)
     sendCommandForOperation(message) {
@@ -180,7 +188,16 @@ class SurveyProgressController @Inject constructor(
               it.beginSurveySessionImpl(message.callbackFlow)
             }
           }
-          is ControllerMessage.FinishSurveySession -> TODO()
+          is ControllerMessage.FinishSurveySession -> {
+            try {
+              controllerState.completeSurveyImpl(
+                message.callbackFlow
+              )
+            } finally {
+              // Ensure the actor ends since the session requires no further message processing.
+              break
+            }
+          }
           is ControllerMessage.MoveToNextQuestion -> controllerState.moveToNextQuestion(
             message.callbackFlow
           )
@@ -189,10 +206,9 @@ class SurveyProgressController @Inject constructor(
           )
           is ControllerMessage.RecomputeQuestionAndNotify ->
             controllerState.recomputeCurrentQuestionAndNotifyImpl()
-          is ControllerMessage.SaveFullCompletion -> TODO()
-          is ControllerMessage.SavePartialCompletion -> TODO()
           is ControllerMessage.SubmitAnswer -> controllerState.submitAnswerImpl(
-            message.callbackFlow
+            message.callbackFlow,
+            message.selectedAnswer
           )
           is ControllerMessage.ReceiveQuestionList -> controllerState.handleUpdatedQuestionsList(
             message.questionsList
@@ -244,6 +260,13 @@ class SurveyProgressController @Inject constructor(
     tryOperation(beginSessionResultFlow) {
       recomputeCurrentQuestionAndNotifyAsync()
       progress.advancePlayStageTo(SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION)
+    }
+  }
+
+  private suspend fun ControllerState.completeSurveyImpl(
+    endSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(endSessionResultFlow) {
     }
   }
 
@@ -310,27 +333,6 @@ class SurveyProgressController @Inject constructor(
     ) : ControllerMessage<Any?>()
 
     /**
-     * [ControllerMessage] to indicate that the mandatory part of the survey is completed and
-     * should be saved/submitted.
-     * TODO: remove the comment on the next line
-     * Maybe we can use this information to notify some subscriber that a survey can be submitted
-     * if an exit action is triggered
-     */
-    data class SavePartialCompletion(
-      override val sessionId: String,
-      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
-    ) : ControllerMessage<Any?>()
-
-    /**
-     * [ControllerMessage] to indicate that the optional part of the survey is completed and
-     * should be saved/submitted.
-     */
-    data class SaveFullCompletion(
-      override val sessionId: String,
-      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
-    ) : ControllerMessage<Any?>()
-
-    /**
      * [ControllerMessage] which recomputes the current [EphemeralSurveyQuestion] and notifies
      * subscribers of the [DataProvider] returned by [getCurrentQuestion] of the change.
      * This is only used in cases where an external operation trigger changes that are only
@@ -354,20 +356,23 @@ class SurveyProgressController @Inject constructor(
 
   private suspend fun ControllerState.submitAnswerImpl(
     submitAnswerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
-
+    selectedAnswer: SurveySelectedAnswer
   ) {
-    // selectedAnswer: SurveySelectedAnswer
     tryOperation(submitAnswerResultFlow) {
       check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
         "Cannot submit an answer while another answer is pending."
       }
+      if (selectedAnswer.questionName == SurveyQuestionName.NPS) {
+        progress.questionGraph.computeFeedbackQuestion(
+          3,
+          selectedAnswer.npsScore
+        )
+      }
+    }.also {
+      if (!progress.questionDeck.isCurrentQuestionTerminal()) {
+        moveToNextQuestion()
+      }
     }
-    // Notify observers that the submitted answer is currently pending.
-    progress.advancePlayStageTo(SurveyProgress.SurveyStage.SUBMITTING_ANSWER)
-    recomputeCurrentQuestionAndNotifyAsync()
-
-    // hold the response ephemerally, so maybe have a queue or an in-memory cache store
-    // update progress and deck, set stage to allow next button click
   }
 
   private suspend fun ControllerState.handleUpdatedQuestionsList(
@@ -390,7 +395,6 @@ class SurveyProgressController @Inject constructor(
       resultFlow.emit(AsyncResult.Success(operation()))
       recomputeCurrentQuestionAndNotifySync()
     } catch (e: Exception) {
-      println("operation failed, ${e.message}")
       exceptionsController.logNonFatalException(e)
       resultFlow.emit(AsyncResult.Failure(e))
     }
@@ -421,7 +425,6 @@ class SurveyProgressController @Inject constructor(
         "Cannot navigate to a previous question if an answer submission is pending."
       }
       progress.questionDeck.navigateToPreviousQuestion()
-      // todo retrieve previous selected answer
     }
   }
 
@@ -469,12 +472,12 @@ class SurveyProgressController @Inject constructor(
           initializeSurvey(questionsList)
           progress.advancePlayStageTo(SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION)
           AsyncResult.Success(
-            retrieveEphemeralQuestion(questionsList)
+            retrieveEphemeralQuestion()
           )
         }
         SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION -> {
           AsyncResult.Success(
-            retrieveEphemeralQuestion(questionsList)
+            retrieveEphemeralQuestion()
           )
         }
         SurveyProgress.SurveyStage.SUBMITTING_ANSWER -> AsyncResult.Pending()
@@ -490,13 +493,15 @@ class SurveyProgressController @Inject constructor(
     progress.initialize(questionsList)
   }
 
-  private fun ControllerState.retrieveEphemeralQuestion(questionsList: List<SurveyQuestion>):
+  private fun ControllerState.retrieveEphemeralQuestion():
     EphemeralSurveyQuestion {
       val currentQuestionIndex = progress.getCurrentQuestionIndex()
+      val currentQuestion = progress.questionGraph.getQuestion(currentQuestionIndex)
       return EphemeralSurveyQuestion.newBuilder()
-        .setQuestion(questionsList[currentQuestionIndex])
+        .setQuestion(currentQuestion)
         .setCurrentQuestionIndex(currentQuestionIndex)
         .setTotalQuestionCount(progress.getTotalQuestionCount())
+        .setTerminalQuestion(progress.questionDeck.isCurrentQuestionTerminal())
         .build()
     }
 

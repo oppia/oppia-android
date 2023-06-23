@@ -4,11 +4,16 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
+import org.oppia.android.app.survey.SelectedAnswerHandler
 import javax.inject.Inject
 
 class FreeFormItemsViewModel @Inject constructor(
-  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
+  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
+  private val questionName: SurveyQuestionName,
+  private val answerHandler: SelectedAnswerHandler
 ) : SurveyAnswerItemViewModel(ViewType.FREE_FORM_ANSWER) {
   var answerText: CharSequence = ""
   val isAnswerAvailable = ObservableField(false)
@@ -40,6 +45,20 @@ class FreeFormItemsViewModel @Inject constructor(
 
       override fun afterTextChanged(s: Editable) {
       }
+    }
+  }
+
+  fun handleSubmitButtonClicked() {
+    getPendingAnswer()
+  }
+
+  private fun getPendingAnswer() {
+    if (answerText.isNotEmpty()) {
+      val answer = SurveySelectedAnswer.newBuilder()
+        .setQuestionName(questionName)
+        .setFreeFormAnswer(answerText.toString())
+        .build()
+      answerHandler.getFreeFormAnswer(answer)
     }
   }
 }

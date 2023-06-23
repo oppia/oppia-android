@@ -8,13 +8,13 @@ import org.oppia.android.app.model.SurveyQuestion
  */
 class SurveyProgress {
   var surveyStage: SurveyStage = SurveyStage.NOT_IN_SURVEY_SESSION
-  private var questionsList: List<SurveyQuestion> = listOf()
+  private var questionsList: List<SurveyQuestion> = mutableListOf()
   private var isTopQuestionCompleted: Boolean = false
-
+  val questionGraph: SurveyQuestionGraph by lazy {
+    SurveyQuestionGraph(questionsList as MutableList)
+  }
   val questionDeck: SurveyQuestionDeck by lazy {
-    SurveyQuestionDeck(
-      questionsList.first(), ::isTopQuestionTerminal
-    )
+    SurveyQuestionDeck(getTotalQuestionCount(), ::isTopQuestionTerminal)
   }
 
   /** Initialize the survey with the specified list of questions. */
@@ -27,11 +27,6 @@ class SurveyProgress {
   /** Returns whether the learner is currently viewing the most recent question. */
   fun isViewingMostRecentQuestion(): Boolean {
     return questionDeck.isCurrentQuestionTopOfDeck()
-  }
-
-  /** Processes when the current question has just been completed. */
-  fun completeCurrentQuestion() {
-    isTopQuestionCompleted = true
   }
 
   /** Processes when a new pending question has been navigated to. */
@@ -96,9 +91,8 @@ class SurveyProgress {
   }
 
   companion object {
-    internal fun isTopQuestionTerminal(question: SurveyQuestion): Boolean {
-      // if current question index == survey question count
-      return true // todo do some comparison here
+    internal fun isTopQuestionTerminal(currentIndex: Int, totalQuestionCount: Int): Boolean {
+      return currentIndex + 1 == totalQuestionCount
     }
   }
 

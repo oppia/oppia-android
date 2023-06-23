@@ -6,14 +6,18 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.R
 import org.oppia.android.app.model.MarketFitAnswer
+import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
+import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 /** [SurveyAnswerItemViewModel] for the market fit question options. */
 class MarketFitItemsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
-  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
+  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
+  private val answerHandler: SelectedAnswerHandler
 ) : SurveyAnswerItemViewModel(ViewType.MARKET_FIT_OPTIONS) {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getMarketFitOptions()
 
@@ -40,6 +44,7 @@ class MarketFitItemsViewModel @Inject constructor(
           selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
             selectedItems.isNotEmpty()
           )
+          getPendingAnswer()
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
@@ -49,6 +54,18 @@ class MarketFitItemsViewModel @Inject constructor(
     val wasSelectedItemListEmpty = isAnswerAvailable.get()
     if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
+    }
+  }
+
+  private fun getPendingAnswer() {
+    if (selectedItems.isNotEmpty()) {
+      val typeCase = selectedItems.first() + 1
+      val answerValue = MarketFitAnswer.forNumber(typeCase)
+      val answer = SurveySelectedAnswer.newBuilder()
+        .setQuestionName(SurveyQuestionName.MARKET_FIT)
+        .setMarketFit(answerValue)
+        .build()
+      answerHandler.getPendingAnswer(answer)
     }
   }
 

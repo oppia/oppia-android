@@ -15,6 +15,7 @@ import com.google.android.flexbox.JustifyContent
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.survey.surveyitemviewmodel.FreeFormItemsViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.MarketFitItemsViewModel
@@ -48,17 +49,20 @@ class SurveyFragmentPresenter @Inject constructor(
   private lateinit var binding: SurveyFragmentBinding
   private lateinit var surveyToolbar: Toolbar
   private lateinit var answerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
+  private lateinit var answerHandler: SelectedAnswerHandler
+  private lateinit var questionSelectedAnswer: SurveySelectedAnswer
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
     topicId: String,
-    answerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
+    fragment: SurveyFragment
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
-    this.answerAvailabilityReceiver = answerAvailabilityReceiver
+    this.answerAvailabilityReceiver = fragment
+    this.answerHandler = fragment
 
     binding = SurveyFragmentBinding.inflate(
       inflater,
@@ -82,7 +86,9 @@ class SurveyFragmentPresenter @Inject constructor(
     }
 
     binding.surveyNextButton.setOnClickListener {
-      surveyProgressController.moveToNextQuestion()
+      if (::questionSelectedAnswer.isInitialized) {
+        surveyProgressController.submitAnswer(questionSelectedAnswer)
+      }
     }
 
     binding.surveyPreviousButton.setOnClickListener {
@@ -185,32 +191,43 @@ class SurveyFragmentPresenter @Inject constructor(
       SurveyQuestionName.USER_TYPE -> surveyViewModel.itemList.add(
         UserTypeItemsViewModel(
           resourceHandler,
-          answerAvailabilityReceiver
+          answerAvailabilityReceiver,
+          answerHandler
         )
       )
       SurveyQuestionName.MARKET_FIT -> surveyViewModel.itemList.add(
         MarketFitItemsViewModel(
           resourceHandler,
-          answerAvailabilityReceiver
+          answerAvailabilityReceiver,
+          answerHandler
         )
       )
       SurveyQuestionName.NPS -> surveyViewModel.itemList.add(
         NpsItemsViewModel(
-          answerAvailabilityReceiver
+          answerAvailabilityReceiver,
+          answerHandler
         )
       )
       SurveyQuestionName.PROMOTER_FEEDBACK -> surveyViewModel.itemList.add(
         FreeFormItemsViewModel(
-          answerAvailabilityReceiver
+          answerAvailabilityReceiver,
+          questionName,
+          answerHandler
         )
       )
       SurveyQuestionName.PASSIVE_FEEDBACK -> surveyViewModel.itemList.add(
         FreeFormItemsViewModel(
-          answerAvailabilityReceiver
+          answerAvailabilityReceiver,
+          questionName,
+          answerHandler
         )
       )
       SurveyQuestionName.DETRACTOR_FEEDBACK -> surveyViewModel.itemList.add(
-        FreeFormItemsViewModel(answerAvailabilityReceiver)
+        FreeFormItemsViewModel(
+          answerAvailabilityReceiver,
+          questionName,
+          answerHandler
+        )
       )
       else -> {}
     }
@@ -237,6 +254,40 @@ class SurveyFragmentPresenter @Inject constructor(
     surveyViewModel.setCanMoveToNextQuestion(inputAnswerAvailable)
   }
 
+  /** Retrieves the answer that was selected by the user for a question. */
+  fun getPendingAnswer(answer: SurveySelectedAnswer) {
+    this.questionSelectedAnswer = answer
+  }
+
+  /**
+   * Retrieves and submits the free text answer that was provided by the user, then navigates to the
+   * final screen.
+   */
+  fun submitFreeFormAnswer(answer: SurveySelectedAnswer) {
+    hideKeyboard()
+    surveyProgressController.submitAnswer(answer).toLiveData().observe(
+      fragment,
+      { result ->
+        when (result) {
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "SurveyFragment", "Failed to submit free form answer", result.error
+            )
+          }
+          is AsyncResult.Pending -> {} // Do nothing until a valid result is available.
+          is AsyncResult.Success -> {
+            val dialogFragment = SurveyOutroDialogFragment.newInstance()
+            val transaction = activity.supportFragmentManager.beginTransaction()
+            transaction
+              .add(dialogFragment, TAG_SURVEY_OUTRO_DIALOG)
+              .addToBackStack(null)
+              .commit()
+          }
+        }
+      }
+    )
+  }
+
   private fun toggleNavigationButtonVisibility(questionIndex: Int, questionCount: Int) {
     when (questionIndex) {
       0 -> {
@@ -252,10 +303,6 @@ class SurveyFragmentPresenter @Inject constructor(
         binding.surveyPreviousButton.visibility = View.VISIBLE
       }
     }
-  }
-
-  fun handleKeyboardAction() {
-    hideKeyboard()
   }
 
   private fun hideKeyboard() {
