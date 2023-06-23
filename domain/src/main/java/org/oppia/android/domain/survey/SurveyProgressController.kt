@@ -94,6 +94,24 @@ class SurveyProgressController @Inject constructor(
     return beginSessionResultFlow.convertToSessionProvider(BEGIN_SESSION_RESULT_PROVIDER_ID)
   }
 
+  /**
+   * Returns a [DataProvider] monitoring the [EphemeralSurveyQuestion] the user is currently
+   * viewing.
+   *
+   * This [DataProvider] may switch from a completed to a pending result during transient operations
+   * like submitting an answer via [submitAnswer]. Calling code should be made resilient to this by
+   * caching the current question object to display since it may disappear temporarily during answer
+   * submission. Calling code should persist this state object across configuration changes if
+   * needed since it cannot rely on this [DataProvider] for immediate UI reconstitution after
+   * configuration changes.
+   *
+   * The underlying question returned by this function can only be changed by calls to
+   * [moveToNextQuestion], or [moveToPreviousQuestion].
+   *
+   * This method does not need to be called for the [EphemeralSurveyQuestion] to be computed;
+   * it's always computed eagerly by other state-changing methods regardless of whether there's an
+   * active subscription to this method's returned [DataProvider].
+   */
   fun getCurrentQuestion(): DataProvider<EphemeralSurveyQuestion> {
     val ephemeralQuestionDataProvider =
       mostRecentEphemeralQuestionFlow.convertToSessionProvider(CURRENT_QUESTION_PROVIDER_ID)
@@ -107,6 +125,16 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
+  /**
+   * Submits an answer to the current question and returns how the UI should respond.
+   *
+   * If the app undergoes a configuration change, calling code should rely on the [DataProvider]
+   * from [getCurrentQuestion] to know whether a current answer is pending. That [DataProvider] will
+   * have its state changed to pending during answer submission.
+   *
+   * No assumptions should be made about the completion order of the returned [DataProvider] vs. the
+   * [DataProvider] from [getCurrentQuestion].
+   */
   fun submitAnswer(selectedAnswer: SurveySelectedAnswer): DataProvider<Any?> {
     val submitResultFlow = createAsyncResultStateFlow<Any?>()
     val message = ControllerMessage.SubmitAnswer(selectedAnswer, activeSessionId, submitResultFlow)
@@ -495,15 +523,15 @@ class SurveyProgressController @Inject constructor(
 
   private fun ControllerState.retrieveEphemeralQuestion():
     EphemeralSurveyQuestion {
-      val currentQuestionIndex = progress.getCurrentQuestionIndex()
-      val currentQuestion = progress.questionGraph.getQuestion(currentQuestionIndex)
-      return EphemeralSurveyQuestion.newBuilder()
-        .setQuestion(currentQuestion)
-        .setCurrentQuestionIndex(currentQuestionIndex)
-        .setTotalQuestionCount(progress.getTotalQuestionCount())
-        .setTerminalQuestion(progress.questionDeck.isCurrentQuestionTerminal())
-        .build()
-    }
+    val currentQuestionIndex = progress.getCurrentQuestionIndex()
+    val currentQuestion = progress.questionGraph.getQuestion(currentQuestionIndex)
+    return EphemeralSurveyQuestion.newBuilder()
+      .setQuestion(currentQuestion)
+      .setCurrentQuestionIndex(currentQuestionIndex)
+      .setTotalQuestionCount(progress.getTotalQuestionCount())
+      .setTerminalQuestion(progress.questionDeck.isCurrentQuestionTerminal())
+      .build()
+  }
 
   /**
    * Represents the current synchronized state of the controller.

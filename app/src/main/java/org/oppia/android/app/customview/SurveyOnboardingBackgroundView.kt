@@ -17,6 +17,13 @@ import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
 
+/**
+ * CustomView to add a background to [SurveyWelcomeDialogFragment] and [SurveyOutroDialogFragment].
+ * Without chaptersFinished and totalChapters values this custom-view cannot be created.
+ *
+ * Reference: // https://proandroiddev.com/how-i-drew-custom-shapes-in-bottom-bar-c4539d86afd7 and
+ * // https://ciechanow.ski/drawing-bezier-curves/
+ */
 class SurveyOnboardingBackgroundView : View {
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler

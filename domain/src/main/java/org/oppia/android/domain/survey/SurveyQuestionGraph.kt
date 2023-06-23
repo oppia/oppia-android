@@ -3,7 +3,7 @@ package org.oppia.android.domain.survey
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
 
-/** Computes the next question in the deck and provides lookup access for [SurveyQuestion]s */
+/** Computes the next question in the deck and provides lookup access for [SurveyQuestion]s. */
 class SurveyQuestionGraph constructor(
   private var questionList: MutableList<SurveyQuestion>
 ) {

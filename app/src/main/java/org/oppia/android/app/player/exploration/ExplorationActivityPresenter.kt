@@ -310,7 +310,7 @@ class ExplorationActivityPresenter @Inject constructor(
    */
   fun backButtonPressed() {
     // check if survey should be shown
-    maybeShowSurveyDialog(profileId, topicId) // todo create a high level function to avoid dry
+    maybeShowSurveyDialog(profileId, topicId)
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {
