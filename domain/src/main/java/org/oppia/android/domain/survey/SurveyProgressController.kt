@@ -523,15 +523,15 @@ class SurveyProgressController @Inject constructor(
 
   private fun ControllerState.retrieveEphemeralQuestion():
     EphemeralSurveyQuestion {
-    val currentQuestionIndex = progress.getCurrentQuestionIndex()
-    val currentQuestion = progress.questionGraph.getQuestion(currentQuestionIndex)
-    return EphemeralSurveyQuestion.newBuilder()
-      .setQuestion(currentQuestion)
-      .setCurrentQuestionIndex(currentQuestionIndex)
-      .setTotalQuestionCount(progress.getTotalQuestionCount())
-      .setTerminalQuestion(progress.questionDeck.isCurrentQuestionTerminal())
-      .build()
-  }
+      val currentQuestionIndex = progress.getCurrentQuestionIndex()
+      val currentQuestion = progress.questionGraph.getQuestion(currentQuestionIndex)
+      return EphemeralSurveyQuestion.newBuilder()
+        .setQuestion(currentQuestion)
+        .setCurrentQuestionIndex(currentQuestionIndex)
+        .setTotalQuestionCount(progress.getTotalQuestionCount())
+        .setTerminalQuestion(progress.questionDeck.isCurrentQuestionTerminal())
+        .build()
+    }
 
   /**
    * Represents the current synchronized state of the controller.

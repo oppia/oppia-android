@@ -71,6 +71,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -115,14 +116,21 @@ private const val TEST_SUB_TOPIC_ID = 1
   qualifiers = "port-xxhdpi"
 )
 class ViewEventLogsFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var analyticsController: AnalyticsController
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var analyticsController: AnalyticsController
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
@@ -585,7 +593,8 @@ class ViewEventLogsFragmentTest {
       MetricLogSchedulerModule::class, PerformanceMetricsAssessorModule::class,
       PerformanceMetricsConfigurationsModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      SurveyQuestionModule::class,
     ]
   )
 

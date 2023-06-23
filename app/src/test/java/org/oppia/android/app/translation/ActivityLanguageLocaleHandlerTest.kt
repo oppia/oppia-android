@@ -70,6 +70,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -128,10 +129,13 @@ class ActivityLanguageLocaleHandlerTest {
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   @Inject
   lateinit var translationController: TranslationController
+
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
@@ -328,6 +332,7 @@ class ActivityLanguageLocaleHandlerTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      SurveyQuestionModule::class,
     ]
   )
 
