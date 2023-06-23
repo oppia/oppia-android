@@ -418,7 +418,7 @@ message PromotedActivityList {
 // recommended stories.
 message PromotedStoryList {
   // Ongoing stories from within the last 7 days.
-  repeated PromotedStory recently_played_story   = 1;
+  repeated PromotedStory recently_played_story = 1;
 
   // Other ongoing stories from longer than 7 days ago.
   repeated PromotedStory older_played_story = 2;
@@ -670,4 +670,24 @@ message SubtopicRecord {
 
   // The old title corresponding to the subtopic (as a string).
   reserved 1;
+}
+
+// Top-level proto used to store the aggregate learning duration timestamps in a topic,
+// on per-profile basis.
+message TopicLearningTimeDatabase {
+  // Map from topic ID to TopicLearningTime.
+  map<string, TopicLearningTime> aggregate_topic_learning_time = 1;
+}
+
+// Represents the active learning time spent in a topic.
+message TopicLearningTime {
+  // The ID of the topic for which this learning time has been recorded.
+  string topic_id = 1;
+
+  // The total time spent by a learner in this topic, in milliseconds.
+  int64 topic_learning_time_ms = 2;
+
+  // Represents the last Unix epoch timestamp when the topic_aggregate_learning_time_ms was updated,
+  // in milliseconds, coinciding with the last time the learner played an exploration in this topic.
+  int64 last_updated_time_ms = 3;
 }
