@@ -277,10 +277,6 @@ class ExplorationActiveTimeController @Inject constructor(
     topicId: String,
   ) {
     tryOperation(beginTimerResultFlow) {
-      check(isAppInForeground) {
-        "Expected the app to be in the foreground."
-      }
-
       timerSessionState.apply {
         sessionStartTime = oppiaClock.getCurrentTimeMs()
         currentProfileId = profileId
