@@ -236,6 +236,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/profileprogress/RecentlyPlayedStorySummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryHeaderViewModel.kt",
+    "src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/FreeFormItemsViewModel.kt",
     "src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/MarketFitItemsViewModel.kt",
     "src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/MultipleChoiceOptionContentViewModel.kt",
     "src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/NpsItemsViewModel.kt",
