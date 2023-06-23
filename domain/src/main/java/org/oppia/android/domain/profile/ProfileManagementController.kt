@@ -8,7 +8,6 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Deferred
-import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.Profile
@@ -30,6 +29,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
@@ -87,6 +87,8 @@ class ProfileManagementController @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @EnableLearnerStudyAnalytics
   private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  @EnableLoggingLearnerStudyIds
+  private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>,
   private val profileNameValidator: ProfileNameValidator
 ) {
   private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
@@ -269,11 +271,10 @@ class ProfileManagementController @Inject constructor(
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
         numberOfLogins = 0
 
-        if (enableLearnerStudyAnalytics.value) {
+        if (enableLoggingLearnerStudyIds.value) {
           // Only set a learner ID if there's an ongoing user study.
           learnerId = loggingIdentifierController.createLearnerId()
         }
@@ -588,36 +589,6 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Updates the app language of the profile.
-   *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @param appLanguage New app language for the profile being updated.
-   * @return a [DataProvider] that indicates the success/failure of this update operation.
-   */
-  fun updateAppLanguage(profileId: ProfileId, appLanguage: AppLanguage): DataProvider<Any?> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
-      updateInMemoryCache = true
-    ) {
-      val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
-          it,
-          ProfileActionStatus.PROFILE_NOT_FOUND
-        )
-      val updatedProfile = profile.toBuilder().setAppLanguage(appLanguage).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
-        updatedProfile
-      )
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-    }
-    return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_APP_LANGUAGE_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
-    }
-  }
-
-  /**
    * Initializes the learner ID of the specified profile (if not set), otherwise clears it if there
    * is no ongoing study.
    *
@@ -635,7 +606,7 @@ class ProfileManagementController @Inject constructor(
       val updatedProfile = profile.toBuilder().apply {
         learnerId = when {
           // There should be no learner ID if no ongoing study.
-          !enableLearnerStudyAnalytics.value -> ""
+          !enableLoggingLearnerStudyIds.value -> ""
           learnerId.isEmpty() -> loggingIdentifierController.createLearnerId() // Generate new ID.
           else -> learnerId // Keep it unchanged.
         }

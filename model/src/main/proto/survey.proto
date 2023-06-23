@@ -113,6 +113,9 @@ message SurveySelectedAnswer {
 
     // The integer value representing the nps score selected by the user.
     int32 nps_score = 5;
+
+    // The string value representing the free text answer entered by a user.
+    string free_form_answer = 6;
   }
 }
 
@@ -122,17 +125,17 @@ enum UserTypeAnswer {
   // User type unknown.
   USER_TYPE_UNSPECIFIED = 0;
 
-  // Corresponds to an unspecified or unknown type of user.
-  OTHER = 1;
-
-  // Corresponds to a user who is a teacher.
-  PARENT = 2;
+  // Corresponds to a user who is a learner.
+  LEARNER = 1;
 
   // Corresponds to a user who is a parent.
-  TEACHER = 3;
+  TEACHER = 2;
 
-  // Corresponds to a user who is a learner.
-  LEARNER = 4;
+  // Corresponds to a user who is a teacher.
+  PARENT = 3;
+
+  // Corresponds to an unspecified or unknown type of user.
+  OTHER = 4;
 }
 
 // Represents general opinion of the user about the Oppia android app.

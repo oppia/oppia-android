@@ -542,12 +542,17 @@ class StateFragmentPresenter @Inject constructor(
                 "Failed to retrieve gating decision",
                 gatingResult.error
               )
+              (activity as StopStatePlayingSessionWithSavedProgressListener)
+                .deleteCurrentProgressAndStopSession(isCompletion = true)
             }
             is AsyncResult.Success -> {
               if (gatingResult.value) {
-                SurveyWelcomeDialogFragment
-                  .newInstance(profileId, topicId)
-                  .showNow(fragment.childFragmentManager, TAG_SURVEY_WELCOME_DIALOG)
+                val dialogFragment = SurveyWelcomeDialogFragment.newInstance(profileId, topicId)
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .addToBackStack(null)
+                  .commit()
               } else {
                 (activity as StopStatePlayingSessionWithSavedProgressListener)
                   .deleteCurrentProgressAndStopSession(isCompletion = true)

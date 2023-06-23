@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="scoreContent"
+      type="CharSequence" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.survey.surveyitemviewmodel.MultipleChoiceOptionContentViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:importantForAccessibility="yes"
+    android:layout_marginTop="@dimen/survey_nps_options_margin"
+    android:minHeight="@dimen/clickable_item_min_height"
+    android:onClick="@{(v) -> viewModel.handleItemClicked()}">
+
+    <androidx.appcompat.widget.AppCompatRadioButton
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@drawable/survey_nps_radio_button_background"
+      android:button="@null"
+      android:checked="@{viewModel.answerSelected}"
+      android:clickable="false"
+      android:enabled="@{viewModel.answerSelected}"
+      android:focusable="false"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:text="@{scoreContent}"
+      android:textColor="@drawable/survey_nps_radio_text_color"
+      android:textSize="16sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

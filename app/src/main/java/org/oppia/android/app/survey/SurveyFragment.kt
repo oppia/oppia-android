@@ -7,13 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 /** Fragment that represents the current state of a survey. */
 class SurveyFragment :
   InjectableFragment(),
-  SelectedAnswerAvailabilityReceiver {
+  SelectedAnswerAvailabilityReceiver,
+  SelectedAnswerHandler {
 
   companion object {
     /**
@@ -56,13 +58,19 @@ class SurveyFragment :
       container,
       internalProfileId,
       topicId,
-      this as SelectedAnswerAvailabilityReceiver
+      this
     )
   }
 
-  fun handleKeyboardAction() = surveyFragmentPresenter.handleKeyboardAction()
-
   override fun onPendingAnswerAvailabilityCheck(inputAnswerAvailable: Boolean) {
     surveyFragmentPresenter.updateNextButton(inputAnswerAvailable)
+  }
+
+  override fun getPendingAnswer(selectedAnswer: SurveySelectedAnswer) {
+    surveyFragmentPresenter.getPendingAnswer(selectedAnswer)
+  }
+
+  override fun getFreeFormAnswer(selectedAnswer: SurveySelectedAnswer) {
+    surveyFragmentPresenter.submitFreeFormAnswer(selectedAnswer)
   }
 }

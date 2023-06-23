@@ -14,6 +14,8 @@ import dagger.multibindings.IntoSet
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
+import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -25,6 +27,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -46,8 +49,8 @@ class ExplorationProgressModuleTest {
   }
 
   @Test
-  fun testExplorationProgressListenerInjection_includesExplorationSessionTimerController() {
-    assertThat(progressListeners.any { it is ExplorationSessionTimerController }).isTrue()
+  fun testExplorationProgressListenerInjection_includesExplorationActiveTimeController() {
+    assertThat(progressListeners.any { it is ExplorationActiveTimeController }).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -63,7 +66,7 @@ class ExplorationProgressModuleTest {
     @Binds
     @IntoSet
     fun bindExplorationProgressListener(
-      explorationSessionTimerController: ExplorationSessionTimerController
+      activeTimeController: ExplorationActiveTimeController
     ): ExplorationProgressListener
   }
 
@@ -88,7 +91,8 @@ class ExplorationProgressModuleTest {
     modules = [
       TestModule::class, TestLogModule::class, RobolectricModule::class,
       FakeOppiaClockModule::class, ExplorationProgressModule::class, TestDispatcherModule::class,
-      LocaleProdModule::class, TestLogReportingModule::class
+      LocaleProdModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

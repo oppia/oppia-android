@@ -69,6 +69,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -117,22 +118,33 @@ class ProfileAndDeviceIdActivityTest {
     private const val FIXED_APPLICATION_ID = 123456789L
   }
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @get:Rule
   var activityRule =
     ActivityScenarioRule<ProfileAndDeviceIdActivity>(
       ProfileAndDeviceIdActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var oppiaClock: OppiaClock
-  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject lateinit var syncStatusManager: SyncStatusManager
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject
+  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject
+  lateinit var syncStatusManager: SyncStatusManager
 
   @Before
   fun setUp() {
@@ -218,7 +230,8 @@ class ProfileAndDeviceIdActivityTest {
       MathEquationInputModule::class, MetricLogSchedulerModule::class,
       TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
-      ApplicationLifecycleModule::class, ExplorationProgressModule::class
+      ApplicationLifecycleModule::class, ExplorationProgressModule::class,
+      SurveyQuestionModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

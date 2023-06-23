@@ -199,6 +199,7 @@
   <color name="color_palette_slide_drawer_open_status_bar_color">@color/color_def_root_beer_blue</color>
   <color name="color_palette_navbar_header_background_color">@color/color_def_japanese_indigo</color>
   <color name="color_palette_shared_spotlight_hint_background_color">@color/color_def_oppia_light_yellow</color>
+  <color name="color_palette_shared_spotlight_overlay_background_color">@color/color_def_black_78</color>
   <color name="color_palette_shared_close_spotlight_button_color">@color/color_def_black</color>
   <color name="color_palette_shared_spotlight_overlay_arrow_color">@color/color_def_white</color>
   <color name="color_palette_color_palette_walkthrough_status_bar_color">@color/color_def_grey</color>
@@ -245,8 +246,10 @@
   <color name="color_palette_avatar_background_24_color">@color/color_def_avatar_background_24</color>
   <color name="color_palette_survey_background_color">@color/color_def_survey_background</color>
   <color name="color_palette_survey_shared_button_color">@color/color_def_survey_buttons_white</color>
-  <color name="color_palette_survey_dialog_stroke_color">@color/color_def_survey_dialog_blue</color>
+  <color name="color_palette_survey_dialog_stroke_color">@color/color_def_light_blue</color>
   <color name="color_palette_survey_radio_button_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_survey_disabled_button_color">@color/color_def_survey_disabled_button_grey</color>
   <color name="color_palette_survey_disabled_button_text_color">@color/color_def_chooser_grey</color>
+  <color name="color_palette_button_text_color">@color/color_def_persian_green</color>
+  <color name="color_palette_edit_text_unselected_color">@color/color_def_grey</color>
 </resources>

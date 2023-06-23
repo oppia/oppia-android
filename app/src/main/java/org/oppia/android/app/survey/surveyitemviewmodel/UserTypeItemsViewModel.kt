@@ -4,8 +4,11 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.R
+import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
+import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import javax.inject.Inject
@@ -13,7 +16,8 @@ import javax.inject.Inject
 /** [SurveyAnswerItemViewModel] for providing the type of user question options. */
 class UserTypeItemsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
-  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
+  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
+  private val answerHandler: SelectedAnswerHandler
 ) : SurveyAnswerItemViewModel(ViewType.USER_TYPE_OPTIONS) {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getUserTypeOptions()
 
@@ -21,10 +25,14 @@ class UserTypeItemsViewModel @Inject constructor(
 
   override fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
     optionItems.forEach { item -> item.isAnswerSelected.set(false) }
-    selectedItems.clear()
-    selectedItems += itemIndex
+    if (!selectedItems.contains(itemIndex)) {
+      selectedItems.clear()
+      selectedItems += itemIndex
+    } else {
+      selectedItems.clear()
+    }
     updateIsAnswerAvailable()
-    return true
+    return selectedItems.isNotEmpty()
   }
 
   val isAnswerAvailable = ObservableField(false)
@@ -36,6 +44,7 @@ class UserTypeItemsViewModel @Inject constructor(
           selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
             selectedItems.isNotEmpty()
           )
+          getPendingAnswer()
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
@@ -45,6 +54,18 @@ class UserTypeItemsViewModel @Inject constructor(
     val wasSelectedItemListEmpty = isAnswerAvailable.get()
     if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
+    }
+  }
+
+  private fun getPendingAnswer() {
+    if (selectedItems.isNotEmpty()) {
+      val typeCase = selectedItems.first() + 1
+      val answerValue = UserTypeAnswer.forNumber(typeCase)
+      val answer = SurveySelectedAnswer.newBuilder()
+        .setQuestionName(SurveyQuestionName.USER_TYPE)
+        .setUserType(answerValue)
+        .build()
+      answerHandler.getPendingAnswer(answer)
     }
   }
 
@@ -90,7 +111,7 @@ class UserTypeItemsViewModel @Inject constructor(
           else -> throw IllegalStateException("Invalid UserTypeAnswer")
         }
       }
-    return observableList.apply { reverse() }
+    return observableList
   }
 
   companion object {

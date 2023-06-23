@@ -25,10 +25,11 @@
   <color name="color_def_black">#000000</color>
   <color name="color_def_transparent">#00000000</color>
   <color name="color_def_black_12">#1F000000</color>
+  <color name="color_def_black_24">#3D000000</color>
   <color name="color_def_black_26">#42000000</color>
   <color name="color_def_black_54">#8A000000</color>
+  <color name="color_def_black_78">#C8000000</color>
   <color name="color_def_black_87">#DE000000</color>
-  <color name="color_def_black_24">#3D000000</color>
   <color name="color_def_white_light">#F9F9F9</color>
   <color name="color_def_accessible_grey">#333333</color>
   <color name="color_def_accessible_light_grey">#555555</color>
@@ -138,6 +139,6 @@
   <color name="color_def_avatar_background_24">#CC2970</color>
   <color name="color_def_survey_background">#F5F5F5</color>
   <color name="color_def_survey_buttons_white">#F6F6F6</color>
-  <color name="color_def_survey_dialog_blue">#BDCCCC</color>
+  <color name="color_def_light_blue">#BDCCCC</color>
   <color name="color_def_survey_disabled_button_grey">#E8E8E8</color>
 </resources>

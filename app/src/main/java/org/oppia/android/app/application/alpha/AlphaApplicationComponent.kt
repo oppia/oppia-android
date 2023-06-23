@@ -38,10 +38,11 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterAlphaModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
@@ -86,7 +87,7 @@ import javax.inject.Singleton
     ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
     WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
     FirebaseLogUploaderModule::class, NetworkModule::class,
-    PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+    PlatformParameterAlphaModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsModule::class,
     PlatformParameterSyncUpWorkerModule::class, NetworkConfigProdModule::class, AssetModule::class,
     LocaleProdModule::class, ActivityRecreatorProdModule::class, ActivityRouterModule::class,
@@ -95,7 +96,7 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
-    HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
+    HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class, SurveyQuestionModule::class,
     PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
     EventLoggingConfigurationModule::class, CpuPerformanceSnapshotterModule::class,
     PerformanceMetricsAssessorModule::class, ExplorationProgressModule::class,

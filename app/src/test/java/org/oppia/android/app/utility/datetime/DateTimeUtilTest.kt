@@ -59,6 +59,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -90,12 +91,16 @@ import javax.inject.Singleton
 
 // Time Tue, 23 April 2019 21:26:12
 private const val EVENING_TIMESTAMP = 1556054772000
+
 // Time: Tue, Apr 23 2019 23:22:00
 private const val LATE_NIGHT_TIMESTAMP = 1556061720000
+
 // Time: Wed, Apr 24 2019 08:22:00
 private const val EARLY_MORNING_TIMESTAMP = 1556094120000
+
 // Time: Wed, 24 April 2019 10:30:12
 private const val MID_MORNING_TIMESTAMP = 1556101812000
+
 // Time: Tue, Apr 23 2019 14:22:00
 private const val AFTERNOON_TIMESTAMP = 1556029320000
 
@@ -109,6 +114,7 @@ class DateTimeUtilTest {
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
@@ -224,7 +230,7 @@ class DateTimeUtilTest {
       SyncStatusModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class,
-      ExplorationProgressModule::class
+      ExplorationProgressModule::class, SurveyQuestionModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

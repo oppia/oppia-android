@@ -94,11 +94,15 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.work:work-testing": "2.4.0",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
+    "com.google.protobuf:protobuf-java-util": "3.17.3",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
     "com.google.truth:truth": "0.43",
     "com.squareup.okhttp3:mockwebserver": "4.7.2",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
+    "io.xlate:yaml-json": "0.1.0",
+    "jakarta.json:jakarta.json-api": "2.1.2",
     "junit:junit": "4.12",
+    "org.eclipse.parsson:parsson": "1.1.2",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
@@ -107,6 +111,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.mockito:mockito-core": "2.19.0",
     "org.robolectric:annotations": "4.5",
     "org.robolectric:robolectric": "4.5",
+    "org.snakeyaml:snakeyaml-engine": "2.6",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.

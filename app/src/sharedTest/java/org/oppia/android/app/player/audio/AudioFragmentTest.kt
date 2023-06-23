@@ -83,6 +83,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -112,7 +113,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -156,7 +156,7 @@ class AudioFragmentTest {
       "2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"
   private val TEST_URL2 =
     "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
-      "2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
+      "2mzzFVDLuAj8/assets/audio/content-hi-2hn6btuei5.mp3"
 
   private var internalProfileId = 0
   private var profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -329,11 +329,10 @@ class AudioFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_language_icon)).perform(click())
 
-      // TODO(#3791): Remove this dependency.
-      val locale = Locale("es")
-
       testCoroutineDispatchers.runCurrent()
-      onView(withText(locale.getDisplayLanguage(locale))).inRoot(isDialog()).perform(click())
+      onView(withText(R.string.hinglish_localized_language_name))
+        .inRoot(isDialog())
+        .perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withText("OK")).inRoot(isDialog()).perform(click())
@@ -484,7 +483,8 @@ class AudioFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      SurveyQuestionModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

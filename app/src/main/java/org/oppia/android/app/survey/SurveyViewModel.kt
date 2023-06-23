@@ -34,6 +34,7 @@ class SurveyViewModel @Inject constructor(
 
   fun updateQuestionText(questionName: SurveyQuestionName) {
     questionText.set(getQuestionText(questionName))
+    setCanMoveToNextQuestion(false)
   }
 
   fun setCanMoveToNextQuestion(canMoveToNext: Boolean) =

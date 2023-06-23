@@ -12,7 +12,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-/** [ObservableViewModel] for concept card, providing rich text and worked examples */
+/** [ObservableViewModel] for concept card, providing rich text and worked examples. */
 @FragmentScope
 class ConceptCardViewModel @Inject constructor(
   private val topicController: TopicController,

@@ -14,7 +14,7 @@ import dagger.multibindings.Multibinds
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.exploration.ExplorationSessionTimerController
+import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -44,8 +44,11 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ApplicationLifecycleModuleTest.TestApplication::class)
 class ApplicationLifecycleModuleTest {
-  @Inject lateinit var startupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
-  @Inject lateinit var lifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
+  @Inject
+  lateinit var startupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
+
+  @Inject
+  lateinit var lifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
 
   @field:[JvmField Inject LearnerAnalyticsInactivityLimitMillis]
   var inactivityLimitMillis: Long = Long.MIN_VALUE
@@ -69,9 +72,10 @@ class ApplicationLifecycleModuleTest {
   }
 
   @Test
-  fun testInjectApplicationLifecycleListenerSet_includesExplorationSessionTimerController() {
-    assertThat(lifecycleListeners.any { it is ExplorationSessionTimerController }).isTrue()
+  fun testInjectApplicationLifecycleListenerSet_includesExplorationActiveTimeController() {
+    assertThat(lifecycleListeners.any { it is ExplorationActiveTimeController }).isTrue()
   }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }

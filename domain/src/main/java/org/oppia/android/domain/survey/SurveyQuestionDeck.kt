@@ -1,15 +1,15 @@
 package org.oppia.android.domain.survey
 
-import org.oppia.android.app.model.SurveyQuestion
-
-/** Tracks the dynamic behavior of the user through a survey session. */
+/**
+ * Tracks the dynamic behavior of the user through a survey session. This class
+ * treats the survey progress like a deck of cards to simplify forward/backward navigation.
+ */
 class SurveyQuestionDeck constructor(
-  initialQuestion: SurveyQuestion,
-  private val isTopOfDeckTerminalChecker: (SurveyQuestion) -> Boolean
+  private val totalQuestionCount: Int,
+  private val isTopOfDeckTerminalChecker: (Int, Int) -> Boolean
 ) {
   private val viewedQuestionsCount: Int = 0
   private var questionIndex: Int = 0
-  private var pendingTopQuestion: SurveyQuestion = initialQuestion
 
   /** Navigates to the previous question in the deck or fails if it is not possible. */
   fun navigateToPreviousQuestion() {
@@ -21,23 +21,14 @@ class SurveyQuestionDeck constructor(
 
   /** Navigates to the next question in the deck or fails if it is not possible. */
   fun navigateToNextQuestion() {
+    check(!isCurrentQuestionTerminal()) {
+      "Cannot navigate to next question; at terminal question"
+    }
     questionIndex++
   }
 
-  /**
-   * Returns the [SurveyQuestion] corresponding to the latest question in the deck, regardless of
-   * whichever state the learner is currently viewing.
-   */
-  fun getPendingTopQuestion(): SurveyQuestion = pendingTopQuestion
-
   /** Returns the index of the current selected question of the deck. */
   fun getTopQuestionIndex(): Int = questionIndex
-
-  /**
-   * Returns the number of unique questions that have been viewed so far in the deck
-   * (i.e. the size of the deck).
-   */
-  fun getViewedQuestionCount(): Int = viewedQuestionsCount
 
   /** Returns whether this is the first question in the survey. */
   private fun isCurrentQuestionInitial(): Boolean {
@@ -56,6 +47,6 @@ class SurveyQuestionDeck constructor(
 
   /** Returns whether the most recent card on the deck is terminal. */
   private fun isTopOfDeckTerminal(): Boolean {
-    return isTopOfDeckTerminalChecker(pendingTopQuestion)
+    return isTopOfDeckTerminalChecker(questionIndex, totalQuestionCount)
   }
 }

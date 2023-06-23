@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
@@ -32,7 +32,7 @@ private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIAL
 
 /** Activity for QuestionPlayer in train mode. */
 class QuestionPlayerActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   StopStatePlayingSessionListener,
   RestartPlayingSessionListener,
   StateKeyboardButtonListener,

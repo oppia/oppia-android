@@ -2,6 +2,7 @@ package org.oppia.android.app.customview
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
@@ -16,6 +17,13 @@ import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
 
+/**
+ * CustomView to add a background to [SurveyWelcomeDialogFragment] and [SurveyOutroDialogFragment].
+ * Without chaptersFinished and totalChapters values this custom-view cannot be created.
+ *
+ * Reference: // https://proandroiddev.com/how-i-drew-custom-shapes-in-bottom-bar-c4539d86afd7 and
+ * // https://ciechanow.ski/drawing-bezier-curves/
+ */
 class SurveyOnboardingBackgroundView : View {
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
@@ -25,7 +33,7 @@ class SurveyOnboardingBackgroundView : View {
   }
 
   private lateinit var paint: Paint
-  private var path: Path = Path()
+  private lateinit var path: Path
   private var strokeWidth = 2f
 
   constructor(context: Context) : super(context)
@@ -37,10 +45,6 @@ class SurveyOnboardingBackgroundView : View {
   )
 
   init {
-    initialize()
-  }
-
-  private fun initialize() {
     setupCurvePaint()
   }
 
@@ -49,11 +53,15 @@ class SurveyOnboardingBackgroundView : View {
       rotationY = 180f
     super.onDraw(canvas)
 
-    path.reset()
+    canvas.drawPath(path, paint)
+  }
+
+  override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+    super.onSizeChanged(w, h, oldw, oldh)
     val width = this.width.toFloat()
     val height = this.height.toFloat()
 
-    val controlPoint1X = width * 0.25f
+    val controlPoint1X = width * 0.5f
     val controlPoint1Y = 0f
 
     val controlPoint2X = width * 0.5f
@@ -62,6 +70,7 @@ class SurveyOnboardingBackgroundView : View {
     val controlPoint3X = width * 1f
     val controlPoint3Y = height * 0.1f
 
+    path.reset()
     path.moveTo(0f, height * 0.1f)
     path.cubicTo(
       controlPoint1X,
@@ -72,19 +81,23 @@ class SurveyOnboardingBackgroundView : View {
       controlPoint3Y
     )
 
-    canvas.drawPath(path, paint)
+    path.lineTo(width, height)
+    path.lineTo(0f, height)
+    path.lineTo(0f, 0f)
   }
 
   private fun setupCurvePaint() {
+    path = Path()
     paint = Paint(Paint.ANTI_ALIAS_FLAG)
     paint.apply {
-      style = Paint.Style.STROKE
+      style = Paint.Style.FILL_AND_STROKE
       strokeWidth = this@SurveyOnboardingBackgroundView.strokeWidth
       color = ContextCompat.getColor(
         context,
         R.color.component_color_survey_onboarding_background_color
       )
     }
+    setBackgroundColor(Color.TRANSPARENT)
   }
 
   override fun onAttachedToWindow() {

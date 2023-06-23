@@ -103,13 +103,14 @@
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_constraintBottom_toBottomOf="parent">
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/survey_navigation_buttons_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/survey_navigation_buttons_margin">
+        android:layout_height="wrap_content">
 
         <Button
           android:id="@+id/survey_previous_button"
@@ -118,23 +119,20 @@
           android:layout_height="wrap_content"
           android:text="@string/survey_previous_button"
           app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toStartOf="@id/survey_next_button"
-          app:layout_constraintHorizontal_chainStyle="spread_inside"
           app:layout_constraintStart_toStartOf="parent" />
 
         <Button
           android:id="@+id/survey_next_button"
-          style="@style/SurveyPrimaryButton"
+          style="@style/SurveyNextButton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="@{viewModel.canMoveToNextQuestion ? @color/component_color_shared_secondary_button_background_trim_color : @color/component_color_survey_disabled_button_color}"
+          android:background="@drawable/survey_next_button_background"
           android:clickable="@{viewModel.canMoveToNextQuestion}"
           android:enabled="@{viewModel.canMoveToNextQuestion}"
           android:text="@string/next"
           android:textColor="@{viewModel.canMoveToNextQuestion ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"
           app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toEndOf="@id/survey_previous_button" />
+          app:layout_constraintEnd_toEndOf="parent" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

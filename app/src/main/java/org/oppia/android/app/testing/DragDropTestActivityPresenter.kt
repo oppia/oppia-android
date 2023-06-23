@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import javax.inject.Inject
 
-/** The presenter for [DragDropTestActivity] */
+/** The presenter for [DragDropTestActivity]. */
 class DragDropTestActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
 
   fun handleOnCreate() {

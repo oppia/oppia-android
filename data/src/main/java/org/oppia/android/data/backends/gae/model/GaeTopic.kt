@@ -16,7 +16,7 @@ data class GaeTopic(
   @Json(name = "additional_story_dicts") val additionalStoryDicts: List<GaeStorySummary?>?,
   /** A map of skill descriptions keyed by skill ID. */
   @Json(name = "skill_descriptions") val skillDescriptions: Map<String, String?>?,
-  /** degrees_of_mastery map has skill id as key and a float value */
+  /** degrees_of_mastery map has skill id as key and a float value. */
   /** A map of degree masteries keyed by skill ID. */
   @Json(name = "degrees_of_mastery") val degreesOfMastery: Map<String, Float?>?,
   @Json(name = "uncategorized_skill_ids") val uncategorizedSkillIds: List<String?>?,

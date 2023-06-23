@@ -563,16 +563,16 @@ class ListItemLeadingMarginSpanTest {
       textView.layout
     )
 
-    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(944.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(926.0f)
     assertThat(shadowCanvas.getDrawnCircle(0).centerY).isWithin(1e-5f).of(48.0f)
 
-    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(878.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(860.0f)
     assertThat(shadowCanvas.getDrawnCircle(1).centerY).isWithin(1e-5f).of(139.0f)
 
-    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(878.0f)
+    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(860.0f)
     assertThat(shadowCanvas.getDrawnCircle(2).centerY).isWithin(1e-5f).of(225.0f)
 
-    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(944.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(926.0f)
     assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(397.0f)
   }
 

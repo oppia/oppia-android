@@ -72,6 +72,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -838,6 +839,17 @@ class AudioPlayerControllerTest {
     @Singleton
     @EnableLearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      // Snapshot the value so that it doesn't change between injection and use.
+      val enableFeature = enableLearnerStudyAnalytics
+      return object : PlatformParameterValue<Boolean> {
+        override val value: Boolean = enableFeature
+      }
+    }
+
+    @Provides
+    @Singleton
+    @EnableLoggingLearnerStudyIds
+    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
       return object : PlatformParameterValue<Boolean> {

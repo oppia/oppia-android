@@ -195,7 +195,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  /** Action for onOptionsItemSelected */
+  /** Action for onOptionsItemSelected. */
   fun handleOnOptionsItemSelected(itemId: Int): Boolean {
     return when (itemId) {
       R.id.action_options -> {
@@ -310,7 +310,7 @@ class ExplorationActivityPresenter @Inject constructor(
    */
   fun backButtonPressed() {
     // check if survey should be shown
-    maybeShowSurveyDialog(profileId, topicId) // todo create a high level function to avoid dry
+    maybeShowSurveyDialog(profileId, topicId)
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {
@@ -523,12 +523,16 @@ class ExplorationActivityPresenter @Inject constructor(
                 "Failed to retrieve gating decision",
                 gatingResult.error
               )
+              backPressActivitySelector()
             }
             is AsyncResult.Success -> {
               if (gatingResult.value) {
-                val dialogFragment = SurveyWelcomeDialogFragment
-                  .newInstance(profileId, topicId)
-                dialogFragment.showNow(activity.supportFragmentManager, TAG_SURVEY_WELCOME_DIALOG)
+                val dialogFragment = SurveyWelcomeDialogFragment.newInstance(profileId, topicId)
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .addToBackStack(null)
+                  .commit()
               } else {
                 backPressActivitySelector()
               }

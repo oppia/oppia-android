@@ -43,6 +43,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterAlphaKenyaMod
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
@@ -96,7 +97,7 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
-    HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
+    HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class, SurveyQuestionModule::class,
     PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
     KenyaAlphaEventLoggingConfigurationModule::class, CpuPerformanceSnapshotterModule::class,
     PerformanceMetricsAssessorModule::class, ExplorationProgressModule::class,
