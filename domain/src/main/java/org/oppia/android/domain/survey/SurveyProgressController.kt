@@ -152,7 +152,7 @@ class SurveyProgressController @Inject constructor(
    *     to this result for failures, and instead rely on [getCurrentQuestion] for observing a
    *     successful transition to another question.
    */
-  private fun moveToNextQuestion(): DataProvider<Any?> {
+  fun moveToNextQuestion(): DataProvider<Any?> {
     val moveResultFlow = createAsyncResultStateFlow<Any?>()
     val message = ControllerMessage.MoveToNextQuestion(activeSessionId, moveResultFlow)
     sendCommandForOperation(message) {
@@ -523,15 +523,15 @@ class SurveyProgressController @Inject constructor(
 
   private fun ControllerState.retrieveEphemeralQuestion():
     EphemeralSurveyQuestion {
-      val currentQuestionIndex = progress.getCurrentQuestionIndex()
-      val currentQuestion = progress.questionGraph.getQuestion(currentQuestionIndex)
-      return EphemeralSurveyQuestion.newBuilder()
-        .setQuestion(currentQuestion)
-        .setCurrentQuestionIndex(currentQuestionIndex)
-        .setTotalQuestionCount(progress.getTotalQuestionCount())
-        .setTerminalQuestion(progress.questionDeck.isCurrentQuestionTerminal())
-        .build()
-    }
+    val currentQuestionIndex = progress.getCurrentQuestionIndex()
+    val currentQuestion = progress.questionGraph.getQuestion(currentQuestionIndex)
+    return EphemeralSurveyQuestion.newBuilder()
+      .setQuestion(currentQuestion)
+      .setCurrentQuestionIndex(currentQuestionIndex)
+      .setTotalQuestionCount(progress.getTotalQuestionCount())
+      .setTerminalQuestion(progress.questionDeck.isCurrentQuestionTerminal())
+      .build()
+  }
 
   /**
    * Represents the current synchronized state of the controller.
