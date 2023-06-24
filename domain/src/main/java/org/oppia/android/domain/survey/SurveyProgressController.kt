@@ -101,7 +101,7 @@ class SurveyProgressController @Inject constructor(
    * This [DataProvider] may switch from a completed to a pending result during transient operations
    * like submitting an answer via [submitAnswer]. Calling code should be made resilient to this by
    * caching the current question object to display since it may disappear temporarily during answer
-   * submission. Calling code should persist this state object across configuration changes if
+   * submission. Calling code should persist this object across configuration changes if
    * needed since it cannot rely on this [DataProvider] for immediate UI reconstitution after
    * configuration changes.
    *
@@ -390,13 +390,14 @@ class SurveyProgressController @Inject constructor(
       check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
         "Cannot submit an answer while another answer is pending."
       }
+
       if (selectedAnswer.questionName == SurveyQuestionName.NPS) {
+        // compute the feedback question before navigating to it
         progress.questionGraph.computeFeedbackQuestion(
-          3,
+          progress.questionDeck.getTopQuestionIndex() + 1,
           selectedAnswer.npsScore
         )
       }
-    }.also {
       if (!progress.questionDeck.isCurrentQuestionTerminal()) {
         moveToNextQuestion()
       }
@@ -436,9 +437,7 @@ class SurveyProgressController @Inject constructor(
         "Cannot navigate to a next question if an answer submission is pending."
       }
       progress.questionDeck.navigateToNextQuestion()
-      if (progress.isViewingMostRecentQuestion()) {
-        progress.processNavigationToNewQuestion()
-      }
+      progress.refreshDeck()
     }
   }
 
@@ -471,8 +470,7 @@ class SurveyProgressController @Inject constructor(
   /**
    * Sends a message to recompute the current question & notify it's been changed.
    *
-   * This must be used in cases when the current [ControllerState] may no longer be up-to-date to
-   * ensure state isn't leaked across training sessions.
+   * This must be used in cases when the current [ControllerState] may no longer be up-to-date.
    */
   private suspend fun ControllerState.recomputeCurrentQuestionAndNotifyAsync() {
     commandQueue.send(ControllerMessage.RecomputeQuestionAndNotify(sessionId))
@@ -488,7 +486,7 @@ class SurveyProgressController @Inject constructor(
     )
   }
 
-  private fun ControllerState.retrieveCurrentQuestionAsync(
+  private suspend fun ControllerState.retrieveCurrentQuestionAsync(
     questionsList: List<SurveyQuestion>
   ): AsyncResult<EphemeralSurveyQuestion> {
     return try {
@@ -499,14 +497,10 @@ class SurveyProgressController @Inject constructor(
           // now that a list of questions is available.
           initializeSurvey(questionsList)
           progress.advancePlayStageTo(SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION)
-          AsyncResult.Success(
-            retrieveEphemeralQuestion()
-          )
+          AsyncResult.Success(computeBaseCurrentEphemeralQuestion())
         }
         SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION -> {
-          AsyncResult.Success(
-            retrieveEphemeralQuestion()
-          )
+          AsyncResult.Success(computeBaseCurrentEphemeralQuestion())
         }
         SurveyProgress.SurveyStage.SUBMITTING_ANSWER -> AsyncResult.Pending()
       }
@@ -516,22 +510,13 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
-  private fun ControllerState.initializeSurvey(questionsList: List<SurveyQuestion>) {
+  private suspend fun ControllerState.initializeSurvey(questionsList: List<SurveyQuestion>) {
     check(questionsList.isNotEmpty()) { "Cannot start a survey session with zero questions." }
     progress.initialize(questionsList)
   }
 
-  private fun ControllerState.retrieveEphemeralQuestion():
-    EphemeralSurveyQuestion {
-    val currentQuestionIndex = progress.getCurrentQuestionIndex()
-    val currentQuestion = progress.questionGraph.getQuestion(currentQuestionIndex)
-    return EphemeralSurveyQuestion.newBuilder()
-      .setQuestion(currentQuestion)
-      .setCurrentQuestionIndex(currentQuestionIndex)
-      .setTotalQuestionCount(progress.getTotalQuestionCount())
-      .setTerminalQuestion(progress.questionDeck.isCurrentQuestionTerminal())
-      .build()
-  }
+  private fun ControllerState.computeBaseCurrentEphemeralQuestion(): EphemeralSurveyQuestion =
+    progress.questionDeck.getCurrentEphemeralQuestion()
 
   /**
    * Represents the current synchronized state of the controller.

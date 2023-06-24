@@ -27,8 +27,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":survey_progress_controller",
         ":question_constants_module",
+        ":survey_progress_controller",
     ],
 )
 

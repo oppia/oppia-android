@@ -14,7 +14,7 @@ class SurveyProgress {
     SurveyQuestionGraph(questionsList as MutableList)
   }
   val questionDeck: SurveyQuestionDeck by lazy {
-    SurveyQuestionDeck(getTotalQuestionCount(), ::isTopQuestionTerminal)
+    SurveyQuestionDeck(getTotalQuestionCount(), questionsList.first(), this::isTopQuestionTerminal)
   }
 
   /** Initialize the survey with the specified list of questions. */
@@ -24,24 +24,19 @@ class SurveyProgress {
     isTopQuestionCompleted = false
   }
 
-  /** Returns whether the learner is currently viewing the most recent question. */
-  fun isViewingMostRecentQuestion(): Boolean {
-    return questionDeck.isCurrentQuestionTopOfDeck()
-  }
-
-  /** Processes when a new pending question has been navigated to. */
-  fun processNavigationToNewQuestion() {
-    isTopQuestionCompleted = false
-  }
-
   /** Returns the index of the current question being viewed. */
-  fun getCurrentQuestionIndex(): Int {
+  private fun getCurrentQuestionIndex(): Int {
     return questionDeck.getTopQuestionIndex()
   }
 
   /** Returns the number of questions in the survey. */
   fun getTotalQuestionCount(): Int {
     return questionsList.size
+  }
+
+  /** Update the question at the current position of the deck. */
+  fun refreshDeck() {
+    questionDeck.updateDeck(questionGraph.getQuestion(getCurrentQuestionIndex()))
   }
 
   /**
@@ -90,10 +85,11 @@ class SurveyProgress {
     }
   }
 
-  companion object {
-    internal fun isTopQuestionTerminal(currentIndex: Int, totalQuestionCount: Int): Boolean {
-      return currentIndex + 1 == totalQuestionCount
-    }
+  private fun isTopQuestionTerminal(
+    @Suppress("UNUSED_PARAMETER") surveyQuestion: SurveyQuestion
+  ): Boolean {
+    return questionDeck.isCurrentQuestionTopOfDeck()
+      && getCurrentQuestionIndex() == getTotalQuestionCount().minus(1)
   }
 
   /** Different stages in which the progress controller can exist. */

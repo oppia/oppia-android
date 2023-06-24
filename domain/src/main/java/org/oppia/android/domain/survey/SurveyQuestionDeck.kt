@@ -1,15 +1,25 @@
 package org.oppia.android.domain.survey
 
+import org.oppia.android.app.model.EphemeralSurveyQuestion
+import org.oppia.android.app.model.SurveyQuestion
+
 /**
  * Tracks the dynamic behavior of the user through a survey session. This class
  * treats the survey progress like a deck of cards to simplify forward/backward navigation.
  */
 class SurveyQuestionDeck constructor(
   private val totalQuestionCount: Int,
-  private val isTopOfDeckTerminalChecker: (Int, Int) -> Boolean
+  initialQuestion: SurveyQuestion,
+  private val isTopOfDeckTerminalChecker: (SurveyQuestion) -> Boolean
 ) {
-  private val viewedQuestionsCount: Int = 0
+  private var pendingTopQuestion = initialQuestion
+  private var viewedQuestionsCount: Int = 0
   private var questionIndex: Int = 0
+
+  /** Sets this deck to a specific question. */
+  fun updateDeck(pendingTopQuestion: SurveyQuestion) {
+    this.pendingTopQuestion = pendingTopQuestion
+  }
 
   /** Navigates to the previous question in the deck or fails if it is not possible. */
   fun navigateToPreviousQuestion() {
@@ -22,9 +32,10 @@ class SurveyQuestionDeck constructor(
   /** Navigates to the next question in the deck or fails if it is not possible. */
   fun navigateToNextQuestion() {
     check(!isCurrentQuestionTerminal()) {
-      "Cannot navigate to next question; at terminal question"
+      "Cannot navigate to next question; at terminal question."
     }
     questionIndex++
+    viewedQuestionsCount++
   }
 
   /** Returns the index of the current selected question of the deck. */
@@ -33,6 +44,37 @@ class SurveyQuestionDeck constructor(
   /** Returns whether this is the first question in the survey. */
   private fun isCurrentQuestionInitial(): Boolean {
     return questionIndex == 0
+  }
+
+  /** Returns the current [EphemeralSurveyQuestion] the learner is viewing. */
+  fun getCurrentEphemeralQuestion(): EphemeralSurveyQuestion {
+    return when {
+      isCurrentQuestionTerminal() -> getCurrentTerminalQuestion()
+      isCurrentQuestionTopOfDeck() -> getCurrentPendingQuestion()
+      else -> getCurrentPendingQuestion()
+    }
+  }
+
+  private fun getCurrentPendingQuestion(): EphemeralSurveyQuestion {
+    return EphemeralSurveyQuestion.newBuilder()
+      .setHasPreviousQuestion(!isCurrentQuestionInitial())
+      .setHasNextQuestion(!isCurrentQuestionTerminal())
+      .setQuestion(pendingTopQuestion)
+      .setPendingQuestion(true)
+      .setCurrentQuestionIndex(questionIndex)
+      .setTotalQuestionCount(totalQuestionCount)
+      .build()
+  }
+
+  private fun getCurrentTerminalQuestion(): EphemeralSurveyQuestion {
+    return EphemeralSurveyQuestion.newBuilder()
+      .setHasPreviousQuestion(!isCurrentQuestionInitial())
+      .setHasNextQuestion(false)
+      .setQuestion(pendingTopQuestion)
+      .setTerminalQuestion(true)
+      .setCurrentQuestionIndex(questionIndex)
+      .setTotalQuestionCount(totalQuestionCount)
+      .build()
   }
 
   /** Returns whether this is the most recent question in the survey. */
@@ -47,6 +89,6 @@ class SurveyQuestionDeck constructor(
 
   /** Returns whether the most recent card on the deck is terminal. */
   private fun isTopOfDeckTerminal(): Boolean {
-    return isTopOfDeckTerminalChecker(questionIndex, totalQuestionCount)
+    return isTopOfDeckTerminalChecker(pendingTopQuestion)
   }
 }
