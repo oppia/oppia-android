@@ -37,6 +37,7 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
 import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
@@ -61,6 +62,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -175,6 +177,7 @@ class MathExpressionAccessibilityUtilTest {
     Iteration("PORTUGUESE", "language=PORTUGUESE"),
     Iteration("BRAZILIAN_PORTUGUESE", "language=BRAZILIAN_PORTUGUESE"),
     Iteration("SWAHILI", "language=SWAHILI"),
+    Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN"),
     Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   )
   fun testConvertToString_constExp_unsupportedLanguage_returnsNull() {
@@ -193,6 +196,7 @@ class MathExpressionAccessibilityUtilTest {
     Iteration("PORTUGUESE", "language=PORTUGUESE"),
     Iteration("BRAZILIAN_PORTUGUESE", "language=BRAZILIAN_PORTUGUESE"),
     Iteration("SWAHILI", "language=SWAHILI"),
+    Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN"),
     Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   )
   fun testConvertToString_constEq_unsupportedLanguage_returnsNull() {
@@ -211,7 +215,7 @@ class MathExpressionAccessibilityUtilTest {
       .asList()
       .containsExactly(
         LANGUAGE_UNSPECIFIED, ENGLISH, ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE,
-        SWAHILI, UNRECOGNIZED
+        SWAHILI, NIGERIAN_PIDGIN, UNRECOGNIZED
       )
   }
 
@@ -1336,7 +1340,7 @@ class MathExpressionAccessibilityUtilTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

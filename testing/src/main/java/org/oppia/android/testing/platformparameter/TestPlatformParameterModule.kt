@@ -1,11 +1,14 @@
 package org.oppia.android.testing.platformparameter
 
+import android.content.Context
 import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
@@ -13,16 +16,32 @@ import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAU
 import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
+import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
+import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.util.platformparameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
+import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
+import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
@@ -117,6 +136,16 @@ class TestPlatformParameterModule {
     PlatformParameterValue.createDefaultParameter(enableLearnerStudyAnalytics)
 
   @Provides
+  @EnableFastLanguageSwitchingInLesson
+  fun provideFastInLessonLanguageSwitching(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableFastLanguageSwitchingInLesson)
+
+  @Provides
+  @EnableLoggingLearnerStudyIds
+  fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableLoggingLearnerStudyIds)
+
+  @Provides
   @CacheLatexRendering
   fun provideCacheLatexRendering(
     platformParameterSingleton: PlatformParameterSingleton
@@ -193,17 +222,82 @@ class TestPlatformParameterModule {
     )
   }
 
+  @Provides
+  @EnableAppAndOsDeprecation
+  fun provideEnableAppAndOsDeprecation(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(enableAppAndOsDeprecation)
+  }
+
+  @Provides
+  @Singleton
+  @OptionalAppUpdateVersionCode
+  fun provideOptionalAppUpdateVersionCode(
+    platformParameterSingleton: PlatformParameterSingleton,
+    context: Context
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      OPTIONAL_APP_UPDATE_VERSION_CODE
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      context.getVersionCode()
+    )
+  }
+
+  @Provides
+  @ForcedAppUpdateVersionCode
+  fun provideForcedAppUpdateVersionCode(
+    platformParameterSingleton: PlatformParameterSingleton,
+    context: Context
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      FORCED_APP_UPDATE_VERSION_CODE
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      context.getVersionCode()
+    )
+  }
+
+  @Provides
+  @LowestSupportedApiLevel
+  fun provideLowestSupportedApiLevel(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      LOWEST_SUPPORTED_API_LEVEL
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @NpsSurveyGracePeriodInDays
+  fun provideNpsSurveyGracePeriodInDays(): PlatformParameterValue<Int> {
+    return PlatformParameterValue.createDefaultParameter(gracePeriodInDays)
+  }
+
+  @Provides
+  @NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+  fun provideNpsSurveyMinimumAggregateLearningTimeInATopicInMinutes():
+    PlatformParameterValue<Int> {
+      return PlatformParameterValue.createDefaultParameter(minimumLearningTime)
+    }
+
   companion object {
     private var enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+    private var enableFastLanguageSwitchingInLesson =
+      FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
+    private var enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
     private var enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
     private var enableInteractionConfigChangeStateRetention =
       ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
     private var enablePerformanceMetricsCollection =
       ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
     private var enableSpotlightUi = true
+    private var enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
+    private var minimumLearningTime =
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
+    private var gracePeriodInDays = NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -228,6 +322,18 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableLearnerStudyAnalytics(value: Boolean) {
       enableLearnerStudyAnalytics = value
+    }
+
+    /** Enables forcing [EnableFastLanguageSwitchingInLesson] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableFastLanguageSwitchingInLesson(value: Boolean) {
+      enableFastLanguageSwitchingInLesson = value
+    }
+
+    /** Enables forcing [EnableLoggingLearnerStudyIds] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableLoggingLearnerStudyIds(value: Boolean) {
+      enableLoggingLearnerStudyIds = value
     }
 
     /** Enables forcing [EnableExtraTopicTabsUi] platform parameter flag from tests. */
@@ -266,10 +372,13 @@ class TestPlatformParameterModule {
       enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
       enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
       enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+      enableFastLanguageSwitchingInLesson = FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
+      enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
       enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
       enableInteractionConfigChangeStateRetention =
         ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
       enablePerformanceMetricsCollection = ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+      enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
     }
   }
 }

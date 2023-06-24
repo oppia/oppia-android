@@ -8,15 +8,20 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
+/** OnActivity result key to access [ReadingTextSize] result. */
 const val MESSAGE_READING_TEXT_SIZE_RESULTS_KEY = "OptionsFragment.message_reading_text_size"
+/** OnActivity result key to access [OppiaLanguage] result. */
 const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
+/** OnActivity result key to access [AudioLanguage] result. */
 const val MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY = "OptionsFragment.message_audio_language"
+/** Request code for [ReadingTextSize]. */
 const val REQUEST_CODE_TEXT_SIZE = 1
-const val REQUEST_CODE_APP_LANGUAGE = 2
+/** Request code for [AudioLanguage]. */
 const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
 private const val IS_MULTIPANE_EXTRA = "IS_MULTIPANE_EXTRA"
@@ -29,6 +34,7 @@ class OptionsFragment : InjectableFragment() {
   lateinit var optionsFragmentPresenter: OptionsFragmentPresenter
 
   companion object {
+    /** Returns a [Fragment] instance to start this fragment. */
     fun newInstance(
       isMultipane: Boolean,
       isFirstOpen: Boolean,
@@ -68,24 +74,33 @@ class OptionsFragment : InjectableFragment() {
     )
   }
 
+  /** Updates [ReadingTextSize] value in [OptionsFragment] when user selects new value. */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateReadingTextSize(textSize)
     }
   }
 
-  fun updateAppLanguage(appLanguage: String) {
+  /** Updates [OppiaLanguage] value in [OptionsFragment] when user selects new value. */
+  fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     optionsFragmentPresenter.runAfterUIInitialization {
-      optionsFragmentPresenter.updateAppLanguage(appLanguage)
+      optionsFragmentPresenter.updateAppLanguage(oppiaLanguage)
     }
   }
 
+  /** Updates [AudioLanguage] value in [OptionsFragment] when user selects new value. */
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateAudioLanguage(audioLanguage)
     }
   }
 
+  /**
+   * Used to fix the race condition that happens when the presenter tries to call a function before
+   * [handleCreateView] is completely executed.
+   *
+   * @param selectedLanguage tag for the fragment to be set as currently selected
+   */
   fun setSelectedFragment(selectedLanguage: String) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.setSelectedFragment(selectedLanguage)

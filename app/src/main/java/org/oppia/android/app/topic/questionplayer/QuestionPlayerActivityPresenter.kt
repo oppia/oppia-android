@@ -177,8 +177,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
           questionId,
           state,
           helpIndex,
-          writtenTranslationContext,
-          profileId
+          writtenTranslationContext
         )
       hintsAndSolutionDialogFragment.showNow(
         activity.supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG

@@ -97,4 +97,13 @@
   <string name="temporary_translate_to_english" translatable="false">Switch lesson to English</string>
   <!-- General test activity strings. -->
   <string name="test_activity_label" translatable="false">Test-only activity</string>
+  <!-- Human-readable names of languages localized to that particular language. -->
+  <string name="hinglish_localized_language_name" translatable="false">हिन्दी</string>
+  <string name="arabic_localized_language_name" translatable="false">العربية</string>
+  <string name="english_localized_language_name" translatable="false">English</string>
+  <string name="hindi_localized_language_name" translatable="false">हिन्दी</string>
+  <string name="portuguese_localized_language_name" translatable="false">Português</string>
+  <string name="brazilian_portuguese_localized_language_name" translatable="false">Português</string>
+  <string name="swahili_localized_language_name" translatable="false">Kiswahili</string>
+  <string name="nigerian_pidgin_localized_language_name" translatable="false">Naijá</string>
 </resources>
