@@ -41,6 +41,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -872,7 +873,7 @@ class AudioPlayerControllerTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
-      HintsAndSolutionConfigModule::class, LoggerModule::class
+      HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -122,6 +122,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":application_lifecycle_listener",
         ":cpu_performance_snapshotter",
         ":dagger",
         ":learner_analytics_inactivity_limit_millis",
@@ -147,6 +148,7 @@ kt_android_library(
         ":application_lifecycle_observer",
         ":dagger",
         ":learner_analytics_inactivity_limit_millis",
+        "//domain",
     ],
 )
 
@@ -184,6 +186,14 @@ kt_android_library(
         ":dagger",
         ":learner_analytics_inactivity_limit_millis",
     ],
+)
+
+kt_android_library(
+    name = "application_lifecycle_listener",
+    srcs = [
+        "ApplicationLifecycleListener.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
 )
 
 dagger_rules()

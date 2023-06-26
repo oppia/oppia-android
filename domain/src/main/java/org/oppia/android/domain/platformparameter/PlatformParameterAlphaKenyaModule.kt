@@ -37,6 +37,12 @@ import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.util.platformparameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS
+import org.oppia.android.util.platformparameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES
+import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
+import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
@@ -268,6 +274,30 @@ class PlatformParameterAlphaKenyaModule {
       LOWEST_SUPPORTED_API_LEVEL
     ) ?: PlatformParameterValue.createDefaultParameter(
       LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @NpsSurveyGracePeriodInDays
+  fun provideNpsSurveyGracePeriodInDays(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      NPS_SURVEY_GRACE_PERIOD_IN_DAYS
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+  fun provideNpsSurveyMinimumAggregateLearningTimeInATopicInMinutes(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
     )
   }
 }
