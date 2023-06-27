@@ -244,6 +244,7 @@
   <color name="color_palette_avatar_background_22_color">@color/color_def_avatar_background_22</color>
   <color name="color_palette_avatar_background_23_color">@color/color_def_avatar_background_23</color>
   <color name="color_palette_avatar_background_24_color">@color/color_def_avatar_background_24</color>
+  <!-- SURVEY -->
   <color name="color_palette_survey_background_color">@color/color_def_survey_background</color>
   <color name="color_palette_survey_shared_button_color">@color/color_def_survey_buttons_white</color>
   <color name="color_palette_survey_dialog_stroke_color">@color/color_def_light_blue</color>
@@ -252,4 +253,5 @@
   <color name="color_palette_survey_disabled_button_text_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_button_text_color">@color/color_def_persian_green</color>
   <color name="color_palette_edit_text_unselected_color">@color/color_def_grey</color>
+  <color name="color_palette_survey_nps_radio_unselected_background">@color/color_def_pale_green</color>
 </resources>

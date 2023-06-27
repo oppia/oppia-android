@@ -70,6 +70,7 @@ class MarketFitItemsViewModel @Inject constructor(
   }
 
   private fun getMarketFitOptions(): ObservableList<MultipleChoiceOptionContentViewModel> {
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
     val observableList = ObservableArrayList<MultipleChoiceOptionContentViewModel>()
     observableList += MarketFitAnswer.values()
       .filter { it.isValid() }
@@ -101,9 +102,9 @@ class MarketFitItemsViewModel @Inject constructor(
 
           MarketFitAnswer.NOT_APPLICABLE_WONT_USE_OPPIA_ANYMORE ->
             MultipleChoiceOptionContentViewModel(
-
-              resourceHandler.getStringInLocale(
-                R.string.market_fit_answer_wont_use_oppia
+              resourceHandler.getStringInLocaleWithWrapping(
+                R.string.market_fit_answer_wont_use_oppia,
+                appName
               ),
               index,
               this
