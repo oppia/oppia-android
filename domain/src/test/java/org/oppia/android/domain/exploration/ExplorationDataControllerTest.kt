@@ -401,7 +401,8 @@ class ExplorationDataControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, ExplorationProgressModule::class
+      PlatformParameterSingletonModule::class, ExplorationProgressModule::class,
+      SurveyQuestionModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

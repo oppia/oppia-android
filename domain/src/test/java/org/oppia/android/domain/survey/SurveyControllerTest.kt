@@ -84,7 +84,6 @@ class SurveyControllerTest {
 
   @Test
   fun testStopSurveySession_withoutStartingSession_returnsFailure() {
-
   }
 
   private fun setUpTestApplicationComponent() {

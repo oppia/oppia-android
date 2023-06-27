@@ -873,7 +873,8 @@ class AudioPlayerControllerTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
-      HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class
+      HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class,
+      SurveyQuestionModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

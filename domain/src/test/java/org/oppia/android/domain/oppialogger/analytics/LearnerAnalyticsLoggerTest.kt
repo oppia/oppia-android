@@ -1828,7 +1828,8 @@ class LearnerAnalyticsLoggerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      CachingTestModule::class, ExplorationProgressModule::class
+      CachingTestModule::class, ExplorationProgressModule::class,
+      SurveyQuestionModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

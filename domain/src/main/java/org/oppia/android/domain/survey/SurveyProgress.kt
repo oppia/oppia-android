@@ -88,8 +88,8 @@ class SurveyProgress {
   private fun isTopQuestionTerminal(
     @Suppress("UNUSED_PARAMETER") surveyQuestion: SurveyQuestion
   ): Boolean {
-    return questionDeck.isCurrentQuestionTopOfDeck()
-      && getCurrentQuestionIndex() == getTotalQuestionCount().minus(1)
+    return questionDeck.isCurrentQuestionTopOfDeck() &&
+      getCurrentQuestionIndex() == getTotalQuestionCount().minus(1)
   }
 
   /** Different stages in which the progress controller can exist. */

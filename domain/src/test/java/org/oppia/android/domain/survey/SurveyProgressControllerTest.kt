@@ -121,7 +121,6 @@ class SurveyProgressControllerTest {
     assertThat(currentQuestion.totalQuestionCount).isEqualTo(4)
     assertThat(currentQuestion.questionTypeCase)
       .isEqualTo(EphemeralSurveyQuestion.QuestionTypeCase.TERMINAL_QUESTION)
-
   }
 
   @Test
