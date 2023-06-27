@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
@@ -282,7 +281,7 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
         activity,
-        Observer<AsyncResult<Any?>> {
+        {
           when (it) {
             is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
             is AsyncResult.Failure ->

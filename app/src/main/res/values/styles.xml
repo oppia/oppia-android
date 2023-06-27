@@ -468,4 +468,16 @@
     <item name="cornerSize">50%</item>
     <item name="cornerFamily">rounded</item>
   </style>
+
+  <!-- Deprecation AlertDialog Button -->
+  <style name="DeprecationAlertDialogPositiveButton">
+    <item name="android:background">@drawable/dialog_positive_rounded_button_solid_color_primary_background</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:layout_marginStart">24dp</item>
+    <item name="android:layout_marginEnd">10dp</item>
+    <item name="android:paddingEnd">20dp</item>
+    <item name="android:paddingStart">20dp</item>
+    <item name="android:paddingTop">4dp</item>
+    <item name="android:paddingBottom">4dp</item>
+  </style>
 </resources>
