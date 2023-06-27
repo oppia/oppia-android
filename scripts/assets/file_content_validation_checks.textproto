@@ -354,7 +354,7 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/drawable.*?/.+?\\.xml"
-  prohibited_content_regex: "@color/(?!component_color_).+|\"#\\p{XDigit}+\""
+  prohibited_content_regex: "@color/(?!component_color_).+"
   failure_message: "Only colors from component_colors.xml may be used in drawables except vector assets."
   exempted_file_patterns: "app/src/main/res/drawable.*?/(ic_|lesson_thumbnail_graphic_).+?\\.xml"
   exempted_file_patterns: "app/src/main/res/drawable/full_oppia_logo.xml"

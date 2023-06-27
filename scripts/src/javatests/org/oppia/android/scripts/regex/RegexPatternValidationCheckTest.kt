@@ -2345,6 +2345,7 @@ class RegexPatternValidationCheckTest {
       )
   }
 
+  // TODO(#5075): Add hex color into prohibitedContent for drawables
   @Test
   fun testFileContent_xmlDrawables_includesNonColorComponentReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
@@ -2352,7 +2353,6 @@ class RegexPatternValidationCheckTest {
         android:color="@color/component_color_shared_primary_text_color"
         android:color="@color/color_defs_shared_primary_text_color"
         android:color="@color/color_palette_primary_text_color"
-        android:color="#003933"
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "drawable")
     val stringFilePath = "app/src/main/res/drawable/test_layout.xml"
@@ -2369,7 +2369,6 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:2: $doesNotReferenceColorFromComponentColorInDrawables
         $stringFilePath:3: $doesNotReferenceColorFromComponentColorInDrawables
-        $stringFilePath:4: $doesNotReferenceColorFromComponentColorInDrawables
         $wikiReferenceNote
         """.trimIndent()
       )
