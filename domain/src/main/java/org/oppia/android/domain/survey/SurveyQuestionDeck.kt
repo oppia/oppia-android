@@ -48,10 +48,10 @@ class SurveyQuestionDeck constructor(
 
   /** Returns the current [EphemeralSurveyQuestion] the learner is viewing. */
   fun getCurrentEphemeralQuestion(): EphemeralSurveyQuestion {
-    return when {
-      isCurrentQuestionTerminal() -> getCurrentTerminalQuestion()
-      isCurrentQuestionTopOfDeck() -> getCurrentPendingQuestion()
-      else -> getCurrentPendingQuestion()
+    return if (isCurrentQuestionTerminal()) {
+      getCurrentTerminalQuestion()
+    } else {
+      getCurrentPendingQuestion()
     }
   }
 

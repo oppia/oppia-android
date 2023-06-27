@@ -210,7 +210,7 @@ class SurveyProgressControllerTest {
   }
 
   @Test
-  fun testMoveToNext_onFinalQuestion_failsWithError() {
+  fun testMoveToNext_onTerminalQuestion_failsWithError() {
     startSuccessfulSurveySession()
     waitForGetCurrentQuestionSuccessfulLoad()
     submitUserTypeAnswer(UserTypeAnswer.PARENT)
@@ -269,6 +269,51 @@ class SurveyProgressControllerTest {
       .isEqualTo(SurveyQuestionName.PROMOTER_FEEDBACK)
   }
 
+  @Test
+  fun testMoveToPreviousQuestion_atInitialQuestion_isFailure() {
+    startSuccessfulSurveySession()
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    val moveTolPreviousProvider = surveyProgressController.moveToPreviousQuestion()
+    val result = monitorFactory.waitForNextFailureResult(moveTolPreviousProvider)
+
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat()
+      .contains("Cannot navigate to previous question; at initial question.")
+  }
+
+  @Test
+  fun testMoveToPreviousQuestion_afterMovingToNextQuestion_isSuccess() {
+    startSuccessfulSurveySession()
+    waitForGetCurrentQuestionSuccessfulLoad()
+    submitUserTypeAnswer(UserTypeAnswer.LEARNER)
+    submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
+
+    val currentQuestion = moveToPreviousQuestion()
+
+    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
+    assertThat(currentQuestion.question.questionName)
+      .isEqualTo(SurveyQuestionName.MARKET_FIT)
+  }
+
+  @Test
+  fun testSubmitAnswer_afterMovingToPreviousQuestion_isSuccess() {
+    startSuccessfulSurveySession()
+    waitForGetCurrentQuestionSuccessfulLoad()
+    submitUserTypeAnswer(UserTypeAnswer.LEARNER)
+    // Submit answer and move to next
+    submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
+
+    moveToPreviousQuestion()
+
+    // Submit a different answer to the navigated question
+    val submitAnswerProvider =
+      surveyProgressController.submitAnswer(createMarketFitAnswer(MarketFitAnswer.NOT_DISAPPOINTED))
+
+    // New answer is submitted successfully
+    monitorFactory.waitForNextSuccessfulResult(submitAnswerProvider)
+  }
+
   private fun startSuccessfulSurveySession() {
     monitorFactory.waitForNextSuccessfulResult(
       surveyController.startSurveySession()
@@ -281,10 +326,10 @@ class SurveyProgressControllerTest {
     )
   }
 
-  private fun moveToNextQuestion(): EphemeralSurveyQuestion {
+  private fun moveToPreviousQuestion(): EphemeralSurveyQuestion {
     // This operation might fail for some tests.
     monitorFactory.ensureDataProviderExecutes(
-      surveyProgressController.moveToNextQuestion()
+      surveyProgressController.moveToPreviousQuestion()
     )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }

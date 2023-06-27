@@ -106,7 +106,7 @@ class SurveyProgressController @Inject constructor(
    * configuration changes.
    *
    * The underlying question returned by this function can only be changed by calls to
-   * [moveToNextQuestion], or [moveToPreviousQuestion].
+   * [moveToNextQuestionImpl], or [moveToPreviousQuestionImpl].
    *
    * This method does not need to be called for the [EphemeralSurveyQuestion] to be computed;
    * it's always computed eagerly by other state-changing methods regardless of whether there's an
@@ -216,6 +216,16 @@ class SurveyProgressController @Inject constructor(
               it.beginSurveySessionImpl(message.callbackFlow)
             }
           }
+          is ControllerMessage.MoveToNextQuestion ->
+            controllerState.moveToNextQuestionImpl(message.callbackFlow)
+          is ControllerMessage.MoveToPreviousQuestion ->
+            controllerState.moveToPreviousQuestionImpl(message.callbackFlow)
+          is ControllerMessage.RecomputeQuestionAndNotify ->
+            controllerState.recomputeCurrentQuestionAndNotifyImpl()
+          is ControllerMessage.SubmitAnswer ->
+            controllerState.submitAnswerImpl(message.callbackFlow, message.selectedAnswer)
+          is ControllerMessage.ReceiveQuestionList ->
+            controllerState.handleUpdatedQuestionsList(message.questionsList)
           is ControllerMessage.FinishSurveySession -> {
             try {
               controllerState.completeSurveyImpl(
@@ -226,21 +236,6 @@ class SurveyProgressController @Inject constructor(
               break
             }
           }
-          is ControllerMessage.MoveToNextQuestion -> controllerState.moveToNextQuestion(
-            message.callbackFlow
-          )
-          is ControllerMessage.MoveToPreviousQuestion -> controllerState.moveToPreviousQuestion(
-            message.callbackFlow
-          )
-          is ControllerMessage.RecomputeQuestionAndNotify ->
-            controllerState.recomputeCurrentQuestionAndNotifyImpl()
-          is ControllerMessage.SubmitAnswer -> controllerState.submitAnswerImpl(
-            message.callbackFlow,
-            message.selectedAnswer
-          )
-          is ControllerMessage.ReceiveQuestionList -> controllerState.handleUpdatedQuestionsList(
-            message.questionsList
-          )
         }
       }
     }
@@ -295,6 +290,55 @@ class SurveyProgressController @Inject constructor(
     endSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
   ) {
     tryOperation(endSessionResultFlow) {
+    }
+  }
+
+  private suspend fun ControllerState.submitAnswerImpl(
+    submitAnswerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+    selectedAnswer: SurveySelectedAnswer
+  ) {
+    tryOperation(submitAnswerResultFlow) {
+      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
+        "Cannot submit an answer while another answer is pending."
+      }
+
+      if (selectedAnswer.questionName == SurveyQuestionName.NPS) {
+        // compute the feedback question before navigating to it
+        progress.questionGraph.computeFeedbackQuestion(
+          progress.questionDeck.getTopQuestionIndex() + 1,
+          selectedAnswer.npsScore
+        )
+      }
+      if (!progress.questionDeck.isCurrentQuestionTerminal()) {
+        moveToNextQuestion()
+      }
+    }
+  }
+
+  private suspend fun ControllerState.moveToNextQuestionImpl(
+    moveToNextQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveToNextQuestionResultFlow) {
+      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
+        "Cannot navigate to a next question if an answer submission is pending."
+      }
+      progress.questionDeck.navigateToNextQuestion()
+      progress.refreshDeck()
+    }
+  }
+
+  private suspend fun ControllerState.moveToPreviousQuestionImpl(
+    moveToPreviousQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveToPreviousQuestionResultFlow) {
+      check(progress.surveyStage != SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION) {
+        "Cannot navigate to a previous question if a session is being loaded."
+      }
+      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
+        "Cannot navigate to a previous question if an answer submission is pending."
+      }
+      progress.questionDeck.navigateToPreviousQuestion()
+      progress.refreshDeck()
     }
   }
 
@@ -382,40 +426,6 @@ class SurveyProgressController @Inject constructor(
     ) : ControllerMessage<Any?>()
   }
 
-  private suspend fun ControllerState.submitAnswerImpl(
-    submitAnswerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
-    selectedAnswer: SurveySelectedAnswer
-  ) {
-    tryOperation(submitAnswerResultFlow) {
-      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
-        "Cannot submit an answer while another answer is pending."
-      }
-
-      if (selectedAnswer.questionName == SurveyQuestionName.NPS) {
-        // compute the feedback question before navigating to it
-        progress.questionGraph.computeFeedbackQuestion(
-          progress.questionDeck.getTopQuestionIndex() + 1,
-          selectedAnswer.npsScore
-        )
-      }
-      if (!progress.questionDeck.isCurrentQuestionTerminal()) {
-        moveToNextQuestion()
-      }
-    }
-  }
-
-  private suspend fun ControllerState.handleUpdatedQuestionsList(
-    questionsList: List<SurveyQuestion>
-  ) {
-    // The questions list is possibly changed which may affect the computed ephemeral question.
-    if (!this.isQuestionsListInitialized || this.questionsList != questionsList) {
-      this.questionsList = questionsList
-      // Only notify if the questions list is different (otherwise an infinite notify loop might be
-      // started).
-      recomputeCurrentQuestionAndNotifySync()
-    }
-  }
-
   private suspend fun <T> ControllerState.tryOperation(
     resultFlow: MutableStateFlow<AsyncResult<T>>,
     operation: suspend ControllerState.() -> T
@@ -429,29 +439,15 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.moveToNextQuestion(
-    moveToNextQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  private suspend fun ControllerState.handleUpdatedQuestionsList(
+    questionsList: List<SurveyQuestion>
   ) {
-    tryOperation(moveToNextQuestionResultFlow) {
-      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
-        "Cannot navigate to a next question if an answer submission is pending."
-      }
-      progress.questionDeck.navigateToNextQuestion()
-      progress.refreshDeck()
-    }
-  }
-
-  private suspend fun ControllerState.moveToPreviousQuestion(
-    moveToPreviousQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
-  ) {
-    tryOperation(moveToPreviousQuestionResultFlow) {
-      check(progress.surveyStage != SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION) {
-        "Cannot navigate to a previous question if a session is being loaded."
-      }
-      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
-        "Cannot navigate to a previous question if an answer submission is pending."
-      }
-      progress.questionDeck.navigateToPreviousQuestion()
+    // The questions list is possibly changed which may affect the computed ephemeral question.
+    if (!this.isQuestionsListInitialized || this.questionsList != questionsList) {
+      this.questionsList = questionsList
+      // Only notify if the questions list is different (otherwise an infinite notify loop might be
+      // started).
+      recomputeCurrentQuestionAndNotifySync()
     }
   }
 
@@ -510,7 +506,7 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.initializeSurvey(questionsList: List<SurveyQuestion>) {
+  private fun ControllerState.initializeSurvey(questionsList: List<SurveyQuestion>) {
     check(questionsList.isNotEmpty()) { "Cannot start a survey session with zero questions." }
     progress.initialize(questionsList)
   }
