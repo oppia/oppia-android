@@ -289,5 +289,4 @@
   <color name="component_color_survey_disabled_button_text_color">@color/color_palette_survey_disabled_button_text_color</color>
   <color name="component_color_begin_survey_button_text_color">@color/color_palette_button_text_color</color>
   <color name="component_color_survey_edit_text_unselected_color">@color/color_palette_edit_text_unselected_color</color>
-  <color name="component_color_survey_nps_radio_unselected_background">@color/color_palette_survey_nps_radio_unselected_background</color>
 </resources>

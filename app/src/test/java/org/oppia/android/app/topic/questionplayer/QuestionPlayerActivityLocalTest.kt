@@ -84,6 +84,7 @@ import org.oppia.android.domain.question.ViewHintMasteryPenalty
 import org.oppia.android.domain.question.ViewHintScorePenalty
 import org.oppia.android.domain.question.WrongAnswerMasteryPenalty
 import org.oppia.android.domain.question.WrongAnswerScorePenalty
+import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
