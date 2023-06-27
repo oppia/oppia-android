@@ -597,6 +597,7 @@
   <string name="survey_free_form_text_hint">Leave your feedback here</string>
   <string name="survey_continue_survey_button">Continue Survey</string>
   <string name="survey_exit_button">Exit</string>
+  <string name="survey_exit_button_description">Exit Survey</string>
   <string name="survey_exit_confirmation_text">Are you sure you want to exit the survey?</string>
   <string name="survey_onboarding_message_text">Your feedback helps us serve learners like you better. Would you like to complete a short survey about your experience?</string>
   <string name="survey_begin_survey_button">Begin Survey</string>

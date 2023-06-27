@@ -40,7 +40,6 @@ import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -90,16 +89,25 @@ class LearnerAnalyticsLoggerTest {
     private const val DEFAULT_INITIAL_SESSION_ID = "e6eacc69-e636-3c90-ba29-32bf3dd17161"
   }
 
-  @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
-  @Inject lateinit var explorationDataController: ExplorationDataController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
+  @Inject
+  lateinit var explorationDataController: ExplorationDataController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Parameter lateinit var iid: String
-  @Parameter lateinit var lid: String
-  @Parameter lateinit var eid: String
-  @Parameter lateinit var elid: String
+  @Parameter
+  lateinit var iid: String
+  @Parameter
+  lateinit var lid: String
+  @Parameter
+  lateinit var eid: String
+  @Parameter
+  lateinit var elid: String
 
   private val learnerIdParameter: String? get() = lid.takeIf { it != "null" }
   private val installIdParameter: String? get() = iid.takeIf { it != "null" }
@@ -1830,7 +1838,6 @@ class LearnerAnalyticsLoggerTest {
       MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       CachingTestModule::class, ExplorationProgressModule::class,
-      SurveyQuestionModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

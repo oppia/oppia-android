@@ -31,6 +31,7 @@
         android:background="@color/component_color_shared_secondary_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
+        android:contentDescription="@string/survey_exit_button_description"
         app:navigationIcon="@drawable/ic_close_white_24dp">
 
         <LinearLayout
