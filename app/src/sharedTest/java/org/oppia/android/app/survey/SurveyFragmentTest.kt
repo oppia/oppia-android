@@ -4,19 +4,27 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -68,6 +76,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.survey.SurveyController
 import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -135,6 +144,9 @@ class SurveyFragmentTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var surveyController: SurveyController
+
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
@@ -155,7 +167,7 @@ class SurveyFragmentTest {
     val screenName = createSurveyActivityIntent()
       .extractCurrentAppScreenName()
 
-    Truth.assertThat(screenName).isEqualTo(ScreenName.SURVEY_ACTIVITY)
+    assertThat(screenName).isEqualTo(ScreenName.SURVEY_ACTIVITY)
   }
 
   @Test
@@ -164,9 +176,9 @@ class SurveyFragmentTest {
       createSurveyActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(withContentDescription(R.string.survey_exit_button_description))
+      onView(withContentDescription(R.string.survey_exit_button_description))
         .check(
-          ViewAssertions.matches(
+          matches(
             withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
           )
         )
@@ -179,7 +191,7 @@ class SurveyFragmentTest {
       createSurveyActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.survey_progress_bar))
+      onView(withId(R.id.survey_progress_bar))
         .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
     }
   }
@@ -190,10 +202,10 @@ class SurveyFragmentTest {
       createSurveyActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.survey_progress_text))
-        .check(ViewAssertions.matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
-      Espresso.onView(ViewMatchers.withId(R.id.survey_progress_text))
-        .check(ViewAssertions.matches(withText("25%")))
+      onView(withId(R.id.survey_progress_text))
+        .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+      onView(withId(R.id.survey_progress_text))
+        .check(matches(withText("25%")))
     }
   }
 
@@ -203,9 +215,147 @@ class SurveyFragmentTest {
       createSurveyActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.survey_navigation_buttons_container))
-        .check(ViewAssertions.matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+      onView(withId(R.id.survey_navigation_buttons_container))
+        .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
     }
+  }
+
+  @Test
+  fun testSurveyFragment_beginSurvey_initialQuestionIsDisplayed() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      onView(withText(R.string.user_type_question))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.survey_next_button))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.survey_previous_button))
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testSurveyFragment_beginSurvey_initialQuestion_correctOptionsDisplayed() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      onView(withId(R.id.survey_answers_recycler_view)).perform(
+        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      ).check(matches(hasDescendant(withText(R.string.user_type_answer_learner))))
+    }
+  }
+
+  @Test
+  fun testSurveyFragment_beginSurvey_closeButtonClicked_exitConfirmationDialogDisplayed() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+      onView(withText(context.getString(R.string.survey_exit_confirmation_text)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testSurveyFragment_nextButtonClicked_marketFitQuestionIsDisplayedWithCorrectOptions() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      selectMultiChoiceAnswer(0)
+      onView(withId(R.id.survey_next_button)).perform(click())
+
+      onView(withText("How would you feel if you could no longer use Oppia?"))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.survey_next_button))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.survey_previous_button))
+        .check(matches(isDisplayed()))
+
+      onView(withId(R.id.survey_answers_recycler_view)).perform(
+        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      ).check(matches(hasDescendant(withText(R.string.market_fit_answer_very_disappointed))))
+    }
+  }
+
+  @Test
+  fun testSurveyNavigation_submitMarketFitAnswer_NpsQuestionIsDisplayed() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      // Select and submit userTypeAnswer
+      selectMultiChoiceAnswer(0)
+      onView(withId(R.id.survey_next_button)).perform(click())
+
+      // Select and submit marketFitAnswer
+      selectMultiChoiceAnswer(0)
+      onView(withId(R.id.survey_next_button)).perform(click())
+
+      onView(
+        withText(
+          "On a scale from 0–10, how likely are you to recommend Oppia to a friend" +
+            " or colleague?"
+        )
+      )
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.survey_answers_recycler_view)).perform(
+        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+          10
+        )
+      ).check(matches(hasDescendant(withText("10"))))
+    }
+  }
+
+  @Test
+  fun testSurveyNavigation_submitNpsScore3_detractorFeedbackQuestionIsDisplayed() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      // Select and submit userTypeAnswer
+      selectMultiChoiceAnswer(0)
+      onView(withId(R.id.survey_next_button)).perform(click())
+
+      // Select and submit marketFitAnswer
+      selectMultiChoiceAnswer(0)
+      onView(withId(R.id.survey_next_button)).perform(click())
+
+      // Select and submit NpsAnswer
+      selectMultiChoiceAnswer(3)
+      onView(withId(R.id.survey_next_button)).perform(click())
+
+      onView(withText(R.string.nps_detractor_feedback_question))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.survey_previous_button))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.survey_next_button))
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  private fun selectMultiChoiceAnswer(choiceIndex: Int) {
+    onView(withId(R.id.survey_answers_recycler_view)).perform(
+      RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+        choiceIndex
+      ),
+      click()
+    )
+  }
+
+  private fun startSurveySession() {
+    surveyController.startSurveySession()
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun createSurveyActivityIntent(): Intent {
