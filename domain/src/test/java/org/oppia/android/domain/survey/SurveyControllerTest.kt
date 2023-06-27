@@ -84,6 +84,13 @@ class SurveyControllerTest {
 
   @Test
   fun testStopSurveySession_withoutStartingSession_returnsFailure() {
+    val stopProvider = surveyController.stopSurveySession()
+
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(stopProvider)
+
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   private fun setUpTestApplicationComponent() {

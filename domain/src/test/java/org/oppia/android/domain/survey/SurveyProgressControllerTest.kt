@@ -314,6 +314,24 @@ class SurveyProgressControllerTest {
     monitorFactory.waitForNextSuccessfulResult(submitAnswerProvider)
   }
 
+  @Test
+  fun testStopSurveySession_withoutStartingSession_returnsFailure() {
+    val stopProvider = surveyController.stopSurveySession()
+
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(stopProvider)
+
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testStopSurveySession_afterStartingPreviousSession_succeeds() {
+    startSuccessfulSurveySession()
+    val stopProvider = surveyController.stopSurveySession()
+    monitorFactory.waitForNextSuccessfulResult(stopProvider)
+  }
+
   private fun startSuccessfulSurveySession() {
     monitorFactory.waitForNextSuccessfulResult(
       surveyController.startSurveySession()

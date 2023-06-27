@@ -37,6 +37,7 @@ private const val MOVE_TO_PREVIOUS_QUESTION_RESULT_PROVIDER_ID =
   "SurveyProgressController.move_to_previous_question_result"
 private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
   "SurveyProgressController.submit_answer_result"
+private const val END_SESSION_RESULT_PROVIDER_ID = "SurveyProgressController.end_session_result"
 
 /**
  * A default session ID to be used before a session has been initialized.
@@ -181,6 +182,31 @@ class SurveyProgressController @Inject constructor(
     return moveResultFlow.convertToSessionProvider(MOVE_TO_PREVIOUS_QUESTION_RESULT_PROVIDER_ID)
   }
 
+  /**
+   * Ends the current survey session and returns a [DataProvider] that indicates whether it was
+   * successfully ended.
+   *
+   * This method does not actually need to be called when a session is over. Calling it ensures all
+   * other [DataProvider]s reset to a correct out-of-session state, but subsequent calls to
+   * [beginSurveySession] will reset the session.
+   */
+  fun endSurveySession(): DataProvider<Any?> {
+    // Reset the base questions list provider so that the ephemeral question has no question list to
+    // reference (since the session finished).
+    monitoredQuestionListDataProvider.setBaseDataProvider(createEmptyQuestionsListDataProvider()) {
+      maybeSendReceiveQuestionListEvent(commandQueue = null, it)
+    }
+    val endSessionResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.FinishSurveySession(
+      activeSessionId,
+      endSessionResultFlow
+    )
+    sendCommandForOperation(message) {
+      "Failed to schedule command for finishing the survey session."
+    }
+    return endSessionResultFlow.convertToSessionProvider(END_SESSION_RESULT_PROVIDER_ID)
+  }
+
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<SurveyQuestion>>
   ): DataProviders.NestedTransformedDataProvider<Any?> {
@@ -289,7 +315,9 @@ class SurveyProgressController @Inject constructor(
   private suspend fun ControllerState.completeSurveyImpl(
     endSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
   ) {
+    checkNotNull(this) { "Cannot stop a survey session which wasn't started." }
     tryOperation(endSessionResultFlow) {
+      progress.advancePlayStageTo(SurveyProgress.SurveyStage.NOT_IN_SURVEY_SESSION)
     }
   }
 

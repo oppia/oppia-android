@@ -86,6 +86,20 @@ class SurveyController @Inject constructor(
       .build()
   }
 
+  /**
+   * Finishes the most recent session started by [startSurveySession].
+   *
+   * This method should only be called if there is an active session, otherwise the
+   * resulting provider will fail. Note that this doesn't actually need to be called between
+   * sessions unless the caller wants to ensure other providers monitored from
+   * [SurveyProgressController] are reset to a proper out-of-session state.
+   *
+   * Note that the returned provider monitors the long-term stopping state of survey sessions and
+   * will be reset to 'pending' when a session is currently active, or before any session has
+   * started.
+   */
+  fun stopSurveySession(): DataProvider<Any?> = surveyProgressController.endSurveySession()
+
   companion object {
     /** Returns whether a [SurveyQuestionName] is valid. */
     fun SurveyQuestionName.isValid(): Boolean {
