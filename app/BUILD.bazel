@@ -408,12 +408,12 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/ChapterNotStartedContainerConstraintLayout.kt",
     "src/main/java/org/oppia/android/app/customview/ContinueButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
-    "src/main/java/org/oppia/android/app/survey/SurveyMultipleChoiceOptionView.kt",
-    "src/main/java/org/oppia/android/app/survey/SurveyNpsItemOptionView.kt",
     "src/main/java/org/oppia/android/app/customview/PromotedStoryCardView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/android/app/customview/SurveyOnboardingBackgroundView.kt",
     "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
+    "src/main/java/org/oppia/android/app/survey/SurveyMultipleChoiceOptionView.kt",
+    "src/main/java/org/oppia/android/app/survey/SurveyNpsItemOptionView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
 
@@ -795,7 +795,6 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/spotlight:spotlight_state_controller",
         "//domain/src/main/java/org/oppia/android/domain/survey:gating_controller",
         "//domain/src/main/java/org/oppia/android/domain/survey:survey_controller",
-        "//domain/src/main/java/org/oppia/android/domain/survey:survey_progress_controller",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//third_party:androidx_databinding_databinding-adapters",
         "//third_party:androidx_databinding_databinding-common",
