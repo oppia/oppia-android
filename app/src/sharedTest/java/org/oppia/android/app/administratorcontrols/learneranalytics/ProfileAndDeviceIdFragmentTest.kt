@@ -1,6 +1,6 @@
 package org.oppia.android.app.administratorcontrols.learneranalytics
 
-/*import android.app.Application
+import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -1070,4 +1070,3 @@ class ProfileAndDeviceIdFragmentTest {
     }.build()
   }
 }
-*/
