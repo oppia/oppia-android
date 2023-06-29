@@ -1,7 +1,5 @@
 package org.oppia.android.app.help.thirdparty
 
-import android.content.Context
-import android.view.accessibility.AccessibilityManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
@@ -9,11 +7,13 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.LicenseTextViewerActivityBinding
 import javax.inject.Inject
+import org.oppia.android.util.accessibility.AccessibilityService
 
 /** The presenter for [LicenseTextViewerActivity]. */
 @ActivityScope
 class LicenseTextViewerActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
+  private val accessibilityService: AccessibilityService,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
 
@@ -47,11 +47,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
     }
 
     activity.applicationContext?.let {
-      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
-        as AccessibilityManager?
-      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
-
-      if (!isAccessibilityManagerEnabled) {
+      if (!accessibilityService.isScreenReaderEnabled()) {
         binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
           binding.licenseTextViewerActivityToolbarTitle.isSelected = true
         }

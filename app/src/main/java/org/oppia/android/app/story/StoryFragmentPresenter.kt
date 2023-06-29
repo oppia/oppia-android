@@ -93,11 +93,7 @@ class StoryFragmentPresenter @Inject constructor(
     }
 
     activity.applicationContext?.let {
-      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
-        as AccessibilityManager?
-      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
-
-      if (!isAccessibilityManagerEnabled) {
+      if (!accessibilityService.isScreenReaderEnabled()) {
         binding.storyToolbarTitle.setOnClickListener {
           binding.storyToolbarTitle.isSelected = true
         }

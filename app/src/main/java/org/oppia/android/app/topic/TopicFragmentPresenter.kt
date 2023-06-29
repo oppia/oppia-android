@@ -25,6 +25,7 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.util.accessibility.AccessibilityService
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
@@ -33,6 +34,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
+  private val accessibilityService: AccessibilityService,
   private val analyticsController: AnalyticsController,
   @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler
@@ -68,11 +70,8 @@ class TopicFragmentPresenter @Inject constructor(
     }
 
     activity.applicationContext?.let {
-      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
-        as AccessibilityManager?
-      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
 
-      if (!isAccessibilityManagerEnabled) {
+      if (!accessibilityService.isScreenReaderEnabled()) {
         binding.topicToolbar.setOnClickListener {
           binding.topicToolbarTitle.isSelected = true
         }

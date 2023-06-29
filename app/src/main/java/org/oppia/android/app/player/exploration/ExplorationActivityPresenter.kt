@@ -38,6 +38,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.util.accessibility.AccessibilityService
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -54,6 +55,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
+  private val accessibilityService: AccessibilityService,
   private val oppiaLogger: OppiaLogger,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
@@ -99,11 +101,7 @@ class ExplorationActivityPresenter @Inject constructor(
     activity.setSupportActionBar(explorationToolbar)
 
     activity.applicationContext?.let {
-      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
-        as AccessibilityManager?
-      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
-
-      if (!isAccessibilityManagerEnabled) {
+      if (!accessibilityService.isScreenReaderEnabled()) {
         binding.explorationToolbarTitle.setOnClickListener {
           binding.explorationToolbarTitle.isSelected = true
         }

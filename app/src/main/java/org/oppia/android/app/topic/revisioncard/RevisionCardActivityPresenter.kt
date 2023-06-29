@@ -24,6 +24,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.util.accessibility.AccessibilityService
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
@@ -32,6 +33,7 @@ class RevisionCardActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
   private val topicController: TopicController,
+  private val accessibilityService: AccessibilityService,
   private val translationController: TranslationController
 ) {
 
@@ -69,11 +71,7 @@ class RevisionCardActivityPresenter @Inject constructor(
       (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
     }
     activity.applicationContext?.let {
-      val accessibilityManager = it.getSystemService(Context.ACCESSIBILITY_SERVICE)
-        as AccessibilityManager?
-      val isAccessibilityManagerEnabled = accessibilityManager!!.isEnabled
-
-      if (!isAccessibilityManagerEnabled) {
+      if (!accessibilityService.isScreenReaderEnabled()) {
         binding.revisionCardToolbarTitle.setOnClickListener {
           binding.revisionCardToolbarTitle.isSelected = true
         }
