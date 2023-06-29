@@ -1,9 +1,11 @@
 package org.oppia.android.app.topic
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
 import android.view.View
+import android.view.accessibility.AccessibilityManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -26,6 +28,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -105,6 +109,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -122,8 +127,6 @@ import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
@@ -146,7 +149,7 @@ class TopicFragmentTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
+  var  activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
@@ -155,6 +158,9 @@ class TopicFragmentTest {
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeAccessibilityManager: FakeAccessibilityService
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
@@ -315,8 +321,49 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+  fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly_whenReaderOff() {
     initializeApplicationComponent(false)
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    fakeAccessibilityManager.setScreenReaderEnabled(false)
+    //setup accessibility manager
+    val topicToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
+    ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+    onView(withId(R.id.topic_toolbar_title)).perform(click())
+    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+  @Test
+  fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly_whenReaderOn() {
+    initializeApplicationComponent(false)
+    fakeAccessibilityManager.setScreenReaderEnabled(true)
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    //setup
+    val topicToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
+    ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    onView(withId(R.id.topic_toolbar_title)).perform(click())
+    assertThat(topicToolbarTitle.isFocused).isEqualTo(false)
+    assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  @Test
+  fun testTopicFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly_whenReaderOff() {
+    initializeApplicationComponent(false)
+    fakeAccessibilityManager.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -326,16 +373,16 @@ class TopicFragmentTest {
     testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
-    ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-
+    ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
     onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
-  fun testTopicFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+  fun testTopicFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly_whenReaderOn() {
     initializeApplicationComponent(false)
+    fakeAccessibilityManager.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
