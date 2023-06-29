@@ -23,7 +23,7 @@
 
 1. Install Bazel following the instructions [here](https://docs.bazel.build/versions/4.0.0/install-os-x.html#install-with-installer-mac-os-x). Make sure that you follow the instructions for installing a specific version (Oppia Android requires 4.0.0 and won't build on other versions). 
 
-2. That’s it, now Bazel is install, you can check it by running the command:
+2. That’s it, now Bazel is installed, and you can verify it by running the command:
    ```
    bazel --version
    ```
@@ -82,7 +82,7 @@ Follow the instructions in [oppia-bazel-tools](https://github.com/oppia/oppia-ba
 
 At this point, your system should be able to build Oppia Android. To verify, try building the APK (from your subsystem terminal -- note that this and all other Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail):
 
-```sh
+```
 bazel build //:oppia
 ```
 
@@ -99,7 +99,5 @@ INFO: Elapsed time: ...
 INFO: 1 process...
 INFO: Build completed successfully, ...
 ```
-
-If you see the above, you can proceed to use your subsystem for Bazel commands while developing Oppia. If you instead see an error, please [file an issue](https://github.com/oppia/oppia-android/issues/new/choose).
 
 Note also that the ``oppia.apk`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using ``adb`` 
