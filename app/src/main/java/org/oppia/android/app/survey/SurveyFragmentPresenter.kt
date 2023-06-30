@@ -52,6 +52,7 @@ class SurveyFragmentPresenter @Inject constructor(
   private lateinit var answerHandler: SelectedAnswerHandler
   private lateinit var questionSelectedAnswer: SurveySelectedAnswer
 
+  /** Sets up data binding. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,

@@ -20,9 +20,10 @@ class SurveyFragment :
   companion object {
     /**
      * Creates a new instance of a SurveyFragment.
-     * @param internalProfileId used by SurveyFragment to record the survey action taken by user.
-     * @param topicId used by SurveyFragment for logging purposes.
-     * @return a new instance of [SurveyFragment].
+     *
+     * @param internalProfileId used by SurveyFragment to record the survey action taken by user
+     * @param topicId used by SurveyFragment for logging purposes
+     * @return a new instance of [SurveyFragment]
      */
     fun newInstance(
       internalProfileId: Int,

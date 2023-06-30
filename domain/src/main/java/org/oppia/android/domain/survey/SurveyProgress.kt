@@ -53,14 +53,14 @@ class SurveyProgress {
   fun advancePlayStageTo(nextStage: SurveyStage) {
     when (nextStage) {
       SurveyStage.NOT_IN_SURVEY_SESSION -> {
-        // All transitions to NOT_IN_SURVEY_SESSION are valid except itself.
+        // All transitions to NOT_IN_SURVEY_SESSION are valid except those originating from itself.
         check(surveyStage != SurveyStage.NOT_IN_SURVEY_SESSION) {
           "Cannot transition to NOT_IN_TRAINING_SESSION from NOT_IN_TRAINING_SESSION"
         }
         surveyStage = nextStage
       }
       SurveyStage.LOADING_SURVEY_SESSION -> {
-        // A session can only begun being loaded when not previously in a session.
+        // A session can only start being loaded when not previously in a session.
         check(surveyStage == SurveyStage.NOT_IN_SURVEY_SESSION) {
           "Cannot transition to LOADING_SURVEY_SESSION from $surveyStage"
         }
@@ -79,7 +79,7 @@ class SurveyProgress {
         surveyStage = nextStage
       }
       SurveyStage.SUBMITTING_ANSWER -> {
-        // An answer can only be submitted after viewing a stage.
+        // An answer can only be submitted after viewing a question.
         check(surveyStage == SurveyStage.VIEWING_SURVEY_QUESTION) {
           "Cannot transition to SUBMITTING_ANSWER from $surveyStage"
         }
