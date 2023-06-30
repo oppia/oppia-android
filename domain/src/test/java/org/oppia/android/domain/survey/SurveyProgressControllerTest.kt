@@ -455,13 +455,6 @@ class SurveyProgressControllerTest {
     fun provideApplicationIdSeed(): Long = applicationIdSeed
   }
 
-  @Module
-  class TestSurveyQuestionModule {
-    @Provides
-    @TotalQuestionCount
-    fun provideTotalQuestionCount(): Int = 4
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -470,7 +463,7 @@ class SurveyProgressControllerTest {
       ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, TestSurveyQuestionModule::class,
+      TestLoggingIdentifierModule::class
     ]
   )
 

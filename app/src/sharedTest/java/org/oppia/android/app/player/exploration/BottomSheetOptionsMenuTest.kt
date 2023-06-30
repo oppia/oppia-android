@@ -67,7 +67,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.survey.SurveyQuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -194,8 +193,7 @@ class BottomSheetOptionsMenuTest {
       ApplicationLifecycleModule::class, SyncStatusModule::class, TestingBuildFlavorModule::class,
       CachingTestModule::class, MetricLogSchedulerModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      SurveyQuestionModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

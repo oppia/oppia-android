@@ -143,7 +143,7 @@ class SurveyControllerTest {
       ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, SurveyQuestionModule::class
+      TestLoggingIdentifierModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
