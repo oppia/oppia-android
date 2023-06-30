@@ -35,7 +35,7 @@ class RecentlyPlayedViewModel private constructor(
     private val translationController: TranslationController,
   ) {
 
-    /** Creates an instance of [RecentlyPlayedViewModel] */
+    /** Creates an instance of [RecentlyPlayedViewModel]. */
     fun create(
       promotedStoryClickListener: PromotedStoryClickListener,
       profileId: ProfileId
