@@ -1,0 +1,20 @@
+"""
+Library for providing survey functionality in the app.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "gating_controller",
+    srcs = [
+        "SurveyGatingController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)

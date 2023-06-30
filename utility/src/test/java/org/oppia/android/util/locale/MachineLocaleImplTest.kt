@@ -181,12 +181,12 @@ class MachineLocaleImplTest {
   }
 
   @Test
-  fun testGetCurrentTimeOfDay_inMorningHour_returnsMorning() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+  fun testGetCurrentTimeOfDay_inMidMorningHour_returnsMidMorning() {
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val timeOfDay = machineLocale.getCurrentTimeOfDay()
 
-    assertThat(timeOfDay).isEqualTo(OppiaLocale.MachineLocale.TimeOfDay.MORNING)
+    assertThat(timeOfDay).isEqualTo(OppiaLocale.MachineLocale.TimeOfDay.MID_MORNING)
   }
 
   @Test
@@ -208,8 +208,26 @@ class MachineLocaleImplTest {
   }
 
   @Test
+  fun testGetCurrentTimeOfDay_inNightHour_returnsNight() {
+    fakeOppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    val timeOfDay = machineLocale.getCurrentTimeOfDay()
+
+    assertThat(timeOfDay).isEqualTo(OppiaLocale.MachineLocale.TimeOfDay.LATE_NIGHT)
+  }
+
+  @Test
+  fun testGetCurrentTimeOfDay_inEarlyMorningHour_returnsEarlyMorning() {
+    fakeOppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS)
+
+    val timeOfDay = machineLocale.getCurrentTimeOfDay()
+
+    assertThat(timeOfDay).isEqualTo(OppiaLocale.MachineLocale.TimeOfDay.EARLY_MORNING)
+  }
+
+  @Test
   fun testParseOppiaDate_emptyString_returnsNull() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val date = machineLocale.parseOppiaDate(dateString = "")
 
@@ -233,7 +251,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testOppiaDateIsBeforeToday_validDateObject_forYesterday_returnsTrue() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val date = machineLocale.parseOppiaDate(dateString = "2019-04-23")
 
@@ -242,7 +260,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testOppiaDateIsBeforeToday_validDateObject_forTomorrow_returnsFalse() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val date = machineLocale.parseOppiaDate(dateString = "2019-04-25")
 
@@ -251,14 +269,14 @@ class MachineLocaleImplTest {
 
   @Test
   fun testComputeCurrentTimeString_forFixedTime_returnsHourMinuteSecondParts() {
-    fakeOppiaClock.setCurrentTimeMs(MORNING_UTC_TIMESTAMP_MILLIS)
+    fakeOppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
 
     val timeString = machineLocale.computeCurrentTimeString()
 
     // Verify that the individual hour, minute, and second components are present (though don't
     // actually verify formatting since that's implementation specific).
     val numbers = "\\d+".toRegex().findAll(timeString).flatMap { it.groupValues }.toList()
-    assertThat(numbers).containsExactly("8", "22", "03")
+    assertThat(numbers).containsExactly("10", "30", "12")
   }
 
   private fun setUpTestApplicationComponent() {
@@ -299,12 +317,18 @@ class MachineLocaleImplTest {
 
   private companion object {
     // Date & time: Wed Apr 24 2019 08:22:03 GMT.
-    private const val MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
+    private const val EARLY_MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
+
+    // Date & time: Wed Apr 24 2019 10:30:12 GMT.
+    private const val MID_MORNING_UTC_TIMESTAMP_MILLIS = 1556101812000
 
     // Date & time: Tue Apr 23 2019 14:22:00 GMT.
     private const val AFTERNOON_UTC_TIMESTAMP_MILLIS = 1556029320000
 
+    // Date & time: Tue Apr 23 2019 21:26:12 GMT.
+    private const val EVENING_UTC_TIMESTAMP_MILLIS = 1556054772000
+
     // Date & time: Tue Apr 23 2019 23:22:00 GMT.
-    private const val EVENING_UTC_TIMESTAMP_MILLIS = 1556061720000
+    private const val LATE_NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
   }
 }

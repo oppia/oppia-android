@@ -167,7 +167,7 @@ class AndroidLocaleFactoryTest {
   }
 
   @Test
-  fun testCreateLocale_appStrings_withAndroidId_incompatible_returnsFallbackAndroidIdLocale() {
+  fun testCreateLocale_appStrings_withPrimarySecondaryAndroidIds_incompat_returnsPrimaryLocale() {
     val context =
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
@@ -178,7 +178,26 @@ class AndroidLocaleFactoryTest {
 
     val locale = androidLocaleFactory.createAndroidLocale(context)
 
-    // pt-BR should be picked because the primary language doesn't match a real locale.
+    // 'qq' is picked because it's an Android ID for app strings, so it's always taken as a forced
+    // locale over any fallback options.
+    assertThat(locale.language).isEqualTo("qq")
+    assertThat(locale.country).isEmpty()
+  }
+
+  @Test
+  fun testCreateLocale_appStrings_withSecondaryAndroidIds_incompat_returnsSecondaryLocale() {
+    val context =
+      createAppStringsContext(
+        language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
+        appStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
+        regionDefinition = REGION_BRAZIL
+      )
+
+    val locale = androidLocaleFactory.createAndroidLocale(context)
+
+    // pt-BR should be picked because the primary language doesn't match a real locale, and it's not
+    // an Android ID that would take precedence.
     assertThat(locale.language).isEqualTo("pt")
     assertThat(locale.country).isEqualTo("BR")
   }
@@ -287,7 +306,7 @@ class AndroidLocaleFactoryTest {
   }
 
   @Test
-  fun testCreateLocale_appStrings_incompat_androidAndIetfFallback_returnsAndroidIdLocale() {
+  fun testCreateLocale_appStrings_incompatAndroidId_androidAndIetfFallback_returnsPrimaryLocale() {
     val context =
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
@@ -301,13 +320,36 @@ class AndroidLocaleFactoryTest {
 
     val locale = androidLocaleFactory.createAndroidLocale(context)
 
-    // pt-BR should be picked since Android IDs take precedence among multiple fallback options.
+    // 'qq' is picked because it's an Android ID for app strings, so it's always taken as a forced
+    // locale over any fallback options.
+    assertThat(locale.language).isEqualTo("qq")
+    assertThat(locale.country).isEmpty()
+  }
+
+  @Test
+  fun testCreateLocale_appStrings_incompatIetfId_androidAndIetfFallback_returnsFallbackLocale() {
+    val context =
+      createAppStringsContext(
+        language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
+        appStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(
+          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+          ietfBcp47LanguageId = HI_IETF_LANGUAGE_ID
+        ),
+        regionDefinition = REGION_INDIA
+      )
+
+    val locale = androidLocaleFactory.createAndroidLocale(context)
+
+    // pt-BR should be picked because the primary language doesn't match a real locale, and it's not
+    // an Android ID that would take precedence. Beyond that, the fallback's Android ID should take
+    // precedence.
     assertThat(locale.language).isEqualTo("pt")
     assertThat(locale.country).isEqualTo("BR")
   }
 
   @Test
-  fun testCreateLocale_appStrings_incompat_androidMacaronicFallbacks_returnsAndroidIdLocale() {
+  fun testCreateLocale_appStrings_incompatAndroidPrimary_androidMacaronicFallbacks_returnsPrim() {
     val context =
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
@@ -321,9 +363,49 @@ class AndroidLocaleFactoryTest {
 
     val locale = androidLocaleFactory.createAndroidLocale(context)
 
-    // pt-BR should be picked since Android IDs take precedence among multiple fallback options.
+    // 'qq' is picked because it's an Android ID for app strings, so it's always taken as a forced
+    // locale over any fallback options.
+    assertThat(locale.language).isEqualTo("qq")
+    assertThat(locale.country).isEmpty()
+  }
+
+  @Test
+  fun testCreateLocale_appStrings_incompatIetfPrimary_androidMacaronicFallbacks_returnsFallback() {
+    val context =
+      createAppStringsContext(
+        language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
+        appStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(
+          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+          macaronicLanguageId = HI_IN_MACARONIC_LANGUAGE_ID
+        ),
+        regionDefinition = REGION_INDIA
+      )
+
+    val locale = androidLocaleFactory.createAndroidLocale(context)
+
+    // pt-BR should be picked since Android IDs take precedence among multiple fallback options, and
+    // none of the primary options are viable.
     assertThat(locale.language).isEqualTo("pt")
     assertThat(locale.country).isEqualTo("BR")
+  }
+
+  @Test
+  fun testCreateLocale_appStrings_incompatIetfPrimary_incompatAndroidFallback_returnsFallback() {
+    val context =
+      createAppStringsContext(
+        language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
+        appStringId = createLanguageId(ietfBcp47LanguageId = QQ_ZZ_IETF_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
+        regionDefinition = REGION_INDIA
+      )
+
+    val locale = androidLocaleFactory.createAndroidLocale(context)
+
+    // 'qq' is picked over the primary language because it's an Android ID and the primary language
+    // doesn't match any locales.
+    assertThat(locale.language).isEqualTo("qq")
+    assertThat(locale.country).isEmpty()
   }
 
   @Test
@@ -332,7 +414,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        fallbackAppStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         regionDefinition = REGION_INDIA
       )
 
@@ -352,7 +434,7 @@ class AndroidLocaleFactoryTest {
           androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
           ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID
         ),
-        fallbackAppStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         regionDefinition = REGION_INDIA
       )
 
@@ -373,7 +455,7 @@ class AndroidLocaleFactoryTest {
           androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
           macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID
         ),
-        fallbackAppStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         regionDefinition = REGION_INDIA
       )
 
@@ -391,7 +473,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
-        fallbackAppStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         regionDefinition = REGION_INDIA
       )
 
@@ -409,7 +491,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID),
-        fallbackAppStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         regionDefinition = REGION_INDIA
       )
 
@@ -427,7 +509,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.ENGLISH,
         appStringId = createLanguageId(macaronicLanguageId = INVALID_MACARONIC_LANGUAGE_ID),
-        fallbackAppStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
+        fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         regionDefinition = REGION_INDIA
       )
 
@@ -435,7 +517,7 @@ class AndroidLocaleFactoryTest {
       androidLocaleFactory.createAndroidLocale(context)
     }
 
-    assertThat(exception).hasMessageThat().contains("Invalid macaronic ID")
+    assertThat(exception).hasMessageThat().contains("Invalid ID")
   }
 
   @Test
@@ -867,7 +949,7 @@ class AndroidLocaleFactoryTest {
       androidLocaleFactory.createAndroidLocale(context)
     }
 
-    assertThat(exception).hasMessageThat().contains("Invalid macaronic ID")
+    assertThat(exception).hasMessageThat().contains("Invalid ID")
   }
 
   @Test
@@ -1299,7 +1381,7 @@ class AndroidLocaleFactoryTest {
       androidLocaleFactory.createAndroidLocale(context)
     }
 
-    assertThat(exception).hasMessageThat().contains("Invalid macaronic ID")
+    assertThat(exception).hasMessageThat().contains("Invalid ID")
   }
 
   @Test

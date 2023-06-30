@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_PICTURE_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Activity to display profile picture. */
-class ProfilePictureActivity : InjectableAppCompatActivity() {
+class ProfilePictureActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   @Inject
   lateinit var profilePictureActivityPresenter: ProfilePictureActivityPresenter

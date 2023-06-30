@@ -204,6 +204,14 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "\\sInjectableAppCompatActivity\\("
+  failure_message: "Never subclass InjectableAppCompatActivity directly. Instead, use InjectableSystemLocalizedAppCompatActivity or InjectableAutoLocalizedAppCompatActivity."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableSystemLocalizedAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "\\sDialogFragment\\("
   failure_message: "DialogFragment should never be subclassed. Use InjectableDialogFragment, instead."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/fragment/InjectableDialogFragment.kt"
@@ -326,7 +334,7 @@ file_content_checks {
   exempted_file_patterns: "testing/src/main/java/org/oppia/android/testing/junit/.+?\\.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt$"
   prohibited_content_regex: "android\\.content\\.ClipboardManager"
   failure_message: "Don't use Android's ClipboardManager directly. Instead, use ClipboardController."
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileAndDeviceIdFragmentTest.kt"
@@ -343,17 +351,6 @@ file_content_checks {
   file_path_regex: "app/src/main/res/layout.*?/.+?\\.xml"
   prohibited_content_regex: "@color/(?!component_color_).+|\"#\\p{XDigit}+\""
   failure_message: "Only colors from component_colors.xml may be used in layouts."
-}
-file_content_checks {
-  file_path_regex: "app/src/main/res/drawable.*?/.+?\\.xml"
-  prohibited_content_regex: "@color/(?!component_color_).+|\"#\\p{XDigit}+\""
-  failure_message: "Only colors from component_colors.xml may be used in drawables except vector assets."
-  exempted_file_patterns: "app/src/main/res/drawable.*?/(ic_|lesson_thumbnail_graphic_).+?\\.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/full_oppia_logo.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/rounded_white_background_with_shadow.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/profile_image_shadow.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/selected_region_background.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/splash_page.xml"
 }
 file_content_checks {
   file_path_regex: "app/src/main/java/org/oppia/android/app.?/.+(ActivityPresenter|FragmentPresenter|ViewPresenter|Activity|Fragment|View)\\.kt"
@@ -410,7 +407,9 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?Activity.kt"
   failure_message: "Please add a Screen Name for this activity. To do this, add a value in the ScreenName enum of screens.proto and add that name to your activity using Intent.decorateWithScreenName(value) on the activity creation intent."
-  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
+  exempted_file_name:"app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAutoLocalizedAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableSystemLocalizedAppCompatActivity.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing.+?\\.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/devoptions/testing.+?\\.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/testing.+?\\.kt"
@@ -423,14 +422,14 @@ file_content_checks {
   required_content_regex: "decorateWithScreenName\\("
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt$"
   prohibited_content_regex: "WorkManager.getInstance"
   failure_message: "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one using getInstance (as the latter may create a WorkManager if one isn't already present, and the application may intend to disable it)."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
   exempted_file_patterns: ".+?Test\\.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt$"
   prohibited_content_regex: ".+?\\.(post|postDelayed)[\\s]*(\\(|\\{).*?"
   failure_message: "Prefer avoiding post() and postDelayed() methods as they can can lead to subtle and difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when an operation needs to run at a future time. For cases when state needs to be synchronized with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/drawer/NavigationDrawerFragmentPresenter.kt"
@@ -439,4 +438,62 @@ file_content_checks {
   exempted_file_name: "app/src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
+}
+file_content_checks {
+  file_path_regex: "app/src/main/AndroidManifest.xml"
+  required_content_regex: "\\s*<meta-data\\s*android:name\\s*=\\s*\"firebase_analytics_collection_deactivated\"\\s*android:value\\s*=\\s*\"true\"\\s*/>\\s*"
+  failure_message: "Firebase analytics collection should always be explicitly deactivated in develop."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/AndroidManifest.xml"
+  required_content_regex: "\\s*<meta-data\\s*android:name\\s*=\\s*\"firebase_crashlytics_collection_enabled\"\\s*android:value\\s*=\\s*\"false\"\\s*/>\\s*"
+  failure_message: "Firebase crashlytics collection should always be explicitly deactivated in develop."
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt$"
+  prohibited_content_regex: "\\/\\*\\*[^\\*\\/]+?$"
+  failure_message: "Badly formatted KDoc. KDocs should either fit entirely on one line, e.g. \"/** My KDoc. */\" or on multiple lines with the \"/**\" by itself. See other KDocs in the codebase for references."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt$"
+  prohibited_content_regex: "\\/\\*\\*[^\\s].+?\\*\\/$"
+  failure_message: "Badly formatted KDoc. Single-line KDocs should have one space after the \"/**\" and no other characters."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt$"
+  prohibited_content_regex: "\\/\\*\\*\\s{2,}.+?\\*\\/$"
+  failure_message: "Badly formatted KDoc. Single-line KDocs should have exactly one space after the \"/**\"."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt$"
+  prohibited_content_regex: "\\/\\*\\*.+?[^\\s]\\*\\/$"
+  failure_message: "Badly formatted KDoc. Single-line KDocs should always end with a single space before the final \"*/\"."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt$"
+  prohibited_content_regex: "\\/\\*\\*.+?\\s{2,}\\*\\/$"
+  failure_message: "Badly formatted KDoc. Single-line KDocs should always end with exactly one space before the final \"*/\"."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt$"
+  prohibited_content_regex: "\\*\\*/"
+  failure_message: "Badly formatted KDoc or block comment. KDocs and block comments should only end with \"*/\"."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt$"
+  prohibited_content_regex: "@(param|property)\\s+\\["
+  failure_message: "Badly formatted KDoc param or property at-clause: the name of the parameter or property should immediately follow the at-clause without any additional linking with brackets."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt$"
+  prohibited_content_regex: "\\/\\*\\*[^\\*\\/]+?[^\\.\\s]\\s*\\*\\/$"
+  failure_message: "Badly formatted KDoc. Single-line KDocs should end with punctuation."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
