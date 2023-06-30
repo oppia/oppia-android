@@ -1,7 +1,5 @@
 package org.oppia.android.app.topic.revisioncard
 
-import android.content.Context
-import android.view.accessibility.AccessibilityManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -9,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -23,7 +22,6 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 import org.oppia.android.util.accessibility.AccessibilityService
 
 /** The presenter for [RevisionCardActivity]. */

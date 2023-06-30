@@ -1,11 +1,9 @@
 package org.oppia.android.app.topic
 
 import android.app.Application
-import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
 import android.view.View
-import android.view.accessibility.AccessibilityManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -149,7 +147,7 @@ class TopicFragmentTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  var  activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
+  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
@@ -330,8 +328,8 @@ class TopicFragmentTest {
       )
     )
     testCoroutineDispatchers.runCurrent()
+    // setup accessibility manager
     fakeAccessibilityManager.setScreenReaderEnabled(false)
-    //setup accessibility manager
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -350,7 +348,6 @@ class TopicFragmentTest {
       )
     )
     testCoroutineDispatchers.runCurrent()
-    //setup
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)

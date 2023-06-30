@@ -1,6 +1,5 @@
 package org.oppia.android.app.story
 
-import android.content.Context
 import android.content.res.Resources
 import android.text.SpannableString
 import android.text.Spanned
@@ -13,13 +12,13 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.accessibility.AccessibilityManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
@@ -44,7 +43,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import javax.inject.Inject
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
