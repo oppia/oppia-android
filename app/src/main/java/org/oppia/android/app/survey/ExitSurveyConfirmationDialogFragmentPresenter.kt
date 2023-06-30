@@ -50,10 +50,10 @@ class ExitSurveyConfirmationDialogFragmentPresenter @Inject constructor(
   }
 
   private fun closeSurveyDialogAndActivity() {
+    activity.finish()
     fragment.parentFragmentManager.beginTransaction()
       .remove(fragment)
       .commitNow()
-    activity.finish()
   }
 
   private fun endSurveyWithCallback(callback: () -> Unit) {

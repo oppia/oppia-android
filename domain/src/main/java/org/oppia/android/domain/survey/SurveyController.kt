@@ -8,7 +8,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
-import java.util.UUID
+import org.oppia.android.util.data.DataProviders.Companion.transform
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,31 +27,29 @@ private const val CREATE_QUESTIONS_LIST_PROVIDER_ID = "create_questions_list_pro
 class SurveyController @Inject constructor(
   private val dataProviders: DataProviders,
   private val surveyProgressController: SurveyProgressController,
-  private val exceptionsController: ExceptionsController,
-  @TotalQuestionCount private val totalQuestionCount: Int
+  private val exceptionsController: ExceptionsController
 ) {
   private val surveyId = UUID.randomUUID().toString()
-
-  private fun createSurvey(): DataProvider<Survey> {
-    return dataProviders.createInMemoryDataProvider(CREATE_SURVEY_PROVIDER_ID) {
-      Survey.newBuilder()
-        .setSurveyId(surveyId)
-        .build()
-    }
-  }
 
   /**
    * Starts a new survey session with a list of questions.
    *
+   * @property mandatoryQuestionNames a list of uniques names of the questions that will be
+   * generated for this survey. Callers should be aware that the order of questions is important as
+   * the list will be indexed and displayed in the provided order.
    * @return a [DataProvider] indicating whether the session start was successful
    */
-  fun startSurveySession(): DataProvider<Any?> {
+  fun startSurveySession(
+    mandatoryQuestionNames: List<SurveyQuestionName>
+  ): DataProvider<Any?> {
     return try {
-      val createSurveyDataProvider = createSurvey()
+      val createSurveyDataProvider =
+        createSurvey(mandatoryQuestionNames)
       val questionsListDataProvider =
-        dataProviders.createInMemoryDataProvider(CREATE_QUESTIONS_LIST_PROVIDER_ID) {
-          createSurveyQuestions()
+        createSurveyDataProvider.transform(CREATE_QUESTIONS_LIST_PROVIDER_ID) { survey ->
+          survey.mandatoryQuestionsList + survey.optionalQuestion
         }
+
       val beginSessionDataProvider =
         surveyProgressController.beginSurveySession(questionsListDataProvider)
 
@@ -65,15 +64,25 @@ class SurveyController @Inject constructor(
     }
   }
 
-  private fun createSurveyQuestions(): List<SurveyQuestion> {
-    return SurveyQuestionName.values()
-      .filter { it.isValid() }
-      .mapIndexed { index, questionName ->
-        createSurveyQuestion(
-          index.toString(),
-          questionName
-        )
-      }.take(totalQuestionCount)
+  private fun createSurvey(
+    mandatoryQuestionNames: List<SurveyQuestionName>
+  ): DataProvider<Survey> {
+    val mandatoryQuestionsList = mandatoryQuestionNames.mapIndexed { index, questionName ->
+      createSurveyQuestion(index.toString(), questionName)
+    }
+
+    // The questionId corresponds to the order of the questions in list, so the optional question
+    // will always come at the end of the list.
+    val defaultOptionalQuestion =
+      createDefaultFeedbackQuestion(mandatoryQuestionsList.size.toString())
+
+    return dataProviders.createInMemoryDataProvider(CREATE_SURVEY_PROVIDER_ID) {
+      Survey.newBuilder()
+        .setSurveyId(surveyId)
+        .addAllMandatoryQuestions(mandatoryQuestionsList)
+        .setOptionalQuestion(defaultOptionalQuestion)
+        .build()
+    }
   }
 
   private fun createSurveyQuestion(
@@ -83,6 +92,16 @@ class SurveyController @Inject constructor(
     return SurveyQuestion.newBuilder()
       .setQuestionId(questionId)
       .setQuestionName(questionName)
+      .build()
+  }
+
+  private fun createDefaultFeedbackQuestion(
+    questionId: String
+  ): SurveyQuestion {
+    return SurveyQuestion.newBuilder()
+      .setQuestionId(questionId)
+      .setQuestionName(SurveyQuestionName.PROMOTER_FEEDBACK)
+      .setFreeFormText(true)
       .build()
   }
 

@@ -25,6 +25,7 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
@@ -547,12 +548,12 @@ class StateFragmentPresenter @Inject constructor(
             }
             is AsyncResult.Success -> {
               if (gatingResult.value) {
-                val dialogFragment = SurveyWelcomeDialogFragment.newInstance(profileId, topicId)
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(profileId, topicId, SURVEY_QUESTIONS)
                 val transaction = activity.supportFragmentManager.beginTransaction()
                 transaction
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                  .addToBackStack(null)
-                  .commit()
+                  .commitNow()
               } else {
                 (activity as StopStatePlayingSessionWithSavedProgressListener)
                   .deleteCurrentProgressAndStopSession(isCompletion = true)
@@ -583,5 +584,13 @@ class StateFragmentPresenter @Inject constructor(
         bounceInterpolator.getInterpolation(1f - input * 2f)
       } else bounceInterpolator.getInterpolation(input * 2f - 1f)
     }
+  }
+
+  companion object {
+    private val SURVEY_QUESTIONS = listOf(
+      SurveyQuestionName.USER_TYPE,
+      SurveyQuestionName.MARKET_FIT,
+      SurveyQuestionName.NPS
+    )
   }
 }

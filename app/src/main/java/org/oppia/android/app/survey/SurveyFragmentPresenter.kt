@@ -280,8 +280,8 @@ class SurveyFragmentPresenter @Inject constructor(
             val transaction = activity.supportFragmentManager.beginTransaction()
             transaction
               .add(dialogFragment, TAG_SURVEY_OUTRO_DIALOG)
-              .addToBackStack(null)
               .commit()
+            activity.supportFragmentManager.executePendingTransactions()
           }
         }
       }

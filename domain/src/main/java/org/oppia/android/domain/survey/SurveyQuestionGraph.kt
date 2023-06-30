@@ -13,15 +13,14 @@ class SurveyQuestionGraph constructor(
   /** Decides which feedback question should be shown based on a user's nps score selection. */
   fun computeFeedbackQuestion(index: Int, npsScore: Int) {
     when (npsScore) {
-      in 9..10 -> questionList[index] = createQuestion(index, SurveyQuestionName.PROMOTER_FEEDBACK)
-      in 7..8 -> questionList[index] = createQuestion(index, SurveyQuestionName.PASSIVE_FEEDBACK)
-      else -> questionList[index] = createQuestion(index, SurveyQuestionName.DETRACTOR_FEEDBACK)
+      in 9..10 -> questionList[index] = createQuestion(SurveyQuestionName.PROMOTER_FEEDBACK)
+      in 7..8 -> questionList[index] = createQuestion(SurveyQuestionName.PASSIVE_FEEDBACK)
+      else -> questionList[index] = createQuestion(SurveyQuestionName.DETRACTOR_FEEDBACK)
     }
   }
 
-  private fun createQuestion(questionId: Int, questionName: SurveyQuestionName): SurveyQuestion {
+  private fun createQuestion(questionName: SurveyQuestionName): SurveyQuestion {
     return SurveyQuestion.newBuilder()
-      .setQuestionId(questionId.toString())
       .setQuestionName(questionName)
       .build()
   }

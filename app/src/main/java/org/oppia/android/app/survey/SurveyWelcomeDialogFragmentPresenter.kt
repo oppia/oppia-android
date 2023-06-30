@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.databinding.SurveyWelcomeDialogFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.survey.SurveyController
@@ -29,7 +30,8 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileId: ProfileId,
-    topicId: String
+    topicId: String,
+    questionNames: List<SurveyQuestionName>,
   ): View {
     val binding =
       SurveyWelcomeDialogFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -37,18 +39,25 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     binding.lifecycleOwner = fragment
 
     binding.beginSurveyButton.setOnClickListener {
-      startSurveySession(profileId, topicId)
+      startSurveySession(profileId, topicId, questionNames)
     }
 
     binding.maybeLaterButton.setOnClickListener {
-      activity.supportFragmentManager.popBackStack()
+      activity.finish()
+      activity.supportFragmentManager.beginTransaction()
+        .remove(fragment)
+        .commitNow()
     }
 
     return binding.root
   }
 
-  private fun startSurveySession(profileId: ProfileId, topicId: String) {
-    val startDataProvider = surveyController.startSurveySession()
+  private fun startSurveySession(
+    profileId: ProfileId,
+    topicId: String,
+    questions: List<SurveyQuestionName>
+  ) {
+    val startDataProvider = surveyController.startSurveySession(questions)
     startDataProvider.toLiveData().observe(
       activity,
       {
@@ -65,10 +74,12 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
           }
           is AsyncResult.Success -> {
             oppiaLogger.d("SurveyWelcomeDialogFragment", "Successfully started a survey session")
-            fragment.parentFragmentManager.popBackStack()
             val intent =
-              SurveyActivity.createSurveyActivityIntent(fragment.activity!!, profileId, topicId)
+              SurveyActivity.createSurveyActivityIntent(activity, profileId, topicId)
             fragment.startActivity(intent)
+            activity.finish()
+            val transaction = activity.supportFragmentManager.beginTransaction()
+            transaction.remove(fragment).commitAllowingStateLoss()
           }
         }
       }

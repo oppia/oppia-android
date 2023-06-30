@@ -14,8 +14,11 @@ message Survey {
   // This field is used to retrieve information about a survey, and should be treated as read-only.
   string survey_id = 1;
 
-  // A list of questions that make up the survey.
-  repeated SurveyQuestion questions = 2;
+  // A list of questions which if not answered in full, the survey is considered incomplete.
+  repeated SurveyQuestion mandatory_questions = 2;
+
+  // An optional question that allows the user to provide additional feedback during the survey.
+  SurveyQuestion optional_question = 3;
 }
 
 // Represents a question that is part of the Survey.
@@ -56,7 +59,7 @@ enum SurveyQuestionName {
   // Corresponds to the name of the user type question.
   USER_TYPE = 1;
 
-  //  Corresponds to the market fit question.
+  // Corresponds to the market fit question.
   MARKET_FIT = 2;
 
   // Corresponds to the NPS question.
@@ -128,10 +131,10 @@ enum UserTypeAnswer {
   // Corresponds to a user who is a learner.
   LEARNER = 1;
 
-  // Corresponds to a user who is a parent.
+  // Corresponds to a user who is a teacher.
   TEACHER = 2;
 
-  // Corresponds to a user who is a teacher.
+  // Corresponds to a user who is a parent.
   PARENT = 3;
 
   // Corresponds to an unspecified or unknown type of user.

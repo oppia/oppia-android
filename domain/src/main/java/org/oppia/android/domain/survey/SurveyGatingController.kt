@@ -47,6 +47,7 @@ class SurveyGatingController @Inject constructor(
     return lastShownDateProvider.combineWith(
       learningTimeProvider, GATING_RESULT_PROVIDER_ID
     ) { lastShownTimestampMs, learningTimeMs ->
+      println("learning time = ${TimeUnit.MILLISECONDS.toMinutes(learningTimeMs)}")
       isSurveyGracePeriodEnded(lastShownTimestampMs) &&
         hasReachedMinimumTopicLearningThreshold(learningTimeMs) &&
         isWithinSurveyTimeWindow()

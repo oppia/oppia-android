@@ -14,7 +14,7 @@ class SurveyProgress {
     SurveyQuestionGraph(questionsList as MutableList)
   }
   val questionDeck: SurveyQuestionDeck by lazy {
-    SurveyQuestionDeck(getTotalQuestionCount(), questionsList.first(), this::isTopQuestionTerminal)
+    SurveyQuestionDeck(getTotalQuestionCount(), getInitialQuestion(), this::isTopQuestionTerminal)
   }
 
   /** Initialize the survey with the specified list of questions. */
@@ -28,6 +28,9 @@ class SurveyProgress {
   private fun getCurrentQuestionIndex(): Int {
     return questionDeck.getTopQuestionIndex()
   }
+
+  /** Returns the first question in the list. */
+  private fun getInitialQuestion(): SurveyQuestion = questionsList.first()
 
   /** Returns the number of questions in the survey. */
   fun getTotalQuestionCount(): Int {
@@ -88,6 +91,7 @@ class SurveyProgress {
   private fun isTopQuestionTerminal(
     @Suppress("UNUSED_PARAMETER") surveyQuestion: SurveyQuestion
   ): Boolean {
+    println("question count = ${getTotalQuestionCount()}, index = ${getCurrentQuestionIndex()}")
     return questionDeck.isCurrentQuestionTopOfDeck() &&
       getCurrentQuestionIndex() == getTotalQuestionCount().minus(1)
   }
