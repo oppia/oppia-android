@@ -43,7 +43,8 @@ class ApplicationLifecycleObserver @Inject constructor(
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @EnablePerformanceMetricsCollection
-  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>
+  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
+  private val applicationLifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
 
   /**
@@ -92,6 +93,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
+    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInForeground)
     val timeDifferenceMs = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
@@ -106,6 +108,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
+    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInBackground)
     firstTimestamp = oppiaClock.getCurrentTimeMs()
     if (enablePerformanceMetricsCollection.value) {
       cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)

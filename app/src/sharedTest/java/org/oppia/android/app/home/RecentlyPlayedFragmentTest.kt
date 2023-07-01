@@ -87,6 +87,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.exploration.testing.FakeExplorationRetriever
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -1499,7 +1500,7 @@ class RecentlyPlayedFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

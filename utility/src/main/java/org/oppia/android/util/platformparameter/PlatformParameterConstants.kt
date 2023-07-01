@@ -320,3 +320,42 @@ const val LOWEST_SUPPORTED_API_LEVEL = "lowest_supported_api_level"
  * The current minimum supported API level is 19 (KitKat).
  */
 const val LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE = 19
+
+/**
+ * Qualifier for the platform parameter that controls the time interval in days between showing
+ * subsequent NPS surveys.
+ */
+@Qualifier
+annotation class NpsSurveyGracePeriodInDays
+
+/**
+ * Name of the platform parameter that controls the time interval in days between showing subsequent
+ * NPS surveys.
+ */
+const val NPS_SURVEY_GRACE_PERIOD_IN_DAYS = "nps_survey_grace_period_in_days"
+
+/** Default value of the time interval in days between showing subsequent NPS surveys. */
+const val NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE = 30
+
+/**
+ * Qualifier for the platform parameter that controls the minimum learning time in a topic, in
+ * minutes, that indicates a learner has had sufficient interaction with the app to be able to
+ * provide informed feedback about their experience with the app.
+ */
+@Qualifier
+annotation class NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+
+/**
+ * Name of the platform parameter that controls the minimum learning time in a topic, in
+ * minutes, that indicates a learner has had sufficient interaction with the app to be able to
+ * provide informed feedback about their experience with the app.
+ */
+const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES =
+  "nps_survey_minimum_aggregate_learning_time_in_a_topic_in_minutes"
+
+/**
+ * Default value of the minimum learning time in a topic, in minutes, that indicates a learner has
+ * had sufficient interaction with the app to be able to provide informed feedback about their
+ * experience with the app.
+ */
+const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL = 5
