@@ -14,7 +14,7 @@ class MultipleChoiceOptionContentViewModel(
   fun handleItemClicked() {
     val isCurrentlySelected = isAnswerSelected.get()
     val shouldNowBeSelected =
-      optionsViewModel.updateSelection(itemIndex, isCurrentlySelected)
+      optionsViewModel.updateSelection(itemIndex)
     if (isCurrentlySelected != shouldNowBeSelected) {
       isAnswerSelected.set(shouldNowBeSelected)
     }

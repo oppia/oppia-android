@@ -67,11 +67,11 @@ class SurveyFragment :
     surveyFragmentPresenter.updateNextButton(inputAnswerAvailable)
   }
 
-  override fun getPendingAnswer(selectedAnswer: SurveySelectedAnswer) {
+  override fun getMultipleChoiceAnswer(selectedAnswer: SurveySelectedAnswer) {
     surveyFragmentPresenter.getPendingAnswer(selectedAnswer)
   }
 
-  override fun getFreeFormAnswer(selectedAnswer: SurveySelectedAnswer) {
-    surveyFragmentPresenter.submitFreeFormAnswer(selectedAnswer)
+  override fun getFreeFormAnswer(answer: SurveySelectedAnswer) {
+    surveyFragmentPresenter.submitFreeFormAnswer(answer)
   }
 }

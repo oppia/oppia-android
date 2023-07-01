@@ -18,7 +18,7 @@ class NpsItemsViewModel @Inject constructor(
 
   private val selectedItems: MutableList<Int> = mutableListOf()
 
-  override fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
+  override fun updateSelection(itemIndex: Int): Boolean {
     optionItems.forEach { item -> item.isAnswerSelected.set(false) }
     if (!selectedItems.contains(itemIndex)) {
       selectedItems.clear()
@@ -26,7 +26,13 @@ class NpsItemsViewModel @Inject constructor(
     } else {
       selectedItems.clear()
     }
+
     updateIsAnswerAvailable()
+
+    if (selectedItems.isNotEmpty()) {
+      getPendingAnswer(itemIndex)
+    }
+
     return selectedItems.isNotEmpty()
   }
 
@@ -39,28 +45,24 @@ class NpsItemsViewModel @Inject constructor(
           selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
             selectedItems.isNotEmpty()
           )
-          getPendingAnswer()
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
   private fun updateIsAnswerAvailable() {
-    val wasSelectedItemListEmpty = isAnswerAvailable.get()
-    if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
+    val selectedItemListWasEmpty = isAnswerAvailable.get()
+    if (selectedItems.isNotEmpty() != selectedItemListWasEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
     }
   }
 
-  private fun getPendingAnswer() {
-    if (selectedItems.isNotEmpty()) {
-      val npsScore = selectedItems.first()
-      val answer = SurveySelectedAnswer.newBuilder()
-        .setQuestionName(SurveyQuestionName.NPS)
-        .setNpsScore(npsScore)
-        .build()
-      answerHandler.getPendingAnswer(answer)
-    }
+  private fun getPendingAnswer(npsScore: Int) {
+    val answer = SurveySelectedAnswer.newBuilder()
+      .setQuestionName(SurveyQuestionName.NPS)
+      .setNpsScore(npsScore)
+      .build()
+    answerHandler.getMultipleChoiceAnswer(answer)
   }
 
   private fun getNpsOptions(): ObservableArrayList<MultipleChoiceOptionContentViewModel> {

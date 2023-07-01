@@ -23,7 +23,7 @@ class UserTypeItemsViewModel @Inject constructor(
 
   private val selectedItems: MutableList<Int> = mutableListOf()
 
-  override fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
+  override fun updateSelection(itemIndex: Int): Boolean {
     optionItems.forEach { item -> item.isAnswerSelected.set(false) }
     if (!selectedItems.contains(itemIndex)) {
       selectedItems.clear()
@@ -31,7 +31,13 @@ class UserTypeItemsViewModel @Inject constructor(
     } else {
       selectedItems.clear()
     }
+
     updateIsAnswerAvailable()
+
+    if (selectedItems.isNotEmpty()) {
+      getPendingAnswer(itemIndex)
+    }
+
     return selectedItems.isNotEmpty()
   }
 
@@ -44,29 +50,26 @@ class UserTypeItemsViewModel @Inject constructor(
           selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
             selectedItems.isNotEmpty()
           )
-          getPendingAnswer()
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
   private fun updateIsAnswerAvailable() {
-    val wasSelectedItemListEmpty = isAnswerAvailable.get()
-    if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
+    val selectedItemListWasEmpty = isAnswerAvailable.get()
+    if (selectedItems.isNotEmpty() != selectedItemListWasEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
     }
   }
 
-  private fun getPendingAnswer() {
-    if (selectedItems.isNotEmpty()) {
-      val typeCase = selectedItems.first() + 1
-      val answerValue = UserTypeAnswer.forNumber(typeCase)
-      val answer = SurveySelectedAnswer.newBuilder()
-        .setQuestionName(SurveyQuestionName.USER_TYPE)
-        .setUserType(answerValue)
-        .build()
-      answerHandler.getPendingAnswer(answer)
-    }
+  fun getPendingAnswer(itemIndex: Int) {
+    val typeCase = itemIndex + 1
+    val answerValue = UserTypeAnswer.forNumber(typeCase)
+    val answer = SurveySelectedAnswer.newBuilder()
+      .setQuestionName(SurveyQuestionName.USER_TYPE)
+      .setUserType(answerValue)
+      .build()
+    answerHandler.getMultipleChoiceAnswer(answer)
   }
 
   private fun getUserTypeOptions(): ObservableArrayList<MultipleChoiceOptionContentViewModel> {

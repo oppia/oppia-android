@@ -11,7 +11,7 @@ import org.oppia.android.app.survey.SelectedAnswerHandler
 import javax.inject.Inject
 
 class FreeFormItemsViewModel @Inject constructor(
-  private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
+  private val answerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
   private val questionName: SurveyQuestionName,
   private val answerHandler: SelectedAnswerHandler
 ) : SurveyAnswerItemViewModel(ViewType.FREE_FORM_ANSWER) {
@@ -22,7 +22,7 @@ class FreeFormItemsViewModel @Inject constructor(
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-          selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
+          answerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
             answerText.isNotEmpty()
           )
         }
@@ -49,10 +49,6 @@ class FreeFormItemsViewModel @Inject constructor(
   }
 
   fun handleSubmitButtonClicked() {
-    getPendingAnswer()
-  }
-
-  private fun getPendingAnswer() {
     if (answerText.isNotEmpty()) {
       val answer = SurveySelectedAnswer.newBuilder()
         .setQuestionName(questionName)

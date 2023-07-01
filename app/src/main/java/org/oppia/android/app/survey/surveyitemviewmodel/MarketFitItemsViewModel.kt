@@ -23,7 +23,7 @@ class MarketFitItemsViewModel @Inject constructor(
 
   private val selectedItems: MutableList<Int> = mutableListOf()
 
-  override fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
+  override fun updateSelection(itemIndex: Int): Boolean {
     optionItems.forEach { item -> item.isAnswerSelected.set(false) }
     if (!selectedItems.contains(itemIndex)) {
       selectedItems.clear()
@@ -31,7 +31,13 @@ class MarketFitItemsViewModel @Inject constructor(
     } else {
       selectedItems.clear()
     }
+
     updateIsAnswerAvailable()
+
+    if (selectedItems.isNotEmpty()) {
+      getPendingAnswer(itemIndex)
+    }
+
     return selectedItems.isNotEmpty()
   }
 
@@ -44,29 +50,26 @@ class MarketFitItemsViewModel @Inject constructor(
           selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
             selectedItems.isNotEmpty()
           )
-          getPendingAnswer()
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
   private fun updateIsAnswerAvailable() {
-    val wasSelectedItemListEmpty = isAnswerAvailable.get()
-    if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
+    val selectedItemListWasEmpty = isAnswerAvailable.get()
+    if (selectedItems.isNotEmpty() != selectedItemListWasEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
     }
   }
 
-  private fun getPendingAnswer() {
-    if (selectedItems.isNotEmpty()) {
-      val typeCase = selectedItems.first() + 1
-      val answerValue = MarketFitAnswer.forNumber(typeCase)
-      val answer = SurveySelectedAnswer.newBuilder()
-        .setQuestionName(SurveyQuestionName.MARKET_FIT)
-        .setMarketFit(answerValue)
-        .build()
-      answerHandler.getPendingAnswer(answer)
-    }
+  private fun getPendingAnswer(itemIndex: Int) {
+    val typeCase = itemIndex + 1
+    val answerValue = MarketFitAnswer.forNumber(typeCase)
+    val answer = SurveySelectedAnswer.newBuilder()
+      .setQuestionName(SurveyQuestionName.MARKET_FIT)
+      .setMarketFit(answerValue)
+      .build()
+    answerHandler.getMultipleChoiceAnswer(answer)
   }
 
   private fun getMarketFitOptions(): ObservableList<MultipleChoiceOptionContentViewModel> {
