@@ -55,7 +55,7 @@ class DeprecationController @Inject constructor(
     deprecationStore.primeInMemoryAndDiskCacheAsync(
       updateMode = PersistentCacheStore.UpdateMode.UPDATE_ALWAYS,
       publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
-    ) .invokeOnCompletion { primeFailure ->
+    ).invokeOnCompletion { primeFailure ->
       primeFailure?.let {
         oppiaLogger.e(
           "DeprecationController",
@@ -69,7 +69,9 @@ class DeprecationController @Inject constructor(
   private val deprecationDataProvider by lazy { fetchDeprecationProvider() }
 
   private fun fetchDeprecationProvider(): DataProvider<DeprecationResponseDatabase> {
-    return deprecationStore.transform(GET_DEPRECATION_RESPONSE_PROVIDER_ID) { deprecationResponsesDatabase ->
+    return deprecationStore.transform(
+      GET_DEPRECATION_RESPONSE_PROVIDER_ID
+    ) { deprecationResponsesDatabase ->
       DeprecationResponseDatabase.newBuilder().apply {
         appDeprecationResponse = deprecationResponsesDatabase.appDeprecationResponse
         osDeprecationResponse = deprecationResponsesDatabase.osDeprecationResponse
