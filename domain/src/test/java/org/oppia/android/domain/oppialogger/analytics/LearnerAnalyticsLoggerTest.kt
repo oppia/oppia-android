@@ -32,6 +32,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -1827,7 +1828,7 @@ class LearnerAnalyticsLoggerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      CachingTestModule::class
+      CachingTestModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
