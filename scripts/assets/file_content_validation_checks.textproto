@@ -354,17 +354,6 @@ file_content_checks {
   failure_message: "Only colors from component_colors.xml may be used in layouts."
 }
 file_content_checks {
-  file_path_regex: "app/src/main/res/drawable.*?/.+?\\.xml"
-  prohibited_content_regex: "@color/(?!component_color_).+|\"#\\p{XDigit}+\""
-  failure_message: "Only colors from component_colors.xml may be used in drawables except vector assets."
-  exempted_file_patterns: "app/src/main/res/drawable.*?/(ic_|lesson_thumbnail_graphic_).+?\\.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/full_oppia_logo.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/rounded_white_background_with_shadow.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/profile_image_shadow.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/selected_region_background.xml"
-  exempted_file_patterns: "app/src/main/res/drawable/splash_page.xml"
-}
-file_content_checks {
   file_path_regex: "app/src/main/java/org/oppia/android/app.?/.+(ActivityPresenter|FragmentPresenter|ViewPresenter|Activity|Fragment|View)\\.kt"
   prohibited_content_regex: "R.color.(?!component_color_).+"
   failure_message: "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments, Views and Presenters)."

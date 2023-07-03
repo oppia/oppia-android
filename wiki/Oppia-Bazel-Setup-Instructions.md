@@ -12,44 +12,19 @@
 ## Overview
 Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. It uses a human-readable, high-level build language.
 
-## Installation
+### Installation
 
 **WARNING: We recommend to not use the Android Studio Bazel plugin since it currently has compatibility issues with the project.**
 
-**NOTE: If you're using Windows, please follow [these instructions](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows) instead.**
+**Instructions for setting up Bazel on different Operating Systems:**
 
-Instructions for setting up Bazel on Unix-based machines:
+- [For Windows/Ubuntu/Fedora](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows)
+- [For Mac including M1/M2](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Mac)
+- [For Linux](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Linux)
 
-1. Install Bazel from [here](https://docs.bazel.build/versions/master/install.html). Make sure that you follow the instructions for installing a specific version (Oppia Android requires 4.0.0 and won't build on other versions).
-    - As of February 2023 we have verified that on Ubuntu (and similar systems) the [apt repository approach](https://bazel.build/install/ubuntu#install-on-ubuntu) works, you just need to make sure to do `sudo apt install bazel-4.0.0` as the latest command to install the correct version.
-    - Note: if you find any errors related to `cURL`, please set up cURL on your machine. For Linux, you can use `sudo apt install curl`.
+### Building the app
 
-
-2. Oppia Android also requires OpenJDK 8. The Bazel installation instructions above include [sections on installing OpenJDK](https://docs.bazel.build/versions/main/tutorial/java.html#install-the-jdk) on different platforms. 
-
-   - For example, if you're using Ubuntu or another Debian-based system, you can run the following to install OpenJDK 8:
-
-     ```sh
-     sudo apt install openjdk-8-jdk
-     ```
-
-   - For MacOS M1, follow the instructions [here](https://installvirtual.com/install-openjdk-8-on-mac-using-brew-adoptopenjdk/). Note that, this requires installation of brew as a pre-requisite, which can be done by following the instructions [here](https://mac.install.guide/homebrew/index.html).
-   
-    You can confirm that this is set up using the command `java -version`, which should result in three lines being printed out with the first one showing "openjdk version "1.8.0_292".
-
-3. Ensure that you have Python 2 installed and make sure that it is currently active on your environment. You can do this by using the ``python --version`` command which should show Python 2.X.X. If it doesn’t, click [here](https://linuxconfig.org/install-python-2-on-ubuntu-20-04-focal-fossa-linux) for a resource on how to install and update Ubuntu to use Python 2 (other distros may vary in this step slightly).
-
-4. Ensure that your `ANDROID_HOME` environment variable is set to the location of your Android SDK. To do this, find the path to the installed SDK using Android Studio’s SDK Manager (install SDK 28). Assuming the SDK is installed to default locations, you can use the following commands to set the `ANDROID_HOME` variable:<br>
-    - Linux: `export ANDROID_HOME=$HOME/Android/Sdk/`<br>
-    - macOS: `export ANDROID_HOME=$HOME/Library/Android/sdk`
-    - **Make sure you have the system environment variable set up** for ``ANDROID_HOME`` as you might have issues getting properly set up if not. If it isn’t set up (on Linux you can check by using ``echo $ANDROID_HOME`` in a new terminal; it should output the correct path to your Android SDK), on Linux you can move the ``export`` from above to your ``~/.bashrc`` file to make it permanent (you can apply the change immediately using ``source ~/.bashrc``).
-
-5. Follow the instructions in [oppia-bazel-tools](https://github.com/oppia/oppia-bazel-tools).
-
-
-#### Building the app
-
-After the installation, completes you can build the app using Bazel. 
+After the installation completes you can build the app using Bazel. 
 
 **Move your command line head to the `~/opensource/oppia-android`**, then run the below bazel command:
 
