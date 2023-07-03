@@ -13,8 +13,8 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val DEPRECATION_PROVIDER_ID = "deprecation_data_provider_id"
-private const val ADD_DEPRECATION_PROVIDER_ID = "add_deprecation_data_provider_id"
+private const val GET_DEPRECATION_RESPONSE_PROVIDER_ID = "get_deprecation_response_provider_id"
+private const val ADD_DEPRECATION_RESPONSE_PROVIDER_ID = "add_deprecation_response_provider_id"
 
 /**
  * Controller for persisting and retrieving the user's deprecation responses. This will be used to
@@ -26,9 +26,7 @@ class DeprecationController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val dataProviders: DataProviders
 ) {
-  /**
-   * Create an instance of [PersistentCacheStore] that contains a [DeprecationResponseDatabase].
-   */
+  /** Create an instance of [PersistentCacheStore] that contains a [DeprecationResponseDatabase]. */
   private val deprecationStore by lazy {
     cacheStoreFactory.create(
       "deprecation_store",
@@ -36,34 +34,28 @@ class DeprecationController @Inject constructor(
     )
   }
 
-  /**
-   * Enum states for the possible outcomes of a deprecation action.
-   */
-  private enum class DeprecationActionStatus {
+  /** Enum states for the possible outcomes of a deprecation action. */
+  private enum class DeprecationResponseActionStatus {
     /** Indicates that the deprecation operation succeeded. */
     SUCCESS,
 
-    /** Indicates that a deprecation write operation failed. */
+    /** Indicates that the deprecation response write/store operation succeeded. */
     FAILED_TO_STORE_DEPRECATION_RESPONSE,
 
     /**
-     * Indicates that a deprecation read operation failed. This is usually the result when a
-     * requested [DeprecationResponse] was not found.
+     * Indicates that a deprecation response read operation failed. This is usually the result when
+     * a requested [DeprecationResponse] was not found.
      */
     DEPRECATION_RESPONSE_NOT_FOUND
   }
 
   init {
-    /**
-     * Prime the cache ahead of time so that the deprecation response can be retrieved
-     * synchronously.
-     */
+    // Prime the cache ahead of time so that the deprecation response can be retrieved
+    // synchronously.
     deprecationStore.primeInMemoryAndDiskCacheAsync(
       updateMode = PersistentCacheStore.UpdateMode.UPDATE_ALWAYS,
       publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
-    ) {
-      it.toBuilder().build()
-    }.invokeOnCompletion { primeFailure ->
+    ) .invokeOnCompletion { primeFailure ->
       primeFailure?.let {
         oppiaLogger.e(
           "DeprecationController",
@@ -74,10 +66,10 @@ class DeprecationController @Inject constructor(
     }
   }
 
-  private val deprecationDataProvider by lazy { computeDeprecationProvider() }
+  private val deprecationDataProvider by lazy { fetchDeprecationProvider() }
 
-  private fun computeDeprecationProvider(): DataProvider<DeprecationResponseDatabase> {
-    return deprecationStore.transform(DEPRECATION_PROVIDER_ID) { deprecationResponsesDatabase ->
+  private fun fetchDeprecationProvider(): DataProvider<DeprecationResponseDatabase> {
+    return deprecationStore.transform(GET_DEPRECATION_RESPONSE_PROVIDER_ID) { deprecationResponsesDatabase ->
       DeprecationResponseDatabase.newBuilder().apply {
         appDeprecationResponse = deprecationResponsesDatabase.appDeprecationResponse
         osDeprecationResponse = deprecationResponsesDatabase.osDeprecationResponse
@@ -97,26 +89,21 @@ class DeprecationController @Inject constructor(
    * @param deprecationResponse the deprecation response to be stored.
    * @return [AsyncResult] of the deprecation action.
    */
-  fun setDeprecationResponse(deprecationResponse: DeprecationResponse): DataProvider<Any?> {
+  fun saveDeprecationResponse(deprecationResponse: DeprecationResponse): DataProvider<Any?> {
     val deferred = deprecationStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
-    ) {
-      val deprecationBuilder = if (deprecationResponse.deprecationNoticeType
-        == DeprecationNoticeType.APP_DEPRECATION
-      ) {
-        it.toBuilder()
-          .setAppDeprecationResponse(deprecationResponse)
-          .build()
-      } else {
-        it.toBuilder()
-          .setOsDeprecationResponse(deprecationResponse)
-          .build()
+    ) { deprecationResponseDb ->
+      val deprecationBuilder = deprecationResponseDb.toBuilder().apply {
+        if (deprecationResponse.deprecationNoticeType == DeprecationNoticeType.APP_DEPRECATION)
+          appDeprecationResponse = deprecationResponse
+        else
+          osDeprecationResponse = deprecationResponse
       }
-
-      Pair(deprecationBuilder, DeprecationActionStatus.SUCCESS)
+        .build()
+      Pair(deprecationBuilder, DeprecationResponseActionStatus.SUCCESS)
     }
 
-    return dataProviders.createInMemoryDataProviderAsync(ADD_DEPRECATION_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(ADD_DEPRECATION_RESPONSE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(deferred)
     }
   }
@@ -124,18 +111,18 @@ class DeprecationController @Inject constructor(
   /**
    * Retrieves the [DeprecationResponse] from the cache.
    *
-   * @param deferred a deferred instance of the [DeprecationActionStatus].
+   * @param deferred a deferred instance of the [DeprecationResponseActionStatus].
    * @return [AsyncResult].
    */
   private suspend fun getDeferredResult(
-    deferred: Deferred<DeprecationActionStatus>
+    deferred: Deferred<DeprecationResponseActionStatus>
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
-      DeprecationActionStatus.SUCCESS -> AsyncResult.Success(null)
-      DeprecationActionStatus.FAILED_TO_STORE_DEPRECATION_RESPONSE -> AsyncResult.Failure(
+      DeprecationResponseActionStatus.SUCCESS -> AsyncResult.Success(null)
+      DeprecationResponseActionStatus.FAILED_TO_STORE_DEPRECATION_RESPONSE -> AsyncResult.Failure(
         Exception("Failed to store deprecation response")
       )
-      DeprecationActionStatus.DEPRECATION_RESPONSE_NOT_FOUND -> AsyncResult.Failure(
+      DeprecationResponseActionStatus.DEPRECATION_RESPONSE_NOT_FOUND -> AsyncResult.Failure(
         Exception("Deprecation response not found")
       )
     }

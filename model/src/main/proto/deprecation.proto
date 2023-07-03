@@ -7,20 +7,18 @@ import "version.proto";
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
-
-// Top-level proto used to store deprecation responses. This proto is used to store the response to
-// a dialog notifying the user of an optional update, as well as the response to a dialog notifying
-// the user of an OS deprecation.
+// Top-level proto used to store deprecation responses, which correspond to a user's interaction
+// with a dialog notifying them of either an optional update or of an OS deprecation.
 message DeprecationResponseDatabase {
-    // Stores the response to a dialog notifying the user that an optional update is available for
-    // download.
+    // Stores a user's response to a dialog notifying the user that an optional update is available
+    // for download.
     DeprecationResponse app_deprecation_response = 1;
 
-    // Stores the response to a dialog notifying the user that their OS is deprecated.
+    // Stores a user's response to a dialog notifying the user that their OS is deprecated.
     DeprecationResponse os_deprecation_response = 2;
 }
 
-// Holds the response to a dialog notifying the user that an optional update is available for
+// Represents a response to a dialog notifying the user that an optional update is available for
 // download, or that their OS is deprecated.
 message DeprecationResponse {
     // The app version of the latest available update at the time the user dismissed a deprecation

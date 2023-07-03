@@ -11,7 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.BuildFlavor
@@ -59,11 +58,6 @@ class DeprecationControllerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  @Before
-  fun setUp() {
-    TestModule.buildFlavor = BuildFlavor.BUILD_FLAVOR_UNSPECIFIED
-  }
-
   @Test
   fun testController_providesInitialState_indicatesNoUpdatesReceivedFromGatingConsole() {
     val defaultDeprecationResponseDatabase = DeprecationResponseDatabase
@@ -92,7 +86,7 @@ class DeprecationControllerTest {
         deprecationNoticeType = DeprecationNoticeType.APP_DEPRECATION
       }.build()
 
-      testComponent.getDeprecationController().setDeprecationResponse(appDeprecationResponse)
+      testComponent.getDeprecationController().saveDeprecationResponse(appDeprecationResponse)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
@@ -122,7 +116,7 @@ class DeprecationControllerTest {
         deprecationNoticeType = DeprecationNoticeType.OS_DEPRECATION
       }.build()
 
-      testComponent.getDeprecationController().setDeprecationResponse(osDeprecationResponse)
+      testComponent.getDeprecationController().saveDeprecationResponse(osDeprecationResponse)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
