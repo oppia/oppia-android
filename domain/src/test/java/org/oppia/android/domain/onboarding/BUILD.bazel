@@ -45,8 +45,8 @@ oppia_android_test(
     deps = [
         ":dagger",
         "//domain",
-        "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:deprecation_controller",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
