@@ -36,10 +36,10 @@ class DeprecationController @Inject constructor(
 
   /** Enum states for the possible outcomes of a deprecation action. */
   private enum class DeprecationResponseActionStatus {
-    /** Indicates that the deprecation operation succeeded. */
+    /** Indicates that the deprecation response read/write operation succeeded. */
     SUCCESS,
 
-    /** Indicates that the deprecation response write/store operation succeeded. */
+    /** Indicates that the deprecation response write operation failed. */
     FAILED_TO_STORE_DEPRECATION_RESPONSE,
 
     /**
@@ -88,8 +88,8 @@ class DeprecationController @Inject constructor(
   /**
    * Stores a new [DeprecationResponse] to the cache.
    *
-   * @param deprecationResponse the deprecation response to be stored.
-   * @return [AsyncResult] of the deprecation action.
+   * @param deprecationResponse the deprecation response to be stored
+   * @return [AsyncResult] of the deprecation action
    */
   fun saveDeprecationResponse(deprecationResponse: DeprecationResponse): DataProvider<Any?> {
     val deferred = deprecationStore.storeDataWithCustomChannelAsync(
@@ -113,8 +113,8 @@ class DeprecationController @Inject constructor(
   /**
    * Retrieves the [DeprecationResponse] from the cache.
    *
-   * @param deferred a deferred instance of the [DeprecationResponseActionStatus].
-   * @return [AsyncResult].
+   * @param deferred a deferred instance of the [DeprecationResponseActionStatus]
+   * @return [AsyncResult]
    */
   private suspend fun getDeferredResult(
     deferred: Deferred<DeprecationResponseActionStatus>
