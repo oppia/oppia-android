@@ -159,12 +159,12 @@ class SurveyProgressController @Inject constructor(
           retrieveSelectedAnswer(ephemeralQuestion.question.questionId.toString())
         )
       }
-
-    return questionsListDataProvider.combineWith(
-      previousAnswerProvider,
-      AUGMENTED_QUESTION_PROVIDER_ID
-    ) { ephemeralQuestion, previousSelectedAnswer ->
-      augmentEphemeralQuestion(previousSelectedAnswer, ephemeralQuestion)
+    return previousAnswerProvider.combineWith(
+      questionsListDataProvider, AUGMENTED_QUESTION_PROVIDER_ID
+    ) { previousSelectedAnswer, ephemeralQuestion ->
+      return@combineWith if (previousSelectedAnswer != SurveySelectedAnswer.getDefaultInstance()) {
+        augmentEphemeralQuestion(previousSelectedAnswer, ephemeralQuestion)
+      } else ephemeralQuestion
     }
   }
 

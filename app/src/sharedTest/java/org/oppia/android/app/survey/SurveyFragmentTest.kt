@@ -15,7 +15,10 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -24,6 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -44,7 +48,9 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -225,6 +231,7 @@ class SurveyFragmentTest {
     launch<SurveyActivity>(
       createSurveyActivityIntent()
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.user_type_question))
         .check(matches(isDisplayed()))
       onView(withId(R.id.survey_next_button))
@@ -240,6 +247,7 @@ class SurveyFragmentTest {
     launch<SurveyActivity>(
       createSurveyActivityIntent()
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.survey_answers_recycler_view)).perform(
         RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -267,8 +275,9 @@ class SurveyFragmentTest {
     launch<SurveyActivity>(
       createSurveyActivityIntent()
     ).use {
-      selectMultiChoiceAnswer(0)
-      onView(withId(R.id.survey_next_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
 
       onView(withText("How would you feel if you could no longer use Oppia?"))
         .check(matches(isDisplayed()))
@@ -291,13 +300,13 @@ class SurveyFragmentTest {
     launch<SurveyActivity>(
       createSurveyActivityIntent()
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       // Select and submit userTypeAnswer
-      selectMultiChoiceAnswer(0)
-      onView(withId(R.id.survey_next_button)).perform(click())
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
 
       // Select and submit marketFitAnswer
-      selectMultiChoiceAnswer(0)
-      onView(withId(R.id.survey_next_button)).perform(click())
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
 
       onView(
         withText(
@@ -306,31 +315,34 @@ class SurveyFragmentTest {
         )
       )
         .check(matches(isDisplayed()))
-      onView(withId(R.id.survey_answers_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-          10
-        )
-      ).check(matches(hasDescendant(withText("10"))))
+
+      onView(withId(R.id.survey_answers_recycler_view))
+        .check(matches(hasDescendant(withText("0"))))
+      onView(withId(R.id.survey_answers_recycler_view))
+        .check(matches(hasDescendant(withText("5"))))
+      onView(withId(R.id.survey_answers_recycler_view))
+        .check(matches(hasDescendant(withText("6"))))
+      onView(withId(R.id.survey_answers_recycler_view))
+        .check(matches(hasDescendant(withText("10"))))
     }
   }
 
   @Test
-  fun testSurveyNavigation_submitNpsScore3_detractorFeedbackQuestionIsDisplayed() {
+  fun testSurveyNavigation_submitNpsScoreOf3_detractorFeedbackQuestionIsDisplayed() {
     startSurveySession()
     launch<SurveyActivity>(
       createSurveyActivityIntent()
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       // Select and submit userTypeAnswer
-      selectMultiChoiceAnswer(0)
-      onView(withId(R.id.survey_next_button)).perform(click())
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
 
       // Select and submit marketFitAnswer
-      selectMultiChoiceAnswer(0)
-      onView(withId(R.id.survey_next_button)).perform(click())
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
 
       // Select and submit NpsAnswer
-      selectMultiChoiceAnswer(3)
-      onView(withId(R.id.survey_next_button)).perform(click())
+      selectNpsAnswerAndMoveToNextQuestion(3)
 
       onView(withText(R.string.nps_detractor_feedback_question))
         .check(matches(isDisplayed()))
@@ -343,17 +355,206 @@ class SurveyFragmentTest {
     }
   }
 
-  private fun selectMultiChoiceAnswer(choiceIndex: Int) {
-    onView(withId(R.id.survey_answers_recycler_view)).perform(
-      RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-        choiceIndex
-      ),
-      click()
-    )
+  @Test
+  fun testSurveyNavigation_submitNpsScoreOf8_passiveFeedbackQuestionIsDisplayed() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Select and submit userTypeAnswer
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
+
+      // Select and submit marketFitAnswer
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
+
+      // Select and submit NpsAnswer
+      selectNpsAnswerAndMoveToNextQuestion(8)
+
+      onView(withText(R.string.nps_passive_feedback_question))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.survey_previous_button))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.survey_next_button))
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testSurveyNavigation_submitNpsScoreOf10_promoterFeedbackQuestionIsDisplayed() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Select and submit userTypeAnswer
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
+
+      // Select and submit marketFitAnswer
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
+
+      // Select and submit NpsAnswer
+      selectNpsAnswerAndMoveToNextQuestion(10)
+
+      onView(
+        withText(
+          "We are glad you have enjoyed your experience with Oppia. Please share " +
+            "what helped you the most:"
+        )
+      ).check(matches(isDisplayed()))
+
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.survey_previous_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.survey_next_button)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testNavigation_moveToNextQuestion_thenMoveToPreviousQuestion_previousSelectionIsRestored() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Select and submit userTypeAnswer
+      // Index 0 corresponds to "I am a learner"
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
+
+      // Move back to previous question
+      moveToPreviousQuestion()
+
+      // Next button is enabled if an answer is available
+      onView(withId(R.id.survey_next_button)).check(matches(isEnabled()))
+
+      onView(
+        allOf(
+          withId(R.id.multiple_choice_radio_button),
+          atPositionOnView(
+            recyclerViewId = R.id.survey_answers_recycler_view,
+            position = 0,
+            targetViewId = R.id.multiple_choice_radio_button
+          )
+        )
+      ).check(matches(isChecked()))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.survey_answers_recycler_view,
+          position = 0,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).check(matches(withText(R.string.user_type_answer_learner)))
+    }
+  }
+
+  @Test
+  fun testNavigation_moveTwoQuestionsAhead_thenMoveToInitialQuestion_previousSelectionIsRestored() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Select and submit userTypeAnswer
+      // Index 0 corresponds to "I am a learner"
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
+
+      // Submit marketFitAnswer and move to question 3
+      // Index 0 corresponds to "Very Disappointed"
+      selectMultiChoiceAnswerAndMoveToNextQuestion(0)
+
+      // Move back to marketFit question
+      moveToPreviousQuestion()
+
+      // Assert marketFit answer selection is restored
+      onView(
+        allOf(
+          withId(R.id.multiple_choice_radio_button),
+          atPositionOnView(
+            recyclerViewId = R.id.survey_answers_recycler_view,
+            position = 0,
+            targetViewId = R.id.multiple_choice_radio_button
+          )
+        )
+      ).check(matches(isChecked()))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.survey_answers_recycler_view,
+          position = 0,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).check(matches(withText(R.string.market_fit_answer_very_disappointed)))
+
+      // Move back to UserType question
+      moveToPreviousQuestion()
+
+      // Assert UserType answer selection is restored
+      onView(
+        allOf(
+          withId(R.id.multiple_choice_radio_button),
+          atPositionOnView(
+            recyclerViewId = R.id.survey_answers_recycler_view,
+            position = 0,
+            targetViewId = R.id.multiple_choice_radio_button
+          )
+        )
+      ).check(matches(isChecked()))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.survey_answers_recycler_view,
+          position = 0,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).check(matches(withText(R.string.user_type_answer_learner)))
+    }
+  }
+
+  private fun selectNpsAnswerAndMoveToNextQuestion(npsScore: Int) {
+    onView(
+      allOf(
+        withText(npsScore.toString()),
+        isDescendantOfA(withId(R.id.survey_answers_recycler_view))
+      )
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    onView(withId(R.id.survey_next_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun selectMultiChoiceAnswerAndMoveToNextQuestion(choiceIndex: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.survey_answers_recycler_view,
+        position = choiceIndex,
+        targetViewId = R.id.multiple_choice_radio_button
+      )
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    onView(withId(R.id.survey_next_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun moveToPreviousQuestion() {
+    onView(withId(R.id.survey_previous_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun startSurveySession() {
-    surveyController.startSurveySession()
+    val questions = listOf(
+      SurveyQuestionName.USER_TYPE,
+      SurveyQuestionName.MARKET_FIT,
+      SurveyQuestionName.NPS
+    )
+    surveyController.startSurveySession(questions)
     testCoroutineDispatchers.runCurrent()
   }
 

@@ -121,8 +121,7 @@ class SurveyProgressControllerTest {
     val getCurrentQuestionProvider = surveyProgressController.getCurrentQuestion()
 
     val result = monitorFactory.waitForNextFailureResult(getCurrentQuestionProvider)
-    assertThat(result.cause).isInstanceOf(IllegalStateException::class.java)
-    assertThat(result).hasMessageThat().contains("Survey is not yet initialized.")
+    assertThat(result).hasCauseThat().hasMessageThat().contains("Survey is not yet initialized.")
   }
 
   @Test

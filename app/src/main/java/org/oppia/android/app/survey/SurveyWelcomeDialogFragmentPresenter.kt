@@ -43,7 +43,6 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     }
 
     binding.maybeLaterButton.setOnClickListener {
-      activity.finish()
       activity.supportFragmentManager.beginTransaction()
         .remove(fragment)
         .commitNow()
