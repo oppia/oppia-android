@@ -3,7 +3,7 @@ package org.oppia.android.domain.hintsandsolution
 import dagger.Module
 import dagger.Provides
 
-/** Test-only module for providing configurations to quickly reveal hints & solutions */
+/** Test-only module for providing configurations to quickly reveal hints & solutions. */
 @Module
 class HintsAndSolutionConfigFastShowTestModule {
   @Provides

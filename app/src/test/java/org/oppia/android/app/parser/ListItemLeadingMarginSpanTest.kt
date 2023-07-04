@@ -66,6 +66,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -562,16 +563,16 @@ class ListItemLeadingMarginSpanTest {
       textView.layout
     )
 
-    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(944.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(926.0f)
     assertThat(shadowCanvas.getDrawnCircle(0).centerY).isWithin(1e-5f).of(48.0f)
 
-    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(878.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(860.0f)
     assertThat(shadowCanvas.getDrawnCircle(1).centerY).isWithin(1e-5f).of(139.0f)
 
-    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(878.0f)
+    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(860.0f)
     assertThat(shadowCanvas.getDrawnCircle(2).centerY).isWithin(1e-5f).of(225.0f)
 
-    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(944.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(926.0f)
     assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(397.0f)
   }
 
@@ -1076,7 +1077,7 @@ class ListItemLeadingMarginSpanTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
 

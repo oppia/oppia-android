@@ -19,8 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.AppLanguage
-import org.oppia.android.app.model.AppLanguage.CHINESE_APP_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.Profile
@@ -39,6 +37,7 @@ import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.AsyncResult
@@ -54,6 +53,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -81,6 +81,7 @@ class ProfileManagementControllerTest {
   @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
+  @Inject lateinit var oppiaClock: FakeOppiaClock
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -103,6 +104,8 @@ class ProfileManagementControllerTest {
     private const val DEFAULT_ALLOW_DOWNLOAD_ACCESS = true
     private const val DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING = false
     private const val DEFAULT_AVATAR_COLOR_RGB = -10710042
+    private const val DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS = 0L
+    private const val CURRENT_TIMESTAMP = 1556094120000
   }
 
   @After
@@ -124,11 +127,11 @@ class ProfileManagementControllerTest {
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.internalId).isEqualTo(0)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-    assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     assertThat(profile.numberOfLogins).isEqualTo(0)
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
   }
 
   @Test
@@ -191,7 +194,6 @@ class ProfileManagementControllerTest {
     assertThat(profile.allowDownloadAccess).isEqualTo(false)
     assertThat(profile.id.internalId).isEqualTo(3)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-    assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
   }
 
@@ -711,20 +713,6 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testUpdateAppLanguage_addProfiles_updateWithChineseLanguage_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
-    addTestProfiles()
-
-    val updateProvider =
-      profileManagementController.updateAppLanguage(PROFILE_ID_2, CHINESE_APP_LANGUAGE)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.appLanguage).isEqualTo(CHINESE_APP_LANGUAGE)
-  }
-
-  @Test
   fun testUpdateAudioLanguage_addProfiles_updateWithFrenchLanguage_checkUpdateIsSuccessful() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -1108,6 +1096,78 @@ class ProfileManagementControllerTest {
     monitorFactory.waitForNextFailureResult(updateProvider)
   }
 
+  @Test
+  fun testFetchSurveyLastShownTime_realProfile_beforeFirstSurveyShown_returnsDefaultTimestamp() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    val lastShownTimeMs = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveSurveyLastShownTimestamp(
+        PROFILE_ID_1
+      )
+    )
+
+    assertThat(lastShownTimeMs).isEqualTo(DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS)
+  }
+
+  @Test
+  fun testFetchSurveyLastShownTime_updateLastShownTimeFunctionCalled_returnsCurrentTime() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(CURRENT_TIMESTAMP)
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::updateSurveyLastShownTimestamp,
+      PROFILE_ID_1
+    )
+
+    val lastShownTimeMs = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveSurveyLastShownTimestamp(
+        PROFILE_ID_1
+      )
+    )
+
+    assertThat(lastShownTimeMs).isEqualTo(CURRENT_TIMESTAMP)
+  }
+
+  @Test
+  fun testFetchSurveyLastShownTime_updateLastShownTime_inOneProfile_doesNotUpdateOtherProfiles() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(CURRENT_TIMESTAMP)
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::updateSurveyLastShownTimestamp,
+      PROFILE_ID_1
+    )
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_2)
+    )
+
+    val lastShownTimeMs = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveSurveyLastShownTimestamp(
+        PROFILE_ID_2
+      )
+    )
+
+    assertThat(lastShownTimeMs).isEqualTo(DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS)
+  }
+
   private fun addTestProfiles() {
     val profileAdditionProviders = PROFILES_LIST.map {
       addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)
@@ -1294,6 +1354,17 @@ class ProfileManagementControllerTest {
     @Singleton
     @EnableLearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      // Snapshot the value so that it doesn't change between injection and use.
+      val enableFeature = enableLearnerStudyAnalytics
+      return object : PlatformParameterValue<Boolean> {
+        override val value: Boolean = enableFeature
+      }
+    }
+
+    @Provides
+    @Singleton
+    @EnableLoggingLearnerStudyIds
+    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
       return object : PlatformParameterValue<Boolean> {

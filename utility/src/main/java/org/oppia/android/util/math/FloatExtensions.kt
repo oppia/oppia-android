@@ -28,7 +28,8 @@ fun Float.isApproximatelyEqualTo(other: Float): Boolean {
   return abs(this - other) < FLOAT_EQUALITY_EPSILON
 }
 
-/** Returns whether this double approximately equals another based on a consistent epsilon value
+/**
+ * Returns whether this double approximately equals another based on a consistent epsilon value
  * ([DOUBLE_EQUALITY_EPSILON]).
  */
 fun Double.isApproximatelyEqualTo(other: Double): Boolean {

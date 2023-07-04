@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -34,8 +35,10 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginBottom
 import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginEnd
 import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginStart
+import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginTop
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -58,6 +61,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -78,6 +82,7 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -108,8 +113,8 @@ class MarginBindingAdaptersTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -127,11 +132,25 @@ class MarginBindingAdaptersTest {
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testMarginBindableAdapters_landscape_topAndBottomIsCorrect() {
+    testMarginBindableAdapters_topAndBottomIsCorrect()
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testMarginBindableAdapters_landscapeWide_topAndBottomIsCorrect() {
+    testMarginBindableAdapters_topAndBottomIsCorrect()
   }
 
   @Config(qualifiers = "port")
@@ -274,6 +293,21 @@ class MarginBindingAdaptersTest {
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
   }
 
+  private fun testMarginBindableAdapters_topAndBottomIsCorrect() {
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginBottom(textView, /* marginBottom= */ 24f)
+      setLayoutMarginTop(textView, /* marginTop= */ 40f)
+
+      testCoroutineDispatchers.runCurrent()
+
+      val computedTopMargin = textView.y
+      val computedBottomMargin = (textView.parent as View).height - textView.y - textView.height
+      assertThat(computedTopMargin).isWithin(TOLERANCE).of(40f)
+      assertThat(computedBottomMargin).isWithin(TOLERANCE).of(24f)
+    }
+  }
+
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
     crossinline action: (A) -> V
   ): V {
@@ -318,7 +352,7 @@ class MarginBindingAdaptersTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   /** Create a TestApplicationComponent. */
