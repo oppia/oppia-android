@@ -319,8 +319,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly_whenReaderOff() {
-    initializeApplicationComponent(false)
+  fun testTopicFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {    initializeApplicationComponent(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -333,12 +332,13 @@ class TopicFragmentTest {
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
     onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
   @Test
-  fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly_whenReaderOn() {
+  fun testTopicFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
     fakeAccessibilityManager.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(
@@ -358,7 +358,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly_whenReaderOff() {
+  fun testTopicFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
     fakeAccessibilityManager.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(
@@ -377,7 +377,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly_whenReaderOn() {
+  fun testTopicFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
     fakeAccessibilityManager.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(
