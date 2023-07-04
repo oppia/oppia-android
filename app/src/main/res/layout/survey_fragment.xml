@@ -128,7 +128,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/survey_next_button_background"
-          android:clickable="@{viewModel.canMoveToNextQuestion}"
           android:enabled="@{viewModel.canMoveToNextQuestion}"
           android:text="@string/next"
           android:textColor="@{viewModel.canMoveToNextQuestion ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"

@@ -234,6 +234,19 @@ class SurveyFragmentPresenter @Inject constructor(
     }
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
     updateQuestionText(questionName)
+
+    if (ephemeralQuestion.selectedAnswer != SurveySelectedAnswer.getDefaultInstance()) {
+      surveyViewModel.retrievePreviousAnswer(
+        ephemeralQuestion.selectedAnswer,
+        ::getPreviousAnswerHandler
+      )
+    }
+  }
+
+  private fun getPreviousAnswerHandler(
+    itemList: List<SurveyAnswerItemViewModel>
+  ): PreviousAnswerHandler? {
+    return itemList.findLast { it is PreviousAnswerHandler } as? PreviousAnswerHandler
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {

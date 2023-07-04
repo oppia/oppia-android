@@ -7,6 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.model.UserTypeAnswer
+import org.oppia.android.app.survey.PreviousAnswerHandler
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -18,7 +19,7 @@ class UserTypeItemsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
   private val answerHandler: SelectedAnswerHandler
-) : SurveyAnswerItemViewModel(ViewType.USER_TYPE_OPTIONS) {
+) : SurveyAnswerItemViewModel(ViewType.USER_TYPE_OPTIONS), PreviousAnswerHandler {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getUserTypeOptions()
 
   private val selectedItems: MutableList<Int> = mutableListOf()
@@ -62,7 +63,7 @@ class UserTypeItemsViewModel @Inject constructor(
     }
   }
 
-  fun getPendingAnswer(itemIndex: Int) {
+  private fun getPendingAnswer(itemIndex: Int) {
     val typeCase = itemIndex + 1
     val answerValue = UserTypeAnswer.forNumber(typeCase)
     val answer = SurveySelectedAnswer.newBuilder()
@@ -70,6 +71,22 @@ class UserTypeItemsViewModel @Inject constructor(
       .setUserType(answerValue)
       .build()
     answerHandler.getMultipleChoiceAnswer(answer)
+  }
+
+  override fun getPreviousAnswer(): SurveySelectedAnswer {
+    return SurveySelectedAnswer.getDefaultInstance()
+  }
+
+  override fun restorePreviousAnswer(previousAnswer: SurveySelectedAnswer) {
+    val selectedAnswerOption = previousAnswer.userType.number
+    val optionIndex = if (selectedAnswerOption != 0) selectedAnswerOption - 1 else 0
+    selectedItems.apply {
+      clear()
+      add(optionIndex)
+    }
+    updateIsAnswerAvailable()
+    getPendingAnswer(optionIndex)
+    optionItems[optionIndex].isAnswerSelected.set(true)
   }
 
   private fun getUserTypeOptions(): ObservableArrayList<MultipleChoiceOptionContentViewModel> {

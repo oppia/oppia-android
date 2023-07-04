@@ -91,7 +91,6 @@ class SurveyProgress {
   private fun isTopQuestionTerminal(
     @Suppress("UNUSED_PARAMETER") surveyQuestion: SurveyQuestion
   ): Boolean {
-    println("question count = ${getTotalQuestionCount()}, index = ${getCurrentQuestionIndex()}")
     return questionDeck.isCurrentQuestionTopOfDeck() &&
       getCurrentQuestionIndex() == getTotalQuestionCount().minus(1)
   }

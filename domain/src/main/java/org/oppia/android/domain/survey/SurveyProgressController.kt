@@ -2,20 +2,24 @@ package org.oppia.android.domain.survey
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.EphemeralSurveyQuestion
+import org.oppia.android.app.model.SelectedAnswerDatabase
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
+import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -38,6 +42,10 @@ private const val MOVE_TO_PREVIOUS_QUESTION_RESULT_PROVIDER_ID =
 private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
   "SurveyProgressController.submit_answer_result"
 private const val END_SESSION_RESULT_PROVIDER_ID = "SurveyProgressController.end_session_result"
+private const val RETRIEVE_RESPONSE_DATA_PROVIDER_ID =
+  "retrieve_response_provider_id"
+private const val AUGMENTED_QUESTION_PROVIDER_ID =
+  "SurveyProgressController.augmented_question"
 
 /**
  * A default session ID to be used before a session has been initialized.
@@ -47,12 +55,16 @@ private const val END_SESSION_RESULT_PROVIDER_ID = "SurveyProgressController.end
  */
 private const val DEFAULT_SESSION_ID = "default_session_id"
 
+/** The name of the cache used to hold selected survey responses ephemerally. */
+private const val CACHE_NAME = "survey_responses_database"
+
 /** Controller for tracking the non-persisted progress of a survey. */
 @Singleton
 class SurveyProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val exceptionsController: ExceptionsController,
-  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  cacheStoreFactory: PersistentCacheStore.Factory
 ) {
   private var mostRecentSessionId: String? = null
   private val activeSessionId: String
@@ -67,6 +79,21 @@ class SurveyProgressController @Inject constructor(
 
   private val monitoredQuestionListDataProvider: DataProviders.NestedTransformedDataProvider<Any?> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
+
+  private val answerDataStore =
+    cacheStoreFactory.create(CACHE_NAME, SelectedAnswerDatabase.getDefaultInstance())
+
+  /**
+   * Statuses correspond to the exceptions such that if the deferred contains an error state,
+   * a corresponding exception will be passed to a failed AsyncResult.
+   */
+  private enum class RecordResponseActionStatus {
+    /** Corresponds to a successful AsyncResult. */
+    SUCCESS,
+
+    /** Corresponds to a failed saving attempt. */
+    FAILED_TO_SAVE_RESPONSE
+  }
 
   /**
    * Begins a survey session based on a set of questions and returns a [DataProvider] indicating
@@ -107,7 +134,7 @@ class SurveyProgressController @Inject constructor(
    * configuration changes.
    *
    * The underlying question returned by this function can only be changed by calls to
-   * [moveToNextQuestionImpl], or [moveToPreviousQuestionImpl].
+   * [moveToNextQuestion], or [moveToPreviousQuestion].
    *
    * This method does not need to be called for the [EphemeralSurveyQuestion] to be computed;
    * it's always computed eagerly by other state-changing methods regardless of whether there's an
@@ -119,10 +146,25 @@ class SurveyProgressController @Inject constructor(
 
     // Combine ephemeral question with the monitored question list to ensure that changes to the
     // questions list trigger a recompute of the ephemeral question.
-    return monitoredQuestionListDataProvider.combineWith(
+    val questionsListDataProvider = monitoredQuestionListDataProvider.combineWith(
       ephemeralQuestionDataProvider, EPHEMERAL_QUESTION_FROM_UPDATED_QUESTION_LIST_PROVIDER_ID
     ) { _, currentQuestion ->
       currentQuestion
+    }
+    val previousAnswerProvider =
+      questionsListDataProvider.transformAsync(
+        RETRIEVE_RESPONSE_DATA_PROVIDER_ID
+      ) { ephemeralQuestion ->
+        return@transformAsync AsyncResult.Success(
+          retrieveSelectedAnswer(ephemeralQuestion.question.questionId.toString())
+        )
+      }
+
+    return questionsListDataProvider.combineWith(
+      previousAnswerProvider,
+      AUGMENTED_QUESTION_PROVIDER_ID
+    ) { ephemeralQuestion, previousSelectedAnswer ->
+      augmentEphemeralQuestion(previousSelectedAnswer, ephemeralQuestion)
     }
   }
 
@@ -308,6 +350,7 @@ class SurveyProgressController @Inject constructor(
   ) {
     tryOperation(beginSessionResultFlow) {
       recomputeCurrentQuestionAndNotifyAsync()
+      answerDataStore.clearCacheAsync()
       progress.advancePlayStageTo(SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION)
     }
   }
@@ -317,6 +360,7 @@ class SurveyProgressController @Inject constructor(
   ) {
     checkNotNull(this) { "Cannot stop a survey session which wasn't started." }
     tryOperation(endSessionResultFlow) {
+      answerDataStore.clearCacheAsync()
       progress.advancePlayStageTo(SurveyProgress.SurveyStage.NOT_IN_SURVEY_SESSION)
     }
   }
@@ -330,17 +374,51 @@ class SurveyProgressController @Inject constructor(
         "Cannot submit an answer while another answer is pending."
       }
 
+      val currentQuestionId = progress.questionDeck.getTopQuestionIndex()
       if (selectedAnswer.questionName == SurveyQuestionName.NPS) {
         // compute the feedback question before navigating to it
         progress.questionGraph.computeFeedbackQuestion(
-          progress.questionDeck.getTopQuestionIndex() + 1,
+          currentQuestionId + 1,
           selectedAnswer.npsScore
         )
       }
+
+      saveSelectedAnswer(currentQuestionId.toString(), selectedAnswer)
+
       if (!progress.questionDeck.isCurrentQuestionTerminal()) {
         moveToNextQuestion()
       }
     }
+  }
+
+  private fun saveSelectedAnswer(questionId: String, answer: SurveySelectedAnswer) {
+    val deferred = recordSelectedAnswerAsync(questionId, answer)
+
+    deferred.invokeOnCompletion {
+      if (it == null) {
+        deferred.getCompleted()
+      } else {
+        RecordResponseActionStatus.FAILED_TO_SAVE_RESPONSE
+      }
+    }
+  }
+
+  private fun recordSelectedAnswerAsync(
+    questionId: String,
+    answer: SurveySelectedAnswer
+  ): Deferred<RecordResponseActionStatus> {
+    return answerDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) { answerDatabase ->
+      answerDatabase.toBuilder().apply {
+        putSelectedAnswer(questionId, answer)
+      }.build() to RecordResponseActionStatus.SUCCESS
+    }
+  }
+
+  private suspend fun retrieveSelectedAnswer(questionId: String): SurveySelectedAnswer {
+    val answerDatabase = answerDataStore.readDataAsync().await()
+    return answerDatabase.selectedAnswerMap[questionId] ?: SurveySelectedAnswer.getDefaultInstance()
   }
 
   private suspend fun ControllerState.moveToNextQuestionImpl(
@@ -541,6 +619,19 @@ class SurveyProgressController @Inject constructor(
 
   private fun ControllerState.computeBaseCurrentEphemeralQuestion(): EphemeralSurveyQuestion =
     progress.questionDeck.getCurrentEphemeralQuestion()
+
+  /**
+   * Augments the specified [EphemeralSurveyQuestion] [AsyncResult] by attaching a previously
+   * selected answer to update the UI.
+   */
+  private fun augmentEphemeralQuestion(
+    previousAnswer: SurveySelectedAnswer,
+    ephemeralQuestion: EphemeralSurveyQuestion
+  ): EphemeralSurveyQuestion {
+    return ephemeralQuestion.toBuilder().apply {
+      selectedAnswer = previousAnswer
+    }.build()
+  }
 
   /**
    * Represents the current synchronized state of the controller.

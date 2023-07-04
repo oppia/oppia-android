@@ -106,19 +106,23 @@ message SurveySelectedAnswer {
   // Semantic name of the question the response is tied to.
   SurveyQuestionName question_name = 2;
 
+  // The ID of the survey question. This is a string value that uniquely identifies the question
+  // within the context of the survey, and is guaranteed to be unique within the survey scope only.
+  string question_id = 3;
+
   // The value of the answer the user gave.
   oneof answer {
     // The enum representation of the type of user answer selected.
-    UserTypeAnswer user_type = 3;
+    UserTypeAnswer user_type = 4;
 
     // The enum representation of the market fit answer selected.
-    MarketFitAnswer market_fit = 4;
+    MarketFitAnswer market_fit = 5;
 
     // The integer value representing the nps score selected by the user.
-    int32 nps_score = 5;
+    int32 nps_score = 6;
 
     // The string value representing the free text answer entered by a user.
-    string free_form_answer = 6;
+    string free_form_answer = 7;
   }
 }
 
@@ -197,7 +201,7 @@ message EphemeralSurveyQuestion {
     // A pending question that requires an answer to continue.
     bool pending_question = 4;
 
-    // The SurveySelectedAnswer given to complete the previous question.
+    // The SurveySelectedAnswer given to complete this question.
     SurveySelectedAnswer selected_answer = 5;
 
     // Present if this is the last question in the survey.
@@ -212,4 +216,11 @@ message EphemeralSurveyQuestion {
   // Corresponds to the number of questions in the survey. This value will never change in the same
   // survey instance.
   int32 total_question_count = 8;
+}
+
+// Top-level proto used to store the user selected answers in a survey, and is expected to only
+// exist ephemerally in memory during the survey session.
+message SelectedAnswerDatabase {
+  // Map from question ID to SurveySelectedAnswer for that question.
+  map<string, SurveySelectedAnswer> selected_answer = 1;
 }

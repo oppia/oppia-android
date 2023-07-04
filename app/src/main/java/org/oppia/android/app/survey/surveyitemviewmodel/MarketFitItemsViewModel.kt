@@ -8,6 +8,7 @@ import org.oppia.android.R
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
+import org.oppia.android.app.survey.PreviousAnswerHandler
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -18,7 +19,7 @@ class MarketFitItemsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
   private val answerHandler: SelectedAnswerHandler
-) : SurveyAnswerItemViewModel(ViewType.MARKET_FIT_OPTIONS) {
+) : SurveyAnswerItemViewModel(ViewType.MARKET_FIT_OPTIONS), PreviousAnswerHandler {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getMarketFitOptions()
 
   private val selectedItems: MutableList<Int> = mutableListOf()
@@ -70,6 +71,22 @@ class MarketFitItemsViewModel @Inject constructor(
       .setMarketFit(answerValue)
       .build()
     answerHandler.getMultipleChoiceAnswer(answer)
+  }
+
+  override fun getPreviousAnswer(): SurveySelectedAnswer {
+    return SurveySelectedAnswer.getDefaultInstance()
+  }
+
+  override fun restorePreviousAnswer(previousAnswer: SurveySelectedAnswer) {
+    val selectedAnswerOption = previousAnswer.marketFit.number
+    val optionIndex = if (selectedAnswerOption != 0) selectedAnswerOption - 1 else 0
+    selectedItems.apply {
+      clear()
+      add(optionIndex)
+    }
+    updateIsAnswerAvailable()
+    getPendingAnswer(optionIndex)
+    optionItems[optionIndex].isAnswerSelected.set(true)
   }
 
   private fun getMarketFitOptions(): ObservableList<MultipleChoiceOptionContentViewModel> {

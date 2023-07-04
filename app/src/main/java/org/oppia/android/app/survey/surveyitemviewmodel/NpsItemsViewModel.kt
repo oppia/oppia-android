@@ -5,6 +5,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
+import org.oppia.android.app.survey.PreviousAnswerHandler
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
@@ -13,7 +14,7 @@ import javax.inject.Inject
 class NpsItemsViewModel @Inject constructor(
   private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
   private val answerHandler: SelectedAnswerHandler
-) : SurveyAnswerItemViewModel(ViewType.NPS_OPTIONS) {
+) : SurveyAnswerItemViewModel(ViewType.NPS_OPTIONS), PreviousAnswerHandler {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getNpsOptions()
 
   private val selectedItems: MutableList<Int> = mutableListOf()
@@ -63,6 +64,25 @@ class NpsItemsViewModel @Inject constructor(
       .setNpsScore(npsScore)
       .build()
     answerHandler.getMultipleChoiceAnswer(answer)
+  }
+
+  override fun getPreviousAnswer(): SurveySelectedAnswer {
+    return SurveySelectedAnswer.getDefaultInstance()
+  }
+
+  override fun restorePreviousAnswer(previousAnswer: SurveySelectedAnswer) {
+    val selectedAnswerOption = previousAnswer.npsScore
+    selectedItems.apply {
+      clear()
+      add(selectedAnswerOption)
+    }
+
+    updateIsAnswerAvailable()
+
+    selectedAnswerOption.let { optionIndex ->
+      getPendingAnswer(optionIndex)
+      optionItems[optionIndex].isAnswerSelected.set(true)
+    }
   }
 
   private fun getNpsOptions(): ObservableArrayList<MultipleChoiceOptionContentViewModel> {

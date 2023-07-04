@@ -4,6 +4,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.R
 import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.survey.surveyitemviewmodel.SurveyAnswerItemViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
@@ -42,6 +43,25 @@ class SurveyViewModel @Inject constructor(
 
   fun getCanMoveToNextQuestion(): ObservableField<Boolean> = canMoveToNextQuestion
 
+  fun retrievePreviousAnswer(
+    previousAnswer: SurveySelectedAnswer,
+    retrieveAnswerHandler: (List<SurveyAnswerItemViewModel>) -> PreviousAnswerHandler?
+  ) {
+    restorePreviousAnswer(
+      previousAnswer,
+      retrieveAnswerHandler(
+        itemList
+      )
+    )
+  }
+
+  private fun restorePreviousAnswer(
+    previousAnswer: SurveySelectedAnswer,
+    answerHandler: PreviousAnswerHandler?
+  ) {
+    answerHandler?.restorePreviousAnswer(previousAnswer)
+  }
+
   private fun getQuestionText(
     questionName: SurveyQuestionName
   ): String {
@@ -65,7 +85,8 @@ class SurveyViewModel @Inject constructor(
       SurveyQuestionName.DETRACTOR_FEEDBACK -> resourceHandler.getStringInLocaleWithWrapping(
         R.string.nps_detractor_feedback_question
       )
-      SurveyQuestionName.UNRECOGNIZED, SurveyQuestionName.QUESTION_NAME_UNSPECIFIED -> ""
+      SurveyQuestionName.UNRECOGNIZED, SurveyQuestionName.QUESTION_NAME_UNSPECIFIED ->
+        DEFAULT_QUESTION
     }
   }
 
