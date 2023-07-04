@@ -23,7 +23,7 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
   companion object {
     internal const val PROFILE_ID_KEY = "SurveyWelcomeDialogFragment.profile_id"
     internal const val TOPIC_ID_KEY = "SurveyWelcomeDialogFragment.topic_id"
-    internal const val MANDATORY_QUESTION_NAMES_KEY = "SurveyWelcomeDialogFragment.questions_id"
+    internal const val MANDATORY_QUESTION_NAMES_KEY = "SurveyWelcomeDialogFragment.question_names"
 
     /**
      * Creates a new instance of a DialogFragment to display the survey on-boarding message.

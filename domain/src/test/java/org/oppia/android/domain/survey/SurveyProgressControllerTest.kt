@@ -72,7 +72,7 @@ class SurveyProgressControllerTest {
   @Test
   fun testStartSurveySession_succeeds() {
     val surveyDataProvider =
-      surveyController.startSurveySession()
+      surveyController.startSurveySession(questions)
 
     monitorFactory.waitForNextSuccessfulResult(surveyDataProvider)
   }
@@ -86,15 +86,7 @@ class SurveyProgressControllerTest {
   }
 
   @Test
-  fun testStartSurveySession_setTotalQuestionCountConstant_sessionStartsWithDefinedQuestionCount() {
-    startSuccessfulSurveySession()
-
-    val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
-    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(TOTAL_QUESTION_COUNT)
-  }
-
-  @Test
-  fun testGetCurrentQuestion_session_loaded_returnsInitialQuestionPending() {
+  fun testGetCurrentQuestion_sessionLoaded_returnsInitialQuestionPending() {
     startSuccessfulSurveySession()
 
     val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
@@ -334,7 +326,7 @@ class SurveyProgressControllerTest {
 
   private fun startSuccessfulSurveySession() {
     monitorFactory.waitForNextSuccessfulResult(
-      surveyController.startSurveySession()
+      surveyController.startSurveySession(questions)
     )
   }
 
@@ -494,7 +486,11 @@ class SurveyProgressControllerTest {
   }
 
   companion object {
-    private const val TOTAL_QUESTION_COUNT = 4
     private const val TEXT_ANSWER = "Some text answer"
+    private val questions = listOf(
+      SurveyQuestionName.USER_TYPE,
+      SurveyQuestionName.MARKET_FIT,
+      SurveyQuestionName.NPS
+    )
   }
 }

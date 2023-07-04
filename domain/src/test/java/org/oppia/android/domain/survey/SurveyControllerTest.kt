@@ -60,6 +60,12 @@ class SurveyControllerTest {
   @Inject
   lateinit var surveyProgressController: SurveyProgressController
 
+  val questions = listOf(
+    SurveyQuestionName.USER_TYPE,
+    SurveyQuestionName.MARKET_FIT,
+    SurveyQuestionName.NPS
+  )
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -68,18 +74,71 @@ class SurveyControllerTest {
   @Test
   fun testController_startSurveySession_succeeds() {
     val surveyDataProvider =
-      surveyController.startSurveySession()
+      surveyController.startSurveySession(questions)
 
     monitorFactory.waitForNextSuccessfulResult(surveyDataProvider)
   }
 
   @Test
   fun testController_startSurveySession_sessionStartsWithInitialQuestion() {
-    surveyController.startSurveySession()
+    surveyController.startSurveySession(questions)
 
     val result = surveyProgressController.getCurrentQuestion()
     val ephemeralQuestion = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(ephemeralQuestion.question.questionName).isEqualTo(SurveyQuestionName.USER_TYPE)
+  }
+
+  @Test
+  fun testStartSurveySession_withTwoQuestions_showOptionalQuestion_succeeds() {
+    val mandatoryQuestionNameList = listOf(SurveyQuestionName.NPS)
+    surveyController.startSurveySession(mandatoryQuestionNameList)
+
+    val result = surveyProgressController.getCurrentQuestion()
+    val ephemeralQuestion = monitorFactory.waitForNextSuccessfulResult(result)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(2)
+  }
+
+  @Test
+  fun testStartSurveySession_withTwoQuestions_dontShowOptionalQuestion_succeeds() {
+    val mandatoryQuestionNameList = listOf(SurveyQuestionName.MARKET_FIT, SurveyQuestionName.NPS)
+    surveyController.startSurveySession(
+      mandatoryQuestionNames = mandatoryQuestionNameList,
+      showOptionalQuestion = false
+    )
+
+    val result = surveyProgressController.getCurrentQuestion()
+    val ephemeralQuestion = monitorFactory.waitForNextSuccessfulResult(result)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(2)
+  }
+
+  @Test
+  fun testStartSurveySession_withOneQuestion_showOptionalQuestionOnly_succeeds() {
+    val mandatoryQuestionNameList = listOf<SurveyQuestionName>()
+    surveyController.startSurveySession(
+      mandatoryQuestionNames = mandatoryQuestionNameList,
+      showOptionalQuestion = true
+    )
+
+    val result = surveyProgressController.getCurrentQuestion()
+    val ephemeralQuestion = monitorFactory.waitForNextSuccessfulResult(result)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(1)
+    assertThat(ephemeralQuestion.question.questionName)
+      .isEqualTo(SurveyQuestionName.PROMOTER_FEEDBACK)
+  }
+
+  @Test
+  fun testStartSurveySession_withOneQuestion_mandatoryQuestionOnly_succeeds() {
+    val mandatoryQuestionNameList = listOf(SurveyQuestionName.NPS)
+    surveyController.startSurveySession(
+      mandatoryQuestionNames = mandatoryQuestionNameList,
+      showOptionalQuestion = false
+    )
+
+    val result = surveyProgressController.getCurrentQuestion()
+    val ephemeralQuestion = monitorFactory.waitForNextSuccessfulResult(result)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(1)
+    assertThat(ephemeralQuestion.question.questionName)
+      .isEqualTo(SurveyQuestionName.NPS)
   }
 
   @Test

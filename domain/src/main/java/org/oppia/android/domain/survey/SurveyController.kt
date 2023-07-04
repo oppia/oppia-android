@@ -40,14 +40,17 @@ class SurveyController @Inject constructor(
    * @return a [DataProvider] indicating whether the session start was successful
    */
   fun startSurveySession(
-    mandatoryQuestionNames: List<SurveyQuestionName>
+    mandatoryQuestionNames: List<SurveyQuestionName>,
+    showOptionalQuestion: Boolean = true
   ): DataProvider<Any?> {
     return try {
       val createSurveyDataProvider =
-        createSurvey(mandatoryQuestionNames)
+        createSurvey(mandatoryQuestionNames, showOptionalQuestion)
       val questionsListDataProvider =
         createSurveyDataProvider.transform(CREATE_QUESTIONS_LIST_PROVIDER_ID) { survey ->
-          survey.mandatoryQuestionsList + survey.optionalQuestion
+          if (survey.hasOptionalQuestion()) {
+            survey.mandatoryQuestionsList + survey.optionalQuestion
+          } else survey.mandatoryQuestionsList
         }
 
       val beginSessionDataProvider =
@@ -65,23 +68,25 @@ class SurveyController @Inject constructor(
   }
 
   private fun createSurvey(
-    mandatoryQuestionNames: List<SurveyQuestionName>
+    mandatoryQuestionNames: List<SurveyQuestionName>,
+    showOptionalQuestion: Boolean
   ): DataProvider<Survey> {
     val mandatoryQuestionsList = mandatoryQuestionNames.mapIndexed { index, questionName ->
       createSurveyQuestion(index.toString(), questionName)
     }
-
     // The questionId corresponds to the order of the questions in list, so the optional question
     // will always come at the end of the list.
-    val defaultOptionalQuestion =
-      createDefaultFeedbackQuestion(mandatoryQuestionsList.size.toString())
+    val surveyBuilder = Survey.newBuilder()
+      .setSurveyId(surveyId)
+      .addAllMandatoryQuestions(mandatoryQuestionsList)
+
+    if (showOptionalQuestion) {
+      surveyBuilder.optionalQuestion =
+        createDefaultFeedbackQuestion(mandatoryQuestionsList.size.toString())
+    }
 
     return dataProviders.createInMemoryDataProvider(CREATE_SURVEY_PROVIDER_ID) {
-      Survey.newBuilder()
-        .setSurveyId(surveyId)
-        .addAllMandatoryQuestions(mandatoryQuestionsList)
-        .setOptionalQuestion(defaultOptionalQuestion)
-        .build()
+      surveyBuilder.build()
     }
   }
 
@@ -118,14 +123,4 @@ class SurveyController @Inject constructor(
    * started.
    */
   fun stopSurveySession(): DataProvider<Any?> = surveyProgressController.endSurveySession()
-
-  companion object {
-    /** Returns whether a [SurveyQuestionName] is valid. */
-    fun SurveyQuestionName.isValid(): Boolean {
-      return when (this) {
-        SurveyQuestionName.UNRECOGNIZED, SurveyQuestionName.QUESTION_NAME_UNSPECIFIED -> false
-        else -> true
-      }
-    }
-  }
 }
