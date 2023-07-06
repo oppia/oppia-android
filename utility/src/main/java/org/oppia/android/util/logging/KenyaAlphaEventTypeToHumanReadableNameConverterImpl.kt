@@ -45,6 +45,7 @@ class KenyaAlphaEventTypeToHumanReadableNameConverterImpl @Inject constructor() 
       ActivityContextCase.OPEN_PROFILE_CHOOSER -> "open_profile_chooser"
       ActivityContextCase.REACH_INVESTED_ENGAGEMENT -> "reached_invested_engagement"
       ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE -> "switch_in_lesson_language"
+      ActivityContextCase.SHOW_SURVEY_POPUP -> "show_survey_popup"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG -> "failed_analytics_log"
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "unknown_activity_context"
     }

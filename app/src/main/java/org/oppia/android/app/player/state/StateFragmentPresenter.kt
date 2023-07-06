@@ -549,7 +549,12 @@ class StateFragmentPresenter @Inject constructor(
             is AsyncResult.Success -> {
               if (gatingResult.value) {
                 val dialogFragment =
-                  SurveyWelcomeDialogFragment.newInstance(profileId, topicId, SURVEY_QUESTIONS)
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
                 val transaction = activity.supportFragmentManager.beginTransaction()
                 transaction
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)

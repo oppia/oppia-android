@@ -10,6 +10,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.databinding.SurveyWelcomeDialogFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.survey.SurveyController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -23,7 +24,8 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val surveyController: SurveyController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController
 ) {
   /** Sets up data binding. */
   fun handleCreateView(
@@ -31,6 +33,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     profileId: ProfileId,
     topicId: String,
+    explorationId: String,
     questionNames: List<SurveyQuestionName>,
   ): View {
     val binding =
@@ -47,6 +50,8 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
         .remove(fragment)
         .commitNow()
     }
+
+    logSurveyPopUpShownEvent(explorationId, topicId, profileId)
 
     return binding.root
   }
@@ -82,6 +87,20 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
           }
         }
       }
+    )
+  }
+
+  private fun logSurveyPopUpShownEvent(
+    explorationId: String,
+    topicId: String,
+    profileId: ProfileId
+  ) {
+    analyticsController.logImportantEvent(
+      oppiaLogger.createShowSurveyPopupContext(
+        explorationId,
+        topicId
+      ),
+      profileId = profileId
     )
   }
 }

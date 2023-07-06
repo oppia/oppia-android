@@ -11,11 +11,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
+import javax.inject.Inject
 
 /**
  * CustomView to add a background to [SurveyWelcomeDialogFragment] and [SurveyOutroDialogFragment].

@@ -10,6 +10,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -40,7 +41,6 @@ import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -529,7 +529,12 @@ class ExplorationActivityPresenter @Inject constructor(
             is AsyncResult.Success -> {
               if (gatingResult.value) {
                 val dialogFragment =
-                  SurveyWelcomeDialogFragment.newInstance(profileId, topicId, SURVEY_QUESTIONS)
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
                 val transaction = activity.supportFragmentManager.beginTransaction()
                 transaction
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
