@@ -158,6 +158,9 @@ message EventLog {
       // Indicates that something went wrong when trying to log a learner analytics even for the
       // device corresponding to the specified device ID.
       string install_id_for_failed_analytics_log = 33;
+
+      // The event being logged is related to viewing a survey popup dialog.
+      SurveyContext show_survey_popup = 38;
     }
   }
 
@@ -297,6 +300,18 @@ message EventLog {
 
     // The content language to which the lesson is being switched.
     OppiaLanguage switch_to_language = 3;
+  }
+
+  // Structure of a survey context.
+  message SurveyContext {
+    // The active topic ID when the event is logged.
+    string topic_id = 1;
+
+    // The active exploration ID when the event is logged.
+    string exploration_id = 2;
+
+    // The selected app language when the survey is in progress.
+    OppiaLanguage app_language = 3;
   }
 
   // Supported priority of events for event logging

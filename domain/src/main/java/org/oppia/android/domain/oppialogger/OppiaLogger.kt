@@ -216,4 +216,21 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
       this.subTopicId = subtopicIndex
     }.build()
   }
+
+  /**
+   * Returns the context of the event indicating that the user saw the survey popup dialog.
+   */
+  fun createShowSurveyPopupContext(
+    explorationId: String,
+    topicId: String,
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setShowSurveyPopup(
+        EventLog.SurveyContext.newBuilder()
+          .setExplorationId(explorationId)
+          .setTopicId(topicId)
+          .build()
+      )
+      .build()
+  }
 }
