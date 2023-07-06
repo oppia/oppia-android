@@ -590,7 +590,7 @@
   <style name="SurveyPopupHeaderStyle" parent="TextViewCenterHorizontal">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/component_color_shared_active_text_color</item>
+    <item name="android:textColor">@color/component_color_survey_popup_header_text_color</item>
     <item name="android:layout_margin">@dimen/survey_text_margin</item>
     <item name="android:textSize">@dimen/survey_popup_header_text_size</item>
     <item name="android:fontFamily">sans-serif</item>
@@ -599,7 +599,7 @@
   <style name="SurveyPopupMessageStyle" parent="TextViewStart">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:textColor">@color/component_color_survey_popup_message_color</item>
     <item name="android:layout_margin">@dimen/survey_popup_message_margin</item>
     <item name="android:textSize">@dimen/survey_popup_message_text_size</item>
     <item name="android:fontFamily">sans-serif</item>
@@ -626,7 +626,7 @@
     <item name="android:windowIsFloating">false</item>
     <!-- This is important! Don't forget to set window background -->
     <item name="android:windowIsTranslucent">false</item>
-    <item name="android:windowBackground">@color/color_palette_shared_white_background_color</item>
+    <item name="android:windowBackground">@color/component_color_survey_background_color</item>
     <!-- Additionally if you want animations when dialog opening -->
     <item name="android:windowEnterAnimation">@anim/slide_up</item>
     <item name="android:windowExitAnimation">@anim/slide_down</item>

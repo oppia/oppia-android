@@ -28,10 +28,10 @@
         android:id="@+id/survey_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_shared_secondary_toolbar_color"
+        android:background="@color/component_color_shared_activity_toolbar_color"
+        android:contentDescription="@string/survey_exit_button_description"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
-        android:contentDescription="@string/survey_exit_button_description"
         app:navigationIcon="@drawable/ic_close_white_24dp">
 
         <LinearLayout

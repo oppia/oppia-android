@@ -11,11 +11,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
-import javax.inject.Inject
 
 /**
  * CustomView to add a background to [SurveyWelcomeDialogFragment] and [SurveyOutroDialogFragment].
@@ -94,7 +94,7 @@ class SurveyOnboardingBackgroundView : View {
       strokeWidth = this@SurveyOnboardingBackgroundView.strokeWidth
       color = ContextCompat.getColor(
         context,
-        R.color.component_color_survey_onboarding_background_color
+        R.color.component_color_survey_popup_background_color
       )
     }
     setBackgroundColor(Color.TRANSPARENT)
