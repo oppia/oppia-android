@@ -1,9 +1,9 @@
 package org.oppia.android.domain.oppialogger
 
+import javax.inject.Inject
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.util.logging.ConsoleLogger
-import javax.inject.Inject
 
 /** Logger that handles general-purpose logging throughout the domain & UI layers. */
 class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) {
@@ -226,6 +226,23 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
       .setShowSurveyPopup(
+        EventLog.SurveyContext.newBuilder()
+          .setExplorationId(explorationId)
+          .setTopicId(topicId)
+          .build()
+      )
+      .build()
+  }
+
+  /**
+   * Returns the context of the event indicating that the user began a survey session.
+   */
+  fun createBeginSurveyContext(
+    explorationId: String,
+    topicId: String,
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setBeginSurvey(
         EventLog.SurveyContext.newBuilder()
           .setExplorationId(explorationId)
           .setTopicId(topicId)

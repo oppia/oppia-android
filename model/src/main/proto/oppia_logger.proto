@@ -161,6 +161,9 @@ message EventLog {
 
       // The event being logged is related to viewing a survey popup dialog.
       SurveyContext show_survey_popup = 38;
+
+      // The event being logged is related to a survey session being started.
+      SurveyContext begin_survey = 39;
     }
   }
 
