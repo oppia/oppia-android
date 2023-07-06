@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -44,6 +45,10 @@ class SurveyFragmentPresenter @Inject constructor(
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
+  private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralSurveyQuestion>> by lazy {
+    surveyProgressController.getCurrentQuestion().toLiveData()
+  }
+
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var binding: SurveyFragmentBinding
@@ -165,7 +170,7 @@ class SurveyFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToCurrentQuestion() {
-    surveyProgressController.getCurrentQuestion().toLiveData().observe(
+    ephemeralQuestionLiveData.observe(
       fragment,
       {
         processEphemeralQuestionResult(it)

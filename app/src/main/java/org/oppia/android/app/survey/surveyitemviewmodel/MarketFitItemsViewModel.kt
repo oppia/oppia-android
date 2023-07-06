@@ -78,15 +78,21 @@ class MarketFitItemsViewModel @Inject constructor(
   }
 
   override fun restorePreviousAnswer(previousAnswer: SurveySelectedAnswer) {
-    val selectedAnswerOption = previousAnswer.marketFit.number
-    val optionIndex = if (selectedAnswerOption != 0) selectedAnswerOption - 1 else 0
+    // Index 0 corresponds to ANSWER_UNSPECIFIED which is not a valid option so it's filtered out.
+    // Valid enum type numbers start from 1 while list item indices start from 0, hence the minus(1)
+    // to get the correct index to update. Notice that for [getPendingAnswer] we increment the index
+    // to get the correct typeCase to save.
+    val previousSelection = previousAnswer.marketFit.number.takeIf { it != 0 }?.minus(1)
+
     selectedItems.apply {
       clear()
-      add(optionIndex)
+      previousSelection?.let { optionIndex ->
+        add(optionIndex)
+        updateIsAnswerAvailable()
+        getPendingAnswer(optionIndex)
+        optionItems[optionIndex].isAnswerSelected.set(true)
+      }
     }
-    updateIsAnswerAvailable()
-    getPendingAnswer(optionIndex)
-    optionItems[optionIndex].isAnswerSelected.set(true)
   }
 
   private fun getMarketFitOptions(): ObservableList<MultipleChoiceOptionContentViewModel> {
