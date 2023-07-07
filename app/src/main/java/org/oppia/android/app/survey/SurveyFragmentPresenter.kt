@@ -57,6 +57,7 @@ class SurveyFragmentPresenter @Inject constructor(
   private lateinit var answerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
   private lateinit var answerHandler: SelectedAnswerHandler
   private lateinit var questionSelectedAnswer: SurveySelectedAnswer
+  private var isCurrentQuestionTerminal: Boolean = false
 
   /** Sets up data binding. */
   fun handleCreateView(
@@ -240,6 +241,8 @@ class SurveyFragmentPresenter @Inject constructor(
       )
       else -> {}
     }
+
+    this.isCurrentQuestionTerminal = ephemeralQuestion.terminalQuestion
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
     updateQuestionText(questionName)
 

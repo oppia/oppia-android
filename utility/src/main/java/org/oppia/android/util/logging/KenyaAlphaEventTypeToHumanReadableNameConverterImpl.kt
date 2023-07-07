@@ -47,6 +47,9 @@ class KenyaAlphaEventTypeToHumanReadableNameConverterImpl @Inject constructor() 
       ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE -> "switch_in_lesson_language"
       ActivityContextCase.SHOW_SURVEY_POPUP -> "show_survey_popup"
       ActivityContextCase.BEGIN_SURVEY -> "begin_survey"
+      ActivityContextCase.ABANDON_SURVEY -> "abandon_survey"
+      ActivityContextCase.MANDATORY_RESPONSE -> "mandatory_response"
+      ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG -> "failed_analytics_log"
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "unknown_activity_context"
     }
