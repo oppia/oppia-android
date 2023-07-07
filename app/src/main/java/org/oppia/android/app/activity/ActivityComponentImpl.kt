@@ -54,6 +54,7 @@ import org.oppia.android.app.settings.profile.ProfileRenameActivity
 import org.oppia.android.app.settings.profile.ProfileResetPinActivity
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.survey.SurveyActivity
 import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.testing.AppCompatCheckBoxBindingAdaptersTestActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
@@ -206,4 +207,5 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
+  fun inject(surveyActivity: SurveyActivity)
 }

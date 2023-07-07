@@ -149,15 +149,23 @@ class SplashActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
-  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var appStartupStateController: AppStartupStateController
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var appStartupStateController: AppStartupStateController
 
-  @Parameter lateinit var firstOpen: String
-  @Parameter lateinit var secondOpen: String
+  @Parameter
+  lateinit var firstOpen: String
+  @Parameter
+  lateinit var secondOpen: String
 
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
   private val firstOpenFlavor by lazy { BuildFlavor.valueOf(firstOpen) }
