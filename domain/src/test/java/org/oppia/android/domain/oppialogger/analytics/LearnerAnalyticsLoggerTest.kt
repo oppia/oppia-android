@@ -32,6 +32,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -88,16 +89,25 @@ class LearnerAnalyticsLoggerTest {
     private const val DEFAULT_INITIAL_SESSION_ID = "e6eacc69-e636-3c90-ba29-32bf3dd17161"
   }
 
-  @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
-  @Inject lateinit var explorationDataController: ExplorationDataController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
+  @Inject
+  lateinit var explorationDataController: ExplorationDataController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Parameter lateinit var iid: String
-  @Parameter lateinit var lid: String
-  @Parameter lateinit var eid: String
-  @Parameter lateinit var elid: String
+  @Parameter
+  lateinit var iid: String
+  @Parameter
+  lateinit var lid: String
+  @Parameter
+  lateinit var eid: String
+  @Parameter
+  lateinit var elid: String
 
   private val learnerIdParameter: String? get() = lid.takeIf { it != "null" }
   private val installIdParameter: String? get() = iid.takeIf { it != "null" }
@@ -1827,7 +1837,7 @@ class LearnerAnalyticsLoggerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      CachingTestModule::class
+      CachingTestModule::class, ExplorationProgressModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
