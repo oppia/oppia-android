@@ -1,9 +1,9 @@
 package org.oppia.android.domain.oppialogger
 
-import javax.inject.Inject
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.util.logging.ConsoleLogger
+import javax.inject.Inject
 
 /** Logger that handles general-purpose logging throughout the domain & UI layers. */
 class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) {

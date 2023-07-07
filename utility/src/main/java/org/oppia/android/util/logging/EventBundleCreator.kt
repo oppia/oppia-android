@@ -1,10 +1,12 @@
 package org.oppia.android.util.logging
+
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
@@ -18,6 +20,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.MANDATORY_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -29,6 +32,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPTIONAL_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
@@ -54,12 +58,15 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.AbandonSurveyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ExplorationContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.HintContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.MandatorySurveyResponseContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.OptionalSurveyResponseContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.QuestionContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.RevisionCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SensitiveStringContext
@@ -80,11 +87,14 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.AbandonSurveyContext as AbandonSurveyEventContext
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
+import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
+import org.oppia.android.app.model.EventLog.OptionalSurveyResponseContext as OptionalSurveyResponseEventContext
 import org.oppia.android.app.model.EventLog.QuestionContext as QuestionEventContext
 import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
 import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
@@ -210,6 +220,9 @@ class EventBundleCreator @Inject constructor(
         SwitchInLessonLanguageContext(activityName, switchInLessonLanguage)
       SHOW_SURVEY_POPUP -> SurveyContext(activityName, showSurveyPopup)
       BEGIN_SURVEY -> SurveyContext(activityName, beginSurvey)
+      ABANDON_SURVEY -> AbandonSurveyContext(activityName, abandonSurvey)
+      MANDATORY_RESPONSE -> MandatorySurveyResponseContext(activityName, mandatoryResponse)
+      OPTIONAL_RESPONSE -> OptionalSurveyResponseContext(activityName, optionalResponse)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
@@ -504,6 +517,44 @@ class EventBundleCreator @Inject constructor(
       override fun SurveyEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("topic_id", topicId)
         store.putNonSensitiveValue("exploration_id", explorationId)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [MandatorySurveyResponseEventContext]s. */
+    class MandatorySurveyResponseContext(
+      activityName: String,
+      value: MandatorySurveyResponseEventContext
+    ) : EventActivityContext<MandatorySurveyResponseEventContext>(activityName, value) {
+      override fun MandatorySurveyResponseEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
+        store.putSensitiveValue("profile_id", surveyDetails.profileId)
+        store.putNonSensitiveValue("user_type_answer", userTypeAnswer)
+        store.putNonSensitiveValue("market_fit_answer", marketFitAnswerValue)
+        store.putNonSensitiveValue("nps_score_answer", npsScoreAnswer)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [OptionalSurveyResponseEventContext]s. */
+    class OptionalSurveyResponseContext(
+      activityName: String,
+      value: OptionalSurveyResponseEventContext
+    ) : EventActivityContext<OptionalSurveyResponseEventContext>(activityName, value) {
+      override fun OptionalSurveyResponseEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
+        store.putSensitiveValue("profile_id", surveyDetails.profileId)
+        store.putSensitiveValue("feedback_answer", feedbackAnswer)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [AbandonSurveyEventContext]s. */
+    class AbandonSurveyContext(
+      activityName: String,
+      value: AbandonSurveyEventContext
+    ) : EventActivityContext<AbandonSurveyEventContext>(activityName, value) {
+      override fun AbandonSurveyEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
+        store.putSensitiveValue("profile_id", surveyDetails.profileId)
+        store.putNonSensitiveValue("question_name", questionName)
       }
     }
   }

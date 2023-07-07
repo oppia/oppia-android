@@ -57,6 +57,9 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE -> "click_switch_language_in_lesson"
       ActivityContextCase.SHOW_SURVEY_POPUP -> "show_survey_popup"
       ActivityContextCase.BEGIN_SURVEY -> "begin_survey"
+      ActivityContextCase.ABANDON_SURVEY -> "abandon_survey"
+      ActivityContextCase.MANDATORY_RESPONSE -> "mandatory_response"
+      ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "ERROR_internal_logging_failure"
     }

@@ -54,7 +54,7 @@ class SurveyOutroDialogFragmentPresenter @Inject constructor(
   }
 
   private fun endSurveyWithCallback(callback: () -> Unit) {
-    surveyController.stopSurveySession().toLiveData().observe(
+    surveyController.stopSurveySession(isCompletion = true).toLiveData().observe(
       activity,
       {
         when (it) {

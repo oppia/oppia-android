@@ -64,7 +64,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     topicId: String,
     questions: List<SurveyQuestionName>
   ) {
-    val startDataProvider = surveyController.startSurveySession(questions)
+    val startDataProvider = surveyController.startSurveySession(questions, profileId = profileId)
     startDataProvider.toLiveData().observe(
       activity,
       {
