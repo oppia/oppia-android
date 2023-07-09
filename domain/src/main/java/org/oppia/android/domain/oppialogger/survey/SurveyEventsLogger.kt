@@ -19,7 +19,8 @@ class SurveyEventsLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
 ) {
 
-  /** Logs an event representing a survey session being started and ended before the
+  /**
+   * Logs an event representing a survey session being started and ended before the
    * mandatory questions are completed.
    */
   fun logAbandonSurvey(surveyId: String, profileId: ProfileId, questionName: SurveyQuestionName) {

@@ -7,9 +7,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
     name = "survey_events_logger",
-    srcs = [
-        "SurveyEventsLogger.kt",
-    ],
+    srcs = ["SurveyEventsLogger.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//domain",
