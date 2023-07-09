@@ -49,14 +49,6 @@ class SurveyEventsLogger @Inject constructor(
     )
   }
 
-  /** Logs an event representing the response to the optional survey question. */
-  fun logOptionalResponse(surveyId: String, profileId: ProfileId, answer: String) {
-    analyticsController.logImportantEvent(
-      createOptionalSurveyResponseContext(surveyId, profileId, answer),
-      profileId
-    )
-  }
-
   private fun createMandatorySurveyResponseContext(
     surveyId: String,
     profileId: ProfileId,
@@ -70,22 +62,6 @@ class SurveyEventsLogger @Inject constructor(
           .setUserTypeAnswer(userTypeAnswer)
           .setMarketFitAnswer(marketFitAnswer)
           .setNpsScoreAnswer(npsScore)
-          .setSurveyDetails(
-            createSurveyResponseContext(surveyId, profileId)
-          )
-      )
-      .build()
-  }
-
-  private fun createOptionalSurveyResponseContext(
-    surveyId: String,
-    profileId: ProfileId,
-    answer: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setOptionalResponse(
-        EventLog.OptionalSurveyResponseContext.newBuilder()
-          .setFeedbackAnswer(answer)
           .setSurveyDetails(
             createSurveyResponseContext(surveyId, profileId)
           )
