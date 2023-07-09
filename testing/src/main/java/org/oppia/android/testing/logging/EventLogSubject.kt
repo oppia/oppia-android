@@ -27,6 +27,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.MANDATORY_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -47,8 +48,10 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CA
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 
@@ -958,6 +961,34 @@ class EventLogSubject private constructor(
   }
 
   /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [MANDATORY_RESPONSE] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasMandatorySurveyResponseContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(MANDATORY_RESPONSE)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasMandatorySurveyResponseContext] and returns a
+   * [MandatorySurveyResponseContextSubject] to test the corresponding context.
+   */
+  fun hasMandatorySurveyResponseContextThat(): MandatorySurveyResponseContextSubject {
+    hasMandatorySurveyResponseContext()
+    return MandatorySurveyResponseContextSubject.assertThat(
+      actual.context.mandatoryResponse
+    )
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block].
+   */
+  fun hasMandatorySurveyResponseContextThat(
+    block: MandatorySurveyResponseContextSubject.() -> Unit
+  ) {
+    hasMandatorySurveyResponseContextThat().block()
+  }
+
+  /**
    * Truth subject for verifying properties of [AppLanguageSelection]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
@@ -1662,6 +1693,74 @@ class EventLogSubject private constructor(
         actual: EventLog.SwitchInLessonLanguageEventContext
       ): SwitchInLessonLanguageEventContextSubject =
         assertAbout(::SwitchInLessonLanguageEventContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.MandatorySurveyResponseContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.MandatorySurveyResponseContext] proto can be verified through inherited methods.
+   *
+   * Call [MandatorySurveyResponseContextSubject.assertThat] to create the subject.
+   */
+  class MandatorySurveyResponseContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.MandatorySurveyResponseContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [SurveyResponseContextSubject] to test
+     * [EventLog.AbandonSurveyContext.getSurveyDetails].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasSurveyDetailsThat(): SurveyResponseContextSubject =
+      SurveyResponseContextSubject.assertThat(actual.surveyDetails)
+
+    /** Executes [block] in the context returned by [hasSurveyDetailsThat]. */
+    fun hasSurveyDetailsThat(block: SurveyResponseContextSubject.() -> Unit) {
+      hasSurveyDetailsThat().block()
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.MandatorySurveyResponseContext.getUserTypeAnswer].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasUserTypeAnswerThat(): ComparableSubject<UserTypeAnswer> =
+      assertThat(actual.userTypeAnswer)
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.MandatorySurveyResponseContext.getMarketFitAnswer].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasMarketFitAnswerThat(): ComparableSubject<MarketFitAnswer> =
+      assertThat(actual.marketFitAnswer)
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.MandatorySurveyResponseContext.getUserTypeAnswer].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasNpsScoreAnswerThat(): IntegerSubject =
+      assertThat(actual.npsScoreAnswer)
+
+    companion object {
+      /**
+       * Returns a new [AbandonSurveyContextSubject] to verify aspects of the specified
+       * [EventLog.AbandonSurveyContext] value.
+       */
+      fun assertThat(actual: EventLog.MandatorySurveyResponseContext):
+        MandatorySurveyResponseContextSubject =
+          assertAbout(::MandatorySurveyResponseContextSubject).that(actual)
     }
   }
 

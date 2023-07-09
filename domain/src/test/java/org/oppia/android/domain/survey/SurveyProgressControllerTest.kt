@@ -353,6 +353,52 @@ class SurveyProgressControllerTest {
     }
   }
 
+  @Test
+  fun testEndSurvey_afterCompletingMandatoryQuestions_logsMandatorySurveyResponseEvent() {
+    startSuccessfulSurveySession()
+    waitForGetCurrentQuestionSuccessfulLoad()
+    submitUserTypeAnswer(UserTypeAnswer.PARENT)
+    submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
+    // Submit and navigate to FEEDBACK question
+    submitNpsAnswer(10)
+    stopSurveySession(isCompletion = false)
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    EventLogSubject.assertThat(eventLog).hasMandatorySurveyResponseContextThat {
+      hasSurveyDetailsThat {
+        hasSurveyIdThat().isNotEmpty()
+        hasInternalProfileIdThat().isEqualTo("1")
+      }
+      hasUserTypeAnswerThat().isEqualTo(UserTypeAnswer.PARENT)
+      hasMarketFitAnswerThat().isEqualTo(MarketFitAnswer.VERY_DISAPPOINTED)
+      hasNpsScoreAnswerThat().isEqualTo(10)
+    }
+  }
+
+  @Test
+  fun testEndSurvey_afterCompletingAllQuestions_logsMandatorySurveyResponseEvent() {
+    startSuccessfulSurveySession()
+    waitForGetCurrentQuestionSuccessfulLoad()
+    submitUserTypeAnswer(UserTypeAnswer.PARENT)
+    submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
+    submitNpsAnswer(10)
+    submitTextInputAnswer(SurveyQuestionName.PROMOTER_FEEDBACK, TEXT_ANSWER)
+    stopSurveySession(isCompletion = true)
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    EventLogSubject.assertThat(eventLog).hasMandatorySurveyResponseContextThat {
+      hasSurveyDetailsThat {
+        hasSurveyIdThat().isNotEmpty()
+        hasInternalProfileIdThat().isEqualTo("1")
+      }
+      hasUserTypeAnswerThat().isEqualTo(UserTypeAnswer.PARENT)
+      hasMarketFitAnswerThat().isEqualTo(MarketFitAnswer.VERY_DISAPPOINTED)
+      hasNpsScoreAnswerThat().isEqualTo(10)
+    }
+  }
+
+  // TODO(#5001): Add tests for Optional responses logging to Firestore
+
   private fun stopSurveySession(isCompletion: Boolean) {
     val stopProvider = surveyController.stopSurveySession(isCompletion)
     monitorFactory.waitForNextSuccessfulResult(stopProvider)
