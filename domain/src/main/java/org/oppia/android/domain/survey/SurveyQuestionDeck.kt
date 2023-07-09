@@ -16,7 +16,7 @@ class SurveyQuestionDeck constructor(
   private var pendingTopQuestion = initialQuestion
   private var viewedQuestionsCount: Int = 0
   private var questionIndex: Int = 0
-  val answeredQuestions = mutableListOf<SurveyQuestionName>()
+  private val answeredQuestions = mutableListOf<SurveyQuestionName>()
 
   /** Sets this deck to a specific question. */
   fun updateDeck(pendingTopQuestion: SurveyQuestion) {

@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.MarketFitAnswer
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.model.UserTypeAnswer
@@ -38,7 +39,9 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -64,6 +67,8 @@ class SurveyProgressControllerTest {
   @Inject
   lateinit var surveyProgressController: SurveyProgressController
 
+  private val profileId = ProfileId.newBuilder().setInternalId(1).build()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -72,7 +77,7 @@ class SurveyProgressControllerTest {
   @Test
   fun testStartSurveySession_succeeds() {
     val surveyDataProvider =
-      surveyController.startSurveySession(questions)
+      surveyController.startSurveySession(questions, profileId = profileId)
 
     monitorFactory.waitForNextSuccessfulResult(surveyDataProvider)
   }
@@ -307,7 +312,7 @@ class SurveyProgressControllerTest {
 
   @Test
   fun testStopSurveySession_withoutStartingSession_returnsFailure() {
-    val stopProvider = surveyController.stopSurveySession()
+    val stopProvider = surveyController.stopSurveySession(true)
 
     // The operation should be failing since the session hasn't started.
     val result = monitorFactory.waitForNextFailureResult(stopProvider)
@@ -319,13 +324,14 @@ class SurveyProgressControllerTest {
   @Test
   fun testStopSurveySession_afterStartingPreviousSession_succeeds() {
     startSuccessfulSurveySession()
-    val stopProvider = surveyController.stopSurveySession()
+    waitForGetCurrentQuestionSuccessfulLoad()
+    val stopProvider = surveyController.stopSurveySession(false)
     monitorFactory.waitForNextSuccessfulResult(stopProvider)
   }
 
   private fun startSuccessfulSurveySession() {
     monitorFactory.waitForNextSuccessfulResult(
-      surveyController.startSurveySession(questions)
+      surveyController.startSurveySession(questions, profileId = profileId)
     )
   }
 
@@ -433,6 +439,13 @@ class SurveyProgressControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @Provides
+    @EnableLearnerStudyAnalytics
+    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      // Enable the study by default in tests.
+      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
+    }
   }
 
   @Module

@@ -84,6 +84,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.survey.SurveyController
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -554,7 +555,8 @@ class SurveyFragmentTest {
       SurveyQuestionName.MARKET_FIT,
       SurveyQuestionName.NPS
     )
-    surveyController.startSurveySession(questions)
+    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    surveyController.startSurveySession(questions, profileId = profileId)
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -562,7 +564,8 @@ class SurveyFragmentTest {
     return SurveyActivity.createSurveyActivityIntent(
       context = context,
       profileId = profileId,
-      TEST_TOPIC_ID_0
+      TEST_TOPIC_ID_0,
+      TEST_EXPLORATION_ID_2
     )
   }
 
