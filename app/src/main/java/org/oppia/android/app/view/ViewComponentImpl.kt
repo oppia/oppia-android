@@ -8,11 +8,14 @@ import org.oppia.android.app.customview.ContinueButtonView
 import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.customview.PromotedStoryCardView
 import org.oppia.android.app.customview.SegmentedCircularProgressView
+import org.oppia.android.app.customview.SurveyOnboardingBackgroundView
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsListView
 import org.oppia.android.app.home.promotedlist.PromotedStoryListView
 import org.oppia.android.app.player.state.DragDropSortInteractionView
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.player.state.SelectionInteractionView
+import org.oppia.android.app.survey.SurveyMultipleChoiceOptionView
+import org.oppia.android.app.survey.SurveyNpsItemOptionView
 
 // TODO(#59): Restrict access to this implementation by introducing injectors in each view.
 
@@ -39,4 +42,7 @@ interface ViewComponentImpl : ViewComponent {
   fun inject(promotedStoryCardView: PromotedStoryCardView)
   fun inject(promotedStoryListView: PromotedStoryListView)
   fun inject(segmentedCircularProgressView: SegmentedCircularProgressView)
+  fun inject(surveyOnboardingBackgroundView: SurveyOnboardingBackgroundView)
+  fun inject(surveyMultipleChoiceOptionView: SurveyMultipleChoiceOptionView)
+  fun inject(surveyNpsItemOptionView: SurveyNpsItemOptionView)
 }

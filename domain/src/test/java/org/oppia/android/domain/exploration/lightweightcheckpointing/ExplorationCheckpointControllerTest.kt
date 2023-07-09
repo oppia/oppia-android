@@ -35,6 +35,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.OutdatedExplorationCheckpointException
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
@@ -998,7 +999,8 @@ class ExplorationCheckpointControllerTest {
       DragDropSortInputModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      ExplorationProgressModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

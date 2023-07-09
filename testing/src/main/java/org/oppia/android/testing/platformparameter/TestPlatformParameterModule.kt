@@ -36,6 +36,10 @@ import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAUL
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.util.platformparameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
+import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
@@ -263,6 +267,19 @@ class TestPlatformParameterModule {
     )
   }
 
+  @Provides
+  @NpsSurveyGracePeriodInDays
+  fun provideNpsSurveyGracePeriodInDays(): PlatformParameterValue<Int> {
+    return PlatformParameterValue.createDefaultParameter(gracePeriodInDays)
+  }
+
+  @Provides
+  @NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+  fun provideNpsSurveyMinimumAggregateLearningTimeInATopicInMinutes():
+    PlatformParameterValue<Int> {
+      return PlatformParameterValue.createDefaultParameter(minimumLearningTime)
+    }
+
   companion object {
     private var enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
@@ -278,6 +295,9 @@ class TestPlatformParameterModule {
       ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
     private var enableSpotlightUi = true
     private var enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
+    private var minimumLearningTime =
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE
+    private var gracePeriodInDays = NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
