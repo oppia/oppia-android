@@ -323,9 +323,6 @@ message EventLog {
 
     // The active exploration ID when the event is logged.
     string exploration_id = 2;
-
-    // The selected app language when the survey is in progress.
-    OppiaLanguage app_language = 3;
   }
 
   // Represents the event context for when a survey is exited without completing all the mandatory

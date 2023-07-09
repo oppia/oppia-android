@@ -91,6 +91,7 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -514,6 +515,23 @@ class SurveyFragmentTest {
           targetViewId = R.id.multiple_choice_content_text_view
         )
       ).check(matches(withText(R.string.user_type_answer_learner)))
+    }
+  }
+
+  @Test
+  fun testSurveyFragment_beginSurvey_logsBeginSurveyEvent() {
+    startSurveySession()
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the "begin survey" event was logged, and with the correct values.
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      EventLogSubject.assertThat(event).hasBeginSurveyContextThat {
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID_0)
+      }
     }
   }
 
