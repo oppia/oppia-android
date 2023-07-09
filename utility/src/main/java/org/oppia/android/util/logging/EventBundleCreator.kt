@@ -529,7 +529,7 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
         store.putSensitiveValue("profile_id", surveyDetails.profileId)
         store.putNonSensitiveValue("user_type_answer", userTypeAnswer)
-        store.putNonSensitiveValue("market_fit_answer", marketFitAnswerValue)
+        store.putNonSensitiveValue("market_fit_answer", marketFitAnswer)
         store.putNonSensitiveValue("nps_score_answer", npsScoreAnswer)
       }
     }

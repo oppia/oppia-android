@@ -268,8 +268,10 @@ oppia_android_test(
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/survey:survey_events_logger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+        "//testing/src/main/java/org/oppia/android/testing/logging:event_log_subject",
         "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -279,7 +281,6 @@ oppia_android_test(
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
-        "//third_party:org_mockito_mockito-core",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
