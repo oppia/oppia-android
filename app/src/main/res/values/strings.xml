@@ -90,6 +90,7 @@
   <string name="chapter_completed">Chapter %s with title %s is completed</string>
   <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
+  <string name="chapter_locked_prerequisite_title_label">Chapter %s: %s is currently locked. Please complete chapter %s: %s to unlock this chapter.</string>
   <string name="chapter_prerequisite_title_label_without_chapter_title">Complete the previous chapter to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
@@ -597,11 +598,12 @@
   <string name="survey_free_form_text_hint">Leave your feedback here</string>
   <string name="survey_continue_survey_button">Continue Survey</string>
   <string name="survey_exit_button">Exit</string>
+  <string name="survey_exit_button_description">Exit Survey</string>
   <string name="survey_exit_confirmation_text">Are you sure you want to exit the survey?</string>
   <string name="survey_onboarding_message_text">Your feedback helps us serve learners like you better. Would you like to complete a short survey about your experience?</string>
   <string name="survey_begin_survey_button">Begin Survey</string>
   <string name="survey_maybe_later_button">Maybe Later</string>
-  <string name="survey_thank_you_message_text">Thank you for completing the survey. We hope you\'ve enjoyed using Oppia!</string>
+  <string name="survey_thank_you_message_text">Thank you for completing the survey. We hope you\'ve enjoyed using %s!</string>
   <string name="survey_exit_survey_button">Exit survey</string>
   <string name="survey_onboarding_title_text">We\'d love your feedback!</string>
   <string name="survey_thank_you_title_text">Thank you</string>
@@ -612,13 +614,13 @@
   <string name="user_type_answer_teacher">I am a teacher</string>
   <string name="user_type_answer_parent">I am a parent</string>
   <string name="user_type_answer_other">Other</string>
-  <string name="market_fit_question">How would you feel if you could no longer use Oppia?</string>
+  <string name="market_fit_question">How would you feel if you could no longer use %s?</string>
   <string name="market_fit_answer_very_disappointed">Very disappointed</string>
   <string name="market_fit_answer_somewhat_disappointed">Somewhat disappointed</string>
   <string name="market_fit_answer_not_disappointed">Not disappointed</string>
-  <string name="market_fit_answer_wont_use_oppia">N/A - Don\’t use Oppia anymore</string>
-  <string name="nps_promoter_feedback_question">We are glad you have enjoyed your experience with Oppia. Please share what helped you the most:</string>
+  <string name="market_fit_answer_wont_use_oppia">N/A - I don\’t use %s anymore</string>
+  <string name="nps_promoter_feedback_question">We are glad you have enjoyed your experience with %s. Please share what helped you the most:</string>
   <string name="nps_passive_feedback_question">Thanks for responding! How can we provide a better experience?</string>
   <string name="nps_detractor_feedback_question">Help us improve your experience! Please share  the primary reason for your score:</string>
-  <string name="nps_score_question">On a scale from 0–10, how likely are you to recommend Oppia to a friend or colleague?</string>
+  <string name="nps_score_question">On a scale from 0–10, how likely are you to recommend %s to a friend or colleague?</string>
 </resources>

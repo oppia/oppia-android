@@ -7,6 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.model.UserTypeAnswer
+import org.oppia.android.app.survey.PreviousAnswerHandler
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -18,12 +19,12 @@ class UserTypeItemsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
   private val answerHandler: SelectedAnswerHandler
-) : SurveyAnswerItemViewModel(ViewType.USER_TYPE_OPTIONS) {
+) : SurveyAnswerItemViewModel(ViewType.USER_TYPE_OPTIONS), PreviousAnswerHandler {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getUserTypeOptions()
 
   private val selectedItems: MutableList<Int> = mutableListOf()
 
-  override fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
+  override fun updateSelection(itemIndex: Int): Boolean {
     optionItems.forEach { item -> item.isAnswerSelected.set(false) }
     if (!selectedItems.contains(itemIndex)) {
       selectedItems.clear()
@@ -31,7 +32,13 @@ class UserTypeItemsViewModel @Inject constructor(
     } else {
       selectedItems.clear()
     }
+
     updateIsAnswerAvailable()
+
+    if (selectedItems.isNotEmpty()) {
+      getPendingAnswer(itemIndex)
+    }
+
     return selectedItems.isNotEmpty()
   }
 
@@ -44,28 +51,47 @@ class UserTypeItemsViewModel @Inject constructor(
           selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
             selectedItems.isNotEmpty()
           )
-          getPendingAnswer()
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
   private fun updateIsAnswerAvailable() {
-    val wasSelectedItemListEmpty = isAnswerAvailable.get()
-    if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
+    val selectedItemListWasEmpty = isAnswerAvailable.get()
+    if (selectedItems.isNotEmpty() != selectedItemListWasEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
     }
   }
 
-  private fun getPendingAnswer() {
-    if (selectedItems.isNotEmpty()) {
-      val typeCase = selectedItems.first() + 1
-      val answerValue = UserTypeAnswer.forNumber(typeCase)
-      val answer = SurveySelectedAnswer.newBuilder()
-        .setQuestionName(SurveyQuestionName.USER_TYPE)
-        .setUserType(answerValue)
-        .build()
-      answerHandler.getPendingAnswer(answer)
+  private fun getPendingAnswer(itemIndex: Int) {
+    val typeCase = itemIndex + 1
+    val answerValue = UserTypeAnswer.forNumber(typeCase)
+    val answer = SurveySelectedAnswer.newBuilder()
+      .setQuestionName(SurveyQuestionName.USER_TYPE)
+      .setUserType(answerValue)
+      .build()
+    answerHandler.getMultipleChoiceAnswer(answer)
+  }
+
+  override fun getPreviousAnswer(): SurveySelectedAnswer {
+    return SurveySelectedAnswer.getDefaultInstance()
+  }
+
+  override fun restorePreviousAnswer(previousAnswer: SurveySelectedAnswer) {
+    // Index 0 corresponds to ANSWER_UNSPECIFIED which is not a valid option so it's filtered out.
+    // Valid enum type numbers start from 1 while list item indices start from 0, hence the minus(1)
+    // to get the correct index to update. Notice that for [getPendingAnswer] we increment the index
+    // to get the correct typeCase to save.
+    val previousSelection = previousAnswer.userType.number.takeIf { it != 0 }?.minus(1)
+
+    selectedItems.apply {
+      clear()
+      previousSelection?.let { optionIndex ->
+        add(optionIndex)
+        updateIsAnswerAvailable()
+        getPendingAnswer(optionIndex)
+        optionItems[optionIndex].isAnswerSelected.set(true)
+      }
     }
   }
 

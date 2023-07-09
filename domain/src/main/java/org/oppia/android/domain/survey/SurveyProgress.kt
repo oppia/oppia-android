@@ -14,7 +14,7 @@ class SurveyProgress {
     SurveyQuestionGraph(questionsList as MutableList)
   }
   val questionDeck: SurveyQuestionDeck by lazy {
-    SurveyQuestionDeck(getTotalQuestionCount(), ::isTopQuestionTerminal)
+    SurveyQuestionDeck(getTotalQuestionCount(), getInitialQuestion(), this::isTopQuestionTerminal)
   }
 
   /** Initialize the survey with the specified list of questions. */
@@ -24,24 +24,22 @@ class SurveyProgress {
     isTopQuestionCompleted = false
   }
 
-  /** Returns whether the learner is currently viewing the most recent question. */
-  fun isViewingMostRecentQuestion(): Boolean {
-    return questionDeck.isCurrentQuestionTopOfDeck()
-  }
-
-  /** Processes when a new pending question has been navigated to. */
-  fun processNavigationToNewQuestion() {
-    isTopQuestionCompleted = false
-  }
-
   /** Returns the index of the current question being viewed. */
-  fun getCurrentQuestionIndex(): Int {
+  private fun getCurrentQuestionIndex(): Int {
     return questionDeck.getTopQuestionIndex()
   }
+
+  /** Returns the first question in the list. */
+  private fun getInitialQuestion(): SurveyQuestion = questionsList.first()
 
   /** Returns the number of questions in the survey. */
   fun getTotalQuestionCount(): Int {
     return questionsList.size
+  }
+
+  /** Update the question at the current position of the deck. */
+  fun refreshDeck() {
+    questionDeck.updateDeck(questionGraph.getQuestion(getCurrentQuestionIndex()))
   }
 
   /**
@@ -55,14 +53,14 @@ class SurveyProgress {
   fun advancePlayStageTo(nextStage: SurveyStage) {
     when (nextStage) {
       SurveyStage.NOT_IN_SURVEY_SESSION -> {
-        // All transitions to NOT_IN_SURVEY_SESSION are valid except itself.
+        // All transitions to NOT_IN_SURVEY_SESSION are valid except those originating from itself.
         check(surveyStage != SurveyStage.NOT_IN_SURVEY_SESSION) {
           "Cannot transition to NOT_IN_TRAINING_SESSION from NOT_IN_TRAINING_SESSION"
         }
         surveyStage = nextStage
       }
       SurveyStage.LOADING_SURVEY_SESSION -> {
-        // A session can only begun being loaded when not previously in a session.
+        // A session can only start being loaded when not previously in a session.
         check(surveyStage == SurveyStage.NOT_IN_SURVEY_SESSION) {
           "Cannot transition to LOADING_SURVEY_SESSION from $surveyStage"
         }
@@ -81,7 +79,7 @@ class SurveyProgress {
         surveyStage = nextStage
       }
       SurveyStage.SUBMITTING_ANSWER -> {
-        // An answer can only be submitted after viewing a stage.
+        // An answer can only be submitted after viewing a question.
         check(surveyStage == SurveyStage.VIEWING_SURVEY_QUESTION) {
           "Cannot transition to SUBMITTING_ANSWER from $surveyStage"
         }
@@ -90,10 +88,11 @@ class SurveyProgress {
     }
   }
 
-  companion object {
-    internal fun isTopQuestionTerminal(currentIndex: Int, totalQuestionCount: Int): Boolean {
-      return currentIndex + 1 == totalQuestionCount
-    }
+  private fun isTopQuestionTerminal(
+    @Suppress("UNUSED_PARAMETER") surveyQuestion: SurveyQuestion
+  ): Boolean {
+    return questionDeck.isCurrentQuestionTopOfDeck() &&
+      getCurrentQuestionIndex() == getTotalQuestionCount().minus(1)
   }
 
   /** Different stages in which the progress controller can exist. */

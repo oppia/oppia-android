@@ -8,6 +8,7 @@ import org.oppia.android.R
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
+import org.oppia.android.app.survey.PreviousAnswerHandler
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -18,12 +19,12 @@ class MarketFitItemsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,
   private val answerHandler: SelectedAnswerHandler
-) : SurveyAnswerItemViewModel(ViewType.MARKET_FIT_OPTIONS) {
+) : SurveyAnswerItemViewModel(ViewType.MARKET_FIT_OPTIONS), PreviousAnswerHandler {
   val optionItems: ObservableList<MultipleChoiceOptionContentViewModel> = getMarketFitOptions()
 
   private val selectedItems: MutableList<Int> = mutableListOf()
 
-  override fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
+  override fun updateSelection(itemIndex: Int): Boolean {
     optionItems.forEach { item -> item.isAnswerSelected.set(false) }
     if (!selectedItems.contains(itemIndex)) {
       selectedItems.clear()
@@ -31,7 +32,13 @@ class MarketFitItemsViewModel @Inject constructor(
     } else {
       selectedItems.clear()
     }
+
     updateIsAnswerAvailable()
+
+    if (selectedItems.isNotEmpty()) {
+      getPendingAnswer(itemIndex)
+    }
+
     return selectedItems.isNotEmpty()
   }
 
@@ -44,32 +51,52 @@ class MarketFitItemsViewModel @Inject constructor(
           selectedAnswerAvailabilityReceiver.onPendingAnswerAvailabilityCheck(
             selectedItems.isNotEmpty()
           )
-          getPendingAnswer()
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
   private fun updateIsAnswerAvailable() {
-    val wasSelectedItemListEmpty = isAnswerAvailable.get()
-    if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
+    val selectedItemListWasEmpty = isAnswerAvailable.get()
+    if (selectedItems.isNotEmpty() != selectedItemListWasEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
     }
   }
 
-  private fun getPendingAnswer() {
-    if (selectedItems.isNotEmpty()) {
-      val typeCase = selectedItems.first() + 1
-      val answerValue = MarketFitAnswer.forNumber(typeCase)
-      val answer = SurveySelectedAnswer.newBuilder()
-        .setQuestionName(SurveyQuestionName.MARKET_FIT)
-        .setMarketFit(answerValue)
-        .build()
-      answerHandler.getPendingAnswer(answer)
+  private fun getPendingAnswer(itemIndex: Int) {
+    val typeCase = itemIndex + 1
+    val answerValue = MarketFitAnswer.forNumber(typeCase)
+    val answer = SurveySelectedAnswer.newBuilder()
+      .setQuestionName(SurveyQuestionName.MARKET_FIT)
+      .setMarketFit(answerValue)
+      .build()
+    answerHandler.getMultipleChoiceAnswer(answer)
+  }
+
+  override fun getPreviousAnswer(): SurveySelectedAnswer {
+    return SurveySelectedAnswer.getDefaultInstance()
+  }
+
+  override fun restorePreviousAnswer(previousAnswer: SurveySelectedAnswer) {
+    // Index 0 corresponds to ANSWER_UNSPECIFIED which is not a valid option so it's filtered out.
+    // Valid enum type numbers start from 1 while list item indices start from 0, hence the minus(1)
+    // to get the correct index to update. Notice that for [getPendingAnswer] we increment the index
+    // to get the correct typeCase to save.
+    val previousSelection = previousAnswer.marketFit.number.takeIf { it != 0 }?.minus(1)
+
+    selectedItems.apply {
+      clear()
+      previousSelection?.let { optionIndex ->
+        add(optionIndex)
+        updateIsAnswerAvailable()
+        getPendingAnswer(optionIndex)
+        optionItems[optionIndex].isAnswerSelected.set(true)
+      }
     }
   }
 
   private fun getMarketFitOptions(): ObservableList<MultipleChoiceOptionContentViewModel> {
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
     val observableList = ObservableArrayList<MultipleChoiceOptionContentViewModel>()
     observableList += MarketFitAnswer.values()
       .filter { it.isValid() }
@@ -101,9 +128,9 @@ class MarketFitItemsViewModel @Inject constructor(
 
           MarketFitAnswer.NOT_APPLICABLE_WONT_USE_OPPIA_ANYMORE ->
             MultipleChoiceOptionContentViewModel(
-
-              resourceHandler.getStringInLocale(
-                R.string.market_fit_answer_wont_use_oppia
+              resourceHandler.getStringInLocaleWithWrapping(
+                R.string.market_fit_answer_wont_use_oppia,
+                appName
               ),
               index,
               this

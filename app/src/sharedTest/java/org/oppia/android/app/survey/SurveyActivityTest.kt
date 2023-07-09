@@ -1,13 +1,13 @@
-package org.oppia.android.app.testing
+package org.oppia.android.app.survey
 
 import android.app.Application
-import android.view.View
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -27,10 +27,9 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
-import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -60,14 +59,17 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -75,6 +77,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -86,111 +89,108 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [SurveyActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = OngoingTopicListSpanTest.TestApplication::class)
-class OngoingTopicListSpanTest {
+@Config(
+  application = SurveyActivityTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class SurveyActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
+  @get:Rule
+  val activityTestRule = ActivityTestRule(
+    SurveyActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
 
   @Before
   fun setUp() {
     Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
-  private fun getOngoingRecyclerViewGridLayoutManager(
-    activity: OngoingTopicListActivity
-  ): GridLayoutManager {
-    return getOngoingRecyclerView(activity).layoutManager as GridLayoutManager
-  }
+  @Test
+  fun testSurveyActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createSurveyActivityIntent(profileId))
+    val title = activityTestRule.activity.title
 
-  private fun getOngoingRecyclerView(activity: OngoingTopicListActivity): RecyclerView {
-    return getOngoingTopicListFragment(activity).view?.findViewWithTag<View>(
-      activity.resources.getString(R.string.ongoing_recycler_view_tag)
-    )!! as RecyclerView
-  }
-
-  private fun getOngoingTopicListFragment(
-    activity: OngoingTopicListActivity
-  ): OngoingTopicListFragment {
-    return activity
-      .supportFragmentManager
-      .findFragmentByTag(
-        OngoingTopicListFragment.ONGOING_TOPIC_LIST_FRAGMENT_TAG
-      ) as OngoingTopicListFragment
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.survey_activity_title))
   }
 
   @Test
-  fun testOngoingTopicList_checkRecyclerView_hasCorrectSpanCount() {
-    launch(OngoingTopicListActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getOngoingRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
-      }
-    }
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val currentScreenNameWithIntent = SurveyActivity.createSurveyActivityIntent(
+      context, profileId, TEST_TOPIC_ID_0
+    ).extractCurrentAppScreenName()
+
+    assertThat(currentScreenNameWithIntent).isEqualTo(ScreenName.SURVEY_ACTIVITY)
   }
 
-  @Test
-  @Config(qualifiers = "land")
-  fun testOngoingTopicList_checkRecyclerView_land_hasCorrectSpanCount() {
-    launch(OngoingTopicListActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getOngoingRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(3)
-      }
-    }
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>()
+      .inject(this)
   }
 
-  @Test
-  @Config(qualifiers = "sw600dp-port")
-  fun testOngoingTopicList_checkRecyclerView_tabletPort_hasCorrectSpanCount() {
-    launch(OngoingTopicListActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getOngoingRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(3)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp-land")
-  fun testOngoingTopicList_checkRecyclerView_tabletLand_hasCorrectSpanCount() {
-    launch(OngoingTopicListActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getOngoingRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(4)
-      }
-    }
+  private fun createSurveyActivityIntent(profileId: ProfileId): Intent {
+    return SurveyActivity.createSurveyActivityIntent(
+      context = context,
+      profileId = profileId,
+      TEST_TOPIC_ID_0
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NetworkConfigProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      SplitScreenInteractionModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
@@ -201,18 +201,18 @@ class OngoingTopicListSpanTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(ongoingTopicListSpanTest: OngoingTopicListSpanTest)
+    fun inject(surveyActivityTest: SurveyActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOngoingTopicListSpanTest_TestApplicationComponent.builder()
+      DaggerSurveyActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(ongoingTopicListSpanTest: OngoingTopicListSpanTest) {
-      component.inject(ongoingTopicListSpanTest)
+    fun inject(surveyActivityTest: SurveyActivityTest) {
+      component.inject(surveyActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

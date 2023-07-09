@@ -140,5 +140,7 @@
   <color name="color_def_survey_background">#F5F5F5</color>
   <color name="color_def_survey_buttons_white">#F6F6F6</color>
   <color name="color_def_light_blue">#BDCCCC</color>
+  
   <color name="color_def_survey_disabled_button_grey">#E8E8E8</color>
+  <color name="color_def_pale_green">#E2F5F4</color>
 </resources>

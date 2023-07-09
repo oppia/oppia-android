@@ -31,6 +31,7 @@
         android:background="@color/component_color_shared_secondary_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
+        android:contentDescription="@string/survey_exit_button_description"
         app:navigationIcon="@drawable/ic_close_white_24dp">
 
         <LinearLayout
@@ -127,7 +128,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/survey_next_button_background"
-          android:clickable="@{viewModel.canMoveToNextQuestion}"
           android:enabled="@{viewModel.canMoveToNextQuestion}"
           android:text="@string/next"
           android:textColor="@{viewModel.canMoveToNextQuestion ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"

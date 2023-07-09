@@ -22,7 +22,7 @@ import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.android.databinding.PromotedStoryCardBinding
-import org.oppia.android.databinding.SurveyMutipleChoiceItemBinding
+import org.oppia.android.databinding.SurveyMultipleChoiceItemBinding
 import org.oppia.android.databinding.SurveyNpsItemBinding
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.HtmlParser
@@ -156,7 +156,7 @@ class ViewBindingShimImpl @Inject constructor(
     parent: ViewGroup,
     attachToParent: Boolean
   ): View {
-    return SurveyMutipleChoiceItemBinding.inflate(
+    return SurveyMultipleChoiceItemBinding.inflate(
       LayoutInflater.from(parent.context),
       parent,
       false
@@ -168,7 +168,7 @@ class ViewBindingShimImpl @Inject constructor(
     viewModel: MultipleChoiceOptionContentViewModel
   ) {
     val binding =
-      DataBindingUtil.findBinding<SurveyMutipleChoiceItemBinding>(view)!!
+      DataBindingUtil.findBinding<SurveyMultipleChoiceItemBinding>(view)!!
     binding.optionContent = viewModel.optionContent
     binding.viewModel = viewModel
   }

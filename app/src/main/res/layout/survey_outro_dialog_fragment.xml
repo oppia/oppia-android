@@ -39,7 +39,6 @@
       style="@style/SurveyPopupMessageStyle"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      android:text="@string/survey_thank_you_message_text"
       app:layout_constraintTop_toTopOf="@id/survey_onboarding_center_guide" />
 
     <Button

@@ -192,7 +192,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/story/storyitemview
 exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/ExitSurveyConfirmationDialogFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/ExitSurveyConfirmationDialogFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyActivityPresenter.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyOutroDialogFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyWelcomeDialogFragment.kt"

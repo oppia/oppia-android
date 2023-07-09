@@ -305,9 +305,9 @@ message AppLanguageActivityStateBundle {
 }
 
 message SurveyActivityParams {
-  // The ID of the profile for which the survey is too be shown.
+  // The ID of the profile for which the survey is to be shown.
   ProfileId profile_id = 1;
 
-  // The ID of the topic to which the opening exploration belongs.
+  // The ID of the topic to which the triggering exploration belongs.
   string topic_id = 2;
 }

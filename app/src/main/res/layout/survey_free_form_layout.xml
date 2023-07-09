@@ -17,7 +17,7 @@
       android:id="@+id/free_form_text"
       style="@style/SurveyFreeFormAnswerEditText"
       android:hint="@string/survey_free_form_text_hint"
-      android:inputType="text|textMultiLine"
+      android:inputType="text|textMultiLine|textCapSentences"
       android:minLines="4"
       android:overScrollMode="never"
       android:text="@={viewModel.answerText}"

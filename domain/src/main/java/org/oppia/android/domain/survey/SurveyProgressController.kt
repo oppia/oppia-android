@@ -2,20 +2,24 @@ package org.oppia.android.domain.survey
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.EphemeralSurveyQuestion
+import org.oppia.android.app.model.SelectedAnswerDatabase
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
+import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -37,6 +41,11 @@ private const val MOVE_TO_PREVIOUS_QUESTION_RESULT_PROVIDER_ID =
   "SurveyProgressController.move_to_previous_question_result"
 private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
   "SurveyProgressController.submit_answer_result"
+private const val END_SESSION_RESULT_PROVIDER_ID = "SurveyProgressController.end_session_result"
+private const val RETRIEVE_RESPONSE_DATA_PROVIDER_ID =
+  "retrieve_response_provider_id"
+private const val AUGMENTED_QUESTION_PROVIDER_ID =
+  "SurveyProgressController.augmented_question"
 
 /**
  * A default session ID to be used before a session has been initialized.
@@ -46,12 +55,16 @@ private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
  */
 private const val DEFAULT_SESSION_ID = "default_session_id"
 
+/** The name of the cache used to hold selected survey responses ephemerally. */
+private const val CACHE_NAME = "survey_responses_database"
+
 /** Controller for tracking the non-persisted progress of a survey. */
 @Singleton
 class SurveyProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val exceptionsController: ExceptionsController,
-  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  cacheStoreFactory: PersistentCacheStore.Factory
 ) {
   private var mostRecentSessionId: String? = null
   private val activeSessionId: String
@@ -66,6 +79,21 @@ class SurveyProgressController @Inject constructor(
 
   private val monitoredQuestionListDataProvider: DataProviders.NestedTransformedDataProvider<Any?> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
+
+  private val answerDataStore =
+    cacheStoreFactory.create(CACHE_NAME, SelectedAnswerDatabase.getDefaultInstance())
+
+  /**
+   * Statuses correspond to the exceptions such that if the deferred contains an error state,
+   * a corresponding exception will be passed to a failed AsyncResult.
+   */
+  private enum class RecordResponseActionStatus {
+    /** Corresponds to a successful AsyncResult. */
+    SUCCESS,
+
+    /** Corresponds to a failed saving attempt. */
+    FAILED_TO_SAVE_RESPONSE
+  }
 
   /**
    * Begins a survey session based on a set of questions and returns a [DataProvider] indicating
@@ -101,7 +129,7 @@ class SurveyProgressController @Inject constructor(
    * This [DataProvider] may switch from a completed to a pending result during transient operations
    * like submitting an answer via [submitAnswer]. Calling code should be made resilient to this by
    * caching the current question object to display since it may disappear temporarily during answer
-   * submission. Calling code should persist this state object across configuration changes if
+   * submission. Calling code should persist this object across configuration changes if
    * needed since it cannot rely on this [DataProvider] for immediate UI reconstitution after
    * configuration changes.
    *
@@ -118,10 +146,25 @@ class SurveyProgressController @Inject constructor(
 
     // Combine ephemeral question with the monitored question list to ensure that changes to the
     // questions list trigger a recompute of the ephemeral question.
-    return monitoredQuestionListDataProvider.combineWith(
+    val questionsListDataProvider = monitoredQuestionListDataProvider.combineWith(
       ephemeralQuestionDataProvider, EPHEMERAL_QUESTION_FROM_UPDATED_QUESTION_LIST_PROVIDER_ID
     ) { _, currentQuestion ->
       currentQuestion
+    }
+    val previousAnswerProvider =
+      questionsListDataProvider.transformAsync(
+        RETRIEVE_RESPONSE_DATA_PROVIDER_ID
+      ) { ephemeralQuestion ->
+        return@transformAsync AsyncResult.Success(
+          retrieveSelectedAnswer(ephemeralQuestion.question.questionId.toString())
+        )
+      }
+    return previousAnswerProvider.combineWith(
+      questionsListDataProvider, AUGMENTED_QUESTION_PROVIDER_ID
+    ) { previousSelectedAnswer, ephemeralQuestion ->
+      return@combineWith if (previousSelectedAnswer != SurveySelectedAnswer.getDefaultInstance()) {
+        augmentEphemeralQuestion(previousSelectedAnswer, ephemeralQuestion)
+      } else ephemeralQuestion
     }
   }
 
@@ -152,7 +195,7 @@ class SurveyProgressController @Inject constructor(
    *     to this result for failures, and instead rely on [getCurrentQuestion] for observing a
    *     successful transition to another question.
    */
-  private fun moveToNextQuestion(): DataProvider<Any?> {
+  fun moveToNextQuestion(): DataProvider<Any?> {
     val moveResultFlow = createAsyncResultStateFlow<Any?>()
     val message = ControllerMessage.MoveToNextQuestion(activeSessionId, moveResultFlow)
     sendCommandForOperation(message) {
@@ -179,6 +222,31 @@ class SurveyProgressController @Inject constructor(
       "Failed to schedule command for moving to the previous question."
     }
     return moveResultFlow.convertToSessionProvider(MOVE_TO_PREVIOUS_QUESTION_RESULT_PROVIDER_ID)
+  }
+
+  /**
+   * Ends the current survey session and returns a [DataProvider] that indicates whether it was
+   * successfully ended.
+   *
+   * This method does not actually need to be called when a session is over. Calling it ensures all
+   * other [DataProvider]s reset to a correct out-of-session state, but subsequent calls to
+   * [beginSurveySession] will reset the session.
+   */
+  fun endSurveySession(): DataProvider<Any?> {
+    // Reset the base questions list provider so that the ephemeral question has no question list to
+    // reference (since the session finished).
+    monitoredQuestionListDataProvider.setBaseDataProvider(createEmptyQuestionsListDataProvider()) {
+      maybeSendReceiveQuestionListEvent(commandQueue = null, it)
+    }
+    val endSessionResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.FinishSurveySession(
+      activeSessionId,
+      endSessionResultFlow
+    )
+    sendCommandForOperation(message) {
+      "Failed to schedule command for finishing the survey session."
+    }
+    return endSessionResultFlow.convertToSessionProvider(END_SESSION_RESULT_PROVIDER_ID)
   }
 
   private fun createCurrentQuestionDataProvider(
@@ -216,6 +284,16 @@ class SurveyProgressController @Inject constructor(
               it.beginSurveySessionImpl(message.callbackFlow)
             }
           }
+          is ControllerMessage.MoveToNextQuestion ->
+            controllerState.moveToNextQuestionImpl(message.callbackFlow)
+          is ControllerMessage.MoveToPreviousQuestion ->
+            controllerState.moveToPreviousQuestionImpl(message.callbackFlow)
+          is ControllerMessage.RecomputeQuestionAndNotify ->
+            controllerState.recomputeCurrentQuestionAndNotifyImpl()
+          is ControllerMessage.SubmitAnswer ->
+            controllerState.submitAnswerImpl(message.callbackFlow, message.selectedAnswer)
+          is ControllerMessage.ReceiveQuestionList ->
+            controllerState.handleUpdatedQuestionsList(message.questionsList)
           is ControllerMessage.FinishSurveySession -> {
             try {
               controllerState.completeSurveyImpl(
@@ -226,21 +304,6 @@ class SurveyProgressController @Inject constructor(
               break
             }
           }
-          is ControllerMessage.MoveToNextQuestion -> controllerState.moveToNextQuestion(
-            message.callbackFlow
-          )
-          is ControllerMessage.MoveToPreviousQuestion -> controllerState.moveToPreviousQuestion(
-            message.callbackFlow
-          )
-          is ControllerMessage.RecomputeQuestionAndNotify ->
-            controllerState.recomputeCurrentQuestionAndNotifyImpl()
-          is ControllerMessage.SubmitAnswer -> controllerState.submitAnswerImpl(
-            message.callbackFlow,
-            message.selectedAnswer
-          )
-          is ControllerMessage.ReceiveQuestionList -> controllerState.handleUpdatedQuestionsList(
-            message.questionsList
-          )
         }
       }
     }
@@ -287,6 +350,7 @@ class SurveyProgressController @Inject constructor(
   ) {
     tryOperation(beginSessionResultFlow) {
       recomputeCurrentQuestionAndNotifyAsync()
+      answerDataStore.clearCacheAsync()
       progress.advancePlayStageTo(SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION)
     }
   }
@@ -294,7 +358,93 @@ class SurveyProgressController @Inject constructor(
   private suspend fun ControllerState.completeSurveyImpl(
     endSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
   ) {
+    checkNotNull(this) { "Cannot stop a survey session which wasn't started." }
     tryOperation(endSessionResultFlow) {
+      answerDataStore.clearCacheAsync()
+      progress.advancePlayStageTo(SurveyProgress.SurveyStage.NOT_IN_SURVEY_SESSION)
+    }
+  }
+
+  private suspend fun ControllerState.submitAnswerImpl(
+    submitAnswerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+    selectedAnswer: SurveySelectedAnswer
+  ) {
+    tryOperation(submitAnswerResultFlow) {
+      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
+        "Cannot submit an answer while another answer is pending."
+      }
+
+      val currentQuestionId = progress.questionDeck.getTopQuestionIndex()
+      if (selectedAnswer.questionName == SurveyQuestionName.NPS) {
+        // compute the feedback question before navigating to it
+        progress.questionGraph.computeFeedbackQuestion(
+          currentQuestionId + 1,
+          selectedAnswer.npsScore
+        )
+      }
+
+      saveSelectedAnswer(currentQuestionId.toString(), selectedAnswer)
+
+      if (!progress.questionDeck.isCurrentQuestionTerminal()) {
+        moveToNextQuestion()
+      }
+    }
+  }
+
+  private fun saveSelectedAnswer(questionId: String, answer: SurveySelectedAnswer) {
+    val deferred = recordSelectedAnswerAsync(questionId, answer)
+
+    deferred.invokeOnCompletion {
+      if (it == null) {
+        deferred.getCompleted()
+      } else {
+        RecordResponseActionStatus.FAILED_TO_SAVE_RESPONSE
+      }
+    }
+  }
+
+  private fun recordSelectedAnswerAsync(
+    questionId: String,
+    answer: SurveySelectedAnswer
+  ): Deferred<RecordResponseActionStatus> {
+    return answerDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) { answerDatabase ->
+      answerDatabase.toBuilder().apply {
+        putSelectedAnswer(questionId, answer)
+      }.build() to RecordResponseActionStatus.SUCCESS
+    }
+  }
+
+  private suspend fun retrieveSelectedAnswer(questionId: String): SurveySelectedAnswer {
+    val answerDatabase = answerDataStore.readDataAsync().await()
+    return answerDatabase.selectedAnswerMap[questionId] ?: SurveySelectedAnswer.getDefaultInstance()
+  }
+
+  private suspend fun ControllerState.moveToNextQuestionImpl(
+    moveToNextQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveToNextQuestionResultFlow) {
+      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
+        "Cannot navigate to a next question if an answer submission is pending."
+      }
+      progress.questionDeck.navigateToNextQuestion()
+      progress.refreshDeck()
+    }
+  }
+
+  private suspend fun ControllerState.moveToPreviousQuestionImpl(
+    moveToPreviousQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveToPreviousQuestionResultFlow) {
+      check(progress.surveyStage != SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION) {
+        "Cannot navigate to a previous question if a session is being loaded."
+      }
+      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
+        "Cannot navigate to a previous question if an answer submission is pending."
+      }
+      progress.questionDeck.navigateToPreviousQuestion()
+      progress.refreshDeck()
     }
   }
 
@@ -382,39 +532,6 @@ class SurveyProgressController @Inject constructor(
     ) : ControllerMessage<Any?>()
   }
 
-  private suspend fun ControllerState.submitAnswerImpl(
-    submitAnswerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
-    selectedAnswer: SurveySelectedAnswer
-  ) {
-    tryOperation(submitAnswerResultFlow) {
-      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
-        "Cannot submit an answer while another answer is pending."
-      }
-      if (selectedAnswer.questionName == SurveyQuestionName.NPS) {
-        progress.questionGraph.computeFeedbackQuestion(
-          3,
-          selectedAnswer.npsScore
-        )
-      }
-    }.also {
-      if (!progress.questionDeck.isCurrentQuestionTerminal()) {
-        moveToNextQuestion()
-      }
-    }
-  }
-
-  private suspend fun ControllerState.handleUpdatedQuestionsList(
-    questionsList: List<SurveyQuestion>
-  ) {
-    // The questions list is possibly changed which may affect the computed ephemeral question.
-    if (!this.isQuestionsListInitialized || this.questionsList != questionsList) {
-      this.questionsList = questionsList
-      // Only notify if the questions list is different (otherwise an infinite notify loop might be
-      // started).
-      recomputeCurrentQuestionAndNotifySync()
-    }
-  }
-
   private suspend fun <T> ControllerState.tryOperation(
     resultFlow: MutableStateFlow<AsyncResult<T>>,
     operation: suspend ControllerState.() -> T
@@ -428,31 +545,15 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.moveToNextQuestion(
-    moveToNextQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  private suspend fun ControllerState.handleUpdatedQuestionsList(
+    questionsList: List<SurveyQuestion>
   ) {
-    tryOperation(moveToNextQuestionResultFlow) {
-      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
-        "Cannot navigate to a next question if an answer submission is pending."
-      }
-      progress.questionDeck.navigateToNextQuestion()
-      if (progress.isViewingMostRecentQuestion()) {
-        progress.processNavigationToNewQuestion()
-      }
-    }
-  }
-
-  private suspend fun ControllerState.moveToPreviousQuestion(
-    moveToPreviousQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
-  ) {
-    tryOperation(moveToPreviousQuestionResultFlow) {
-      check(progress.surveyStage != SurveyProgress.SurveyStage.LOADING_SURVEY_SESSION) {
-        "Cannot navigate to a previous question if a session is being loaded."
-      }
-      check(progress.surveyStage != SurveyProgress.SurveyStage.SUBMITTING_ANSWER) {
-        "Cannot navigate to a previous question if an answer submission is pending."
-      }
-      progress.questionDeck.navigateToPreviousQuestion()
+    // The questions list is possibly changed which may affect the computed ephemeral question.
+    if (!this.isQuestionsListInitialized || this.questionsList != questionsList) {
+      this.questionsList = questionsList
+      // Only notify if the questions list is different (otherwise an infinite notify loop might be
+      // started).
+      recomputeCurrentQuestionAndNotifySync()
     }
   }
 
@@ -471,8 +572,7 @@ class SurveyProgressController @Inject constructor(
   /**
    * Sends a message to recompute the current question & notify it's been changed.
    *
-   * This must be used in cases when the current [ControllerState] may no longer be up-to-date to
-   * ensure state isn't leaked across training sessions.
+   * This must be used in cases when the current [ControllerState] may no longer be up-to-date.
    */
   private suspend fun ControllerState.recomputeCurrentQuestionAndNotifyAsync() {
     commandQueue.send(ControllerMessage.RecomputeQuestionAndNotify(sessionId))
@@ -488,7 +588,7 @@ class SurveyProgressController @Inject constructor(
     )
   }
 
-  private fun ControllerState.retrieveCurrentQuestionAsync(
+  private suspend fun ControllerState.retrieveCurrentQuestionAsync(
     questionsList: List<SurveyQuestion>
   ): AsyncResult<EphemeralSurveyQuestion> {
     return try {
@@ -499,14 +599,10 @@ class SurveyProgressController @Inject constructor(
           // now that a list of questions is available.
           initializeSurvey(questionsList)
           progress.advancePlayStageTo(SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION)
-          AsyncResult.Success(
-            retrieveEphemeralQuestion()
-          )
+          AsyncResult.Success(computeBaseCurrentEphemeralQuestion())
         }
         SurveyProgress.SurveyStage.VIEWING_SURVEY_QUESTION -> {
-          AsyncResult.Success(
-            retrieveEphemeralQuestion()
-          )
+          AsyncResult.Success(computeBaseCurrentEphemeralQuestion())
         }
         SurveyProgress.SurveyStage.SUBMITTING_ANSWER -> AsyncResult.Pending()
       }
@@ -521,17 +617,21 @@ class SurveyProgressController @Inject constructor(
     progress.initialize(questionsList)
   }
 
-  private fun ControllerState.retrieveEphemeralQuestion():
-    EphemeralSurveyQuestion {
-      val currentQuestionIndex = progress.getCurrentQuestionIndex()
-      val currentQuestion = progress.questionGraph.getQuestion(currentQuestionIndex)
-      return EphemeralSurveyQuestion.newBuilder()
-        .setQuestion(currentQuestion)
-        .setCurrentQuestionIndex(currentQuestionIndex)
-        .setTotalQuestionCount(progress.getTotalQuestionCount())
-        .setTerminalQuestion(progress.questionDeck.isCurrentQuestionTerminal())
-        .build()
-    }
+  private fun ControllerState.computeBaseCurrentEphemeralQuestion(): EphemeralSurveyQuestion =
+    progress.questionDeck.getCurrentEphemeralQuestion()
+
+  /**
+   * Augments the specified [EphemeralSurveyQuestion] [AsyncResult] by attaching a previously
+   * selected answer to update the UI.
+   */
+  private fun augmentEphemeralQuestion(
+    previousAnswer: SurveySelectedAnswer,
+    ephemeralQuestion: EphemeralSurveyQuestion
+  ): EphemeralSurveyQuestion {
+    return ephemeralQuestion.toBuilder().apply {
+      selectedAnswer = previousAnswer
+    }.build()
+  }
 
   /**
    * Represents the current synchronized state of the controller.

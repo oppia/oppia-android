@@ -19,6 +19,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
@@ -527,7 +528,8 @@ class ExplorationActivityPresenter @Inject constructor(
             }
             is AsyncResult.Success -> {
               if (gatingResult.value) {
-                val dialogFragment = SurveyWelcomeDialogFragment.newInstance(profileId, topicId)
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(profileId, topicId, SURVEY_QUESTIONS)
                 val transaction = activity.supportFragmentManager.beginTransaction()
                 transaction
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
@@ -540,5 +542,13 @@ class ExplorationActivityPresenter @Inject constructor(
           }
         }
       )
+  }
+
+  companion object {
+    private val SURVEY_QUESTIONS = listOf(
+      SurveyQuestionName.USER_TYPE,
+      SurveyQuestionName.MARKET_FIT,
+      SurveyQuestionName.NPS
+    )
   }
 }
