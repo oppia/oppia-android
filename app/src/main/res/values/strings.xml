@@ -453,7 +453,7 @@
   <string name="no_new_hint_available">No new hint available</string>
   <string name="show_hints_and_solution">Show hints and solution</string>
   <string name="hint_list_item_number">Hint %s</string>
-  <string name="hints_andSolution_close_icon_description">Navigate up</string>
+  <string name="hints_andSolution_close_icon_description">Close Button</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="show_solution">Show solution</string>
   <string name="reveal_solution">Show Solution</string>
