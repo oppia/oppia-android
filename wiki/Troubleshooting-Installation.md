@@ -39,6 +39,23 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
    or `Module not specified` while running Unit Tests, try to downgrade Android Studio to [Bumblebee (Patch 3)](https://developer.android.com/studio/archive). That should resolve this issue.
 
 
+7. If you getting this error while gradle build
+
+   ```
+   > Task :utility:kaptGenerateStubsDebugKotlin FAILED
+   Execution failed for task ':utility:kaptGenerateStubsDebugKotlin'.
+   > Could not resolve all files for configuration ':utility:debugCompileClasspath'.
+      > Failed to transform model.jar (project :model) to match attributes {artifactType=android-classes, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.jvm.version=15, org.gradle.libraryelements=jar, org.gradle.usage=java-api}.
+         > Execution failed for JetifyTransform: E:\Android\open-source\oppia-android\model\build\libs\model.jar.
+            > Failed to transform 'E:\Android\open-source\oppia-android\model\build\libs\model.jar' using Jetifier. Reason: Unsupported class file major version 59. (Run with --stacktrace for more details.)
+   ```
+   This error occur because of our use of jetifier. In gradle.properties, `android.enableJetifier=true` automatically converts third-party libraries to use AndroidX.
+   The maximum supported major version for jetifier class file format in Android is 58, which corresponds to Java 14.
+   The `model.jar` was compiled with Java 15/major version 59, hence the incompatibility.
+   
+
+   To fix this error you need to lower version of Java to compile JAR file. Check [here](https://developer.android.com/studio/intro/studio-config#jdk) more about Java version.
+
 ### Bazel issues
 
 1. No matching toolchains (sdk_toolchain_type)
