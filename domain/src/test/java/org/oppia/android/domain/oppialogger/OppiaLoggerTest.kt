@@ -13,6 +13,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
@@ -25,11 +26,11 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
@@ -99,9 +100,14 @@ class OppiaLoggerTest {
     private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
   }
 
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
@@ -313,6 +319,24 @@ class OppiaLoggerTest {
     assertThat(eventContext.activityContextCase).isEqualTo(CLOSE_REVISION_CARD)
     assertThat(eventContext.closeRevisionCard.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.closeRevisionCard.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
+  }
+
+  @Test
+  fun testController_createShowSurveyPopupContext_returnsCorrectShowSurveyPopupContext() {
+    val eventContext = oppiaLogger.createShowSurveyPopupContext(TEST_EXPLORATION_ID, TEST_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(SHOW_SURVEY_POPUP)
+    assertThat(eventContext.showSurveyPopup.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.showSurveyPopup.explorationId).isEqualTo(TEST_EXPLORATION_ID)
+  }
+
+  @Test
+  fun testController_createBeginSurveyContext_returnsCorrectBeginSurveyContext() {
+    val eventContext = oppiaLogger.createBeginSurveyContext(TEST_EXPLORATION_ID, TEST_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(BEGIN_SURVEY)
+    assertThat(eventContext.beginSurvey.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.beginSurvey.explorationId).isEqualTo(TEST_EXPLORATION_ID)
   }
 
   private fun setUpTestApplicationComponent() {
