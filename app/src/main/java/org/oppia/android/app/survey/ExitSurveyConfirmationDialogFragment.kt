@@ -63,8 +63,7 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
 
     return exitSurveyConfirmationDialogFragmentPresenter.handleCreateView(
       inflater,
-      container,
-      profileId
+      container
     )
   }
 

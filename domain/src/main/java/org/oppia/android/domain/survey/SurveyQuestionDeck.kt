@@ -2,6 +2,7 @@ package org.oppia.android.domain.survey
 
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.SurveyQuestion
+import org.oppia.android.app.model.SurveyQuestionName
 
 /**
  * Tracks the dynamic behavior of the user through a survey session. This class
@@ -15,6 +16,7 @@ class SurveyQuestionDeck constructor(
   private var pendingTopQuestion = initialQuestion
   private var viewedQuestionsCount: Int = 0
   private var questionIndex: Int = 0
+  val answeredQuestions = mutableListOf<SurveyQuestionName>()
 
   /** Sets this deck to a specific question. */
   fun updateDeck(pendingTopQuestion: SurveyQuestion) {
@@ -90,5 +92,15 @@ class SurveyQuestionDeck constructor(
   /** Returns whether the most recent card on the deck is terminal. */
   private fun isTopOfDeckTerminal(): Boolean {
     return isTopOfDeckTerminalChecker(pendingTopQuestion)
+  }
+
+  /** Stores a list of all the questions that have been answered in the survey. */
+  fun trackAnsweredQuestions(questionName: SurveyQuestionName) {
+    answeredQuestions.add(questionName)
+  }
+
+  /** Returns whether the survey progress has reached the threshold for partial completion. */
+  fun hasReachedPartialCompletionThreshold(): Boolean {
+    return answeredQuestions.contains(SurveyQuestionName.NPS)
   }
 }

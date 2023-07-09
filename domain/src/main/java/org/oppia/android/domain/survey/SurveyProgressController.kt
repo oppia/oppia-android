@@ -9,12 +9,16 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.EphemeralSurveyQuestion
+import org.oppia.android.app.model.MarketFitAnswer
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SelectedAnswerDatabase
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
+import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -64,8 +68,13 @@ class SurveyProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val exceptionsController: ExceptionsController,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
-  cacheStoreFactory: PersistentCacheStore.Factory
+  cacheStoreFactory: PersistentCacheStore.Factory,
+  private val surveyLogger: SurveyEventsLogger
 ) {
+  // TODO(#606): Replace this with a profile scope.
+  private lateinit var profileId: ProfileId
+  private lateinit var surveyId: String
+
   private var mostRecentSessionId: String? = null
   private val activeSessionId: String
     get() = mostRecentSessionId ?: DEFAULT_SESSION_ID
@@ -100,6 +109,8 @@ class SurveyProgressController @Inject constructor(
    * whether the start was successful.
    */
   fun beginSurveySession(
+    surveyId: String,
+    profileId: ProfileId,
     questionsListDataProvider: DataProvider<List<SurveyQuestion>>
   ): DataProvider<Any?> {
     val ephemeralQuestionFlow = createAsyncResultStateFlow<EphemeralSurveyQuestion>()
@@ -116,6 +127,8 @@ class SurveyProgressController @Inject constructor(
       ControllerMessage.InitializeController(
         ephemeralQuestionFlow, sessionId, beginSessionResultFlow
       )
+    this.profileId = profileId
+    this.surveyId = surveyId
     sendCommandForOperation(initializeMessage) {
       "Failed to schedule command for initializing the survey progress controller."
     }
@@ -228,11 +241,15 @@ class SurveyProgressController @Inject constructor(
    * Ends the current survey session and returns a [DataProvider] that indicates whether it was
    * successfully ended.
    *
-   * This method does not actually need to be called when a session is over. Calling it ensures all
-   * other [DataProvider]s reset to a correct out-of-session state, but subsequent calls to
-   * [beginSurveySession] will reset the session.
+   * This method must be called to explicitly notify the controller that the survey session is being
+   * stopped, in order to maybe save the responses.
+   *
+   * @param isCompletion whether this finish action indicates that the survey was fully completed by
+   *     the user.
    */
-  fun endSurveySession(): DataProvider<Any?> {
+  fun endSurveySession(
+    isCompletion: Boolean
+  ): DataProvider<Any?> {
     // Reset the base questions list provider so that the ephemeral question has no question list to
     // reference (since the session finished).
     monitoredQuestionListDataProvider.setBaseDataProvider(createEmptyQuestionsListDataProvider()) {
@@ -240,8 +257,7 @@ class SurveyProgressController @Inject constructor(
     }
     val endSessionResultFlow = createAsyncResultStateFlow<Any?>()
     val message = ControllerMessage.FinishSurveySession(
-      activeSessionId,
-      endSessionResultFlow
+      isCompletion, activeSessionId, endSessionResultFlow
     )
     sendCommandForOperation(message) {
       "Failed to schedule command for finishing the survey session."
@@ -296,9 +312,7 @@ class SurveyProgressController @Inject constructor(
             controllerState.handleUpdatedQuestionsList(message.questionsList)
           is ControllerMessage.FinishSurveySession -> {
             try {
-              controllerState.completeSurveyImpl(
-                message.callbackFlow
-              )
+              controllerState.completeSurveyImpl(message.isCompletion, message.callbackFlow)
             } finally {
               // Ensure the actor ends since the session requires no further message processing.
               break
@@ -355,16 +369,6 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.completeSurveyImpl(
-    endSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
-  ) {
-    checkNotNull(this) { "Cannot stop a survey session which wasn't started." }
-    tryOperation(endSessionResultFlow) {
-      answerDataStore.clearCacheAsync()
-      progress.advancePlayStageTo(SurveyProgress.SurveyStage.NOT_IN_SURVEY_SESSION)
-    }
-  }
-
   private suspend fun ControllerState.submitAnswerImpl(
     submitAnswerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
     selectedAnswer: SurveySelectedAnswer
@@ -391,11 +395,12 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
-  private fun saveSelectedAnswer(questionId: String, answer: SurveySelectedAnswer) {
+  private fun ControllerState.saveSelectedAnswer(questionId: String, answer: SurveySelectedAnswer) {
     val deferred = recordSelectedAnswerAsync(questionId, answer)
 
     deferred.invokeOnCompletion {
       if (it == null) {
+        progress.questionDeck.trackAnsweredQuestions(answer.questionName)
         deferred.getCompleted()
       } else {
         RecordResponseActionStatus.FAILED_TO_SAVE_RESPONSE
@@ -448,6 +453,17 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
+  private suspend fun ControllerState.completeSurveyImpl(
+    isCompletion: Boolean,
+    endSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    checkNotNull(this) { "Cannot stop a survey session which wasn't started." }
+    tryOperation(endSessionResultFlow) {
+      progress.advancePlayStageTo(SurveyProgress.SurveyStage.NOT_IN_SURVEY_SESSION)
+      finishSurveyAndLog(isCompletion)
+    }
+  }
+
   private fun <T> createAsyncResultStateFlow(initialValue: AsyncResult<T> = AsyncResult.Pending()) =
     MutableStateFlow(initialValue)
 
@@ -455,6 +471,63 @@ class SurveyProgressController @Inject constructor(
     baseId: String
   ): DataProvider<T> = dataProviders.run {
     convertAsyncToAutomaticDataProvider("${baseId}_$activeSessionId")
+  }
+
+  private suspend fun ControllerState.finishSurveyAndLog(isCompletion: Boolean) {
+    when {
+      isCompletion -> {
+        surveyLogger.logMandatoryResponses(
+          surveyId,
+          profileId,
+          getStoredResponse(SurveyQuestionName.USER_TYPE)!!,
+          getStoredResponse(SurveyQuestionName.MARKET_FIT)!!,
+          getStoredResponse(SurveyQuestionName.NPS)!!
+        )
+
+        // TODO(#5001): Optional responses are uploaded to Firestore, which is out of scope for this PR
+      }
+      progress.questionDeck.hasReachedPartialCompletionThreshold() -> {
+        surveyLogger.logMandatoryResponses(
+          surveyId,
+          profileId,
+          getStoredResponse(SurveyQuestionName.USER_TYPE)!!,
+          getStoredResponse(SurveyQuestionName.MARKET_FIT)!!,
+          getStoredResponse(SurveyQuestionName.NPS)!!
+        )
+      }
+      else -> {
+        val currentQuestionName = progress.questionGraph
+          .getQuestion(progress.questionDeck.getTopQuestionIndex())
+          .questionName
+
+        surveyLogger.logAbandonSurvey(
+          surveyId,
+          profileId,
+          currentQuestionName
+        )
+      }
+    }
+    answerDataStore.clearCacheAsync()
+  }
+
+  private suspend inline fun <reified T : Any> getStoredResponse(
+    questionName: SurveyQuestionName
+  ): T? {
+    val answerDatabase = answerDataStore.readDataAsync().await()
+    val savedAnswer =
+      answerDatabase.selectedAnswerMap.values.find { it.questionName == questionName }
+    return savedAnswer?.let { getAnswerTypeCase(it) }
+  }
+
+  private inline fun <reified T : Any> getAnswerTypeCase(surveyAnswer: SurveySelectedAnswer): T? {
+    return when {
+      surveyAnswer.userType != null && T::class == UserTypeAnswer::class ->
+        surveyAnswer.userType as? T
+      surveyAnswer.marketFit != null && T::class == MarketFitAnswer::class ->
+        surveyAnswer.marketFit as? T
+      surveyAnswer.npsScore != null && T::class == Int::class -> surveyAnswer.npsScore as? T
+      else -> null
+    }
   }
 
   /**
@@ -487,6 +560,7 @@ class SurveyProgressController @Inject constructor(
 
     /** [ControllerMessage] for ending the current survey session. */
     data class FinishSurveySession(
+      val isCompletion: Boolean,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()

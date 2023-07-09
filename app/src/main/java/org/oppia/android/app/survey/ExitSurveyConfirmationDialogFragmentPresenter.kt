@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.SurveyExitConfirmationDialogBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.survey.SurveyController
@@ -28,8 +27,7 @@ class ExitSurveyConfirmationDialogFragmentPresenter @Inject constructor(
   /** Sets up data binding. */
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?,
-    profileId: ProfileId
+    container: ViewGroup?
   ): View {
     val binding =
       SurveyExitConfirmationDialogBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -57,7 +55,7 @@ class ExitSurveyConfirmationDialogFragmentPresenter @Inject constructor(
   }
 
   private fun endSurveyWithCallback(callback: () -> Unit) {
-    surveyController.stopSurveySession().toLiveData().observe(
+    surveyController.stopSurveySession(isCompletion = false).toLiveData().observe(
       activity,
       {
         when (it) {
