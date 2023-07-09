@@ -15,6 +15,7 @@ import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
@@ -47,7 +48,9 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 
 // TODO(#4272): Add tests for this class.
 
@@ -927,6 +930,34 @@ class EventLogSubject private constructor(
   }
 
   /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [ABANDON_SURVEY] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasAbandonSurveyContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(ABANDON_SURVEY)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasAbandonSurveyContext] and returns a
+   * [AbandonSurveyContextSubject] to test the corresponding context.
+   */
+  fun hasAbandonSurveyContextThat(): AbandonSurveyContextSubject {
+    hasAbandonSurveyContext()
+    return AbandonSurveyContextSubject.assertThat(
+      actual.context.abandonSurvey
+    )
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block].
+   */
+  fun hasAbandonSurveyContextThat(
+    block: AbandonSurveyContextSubject.() -> Unit
+  ) {
+    hasAbandonSurveyContextThat().block()
+  }
+
+  /**
    * Truth subject for verifying properties of [AppLanguageSelection]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
@@ -1631,6 +1662,90 @@ class EventLogSubject private constructor(
         actual: EventLog.SwitchInLessonLanguageEventContext
       ): SwitchInLessonLanguageEventContextSubject =
         assertAbout(::SwitchInLessonLanguageEventContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.AbandonSurveyContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.AbandonSurveyContext] proto can be verified through inherited methods.
+   *
+   * Call [AbandonSurveyContextSubject.assertThat] to create the subject.
+   */
+  class AbandonSurveyContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.AbandonSurveyContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [SurveyResponseContextSubject] to test
+     * [EventLog.AbandonSurveyContext.getSurveyDetails].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasSurveyDetailsThat(): SurveyResponseContextSubject =
+      SurveyResponseContextSubject.assertThat(actual.surveyDetails)
+
+    /** Executes [block] in the context returned by [hasSurveyDetailsThat]. */
+    fun hasSurveyDetailsThat(block: SurveyResponseContextSubject.() -> Unit) {
+      hasSurveyDetailsThat().block()
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test [EventLog.AbandonSurveyContext.getQuestionName].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasQuestionNameThat(): ComparableSubject<SurveyQuestionName> =
+      assertThat(actual.questionName)
+
+    companion object {
+      /**
+       * Returns a new [AbandonSurveyContextSubject] to verify aspects of the specified
+       * [EventLog.AbandonSurveyContext] value.
+       */
+      fun assertThat(actual: EventLog.AbandonSurveyContext): AbandonSurveyContextSubject =
+        assertAbout(::AbandonSurveyContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.SurveyResponseContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.SurveyResponseContext] proto can be verified through inherited methods.
+   *
+   * Call [SurveyResponseContextSubject.assertThat] to create the subject.
+   */
+  class SurveyResponseContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.SurveyResponseContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [StringSubject] to test [EventLog.SurveyResponseContext.getSurveyId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSurveyIdThat(): StringSubject = assertThat(actual.surveyId)
+
+    /**
+     * Returns a [StringSubject] to test [EventLog.SurveyResponseContext.getSurveyId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasInternalProfileIdThat(): StringSubject = assertThat(actual.profileId)
+
+    companion object {
+      /**
+       * Returns a new [SurveyResponseContextSubject] to verify aspects of the specified
+       * [EventLog.SurveyResponseContext] value.
+       */
+      fun assertThat(actual: EventLog.SurveyResponseContext): SurveyResponseContextSubject =
+        assertAbout(::SurveyResponseContextSubject).that(actual)
     }
   }
 

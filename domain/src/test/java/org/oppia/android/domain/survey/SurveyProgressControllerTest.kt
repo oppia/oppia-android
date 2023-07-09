@@ -9,6 +9,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,9 +24,11 @@ import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -44,8 +48,6 @@ import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [SurveyProgressController]. */
 @RunWith(AndroidJUnit4::class)
@@ -66,6 +68,9 @@ class SurveyProgressControllerTest {
 
   @Inject
   lateinit var surveyProgressController: SurveyProgressController
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val profileId = ProfileId.newBuilder().setInternalId(1).build()
 
@@ -326,6 +331,30 @@ class SurveyProgressControllerTest {
     startSuccessfulSurveySession()
     waitForGetCurrentQuestionSuccessfulLoad()
     val stopProvider = surveyController.stopSurveySession(false)
+    monitorFactory.waitForNextSuccessfulResult(stopProvider)
+  }
+
+  @Test
+  fun testEndSurvey_beforeCompletingMandatoryQuestions_logsAbandonSurveyEvent() {
+    startSuccessfulSurveySession()
+    waitForGetCurrentQuestionSuccessfulLoad()
+    submitUserTypeAnswer(UserTypeAnswer.PARENT)
+    // Submit and navigate to NPS question
+    submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
+    stopSurveySession(isCompletion = false)
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    EventLogSubject.assertThat(eventLog).hasAbandonSurveyContextThat {
+      hasSurveyDetailsThat {
+        hasSurveyIdThat().isNotEmpty()
+        hasInternalProfileIdThat().isEqualTo("1")
+      }
+      hasQuestionNameThat().isEqualTo(SurveyQuestionName.NPS)
+    }
+  }
+
+  private fun stopSurveySession(isCompletion: Boolean) {
+    val stopProvider = surveyController.stopSurveySession(isCompletion)
     monitorFactory.waitForNextSuccessfulResult(stopProvider)
   }
 
