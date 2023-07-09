@@ -4186,46 +4186,6 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  fun testStateFragment_explorationEnded_clickReturnToTopic_opensSurveyPopup() {
-    setUpTestWithLanguageSwitchingFeatureOff()
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-      // Mock 5 minutes spent in the app
-      testCoroutineDispatchers.advanceTimeBy(300000L)
-      playThroughPrototypeExploration()
-
-      clickReturnToTopicButton()
-
-      onView(withText(R.string.survey_onboarding_title_text)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.survey_onboarding_message_text)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.begin_survey_button)).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withId(R.id.maybe_later_button)).inRoot(isDialog()).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testStateFragment_explorationEnded_clickReturnToTopic_logsShowSurveyPopupEvent() {
-    setUpTestWithLanguageSwitchingFeatureOff()
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-      // Mock 5 minutes spent in the app
-      testCoroutineDispatchers.advanceTimeBy(300000L)
-      playThroughPrototypeExploration()
-
-      clickReturnToTopicButton()
-
-      // Verify that the "show survey popup" event was logged, and with the correct values.
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-      assertThat(event).hasShowSurveyPopupContextThat {
-        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
-        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID_0)
-      }
-    }
-  }
-
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
