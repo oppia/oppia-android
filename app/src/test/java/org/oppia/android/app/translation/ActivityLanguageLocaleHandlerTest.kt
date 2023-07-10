@@ -128,10 +128,13 @@ class ActivityLanguageLocaleHandlerTest {
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   @Inject
   lateinit var translationController: TranslationController
+
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
@@ -327,7 +330,7 @@ class ActivityLanguageLocaleHandlerTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
 
