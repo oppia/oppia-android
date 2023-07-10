@@ -5,6 +5,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +20,6 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
-import javax.inject.Inject
 
 /** Worker class that extracts log reports from the cache store and logs them to the remote service. */
 class LogUploadWorker private constructor(
@@ -41,6 +41,7 @@ class LogUploadWorker private constructor(
     const val EVENT_WORKER = "event_worker"
     const val EXCEPTION_WORKER = "exception_worker"
     const val PERFORMANCE_METRICS_WORKER = "performance_metrics_worker"
+    const val FIRESTORE_WORKER = "firestore_worker"
   }
 
   @ExperimentalCoroutinesApi
@@ -109,6 +110,11 @@ class LogUploadWorker private constructor(
       consoleLogger.e(TAG, e.toString(), e)
       Result.failure()
     }
+  }
+
+  /** Extracts data from offline Firestore and logs them to the remote service. */
+  private suspend fun uploadFirestoreData(): Result {
+    return Result.success()
   }
 
   /** Creates an instance of [LogUploadWorker] by properly injecting dependencies. */

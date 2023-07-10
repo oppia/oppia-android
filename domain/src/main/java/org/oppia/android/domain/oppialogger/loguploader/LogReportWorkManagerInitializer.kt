@@ -5,16 +5,17 @@ import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
+import org.oppia.android.util.firestore.FirestoreDataUploader
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import java.util.UUID
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 /**
  * Enqueues unique periodic work requests for uploading events and exceptions to the remote service
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class LogReportWorkManagerInitializer @Inject constructor(
   private val logUploader: LogUploader,
   private val metricLogScheduler: MetricLogScheduler,
+  private val dataUploader: FirestoreDataUploader,
   @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
   performanceMetricsCollectionHighFrequencyTimeInterval: PlatformParameterValue<Int>,
   @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
@@ -76,6 +78,13 @@ class LogReportWorkManagerInitializer @Inject constructor(
     )
     .build()
 
+  private val workerCaseForUploadingFirestoreData: Data = Data.Builder()
+    .putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.FIRESTORE_WORKER
+    )
+    .build()
+
   private val workRequestForUploadingEvents: PeriodicWorkRequest = PeriodicWorkRequest
     .Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
     .setInputData(workerCaseForUploadingEvents)
@@ -124,6 +133,12 @@ class LogReportWorkManagerInitializer @Inject constructor(
       .setConstraints(logReportWorkerConstraints)
       .build()
 
+  private val workRequestForUploadingFireStoreData: PeriodicWorkRequest =
+    PeriodicWorkRequest.Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
+      .setInputData(workerCaseForUploadingFirestoreData)
+      .setConstraints(logReportWorkerConstraints)
+      .build()
+
   override fun onCreate(workManager: WorkManager) {
     logUploader.enqueueWorkRequestForEvents(workManager, workRequestForUploadingEvents)
     logUploader.enqueueWorkRequestForExceptions(workManager, workRequestForUploadingExceptions)
@@ -143,6 +158,7 @@ class LogReportWorkManagerInitializer @Inject constructor(
       workManager,
       workRequestForSchedulingPeriodicUiMetricLogs
     )
+    dataUploader.enqueueWorkRequestForFirestore(workManager, workRequestForUploadingFireStoreData)
   }
 
   /** Returns the worker constraints set for the log reporting work requests. */
@@ -212,4 +228,13 @@ class LogReportWorkManagerInitializer @Inject constructor(
    */
   fun getWorkRequestDataForSchedulingPeriodicBackgroundPerformanceMetricLogs(): Data =
     workerCaseForSchedulingPeriodicBackgroundMetricLogs
+
+  /**
+   * Returns the [Data] that goes into the work request that is enqueued for uploading firestore data.
+   */
+  fun getWorkRequestDataForFirestore(): Data = workerCaseForUploadingFirestoreData
+
+  /** Returns the [UUID] of the work request that is enqueued for uploading firestore data.
+   */
+  fun getWorkRequestForFirestoreId(): UUID = workRequestForUploadingFireStoreData.id
 }
