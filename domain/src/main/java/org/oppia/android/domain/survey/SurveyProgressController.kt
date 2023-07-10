@@ -454,13 +454,13 @@ class SurveyProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.completeSurveyImpl(
-    isCompletion: Boolean,
+    surveyCompleted: Boolean,
     endSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
   ) {
     checkNotNull(this) { "Cannot stop a survey session which wasn't started." }
     tryOperation(endSessionResultFlow) {
       progress.advancePlayStageTo(SurveyProgress.SurveyStage.NOT_IN_SURVEY_SESSION)
-      finishSurveyAndLog(isCompletion)
+      finishSurveyAndLog(surveyCompleted)
     }
   }
 
@@ -473,9 +473,9 @@ class SurveyProgressController @Inject constructor(
     convertAsyncToAutomaticDataProvider("${baseId}_$activeSessionId")
   }
 
-  private suspend fun ControllerState.finishSurveyAndLog(isCompletion: Boolean) {
+  private suspend fun ControllerState.finishSurveyAndLog(surveyIsComplete: Boolean) {
     when {
-      isCompletion -> {
+      surveyIsComplete -> {
         surveyLogger.logMandatoryResponses(
           surveyId,
           profileId,
@@ -484,9 +484,9 @@ class SurveyProgressController @Inject constructor(
           getStoredResponse(SurveyQuestionName.NPS)!!
         )
 
-        // TODO(#5001): Optional responses are uploaded to Firestore, which is out of scope for this PR
+        // TODO(#5001): Log the optional question response to Firestore
       }
-      progress.questionDeck.hasReachedPartialCompletionThreshold() -> {
+      progress.questionDeck.hasAnsweredAllMandatoryQuestions() -> {
         surveyLogger.logMandatoryResponses(
           surveyId,
           profileId,

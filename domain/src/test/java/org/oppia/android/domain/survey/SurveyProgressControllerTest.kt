@@ -317,7 +317,7 @@ class SurveyProgressControllerTest {
 
   @Test
   fun testStopSurveySession_withoutStartingSession_returnsFailure() {
-    val stopProvider = surveyController.stopSurveySession(isCompletion = true)
+    val stopProvider = surveyController.stopSurveySession(surveyCompleted = true)
 
     // The operation should be failing since the session hasn't started.
     val result = monitorFactory.waitForNextFailureResult(stopProvider)
@@ -330,7 +330,7 @@ class SurveyProgressControllerTest {
   fun testStopSurveySession_afterStartingPreviousSession_succeeds() {
     startSuccessfulSurveySession()
     waitForGetCurrentQuestionSuccessfulLoad()
-    val stopProvider = surveyController.stopSurveySession(isCompletion = false)
+    val stopProvider = surveyController.stopSurveySession(surveyCompleted = false)
     monitorFactory.waitForNextSuccessfulResult(stopProvider)
   }
 

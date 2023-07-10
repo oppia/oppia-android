@@ -99,8 +99,14 @@ class SurveyQuestionDeck constructor(
     answeredQuestions.add(questionName)
   }
 
-  /** Returns whether the survey progress has reached the threshold for partial completion. */
-  fun hasReachedPartialCompletionThreshold(): Boolean {
+  /**
+   * Returns whether the user has answered all the mandatory questions, which indicate partial
+   * survey completion.
+   *
+   * The user must have answered the [SurveyQuestionName.NPS] question for the survey to be
+   * considered partially completed.
+   */
+  fun hasAnsweredAllMandatoryQuestions(): Boolean {
     return answeredQuestions.contains(SurveyQuestionName.NPS)
   }
 }
