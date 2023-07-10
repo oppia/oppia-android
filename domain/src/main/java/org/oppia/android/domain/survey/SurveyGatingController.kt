@@ -38,8 +38,8 @@ class SurveyGatingController @Inject constructor(
   )
 
   /**
-   * Returns a data provider containing the outcome of gating, which will be used by callers to
-   * determine if a survey can be shown.
+   * Returns a data provider containing a boolean outcome of gating, which informs callers whether
+   * a survey can be shown.
    */
   fun maybeShowSurvey(profileId: ProfileId, topicId: String): DataProvider<Boolean> {
     val lastShownDateProvider = retrieveSurveyLastShownDate(profileId)
