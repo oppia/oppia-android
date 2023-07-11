@@ -244,11 +244,11 @@ class SurveyProgressController @Inject constructor(
    * This method must be called to explicitly notify the controller that the survey session is being
    * stopped, in order to maybe save the responses.
    *
-   * @param isCompletion whether this finish action indicates that the survey was fully completed by
+   * @param surveyCompleted whether this finish action indicates that the survey was fully completed by
    *     the user.
    */
   fun endSurveySession(
-    isCompletion: Boolean
+    surveyCompleted: Boolean
   ): DataProvider<Any?> {
     // Reset the base questions list provider so that the ephemeral question has no question list to
     // reference (since the session finished).
@@ -257,7 +257,7 @@ class SurveyProgressController @Inject constructor(
     }
     val endSessionResultFlow = createAsyncResultStateFlow<Any?>()
     val message = ControllerMessage.FinishSurveySession(
-      isCompletion, activeSessionId, endSessionResultFlow
+      surveyCompleted, activeSessionId, endSessionResultFlow
     )
     sendCommandForOperation(message) {
       "Failed to schedule command for finishing the survey session."
@@ -312,7 +312,7 @@ class SurveyProgressController @Inject constructor(
             controllerState.handleUpdatedQuestionsList(message.questionsList)
           is ControllerMessage.FinishSurveySession -> {
             try {
-              controllerState.completeSurveyImpl(message.isCompletion, message.callbackFlow)
+              controllerState.completeSurveyImpl(message.surveyCompleted, message.callbackFlow)
             } finally {
               // Ensure the actor ends since the session requires no further message processing.
               break
@@ -560,7 +560,7 @@ class SurveyProgressController @Inject constructor(
 
     /** [ControllerMessage] for ending the current survey session. */
     data class FinishSurveySession(
-      val isCompletion: Boolean,
+      val surveyCompleted: Boolean,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()

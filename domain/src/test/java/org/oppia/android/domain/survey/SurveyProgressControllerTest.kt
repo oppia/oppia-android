@@ -341,7 +341,7 @@ class SurveyProgressControllerTest {
     submitUserTypeAnswer(UserTypeAnswer.PARENT)
     // Submit and navigate to NPS question
     submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
-    stopSurveySession(isCompletion = false)
+    stopSurveySession(surveyCompleted = false)
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     EventLogSubject.assertThat(eventLog).hasAbandonSurveyContextThat {
@@ -361,7 +361,7 @@ class SurveyProgressControllerTest {
     submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
     // Submit and navigate to FEEDBACK question
     submitNpsAnswer(10)
-    stopSurveySession(isCompletion = false)
+    stopSurveySession(surveyCompleted = false)
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     EventLogSubject.assertThat(eventLog).hasMandatorySurveyResponseContextThat {
@@ -383,7 +383,7 @@ class SurveyProgressControllerTest {
     submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
     submitNpsAnswer(10)
     submitTextInputAnswer(SurveyQuestionName.PROMOTER_FEEDBACK, TEXT_ANSWER)
-    stopSurveySession(isCompletion = true)
+    stopSurveySession(surveyCompleted = true)
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     EventLogSubject.assertThat(eventLog).hasMandatorySurveyResponseContextThat {
@@ -399,8 +399,8 @@ class SurveyProgressControllerTest {
 
   // TODO(#5001): Add tests for Optional responses logging to Firestore
 
-  private fun stopSurveySession(isCompletion: Boolean) {
-    val stopProvider = surveyController.stopSurveySession(isCompletion)
+  private fun stopSurveySession(surveyCompleted: Boolean) {
+    val stopProvider = surveyController.stopSurveySession(surveyCompleted)
     monitorFactory.waitForNextSuccessfulResult(stopProvider)
   }
 
