@@ -37,16 +37,7 @@ class DeprecationController @Inject constructor(
   /** Enum states for the possible outcomes of a deprecation action. */
   private enum class DeprecationResponseActionStatus {
     /** Indicates that the deprecation response read/write operation succeeded. */
-    SUCCESS,
-
-    /** Indicates that the deprecation response write operation failed. */
-    FAILED_TO_STORE_DEPRECATION_RESPONSE,
-
-    /**
-     * Indicates that a deprecation response read operation failed. This is usually the result when
-     * a requested [DeprecationResponse] was not found.
-     */
-    DEPRECATION_RESPONSE_NOT_FOUND
+    SUCCESS
   }
 
   init {
@@ -121,12 +112,6 @@ class DeprecationController @Inject constructor(
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
       DeprecationResponseActionStatus.SUCCESS -> AsyncResult.Success(null)
-      DeprecationResponseActionStatus.FAILED_TO_STORE_DEPRECATION_RESPONSE -> AsyncResult.Failure(
-        Exception("Failed to store deprecation response")
-      )
-      DeprecationResponseActionStatus.DEPRECATION_RESPONSE_NOT_FOUND -> AsyncResult.Failure(
-        Exception("Deprecation response not found")
-      )
     }
   }
 }
