@@ -3,6 +3,8 @@ package org.oppia.android.util.logging.firebase
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.util.firestore.DataLogger
+import org.oppia.android.util.firestore.FirestoreDataLogger
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -27,4 +29,9 @@ class DebugLogReportingModule {
     factory: FirebaseAnalyticsEventLogger.Factory
   ): PerformanceMetricsEventLogger =
     factory.createPerformanceMetricEventLogger()
+
+  @Provides
+  @Singleton
+  fun provideFirestoreDataLogger(factory: FirestoreDataLogger.Factory): DataLogger =
+    factory.createFirestoreDataLogger()
 }

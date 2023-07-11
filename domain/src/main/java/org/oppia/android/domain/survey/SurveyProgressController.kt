@@ -391,6 +391,8 @@ class SurveyProgressController @Inject constructor(
 
       if (!progress.questionDeck.isCurrentQuestionTerminal()) {
         moveToNextQuestion()
+      } else {
+        surveyLogger.logOptionalResponse(surveyId, profileId, selectedAnswer.freeFormAnswer)
       }
     }
   }
@@ -483,8 +485,6 @@ class SurveyProgressController @Inject constructor(
           getStoredResponse(SurveyQuestionName.MARKET_FIT)!!,
           getStoredResponse(SurveyQuestionName.NPS)!!
         )
-
-        // TODO(#5001): Log the optional question response to Firestore
       }
       progress.questionDeck.hasAnsweredAllMandatoryQuestions() -> {
         surveyLogger.logMandatoryResponses(
@@ -511,7 +511,7 @@ class SurveyProgressController @Inject constructor(
   }
 
   private suspend inline fun <reified T : Any> getStoredResponse(
-    questionName: SurveyQuestionName
+    questionName: SurveyQuestionName?
   ): T? {
     val answerDatabase = answerDataStore.readDataAsync().await()
     val savedAnswer =

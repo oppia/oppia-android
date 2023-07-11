@@ -1,7 +1,5 @@
 package org.oppia.android.domain.oppialogger
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -15,6 +13,8 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BlockingDispatcher
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Controller for handling event logging for Firestore-bound data. */
 @Singleton

@@ -51,11 +51,10 @@ class LogStorageModule {
   fun provideMetricLogStorageCacheSize(): Int = 25_000
 
   /**
-   * TODO Caluclate the firestore document size
-   * Provides the maximum number of performance metrics logs that can be cached on disk.
+   * Provides the maximum number of firestore-bound event logs that can be cached on disk.
    *
-   * At a configured cache size of 25k records & estimating 121 bytes per record, it's expected that
-   * no more than 3.02MB will be required for cache disk space.
+   * At a configured cache size of 30 records & estimating 376 bytes per record, it's expected that
+   * no more than 11.1KB will be required for cache disk space.
    */
   @Provides
   @FirestoreLogStorageCacheSize

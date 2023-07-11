@@ -66,7 +66,6 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Ex
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.HintContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.MandatorySurveyResponseContext
-import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.OptionalSurveyResponseContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.QuestionContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.RevisionCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SensitiveStringContext
@@ -94,7 +93,6 @@ import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEve
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
-import org.oppia.android.app.model.EventLog.OptionalSurveyResponseContext as OptionalSurveyResponseEventContext
 import org.oppia.android.app.model.EventLog.QuestionContext as QuestionEventContext
 import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
 import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
@@ -222,7 +220,7 @@ class EventBundleCreator @Inject constructor(
       BEGIN_SURVEY -> SurveyContext(activityName, beginSurvey)
       ABANDON_SURVEY -> AbandonSurveyContext(activityName, abandonSurvey)
       MANDATORY_RESPONSE -> MandatorySurveyResponseContext(activityName, mandatoryResponse)
-      OPTIONAL_RESPONSE -> OptionalSurveyResponseContext(activityName, optionalResponse)
+      OPTIONAL_RESPONSE -> EmptyContext(activityName)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
@@ -531,18 +529,6 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("user_type_answer", userTypeAnswer)
         store.putNonSensitiveValue("market_fit_answer", marketFitAnswer)
         store.putNonSensitiveValue("nps_score_answer", npsScoreAnswer)
-      }
-    }
-
-    /** The [EventActivityContext] corresponding to [OptionalSurveyResponseEventContext]s. */
-    class OptionalSurveyResponseContext(
-      activityName: String,
-      value: OptionalSurveyResponseEventContext
-    ) : EventActivityContext<OptionalSurveyResponseEventContext>(activityName, value) {
-      override fun OptionalSurveyResponseEventContext.storeValue(store: PropertyStore) {
-        store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
-        store.putSensitiveValue("profile_id", surveyDetails.profileId)
-        store.putSensitiveValue("feedback_answer", feedbackAnswer)
       }
     }
 

@@ -3,12 +3,12 @@ package org.oppia.android.util.logging.firebase
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 import org.oppia.android.util.firestore.DataLogger
 import org.oppia.android.util.firestore.FirestoreDataLogger
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import javax.inject.Singleton
 
 /** Provides Firebase-specific logging implementations. */
 @Module

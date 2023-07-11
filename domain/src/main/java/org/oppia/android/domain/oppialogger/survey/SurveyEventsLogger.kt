@@ -1,7 +1,5 @@
 package org.oppia.android.domain.oppialogger.survey
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.ProfileId
@@ -9,6 +7,8 @@ import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.domain.oppialogger.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Convenience logger for survey events.
