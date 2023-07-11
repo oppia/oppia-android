@@ -114,7 +114,8 @@ class RecentlyPlayedViewModel private constructor(
       SectionTitleViewModel(
         resourceHandler.getStringInLocale(
           R.string.recently_played_activity_ongoing_story_last_week
-        ), false
+        ),
+        false
       )
     itemList.add(recentSectionTitleViewModel)
     recentlyPlayedStoryList.forEachIndexed { index, promotedStory ->
