@@ -49,9 +49,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: Int
+    internalProfileId: Int
   ): View? {
-    this.profileId = ProfileId.newBuilder().setInternalId(profileId).build()
+    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     val recentlyPlayedViewModel = recentlyPlayedViewModelFactory.create(
       fragment as PromotedStoryClickListener,
       this.profileId
