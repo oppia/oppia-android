@@ -601,6 +601,7 @@
   <string name="recently_played_stories">Recently-Played Stories</string>
   <string name="survey_activity_title">Survey</string>
   <!-- Survey Activity -->
+  <string name="next">Next</string>
   <string name="survey_previous_button">Previous</string>
   <string name="survey_submit_button">Submit</string>
   <string name="survey_free_form_text_hint">Leave your feedback here</string>
