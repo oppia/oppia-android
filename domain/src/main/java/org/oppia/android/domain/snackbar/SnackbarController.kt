@@ -40,7 +40,7 @@ class SnackbarController @Inject constructor(
     notifyPotentialSnackbarChange()
   }
 
-  fun notifyPotentialSnackbarChange() {
+  private fun notifyPotentialSnackbarChange() {
     asyncDataSubscriptionManager.notifyChangeAsync(SNACKBAR_REQUEST_PROVIDER_ID)
   }
 

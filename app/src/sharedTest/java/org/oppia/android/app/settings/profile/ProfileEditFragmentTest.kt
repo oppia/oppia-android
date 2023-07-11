@@ -159,6 +159,25 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_deleteSnackbarIsVisible() {
+    launchFragmentTestActivity(internalProfileId = 1).use {
+      onView(withId(R.id.profile_delete_button)).perform(click())
+      onView(withId(android.R.id.button1)).perform(click())
+      onView(withId(com.google.android.material.R.id.snackbar_text))
+        .check(matches(withText(R.string.profile_edit_delete_success)))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_startWithUserProfile_AfterDeleteSnackbar_profileActivityIsShownAgain() {
+    launchFragmentTestActivity(internalProfileId = 1).use {
+      onView(withId(R.id.profile_delete_button)).perform(click())
+      onView(withId(android.R.id.button1)).perform(click())
+      intended(hasComponent(ProfileListActivity::class.java.name))
+    }
+  }
+
+  @Test
   @Config(qualifiers = "land")
   fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
     launchFragmentTestActivity(internalProfileId = 1).use {

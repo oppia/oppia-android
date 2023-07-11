@@ -33,7 +33,6 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
           )
           SnackbarController.SnackbarRequest.ShowNothing -> {
             if (snackbarController.snackbarRequestQueue.isNotEmpty()) {
-              snackbarController.notifyPotentialSnackbarChange()
               snackbarController.dismissCurrentSnackbar()
             }
           }
@@ -60,7 +59,6 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
         .addCallback(object : Snackbar.Callback() {
           override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             super.onDismissed(transientBottomBar, event)
-            snackbarController.notifyPotentialSnackbarChange()
             snackbarController.dismissCurrentSnackbar()
           }
         })
