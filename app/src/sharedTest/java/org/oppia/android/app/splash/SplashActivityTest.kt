@@ -151,25 +151,19 @@ class SplashActivityTest {
 
   @Inject
   lateinit var context: Context
-
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
   @Inject
   lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
-
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
   @Inject
   lateinit var appStartupStateController: AppStartupStateController
 
   @Parameter
   lateinit var firstOpen: String
-
   @Parameter
   lateinit var secondOpen: String
 
