@@ -124,6 +124,6 @@ class SurveyController @Inject constructor(
    * will be reset to 'pending' when a session is currently active, or before any session has
    * started.
    */
-  fun stopSurveySession(isCompletion: Boolean): DataProvider<Any?> =
-    surveyProgressController.endSurveySession(isCompletion)
+  fun stopSurveySession(surveyCompleted: Boolean): DataProvider<Any?> =
+    surveyProgressController.endSurveySession(surveyCompleted)
 }
