@@ -13,6 +13,9 @@ annotation class ExceptionLogStorageCacheSize
 @Qualifier
 annotation class PerformanceMetricsLogStorageCacheSize
 
+@Qualifier
+annotation class FirestoreLogStorageCacheSize
+
 /** Provider to return any constants required during the storage of log reports. */
 @Module
 class LogStorageModule {
@@ -46,4 +49,15 @@ class LogStorageModule {
   @Provides
   @PerformanceMetricsLogStorageCacheSize
   fun provideMetricLogStorageCacheSize(): Int = 25_000
+
+  /**
+   * TODO Caluclate the firestore document size
+   * Provides the maximum number of performance metrics logs that can be cached on disk.
+   *
+   * At a configured cache size of 25k records & estimating 121 bytes per record, it's expected that
+   * no more than 3.02MB will be required for cache disk space.
+   */
+  @Provides
+  @FirestoreLogStorageCacheSize
+  fun provideFirestoreLogStorageCacheSize(): Int = 30
 }

@@ -15,7 +15,7 @@ class FirestoreDocumentCreator {
    * Fills the specified document with the required key value pairs needed to
    * create a complete firestore document.
    */
-  fun createDocument(dataObject: Any?): HashMap<String, Any?> {
+  fun createDocument(eventLog: EventLog): HashMap<String, Any?> {
     return hashMapOf()
   }
 
