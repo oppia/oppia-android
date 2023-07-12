@@ -30,6 +30,7 @@ import org.oppia.android.databinding.SurveyMarketFitQuestionLayoutBinding
 import org.oppia.android.databinding.SurveyNpsScoreLayoutBinding
 import org.oppia.android.databinding.SurveyUserTypeQuestionLayoutBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.survey.SurveyProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -43,30 +44,31 @@ class SurveyFragmentPresenter @Inject constructor(
   private val surveyProgressController: SurveyProgressController,
   private val surveyViewModel: SurveyViewModel,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val analyticsController: AnalyticsController
 ) {
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralSurveyQuestion>> by lazy {
     surveyProgressController.getCurrentQuestion().toLiveData()
   }
 
   private lateinit var profileId: ProfileId
-  private lateinit var topicId: String
   private lateinit var binding: SurveyFragmentBinding
   private lateinit var surveyToolbar: Toolbar
   private lateinit var answerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
   private lateinit var answerHandler: SelectedAnswerHandler
   private lateinit var questionSelectedAnswer: SurveySelectedAnswer
+  private var isCurrentQuestionTerminal: Boolean = false
 
   /** Sets up data binding. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
+    explorationId: String,
     topicId: String,
     fragment: SurveyFragment
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    this.topicId = topicId
     this.answerAvailabilityReceiver = fragment
     this.answerHandler = fragment
 
@@ -100,6 +102,8 @@ class SurveyFragmentPresenter @Inject constructor(
     binding.surveyPreviousButton.setOnClickListener {
       surveyProgressController.moveToPreviousQuestion()
     }
+
+    logBeginSurveyEvent(explorationId, topicId, profileId)
 
     subscribeToCurrentQuestion()
 
@@ -237,6 +241,8 @@ class SurveyFragmentPresenter @Inject constructor(
       )
       else -> {}
     }
+
+    this.isCurrentQuestionTerminal = ephemeralQuestion.terminalQuestion
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
     updateQuestionText(questionName)
 
@@ -330,6 +336,20 @@ class SurveyFragmentPresenter @Inject constructor(
     inputManager.hideSoftInputFromWindow(
       fragment.view!!.windowToken,
       InputMethodManager.SHOW_FORCED
+    )
+  }
+
+  private fun logBeginSurveyEvent(
+    explorationId: String,
+    topicId: String,
+    profileId: ProfileId
+  ) {
+    analyticsController.logImportantEvent(
+      oppiaLogger.createBeginSurveyContext(
+        explorationId,
+        topicId
+      ),
+      profileId = profileId
     )
   }
 }

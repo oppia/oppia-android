@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 /** The activity for showing a survey. */
 class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
-  @Inject lateinit var surveyActivityPresenter: SurveyActivityPresenter
+  @Inject
+  lateinit var surveyActivityPresenter: SurveyActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -23,9 +24,9 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     val params = intent.extractParams()
     surveyActivityPresenter.handleOnCreate(
-      this,
       params.profileId,
-      params.topicId
+      params.topicId,
+      params.explorationId
     )
   }
 
@@ -39,11 +40,13 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
     fun createSurveyActivityIntent(
       context: Context,
       profileId: ProfileId,
-      topicId: String
+      topicId: String,
+      explorationId: String
     ): Intent {
       val params = SurveyActivityParams.newBuilder().apply {
         this.profileId = profileId
         this.topicId = topicId
+        this.explorationId = explorationId
       }.build()
       return createSurveyActivityIntent(context, params)
     }

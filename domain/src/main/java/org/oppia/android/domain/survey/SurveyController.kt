@@ -1,5 +1,6 @@
 package org.oppia.android.domain.survey
 
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Survey
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
@@ -41,7 +42,8 @@ class SurveyController @Inject constructor(
    */
   fun startSurveySession(
     mandatoryQuestionNames: List<SurveyQuestionName>,
-    showOptionalQuestion: Boolean = true
+    showOptionalQuestion: Boolean = true,
+    profileId: ProfileId
   ): DataProvider<Any?> {
     return try {
       val createSurveyDataProvider =
@@ -54,7 +56,7 @@ class SurveyController @Inject constructor(
         }
 
       val beginSessionDataProvider =
-        surveyProgressController.beginSurveySession(questionsListDataProvider)
+        surveyProgressController.beginSurveySession(surveyId, profileId, questionsListDataProvider)
 
       beginSessionDataProvider.combineWith(
         createSurveyDataProvider, START_SURVEY_SESSION_PROVIDER_ID
@@ -122,5 +124,6 @@ class SurveyController @Inject constructor(
    * will be reset to 'pending' when a session is currently active, or before any session has
    * started.
    */
-  fun stopSurveySession(): DataProvider<Any?> = surveyProgressController.endSurveySession()
+  fun stopSurveySession(surveyCompleted: Boolean): DataProvider<Any?> =
+    surveyProgressController.endSurveySession(surveyCompleted)
 }
