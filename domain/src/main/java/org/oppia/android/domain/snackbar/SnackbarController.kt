@@ -9,8 +9,10 @@ import java.util.Queue
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val SNACKBAR_REQUEST_PROVIDER_ID = "snackbar_request_provider_id"
+private const val GET_CURRENT_SNACKBAR_REQUEST_PROVIDER_ID =
+  "get_current_snackbar_request_provider_id"
 
+/** Controller for enqueueing, dismissing, and retrieving snackbars. */
 @Singleton
 class SnackbarController @Inject constructor(
   private val dataProviders: DataProviders,
@@ -19,29 +21,41 @@ class SnackbarController @Inject constructor(
 
   private val _snackbarRequestQueue: Queue<SnackbarRequest.ShowSnackbar> = LinkedList()
 
+  /** Queue for the snackbar request that to be shown in FIFO Behaviour. */
   val snackbarRequestQueue: Queue<SnackbarRequest.ShowSnackbar>
     get() = _snackbarRequestQueue
 
+  /**
+   * Gets the snackbar that is enqueued first.
+   *
+   * @return a [DataProvider] of the current request.
+   */
   fun getCurrentSnackbar(): DataProvider<SnackbarRequest> {
     val currentRequest = _snackbarRequestQueue.peek()
-    return dataProviders.createInMemoryDataProvider(SNACKBAR_REQUEST_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProvider(GET_CURRENT_SNACKBAR_REQUEST_PROVIDER_ID) {
       return@createInMemoryDataProvider currentRequest
         ?: SnackbarRequest.ShowNothing
     }
   }
 
+  /**
+   *  Enqueue the snackbar request that to be shown and notify the data provider that it is changed.
+   *
+   *  @param request the request that is to be added in the queue.
+   */
   fun enqueueSnackbar(request: SnackbarRequest.ShowSnackbar) {
     _snackbarRequestQueue.add(request)
     notifyPotentialSnackbarChange()
   }
 
+  /**  Dismiss the current snackbar and notify the data provider that it is changed. */
   fun dismissCurrentSnackbar() {
     _snackbarRequestQueue.remove()
     notifyPotentialSnackbarChange()
   }
 
   private fun notifyPotentialSnackbarChange() {
-    asyncDataSubscriptionManager.notifyChangeAsync(SNACKBAR_REQUEST_PROVIDER_ID)
+    asyncDataSubscriptionManager.notifyChangeAsync(GET_CURRENT_SNACKBAR_REQUEST_PROVIDER_ID)
   }
 
   sealed class SnackbarRequest {
@@ -51,8 +65,14 @@ class SnackbarController @Inject constructor(
     object ShowNothing : SnackbarRequest()
   }
 
+  /**
+   * These are for the length of the snackbar that is to be shown.
+   */
   enum class SnackbarDuration {
+    /** Indicates the short duration of the snackbar */
     SHORT,
+
+    /** Indicates the long duration of the snackbar */
     LONG
   }
 }

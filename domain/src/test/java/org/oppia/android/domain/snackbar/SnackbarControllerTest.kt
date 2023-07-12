@@ -26,7 +26,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val test_string: Int = 1
+private const val STRING_ID: Int = 1
 
 @Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
@@ -35,50 +35,40 @@ const val test_string: Int = 1
 class SnackbarControllerTest {
 
   @Inject
-  lateinit var context: Context
-
-  @Inject
   lateinit var snackbarController: SnackbarController
 
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  var request = SnackbarController.SnackbarRequest.ShowSnackbar(
+    messageStringId = STRING_ID,
+    duration = SnackbarController.SnackbarDuration.SHORT
+  )
 
-  lateinit var request: SnackbarController.SnackbarRequest.ShowSnackbar
-  lateinit var request2: SnackbarController.SnackbarRequest.ShowSnackbar
+  var request2 = SnackbarController.SnackbarRequest.ShowSnackbar(
+    messageStringId = STRING_ID,
+    duration = SnackbarController.SnackbarDuration.LONG
+  )
 
   @Before
   fun setUp() {
-    request = SnackbarController.SnackbarRequest.ShowSnackbar(
-      messageStringId = test_string,
-      duration = SnackbarController.SnackbarDuration.SHORT
-    )
-    request2 = SnackbarController.SnackbarRequest.ShowSnackbar(
-      messageStringId = test_string,
-      duration = SnackbarController.SnackbarDuration.LONG
-    )
     setUpTestApplicationComponent()
   }
 
   @Test
-  fun testAddSnackbarRequestReturnsElementInTheQueue() {
+  fun testEnqueueSnackbarRequest_returns_requestInTheQueue() {
     snackbarController.enqueueSnackbar(request)
-
     assertThat(snackbarController.snackbarRequestQueue).contains(request)
   }
 
   @Test
-  fun testAddAndRemoveSnackbarRequestReturnsElementNotInTheQueue() {
+  fun testEnqueueAndDismissSnackbarRequest_returns_requestNotInTheQueue() {
     snackbarController.enqueueSnackbar(request)
     snackbarController.dismissCurrentSnackbar()
-
     assertThat(snackbarController.snackbarRequestQueue).doesNotContain(request)
   }
 
   @Test
-  fun testAddTwoRequestsReturnsEarliestRequestInTheQueue() {
+  fun testEnqueueTwoRequests_returns_FirstRequestInTheQueue() {
     snackbarController.enqueueSnackbar(request)
     snackbarController.enqueueSnackbar(request2)
-
     assertThat(snackbarController.snackbarRequestQueue.peek()).isEqualTo(request)
   }
 

@@ -13,7 +13,6 @@ import org.oppia.android.app.model.ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.settings.profile.ProfileListFragment
-import org.oppia.android.app.settings.profile.SnackbarManager
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -65,8 +64,6 @@ class AdministratorControlsActivity :
   lateinit var resourceHandler: AppLanguageResourceHandler
   private lateinit var lastLoadedFragment: String
   private var isProfileDeletionDialogVisible: Boolean = false
-  @Inject
-  lateinit var snackbarManager: SnackbarManager
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -89,7 +86,6 @@ class AdministratorControlsActivity :
       isProfileDeletionDialogVisible
     )
     title = resourceHandler.getStringInLocale(R.string.administrator_controls)
-    snackbarManager.enableShowingSnackbars(this)
   }
 
   override fun routeToAppVersion() {
