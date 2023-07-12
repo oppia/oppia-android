@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package model;
+
+import "version.proto";
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Top-level proto used to store deprecation responses, which correspond to a user's interaction
+// with a dialog notifying them of either an optional update or of an OS deprecation.
+message DeprecationResponseDatabase {
+    // Stores a user's response to a dialog notifying the user that an optional update is available
+    // for download.
+    DeprecationResponse app_deprecation_response = 1;
+
+    // Stores a user's response to a dialog notifying the user that their OS is deprecated.
+    DeprecationResponse os_deprecation_response = 2;
+}
+
+// Represents a response to a dialog notifying the user that an optional update is available for
+// download, or that their OS is deprecated.
+message DeprecationResponse {
+    // The app version of the latest available update at the time the user dismissed a deprecation
+    // notice dialog.
+    int32 deprecated_version = 1;
+
+    // The timestamp in milliseconds since epoch corresponding to the date and time that the user
+    // dismissed the deprecation notice dialog.
+    uint64 notice_dismissed_timestamp_millis = 2;
+
+    // The [DeprecationNoticeType] of the dialog that the user has dismissed. This can
+    // either be unspecified, an app deprecation or an OS deprecation notice.
+    DeprecationNoticeType deprecation_notice_type = 3;
+}
+
+// An enum object that represents the different deprecation notices that can be shown to the user.
+enum DeprecationNoticeType {
+    // Unspecified notice type.
+    DEPRECATION_NOTICE_TYPE_UNSPECIFIED = 0;
+
+    // App update notice type.
+    APP_DEPRECATION = 1;
+
+    // OS deprecation notice type.
+    OS_DEPRECATION = 2;
+}
