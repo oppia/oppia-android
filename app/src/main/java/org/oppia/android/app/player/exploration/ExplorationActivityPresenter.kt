@@ -92,7 +92,7 @@ class ExplorationActivityPresenter @Inject constructor(
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
+    binding = DataBindingUtil.setContentView(
       activity,
       R.layout.exploration_activity
     )
@@ -289,21 +289,20 @@ class ExplorationActivityPresenter @Inject constructor(
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
     explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
-        activity,
-        {
-          when (it) {
-            is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
-            is AsyncResult.Failure ->
-              oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
-            is AsyncResult.Success -> {
-              oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              if (isCompletion) {
-                maybeShowSurveyDialog(profileId, topicId)
-              }
+        activity
+      ) {
+        when (it) {
+          is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
+          is AsyncResult.Success -> {
+            oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
+            if (isCompletion) {
+              maybeShowSurveyDialog(profileId, topicId)
             }
           }
         }
-      )
+      }
   }
 
   fun onKeyboardAction(actionCode: Int) {
@@ -530,41 +529,40 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
     surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
       .observe(
-        activity,
-        { gatingResult ->
-          when (gatingResult) {
-            is AsyncResult.Pending -> {
-              oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "ExplorationActivity",
-                "Failed to retrieve gating decision",
-                gatingResult.error
-              )
+        activity
+      ) { gatingResult ->
+        when (gatingResult) {
+          is AsyncResult.Pending -> {
+            oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ExplorationActivity",
+              "Failed to retrieve gating decision",
+              gatingResult.error
+            )
+            backPressActivitySelector()
+          }
+          is AsyncResult.Success -> {
+            if (gatingResult.value) {
+              val dialogFragment =
+                SurveyWelcomeDialogFragment.newInstance(
+                  profileId,
+                  topicId,
+                  explorationId,
+                  SURVEY_QUESTIONS
+                )
+              val transaction = activity.supportFragmentManager.beginTransaction()
+              transaction
+                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                .addToBackStack(null)
+                .commit()
+            } else {
               backPressActivitySelector()
-            }
-            is AsyncResult.Success -> {
-              if (gatingResult.value) {
-                val dialogFragment =
-                  SurveyWelcomeDialogFragment.newInstance(
-                    profileId,
-                    topicId,
-                    explorationId,
-                    SURVEY_QUESTIONS
-                  )
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction
-                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                  .addToBackStack(null)
-                  .commit()
-              } else {
-                backPressActivitySelector()
-              }
             }
           }
         }
-      )
+      }
   }
 
   companion object {
