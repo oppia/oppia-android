@@ -4,6 +4,7 @@ package model;
 
 import "languages.proto";
 import "profile.proto";
+import "survey.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -158,6 +159,22 @@ message EventLog {
       // Indicates that something went wrong when trying to log a learner analytics even for the
       // device corresponding to the specified device ID.
       string install_id_for_failed_analytics_log = 33;
+
+      // The event being logged is related to viewing a survey popup dialog.
+      SurveyContext show_survey_popup = 38;
+
+      // The event being logged is related to a survey session being started.
+      SurveyContext begin_survey = 39;
+
+      // The event being logged is related to a survey session being started and ended before the
+      // mandatory questions are completed.
+      AbandonSurveyContext abandon_survey = 40;
+
+      // The event being logged is related to the responses to the mandatory survey questions.
+      MandatorySurveyResponseContext mandatory_response = 41;
+
+      // The event being logged is related to the response to the optional survey question.
+      OptionalSurveyResponseContext optional_response = 42;
     }
   }
 
@@ -297,6 +314,58 @@ message EventLog {
 
     // The content language to which the lesson is being switched.
     OppiaLanguage switch_to_language = 3;
+  }
+
+  // Structure of a survey context.
+  message SurveyContext {
+    // The active topic ID when the event is logged.
+    string topic_id = 1;
+
+    // The active exploration ID when the event is logged.
+    string exploration_id = 2;
+  }
+
+  // Represents the event context for when a survey is exited without completing all the mandatory
+  // questions.
+  message AbandonSurveyContext {
+    // Defined attributes that are common among other survey related event log contexts.
+    SurveyResponseContext survey_details = 1;
+
+    // The semantic name of the question at which the survey was abandoned.
+    SurveyQuestionName question_name = 2;
+  }
+
+  // Represents the event context that contains the responses to the mandatory survey questions.
+  message MandatorySurveyResponseContext {
+    // Defined attributes that are common among other survey related event log contexts.
+    SurveyResponseContext survey_details = 1;
+
+    // The semantic name of the selected answer for the user type question.
+    UserTypeAnswer user_type_answer = 2;
+
+    // The semantic name of the selected answer for the market fit question.
+    MarketFitAnswer market_fit_answer = 3;
+
+    // The integer value representing the score selected by the user for the NPS question.
+    int32 nps_score_answer = 4;
+  }
+
+  // Represents the event context that contains the response to the optional survey question.
+  message OptionalSurveyResponseContext {
+    // Defined attributes that are common among other survey related event log contexts.
+    SurveyResponseContext survey_details = 1;
+
+    // The string value representing the free form answer given for the feedback question.
+    string feedback_answer = 2;
+  }
+
+  // Structure of a survey response context.
+  message SurveyResponseContext {
+    // The ID of the survey for which this response event is being logged.
+    string survey_id = 1;
+
+    // The ID of the Oppia profile currently logged in, responding to the survey.
+    string profile_id = 2;
   }
 
   // Supported priority of events for event logging
