@@ -10,7 +10,6 @@ import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -35,9 +34,10 @@ import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.accessibility.AccessibilityService
+import javax.inject.Inject
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -54,10 +54,11 @@ class ExplorationActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
-  private val accessibilityService: AccessibilityService,
   private val oppiaLogger: OppiaLogger,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
+  @Inject lateinit var accessibilityService: AccessibilityService
+
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
   private lateinit var profileId: ProfileId
@@ -182,7 +183,11 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
-          profileId, topicId, storyId, explorationId, readingTextSize
+          profileId,
+          topicId,
+          storyId,
+          explorationId,
+          readingTextSize
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
@@ -212,7 +217,8 @@ class ExplorationActivityPresenter @Inject constructor(
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, profileId.internalId,
+          activity,
+          profileId.internalId,
           /* isFromNavigationDrawer= */false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -267,30 +273,30 @@ class ExplorationActivityPresenter @Inject constructor(
     // without deleting any checkpoints.
     if (::oldestCheckpointExplorationId.isInitialized) {
       explorationDataController.deleteExplorationProgressById(
-        profileId, oldestCheckpointExplorationId
+        profileId,
+        oldestCheckpointExplorationId
       )
     }
     stopExploration(isCompletion = false)
   }
 
-  fun stopExploration(isCompletion: Boolean) {
+  private fun stopExploration(isCompletion: Boolean) {
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
     explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
-        activity,
-        {
-          when (it) {
-            is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
-            is AsyncResult.Failure ->
-              oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
-            is AsyncResult.Success -> {
-              oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              backPressActivitySelector()
-              (activity as ExplorationActivity).finish()
-            }
+        activity
+      ) {
+        when (it) {
+          is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
+          is AsyncResult.Success -> {
+            oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
+            backPressActivitySelector()
+            (activity as ExplorationActivity).finish()
           }
         }
-      )
+      }
   }
 
   fun onKeyboardAction(actionCode: Int) {
@@ -338,7 +344,8 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationLiveData.observe(activity) {
       explorationToolbarTitle.text =
         translationController.extractString(
-          it.exploration.translatableTitle, it.writtenTranslationContext
+          it.exploration.translatableTitle,
+          it.writtenTranslationContext
         )
     }
   }
@@ -361,7 +368,9 @@ class ExplorationActivityPresenter @Inject constructor(
     return when (ephemeralExpResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralExpResult.error
+          "ExplorationActivity",
+          "Failed to retrieve answer outcome",
+          ephemeralExpResult.error
         )
         EphemeralExploration.getDefaultInstance()
       }
@@ -470,7 +479,9 @@ class ExplorationActivityPresenter @Inject constructor(
         }
         is AsyncResult.Failure -> {
           oppiaLogger.e(
-            "ExplorationActivity", "Failed to retrieve oldest saved checkpoint details.", it.error
+            "ExplorationActivity",
+            "Failed to retrieve oldest saved checkpoint details.",
+            it.error
           )
         }
         is AsyncResult.Pending -> {} // Wait for an actual result.

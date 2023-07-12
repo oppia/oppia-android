@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -20,9 +18,10 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.accessibility.AccessibilityService
+import javax.inject.Inject
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
@@ -31,9 +30,9 @@ class RevisionCardActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
   private val topicController: TopicController,
-  private val accessibilityService: AccessibilityService,
   private val translationController: TranslationController
 ) {
+  @Inject lateinit var accessibilityService: AccessibilityService
 
   private lateinit var revisionCardToolbar: Toolbar
   private lateinit var revisionCardToolbarTitle: TextView
@@ -68,11 +67,9 @@ class RevisionCardActivityPresenter @Inject constructor(
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
     }
-    activity.applicationContext?.let {
-      if (!accessibilityService.isScreenReaderEnabled()) {
-        binding.revisionCardToolbarTitle.setOnClickListener {
-          binding.revisionCardToolbarTitle.isSelected = true
-        }
+    if (!accessibilityService.isScreenReaderEnabled()) {
+      binding.revisionCardToolbarTitle.setOnClickListener {
+        binding.revisionCardToolbarTitle.isSelected = true
       }
     }
 
@@ -96,14 +93,18 @@ class RevisionCardActivityPresenter @Inject constructor(
     return when (itemId) {
       R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
-          activity, profileId.internalId, isFromNavigationDrawer = false
+          activity,
+          profileId.internalId,
+          isFromNavigationDrawer = false
         )
         activity.startActivity(intent)
         true
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, profileId.internalId, isFromNavigationDrawer = false
+          activity,
+          profileId.internalId,
+          isFromNavigationDrawer = false
         )
         activity.startActivity(intent)
         true
@@ -124,11 +125,10 @@ class RevisionCardActivityPresenter @Inject constructor(
 
   private fun subscribeToSubtopicTitle() {
     subtopicLiveData.observe(
-      activity,
-      Observer<String> {
-        revisionCardToolbarTitle.text = it
-      }
-    )
+      activity
+    ) {
+      revisionCardToolbarTitle.text = it
+    }
   }
 
   private val subtopicLiveData: LiveData<String> by lazy {
@@ -150,7 +150,9 @@ class RevisionCardActivityPresenter @Inject constructor(
       when (revisionCardResult) {
         is AsyncResult.Failure -> {
           oppiaLogger.e(
-            "RevisionCardActivity", "Failed to retrieve Revision Card", revisionCardResult.error
+            "RevisionCardActivity",
+            "Failed to retrieve Revision Card",
+            revisionCardResult.error
           )
           EphemeralRevisionCard.getDefaultInstance()
         }

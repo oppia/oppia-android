@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
@@ -21,9 +20,10 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.accessibility.AccessibilityService
+import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
@@ -32,11 +32,12 @@ class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
-  private val accessibilityService: AccessibilityService,
   private val analyticsController: AnalyticsController,
   @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
+  @Inject lateinit var accessibilityService: AccessibilityService
+
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -50,7 +51,7 @@ class TopicFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     isConfigChanged: Boolean
-  ): View? {
+  ): View {
     val binding = TopicFragmentBinding.inflate(
       inflater,
       container,
@@ -67,12 +68,9 @@ class TopicFragmentPresenter @Inject constructor(
       (activity as TopicActivity).finish()
     }
 
-    activity.applicationContext?.let {
-
-      if (!accessibilityService.isScreenReaderEnabled()) {
-        binding.topicToolbar.setOnClickListener {
-          binding.topicToolbarTitle.isSelected = true
-        }
+    if (!accessibilityService.isScreenReaderEnabled()) {
+      binding.topicToolbar.setOnClickListener {
+        binding.topicToolbarTitle.isSelected = true
       }
     }
 
@@ -159,7 +157,8 @@ class TopicFragmentPresenter @Inject constructor(
       TopicTab.REVISION -> oppiaLogger.createOpenRevisionTabContext(topicId)
     }
     analyticsController.logImportantEvent(
-      eventContext, ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      eventContext,
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }
 }
