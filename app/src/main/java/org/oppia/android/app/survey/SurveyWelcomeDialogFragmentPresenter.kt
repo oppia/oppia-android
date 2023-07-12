@@ -10,6 +10,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.databinding.SurveyWelcomeDialogFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.survey.SurveyController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -23,16 +24,21 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val surveyController: SurveyController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController
 ) {
+  private lateinit var explorationId: String
+
   /** Sets up data binding. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileId: ProfileId,
     topicId: String,
+    explorationId: String,
     questionNames: List<SurveyQuestionName>,
   ): View {
+    this.explorationId = explorationId
     val binding =
       SurveyWelcomeDialogFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
@@ -48,6 +54,8 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
         .commitNow()
     }
 
+    logSurveyPopUpShownEvent(explorationId, topicId, profileId)
+
     return binding.root
   }
 
@@ -56,7 +64,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     topicId: String,
     questions: List<SurveyQuestionName>
   ) {
-    val startDataProvider = surveyController.startSurveySession(questions)
+    val startDataProvider = surveyController.startSurveySession(questions, profileId = profileId)
     startDataProvider.toLiveData().observe(
       activity,
       {
@@ -74,7 +82,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
           is AsyncResult.Success -> {
             oppiaLogger.d("SurveyWelcomeDialogFragment", "Successfully started a survey session")
             val intent =
-              SurveyActivity.createSurveyActivityIntent(activity, profileId, topicId)
+              SurveyActivity.createSurveyActivityIntent(activity, profileId, topicId, explorationId)
             fragment.startActivity(intent)
             activity.finish()
             val transaction = activity.supportFragmentManager.beginTransaction()
@@ -82,6 +90,20 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
           }
         }
       }
+    )
+  }
+
+  private fun logSurveyPopUpShownEvent(
+    explorationId: String,
+    topicId: String,
+    profileId: ProfileId
+  ) {
+    analyticsController.logImportantEvent(
+      oppiaLogger.createShowSurveyPopupContext(
+        explorationId,
+        topicId
+      ),
+      profileId = profileId
     )
   }
 }
