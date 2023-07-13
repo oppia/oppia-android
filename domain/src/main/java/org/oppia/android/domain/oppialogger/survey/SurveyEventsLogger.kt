@@ -5,8 +5,8 @@ import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
-import org.oppia.android.domain.oppialogger.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.firestoreuploader.FirestoreDataController
 import javax.inject.Inject
 import javax.inject.Singleton
 

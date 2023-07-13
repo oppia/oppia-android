@@ -35,13 +35,6 @@ class FakeLogUploader @Inject constructor() : LogUploader {
     performanceMetricsRequestIdList.add(workRequest.id)
   }
 
-  override fun enqueueWorkRequestForFirestore(
-    workManager: WorkManager,
-    workRequest: PeriodicWorkRequest
-  ) {
-    TODO("Not yet implemented")
-  }
-
   /** Returns the most recent work request id that's stored in the [eventRequestIdList]. */
   fun getMostRecentEventRequestId() = eventRequestIdList.last()
 

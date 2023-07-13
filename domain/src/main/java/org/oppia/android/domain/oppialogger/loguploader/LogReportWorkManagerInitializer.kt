@@ -76,13 +76,6 @@ class LogReportWorkManagerInitializer @Inject constructor(
     )
     .build()
 
-  private val workerCaseForUploadingFirestoreData: Data = Data.Builder()
-    .putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.FIRESTORE_WORKER
-    )
-    .build()
-
   private val workRequestForUploadingEvents: PeriodicWorkRequest = PeriodicWorkRequest
     .Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
     .setInputData(workerCaseForUploadingEvents)
@@ -131,12 +124,6 @@ class LogReportWorkManagerInitializer @Inject constructor(
       .setConstraints(logReportWorkerConstraints)
       .build()
 
-  private val workRequestForUploadingFireStoreData: PeriodicWorkRequest =
-    PeriodicWorkRequest.Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
-      .setInputData(workerCaseForUploadingFirestoreData)
-      .setConstraints(logReportWorkerConstraints)
-      .build()
-
   override fun onCreate(workManager: WorkManager) {
     logUploader.enqueueWorkRequestForEvents(workManager, workRequestForUploadingEvents)
     logUploader.enqueueWorkRequestForExceptions(workManager, workRequestForUploadingExceptions)
@@ -156,7 +143,6 @@ class LogReportWorkManagerInitializer @Inject constructor(
       workManager,
       workRequestForSchedulingPeriodicUiMetricLogs
     )
-    logUploader.enqueueWorkRequestForFirestore(workManager, workRequestForUploadingFireStoreData)
   }
 
   /** Returns the worker constraints set for the log reporting work requests. */
@@ -226,13 +212,4 @@ class LogReportWorkManagerInitializer @Inject constructor(
    */
   fun getWorkRequestDataForSchedulingPeriodicBackgroundPerformanceMetricLogs(): Data =
     workerCaseForSchedulingPeriodicBackgroundMetricLogs
-
-  /**
-   * Returns the [Data] that goes into the work request that is enqueued for uploading firestore data.
-   */
-  fun getWorkRequestDataForFirestore(): Data = workerCaseForUploadingFirestoreData
-
-  /** Returns the [UUID] of the work request that is enqueued for uploading firestore data.
-   */
-  fun getWorkRequestForFirestoreId(): UUID = workRequestForUploadingFireStoreData.id
 }

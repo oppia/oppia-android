@@ -17,10 +17,4 @@ interface LogUploader {
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
   )
-
-  /**
-   * Enqueues a [workRequest] using the [workManager] for uploading data that is stored offline
-   * to Firestore.
-   */
-  fun enqueueWorkRequestForFirestore(workManager: WorkManager, workRequest: PeriodicWorkRequest)
 }
