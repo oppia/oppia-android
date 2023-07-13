@@ -26,8 +26,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -125,6 +123,8 @@ import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
@@ -143,19 +143,33 @@ private const val REVISION_TAB_POSITION_EXTRA_TABS_DISABLED = 1
   qualifiers = "port-xxhdpi"
 )
 class TopicFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    TopicActivity::class.java, /* initialTouchMode= */
+    true, /* launchActivity= */
+    false
   )
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var spotlightStateController: SpotlightStateController
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Inject
   lateinit var fakeAccessibilityManager: FakeAccessibilityService
@@ -319,7 +333,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {    initializeApplicationComponent(false)
+  fun testTopicFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
+    initializeApplicationComponent(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -337,6 +352,7 @@ class TopicFragmentTest {
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
+
   @Test
   fun testTopicFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
@@ -856,7 +872,9 @@ class TopicFragmentTest {
    */
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId
     )
   }
 
@@ -871,7 +889,10 @@ class TopicFragmentTest {
     storyId: String
   ): Intent {
     return TopicActivity.createTopicPlayStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId,
+      storyId
     )
   }
 
