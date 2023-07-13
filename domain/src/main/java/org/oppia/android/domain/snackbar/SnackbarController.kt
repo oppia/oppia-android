@@ -58,10 +58,18 @@ class SnackbarController @Inject constructor(
     asyncDataSubscriptionManager.notifyChangeAsync(GET_CURRENT_SNACKBAR_REQUEST_PROVIDER_ID)
   }
 
+  /** For the Snackbar Request. */
   sealed class SnackbarRequest {
+
+    /** For showing the snackbar.
+     *
+     *  @param messageStringId The message string of string resource that is to be displayed.
+     *  @param duration The duration for which snackbar is to be shown.
+     */
     data class ShowSnackbar(@StringRes val messageStringId: Int, val duration: SnackbarDuration) :
       SnackbarRequest()
 
+    /** For not showing snackbar and dismissing the snackbar if present in the queue. */
     object ShowNothing : SnackbarRequest()
   }
 
