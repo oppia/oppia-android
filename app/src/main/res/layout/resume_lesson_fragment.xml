@@ -109,7 +109,6 @@
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:background="@drawable/state_button_primary_background"
-          app:backgroundTint="@null"
           android:fontFamily="sans-serif-medium"
           android:gravity="center"
           android:minWidth="144dp"
@@ -118,6 +117,7 @@
           android:textAllCaps="true"
           android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="14sp"
+          app:backgroundTint="@null"
           app:icon="@drawable/ic_arrow_right_alt_24dp"
           app:iconGravity="textEnd" />
       </com.google.android.flexbox.FlexboxLayout>
