@@ -5,7 +5,6 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,6 +12,7 @@ import kotlinx.coroutines.async
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
 
 class FirestoreUploadWorker private constructor(
   context: Context,
@@ -52,14 +52,11 @@ class FirestoreUploadWorker private constructor(
 
   /** Extracts data from offline Firestore and logs them to the remote service. */
   private suspend fun uploadFirestoreData(): Result {
-    println("Firestore upload worker started")
     return try {
       dataController.uploadData()
-      println("Firestore worker success")
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
-      println("Firestore worker failed")
       Result.failure()
     }
   }

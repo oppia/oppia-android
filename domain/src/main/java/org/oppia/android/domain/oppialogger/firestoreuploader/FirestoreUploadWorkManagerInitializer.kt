@@ -35,7 +35,7 @@ class FirestoreUploadWorkManagerInitializer @Inject constructor() : AnalyticsSta
 
   // TODO change interval to 6 hours
   private val workRequestForUploadingFireStoreData: PeriodicWorkRequest =
-    PeriodicWorkRequest.Builder(FirestoreUploadWorker::class.java, 15, TimeUnit.MINUTES)
+    PeriodicWorkRequest.Builder(FirestoreUploadWorker::class.java, 15, TimeUnit.HOURS)
       .addTag(TAG)
       .setInputData(workerCaseForUploadingFirestoreData)
       .setConstraints(firestoreUploadWorkerConstraints)

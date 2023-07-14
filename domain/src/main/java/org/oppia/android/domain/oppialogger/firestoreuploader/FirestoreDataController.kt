@@ -1,5 +1,7 @@
 package org.oppia.android.domain.oppialogger.firestoreuploader
 
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,7 +12,7 @@ import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
-import org.oppia.android.util.firestore.DataLogger
+import org.oppia.android.util.firestore.DataUploader
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
@@ -23,7 +25,7 @@ class FirestoreDataController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
-  private val dataLogger: DataLogger,
+  private val dataUploader: DataUploader,
   private val exceptionLogger: ExceptionLogger,
   private val oppiaClock: OppiaClock,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
@@ -31,6 +33,8 @@ class FirestoreDataController @Inject constructor(
 ) {
   private val firestoreDataStore =
     cacheStoreFactory.create("firestore_data", OppiaEventLogs.getDefaultInstance())
+
+  private val firebaseAuth = Firebase.auth
 
   /**
    * Logs a high priority event defined by [eventContext] corresponding to time [timestamp].
@@ -62,8 +66,30 @@ class FirestoreDataController @Inject constructor(
    */
   suspend fun uploadData() {
     firestoreDataStore.readDataAsync().await().eventLogsToUploadList.forEach { eventLog ->
-      dataLogger.saveData(eventLog)
-      removeFirstEventLogFromStore()
+      // uploadToFirestore(eventLog)
+    }
+  }
+
+  /** Either uploads or caches [eventLog] depending on current internet connectivity. */
+  private fun uploadOrCacheEventLog(eventLog: EventLog) {
+    when (networkConnectionUtil.getCurrentConnectionStatus()) {
+      NetworkConnectionUtil.ProdConnectionStatus.NONE -> cacheEventForFirestore(eventLog)
+      else -> authenticateAndUploadToFirestore(eventLog)
+    }
+  }
+
+  private fun authenticateAndUploadToFirestore(eventLog: EventLog) {
+    if (firebaseAuth.currentUser == null) {
+      firebaseAuth.signInAnonymously()
+        .addOnSuccessListener {
+          dataUploader.uploadData(eventLog)
+        }
+        .addOnFailureListener {
+          cacheEventForFirestore(eventLog)
+          consoleLogger.e("FirestoreDataController", "Authentication Failed")
+        }
+    } else {
+      dataUploader.uploadData(eventLog)
     }
   }
 
@@ -73,11 +99,7 @@ class FirestoreDataController @Inject constructor(
       return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLogsToUpload(0).build()
     }.invokeOnCompletion {
       it?.let {
-        consoleLogger.e(
-          "FirestoreDataController",
-          "Failed to remove event log.",
-          it
-        )
+        consoleLogger.e("FirestoreDataController", "Failed to remove event log", it)
       }
     }
   }
@@ -96,16 +118,6 @@ class FirestoreDataController @Inject constructor(
     }.build()
   }
 
-  /** Either uploads or caches [eventLog] depending on current internet connectivity. */
-  private fun uploadOrCacheEventLog(eventLog: EventLog) {
-    when (networkConnectionUtil.getCurrentConnectionStatus()) {
-      NetworkConnectionUtil.ProdConnectionStatus.NONE -> cacheFirestoreEvents(eventLog)
-      else -> {
-        dataLogger.saveData(eventLog)
-      }
-    }
-  }
-
   /**
    * Adds an event to the storage.
    *
@@ -113,7 +125,7 @@ class FirestoreDataController @Inject constructor(
    * [logStorageCacheSize]. If the limit is exceeded then the least recent event is removed from the
    * [firestoreDataStore].
    */
-  private fun cacheFirestoreEvents(eventLog: EventLog) {
+  private fun cacheEventForFirestore(eventLog: EventLog) {
     firestoreDataStore.storeDataAsync(updateInMemoryCache = true) { eventLogs ->
       val storeSize = eventLogs.eventLogsToUploadList.size
       if (storeSize + 1 > logStorageCacheSize) {
