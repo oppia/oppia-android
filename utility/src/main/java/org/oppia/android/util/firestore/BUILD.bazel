@@ -1,0 +1,56 @@
+"""
+Logging utility implementations backed by Firestore.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "survey_data_uploader",
+    srcs = [
+        "SurveyFirestoreDataUploader.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":data_uploader",
+        ":survey_firestore_document_creator",
+        "//third_party:com_google_firebase_firebase-firestore-ktx",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ]
+)
+
+kt_android_library(
+    name = "data_uploader",
+    srcs = [
+       "DataUploader.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model/src/main/proto:event_logger_java_proto_lite",
+    ]
+)
+
+kt_android_library(
+    name = "survey_firestore_document_creator",
+    srcs = [
+        "SurveyFirestoreDocumentCreator.kt",
+    ],
+    deps = [
+        ":firestore_document_creator",
+    ],
+)
+
+kt_android_library(
+    name = "firestore_document_creator",
+    srcs = [
+        "FirestoreDocumentCreator.kt",
+    ],
+    deps = [
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+dagger_rules()

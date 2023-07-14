@@ -118,6 +118,7 @@ android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/firestoreuploader:worker_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",

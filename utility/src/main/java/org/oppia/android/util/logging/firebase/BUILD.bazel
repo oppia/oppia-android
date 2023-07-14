@@ -52,6 +52,7 @@ kt_android_library(
         "//third_party:com_google_firebase_firebase-analytics",
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/firestore:survey_data_uploader",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
     ],
@@ -83,6 +84,7 @@ kt_android_library(
         ":dagger",
         ":debug_event_logger",
         ":firebase_exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/firestore:survey_data_uploader",
     ],
 )
 

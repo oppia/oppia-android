@@ -54,6 +54,7 @@ class FirestoreUploadWorker private constructor(
   private suspend fun uploadFirestoreData(): Result {
     return try {
       dataController.uploadData()
+      dataController.removeFirstEventLogFromStore()
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)

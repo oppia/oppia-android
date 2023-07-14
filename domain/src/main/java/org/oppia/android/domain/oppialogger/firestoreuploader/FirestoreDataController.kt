@@ -2,8 +2,6 @@ package org.oppia.android.domain.oppialogger.firestoreuploader
 
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -18,6 +16,8 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BlockingDispatcher
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Controller for handling event logging for Firestore-bound data. */
 @Singleton
@@ -66,7 +66,7 @@ class FirestoreDataController @Inject constructor(
    */
   suspend fun uploadData() {
     firestoreDataStore.readDataAsync().await().eventLogsToUploadList.forEach { eventLog ->
-      // uploadToFirestore(eventLog)
+      authenticateAndUploadToFirestore(eventLog)
     }
   }
 
@@ -94,7 +94,7 @@ class FirestoreDataController @Inject constructor(
   }
 
   /** Removes the first log report that had been recorded for upload. */
-  private fun removeFirstEventLogFromStore() {
+  fun removeFirstEventLogFromStore() {
     firestoreDataStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLogsToUpload(0).build()
     }.invokeOnCompletion {

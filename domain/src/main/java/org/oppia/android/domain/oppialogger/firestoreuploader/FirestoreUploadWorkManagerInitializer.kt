@@ -9,7 +9,6 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.firestoreuploader.FirestoreUploadWorker.Companion.FIRESTORE_WORKER
-import org.oppia.android.domain.oppialogger.firestoreuploader.FirestoreUploadWorker.Companion.TAG
 import org.oppia.android.domain.oppialogger.firestoreuploader.FirestoreUploadWorker.Companion.WORKER_CASE_KEY
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -35,8 +34,7 @@ class FirestoreUploadWorkManagerInitializer @Inject constructor() : AnalyticsSta
 
   // TODO change interval to 6 hours
   private val workRequestForUploadingFireStoreData: PeriodicWorkRequest =
-    PeriodicWorkRequest.Builder(FirestoreUploadWorker::class.java, 15, TimeUnit.HOURS)
-      .addTag(TAG)
+    PeriodicWorkRequest.Builder(FirestoreUploadWorker::class.java, 15, TimeUnit.MINUTES)
       .setInputData(workerCaseForUploadingFirestoreData)
       .setConstraints(firestoreUploadWorkerConstraints)
       .build()

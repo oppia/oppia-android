@@ -3,9 +3,9 @@ package org.oppia.android.util.firestore
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import javax.inject.Inject
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.util.logging.ConsoleLogger
+import javax.inject.Inject
 
 /** Logger for uploading to Firestore. */
 class SurveyFirestoreDataUploader private constructor(
@@ -23,7 +23,6 @@ class SurveyFirestoreDataUploader private constructor(
         }
         .addOnFailureListener { e ->
           consoleLogger.e("SurveyFirestoreDataUploader", e.toString(), e)
-          firebaseFirestore.clearPersistence()
         }
     }
   }
