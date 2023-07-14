@@ -22,9 +22,9 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
   /**
    *  Enqueues the snackbar that is be to shown in the FIFO buffer.
    *
-   *  @param messageStringId The message string of string resource that is to be displayed.
-   *  @param duration The duration for which snackbar is to be shown.
-   *  */
+   *  @param messageStringId The message string of string resource that is to be displayed
+   *  @param duration The duration for which snackbar is to be shown
+   */
   fun showSnackbar(@StringRes messageStringId: Int, duration: SnackbarController.SnackbarDuration) {
     snackbarController.enqueueSnackbar(
       SnackbarController.SnackbarRequest.ShowSnackbar(
@@ -37,7 +37,7 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
   /**
    * Enables the activity to show the snackbar.
    *
-   * @param activity For the activity that is to be observed and to upon which the snackbar to be shown.
+   * @param activity that is to observing  for a snackbar and in which the snackbar  will be shown
    */
   fun enableShowingSnackbars(activity: AppCompatActivity) {
     snackbarController.getCurrentSnackbar().toLiveData().observe(activity) { result ->

@@ -112,6 +112,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.Matchers.allOf
 
 /** Tests for [ProfileEditFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -121,14 +122,21 @@ import javax.inject.Singleton
 @Config(application = ProfileEditFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class ProfileEditFragmentTest {
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -162,9 +170,13 @@ class ProfileEditFragmentTest {
   fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_deleteSnackbarIsVisible() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withId(android.R.id.button1)).perform(click())
-      onView(withId(com.google.android.material.R.id.snackbar_text))
-        .check(matches(withText(R.string.profile_edit_delete_success)))
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_positive))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withText(R.string.profile_edit_delete_success)))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -172,7 +184,14 @@ class ProfileEditFragmentTest {
   fun testProfileEdit_startWithUserProfile_AfterDeleteSnackbar_profileActivityIsShownAgain() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withId(android.R.id.button1)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_positive))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+       onView(allOf(withText(R.string.profile_edit_delete_success)))
+        .check(matches(isDisplayed()))
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
