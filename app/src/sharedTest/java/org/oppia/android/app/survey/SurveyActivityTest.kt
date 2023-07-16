@@ -62,6 +62,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -147,7 +148,7 @@ class SurveyActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenNameWithIntent = SurveyActivity.createSurveyActivityIntent(
-      context, profileId, TEST_TOPIC_ID_0
+      context, profileId, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenNameWithIntent).isEqualTo(ScreenName.SURVEY_ACTIVITY)
@@ -160,9 +161,7 @@ class SurveyActivityTest {
 
   private fun createSurveyActivityIntent(profileId: ProfileId): Intent {
     return SurveyActivity.createSurveyActivityIntent(
-      context = context,
-      profileId = profileId,
-      TEST_TOPIC_ID_0
+      context, profileId, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
     )
   }
 

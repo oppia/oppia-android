@@ -53,11 +53,13 @@ class SurveyFragment :
   ): View? {
     val internalProfileId = arguments!!.getInt(PROFILE_ID_ARGUMENT_KEY, -1)
     val topicId = arguments!!.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)!!
+    val explorationId = arguments!!.getStringFromBundle(EXPLORATION_ID_ARGUMENT_KEY)!!
 
     return surveyFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
+      explorationId,
       topicId,
       this
     )

@@ -310,4 +310,7 @@ message SurveyActivityParams {
 
   // The ID of the topic to which the triggering exploration belongs.
   string topic_id = 2;
+
+  // The ID of the triggering exploration.
+  string exploration_id = 3;
 }

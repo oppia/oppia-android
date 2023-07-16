@@ -23,6 +23,7 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
   companion object {
     internal const val PROFILE_ID_KEY = "SurveyWelcomeDialogFragment.profile_id"
     internal const val TOPIC_ID_KEY = "SurveyWelcomeDialogFragment.topic_id"
+    internal const val EXPLORATION_ID_KEY = "SurveyWelcomeDialogFragment.exploration_id"
     internal const val MANDATORY_QUESTION_NAMES_KEY = "SurveyWelcomeDialogFragment.question_names"
 
     /**
@@ -34,12 +35,14 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
     fun newInstance(
       profileId: ProfileId,
       topicId: String,
-      mandatoryQuestionNames: List<SurveyQuestionName>,
+      explorationId: String,
+      mandatoryQuestionNames: List<SurveyQuestionName>
     ): SurveyWelcomeDialogFragment {
       return SurveyWelcomeDialogFragment().apply {
         arguments = Bundle().apply {
           putProto(PROFILE_ID_KEY, profileId)
           putString(TOPIC_ID_KEY, topicId)
+          putString(EXPLORATION_ID_KEY, explorationId)
           putQuestions(MANDATORY_QUESTION_NAMES_KEY, extractQuestions(mandatoryQuestionNames))
         }
       }
@@ -76,6 +79,7 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
 
     val profileId = args.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
     val topicId = args.getStringFromBundle(TOPIC_ID_KEY)!!
+    val explorationId = args.getStringFromBundle(EXPLORATION_ID_KEY)!!
     val surveyQuestions = args.getQuestions()
 
     return surveyWelcomeDialogFragmentPresenter.handleCreateView(
@@ -83,6 +87,7 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
       container,
       profileId,
       topicId,
+      explorationId,
       surveyQuestions
     )
   }
