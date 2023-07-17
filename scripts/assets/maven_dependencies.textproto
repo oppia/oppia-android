@@ -589,6 +589,15 @@ maven_dependency {
     }
   }
 }
+artifact_name: "com.google.firebase:firebase-auth-ktx:20.0.0"
+artifact_version: "20.0.0"
+license {
+  license_name: "Android Software Development Kit License"
+  original_link: "https://developer.android.com/studio/terms.html"
+  direct_link_only {
+    url: "https://developer.android.com/studio/terms.html"
+  }
+}
 maven_dependency {
   artifact_name: "com.google.firebase:firebase-common:19.3.1"
   artifact_version: "19.3.1"
