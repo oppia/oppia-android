@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "FirestoreUploadWorkManagerInitializer.kt",
     ],
-    visibility = ["//domain:domain_testing_visibility",],
+    visibility = ["//domain:domain_testing_visibility"],
     deps = [
         ":worker",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_startup_listener",
