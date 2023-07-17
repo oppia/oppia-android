@@ -300,6 +300,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rule
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgress.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing/ExplorationCheckpointController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/LogStorageModule.kt"
+exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/firestoreuploader/FirestoreUploadWorker.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionAssessmentProgress.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionConstantsProvider.kt"
