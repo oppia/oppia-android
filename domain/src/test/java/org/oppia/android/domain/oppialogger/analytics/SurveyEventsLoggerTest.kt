@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -17,7 +18,7 @@ import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
-import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -68,6 +69,7 @@ class SurveyEventsLoggerTest {
 
   @Before
   fun setUp() {
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
   }
 
@@ -151,6 +153,10 @@ class SurveyEventsLoggerTest {
     @Provides
     @ExceptionLogStorageCacheSize
     fun provideExceptionLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -162,7 +168,7 @@ class SurveyEventsLoggerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      ApplicationLifecycleModule::class, AssetModule::class, LogStorageModule::class,
+      ApplicationLifecycleModule::class, AssetModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
