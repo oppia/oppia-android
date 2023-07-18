@@ -24,7 +24,7 @@ kt_android_library(
 kt_android_library(
     name = "data_uploader",
     srcs = [
-       "DataUploader.kt",
+        "DataUploader.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
