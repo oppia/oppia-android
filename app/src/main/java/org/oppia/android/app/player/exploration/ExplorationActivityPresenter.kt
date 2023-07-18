@@ -105,11 +105,9 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationToolbarTitle = binding.explorationToolbarTitle
     activity.setSupportActionBar(explorationToolbar)
 
-    activity.applicationContext?.let {
-      if (!accessibilityService.isScreenReaderEnabled()) {
-        binding.explorationToolbarTitle.setOnClickListener {
-          binding.explorationToolbarTitle.isSelected = true
-        }
+    if (!accessibilityService.isScreenReaderEnabled()) {
+      binding.explorationToolbarTitle.setOnClickListener {
+        binding.explorationToolbarTitle.isSelected = true
       }
     }
 
