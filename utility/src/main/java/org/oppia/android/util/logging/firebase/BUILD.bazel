@@ -63,9 +63,7 @@ kt_android_library(
     srcs = [
         "DebugAnalyticsEventLogger.kt",
     ],
-    visibility = [
-        "//app:__pkg__",
-    ],
+    visibility = ["//app:__pkg__"],
     deps = [
         ":prod_impl",
         "//model/src/main/proto:event_logger_java_proto_lite",
