@@ -172,7 +172,7 @@ class TopicFragmentTest {
   lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Inject
-  lateinit var fakeAccessibilityManager: FakeAccessibilityService
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
@@ -343,7 +343,7 @@ class TopicFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
     // setup accessibility manager
-    fakeAccessibilityManager.setScreenReaderEnabled(false)
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -356,7 +356,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
-    fakeAccessibilityManager.setScreenReaderEnabled(true)
+    fakeAccessibilityService.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -376,7 +376,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
-    fakeAccessibilityManager.setScreenReaderEnabled(false)
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -395,7 +395,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
-    fakeAccessibilityManager.setScreenReaderEnabled(true)
+    fakeAccessibilityService.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -407,7 +407,7 @@ class TopicFragmentTest {
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
     onView(withId(R.id.topic_toolbar_title)).perform(click())
-    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.isFocused).isEqualTo(false)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
