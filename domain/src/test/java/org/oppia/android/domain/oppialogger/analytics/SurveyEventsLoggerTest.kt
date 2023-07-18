@@ -17,6 +17,7 @@ import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -161,7 +162,7 @@ class SurveyEventsLoggerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      ApplicationLifecycleModule::class, AssetModule::class
+      ApplicationLifecycleModule::class, AssetModule::class, LogStorageModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

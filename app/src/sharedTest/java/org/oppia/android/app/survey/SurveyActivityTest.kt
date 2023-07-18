@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -125,6 +126,7 @@ class SurveyActivityTest {
   @Before
   fun setUp() {
     Intents.init()
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
