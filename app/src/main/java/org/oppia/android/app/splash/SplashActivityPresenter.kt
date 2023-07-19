@@ -1,5 +1,8 @@
 package org.oppia.android.app.splash
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -10,7 +13,7 @@ import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
-import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
+import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.onboarding.OnboardingActivity
@@ -29,6 +32,8 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
+import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
+import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val BETA_NOTICE_DIALOG_FRAGMENT_TAG = "beta_notice_dialog"
@@ -64,9 +69,45 @@ class SplashActivityPresenter @Inject constructor(
     subscribeToOnboardingFlow()
   }
 
+  /** */
   fun handleOnCloseAppButtonClicked() {
     // If the app close button is clicked for the deprecation notice, finish the activity to close
     // the app.
+    activity.finish()
+  }
+
+  /** */
+  fun handleOnUpdateButtonClicked() {
+    // If the Update button is clicked for the deprecation notice, launch the Play Store and open
+    // the Oppia app's page.
+
+    // Launch profile selection activity in case the user presses the back button
+    activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+    activity.finish()
+
+    val packageName = activity.packageName
+
+    try {
+      activity.startActivity(
+        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
+      )
+    } catch (e: ActivityNotFoundException) {
+      activity.startActivity(
+        Intent(
+          Intent.ACTION_VIEW,
+          Uri.parse(
+            "https://play.google.com/store/apps/details?id=$packageName"
+          )
+        )
+      )
+    }
+  }
+
+  /** */
+  fun handleOnDismissButtonClicked() {
+    // If the Dismiss button is clicked for the deprecation notice, the dialog is automatically
+    // dismissed. Navigate to profile chooser activity.
+    activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
     activity.finish()
   }
 
@@ -171,7 +212,7 @@ class SplashActivityPresenter @Inject constructor(
       StartupMode.APP_IS_DEPRECATED -> {
         showDialog(
           AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
-          AutomaticAppDeprecationNoticeDialogFragment::newInstance
+          ForcedAppDeprecationNoticeDialogFragment::newInstance
         )
       }
       else -> {

@@ -11,10 +11,16 @@ import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.model.ScreenName.SPLASH_ACTIVITY
 import org.oppia.android.app.notice.BetaNoticeClosedListener
-import org.oppia.android.app.notice.DeprecationNoticeExitAppListener
+import org.oppia.android.app.notice.DeprecationNoticeActionListener
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeClosedListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+
+enum class DeprecationNoticeActionType {
+  CLOSE,
+  DISMISS,
+  UPDATE
+}
 
 /**
  * An activity that shows a temporary loading page until the app is fully loaded then navigates to
@@ -27,7 +33,7 @@ import javax.inject.Inject
 class SplashActivity :
   AppCompatActivity(),
   FragmentComponentFactory,
-  DeprecationNoticeExitAppListener,
+  DeprecationNoticeActionListener,
   BetaNoticeClosedListener,
   GeneralAvailabilityUpgradeNoticeClosedListener {
 
@@ -50,7 +56,21 @@ class SplashActivity :
     return builderInjector.getFragmentComponentBuilderProvider().get().setFragment(fragment).build()
   }
 
-  override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnCloseAppButtonClicked()
+  override fun onPositiveActionButtonClicked(noticeType: DeprecationNoticeActionType) {
+    when (noticeType) {
+      DeprecationNoticeActionType.CLOSE -> splashActivityPresenter.handleOnCloseAppButtonClicked()
+      DeprecationNoticeActionType.DISMISS -> splashActivityPresenter.handleOnDismissButtonClicked()
+      DeprecationNoticeActionType.UPDATE -> splashActivityPresenter.handleOnUpdateButtonClicked()
+    }
+  }
+
+  override fun onNegativeActionButtonClicked(noticeType: DeprecationNoticeActionType) {
+    when (noticeType) {
+      DeprecationNoticeActionType.CLOSE -> splashActivityPresenter.handleOnCloseAppButtonClicked()
+      DeprecationNoticeActionType.DISMISS -> splashActivityPresenter.handleOnDismissButtonClicked()
+      DeprecationNoticeActionType.UPDATE -> splashActivityPresenter.handleOnUpdateButtonClicked()
+    }
+  }
 
   override fun onBetaNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnBetaNoticeOkayButtonClicked(permanentlyDismiss)
