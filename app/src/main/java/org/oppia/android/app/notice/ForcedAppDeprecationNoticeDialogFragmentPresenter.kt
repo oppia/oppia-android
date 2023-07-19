@@ -4,8 +4,8 @@ import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import javax.inject.Inject
 import org.oppia.android.app.splash.DeprecationNoticeActionType
+import javax.inject.Inject
 
 /** Presenter class responsible for showing an app deprecation dialog to the user. */
 class ForcedAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
