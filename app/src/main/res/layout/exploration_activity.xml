@@ -31,8 +31,7 @@
         android:background="@color/component_color_shared_secondary_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
-        app:navigationIcon="@drawable/ic_close_white_24dp"
-        app:navigationContentDescription="@string/hints_andSolution_close_icon_description">
+        app:navigationIcon="@drawable/ic_close_white_24dp">
 
         <LinearLayout
           android:layout_width="match_parent"
