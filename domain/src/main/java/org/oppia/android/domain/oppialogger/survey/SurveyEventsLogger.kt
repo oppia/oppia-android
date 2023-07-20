@@ -53,8 +53,8 @@ class SurveyEventsLogger @Inject constructor(
   }
 
   /** Logs an event representing the response to the optional survey question. */
-  fun logOptionalResponse(surveyId: String, profileId: ProfileId, answer: String) {
-    firestoreDataController.logData(
+  fun logOptionalResponse(surveyId: String, profileId: ProfileId?, answer: String) {
+    firestoreDataController.logEvent(
       createOptionalSurveyResponseContext(surveyId, profileId, answer),
       profileId
     )
@@ -98,17 +98,17 @@ class SurveyEventsLogger @Inject constructor(
 
   private fun createSurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId
+    profileId: ProfileId?
   ): EventLog.SurveyResponseContext {
     return EventLog.SurveyResponseContext.newBuilder()
-      .setProfileId(profileId.internalId.toString())
+      .setProfileId(profileId?.internalId.toString())
       .setSurveyId(surveyId)
       .build()
   }
 
   private fun createOptionalSurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId,
+    profileId: ProfileId?,
     answer: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()

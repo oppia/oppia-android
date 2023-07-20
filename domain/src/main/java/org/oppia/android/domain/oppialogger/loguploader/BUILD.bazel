@@ -36,6 +36,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/firestoreuploader:data_controller",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//third_party:androidx_work_work-runtime-ktx",
         "//third_party:com_google_guava_guava",

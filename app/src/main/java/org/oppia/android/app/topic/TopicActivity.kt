@@ -13,9 +13,11 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.TOPIC_ACTIVITY
-import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
+import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -97,17 +99,17 @@ class TopicActivity :
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    startActivity(
-      ExplorationActivity.createExplorationActivityIntent(
-        this,
-        profileId,
-        topicId,
-        storyId,
-        explorationId,
-        parentScreen,
-        isCheckpointingEnabled
-      )
+    val questions = listOf(
+      SurveyQuestionName.USER_TYPE,
+      SurveyQuestionName.MARKET_FIT,
+      SurveyQuestionName.NPS
     )
+    val fragment =
+      SurveyWelcomeDialogFragment.newInstance(profileId, topicId, explorationId, questions)
+    supportFragmentManager.beginTransaction()
+      .add(fragment, TAG_SURVEY_WELCOME_DIALOG)
+      .addToBackStack(null)
+      .commit()
   }
 
   override fun routeToResumeLesson(

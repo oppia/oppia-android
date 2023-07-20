@@ -6,45 +6,6 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "initializer",
-    srcs = [
-        "FirestoreUploadWorkManagerInitializer.kt",
-    ],
-    visibility = ["//domain:domain_testing_visibility"],
-    deps = [
-        ":worker",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_startup_listener",
-        "//third_party:androidx_work_work-runtime-ktx",
-    ],
-)
-
-kt_android_library(
-    name = "worker_factory",
-    srcs = [
-        "FirestoreUploadWorkerFactory.kt",
-    ],
-    visibility = ["//domain:__pkg__"],
-    deps = [
-        ":worker",
-    ],
-)
-
-kt_android_library(
-    name = "worker",
-    srcs = [
-        "FirestoreUploadWorker.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":data_controller",
-        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
-        "//third_party:androidx_work_work-runtime-ktx",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
-    ],
-)
-
-kt_android_library(
     name = "data_controller",
     srcs = [
         "FirestoreDataController.kt",
@@ -62,18 +23,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
-    ],
-)
-
-kt_android_library(
-    name = "worker_module",
-    srcs = [
-        "FirestoreUploadWorkerModule.kt",
-    ],
-    visibility = ["//:oppia_prod_module_visibility"],
-    deps = [
-        ":dagger",
-        ":initializer",
     ],
 )
 

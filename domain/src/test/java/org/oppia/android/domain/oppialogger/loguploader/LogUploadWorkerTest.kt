@@ -29,6 +29,7 @@ import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
@@ -40,6 +41,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakeFirestoreDataUploader
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -54,6 +56,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.firestore.DataUploader
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
@@ -462,6 +465,11 @@ class LogUploadWorkerTest {
     fun bindFakePerformanceMetricsLogger(
       fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
     ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
+
+    @Provides
+    fun bindFakeFirestoreDataLogger(
+      fakeFirestoreDataUploader: FakeFirestoreDataUploader
+    ): DataUploader = fakeFirestoreDataUploader
   }
 
   @Module
@@ -478,6 +486,10 @@ class LogUploadWorkerTest {
     @Provides
     @PerformanceMetricsLogStorageCacheSize
     fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
   @Module

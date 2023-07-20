@@ -24,6 +24,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
@@ -131,6 +132,8 @@ class LogReportWorkManagerInitializerTest {
     val enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId =
       logReportWorkManagerInitializer
         .getWorkRequestForSchedulingPeriodicBackgroundPerformanceMetricLogsId()
+    val enqueuedFirestoreWorkRequestId =
+      logReportWorkManagerInitializer.getWorkRequestForFirestoreId()
 
     assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
     assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
@@ -147,6 +150,9 @@ class LogReportWorkManagerInitializerTest {
     )
     assertThat(fakeLogScheduler.getMostRecentPeriodicBackgroundMetricLoggingRequestId()).isEqualTo(
       enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId
+    )
+    assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(
+      enqueuedFirestoreWorkRequestId
     )
   }
 
@@ -248,6 +254,20 @@ class LogReportWorkManagerInitializerTest {
     ).isEqualTo(workerCaseForSchedulingMemoryUsageMetricLogs)
   }
 
+  @Test
+  fun testWorkRequest_verifyWorkRequestData_forSchedulingFirestoreUpload() {
+    val workerCaseForUploadingFirestoreData: Data = Data.Builder()
+      .putString(
+        LogUploadWorker.WORKER_CASE_KEY,
+        LogUploadWorker.FIRESTORE_WORKER
+      )
+      .build()
+
+    assertThat(
+      logReportWorkManagerInitializer.getWorkRequestDataForFirestore()
+    ).isEqualTo(workerCaseForUploadingFirestoreData)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -276,6 +296,10 @@ class LogReportWorkManagerInitializerTest {
     @Provides
     @PerformanceMetricsLogStorageCacheSize
     fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
   @Module
@@ -296,7 +320,7 @@ class LogReportWorkManagerInitializerTest {
       TestLogStorageModule::class, TestDispatcherModule::class,
       LogReportWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
+      LoggerModule::class, AssetModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class,
       CpuPerformanceSnapshotterModule::class

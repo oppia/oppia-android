@@ -29,5 +29,7 @@ interface TestLogReportingModule {
   ): PerformanceMetricsAssessor
 
   @Binds
-  fun provideFirestoreDataLogger(factory: FakeFirestoreDataUploader): DataUploader
+  fun bindFakeFirestoreDataLogger(
+    fakeFirestoreDataUploader: FakeFirestoreDataUploader
+  ): DataUploader
 }

@@ -17,6 +17,7 @@ android {
         includeCompileClasspath true
       }
     }
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
   compileOptions {

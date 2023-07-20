@@ -4,7 +4,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.firestore.DataUploader
-import org.oppia.android.util.firestore.SurveyFirestoreDataUploader
+import org.oppia.android.util.firestore.DebugFirestoreUploader
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -32,6 +32,6 @@ class DebugLogReportingModule {
 
   @Provides
   @Singleton
-  fun provideFirestoreDataLogger(factory: SurveyFirestoreDataUploader.Factory): DataUploader =
-    factory.createFirestoreDataLogger()
+  fun provideFirestoreDataLogger(factory: DebugFirestoreUploader): DataUploader =
+    factory
 }

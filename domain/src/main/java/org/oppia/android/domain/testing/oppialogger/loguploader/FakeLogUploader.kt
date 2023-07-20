@@ -13,6 +13,7 @@ class FakeLogUploader @Inject constructor() : LogUploader {
   private val eventRequestIdList = mutableListOf<UUID>()
   private val exceptionRequestIdList = mutableListOf<UUID>()
   private val performanceMetricsRequestIdList = mutableListOf<UUID>()
+  private val firestoreRequestIdList = mutableListOf<UUID>()
 
   override fun enqueueWorkRequestForEvents(
     workManager: WorkManager,
@@ -33,6 +34,13 @@ class FakeLogUploader @Inject constructor() : LogUploader {
     workRequest: PeriodicWorkRequest
   ) {
     performanceMetricsRequestIdList.add(workRequest.id)
+  }
+
+  override fun enqueueWorkRequestForFirestore(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
+  ) {
+    firestoreRequestIdList.add(workRequest.id)
   }
 
   /** Returns the most recent work request id that's stored in the [eventRequestIdList]. */
