@@ -3,8 +3,8 @@ package org.oppia.android.util.logging.firebase
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import javax.inject.Inject
 import org.oppia.android.util.logging.LogUploader
+import javax.inject.Inject
 
 private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"
 private const val OPPIA_EXCEPTION_WORK = "OPPIA_EXCEPTION_WORK_REQUEST"
@@ -47,7 +47,6 @@ class FirebaseLogUploader @Inject constructor() :
       workRequest
     )
   }
-
 
   override fun enqueueWorkRequestForFirestore(
     workManager: WorkManager,

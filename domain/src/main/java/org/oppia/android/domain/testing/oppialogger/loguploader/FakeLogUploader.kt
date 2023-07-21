@@ -2,10 +2,10 @@ package org.oppia.android.domain.testing.oppialogger.loguploader
 
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import java.util.*
+import org.oppia.android.util.logging.LogUploader
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.logging.LogUploader
 
 /** A test specific fake for the log uploader. */
 @Singleton
