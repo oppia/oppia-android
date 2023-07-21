@@ -36,6 +36,16 @@ class FirestoreDataController @Inject constructor(
     cacheStoreFactory.create("firestore_data", OppiaEventLogs.getDefaultInstance())
 
   /**
+   * Uploads all events pending currently for upload, and blocks until the events are uploaded. An
+   * error will be thrown if something went wrong during upload.
+   */
+  suspend fun uploadData() {
+    firestoreEventsStore.readDataAsync().await().eventLogsToUploadList.forEach { eventLog ->
+      authenticateAndUploadToFirestore(eventLog)
+    }
+  }
+
+  /**
    * Logs a high priority event defined by [eventContext] corresponding to time [timestamp].
    *
    * This will schedule a background upload of the event if there's internet connectivity, otherwise
@@ -138,4 +148,16 @@ class FirestoreDataController @Inject constructor(
 
   /** Returns a data provider for log reports that have been recorded for upload. */
   fun getEventLogStore(): DataProvider<OppiaEventLogs> = firestoreEventsStore
+
+  /** Removes the first log report that had been recorded for upload. */
+  fun removeFirstEventLogFromStore() {
+    println("removing first event log from store")
+    firestoreEventsStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
+      return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLogsToUpload(0).build()
+    }.invokeOnCompletion {
+      it?.let {
+        consoleLogger.e("FirestoreDataController", "Failed to remove event log", it)
+      }
+    }
+  }
 }

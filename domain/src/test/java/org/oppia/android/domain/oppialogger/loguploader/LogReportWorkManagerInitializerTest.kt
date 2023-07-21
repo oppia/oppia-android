@@ -19,11 +19,14 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
@@ -55,8 +58,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -131,6 +132,8 @@ class LogReportWorkManagerInitializerTest {
     val enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId =
       logReportWorkManagerInitializer
         .getWorkRequestForSchedulingPeriodicBackgroundPerformanceMetricLogsId()
+    val enqueuedFirestoreWorkRequestId =
+      logReportWorkManagerInitializer.getWorkRequestForFirestoreId()
 
     assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
     assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
@@ -147,6 +150,9 @@ class LogReportWorkManagerInitializerTest {
     )
     assertThat(fakeLogScheduler.getMostRecentPeriodicBackgroundMetricLoggingRequestId()).isEqualTo(
       enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId
+    )
+    assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(
+      enqueuedFirestoreWorkRequestId
     )
   }
 
@@ -248,6 +254,20 @@ class LogReportWorkManagerInitializerTest {
     ).isEqualTo(workerCaseForSchedulingMemoryUsageMetricLogs)
   }
 
+  @Test
+  fun testWorkRequest_verifyWorkRequestData_forSchedulingFirestoreUpload() {
+    val workerCaseForUploadingFirestoreData: Data = Data.Builder()
+      .putString(
+        LogUploadWorker.WORKER_CASE_KEY,
+        LogUploadWorker.FIRESTORE_WORKER
+      )
+      .build()
+
+    assertThat(
+      logReportWorkManagerInitializer.getWorkRequestDataForFirestore()
+    ).isEqualTo(workerCaseForUploadingFirestoreData)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -276,6 +296,10 @@ class LogReportWorkManagerInitializerTest {
     @Provides
     @PerformanceMetricsLogStorageCacheSize
     fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
   @Module

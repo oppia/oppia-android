@@ -19,6 +19,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -29,17 +32,20 @@ import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -64,6 +70,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADIN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
+import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -73,9 +80,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionSta
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -92,8 +96,10 @@ class LogUploadWorkerTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var dataController: FirestoreDataController
   @Inject lateinit var exceptionsController: ExceptionsController
   @Inject lateinit var performanceMetricsController: PerformanceMetricsController
   @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
@@ -402,6 +408,120 @@ class LogUploadWorkerTest {
     assertThat(currentStatus).isEqualTo(NO_CONNECTIVITY)
   }
 
+  @Test
+  fun testWorker_logFirestoreEvent_withoutNetwork_enqueueRequest_verifyFailed() {
+    setUpTestApplicationComponent()
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    dataController.logEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      eventLogTopicContext.timestamp
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.FIRESTORE_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    // The enqueue should fail since the worker shouldn't be running when there's no network
+    // connectivity.
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+  }
+
+  @Test
+  fun testWorker_logFirestoreEvent_withNetwork_enqueueRequest_verifySuccess() {
+    setUpTestApplicationComponent()
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    dataController.logEvent(
+      createOptionalSurveyResponseContext(),
+      profileId = null,
+      1556094120000
+    )
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.FIRESTORE_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(fakeFirestoreEventLogger.getMostRecentEvent()).isEqualTo(
+      createSurveyResponseContext()
+    )
+  }
+
+  @Test
+  fun testWorker_logFirestoreEvent_withoutNetwork_enqueueRequest_writeFails_verifyFailure() {
+    setUpTestApplicationComponent()
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    dataController.logEvent(
+      createOptionalSurveyResponseContext(),
+      profileId = null,
+      1556094120000
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.FIRESTORE_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    setUpEventLoggerToFail()
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(fakeFirestoreEventLogger.noEventsPresent()).isTrue()
+  }
+
+  private fun createOptionalSurveyResponseContext(): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setOptionalResponse(
+        EventLog.OptionalSurveyResponseContext.newBuilder()
+          .setFeedbackAnswer("answer")
+          .setSurveyDetails(
+            createSurveyResponseContext()
+          )
+      )
+      .build()
+  }
+
+  private fun createSurveyResponseContext(): EventLog.SurveyResponseContext {
+    return EventLog.SurveyResponseContext.newBuilder()
+      .setProfileId(null)
+      .setSurveyId("test_survey_id")
+      .build()
+  }
+
   private fun setUpEventLoggerToFail() {
     // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
     // to remove the default stubbing for the mock so that it can properly trigger a failure.
@@ -462,6 +582,11 @@ class LogUploadWorkerTest {
     fun bindFakePerformanceMetricsLogger(
       fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
     ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
+
+    @Provides
+    fun bindFakeFirestoreDataLogger(
+      fakeFirestoreDataUploader: FakeFirestoreEventLogger
+    ): FirestoreEventLogger = fakeFirestoreDataUploader
   }
 
   @Module
@@ -478,6 +603,10 @@ class LogUploadWorkerTest {
     @Provides
     @PerformanceMetricsLogStorageCacheSize
     fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
   @Module
