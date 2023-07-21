@@ -57,8 +57,9 @@
 
         <com.google.android.material.card.MaterialCardView
           android:id="@+id/previous_navigation_card"
-          android:layout_width="144dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:maxWidth="144dp"
           android:layout_marginStart="28dp"
           android:layout_marginTop="16dp"
           android:layout_marginEnd="28dp"
@@ -95,6 +96,7 @@
               style="@style/TextViewStart"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:minWidth="144dp"
               android:background="@color/component_color_shared_revision_card_text_background_color"
               android:ellipsize="end"
               android:fontFamily="sans-serif"
@@ -113,8 +115,9 @@
 
         <com.google.android.material.card.MaterialCardView
           android:id="@+id/next_navigation_card"
-          android:layout_width="144dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:maxWidth="144dp"
           android:layout_marginStart="28dp"
           android:layout_marginTop="16dp"
           android:layout_marginEnd="28dp"
@@ -151,6 +154,7 @@
               style="@style/TextViewStart"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:minWidth="144dp"
               android:background="@color/component_color_shared_revision_card_text_background_color"
               android:ellipsize="end"
               android:fontFamily="sans-serif"
