@@ -171,6 +171,7 @@ dependencies {
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.firebase:firebase-firestore-ktx:21.6.0',
+      'com.google.firebase:firebase-auth-ktx:20.0.0',
       'com.google.guava:guava:28.1-android',
       'com.google.protobuf:protobuf-javalite:3.17.3',
       'com.github.oppia:CircularImageview:35d08ba88a',

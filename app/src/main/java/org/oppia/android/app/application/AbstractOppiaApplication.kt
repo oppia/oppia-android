@@ -9,6 +9,7 @@ import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.oppia.android.app.activity.ActivityComponent
@@ -50,6 +51,7 @@ abstract class AbstractOppiaApplication(
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
       FirebaseApp.initializeApp(applicationContext)
       Firebase.firestore
+      Firebase.auth
       WorkManager.initialize(applicationContext, workManagerConfiguration)
       val workManager = WorkManager.getInstance(applicationContext)
       component.getAnalyticsStartupListenerStartupListeners().forEach { it.onCreate(workManager) }

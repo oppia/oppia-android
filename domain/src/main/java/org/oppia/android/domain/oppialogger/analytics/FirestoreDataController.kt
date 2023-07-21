@@ -1,5 +1,9 @@
 package org.oppia.android.domain.oppialogger.analytics
 
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -15,8 +19,6 @@ import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BlockingDispatcher
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Controller for handling event logging for Firestore-bound data. */
 @Singleton
@@ -75,26 +77,24 @@ class FirestoreDataController @Inject constructor(
   private fun uploadOrCacheEventLog(eventLog: EventLog) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ProdConnectionStatus.NONE -> cacheEventForFirestore(eventLog)
-      else -> eventLogger.uploadEvent(eventLog)
-      // todo replace authenticateAndUploadToFirestore(eventLog)
+      else -> authenticateAndUploadToFirestore(eventLog)
     }
   }
 
   private fun authenticateAndUploadToFirestore(eventLog: EventLog) {
-
-/*      val firebaseAuth = Firebase.auth
-      if (firebaseAuth.currentUser == null) {
-        firebaseAuth.signInAnonymously()
-          .addOnSuccessListener {
-            dataUploader.uploadData(eventLog)
-          }
-          .addOnFailureListener {
-            cacheEventForFirestore(eventLog)
-            consoleLogger.e("FirestoreDataController", "Authentication Failed")
-          }
-      } else {
-        dataUploader.uploadData(eventLog)
-      }*/
+    val firebaseAuth = Firebase.auth
+    if (firebaseAuth.currentUser == null) {
+      firebaseAuth.signInAnonymously()
+        .addOnSuccessListener {
+          eventLogger.uploadEvent(eventLog)
+        }
+        .addOnFailureListener {
+          cacheEventForFirestore(eventLog)
+          consoleLogger.e("FirestoreDataController", "Authentication Failed")
+        }
+    } else {
+      eventLogger.uploadEvent(eventLog)
+    }
   }
 
   /**
