@@ -68,6 +68,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -117,19 +118,27 @@ private const val TEST_SUB_TOPIC_ID = 1
 class ViewEventLogsFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var oppiaLogger: OppiaLogger
+
   @Inject
   lateinit var analyticsController: AnalyticsController
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var surveyLogger: SurveyEventsLogger
 
   @Before
   fun setUp() {
@@ -173,7 +182,7 @@ class ViewEventLogsFragmentTest {
     launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.view_event_logs_recycler_view))
-        .check(hasItemCount(count = 5))
+        .check(hasItemCount(count = 6))
     }
   }
 
@@ -183,7 +192,7 @@ class ViewEventLogsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.view_event_logs_recycler_view))
-        .check(hasItemCount(count = 5))
+        .check(hasItemCount(count = 6))
     }
   }
 
@@ -194,30 +203,36 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Open Revision Card",
+        stringToMatch = "Optional Response",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Open Story Activity",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "Open Lessons Tab",
+        stringToMatch = "Open Story Activity",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = "Open Home",
+        stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = "Open Home",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = "Open Profile Chooser",
         targetViewId = R.id.view_event_logs_context_text_view
       )
@@ -232,30 +247,36 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Open Revision Card",
+        stringToMatch = "Optional Response",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Open Story Activity",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "Open Lessons Tab",
+        stringToMatch = "Open Story Activity",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = "Open Home",
+        stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = "Open Home",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = "Open Profile Chooser",
         targetViewId = R.id.view_event_logs_context_text_view
       )
@@ -273,7 +294,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Open Revision Card",
+        stringToMatch = "Optional Response",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
@@ -283,7 +304,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Open Story Activity",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
@@ -293,6 +314,16 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
+        stringToMatch = "Open Story Activity",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 3)
+      verifyItemDisplayedOnEventLogItemViewAtPosition(
+        position = 3,
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 3,
         stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
@@ -311,7 +342,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Open Revision Card",
+        stringToMatch = "Optional Response",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
@@ -321,7 +352,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Open Story Activity",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
@@ -331,6 +362,16 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
+        stringToMatch = "Open Story Activity",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 3)
+      verifyItemDisplayedOnEventLogItemViewAtPosition(
+        position = 3,
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 3,
         stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
@@ -344,30 +385,36 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 50000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        targetViewId = R.id.view_event_logs_time_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
@@ -382,30 +429,36 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 50000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        targetViewId = R.id.view_event_logs_time_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
@@ -443,6 +496,12 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = "Essential",
+        targetViewId = R.id.view_event_logs_priority_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
@@ -484,6 +543,12 @@ class ViewEventLogsFragmentTest {
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
+        stringToMatch = "Essential",
+        targetViewId = R.id.view_event_logs_priority_text_view
+      )
     }
   }
 
@@ -514,6 +579,13 @@ class ViewEventLogsFragmentTest {
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 40000)
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID), profileId = null
+    )
+
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 50000)
+    surveyLogger.logOptionalResponse(
+      "survey_id",
+      profileId = null,
+      answer = "some response"
     )
   }
 

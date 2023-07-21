@@ -17,10 +17,12 @@ import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -52,6 +54,7 @@ import javax.inject.Singleton
 class SurveyEventsLoggerTest {
   private companion object {
     private const val TEST_SURVEY_ID = "test_survey_id"
+    private const val TEST_ANSWER = "Some text response"
   }
 
   @Inject
@@ -59,6 +62,9 @@ class SurveyEventsLoggerTest {
 
   @Inject
   lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -110,6 +116,26 @@ class SurveyEventsLoggerTest {
     }
   }
 
+  @Test
+  fun testLogOptionalResponse_logsEventWithCorrectValues() {
+    surveyEventsLogger.logOptionalResponse(
+      TEST_SURVEY_ID,
+      profileId,
+      TEST_ANSWER
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeFirestoreEventLogger.getMostRecentEvent()
+
+    assertThat(eventLog).hasOptionalSurveyResponseContextThat {
+      hasSurveyDetailsThat {
+        hasSurveyIdThat().isNotEmpty()
+        hasInternalProfileIdThat().isEqualTo("0")
+      }
+      hasFeedbackAnswerThat().isEqualTo(TEST_ANSWER)
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerSurveyEventsLoggerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -150,6 +176,10 @@ class SurveyEventsLoggerTest {
     @Provides
     @ExceptionLogStorageCacheSize
     fun provideExceptionLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
   // TODO(#89): Move this to a common test application component.

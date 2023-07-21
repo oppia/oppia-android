@@ -5,6 +5,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
+import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
 import javax.inject.Inject
 
 /**
@@ -14,11 +15,14 @@ import javax.inject.Inject
 @FragmentScope
 class ViewEventLogsViewModel @Inject constructor(
   debugAnalyticsEventLogger: DebugAnalyticsEventLogger,
+  debugFirestoreEventLogger: DebugFirestoreEventLogger,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
-  private val eventList = debugAnalyticsEventLogger.getEventList()
+  private val firebaseEvents = debugAnalyticsEventLogger.getEventList()
+  private val firestoreEvents = debugFirestoreEventLogger.getEventList()
+  private val eventList = firebaseEvents + firestoreEvents
 
   /**
    * List of [EventLogItemViewModel] used to populate recyclerview of [ViewEventLogsFragment]
