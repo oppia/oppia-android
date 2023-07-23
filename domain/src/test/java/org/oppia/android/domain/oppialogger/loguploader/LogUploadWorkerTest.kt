@@ -517,7 +517,6 @@ class LogUploadWorkerTest {
 
   private fun createSurveyResponseContext(): EventLog.SurveyResponseContext {
     return EventLog.SurveyResponseContext.newBuilder()
-      .setProfileId(null)
       .setSurveyId("test_survey_id")
       .build()
   }
