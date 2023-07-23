@@ -48,6 +48,7 @@ kt_android_library(
     deps = [
         ":dagger",
         ":firebase_exception_logger",
+        ":firestore_logger_impl",
         ":prod_impl",
         "//third_party:com_google_firebase_firebase-analytics",
         "//third_party:com_google_firebase_firebase-crashlytics",
@@ -82,6 +83,7 @@ kt_android_library(
     deps = [
         ":dagger",
         ":debug_event_logger",
+        ":debug_firestore_logger",
         ":firebase_exception_logger",
     ],
 )
@@ -94,10 +96,9 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":firestore_logger",
-        ":survey_firestore_document_creator",
-        "//third_party:com_google_firebase_firebase-firestore-ktx",
         "//third_party:androidx_work_work-runtime",
         "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_google_firebase_firebase-firestore-ktx",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )
@@ -110,6 +111,20 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//model/src/main/proto:event_logger_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "debug_firestore_logger",
+    srcs = [
+        "DebugFirestoreEventLogger.kt",
+    ],
+    visibility = [
+        "//app:__pkg__",
+    ],
+    deps = [
+        ":firestore_logger_impl",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
