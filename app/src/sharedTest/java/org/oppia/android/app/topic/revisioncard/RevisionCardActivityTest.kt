@@ -206,6 +206,7 @@ class RevisionCardActivityTest {
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(true)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -226,7 +227,8 @@ class RevisionCardActivityTest {
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
-        assertThat(revisionCardToolbarTitle.isFocused).isEqualTo(false)
+        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(false)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -248,6 +250,7 @@ class RevisionCardActivityTest {
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(true)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -268,7 +271,8 @@ class RevisionCardActivityTest {
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
-        assertThat(revisionCardToolbarTitle.isFocused).isEqualTo(false)
+        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(false)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }

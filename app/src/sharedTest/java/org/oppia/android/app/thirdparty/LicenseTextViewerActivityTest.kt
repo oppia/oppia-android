@@ -173,6 +173,7 @@ class LicenseTextViewerActivityTest {
     Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())
     assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
     assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -192,12 +193,13 @@ class LicenseTextViewerActivityTest {
 
     Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())
-    assertThat(activityToolbarTitle.isFocused).isEqualTo(false)
+    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
     assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
-  fun testExploration_toolbarTitle_readerOff_marqueeInLtl_isDisplayedCorrectly() {
+  fun testExploration_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
@@ -213,11 +215,12 @@ class LicenseTextViewerActivityTest {
     Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())
     assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
     assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
-  fun testExploration_toolbarTitle_readerOn_marqueeInLtl_isDisplayedCorrectly() {
+  fun testExploration_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
@@ -232,7 +235,8 @@ class LicenseTextViewerActivityTest {
 
     Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())
-    assertThat(activityToolbarTitle.isFocused).isEqualTo(false)
+    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
     assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 

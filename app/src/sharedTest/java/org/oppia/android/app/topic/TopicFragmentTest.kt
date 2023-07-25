@@ -350,6 +350,7 @@ class TopicFragmentTest {
 
     onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.isSelected).isEqualTo(true)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -369,7 +370,8 @@ class TopicFragmentTest {
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
     onView(withId(R.id.topic_toolbar_title)).perform(click())
-    assertThat(topicToolbarTitle.isFocused).isEqualTo(false)
+    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.isSelected).isEqualTo(false)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -389,6 +391,7 @@ class TopicFragmentTest {
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
     onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.isSelected).isEqualTo(true)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -407,7 +410,8 @@ class TopicFragmentTest {
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
     onView(withId(R.id.topic_toolbar_title)).perform(click())
-    assertThat(topicToolbarTitle.isFocused).isEqualTo(false)
+    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.isSelected).isEqualTo(false)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 

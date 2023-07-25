@@ -229,8 +229,8 @@ class StoryFragmentTest {
     }
   }
 
-  // its view
-  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test
   fun testStoryFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -241,12 +241,13 @@ class StoryFragmentTest {
     ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
+    assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
-  // its view
-  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test
   fun testStoryFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -257,12 +258,13 @@ class StoryFragmentTest {
     ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
-    assertThat(storyToolbarTitle.isFocused).isEqualTo(false)
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.isSelected).isEqualTo(false)
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
-  // its view
-  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test
   fun testStoryFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -271,18 +273,18 @@ class StoryFragmentTest {
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
     ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
-
     onView(withId(R.id.story_toolbar_title)).perform(click())
-    assertThat(storyToolbarTitle.isFocused).isEqualTo(false)
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
-  // its view
-  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test
   fun testStoryFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
-    accessibilityService.setScreenReaderEnabled(false)
+    accessibilityService.setScreenReaderEnabled(true)
 
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
@@ -290,6 +292,7 @@ class StoryFragmentTest {
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.isSelected).isEqualTo(false)
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 

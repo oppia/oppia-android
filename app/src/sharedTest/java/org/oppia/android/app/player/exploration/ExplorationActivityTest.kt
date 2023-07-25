@@ -345,6 +345,7 @@ class ExplorationActivityTest {
 
     onView(withId(R.id.exploration_toolbar_title)).perform(click())
     assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(explorationToolbarTitle.isSelected).isEqualTo(true)
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -366,12 +367,13 @@ class ExplorationActivityTest {
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
     onView(withId(R.id.exploration_toolbar_title)).perform(click())
-    assertThat(explorationToolbarTitle.isFocused).isEqualTo(false)
+    assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(explorationToolbarTitle.isSelected).isEqualTo(false)
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
-  fun testExploration_toolbarTitle_readerOff_marqueeInLtl_isDisplayedCorrectly() {
+  fun testExploration_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -388,12 +390,13 @@ class ExplorationActivityTest {
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
     onView(withId(R.id.exploration_toolbar_title)).perform(click())
+    assertThat(explorationToolbarTitle.isSelected).isEqualTo(true)
     assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
-  fun testExploration_toolbarTitle_readerOn_marqueeInLtl_isDisplayedCorrectly() {
+  fun testExploration_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -410,7 +413,8 @@ class ExplorationActivityTest {
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
     onView(withId(R.id.exploration_toolbar_title)).perform(click())
-    assertThat(explorationToolbarTitle.isFocused).isEqualTo(false)
+    assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(explorationToolbarTitle.isSelected).isEqualTo(false)
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
