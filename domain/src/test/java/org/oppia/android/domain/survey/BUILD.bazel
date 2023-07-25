@@ -72,6 +72,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/survey:survey_controller",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/logging:event_log_subject",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
