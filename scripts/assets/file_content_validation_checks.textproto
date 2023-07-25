@@ -331,6 +331,7 @@ file_content_checks {
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/PolynomialExtensionsTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/RealExtensionsTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/profile/ProfileNameValidatorTest.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/DeprecationControllerTest.kt"
   exempted_file_patterns: "testing/src/main/java/org/oppia/android/testing/junit/.+?\\.kt"
 }
 file_content_checks {
