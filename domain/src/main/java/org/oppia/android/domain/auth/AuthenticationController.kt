@@ -8,6 +8,7 @@ import kotlinx.coroutines.CompletableDeferred
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
 
+/** Controller for signing in and retrieving a Firebase user. */
 class AuthenticationController private constructor(
   private val firebaseAuth: FirebaseAuth
 ) : AuthenticationListener {
