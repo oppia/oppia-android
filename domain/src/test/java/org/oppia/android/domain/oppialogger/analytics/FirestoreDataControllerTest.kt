@@ -10,11 +10,20 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -29,6 +38,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -40,13 +50,14 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
-@Suppress("FunctionName")
+@Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FirestoreDataControllerTest.TestApplication::class)
@@ -68,6 +79,12 @@ class FirestoreDataControllerTest {
 
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @field:[Inject BackgroundDispatcher]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var persistentCacheStoryFactory: PersistentCacheStore.Factory
 
   private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
 
@@ -148,6 +165,171 @@ class FirestoreDataControllerTest {
     EventLogSubject.assertThat(firstEventLog).hasTimestampThat().isEqualTo(1556094120000)
     EventLogSubject.assertThat(secondEventLog).hasTimestampThat().isEqualTo(1556094100000)
   }
+
+  @Test
+  fun testController_uploadEventLogs_noLogs_cacheUnchanged() {
+    setUpTestApplicationComponent()
+    val monitor = monitorFactory.createMonitor(dataController.getEventLogStore())
+
+    runSynchronously { dataController.uploadData() }
+
+    val logs = monitor.ensureNextResultIsSuccess()
+    assertThat(logs.eventLogsToUploadList).isEmpty()
+    assertThat(logs.uploadedEventLogsList).isEmpty()
+  }
+
+  @Test
+  fun testController_uploadEventLogs_withPreviousLogs_recordsEventsAsUploaded() {
+    setUpTestApplicationComponent()
+    logTwoEvents()
+
+    runSynchronously { dataController.uploadData() }
+
+    assertThat(fakeFirestoreEventLogger.getEventListCount()).isEqualTo(2)
+  }
+
+  @Test
+  fun testController_uploadEventLogs_withLogs_recordsEventsAsUploaded() {
+    setUpTestApplicationComponent()
+    logTwoEventsOffline()
+
+    runSynchronously { dataController.uploadData() }
+
+    assertThat(fakeFirestoreEventLogger.getEventListCount()).isEqualTo(2)
+  }
+
+  @Test
+  fun testController_uploadEventLogsAndWait_noLogs_cacheUnchanged() {
+    setUpTestApplicationComponent()
+    val monitor = monitorFactory.createMonitor(dataController.getEventLogStore())
+
+    runSynchronously { dataController.uploadData() }
+
+    val logs = monitor.ensureNextResultIsSuccess()
+    assertThat(logs.eventLogsToUploadList).isEmpty()
+    assertThat(logs.uploadedEventLogsList).isEmpty()
+  }
+
+  @Test
+  fun testController_cachedEventsFromLastAppInstance_logNewEvent_thenForceSync_everythingUploads() {
+    // Simulate events being logged in a previous instance of the app.
+    logTwoCachedEventsDirectlyOnDisk()
+
+    dataController.logEvent(
+      createAbandonSurveyContext(
+        TEST_SURVEY_ID,
+        profileId,
+        SurveyQuestionName.MARKET_FIT
+      ),
+      profileId = profileId
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    runSynchronously { dataController.uploadData() }
+
+    // The force sync should ensure everything is uploaded. NOTE TO DEVELOPER: If this test is
+    // failing, it may be due to FirestoreDataController being created before
+    // logTwoCachedEventsDirectlyOnDisk is called above. If that's the case, use the indirect
+    // injection pattern at the top of the test suite (for FirestoreDataController itself) to ensure
+    // whichever dependency is injecting FirestoreDataController is also only injected when needed
+    // (i.e. using a Provider).
+    assertThat(fakeFirestoreEventLogger.getEventListCount()).isEqualTo(3)
+  }
+
+  private fun createAbandonSurveyContext(
+    surveyId: String,
+    profileId: ProfileId,
+    questionName: SurveyQuestionName
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setAbandonSurvey(
+        EventLog.AbandonSurveyContext.newBuilder()
+          .setQuestionName(questionName)
+          .setSurveyDetails(
+            createSurveyResponseContext(surveyId, profileId)
+          )
+      )
+      .build()
+  }
+
+  private fun runSynchronously(operation: suspend () -> Unit) =
+    CoroutineScope(backgroundDispatcher).async { operation() }.waitForSuccessfulResult()
+
+  private fun logTwoEvents() {
+    logOptionalSurveyResponseEvent()
+    logOptionalSurveyResponseEvent(timestamp = 1556094110000)
+  }
+
+  private fun logTwoEventsOffline() {
+    networkConnectionUtil.setCurrentConnectionStatus(
+      NetworkConnectionUtil.ProdConnectionStatus.NONE
+    )
+    logTwoEvents()
+    networkConnectionUtil.setCurrentConnectionStatus(
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL
+    )
+  }
+
+  private fun logTwoCachedEventsDirectlyOnDisk() {
+    persistentCacheStoryFactory.create(
+      "firestore_data", OppiaEventLogs.getDefaultInstance()
+    ).storeDataAsync {
+      OppiaEventLogs.newBuilder().apply {
+        addEventLogsToUpload(
+          createEventLog(
+            context = createOptionalSurveyResponseContext(
+              surveyId = TEST_SURVEY_ID,
+              profileId = profileId,
+              answer = TEST_ANSWER
+            )
+          )
+        )
+        addEventLogsToUpload(
+          createEventLog(
+            context = createOptionalSurveyResponseContext(
+              surveyId = TEST_SURVEY_ID,
+              profileId = profileId,
+              answer = TEST_ANSWER
+            )
+          )
+        )
+      }.build()
+    }.waitForSuccessfulResult()
+  }
+
+  private fun <T> Deferred<T>.waitForSuccessfulResult() {
+    return when (val result = waitForResult()) {
+      is AsyncResult.Pending -> error("Deferred never finished.")
+      is AsyncResult.Success -> {} // Nothing to do; the result succeeded.
+      is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
+    }
+  }
+
+  private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
+
+  private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
+    val deferred = this
+    return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
+      CoroutineScope(backgroundDispatcher).async {
+        flow.emit(AsyncResult.Success(deferred.await()))
+      }.invokeOnCompletion {
+        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
+      }
+    }
+  }
+
+  private fun <T> StateFlow<T>.waitForLatestValue(): T =
+    also { testCoroutineDispatchers.runCurrent() }.value
+
+  private fun createEventLog(
+    context: EventLog.Context,
+    priority: EventLog.Priority = EventLog.Priority.ESSENTIAL,
+    timestamp: Long = oppiaClock.getCurrentTimeMs()
+  ) = EventLog.newBuilder().apply {
+    this.timestamp = timestamp
+    this.priority = priority
+    this.context = context
+  }.build()
 
   private fun logFourEvents() {
     logOptionalSurveyResponseEvent(timestamp = 1556094120000)
