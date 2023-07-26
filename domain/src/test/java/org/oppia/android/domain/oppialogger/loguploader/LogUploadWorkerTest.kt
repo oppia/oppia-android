@@ -19,6 +19,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -79,9 +82,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionSta
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -110,6 +110,8 @@ class LogUploadWorkerTest {
   @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
+  @field:[Inject MockFirestoreEventLogger]
+  lateinit var mockFirestoreEventLogger: FirestoreEventLogger
 
   private lateinit var context: Context
 
@@ -470,7 +472,7 @@ class LogUploadWorkerTest {
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fakeFirestoreEventLogger.getMostRecentEvent()).isEqualTo(
-      createSurveyResponseContext()
+      optionalSurveyResponseEventLog
     )
   }
 
@@ -496,7 +498,7 @@ class LogUploadWorkerTest {
       .setInputData(inputData)
       .build()
 
-    setUpEventLoggerToFail()
+    setUpFirestoreEventLoggerToFail()
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
@@ -504,6 +506,13 @@ class LogUploadWorkerTest {
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(fakeFirestoreEventLogger.noEventsPresent()).isTrue()
   }
+
+  private val optionalSurveyResponseEventLog = EventLog.newBuilder().apply {
+    this.context = createOptionalSurveyResponseContext()
+    this.timestamp = TEST_TIMESTAMP
+    this.priority = EventLog.Priority.ESSENTIAL
+  }
+    .build()
 
   private fun createOptionalSurveyResponseContext(): EventLog.Context {
     return EventLog.Context.newBuilder()
@@ -531,6 +540,14 @@ class LogUploadWorkerTest {
       .thenThrow(IllegalStateException("Failure."))
   }
 
+  private fun setUpFirestoreEventLoggerToFail() {
+    // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
+    // to remove the default stubbing for the mock so that it can properly trigger a failure.
+    reset(mockFirestoreEventLogger)
+    `when`(mockFirestoreEventLogger.uploadEvent(anyOrNull()))
+      .thenThrow(IllegalStateException("Failure."))
+  }
+
   /**
    * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
    * comparison in a way that's consistent across JDK versions.
@@ -551,6 +568,9 @@ class LogUploadWorkerTest {
 
   @Qualifier
   annotation class MockEventLogger
+
+  @Qualifier
+  annotation class MockFirestoreEventLogger
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -573,6 +593,21 @@ class LogUploadWorkerTest {
     }
 
     @Provides
+    @Singleton
+    @MockFirestoreEventLogger
+    fun bindMockFirestoreEventLogger(fakeFirestoreLogger: FakeFirestoreEventLogger):
+      FirestoreEventLogger {
+        return mock(FirestoreEventLogger::class.java).also {
+          `when`(it.uploadEvent(anyOrNull())).then { answer ->
+            fakeFirestoreLogger.uploadEvent(
+              answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
+            )
+            return@then null
+          }
+        }
+      }
+
+    @Provides
     fun bindFakeEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):
       AnalyticsEventLogger = delegate
 
@@ -585,9 +620,9 @@ class LogUploadWorkerTest {
     ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
 
     @Provides
-    fun bindFakeFirestoreDataLogger(
-      fakeFirestoreDataUploader: FakeFirestoreEventLogger
-    ): FirestoreEventLogger = fakeFirestoreDataUploader
+    fun bindFakeFirestoreEventLogger(
+      @MockFirestoreEventLogger delegate: FirestoreEventLogger
+    ): FirestoreEventLogger = delegate
   }
 
   @Module

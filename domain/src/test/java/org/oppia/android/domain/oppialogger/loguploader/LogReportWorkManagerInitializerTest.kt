@@ -153,7 +153,7 @@ class LogReportWorkManagerInitializerTest {
     assertThat(fakeLogScheduler.getMostRecentPeriodicBackgroundMetricLoggingRequestId()).isEqualTo(
       enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId
     )
-    assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(
+    assertThat(fakeLogUploader.getMostRecentFirestoreRequestId()).isEqualTo(
       enqueuedFirestoreWorkRequestId
     )
   }
