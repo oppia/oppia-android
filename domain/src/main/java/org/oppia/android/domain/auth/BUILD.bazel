@@ -31,8 +31,8 @@ kt_android_library(
     srcs = ["AuthenticationModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":authentication_controller",
+        ":dagger",
     ],
 )
 

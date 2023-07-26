@@ -9,6 +9,6 @@ interface AuthenticationListener {
   /** Returns the current signed in user or null if there is no authenticated user. */
   fun getCurrentSignedInUser(): FirebaseUser?
 
-  /** Returns the authentication result.  */
+  /** Returns the authentication result. */
   fun signInAnonymously(): CompletableDeferred<AsyncResult<Any?>>
 }
