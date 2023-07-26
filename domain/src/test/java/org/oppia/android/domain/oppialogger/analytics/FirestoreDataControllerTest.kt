@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -14,9 +15,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.FakeAuthenticationController
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -233,6 +236,14 @@ class FirestoreDataControllerTest {
     fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
+  @Module
+  interface TestAuthModule {
+    @Binds
+    fun bindFakeAuthenticationController(
+      fakeAuthenticationController: FakeAuthenticationController
+    ): AuthenticationListener
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -242,7 +253,7 @@ class FirestoreDataControllerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       PlatformParameterSingletonModule::class, SyncStatusModule::class,
       ApplicationLifecycleModule::class, PlatformParameterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, TestAuthModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -1,0 +1,29 @@
+"""
+Library for providing authentication with Firebase functionality in the app.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "AuthenticationModuleTest",
+    srcs = ["AuthenticationModuleTest.kt"],
+    custom_package = "org.oppia.android.domain.auth",
+    test_class = "org.oppia.android.domain.auth.AuthenticationModuleTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/auth:auth_module",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+    ],
+)
+
+dagger_rules()

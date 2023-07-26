@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -15,6 +16,7 @@ import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
+import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -22,6 +24,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.FakeAuthenticationController
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -182,6 +185,14 @@ class SurveyEventsLoggerTest {
     fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
+  @Module
+  interface TestAuthModule {
+    @Binds
+    fun bindFakeAuthenticationController(
+      fakeAuthenticationController: FakeAuthenticationController
+    ): AuthenticationListener
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -191,7 +202,7 @@ class SurveyEventsLoggerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      ApplicationLifecycleModule::class, AssetModule::class
+      ApplicationLifecycleModule::class, AssetModule::class, TestAuthModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

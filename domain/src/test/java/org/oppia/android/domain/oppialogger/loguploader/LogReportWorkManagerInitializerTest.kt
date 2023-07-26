@@ -22,6 +22,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -37,6 +38,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWork
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
+import org.oppia.android.testing.FakeAuthenticationController
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -312,6 +314,15 @@ class LogReportWorkManagerInitializerTest {
     fun bindsFakeLogScheduler(fakeLogScheduler: FakeLogScheduler): MetricLogScheduler
   }
 
+  @Module
+  interface
+  TestAuthModule {
+    @Binds
+    fun bindFakeAuthenticationController(
+      fakeAuthenticationController: FakeAuthenticationController
+    ): AuthenticationListener
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -323,7 +334,7 @@ class LogReportWorkManagerInitializerTest {
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, TestAuthModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

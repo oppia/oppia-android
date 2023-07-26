@@ -1,7 +1,5 @@
 package org.oppia.android.domain.oppialogger.analytics
 
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -9,7 +7,9 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
@@ -29,6 +29,7 @@ class FirestoreDataController @Inject constructor(
   private val eventLogger: FirestoreEventLogger,
   private val exceptionLogger: ExceptionLogger,
   private val oppiaClock: OppiaClock,
+  private val authenticationListener: AuthenticationListener,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @FirestoreLogStorageCacheSize private val logStorageCacheSize: Int
 ) {
@@ -84,24 +85,29 @@ class FirestoreDataController @Inject constructor(
   }
 
   /** Either uploads or caches [eventLog] depending on current internet connectivity. */
-  private fun uploadOrCacheEventLog(eventLog: EventLog) {
+  private suspend fun uploadOrCacheEventLog(eventLog: EventLog) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ProdConnectionStatus.NONE -> cacheEventForFirestore(eventLog)
       else -> authenticateAndUploadToFirestore(eventLog)
     }
   }
 
-  private fun authenticateAndUploadToFirestore(eventLog: EventLog) {
-    val firebaseAuth = Firebase.auth
-    if (firebaseAuth.currentUser == null) {
-      firebaseAuth.signInAnonymously()
-        .addOnSuccessListener {
+  private suspend fun authenticateAndUploadToFirestore(eventLog: EventLog) {
+    if (authenticationListener.getCurrentSignedInUser() == null) {
+      when (val signInResult = authenticationListener.signInAnonymously().await()) {
+        is AsyncResult.Success -> {
+          consoleLogger.i("FirestoreDataController", "Sign in succeeded")
           eventLogger.uploadEvent(eventLog)
         }
-        .addOnFailureListener {
+        is AsyncResult.Failure -> {
+          consoleLogger.e(
+            "FirestoreDataController",
+            "Sign in failed with cause ${signInResult.error}"
+          )
           cacheEventForFirestore(eventLog)
-          consoleLogger.e("FirestoreDataController", "Authentication Failed")
         }
+        is AsyncResult.Pending -> {} // no-op
+      }
     } else {
       eventLogger.uploadEvent(eventLog)
     }
