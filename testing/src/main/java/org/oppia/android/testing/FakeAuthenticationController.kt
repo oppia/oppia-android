@@ -11,6 +11,7 @@ import javax.inject.Singleton
 /** A test specific fake for the AuthenticationController. */
 @Singleton
 class FakeAuthenticationController @Inject constructor() : AuthenticationListener {
+  private var signInIsSuccessful = true
   private val mockFirebaseUser: FirebaseUser? = mock(FirebaseUser::class.java)
 
   override fun getCurrentSignedInUser(): FirebaseUser? {
@@ -20,9 +21,7 @@ class FakeAuthenticationController @Inject constructor() : AuthenticationListene
   override fun signInAnonymously(): CompletableDeferred<AsyncResult<Any?>> {
     val deferredResult = CompletableDeferred<AsyncResult<Any?>>()
 
-    val isSuccess = true
-
-    if (isSuccess) {
+    if (signInIsSuccessful) {
       deferredResult.complete(AsyncResult.Success(null))
     } else {
       val error = Exception("Authentication failed")
@@ -30,5 +29,10 @@ class FakeAuthenticationController @Inject constructor() : AuthenticationListene
     }
 
     return deferredResult
+  }
+
+  /** Sets whether sign in was successful. */
+  fun setSignInSuccessStatus(signInSuccessful: Boolean) {
+    signInIsSuccessful = signInSuccessful
   }
 }

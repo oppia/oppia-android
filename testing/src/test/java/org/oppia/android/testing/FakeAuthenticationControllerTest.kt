@@ -4,30 +4,39 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import com.google.firebase.auth.FirebaseUser
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Assert.assertTrue
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.auth.AuthenticationController
 import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
+import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [AuthenticationController]. */
+/** Tests for [FakeAuthenticationController]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -37,15 +46,64 @@ class FakeAuthenticationControllerTest {
   @Inject
   lateinit var fakeAuthenticationController: FakeAuthenticationController
 
+  @Inject
+  lateinit var authenticationListener: AuthenticationListener
+
+  @field:[Inject BackgroundDispatcher]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
   @Test
-  fun testAuthentication_noCurrentSignedInUser_returnsNull() {
-    assertTrue(true)
+  fun testAuthentication_getCurrentSignedInUser() {
+    val user = authenticationListener.getCurrentSignedInUser()
+
+    assertThat(user).isInstanceOf(FirebaseUser::class.java)
   }
+
+  @Test
+  fun testFakeController_signInAnonymously_succeeds() {
+    fakeAuthenticationController.setSignInSuccessStatus(true)
+
+    // A successful result is returned
+    runSynchronously { fakeAuthenticationController.signInAnonymously().await() }
+  }
+
+  private fun runSynchronously(operation: suspend () -> Unit) =
+    CoroutineScope(backgroundDispatcher).async { operation() }.waitForSuccessfulResult()
+
+  private fun <T> Deferred<T>.waitForSuccessfulResult() {
+    return when (val result = waitForResult()) {
+      is AsyncResult.Pending -> error("Deferred never finished.")
+      is AsyncResult.Success -> {} // Nothing to do; the result succeeded.
+      is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
+    }
+  }
+
+  private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
+
+  private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
+    val deferred = this
+    return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
+      CoroutineScope(backgroundDispatcher).async {
+        try {
+          val result = deferred.await()
+          flow.emit(AsyncResult.Success(result))
+        } catch (e: Throwable) {
+          flow.emit(AsyncResult.Failure(e))
+        }
+      }
+    }
+  }
+
+  private fun <T> StateFlow<T>.waitForLatestValue(): T =
+    also { testCoroutineDispatchers.runCurrent() }.value
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>()
