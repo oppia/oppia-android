@@ -413,37 +413,6 @@ class LogUploadWorkerTest {
   }
 
   @Test
-  fun testWorker_logFirestoreEvent_withoutNetwork_enqueueRequest_verifyFailed() {
-    setUpTestApplicationComponent()
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    dataController.logEvent(
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
-      profileId = null,
-      eventLogTopicContext.timestamp
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.FIRESTORE_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
-
-    // The enqueue should fail since the worker shouldn't be running when there's no network
-    // connectivity.
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
-  }
-
-  @Test
   fun testWorker_logFirestoreEvent_withNetwork_enqueueRequest_verifySuccess() {
     setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)

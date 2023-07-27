@@ -29,7 +29,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -133,7 +132,7 @@ class FakeAuthenticationControllerTest {
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, TestDispatcherModule::class, TestAuthModule::class,
-      DebugLogReportingModule::class,
+      TestLogReportingModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

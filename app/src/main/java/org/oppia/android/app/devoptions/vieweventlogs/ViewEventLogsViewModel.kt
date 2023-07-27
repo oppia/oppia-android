@@ -20,7 +20,9 @@ class ViewEventLogsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
+  // Retrieves events from cache that are meant to be unloaded to Firebase Analytics.
   private val firebaseEvents = debugAnalyticsEventLogger.getEventList()
+  // Retrieves events from cache that are meant to be unloaded to Firebase Firestore.
   private val firestoreEvents = debugFirestoreEventLogger.getEventList()
   private val eventList = firebaseEvents + firestoreEvents
 
