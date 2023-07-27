@@ -236,5 +236,3 @@ To fix the failures for this check: resolve the TODO items and then close the is
 - Alternatively, in android studio, go to the `.github` folder and find the [static_checks.yml](https://github.com/oppia/oppia-android/blob/develop/.github/workflows/static_checks.yml) file. Search for the line that corresponds to the name of the job that failed, and you can run the same script on your local terminal.
 
 Note: Before running script command in your local terminal make sure you have Bazel installed. To know how to setup Bazel for oppia-android follow these [instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions).
-
-
