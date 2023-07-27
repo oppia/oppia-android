@@ -753,6 +753,7 @@ exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestAn
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/RichTextViewMatcher.kt"
+exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TestAuthenticationModule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TestImageLoaderModule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TestLogReportingModule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TextInputActionTestActivity.kt"
