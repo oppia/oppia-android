@@ -11,6 +11,7 @@
     - [KDoc validity check](#kdoc-validity-check)
     - [TODO open checks](#todo-open-checks)
     - [TODO issue resolved check](#todo-issue-resolved-check)
+    - [How to run static checks locally](#how-to-run-static-checks-locally)
 
 # Background
 Static analysis is a method of debugging by examining source code before a program is run. It’s done by analyzing a set of code against a set (or multiple sets) of coding rules.
@@ -227,3 +228,11 @@ To fix the failures for this check: resolve the TODO items and then close the is
 
 # How to add a new Static analysis check
 // TODO([#3690](https://github.com/oppia/oppia-android/issues/3690)): Complete static checks Wiki
+
+# How to run static checks locally
+
+- Go to the failing CI check in your GitHub PR.
+- Scroll to the top of the failing CI check logs, and find the Bazel command that was run for this script.
+- Alternatively, in Android Studio, go to the `.github` folder and find the [static_checks.yml](https://github.com/oppia/oppia-android/blob/develop/.github/workflows/static_checks.yml) file. Search for the line that corresponds to the name of the job that failed. You can then run the same script on your local terminal.
+
+Note: Before running the script command in your local terminal, make sure you have Bazel installed. To learn how to set up Bazel for Oppia Android, follow these [instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions).
