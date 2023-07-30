@@ -75,7 +75,8 @@ echo "********************************"
 bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb
 echo ""
 
-# Run Todo Check (TODO: Fix here)
+# Todo Check
+# Skipped todo checks for local run
 
 # Run String resource validation check
 echo "********************************"
