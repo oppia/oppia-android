@@ -15,9 +15,9 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
 
 /**
  * [ObservableViewModel] for revision card, providing rich text and worked examples
