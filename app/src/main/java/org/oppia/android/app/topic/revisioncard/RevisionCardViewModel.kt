@@ -16,6 +16,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.R
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /**
  * [ObservableViewModel] for revision card, providing rich text and worked examples
@@ -36,6 +38,7 @@ class RevisionCardViewModel private constructor(
   val topicId: String,
   val subtopicId: Int,
   val profileId: ProfileId,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
   val subtopicListSize: Int
 ) : ObservableViewModel() {
 
@@ -100,6 +103,21 @@ class RevisionCardViewModel private constructor(
     } ?: ""
   }
 
+  /** Returns the content description of the subtopic. */
+  fun computeContentDescriptionText(subtopicLiveData: LiveData<EphemeralSubtopic>): String {
+    return when (subtopicLiveData) {
+      previousSubtopicLiveData -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
+        R.string.previous_subtopic_talkback_text,
+        computeTitleText(previousSubtopicLiveData.value)
+      )
+      nextSubtopicLiveData -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
+        R.string.next_subtopic_talkback_text,
+        computeTitleText(nextSubtopicLiveData.value)
+      )
+      else -> ""
+    }
+  }
+
   private fun processPreviousSubtopicData(
     topicLiveData: AsyncResult<EphemeralTopic>
   ): EphemeralSubtopic {
@@ -157,6 +175,7 @@ class RevisionCardViewModel private constructor(
     private val topicController: TopicController,
     private val oppiaLogger: OppiaLogger,
     @TopicHtmlParserEntityType private val entityType: String,
+    private val appLanguageResourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController
   ) {
     /** Returns a new [RevisionCardViewModel]. */
@@ -175,6 +194,7 @@ class RevisionCardViewModel private constructor(
         topicId,
         subtopicId,
         profileId,
+        appLanguageResourceHandler,
         subtopicListSize
       )
     }
