@@ -230,9 +230,10 @@ To fix the failures for this check: resolve the TODO items and then close the is
 // TODO([#3690](https://github.com/oppia/oppia-android/issues/3690)): Complete static checks Wiki
 
 # How to run static checks locally
-
+There are two ways to run static checks locally. You can either run all checks locally with the command `bash scripts/static_checks.sh` or run individual commands based on the name of the failing check on GitHub CI. To fix failing tests from GitHub CI individually, follow the steps below.
 - Go to the failing CI check in your GitHub PR.
 - Scroll to the top of the failing CI check logs, and find the Bazel command that was run for this script.
 - Alternatively, in Android Studio, go to the `.github` folder and find the [static_checks.yml](https://github.com/oppia/oppia-android/blob/develop/.github/workflows/static_checks.yml) file. Search for the line that corresponds to the name of the job that failed. You can then run the same script on your local terminal.
+- You can also go to scripts/static_checks.sh to view the failing check and run it locally.
 
-Note: Before running the script command in your local terminal, make sure you have Bazel installed. To learn how to set up Bazel for Oppia Android, follow these [instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions).
+Note: Before running the script command in your local terminal, make sure you have Bazel installed. To learn how to set up Bazel for Oppia Android, follow these [instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions). Also make sure you have oppia-android-tools installed since static checks rely on these tools to be able to perform some of the checks. To install oppia-android-tools, run `bash scripts/setup.sh` in the oppia-android directory.
