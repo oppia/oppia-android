@@ -269,7 +269,7 @@ class ExplorationActivityPresenter @Inject constructor(
         profileId, oldestCheckpointExplorationId
       )
     }
-    stopExploration(isCompletion = false)
+    stopExploration(isCompletion = true)
   }
 
   fun stopExploration(isCompletion: Boolean) {
@@ -278,6 +278,7 @@ class ExplorationActivityPresenter @Inject constructor(
       .observe(
         activity,
         {
+          maybeShowSurveyDialog(profileId, topicId)
           when (it) {
             is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
             is AsyncResult.Failure ->
@@ -285,9 +286,7 @@ class ExplorationActivityPresenter @Inject constructor(
             is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
               if (isCompletion) {
-                maybeShowSurveyDialog(profileId, topicId)
-              } else {
-                backPressActivitySelector()
+
               }
             }
           }
@@ -312,6 +311,8 @@ class ExplorationActivityPresenter @Inject constructor(
    * current exploration.
    */
   fun backButtonPressed() {
+    // check if survey should be shown
+    maybeShowSurveyDialog(profileId, topicId)
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {
@@ -510,43 +511,54 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
-      .observe(
-        activity,
-        { gatingResult ->
-          when (gatingResult) {
-            is AsyncResult.Pending -> {
-              oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "ExplorationActivity",
-                "Failed to retrieve gating decision",
-                gatingResult.error
-              )
-              backPressActivitySelector()
-            }
-            is AsyncResult.Success -> {
-              if (gatingResult.value) {
-                val dialogFragment =
-                  SurveyWelcomeDialogFragment.newInstance(
-                    profileId,
-                    topicId,
-                    explorationId,
-                    SURVEY_QUESTIONS
-                  )
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction
-                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                  .addToBackStack(null)
-                  .commit()
-              } else {
-                backPressActivitySelector()
-              }
-            }
-          }
-        }
+    val dialogFragment =
+      SurveyWelcomeDialogFragment.newInstance(
+        profileId,
+        topicId,
+        explorationId,
+        SURVEY_QUESTIONS
       )
+    val transaction = activity.supportFragmentManager.beginTransaction()
+    transaction
+      .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+      .addToBackStack(null)
+      .commit()
+//    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+//      .observe(
+//        activity
+//      ) { gatingResult ->
+//        when (gatingResult) {
+//          is AsyncResult.Pending -> {
+//            oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
+//          }
+//          is AsyncResult.Failure -> {
+//            oppiaLogger.e(
+//              "ExplorationActivity",
+//              "Failed to retrieve gating decision",
+//              gatingResult.error
+//            )
+//            backPressActivitySelector()
+//          }
+//          is AsyncResult.Success -> {
+//            if (gatingResult.value) {
+//              val dialogFragment =
+//                SurveyWelcomeDialogFragment.newInstance(
+//                  profileId,
+//                  topicId,
+//                  explorationId,
+//                  SURVEY_QUESTIONS
+//                )
+//              val transaction = activity.supportFragmentManager.beginTransaction()
+//              transaction
+//                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+//                .addToBackStack(null)
+//                .commit()
+//            } else {
+//              backPressActivitySelector()
+//            }
+//          }
+//        }
+//      }
   }
 
   companion object {

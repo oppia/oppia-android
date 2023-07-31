@@ -530,7 +530,7 @@
     <item name="android:background">@drawable/rounded_button_white_background_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
-    <item name="android:textAllCaps">true</item>
+    <item name="android:textAllCaps">false</item>
     <item name="android:textColor">@color/component_color_begin_survey_button_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
@@ -544,7 +544,7 @@
     <item name="android:background">@drawable/rounded_button_white_outline_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
-    <item name="android:textAllCaps">true</item>
+    <item name="android:textAllCaps">false</item>
     <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
@@ -557,7 +557,7 @@
     <item name="android:layout_margin">@dimen/survey_navigation_buttons_margin</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
-    <item name="android:textAllCaps">true</item>
+    <item name="android:textAllCaps">false</item>
     <item name="android:textColor">@color/component_color_survey_previous_button_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
@@ -571,7 +571,7 @@
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
-    <item name="android:textAllCaps">true</item>
+    <item name="android:textAllCaps">false</item>
     <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
@@ -584,7 +584,7 @@
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
-    <item name="android:textAllCaps">true</item>
+    <item name="android:textAllCaps">false</item>
     <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
@@ -626,7 +626,7 @@
     <item name="android:layout_margin">@dimen/survey_popup_message_margin</item>
     <item name="android:textSize">@dimen/survey_popup_message_text_size</item>
     <item name="android:fontFamily">sans-serif</item>
-
+    <item name="android:textAllCaps">false</item>
   </style>
 
   <style name="SurveyNpsHintTextStyle">

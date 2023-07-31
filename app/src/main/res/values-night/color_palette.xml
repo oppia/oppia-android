@@ -210,6 +210,7 @@
   <color name="color_palette_survey_previous_button_text_color">@color/color_def_dark_turquoise</color>
   <color name="color_palette_survey_progress_bar_solid_color">@color/color_def_oppia_green</color>
   <color name="color_palette_survey_popup_header_color">@color/color_def_white_f5</color>
+  <color name="color_palette_nps_survey_button_inactive_stroke_color">@color/color_def_black_grey</color>
   <color name="color_palette_survey_popup_background_color">@color/color_def_dark_green</color>
   <color name="color_palette_survey_popup_message_color">@color/color_def_white</color>
   <color name="color_palette_survey_white_button_color">@color/color_def_white_f6</color>
@@ -222,6 +223,6 @@
   <color name="color_palette_edit_text_unselected_color">@color/color_def_grey</color>
   <color name="color_palette_nps_unselected_text_color">@color/color_def_dark_green</color>
   <color name="color_palette_nps_selected_text_color">@color/color_def_white</color>
-  <color name="color_palette_nps_selected_background_color">@color/color_def_dark_green</color>
+  <color name="color_palette_nps_selected_background_color">@color/color_def_oppia_green</color>
   <color name="color_palette_nps_unselected_background_color">@color/color_def_pale_green</color>
 </resources>
