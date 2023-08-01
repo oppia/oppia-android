@@ -61,6 +61,9 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
 
     val profileId = args.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
 
+    dialog?.setCanceledOnTouchOutside(false)
+    dialog?.setCancelable(false)
+
     return exitSurveyConfirmationDialogFragmentPresenter.handleCreateView(
       inflater,
       container

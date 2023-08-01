@@ -94,7 +94,7 @@ class SurveyOnboardingBackgroundView : View {
       strokeWidth = this@SurveyOnboardingBackgroundView.strokeWidth
       color = ContextCompat.getColor(
         context,
-        R.color.component_color_survey_onboarding_background_color
+        R.color.component_color_survey_popup_background_color
       )
     }
     setBackgroundColor(Color.TRANSPARENT)
