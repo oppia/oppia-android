@@ -67,8 +67,8 @@ class TopicFragmentPresenter @Inject constructor(
     binding.topicToolbar.getChildAt(0).setOnClickListener {
       (activity as TopicActivity).finish()
     }
-
-    if (!accessibilityService.isScreenReaderEnabled()) {
+    val readerEnabled = accessibilityService.isScreenReaderEnabled()
+    if (!readerEnabled) {
       binding.topicToolbar.setOnClickListener {
         binding.topicToolbarTitle.isSelected = true
       }

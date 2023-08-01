@@ -347,7 +347,7 @@ class TopicFragmentTest {
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-
+    val isSelectedBeforeClick = topicToolbarTitle.isSelected
     onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.isSelected).isEqualTo(true)
