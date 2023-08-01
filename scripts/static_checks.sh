@@ -23,7 +23,7 @@ echo ""
 bash scripts/buf_lint_check.sh
 echo ""
 
-# Download Buildifier in oppia-andoid-tools folder (pre-requisite for buildifier checks)
+# Download Buildifier in oppia-android-tools folder (pre-requisite for buildifier checks)
 echo "********************************"
 echo "Downloading buildifier"
 echo "********************************"
@@ -74,9 +74,6 @@ echo "Running KDoc validation checks"
 echo "********************************"
 bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb
 echo ""
-
-# Todo Check
-# Skipped todo checks for local run
 
 # Run String resource validation check
 echo "********************************"
