@@ -55,6 +55,8 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.android.flexbox:flexbox": "3.0.0",
     "com.google.android.material:material": "1.3.0",
     "com.google.firebase:firebase-analytics": "17.5.0",
+    "com.google.firebase:firebase-appcheck": "16.0.0",
+    "com.google.firebase:firebase-appcheck-playintegrity": "16.0.0",
     "com.google.firebase:firebase-auth-ktx": "19.3.1",
     "com.google.firebase:firebase-common": "19.3.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
