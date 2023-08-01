@@ -11,7 +11,8 @@
       style="@style/SurveyQuestionTextStyle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/survey_question_text_margin"
+      android:layout_marginStart="@dimen/survey_question_text_margin"
+      android:layout_marginEnd="@dimen/survey_question_text_margin"
       android:text="@string/survey_exit_confirmation_text"
       app:layout_constraintTop_toTopOf="parent" />
 
