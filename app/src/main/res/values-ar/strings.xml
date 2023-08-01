@@ -418,7 +418,7 @@
   <string name="no_new_hint_available">لا يوجد تلميح جديد متاح</string>
   <string name="show_hints_and_solution">إظهار الملاحظات والحل</string>
   <string name="hint_list_item_number">تلميح %s</string>
-  <string name="hints_andSolution_close_icon_description">العودة للسابق</string>
+  <string name="hints_and_solution_close_icon_description" fuzzy="true">العودة للسابق</string>
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="show_solution">عرض الحل</string>
   <string name="reveal_solution">عرض الحل</string>
