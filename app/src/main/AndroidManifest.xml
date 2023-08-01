@@ -311,7 +311,7 @@
       android:name=".app.survey.SurveyActivity"
       android:label="@string/survey_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
-      android:windowSoftInputMode="adjustResize" />
+      android:windowSoftInputMode="adjustNothing" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"
