@@ -33,6 +33,8 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
@@ -66,9 +68,9 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -139,7 +141,7 @@ class ViewEventLogsFragmentTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Inject
-  lateinit var surveyLogger: SurveyEventsLogger
+  lateinit var dataController: FirestoreDataController
 
   @Before
   fun setUp() {
@@ -582,12 +584,39 @@ class ViewEventLogsFragmentTest {
       oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID), profileId = null
     )
 
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 50000)
-    surveyLogger.logOptionalResponse(
-      "survey_id",
+    logOptionalSurveyResponseEvent()
+  }
+
+  private fun logOptionalSurveyResponseEvent() {
+    dataController.logEvent(
+      createOptionalSurveyResponseContext(
+        "survey_id",
+        profileId = null,
+        answer = "some response"
+      ),
       profileId = null,
-      answer = "some response"
+      TEST_TIMESTAMP + 50000
     )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun createOptionalSurveyResponseContext(
+    surveyId: String,
+    profileId: ProfileId?,
+    answer: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setOptionalResponse(
+        EventLog.OptionalSurveyResponseContext.newBuilder()
+          .setFeedbackAnswer(answer)
+          .setSurveyDetails(
+            EventLog.SurveyResponseContext.newBuilder()
+              .setProfileId(profileId?.internalId.toString())
+              .setSurveyId(surveyId)
+              .build()
+          )
+      )
+      .build()
   }
 
   private fun verifyTextOnEventLogItemViewAtPosition(
