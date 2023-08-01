@@ -9,6 +9,8 @@ import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
@@ -47,6 +49,9 @@ abstract class AbstractOppiaApplication(
     // TODO(#4751): Re-enable WorkManager for S+.
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
       FirebaseApp.initializeApp(applicationContext)
+      FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+        PlayIntegrityAppCheckProviderFactory.getInstance(),
+      )
       WorkManager.initialize(applicationContext, workManagerConfiguration)
       val workManager = WorkManager.getInstance(applicationContext)
       component.getAnalyticsStartupListenerStartupListeners().forEach { it.onCreate(workManager) }
