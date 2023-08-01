@@ -185,50 +185,6 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCard_previousSubtopicTitle_hasCorrectContentDescription() {
-    launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
-        context,
-        profileId.internalId,
-        "test_topic_id_0",
-        subtopicId = 1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.prev_subtopic_title)).check(
-        matches(
-          ViewMatchers.withContentDescription(
-            "The previous subtopic is "
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testRevisionCard_nextSubtopicTitle_hasCorrectContentDescription() {
-    launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
-        context,
-        profileId.internalId,
-        "test_topic_id_0",
-        subtopicId = 1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.next_subtopic_title)).check(
-        matches(
-          ViewMatchers.withContentDescription(
-            "The next subtopic is "
-          )
-        )
-      )
-    }
-  }
-
-  @Test
   fun testRevisionCard_previousSubtopicTitle_whatIsAFraction_hasCorrectContentDescription() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
