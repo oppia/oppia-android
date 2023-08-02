@@ -16,7 +16,7 @@
     <EditText
       android:id="@+id/free_form_text"
       style="@style/SurveyFreeFormAnswerEditText"
-      android:hint="@string/survey_free_form_text_hint"
+      android:hint="@string/survey_activity_free_form_text_hint"
       android:inputType="text|textMultiLine|textCapSentences"
       android:minLines="4"
       android:overScrollMode="never"
@@ -32,10 +32,11 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
+      android:background="@{viewModel.isAnswerAvailable() ? @drawable/nps_survey_button_background : @drawable/nps_survey_button_inactive_background}"
       android:clickable="@{viewModel.isAnswerAvailable()}"
       android:enabled="@{viewModel.isAnswerAvailable()}"
       android:onClick="@{(v) ->viewModel.handleSubmitButtonClicked()}"
-      android:text="@string/survey_submit_button"
+      android:text="@string/survey_activity_submit_button_text"
       android:textColor="@{viewModel.isAnswerAvailable() ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"
       app:layout_constraintTop_toBottomOf="@id/free_form_text" />
   </androidx.constraintlayout.widget.ConstraintLayout>

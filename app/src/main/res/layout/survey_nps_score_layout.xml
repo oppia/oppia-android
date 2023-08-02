@@ -17,7 +17,7 @@
       android:id="@+id/not_likely_text_view"
       style="@style/SurveyNpsHintTextStyle"
       android:fontFamily="sans-serif-light"
-      android:text="@string/survey_nps_not_at_all_likely_label"
+      android:text="@string/survey_nps_activity_not_at_all_likely_label"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,7 +32,7 @@
     <TextView
       android:id="@+id/extremely_likely_text_view"
       style="@style/SurveyNpsHintTextStyle"
-      android:text="@string/survey_nps_extremely_likely_label"
+      android:text="@string/survey_nps_activity_extremely_likely_label"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@id/survey_nps_buttons_container" />
   </androidx.constraintlayout.widget.ConstraintLayout>

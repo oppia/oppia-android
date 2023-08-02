@@ -170,7 +170,7 @@
       android:layout_marginTop="64dp"
       android:fontFamily="sans-serif-medium"
       android:minHeight="48dp"
-      android:text="@string/profile_progress_header_activity_recently_played_stories"
+      android:text="@string/recently_played_stories"
       android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="18sp"
       android:visibility="@{viewModel.headerTextVisibility}"

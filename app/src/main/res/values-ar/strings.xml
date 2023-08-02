@@ -130,7 +130,6 @@
   <string name="math_expression_activity_error_unsupported_function">الوظيفة \' %s \' غير مدعومة. يرجى مراجعة إجابتك.</string>
   <string name="math_expression_activity_error_incomplete_function_name">هل تقصد sqrt؟ إذا لم يكن كذلك ، يرجى فصل المتغيرات برموز الضرب.</string>
   <string name="math_expression_activity_error_generic_text">عذرا ، لم نستطع فهم إجابتك. يرجى التحقق منه للتأكد من عدم وجود أية أخطاء.</string>
-  <string name="profile_progress_header_activity_recently_played_stories">القصص التي تم تشغيلها مؤخرًا</string>
   <string name="recently_played_stories">القصص التي تم تشغيلها مؤخرًا</string>
   <string name="last_played_stories">آخر القصص التي تم تشغيلها</string>
   <string name="profile_progress_header_activity_view_all">عرض الكل</string>
@@ -376,7 +375,6 @@
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">إصدار التطبيق</string>
   <string name="app_language_activity_title">لغة التطبيق</string>
   <string name="audio_language_activity_title">لغة الصوت الافتراضية</string>
-  <string name="reading_text_size_activity_title">حجم النص المقروء</string>
   <string name="reading_text_size_activity_toolbar_title_text">حجم النص المقروء</string>
   <string name="audio_language">الصوت الافتراضي</string>
   <string name="app_language_activity_label_text">لغة التطبيق</string>
@@ -407,7 +405,7 @@
   <string name="state_fragment_activity_hint_bulb_no_state_activity_new_hint_available_text">لا يوجد تلميح جديد متاح</string>
   <string name="question_player_activity_show_hints_and_solution">إظهار الملاحظات والحل</string>
   <string name="hint_list_item_number">تلميح %s</string>
-  <string name="hint_and_solution_activity_close_icon_description">العودة للسابق</string>
+  <string name="reveal_solution_dialog_fragment_close_icon_description" fuzzy="true">العودة للسابق</string>
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="solution_summary_activity_show_solution_button_text">عرض الحل</string>
   <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title">عرض الحل</string>
@@ -478,7 +476,7 @@
   <string name="general_availability_upgrade_notice_dialog_content_activity_close_button_text">نعم</string>
   <string name="ratio_content_description_separator">إلى</string>
   <string name="ratio_default_hint_text">أدخل نسبة في الصيغة س:ص.</string>
-  <string name="text_input_default_hint_text">انقر هنا لإدخال نص.</string>
+  <string name="exploration_activity_text_input_default_hint_text">انقر هنا لإدخال نص.</string>
   <string name="coming_soon_topic_list_activity_title">قريباً</string>
   <string name="recommended_stories">قصص موصّى بها</string>
   <string name="stories_for_you">قصص من أجلك</string>

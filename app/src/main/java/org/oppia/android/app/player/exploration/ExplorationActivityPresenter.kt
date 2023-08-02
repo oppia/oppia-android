@@ -286,6 +286,8 @@ class ExplorationActivityPresenter @Inject constructor(
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
               if (isCompletion) {
                 maybeShowSurveyDialog(profileId, topicId)
+              } else {
+                backPressActivitySelector()
               }
             }
           }
@@ -310,8 +312,6 @@ class ExplorationActivityPresenter @Inject constructor(
    * current exploration.
    */
   fun backButtonPressed() {
-    // check if survey should be shown
-    maybeShowSurveyDialog(profileId, topicId)
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {

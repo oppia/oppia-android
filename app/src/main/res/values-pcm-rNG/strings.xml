@@ -336,7 +336,7 @@
   <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
   <string name="add_profile_required">Required</string>
   <string name="back_button">Back Button</string>
-  <string name="next">Next</string>
+  <string name="survey_activity_next_button_text">Next</string>
   <string name="administrator_controls_general_label">General</string>
   <string name="administrator_controls_edit_account">Edit account</string>
   <string name="administrator_controls_profile_management_label">Profile Management</string>
@@ -358,7 +358,6 @@
   <string name="app_version_activity_title">App Version</string>
   <string name="app_language_activity_title">App Language</string>
   <string name="audio_language_activity_title">Default Audio Language</string>
-  <string name="reading_text_size_activity_title">Reading Text Size</string>
   <string name="title_reading_text_size">Reading Text Size</string>
   <string name="story_text_will_look_like_this">Story text go look like dis.</string>
   <string name="constant_string_for_text_size">A</string>
@@ -392,7 +391,7 @@
   <string name="no_new_hint_available">No new hint dey</string>
   <string name="show_hints_and_solution">Show hints and solution</string>
   <string name="hint_list_item_number">Hint %s</string>
-  <string name="hints_andSolution_close_icon_description">Go up</string>
+  <string name="reveal_solution_dialog_fragment_close_icon_description" fuzzy="true">Go up</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="show_solution">Show solution</string>
   <string name="reveal_solution">Show Solution</string>
@@ -450,7 +449,7 @@
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
   <string name="ratio_content_description_separator">to</string>
   <string name="ratio_default_hint_text">Enter a ratio in di form x:y.</string>
-  <string name="text_input_default_hint_text">Tap here to put text.</string>
+  <string name="exploration_activity_text_input_default_hint_text">Tap here to put text.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>

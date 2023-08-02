@@ -90,7 +90,7 @@ class TextInputViewModel private constructor(
     return when {
       placeholder1.isNotEmpty() -> placeholder1
       placeholder2.isNotEmpty() -> placeholder2
-      else -> resourceHandler.getStringInLocale(R.string.text_input_default_hint_text)
+      else -> resourceHandler.getStringInLocale(R.string.exploration_activity_text_input_default_hint_text)
     }
   }
 

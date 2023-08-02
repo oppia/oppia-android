@@ -113,7 +113,6 @@
   <string name="math_expression_activity_error_unsupported_function">Chaguo la kukokotoa \'%s\' haitumiki. Tafadhali rekebisha jibu lako.</string>
   <string name="math_expression_activity_error_incomplete_function_name">Ulimaanisha sqrt? Ikiwa sivyo, tafadhali tenganisha vigeu kwa kutumia alama za kuzidisha.</string>
   <string name="math_expression_activity_error_generic_text">Samahani, hatukuweza kuelewa jibu lako. Tafadhali iangalie ili kuhakikisha kuwa hakuna hitilafu zozote.</string>
-  <string name="profile_progress_header_activity_recently_played_stories">Hadithi Zilizochezwa hivi karibuni</string>
   <string name="recently_played_stories">Hadithi Zilizochezwa hivi karibuni</string>
   <string name="last_played_stories">Hadithi Zilizochezwa Mwisho</string>
   <string name="profile_progress_header_activity_view_all">Tazama zote</string>
@@ -315,7 +314,6 @@
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">Toleo la Programu</string>
   <string name="app_language_activity_title">Lugha ya Programu</string>
   <string name="audio_language_activity_title">Lugha chaguomsingi ya Sauti</string>
-  <string name="reading_text_size_activity_title">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="reading_text_size">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="reading_text_size_activity_toolbar_title_text">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="audio_language">Sauti Chaguomsingi</string>
@@ -344,7 +342,7 @@
   <string name="walkthrough_final_activity_are_you_interested">Je, unavutiwa na:\n%s?</string>
   <string name="state_activity_new_hint_available">Kidokezo kipya kinapatikana</string>
   <string name="question_player_activity_show_hints_and_solution">Onyesha vidokezo na suluhisho</string>
-  <string name="hint_and_solution_activity_close_icon_description">Nenda juu</string>
+  <string name="reveal_solution_dialog_fragment_close_icon_description">Funga</string>
   <string name="hints_toolbar_title">Vidokezo</string>
   <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title" fuzzy="true">Fichua Suluhisho</string>
   <string name="hints_summary_activity_reveal_hint_button_text" fuzzy="true">Fichua Kidokezo</string>

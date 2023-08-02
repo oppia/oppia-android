@@ -120,7 +120,6 @@
   <string name="math_expression_activity_error_unsupported_function">A função \'%s\' não é suportada. Por favor, revise sua resposta.</string>
   <string name="math_expression_activity_error_incomplete_function_name">Será que queria dizer sqrt? Se não, por favor, separe as variáveis ​​com símbolos de multiplicação.</string>
   <string name="math_expression_activity_error_generic_text">Desculpe, não conseguimos entender sua resposta. Por favor, verifique se não há erros.</string>
-  <string name="profile_progress_header_activity_recently_played_stories">Histórias Reproduzidas Recentemente</string>
   <string name="recently_played_stories">Histórias Reproduzidas Recentemente</string>
   <string name="last_played_stories">Últimas Histórias Reproduzidas</string>
   <string name="profile_progress_header_activity_view_all">Ver Tudo</string>
@@ -337,7 +336,6 @@
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">Versão do Aplicativo</string>
   <string name="app_language_activity_title">Idioma do Aplicativo</string>
   <string name="audio_language_activity_title">Idioma Padrão de Áudio</string>
-  <string name="reading_text_size_activity_title">Tamanho do Texto de Leitura</string>
   <string name="reading_text_size_activity_toolbar_title_text">Tamanho do Texto de Leitura</string>
   <string name="audio_language">Áudio Padrão</string>
   <string name="app_language_activity_label_text">Idioma do Aplicativo</string>
@@ -366,7 +364,7 @@
   <string name="state_activity_new_hint_available">Nova dica disponível</string>
   <string name="state_fragment_activity_hint_bulb_no_state_activity_new_hint_available_text">Nova dica disponível</string>
   <string name="question_player_activity_show_hints_and_solution">Mostrar dicas e solução</string>
-  <string name="hint_and_solution_activity_close_icon_description">Navegar para cima</string>
+  <string name="reveal_solution_dialog_fragment_close_icon_description" fuzzy="true">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
   <string name="solution_summary_activity_show_solution_button_text" fuzzy="true">Exibir</string>
   <string name="solution_summary_activity_show_solution" fuzzy="true">Exibir</string>
@@ -420,7 +418,7 @@
   <string name="general_availability_upgrade_notice_dialog_content_activity_close_button_text">OK</string>
   <string name="ratio_content_description_separator">para</string>
   <string name="ratio_default_hint_text">Insira uma razão no formato x:y.</string>
-  <string name="text_input_default_hint_text">Clique aqui para inserir texto.</string>
+  <string name="exploration_activity_text_input_default_hint_text">Clique aqui para inserir texto.</string>
   <string name="coming_soon_topic_list_activity_title">Em Breve</string>
   <string name="recommended_stories">Histórias Recomendadas</string>
   <string name="stories_for_you">Histórias Para Você</string>

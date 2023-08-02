@@ -114,7 +114,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.ReadingTextSizeActivity"
-      android:label="@string/reading_text_size_activity_title"
+      android:label="@string/reading_text_size"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.player.exploration.ExplorationActivity"
@@ -311,7 +311,7 @@
       android:name=".app.survey.SurveyActivity"
       android:label="@string/survey_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
-      android:windowSoftInputMode="adjustResize" />
+      android:windowSoftInputMode="adjustNothing" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"

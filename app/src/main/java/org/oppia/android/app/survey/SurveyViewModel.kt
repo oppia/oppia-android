@@ -68,22 +68,22 @@ class SurveyViewModel @Inject constructor(
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     return when (questionName) {
       SurveyQuestionName.USER_TYPE -> resourceHandler.getStringInLocale(
-        R.string.user_type_question
+        R.string.survey_activity_user_type_question
       )
       SurveyQuestionName.MARKET_FIT -> resourceHandler.getStringInLocaleWithWrapping(
-        R.string.market_fit_question, appName
+        R.string.survey_activity_market_fit_question, appName
       )
       SurveyQuestionName.NPS -> resourceHandler.getStringInLocaleWithWrapping(
-        R.string.nps_score_question, appName
+        R.string.survey_activity_nps_score_question, appName
       )
       SurveyQuestionName.PROMOTER_FEEDBACK -> resourceHandler.getStringInLocaleWithWrapping(
-        R.string.nps_promoter_feedback_question, appName
+        R.string.survey_activity_nps_promoter_feedback_question, appName
       )
       SurveyQuestionName.PASSIVE_FEEDBACK -> resourceHandler.getStringInLocaleWithWrapping(
-        R.string.nps_passive_feedback_question
+        R.string.survey_activity_nps_passive_feedback_question
       )
       SurveyQuestionName.DETRACTOR_FEEDBACK -> resourceHandler.getStringInLocaleWithWrapping(
-        R.string.nps_detractor_feedback_question
+        R.string.survey_activity_nps_detractor_feedback_question
       )
       SurveyQuestionName.UNRECOGNIZED, SurveyQuestionName.QUESTION_NAME_UNSPECIFIED ->
         DEFAULT_QUESTION
