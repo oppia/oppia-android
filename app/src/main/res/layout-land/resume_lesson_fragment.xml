@@ -94,6 +94,7 @@
           android:id="@+id/resume_lesson_continue_button"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
+          app:backgroundTint="@null"
           android:minWidth="144dp"
           android:gravity="center"
           android:background="@drawable/state_button_primary_background"

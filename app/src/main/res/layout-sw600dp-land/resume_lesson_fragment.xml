@@ -122,6 +122,7 @@
 
           <com.google.android.material.button.MaterialButton
             android:id="@+id/resume_lesson_continue_button"
+            app:backgroundTint="@null"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:minWidth="144dp"
