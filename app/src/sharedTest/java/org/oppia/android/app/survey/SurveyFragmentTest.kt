@@ -265,7 +265,13 @@ class SurveyFragmentTest {
       createSurveyActivityIntent()
     ).use {
       onView(withContentDescription(R.string.navigate_up)).perform(click())
-      onView(withText(context.getString(R.string.survey_exit_confirmation_dialog_confirmation_text)))
+      onView(
+        withText(
+          context.getString(
+            R.string.survey_exit_confirmation_dialog_confirmation_text
+          )
+        )
+      )
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -292,7 +298,15 @@ class SurveyFragmentTest {
         RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
-      ).check(matches(hasDescendant(withText(R.string.survey_activity_market_fit_answer_very_disappointed))))
+      ).check(
+        matches(
+          hasDescendant(
+            withText(
+              R.string.survey_activity_market_fit_answer_very_disappointed
+            )
+          )
+        )
+      )
     }
   }
 
