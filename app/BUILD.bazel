@@ -1014,6 +1014,8 @@ android_library(
     exports = [
         "//third_party:com_crashlytics_sdk_android_crashlytics",
         "//third_party:com_google_firebase_firebase-analytics",
+        "//third_party:com_google_firebase_firebase-appcheck",
+        "//third_party:com_google_firebase_firebase-appcheck-playintegrity",
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:io_fabric_sdk_android_fabric",
     ],
