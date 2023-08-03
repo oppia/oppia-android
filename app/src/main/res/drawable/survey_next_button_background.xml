@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <!-- Enabled state -->
-  <item android:drawable="@drawable/rounded_primary_button_grey_shadow_color" android:state_enabled="true" />
-  <!-- Disabled state -->
-  <item android:drawable="@drawable/survey_rounded_disabled_button_background" android:state_enabled="false" />
-</selector>
