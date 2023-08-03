@@ -19,6 +19,7 @@ import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -381,6 +382,7 @@ class ViewEventLogsFragmentTest {
     }
   }
 
+  @Ignore // TODO(#4748): Remove the Ignore annotation once tests can run on API 31
   @Test
   fun testViewEventLogsFragment_dateAndTimeIsDisplayedCorrectly() {
     launch(ViewEventLogsTestActivity::class.java).use { scenario ->
