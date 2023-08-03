@@ -248,6 +248,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt",
     "src/main/java/org/oppia/android/app/utility/RatioExtensions.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicSummaryViewModel.kt",
 ]
@@ -365,7 +366,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/topic/practice/TopicPracticeViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revision/revisionitemviewmodel/TopicRevisionItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revision/TopicRevisionViewModel.kt",
-    "src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/end/WalkthroughFinalViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/WalkthroughTopicItemViewModel.kt",

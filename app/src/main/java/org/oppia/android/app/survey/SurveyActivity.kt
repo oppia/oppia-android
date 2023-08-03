@@ -18,16 +18,25 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var surveyActivityPresenter: SurveyActivityPresenter
 
+  private lateinit var profileId: ProfileId
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val params = intent.extractParams()
+    this.profileId = params.profileId ?: ProfileId.newBuilder().setInternalId(-1).build()
+
     surveyActivityPresenter.handleOnCreate(
-      params.profileId,
+      profileId,
       params.topicId,
       params.explorationId
     )
+  }
+
+  override fun onBackPressed() {
+    val dialogFragment = ExitSurveyConfirmationDialogFragment.newInstance(profileId)
+    dialogFragment.showNow(supportFragmentManager, TAG_EXIT_SURVEY_CONFIRMATION_DIALOG)
   }
 
   companion object {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:color="@color/component_color_shared_secondary_4_text_color" android:state_enabled="true" />
-  <item android:color="@color/component_color_shared_active_text_color" android:state_enabled="false" />
+  <item android:color="@color/component_color_survey_nps_selected_text_color" android:state_enabled="true" />
+  <item android:color="@color/component_color_survey_nps_unselected_text_color" android:state_enabled="false" />
 </selector>
