@@ -382,7 +382,7 @@ class ViewEventLogsFragmentTest {
     }
   }
 
-  @Ignore // TODO(#4748): Remove the Ignore annotation once tests can run on API 31
+  @Ignore("#4748 will fix conflict between Firestore and Robolectric's implementation of SQLite.")
   @Test
   fun testViewEventLogsFragment_dateAndTimeIsDisplayedCorrectly() {
     launch(ViewEventLogsTestActivity::class.java).use { scenario ->
