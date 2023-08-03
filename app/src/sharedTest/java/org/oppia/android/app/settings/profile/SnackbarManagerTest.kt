@@ -3,15 +3,16 @@ package org.oppia.android.app.settings.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -62,7 +63,6 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.snackbar.SnackbarController
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -88,11 +88,15 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [SnackbarManager]*/
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = SnackbarManagerTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class SnackbarManagerTest {
 
   @get:Rule
@@ -106,6 +110,9 @@ class SnackbarManagerTest {
 
   @Inject
   lateinit var snackbarManager: SnackbarManager
+
+  @Inject
+  lateinit var snackbarController: SnackbarController
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -123,14 +130,29 @@ class SnackbarManagerTest {
     Intents.release()
   }
 
+  @Test
+  fun testShowSnackbarMethod_enqueuesRequestInTheRequestQueue_returns_SameMessage() {
+    snackbarManager.showSnackbar(
+      R.string.profile_edit_delete_success,
+      SnackbarController.SnackbarDuration.SHORT
+    )
+    val element = snackbarController.snackbarRequestQueue.peek()
+    assertThat(element?.messageStringId).isEqualTo(R.string.profile_edit_delete_success)
+  }
 
   @Test
-  fun firstTest(){
-    snackbarManager.showSnackbar(R.string.profile_edit_delete_success, SnackbarController.SnackbarDuration.SHORT)
+  fun testShowSnackbarMethod_showsSnackbarInTheActivity_IfEnableSnackbarsIsCalled() {
+    snackbarManager.showSnackbar(
+      R.string.profile_edit_delete_success,
+      SnackbarController.SnackbarDuration.SHORT
+    )
+    ActivityScenario.launch(ProfileListActivity::class.java).onActivity {
+      snackbarManager.enableShowingSnackbars(it)
+    }
+    testCoroutineDispatchers.runCurrent()
     onView(allOf(withText(R.string.profile_edit_delete_success)))
       .check(matches(isDisplayed()))
   }
-
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

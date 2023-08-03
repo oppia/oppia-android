@@ -13,7 +13,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -26,6 +28,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val STRING_ID: Int = 1
+private const val STRING_ID_2: Int = 2
 
 @Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
@@ -36,14 +39,20 @@ class SnackbarControllerTest {
   @Inject
   lateinit var snackbarController: SnackbarController
 
+  @Inject
+  lateinit var dataProviderTestMonitor: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   var request = SnackbarController.SnackbarRequest.ShowSnackbar(
     messageStringId = STRING_ID,
     duration = SnackbarController.SnackbarDuration.SHORT
   )
 
   var request2 = SnackbarController.SnackbarRequest.ShowSnackbar(
-    messageStringId = STRING_ID,
-    duration = SnackbarController.SnackbarDuration.LONG
+    messageStringId = STRING_ID_2,
+    duration = SnackbarController.SnackbarDuration.SHORT
   )
 
   @Before
@@ -69,6 +78,39 @@ class SnackbarControllerTest {
     snackbarController.enqueueSnackbar(request)
     snackbarController.enqueueSnackbar(request2)
     assertThat(snackbarController.snackbarRequestQueue.peek()).isEqualTo(request)
+  }
+
+  @Test
+  fun testEnqueueRequest_returns_getCurrentSnackbar_success() {
+    snackbarController.enqueueSnackbar(request)
+    val monitor = dataProviderTestMonitor.createMonitor(snackbarController.getCurrentSnackbar())
+    testCoroutineDispatchers.runCurrent()
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  @Test
+  fun testEnqueueTwoRequest_returns_firstRequest() {
+    snackbarController.enqueueSnackbar(request)
+    snackbarController.enqueueSnackbar(request2)
+    val result =
+      dataProviderTestMonitor.waitForNextSuccessfulResult(snackbarController.getCurrentSnackbar())
+    testCoroutineDispatchers.runCurrent()
+    assertThat(result).isEqualTo(request)
+  }
+
+  @Test
+  fun testEnqueueTwoRequest_verifyingFirst_thenDismissing_returns_secondRequest() {
+    snackbarController.enqueueSnackbar(request)
+    snackbarController.enqueueSnackbar(request2)
+    val result =
+      dataProviderTestMonitor.waitForNextSuccessfulResult(snackbarController.getCurrentSnackbar())
+    testCoroutineDispatchers.runCurrent()
+    assertThat(result).isEqualTo(request)
+    snackbarController.dismissCurrentSnackbar()
+    val result2 =
+      dataProviderTestMonitor.waitForNextSuccessfulResult(snackbarController.getCurrentSnackbar())
+    testCoroutineDispatchers.runCurrent()
+    assertThat(result2).isEqualTo(request2)
   }
 
   private fun setUpTestApplicationComponent() {

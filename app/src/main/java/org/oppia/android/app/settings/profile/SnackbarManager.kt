@@ -37,7 +37,7 @@ class SnackbarManager @Inject constructor(private val snackbarController: Snackb
   /**
    * Enables the activity to show the snackbar.
    *
-   * @param activity that is to observing  for a snackbar and in which the snackbar  will be shown
+   * @param activity An activity that will observe for snackbars and display them
    */
   fun enableShowingSnackbars(activity: AppCompatActivity) {
     snackbarController.getCurrentSnackbar().toLiveData().observe(activity) { result ->
