@@ -93,7 +93,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [SnackbarManager]*/
+/** Test for [SnackbarManager]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SnackbarManagerTest.TestApplication::class, qualifiers = "port-xxhdpi")
