@@ -137,8 +137,8 @@
   <color name="color_def_avatar_background_22">#AB29CC</color>
   <color name="color_def_avatar_background_23">#CC29B1</color>
   <color name="color_def_avatar_background_24">#CC2970</color>
-  <color name="color_def_survey_background">#F5F5F5</color>
-  <color name="color_def_survey_buttons_white">#F6F6F6</color>
+  <color name="color_def_white_f5">#F5F5F5</color>
+  <color name="color_def_white_f6">#F6F6F6</color>
   <color name="color_def_light_blue">#BDCCCC</color>
   
   <color name="color_def_survey_disabled_button_grey">#E8E8E8</color>

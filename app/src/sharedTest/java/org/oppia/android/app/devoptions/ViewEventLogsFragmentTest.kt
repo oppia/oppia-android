@@ -19,6 +19,7 @@ import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -68,7 +69,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
-import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -92,6 +92,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
@@ -141,7 +142,7 @@ class ViewEventLogsFragmentTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Inject
-  lateinit var dataController: FirestoreDataController
+  lateinit var debugFirestoreEventLogger: DebugFirestoreEventLogger
 
   @Before
   fun setUp() {
@@ -381,6 +382,7 @@ class ViewEventLogsFragmentTest {
     }
   }
 
+  @Ignore("#4748 will fix conflict between Firestore and Robolectric's implementation of SQLite.")
   @Test
   fun testViewEventLogsFragment_dateAndTimeIsDisplayedCorrectly() {
     launch(ViewEventLogsTestActivity::class.java).use { scenario ->
@@ -588,14 +590,18 @@ class ViewEventLogsFragmentTest {
   }
 
   private fun logOptionalSurveyResponseEvent() {
-    dataController.logEvent(
-      createOptionalSurveyResponseContext(
-        "survey_id",
-        profileId = null,
-        answer = "some response"
-      ),
-      profileId = null,
-      TEST_TIMESTAMP + 50000
+    debugFirestoreEventLogger.uploadEvent(
+      EventLog.newBuilder()
+        .setContext(
+          createOptionalSurveyResponseContext(
+            "survey_id",
+            profileId = null,
+            answer = "some response"
+          )
+        )
+        .setPriority(EventLog.Priority.ESSENTIAL)
+        .setTimestamp(TEST_TIMESTAMP + 50000)
+        .build()
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -695,7 +701,7 @@ class ViewEventLogsFragmentTest {
       PerformanceMetricsConfigurationsModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      TestAuthenticationModule::class,
     ]
   )
 
