@@ -174,7 +174,6 @@ class ProfileEditFragmentTest {
       onView(withText(R.string.profile_edit_delete_dialog_positive))
         .inRoot(isDialog())
         .perform(click())
-      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_success))
         .check(matches(isDisplayed()))
     }
@@ -188,7 +187,6 @@ class ProfileEditFragmentTest {
       onView(withText(R.string.profile_edit_delete_dialog_positive))
         .inRoot(isDialog())
         .perform(click())
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withText(R.string.profile_edit_delete_success)))
         .check(matches(isDisplayed()))
       testCoroutineDispatchers.runCurrent()

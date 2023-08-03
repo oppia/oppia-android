@@ -39,16 +39,16 @@ class SnackbarController @Inject constructor(
   }
 
   /**
-   *   Enqueue the snackbar request that is to be shown and notify subscribers that it has changed.
+   * Enqueue the snackbar request that is to be shown and notify subscribers that it has changed.
    *
-   *  @param request that is to be added in the queue
+   * @param request that is to be added in the queue
    */
   fun enqueueSnackbar(request: SnackbarRequest.ShowSnackbar) {
     _snackbarRequestQueue.add(request)
     notifyPotentialSnackbarChange()
   }
 
-  /**  Dismiss the current snackbar and notify subscribers that the [DataProvider] has changed. */
+  /** Dismiss the current snackbar and notify subscribers that the [DataProvider] has changed. */
   fun dismissCurrentSnackbar() {
     _snackbarRequestQueue.remove()
     notifyPotentialSnackbarChange()
@@ -61,10 +61,11 @@ class SnackbarController @Inject constructor(
   /** Sealed class that encapsulates the SnackbarRequest behaviour. */
   sealed class SnackbarRequest {
 
-    /** For showing the snackbar.
+    /**
+     * For showing the snackbar.
      *
-     *  @param messageStringId The message string of string resource that is to be displayed
-     *  @param duration The duration for which snackbar is to be shown
+     * @param messageStringId The message string of string resource that is to be displayed
+     * @param duration The duration for which snackbar is to be shown
      */
     data class ShowSnackbar(@StringRes val messageStringId: Int, val duration: SnackbarDuration) :
       SnackbarRequest()
