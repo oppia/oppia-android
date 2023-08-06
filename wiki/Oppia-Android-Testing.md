@@ -275,9 +275,9 @@ While writing espresso test cases we should never use `Thread.sleep(period)` as 
 
 Sometimes it may happen that test cases pass in Espresso but fail in Robolectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso. 
 
-In order to solve this in a clean and effective manner, we have created a [TestCoroutineDispatchers](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/TestCoroutineDispatchers.kt) using which we can provide test cases required delay weather on robolectric or espresso, both has its own implementation.  
-1. [TestCoroutineDispatchersEspressoImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/TestCoroutineDispatchersEspressoImpl.kt) - Here, we are using the real-time-clock and hooking the idling resources to monitor background coroutines. 
-2. [TestCoroutineDispatchersRobolectricImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/TestCoroutineDispatchersRobolectricImpl.kt) - Here, we had implemented a way using which we can run test cases in a coordinated, deterministic, and thread-safe way. 
+In order to solve this in a clean and effective manner, we have created a [TestCoroutineDispatchers](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchers.kt) using which we can provide test cases required delay weather on robolectric or espresso, both has its own implementation.  
+1. [TestCoroutineDispatchersEspressoImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchersEspressoImpl.kt) - Here, we are using the real-time-clock and hooking the idling resources to monitor background coroutines. 
+2. [TestCoroutineDispatchersRobolectricImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchersRobolectricImpl.kt) - Here, we had implemented a way using which we can run test cases in a coordinated, deterministic, and thread-safe way. 
 
 Following are the different ways you can try to pass the test cases.
 
