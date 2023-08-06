@@ -280,7 +280,19 @@
   <!-- Survey Activity -->
   <color name="component_color_survey_background_color">@color/color_palette_survey_background_color</color>
   <color name="component_color_survey_shared_button_color">@color/color_palette_survey_shared_button_color</color>
-  <color name="component_color_survey_onboarding_background_color">@color/color_palette_primary_color</color>
+  <color name="component_color_survey_previous_button_text_color">@color/color_palette_survey_previous_button_text_color</color>
+  <color name="component_color_survey_progress_bar_solid_color">@color/color_palette_survey_progress_bar_solid_color</color>
+  <color name="component_color_nps_survey_button_inactive_stroke_color">@color/color_palette_nps_survey_button_inactive_stroke_color</color>
+  <color name="component_color_survey_popup_header_text_color">@color/color_palette_survey_popup_header_color</color>
+  <color name="component_color_survey_popup_message_color">@color/color_palette_survey_popup_message_color</color>
+  <color name="component_color_survey_popup_background_color">@color/color_palette_survey_popup_background_color</color>
+  <color name="component_color_survey_white_button_color">@color/color_palette_survey_shared_button_color</color>
+  <color name="component_color_survey_green_button_color">@color/color_palette_survey_green_button_color</color>
+  <color name="component_color_survey_progress_bar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_survey_nps_unselected_text_color">@color/color_palette_nps_unselected_text_color</color>
+  <color name="component_color_survey_nps_selected_text_color">@color/color_palette_nps_selected_text_color</color>
+  <color name="component_color_survey_nps_unselected_background_color">@color/color_palette_nps_unselected_background_color</color>
+  <color name="component_color_survey_nps_selected_background_color">@color/color_palette_nps_selected_background_color</color>
   <color name="component_color_survey_primary_button_background_color">@color/color_palette_primary_color</color>
   <color name="component_color_survey_dialog_stroke_color">@color/color_palette_survey_dialog_stroke_color</color>
   <color name="component_color_survey_radio_button_unchecked_color">@color/color_palette_survey_radio_button_color</color>
