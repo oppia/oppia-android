@@ -204,4 +204,25 @@
   <color name="color_palette_onboarding_4_status_bar_color">@color/color_def_onboarding_4_status_bar</color>
   <color name="color_palette_coming_soon_rect_background_end_color">@color/color_def_grape_violet</color>
   <color name="color_palette_coming_soon_rect_background_start_color">@color/color_def_bright_violet</color>
+  <!-- SURVEY -->
+  <color name="color_palette_survey_background_color">@color/color_def_oppia_light_black</color>
+  <color name="color_palette_survey_shared_button_color">@color/color_def_white_f6</color>
+  <color name="color_palette_survey_previous_button_text_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_survey_progress_bar_solid_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_survey_popup_header_color">@color/color_def_white_f5</color>
+  <color name="color_palette_nps_survey_button_inactive_stroke_color">@color/color_def_black_grey</color>
+  <color name="color_palette_survey_popup_background_color">@color/color_def_dark_green</color>
+  <color name="color_palette_survey_popup_message_color">@color/color_def_white</color>
+  <color name="color_palette_survey_white_button_color">@color/color_def_white_f6</color>
+  <color name="color_palette_survey_green_button_color">@color/color_def_dark_green</color>
+  <color name="color_palette_survey_dialog_stroke_color">@color/color_def_light_blue</color>
+  <color name="color_palette_survey_radio_button_color">@color/color_def_white</color>
+  <color name="color_palette_survey_disabled_button_color">@color/color_def_oppia_grayish_black</color>
+  <color name="color_palette_survey_disabled_button_text_color">@color/color_def_chooser_grey</color>
+  <color name="color_palette_button_text_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_edit_text_unselected_color">@color/color_def_grey</color>
+  <color name="color_palette_nps_unselected_text_color">@color/color_def_dark_green</color>
+  <color name="color_palette_nps_selected_text_color">@color/color_def_white</color>
+  <color name="color_palette_nps_selected_background_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_nps_unselected_background_color">@color/color_def_pale_green</color>
 </resources>
