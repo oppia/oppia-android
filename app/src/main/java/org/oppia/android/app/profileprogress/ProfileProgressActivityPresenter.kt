@@ -1,7 +1,6 @@
 package org.oppia.android.app.profileprogress
 
 import android.content.Intent
-import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -37,9 +36,9 @@ class ProfileProgressActivityPresenter @Inject constructor(
       R.id.profile_progress_activity_toolbar
     ) as Toolbar
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar!!.setTitle(R.string.profile)
-    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    (activity.supportActionBar ?: return).setTitle(R.string.profile)
+    (activity.supportActionBar ?: return).setDisplayShowHomeEnabled(true)
+    (activity.supportActionBar ?: return).setDisplayHomeAsUpEnabled(true)
     toolbar.setNavigationOnClickListener {
       activity.finish()
     }
@@ -52,8 +51,7 @@ class ProfileProgressActivityPresenter @Inject constructor(
   }
 
   fun openGalleryIntent() {
-    val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
-    galleryIntent.type="image/*"
+    val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
     activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 
