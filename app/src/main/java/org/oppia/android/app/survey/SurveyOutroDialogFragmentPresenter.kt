@@ -60,7 +60,7 @@ class SurveyOutroDialogFragmentPresenter @Inject constructor(
         when (it) {
           is AsyncResult.Pending -> oppiaLogger.d("SurveyActivity", "Stopping survey session")
           is AsyncResult.Failure -> {
-            oppiaLogger.d("SurveyActivity", "Failed to stop the survey session")
+            oppiaLogger.d("SurveyActivity", "Failed to stop the survey session, ${it.error}")
             activity.finish() // Can't recover from the session failing to stop.
           }
           is AsyncResult.Success -> {

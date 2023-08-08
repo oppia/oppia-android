@@ -22,8 +22,10 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
@@ -36,6 +38,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWork
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
+import org.oppia.android.testing.FakeAuthenticationController
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -131,6 +134,8 @@ class LogReportWorkManagerInitializerTest {
     val enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId =
       logReportWorkManagerInitializer
         .getWorkRequestForSchedulingPeriodicBackgroundPerformanceMetricLogsId()
+    val enqueuedFirestoreWorkRequestId =
+      logReportWorkManagerInitializer.getWorkRequestForFirestoreId()
 
     assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
     assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
@@ -147,6 +152,9 @@ class LogReportWorkManagerInitializerTest {
     )
     assertThat(fakeLogScheduler.getMostRecentPeriodicBackgroundMetricLoggingRequestId()).isEqualTo(
       enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId
+    )
+    assertThat(fakeLogUploader.getMostRecentFirestoreRequestId()).isEqualTo(
+      enqueuedFirestoreWorkRequestId
     )
   }
 
@@ -248,6 +256,20 @@ class LogReportWorkManagerInitializerTest {
     ).isEqualTo(workerCaseForSchedulingMemoryUsageMetricLogs)
   }
 
+  @Test
+  fun testWorkRequest_verifyWorkRequestData_forSchedulingFirestoreUpload() {
+    val workerCaseForUploadingFirestoreData: Data = Data.Builder()
+      .putString(
+        LogUploadWorker.WORKER_CASE_KEY,
+        LogUploadWorker.FIRESTORE_WORKER
+      )
+      .build()
+
+    assertThat(
+      logReportWorkManagerInitializer.getWorkRequestDataForFirestore()
+    ).isEqualTo(workerCaseForUploadingFirestoreData)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -276,6 +298,10 @@ class LogReportWorkManagerInitializerTest {
     @Provides
     @PerformanceMetricsLogStorageCacheSize
     fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
   @Module
@@ -286,6 +312,15 @@ class LogReportWorkManagerInitializerTest {
 
     @Binds
     fun bindsFakeLogScheduler(fakeLogScheduler: FakeLogScheduler): MetricLogScheduler
+  }
+
+  @Module
+  interface
+  TestAuthModule {
+    @Binds
+    fun bindFakeAuthenticationController(
+      fakeAuthenticationController: FakeAuthenticationController
+    ): AuthenticationListener
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -299,7 +334,7 @@ class LogReportWorkManagerInitializerTest {
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, TestAuthModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

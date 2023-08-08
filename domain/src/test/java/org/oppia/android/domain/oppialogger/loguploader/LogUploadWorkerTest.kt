@@ -27,19 +27,24 @@ import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
+import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.FakeAuthenticationController
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -64,6 +69,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADIN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
+import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -92,8 +98,10 @@ class LogUploadWorkerTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var dataController: FirestoreDataController
   @Inject lateinit var exceptionsController: ExceptionsController
   @Inject lateinit var performanceMetricsController: PerformanceMetricsController
   @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
@@ -102,6 +110,8 @@ class LogUploadWorkerTest {
   @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
+  @field:[Inject MockFirestoreEventLogger]
+  lateinit var mockFirestoreEventLogger: FirestoreEventLogger
 
   private lateinit var context: Context
 
@@ -402,11 +412,108 @@ class LogUploadWorkerTest {
     assertThat(currentStatus).isEqualTo(NO_CONNECTIVITY)
   }
 
+  @Test
+  fun testWorker_logFirestoreEvent_withNetwork_enqueueRequest_verifySuccess() {
+    setUpTestApplicationComponent()
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    dataController.logEvent(
+      createOptionalSurveyResponseContext(),
+      profileId = null,
+      1556094120000
+    )
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.FIRESTORE_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(fakeFirestoreEventLogger.getMostRecentEvent()).isEqualTo(
+      optionalSurveyResponseEventLog
+    )
+  }
+
+  @Test
+  fun testWorker_logFirestoreEvent_withoutNetwork_enqueueRequest_writeFails_verifyFailure() {
+    setUpTestApplicationComponent()
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    dataController.logEvent(
+      createOptionalSurveyResponseContext(),
+      profileId = null,
+      1556094120000
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.FIRESTORE_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    setUpFirestoreEventLoggerToFail()
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(fakeFirestoreEventLogger.noEventsPresent()).isTrue()
+  }
+
+  private val optionalSurveyResponseEventLog = EventLog.newBuilder().apply {
+    this.context = createOptionalSurveyResponseContext()
+    this.timestamp = TEST_TIMESTAMP
+    this.priority = EventLog.Priority.ESSENTIAL
+  }
+    .build()
+
+  private fun createOptionalSurveyResponseContext(): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setOptionalResponse(
+        EventLog.OptionalSurveyResponseContext.newBuilder()
+          .setFeedbackAnswer("answer")
+          .setSurveyDetails(
+            createSurveyResponseContext()
+          )
+      )
+      .build()
+  }
+
+  private fun createSurveyResponseContext(): EventLog.SurveyResponseContext {
+    return EventLog.SurveyResponseContext.newBuilder()
+      .setSurveyId("test_survey_id")
+      .build()
+  }
+
   private fun setUpEventLoggerToFail() {
     // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
     // to remove the default stubbing for the mock so that it can properly trigger a failure.
     reset(mockAnalyticsEventLogger)
     `when`(mockAnalyticsEventLogger.logEvent(anyOrNull()))
+      .thenThrow(IllegalStateException("Failure."))
+  }
+
+  private fun setUpFirestoreEventLoggerToFail() {
+    // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
+    // to remove the default stubbing for the mock so that it can properly trigger a failure.
+    reset(mockFirestoreEventLogger)
+    `when`(mockFirestoreEventLogger.uploadEvent(anyOrNull()))
       .thenThrow(IllegalStateException("Failure."))
   }
 
@@ -431,6 +538,9 @@ class LogUploadWorkerTest {
   @Qualifier
   annotation class MockEventLogger
 
+  @Qualifier
+  annotation class MockFirestoreEventLogger
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -452,6 +562,21 @@ class LogUploadWorkerTest {
     }
 
     @Provides
+    @Singleton
+    @MockFirestoreEventLogger
+    fun bindMockFirestoreEventLogger(fakeFirestoreLogger: FakeFirestoreEventLogger):
+      FirestoreEventLogger {
+        return mock(FirestoreEventLogger::class.java).also {
+          `when`(it.uploadEvent(anyOrNull())).then { answer ->
+            fakeFirestoreLogger.uploadEvent(
+              answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
+            )
+            return@then null
+          }
+        }
+      }
+
+    @Provides
     fun bindFakeEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):
       AnalyticsEventLogger = delegate
 
@@ -462,6 +587,11 @@ class LogUploadWorkerTest {
     fun bindFakePerformanceMetricsLogger(
       fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
     ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
+
+    @Provides
+    fun bindFakeFirestoreEventLogger(
+      @MockFirestoreEventLogger delegate: FirestoreEventLogger
+    ): FirestoreEventLogger = delegate
   }
 
   @Module
@@ -478,6 +608,10 @@ class LogUploadWorkerTest {
     @Provides
     @PerformanceMetricsLogStorageCacheSize
     fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
   @Module
@@ -485,6 +619,14 @@ class LogUploadWorkerTest {
 
     @Binds
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
+  }
+
+  @Module
+  interface TestAuthModule {
+    @Binds
+    fun bindFakeAuthenticationController(
+      fakeAuthenticationController: FakeAuthenticationController
+    ): AuthenticationListener
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -498,7 +640,8 @@ class LogUploadWorkerTest {
       AssetModule::class, TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PerformanceMetricsAssessorModule::class,
-      ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class
+      ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class,
+      TestAuthModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

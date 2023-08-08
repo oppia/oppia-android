@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -18,12 +19,15 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.model.UserTypeAnswer
+import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.FakeAuthenticationController
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject
@@ -71,6 +75,9 @@ class SurveyProgressControllerTest {
 
   @Inject
   lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
 
   private val profileId = ProfileId.newBuilder().setInternalId(1).build()
 
@@ -397,7 +404,26 @@ class SurveyProgressControllerTest {
     }
   }
 
-  // TODO(#5001): Add tests for Optional responses logging to Firestore
+  @Test
+  fun testEndSurvey_afterCompletingAllQuestions_logsOptionalSurveyResponseEvent() {
+    startSuccessfulSurveySession()
+    waitForGetCurrentQuestionSuccessfulLoad()
+    submitUserTypeAnswer(UserTypeAnswer.PARENT)
+    submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
+    submitNpsAnswer(10)
+    submitTextInputAnswer(SurveyQuestionName.PROMOTER_FEEDBACK, TEXT_ANSWER)
+    stopSurveySession(surveyCompleted = true)
+
+    val eventLog = fakeFirestoreEventLogger.getMostRecentEvent()
+
+    EventLogSubject.assertThat(eventLog).hasOptionalSurveyResponseContextThat {
+      hasSurveyDetailsThat {
+        hasSurveyIdThat().isNotEmpty()
+        hasInternalProfileIdThat().isEqualTo("1")
+      }
+      hasFeedbackAnswerThat().isEqualTo(TEXT_ANSWER)
+    }
+  }
 
   private fun stopSurveySession(surveyCompleted: Boolean) {
     val stopProvider = surveyController.stopSurveySession(surveyCompleted)
@@ -534,6 +560,14 @@ class SurveyProgressControllerTest {
     fun provideApplicationIdSeed(): Long = applicationIdSeed
   }
 
+  @Module
+  interface TestAuthModule {
+    @Binds
+    fun bindFakeAuthenticationController(
+      fakeAuthenticationController: FakeAuthenticationController
+    ): AuthenticationListener
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -542,7 +576,7 @@ class SurveyProgressControllerTest {
       ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class
+      TestLoggingIdentifierModule::class, TestAuthModule::class,
     ]
   )
 

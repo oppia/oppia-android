@@ -196,4 +196,25 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
 )
 
+kt_android_library(
+    name = "data_controller",
+    srcs = [
+        "FirestoreDataController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/auth:authentication_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:firestore_logger_impl",
+        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
 dagger_rules()
