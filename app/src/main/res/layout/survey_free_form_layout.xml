@@ -32,6 +32,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
+      android:background="@{viewModel.isAnswerAvailable() ? @drawable/nps_survey_button_background : @drawable/nps_survey_button_inactive_background}"
       android:clickable="@{viewModel.isAnswerAvailable()}"
       android:enabled="@{viewModel.isAnswerAvailable()}"
       android:onClick="@{(v) ->viewModel.handleSubmitButtonClicked()}"
