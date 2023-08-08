@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivityPresenter
@@ -21,7 +21,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 class NavigationDrawerTestActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
   RouteToRecentlyPlayedListener {
@@ -48,7 +48,7 @@ class NavigationDrawerTestActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
-    homeActivityPresenter.handleOnCreate()
+    homeActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 

@@ -96,12 +96,12 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    syncUpWorkManagerInitializer.onCreate()
+    val workManager = WorkManager.getInstance(context)
+    syncUpWorkManagerInitializer.onCreate(workManager)
     testCoroutineDispatchers.runCurrent()
 
     val enqueuedSyncUpWorkRequestId = syncUpWorkManagerInitializer.getSyncUpWorkRequestId()
 
-    val workManager = WorkManager.getInstance(context)
     // Get all the WorkRequestInfo which have been tagged with "PlatformParameterSyncUpWorker.TAG"
     val workInfoList = workManager.getWorkInfosByTag(PlatformParameterSyncUpWorker.TAG).get()
     // There should be only one such work request having "PlatformParameterSyncUpWorker.TAG" tag
@@ -136,7 +136,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_verifyWorkRequestPeriodicity() {
-    syncUpWorkManagerInitializer.onCreate()
+    syncUpWorkManagerInitializer.onCreate(WorkManager.getInstance(context))
     testCoroutineDispatchers.runCurrent()
 
     val syncUpWorkerTimePeriodInMs = syncUpWorkManagerInitializer.getSyncUpWorkerTimePeriod()

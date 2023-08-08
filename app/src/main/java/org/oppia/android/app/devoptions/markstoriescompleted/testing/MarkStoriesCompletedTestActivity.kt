@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 
 /** Activity for testing [MarkStoriesCompletedFragment]. */
-class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
+class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   private var internalProfileId = -1
 
@@ -35,6 +35,7 @@ class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    /** [String] key value for mapping to InternalProfileId in [Bundle]. */
     const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedTestActivity.profile_id"
 
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */

@@ -194,14 +194,15 @@ class HomeViewModel(
       // completed story topic.
       val sortedStoryList = storyList.sortedByDescending { !it.isTopicLearned }
       return sortedStoryList.take(promotedStoryListLimit)
-        .map { promotedStory ->
+        .mapIndexed { index, promotedStory ->
           PromotedStoryViewModel(
             activity,
             internalProfileId,
             sortedStoryList.size,
             storyEntityType,
             promotedStory,
-            translationController
+            translationController,
+            index
           )
         }
     }

@@ -14,6 +14,7 @@ import dagger.multibindings.Multibinds
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -23,6 +24,7 @@ import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -42,7 +44,11 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ApplicationLifecycleModuleTest.TestApplication::class)
 class ApplicationLifecycleModuleTest {
-  @Inject lateinit var startupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
+  @Inject
+  lateinit var startupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
+
+  @Inject
+  lateinit var lifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
 
   @field:[JvmField Inject LearnerAnalyticsInactivityLimitMillis]
   var inactivityLimitMillis: Long = Long.MIN_VALUE
@@ -63,6 +69,11 @@ class ApplicationLifecycleModuleTest {
     // considered to help avoid potential unintended changes to this analytics behavioral
     // configuration property.
     assertThat(inactivityLimitMillis).isEqualTo(TimeUnit.MINUTES.toMillis(30))
+  }
+
+  @Test
+  fun testInjectApplicationLifecycleListenerSet_includesExplorationActiveTimeController() {
+    assertThat(lifecycleListeners.any { it is ExplorationActiveTimeController }).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -100,7 +111,8 @@ class ApplicationLifecycleModuleTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      LoggerModule::class, SyncStatusModule::class, CpuPerformanceSnapshotterModule::class
+      LoggerModule::class, SyncStatusModule::class, CpuPerformanceSnapshotterModule::class,
+      AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

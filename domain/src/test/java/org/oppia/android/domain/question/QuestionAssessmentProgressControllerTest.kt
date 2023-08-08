@@ -60,7 +60,6 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
-import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -109,6 +108,25 @@ class QuestionAssessmentProgressControllerTest {
   @Before
   fun setUp() {
     profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+  }
+
+  @Test
+  fun testEphemeralState_playSession_shouldIndicateNoButtonAnimation() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
+    val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
+    assertThat(ephemeralQuestion.ephemeralState.showContinueButtonAnimation).isFalse()
+  }
+
+  @Test
+  fun testEphemeralState_moveToNextState_shouldIndicateNoButtonAnimation() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
+    waitForGetCurrentQuestionSuccessfulLoad()
+    submitCorrectAnswerForQuestion0()
+    moveToNextQuestion()
+    val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
+    assertThat(ephemeralQuestion.ephemeralState.showContinueButtonAnimation).isFalse()
   }
 
   @Test
@@ -677,7 +695,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(3)
 
     val hintAndSolution = currentQuestion.ephemeralState.state.interaction.solution
-    assertThat(hintAndSolution.correctAnswer.correctAnswer).contains("1/4")
+    assertThat(hintAndSolution.correctAnswer.normalizedString).contains("1/4")
 
     monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitSolutionIsRevealed()
@@ -1500,7 +1518,7 @@ class QuestionAssessmentProgressControllerTest {
 
   private fun viewSolutionForQuestion2(ephemeralQuestion: EphemeralQuestion) {
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("3.0")
+    assertThat(solution.correctAnswer.real).isWithin(1e-5).of(3.0)
     monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitSolutionIsRevealed()
     )
@@ -1516,7 +1534,7 @@ class QuestionAssessmentProgressControllerTest {
 
   private fun viewSolutionForQuestion3(ephemeralQuestion: EphemeralQuestion) {
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("1/2")
+    assertThat(solution.correctAnswer.normalizedString).isEqualTo("1/2")
     monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitSolutionIsRevealed()
     )

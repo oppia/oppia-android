@@ -1,6 +1,7 @@
 package org.oppia.android.testing.logging
 
 import com.google.common.truth.BooleanSubject
+import com.google.common.truth.ComparableSubject
 import com.google.common.truth.FailureMetadata
 import com.google.common.truth.IntegerSubject
 import com.google.common.truth.IterableSubject
@@ -9,17 +10,25 @@ import com.google.common.truth.StringSubject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoSubject
+import com.google.common.truth.extensions.proto.LiteProtoTruth
+import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT
+import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.MANDATORY_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -31,12 +40,22 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.MarketFitAnswer
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.UserTypeAnswer
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 
 // TODO(#4272): Add tests for this class.
 
@@ -75,6 +94,39 @@ class EventLogSubject private constructor(
    */
   fun isOptionalPriority() {
     assertThat(actual.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+  }
+
+  /**
+   * Returns an [LiteProtoSubject] to verify the under-test [EventLog]'s [EventLog.getProfileId]
+   * field.
+   */
+  fun hasProfileIdThat(): LiteProtoSubject = LiteProtoTruth.assertThat(actual.profileId)
+
+  /**
+   * Returns an [AppLanguageSelectionSubject] to verify the under-test [EventLog]'s
+   * [EventLog.getAppLanguageSelection] field.
+   */
+  fun hasAppLanguageSelectionThat(): AppLanguageSelectionSubject =
+    AppLanguageSelectionSubject.assertThat(actual.appLanguageSelection)
+
+  /**
+   * Returns an [WrittenTranslationLanguageSelectionSubject] to verify the under-test [EventLog]'s
+   * [EventLog.getWrittenTranslationLanguageSelection] field.
+   */
+  fun hasWrittenTranslationLanguageSelectionThat(): WrittenTranslationLanguageSelectionSubject {
+    return WrittenTranslationLanguageSelectionSubject.assertThat(
+      actual.writtenTranslationLanguageSelection
+    )
+  }
+
+  /**
+   * Returns an [AudioTranslationLanguageSelectionSubject] to verify the under-test [EventLog]'s
+   * [EventLog.getAudioTranslationLanguageSelection] field.
+   */
+  fun hasAudioTranslationLanguageSelectionThat(): AudioTranslationLanguageSelectionSubject {
+    return AudioTranslationLanguageSelectionSubject.assertThat(
+      actual.audioTranslationLanguageSelection
+    )
   }
 
   /**
@@ -143,7 +195,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenInfoTabContextThat].
    */
@@ -169,7 +221,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenLessonsTabContextThat].
    */
@@ -195,7 +247,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenPracticeTabContextThat].
    */
@@ -221,7 +273,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenRevisionTabContextThat].
    */
@@ -247,7 +299,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenQuestionPlayerContextThat].
    */
@@ -273,7 +325,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenStoryActivityContextThat].
    */
@@ -299,7 +351,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenConceptCardContextThat].
    */
@@ -325,12 +377,38 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenRevisionCardContextThat].
    */
   fun hasOpenRevisionCardContextThat(block: RevisionCardContextSubject.() -> Unit) {
     hasOpenRevisionCardContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to [CLOSE_REVISION_CARD]
+   * (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasCloseRevisionCardContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(CLOSE_REVISION_CARD)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasCloseRevisionCardContext] and returns a
+   * [RevisionCardContextSubject] to test the corresponding context.
+   */
+  fun hasCloseRevisionCardContextThat(): RevisionCardContextSubject {
+    hasCloseRevisionCardContext()
+    return RevisionCardContextSubject.assertThat(actual.context.closeRevisionCard)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasCloseRevisionCardContextThat].
+   */
+  fun hasCloseRevisionCardContextThat(block: RevisionCardContextSubject.() -> Unit) {
+    hasCloseRevisionCardContextThat().block()
   }
 
   /**
@@ -351,7 +429,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasStartCardContextThat].
    */
@@ -377,7 +455,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasEndCardContextThat].
    */
@@ -386,29 +464,29 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies that the [EventLog] under test has a context corresponding to [HINT_OFFERED_CONTEXT]
+   * Verifies that the [EventLog] under test has a context corresponding to [HINT_UNLOCKED_CONTEXT]
    * (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasHintOfferedContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(HINT_OFFERED_CONTEXT)
+  fun hasHintUnlockedContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(HINT_UNLOCKED_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasHintOfferedContext] and returns a
+   * Verifies the [EventLog]'s context per [hasHintUnlockedContext] and returns a
    * [HintContextSubject] to test the corresponding context.
    */
-  fun hasHintOfferedContextThat(): HintContextSubject {
-    hasHintOfferedContext()
-    return HintContextSubject.assertThat(actual.context.hintOfferedContext)
+  fun hasHintUnlockedContextThat(): HintContextSubject {
+    hasHintUnlockedContext()
+    return HintContextSubject.assertThat(actual.context.hintUnlockedContext)
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasHintOfferedContextThat].
+   * [hasHintUnlockedContextThat].
    */
-  fun hasHintOfferedContextThat(block: HintContextSubject.() -> Unit) {
-    hasHintOfferedContextThat().block()
+  fun hasHintUnlockedContextThat(block: HintContextSubject.() -> Unit) {
+    hasHintUnlockedContextThat().block()
   }
 
   /**
@@ -429,7 +507,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasAccessHintContextThat].
    */
@@ -439,28 +517,28 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies that the [EventLog] under test has a context corresponding to
-   * [SOLUTION_OFFERED_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   * [SOLUTION_UNLOCKED_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasSolutionOfferedContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(SOLUTION_OFFERED_CONTEXT)
+  fun hasSolutionUnlockedContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(SOLUTION_UNLOCKED_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasSolutionOfferedContext] and returns an
+   * Verifies the [EventLog]'s context per [hasSolutionUnlockedContext] and returns an
    * [ExplorationContextSubject] to test the corresponding context.
    */
-  fun hasSolutionOfferedContextThat(): ExplorationContextSubject {
-    hasSolutionOfferedContext()
-    return ExplorationContextSubject.assertThat(actual.context.solutionOfferedContext)
+  fun hasSolutionUnlockedContextThat(): ExplorationContextSubject {
+    hasSolutionUnlockedContext()
+    return ExplorationContextSubject.assertThat(actual.context.solutionUnlockedContext)
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasSolutionOfferedContextThat].
+   * [hasSolutionUnlockedContextThat].
    */
-  fun hasSolutionOfferedContextThat(block: ExplorationContextSubject.() -> Unit) {
-    hasSolutionOfferedContextThat().block()
+  fun hasSolutionUnlockedContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasSolutionUnlockedContextThat().block()
   }
 
   /**
@@ -481,7 +559,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasAccessSolutionContextThat].
    */
@@ -507,7 +585,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasSubmitAnswerContextThat].
    */
@@ -525,20 +603,46 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies the [EventLog]'s context per [hasPlayVoiceOverContext] and returns a
-   * [PlayVoiceOverContextSubject] to test the corresponding context.
+   * [VoiceoverActionContextSubject] to test the corresponding context.
    */
-  fun hasPlayVoiceOverContextThat(): PlayVoiceOverContextSubject {
+  fun hasPlayVoiceOverContextThat(): VoiceoverActionContextSubject {
     hasPlayVoiceOverContext()
-    return PlayVoiceOverContextSubject.assertThat(actual.context.playVoiceOverContext)
+    return VoiceoverActionContextSubject.assertThat(actual.context.playVoiceOverContext)
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasPlayVoiceOverContextThat].
    */
-  fun hasPlayVoiceOverContextThat(block: PlayVoiceOverContextSubject.() -> Unit) {
+  fun hasPlayVoiceOverContextThat(block: VoiceoverActionContextSubject.() -> Unit) {
     hasPlayVoiceOverContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [PAUSE_VOICE_OVER_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasPauseVoiceOverContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(PAUSE_VOICE_OVER_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasPauseVoiceOverContext] and returns a
+   * [VoiceoverActionContextSubject] to test the corresponding context.
+   */
+  fun hasPauseVoiceOverContextThat(): VoiceoverActionContextSubject {
+    hasPauseVoiceOverContext()
+    return VoiceoverActionContextSubject.assertThat(actual.context.pauseVoiceOverContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasPauseVoiceOverContextThat].
+   */
+  fun hasPauseVoiceOverContextThat(block: VoiceoverActionContextSubject.() -> Unit) {
+    hasPauseVoiceOverContextThat().block()
   }
 
   /**
@@ -559,7 +663,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasAppInBackgroundContextThat].
    */
@@ -585,7 +689,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasAppInForegroundContextThat].
    */
@@ -611,7 +715,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasExitExplorationContextThat].
    */
@@ -637,7 +741,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasFinishExplorationContextThat].
    */
@@ -663,7 +767,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasResumeExplorationContextThat].
    */
@@ -689,7 +793,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasStartOverExplorationContextThat].
    */
@@ -715,7 +819,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasDeleteProfileContextThat].
    */
@@ -759,6 +863,62 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies that the [EventLog] under test has a context corresponding to
+   * [REACH_INVESTED_ENGAGEMENT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasReachedInvestedEngagementContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(REACH_INVESTED_ENGAGEMENT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasReachedInvestedEngagementContext] and returns a
+   * [ExplorationContextSubject] to test the corresponding context.
+   */
+  fun hasReachedInvestedEngagementContextThat(): ExplorationContextSubject {
+    hasReachedInvestedEngagementContext()
+    return ExplorationContextSubject.assertThat(actual.context.reachInvestedEngagement)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned
+   * by, [hasReachedInvestedEngagementContextThat].
+   */
+  fun hasReachedInvestedEngagementContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasReachedInvestedEngagementContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [SWITCH_IN_LESSON_LANGUAGE] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasSwitchInLessonLanguageContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(SWITCH_IN_LESSON_LANGUAGE)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasSwitchInLessonLanguageContext] and returns a
+   * [SwitchInLessonLanguageEventContextSubject] to test the corresponding context.
+   */
+  fun hasSwitchInLessonLanguageContextThat(): SwitchInLessonLanguageEventContextSubject {
+    hasSwitchInLessonLanguageContext()
+    return SwitchInLessonLanguageEventContextSubject.assertThat(
+      actual.context.switchInLessonLanguage
+    )
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned
+   * by, [hasSwitchInLessonLanguageContextThat].
+   */
+  fun hasSwitchInLessonLanguageContextThat(
+    block: SwitchInLessonLanguageEventContextSubject.() -> Unit
+  ) {
+    hasSwitchInLessonLanguageContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
    * [INSTALL_ID_FOR_FAILED_ANALYTICS_LOG] (per [EventLog.Context.getActivityContextCase]).
    */
   fun hasInstallIdForAnalyticsLogFailure() {
@@ -772,6 +932,266 @@ class EventLogSubject private constructor(
   fun hasInstallIdForAnalyticsLogFailureThat(): StringSubject {
     hasInstallIdForAnalyticsLogFailure()
     return assertThat(actual.context.installIdForFailedAnalyticsLog)
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [ABANDON_SURVEY] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasAbandonSurveyContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(ABANDON_SURVEY)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasAbandonSurveyContext] and returns a
+   * [AbandonSurveyContextSubject] to test the corresponding context.
+   */
+  fun hasAbandonSurveyContextThat(): AbandonSurveyContextSubject {
+    hasAbandonSurveyContext()
+    return AbandonSurveyContextSubject.assertThat(
+      actual.context.abandonSurvey
+    )
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block].
+   */
+  fun hasAbandonSurveyContextThat(
+    block: AbandonSurveyContextSubject.() -> Unit
+  ) {
+    hasAbandonSurveyContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [MANDATORY_RESPONSE] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasMandatorySurveyResponseContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(MANDATORY_RESPONSE)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasMandatorySurveyResponseContext] and returns a
+   * [MandatorySurveyResponseContextSubject] to test the corresponding context.
+   */
+  fun hasMandatorySurveyResponseContextThat(): MandatorySurveyResponseContextSubject {
+    hasMandatorySurveyResponseContext()
+    return MandatorySurveyResponseContextSubject.assertThat(
+      actual.context.mandatoryResponse
+    )
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block].
+   */
+  fun hasMandatorySurveyResponseContextThat(
+    block: MandatorySurveyResponseContextSubject.() -> Unit
+  ) {
+    hasMandatorySurveyResponseContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [SHOW_SURVEY_POPUP] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasShowSurveyPopupContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(SHOW_SURVEY_POPUP)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasShowSurveyPopupContext] and returns a
+   * [SurveyContextSubject] to test the corresponding context.
+   */
+  fun hasShowSurveyPopupContextThat(): SurveyContextSubject {
+    hasShowSurveyPopupContext()
+    return SurveyContextSubject.assertThat(
+      actual.context.showSurveyPopup
+    )
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block].
+   */
+  fun hasShowSurveyPopupContextThat(
+    block: SurveyContextSubject.() -> Unit
+  ) {
+    hasShowSurveyPopupContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [BEGIN_SURVEY] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasBeginSurveyContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(BEGIN_SURVEY)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasBeginSurveyContext] and returns a
+   * [SurveyContextSubject] to test the corresponding context.
+   */
+  fun hasBeginSurveyContextThat(): SurveyContextSubject {
+    hasBeginSurveyContext()
+    return SurveyContextSubject.assertThat(
+      actual.context.beginSurvey
+    )
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block].
+   */
+  fun hasBeginSurveyContextThat(
+    block: SurveyContextSubject.() -> Unit
+  ) {
+    hasBeginSurveyContextThat().block()
+  }
+
+  /**
+   * Truth subject for verifying properties of [AppLanguageSelection]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [AppLanguageSelection] proto can be verified through inherited methods.
+   *
+   * Call [AppLanguageSelectionSubject.assertThat] to create the subject.
+   */
+  class AppLanguageSelectionSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: AppLanguageSelection
+  ) : LiteProtoSubject(metadata, actual) {
+    /** Asserts that this selection corresponds to [USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT]. */
+    fun isUseSystemLanguageOrAppDefault(): Unit =
+      assertThat(actual.selectionTypeCase).isEqualTo(USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT)
+
+    /**
+     * Asserts that this selection corresponds to
+     * [AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE].
+     */
+    fun isSelectedLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE)
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test [AppLanguageSelection.getSelectedLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.selectedLanguage)
+
+    companion object {
+      /**
+       * Returns a new [AppLanguageSelectionSubject] to verify aspects of the specified
+       * [AppLanguageSelection] value.
+       */
+      fun assertThat(actual: AppLanguageSelection): AppLanguageSelectionSubject =
+        assertAbout(::AppLanguageSelectionSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [WrittenTranslationLanguageSelection]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [WrittenTranslationLanguageSelection] proto can be verified through inherited methods.
+   *
+   * Call [WrittenTranslationLanguageSelectionSubject.assertThat] to create the subject.
+   */
+  class WrittenTranslationLanguageSelectionSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: WrittenTranslationLanguageSelection
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Asserts that this selection corresponds to
+     * [WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE].
+     */
+    fun isUseAppLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE)
+    }
+
+    /**
+     * Asserts that this selection corresponds to
+     * [WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE].
+     */
+    fun isSelectedLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE)
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [WrittenTranslationLanguageSelection.getSelectedLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.selectedLanguage)
+
+    companion object {
+      /**
+       * Returns a new [WrittenTranslationLanguageSelectionSubject] to verify aspects of the
+       * specified [WrittenTranslationLanguageSelection] value.
+       */
+      fun assertThat(
+        actual: WrittenTranslationLanguageSelection
+      ): WrittenTranslationLanguageSelectionSubject =
+        assertAbout(::WrittenTranslationLanguageSelectionSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [AudioTranslationLanguageSelection]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [AudioTranslationLanguageSelection] proto can be verified through inherited methods.
+   *
+   * Call [AudioTranslationLanguageSelectionSubject.assertThat] to create the subject.
+   */
+  class AudioTranslationLanguageSelectionSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: AudioTranslationLanguageSelection
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Asserts that this selection corresponds to
+     * [AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE].
+     */
+    fun isUseAppLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE)
+    }
+
+    /**
+     * Asserts that this selection corresponds to
+     * [AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE].
+     */
+    fun isSelectedLanguage() {
+      assertThat(actual.selectionTypeCase)
+        .isEqualTo(AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE)
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [AudioTranslationLanguageSelection.getSelectedLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.selectedLanguage)
+
+    companion object {
+      /**
+       * Returns a new [AudioTranslationLanguageSelectionSubject] to verify aspects of the
+       * specified [AudioTranslationLanguageSelection] value.
+       */
+      fun assertThat(
+        actual: AudioTranslationLanguageSelection
+      ): AudioTranslationLanguageSelectionSubject =
+        assertAbout(::AudioTranslationLanguageSelectionSubject).that(actual)
+    }
   }
 
   /**
@@ -1025,20 +1445,20 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Truth subject for verifying properties of [EventLog.PlayVoiceOverContext]s.
+   * Truth subject for verifying properties of [EventLog.VoiceoverActionContext]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
-   * [EventLog.PlayVoiceOverContext] proto can be verified through inherited methods.
+   * [EventLog.VoiceoverActionContext] proto can be verified through inherited methods.
    *
-   * Call [PlayVoiceOverContextSubject.assertThat] to create the subject.
+   * Call [VoiceoverActionContextSubject.assertThat] to create the subject.
    */
-  class PlayVoiceOverContextSubject private constructor(
+  class VoiceoverActionContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.PlayVoiceOverContext
+    private val actual: EventLog.VoiceoverActionContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test
-     * [EventLog.PlayVoiceOverContext.getExplorationDetails].
+     * [EventLog.VoiceoverActionContext.getExplorationDetails].
      *
      * This method never fails since the underlying property defaults to empty proto if it's not
      * defined in the context.
@@ -1055,20 +1475,28 @@ class EventLogSubject private constructor(
     }
 
     /**
-     * Returns a [StringSubject] to test [EventLog.PlayVoiceOverContext.getContentId].
+     * Returns a [StringSubject] to test [EventLog.VoiceoverActionContext.getContentId].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
     fun hasContentIdThat(): StringSubject = assertThat(actual.contentId)
 
+    /**
+     * Returns a [StringSubject] to test [EventLog.VoiceoverActionContext.getLanguageCode].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasLanguageCodeThat(): StringSubject = assertThat(actual.languageCode)
+
     companion object {
       /**
-       * Returns a new [PlayVoiceOverContextSubject] to verify aspects of the specified
-       * [EventLog.PlayVoiceOverContext] value.
+       * Returns a new [VoiceoverActionContextSubject] to verify aspects of the specified
+       * [EventLog.VoiceoverActionContext] value.
        */
-      fun assertThat(actual: EventLog.PlayVoiceOverContext): PlayVoiceOverContextSubject =
-        assertAbout(::PlayVoiceOverContextSubject).that(actual)
+      fun assertThat(actual: EventLog.VoiceoverActionContext): VoiceoverActionContextSubject =
+        assertAbout(::VoiceoverActionContextSubject).that(actual)
     }
   }
 
@@ -1261,6 +1689,258 @@ class EventLogSubject private constructor(
        */
       fun assertThat(actual: EventLog.TopicContext): TopicContextSubject =
         assertAbout(::TopicContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.SwitchInLessonLanguageEventContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.SwitchInLessonLanguageEventContext] proto can be verified through inherited methods.
+   *
+   * Call [SwitchInLessonLanguageEventContextSubject.assertThat] to create the subject.
+   */
+  class SwitchInLessonLanguageEventContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.SwitchInLessonLanguageEventContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [ExplorationContextSubject] to test
+     * [EventLog.SwitchInLessonLanguageEventContext.getExplorationDetails].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasExplorationDetailsThat(): ExplorationContextSubject =
+      ExplorationContextSubject.assertThat(actual.explorationDetails)
+
+    /**
+     * Executes [block] in the context returned by [hasExplorationDetailsThat], similar to
+     * [hasOpenExplorationActivityContextThat].
+     */
+    fun hasExplorationDetailsThat(block: ExplorationContextSubject.() -> Unit) {
+      hasExplorationDetailsThat().block()
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.SwitchInLessonLanguageEventContext.getSwitchFromLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSwitchFromLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.switchFromLanguage)
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.SwitchInLessonLanguageEventContext.getSwitchToLanguage].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSwitchToLanguageThat(): ComparableSubject<OppiaLanguage> =
+      assertThat(actual.switchToLanguage)
+
+    companion object {
+      /**
+       * Returns a new [TopicContextSubject] to verify aspects of the specified
+       * [EventLog.TopicContext] value.
+       */
+      fun assertThat(
+        actual: EventLog.SwitchInLessonLanguageEventContext
+      ): SwitchInLessonLanguageEventContextSubject =
+        assertAbout(::SwitchInLessonLanguageEventContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.MandatorySurveyResponseContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.MandatorySurveyResponseContext] proto can be verified through inherited methods.
+   *
+   * Call [MandatorySurveyResponseContextSubject.assertThat] to create the subject.
+   */
+  class MandatorySurveyResponseContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.MandatorySurveyResponseContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [SurveyResponseContextSubject] to test
+     * [EventLog.AbandonSurveyContext.getSurveyDetails].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasSurveyDetailsThat(): SurveyResponseContextSubject =
+      SurveyResponseContextSubject.assertThat(actual.surveyDetails)
+
+    /** Executes [block] in the context returned by [hasSurveyDetailsThat]. */
+    fun hasSurveyDetailsThat(block: SurveyResponseContextSubject.() -> Unit) {
+      hasSurveyDetailsThat().block()
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.MandatorySurveyResponseContext.getUserTypeAnswer].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasUserTypeAnswerThat(): ComparableSubject<UserTypeAnswer> =
+      assertThat(actual.userTypeAnswer)
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.MandatorySurveyResponseContext.getMarketFitAnswer].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasMarketFitAnswerThat(): ComparableSubject<MarketFitAnswer> =
+      assertThat(actual.marketFitAnswer)
+
+    /**
+     * Returns a [ComparableSubject] to test
+     * [EventLog.MandatorySurveyResponseContext.getUserTypeAnswer].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasNpsScoreAnswerThat(): IntegerSubject =
+      assertThat(actual.npsScoreAnswer)
+
+    companion object {
+      /**
+       * Returns a new [AbandonSurveyContextSubject] to verify aspects of the specified
+       * [EventLog.AbandonSurveyContext] value.
+       */
+      fun assertThat(actual: EventLog.MandatorySurveyResponseContext):
+        MandatorySurveyResponseContextSubject =
+          assertAbout(::MandatorySurveyResponseContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.AbandonSurveyContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.AbandonSurveyContext] proto can be verified through inherited methods.
+   *
+   * Call [AbandonSurveyContextSubject.assertThat] to create the subject.
+   */
+  class AbandonSurveyContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.AbandonSurveyContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [SurveyResponseContextSubject] to test
+     * [EventLog.AbandonSurveyContext.getSurveyDetails].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasSurveyDetailsThat(): SurveyResponseContextSubject =
+      SurveyResponseContextSubject.assertThat(actual.surveyDetails)
+
+    /** Executes [block] in the context returned by [hasSurveyDetailsThat]. */
+    fun hasSurveyDetailsThat(block: SurveyResponseContextSubject.() -> Unit) {
+      hasSurveyDetailsThat().block()
+    }
+
+    /**
+     * Returns a [ComparableSubject] to test [EventLog.AbandonSurveyContext.getQuestionName].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasQuestionNameThat(): ComparableSubject<SurveyQuestionName> =
+      assertThat(actual.questionName)
+
+    companion object {
+      /**
+       * Returns a new [AbandonSurveyContextSubject] to verify aspects of the specified
+       * [EventLog.AbandonSurveyContext] value.
+       */
+      fun assertThat(actual: EventLog.AbandonSurveyContext): AbandonSurveyContextSubject =
+        assertAbout(::AbandonSurveyContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.SurveyResponseContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.SurveyResponseContext] proto can be verified through inherited methods.
+   *
+   * Call [SurveyResponseContextSubject.assertThat] to create the subject.
+   */
+  class SurveyResponseContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.SurveyResponseContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [StringSubject] to test [EventLog.SurveyResponseContext.getSurveyId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSurveyIdThat(): StringSubject = assertThat(actual.surveyId)
+
+    /**
+     * Returns a [StringSubject] to test [EventLog.SurveyResponseContext.getSurveyId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasInternalProfileIdThat(): StringSubject = assertThat(actual.profileId)
+
+    companion object {
+      /**
+       * Returns a new [SurveyResponseContextSubject] to verify aspects of the specified
+       * [EventLog.SurveyResponseContext] value.
+       */
+      fun assertThat(actual: EventLog.SurveyResponseContext): SurveyResponseContextSubject =
+        assertAbout(::SurveyResponseContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.SurveyContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.SurveyContext] proto can be verified through inherited methods.
+   *
+   * Call [SurveyContextSubject.assertThat] to create the subject.
+   */
+  class SurveyContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.SurveyContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [StringSubject] to test [EventLog.SurveyContext.getExplorationId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasExplorationIdThat(): StringSubject = assertThat(actual.explorationId)
+
+    /**
+     * Returns a [StringSubject] to test [EventLog.SurveyContext.getTopicId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasTopicIdThat(): StringSubject = assertThat(actual.topicId)
+
+    companion object {
+      /**
+       * Returns a new [SurveyContextSubject] to verify aspects of the specified
+       * [EventLog.SurveyContext] value.
+       */
+      fun assertThat(actual: EventLog.SurveyContext): SurveyContextSubject =
+        assertAbout(::SurveyContextSubject).that(actual)
     }
   }
 

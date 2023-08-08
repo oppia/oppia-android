@@ -18,7 +18,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_onboarding_activity_background_color">
+    android:background="@color/component_color_shared_screen_secondary_background_color">
 
     <androidx.viewpager2.widget.ViewPager2
       android:id="@+id/onboarding_slide_view_pager"
@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/component_color_onboarding_activity_divider_color"
+        android:background="@color/component_color_shared_divider_color"
         app:layout_constraintBottom_toTopOf="@+id/slide_dots_container" />
 
       <LinearLayout
@@ -74,10 +74,11 @@
         android:onClick="@{(v) -> presenter.clickOnNext()}"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        app:srcCompat="@drawable/ic_arrow_forward_black_24dp"
         android:visibility="@{viewModel.slideNumber != 3 ? View.VISIBLE: View.GONE, default=visible}"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/slide_dots_container" />
+        app:layout_constraintTop_toTopOf="@+id/slide_dots_container"
+        app:srcCompat="@drawable/ic_arrow_forward_black_24dp"
+        app:tint="@color/component_color_onboarding_activity_arrow_color" />
 
       <TextView
         android:id="@+id/skip_text_view"
@@ -88,6 +89,7 @@
         android:onClick="@{(v) -> presenter.clickOnSkip()}"
         android:text="@string/skip"
         android:textAllCaps="true"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:visibility="@{viewModel.slideNumber != (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=visible}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/slide_dots_container" />

@@ -1,11 +1,12 @@
 # [Oppia Android](https://www.oppia.org)
-[![Gitter](https://img.shields.io/badge/chat-on%20gitter-ff006f.svg)](https://gitter.im/oppia/oppia-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Mailing List](https://img.shields.io/badge/Mailing%20List-Oppia%20Android-dev.svg)](mailto:oppia-android-dev@googlegroups.com) [![Twitter Follow](https://img.shields.io/twitter/follow/oppiaorg.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/oppiaorg) [![GitHub issues by-label](https://img.shields.io/github/issues-search/oppia/oppia-android?label=Available%20starter%20issues&query=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22%20no%3Aassignee)](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee)
+
+[![Mailing List](https://img.shields.io/badge/Mailing%20List-Oppia%20Android-dev.svg)](mailto:oppia-android-dev@googlegroups.com) [![Twitter Follow](https://img.shields.io/twitter/follow/oppiaorg.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/oppiaorg) [![GitHub issues by-label](https://img.shields.io/github/issues-search/oppia/oppia-android?label=Available%20starter%20issues&query=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22%20no%3Aassignee)](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee)
 
 [![Unit Tests (Robolectric -- Gradle)](https://github.com/oppia/oppia-android/actions/workflows/main.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/main.yml) [![Unit Tests (Robolectric - Bazel)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml) [![Build Tests](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml) [![Static Checks](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml)
 
 Oppia is an online learning tool that enables anyone to easily create and share interactive activities (called 'explorations'). These activities simulate a one-on-one conversation with a tutor, making it possible for students to learn by doing while getting feedback.
 
-The Android app is a new, not-yet-released frontend for Oppia that provides access to Oppia's curated numeracy lessons for users who may not have regular access to internet connectivity, and in a way that can be easily shared across multiple members of the same household.
+The Android app is a frontend for Oppia that provides access to Oppia's curated numeracy lessons for users who may not have regular access to internet connectivity, and in a way that can be easily shared across multiple members of the same household. The app is now available in beta and can be installed from the [Play Store](https://play.google.com/store/apps/details?id=org.oppia.android).
 
 Oppia Android is written using Kotlin and Java, and leverages Bazel, databinding, Dagger 2, and AndroidX. See also:
 
@@ -13,21 +14,25 @@ Oppia Android is written using Kotlin and Java, and leverages Bazel, databinding
   * [Oppia.org community site](https://www.oppia.org)
   * [File an issue](https://github.com/oppia/oppia-android/issues/new/choose)
 
+You can also sign up to our [email newsletter](https://shorturl.at/CHPY6) for news and updates about the overall Oppia project.
+
+
 ## Installation
 
-Please refer to the [installation wiki page](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android) for full instructions.
+Please refer to the [Installing Oppia Android](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android) page for full instructions on how to install Oppia-Android on your local machine.
 
 ## Contributing
 
 The Oppia project is built by the community for the community. We welcome contributions from everyone, especially new contributors.
 
-You can help with Oppia's development in many ways, including 
-- [coding](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change) 
+You can help with Oppia's development in many ways, including
+- [coding](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change)
 - [instructional design & storytelling](https://github.com/oppia/oppia/wiki/Teaching-with-Oppia)
 - [UX research](https://github.com/oppia/oppia/wiki/Conducting-research-with-students)
 - [creating voiceovers](https://github.com/oppia/oppia/wiki/Instructions-for-voice-artists)
 - [design & art](https://github.com/oppia/oppia/wiki/Contributing-to-Oppia%27s-design)
 - [documentation](https://github.com/oppia/oppia-android/issues/1723)
+- [donating to support our work](https://www.oppia.org/donate)
 
 **Mobile developers**: please see [this wiki page](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change) for instructions on setting things up and committing changes.
 
@@ -64,10 +69,8 @@ The Oppia Android code is released under the [Apache v2 license](https://github.
 
 ## Keeping in touch
 
-  * [Discussion forum](http://groups.google.com/group/oppia)
+  * [Discussion forum](https://github.com/oppia/oppia-android/discussions)
   * [Announcements mailing list](http://groups.google.com/group/oppia-announce)
-
-We also have public chat rooms on Gitter: [https://gitter.im/oppia/oppia-android](https://gitter.im/oppia/oppia-android). Drop by and say hello!
 
 ## Social Media
 [<img height="30" src="https://img.shields.io/badge/twitter-1DA1F2.svg?&style=for-the-badge&logo=twitter&logoColor=white" />][twitter]

@@ -27,7 +27,6 @@
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
-  <string name="concept_card_close_icon_description">Clicking on this will close the concept card.</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
   <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
@@ -37,6 +36,9 @@
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
+  <string name="exploration_exit_button_spotlight_hint">Exit anytime using this button. We will save your progress.</string>
+  <string name="voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try it!</string>
+  <string name="voiceover_language_icon_spotlight_hint">Tap to change the voiceover language.</string>
   <string name="progress_database_full_dialog_title">Maximum storage capacity reached</string>
   <string name="progress_database_full_dialog_description">Saved progress for the lesson \"%s\" will be deleted.</string>
   <string name="progress_database_full_dialog_continue_button">Continue</string>
@@ -46,6 +48,13 @@
   <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
   <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_practice_start">Start</string>
+  <string name="info_tab_content_description">Details about the topic.</string>
+  <string name="revision_tab_content_description">Revise concepts learned from completed lessons here.</string>
+  <string name="practice_tab_content_description">Practice the concepts learned from completed lessons.</string>
+  <string name="lessons_tab_content_description">Tap here to start playing a lesson.</string>
+  <string name="topic_lessons_tab_spotlight_hint">Find all your lessons here.</string>
+  <string name="topic_revision_tab_spotlight_hint">Revise concepts learned from completed lessons here.</string>
+  <string name="first_chapter_spotlight_hint">Tap here to start playing a lesson.</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
   <string name="previous_state_description">Navigate to the previous card</string>
@@ -81,6 +90,8 @@
   <string name="chapter_completed">Chapter %s with title %s is completed</string>
   <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
+  <string name="chapter_locked_prerequisite_title_label">Chapter %s: %s is currently locked. Please complete chapter %s: %s to unlock this chapter.</string>
+  <string name="chapter_prerequisite_title_label_without_chapter_title">Complete the previous chapter to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
@@ -176,7 +187,6 @@
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%s!</string>
-  <string name="chapter_count_with_story_name">%1$s in %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -336,13 +346,19 @@
   <string name="home_activity_back_dialog_exit">Exit</string>
   <!-- HomeActivity -->
   <string name="home_activity_title">Home</string>
+  <string name="promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
+  <string name="select_a_topic_to_start">Select a Topic to Start</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->
+  <string name="profile_edit_activity_title">Edit Profile</string>
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>
   <string name="profile_edit_reset">Reset PIN</string>
+  <string name="profile_edit_mark_chapter_completion">Mark Chapters Completed</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_label">Enable Quick Language Switching</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_explanation">Allow this user to quickly switch between English and Swahili within a lesson.</string>
   <string name="profile_edit_delete">Profile Deletion</string>
   <string name="profile_edit_delete_dialog_title">Permanently delete this profile?</string>
   <string name="profile_edit_delete_dialog_message">All progress will be deleted and cannot be recovered.</string>
@@ -437,16 +453,18 @@
   <string name="no_new_hint_available">No new hint available</string>
   <string name="show_hints_and_solution">Show hints and solution</string>
   <string name="hint_list_item_number">Hint %s</string>
-  <string name="hints_andSolution_close_icon_description">Navigate up</string>
+  <string name="hints_and_solution_close_icon_description">Close</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="show_solution">Show solution</string>
-  <string name="reveal_solution">Reveal Solution</string>
+  <string name="reveal_solution">Show Solution</string>
+  <string name="hint_list_solution_title">Solution</string>
   <string name="reveal_hint">Show Hint</string>
   <string name="hide_hint">Hide Hint</string>
   <string name="hide_solution">Hide solution</string>
-  <string name="the_only_solution_is">The only solution is :  </string>
-  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
-  <string name="reveal">Reveal</string>
+  <string name="hints_list_exclusive_solution_text">The only solution is: %s</string>
+  <string name="hints_list_possible_solution_text">One solution is: %s</string>
+  <string name="this_will_reveal_the_solution">This will show the solution. Are you sure?</string>
+  <string name="reveal">Show</string>
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
   <string name="last_logged_in_recently">recently</string>
@@ -519,7 +537,6 @@
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
-  <string name="hints_android_solution_correct_answer">%s/%s</string>
   <string name="correct_submitted_answer">Correct submitted answer</string>
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
@@ -549,7 +566,7 @@
   <string name="privacy_policy_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/privacy-policy">this page</a> for the latest version of this privacy policy.]]></string>
   <!-- Terms of Service -->
   <string name="terms_of_service_title">Terms of Service</string>
-  <string name="agree_to_terms"><![CDATA[By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">Privacy Policy</oppia-noninteractive-policy>.]]></string>
+  <string name="agree_to_terms"><![CDATA[By using %s, you agree to our <br> <oppia-noninteractive-policy link="tos">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link="privacy">Privacy Policy</oppia-noninteractive-policy>.]]></string>
   <string name="terms_of_service_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/terms">this page</a> for the latest version of these terms.]]></string>
   <!-- Frequently asked questions & generic app help. -->
   <string name="faq_question_1">How can I create a new profile?</string>
@@ -563,13 +580,49 @@
   <string name="faq_answer_1"><![CDATA[<p>If it is your first time creating a profile and not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
   <string name="faq_answer_2"><![CDATA[<p>Once a profile is deleted:</p><ol><li>The profile cannot be recovered. </li><li> Profile information such as name, photos, and progress will be permanently deleted. </li></ol><p>To delete a profile (excluding the <u>Administrator\'s</u>):</p><ol><li> From the Administrator\'s Home Page, tap on the menu button on the top left. </li><li>Tap on <strong>Administrator Controls</strong>. </li><li>Tap on <strong>Edit Profiles</strong>. </li><li>Tap on the Profile you would like to delete. </li><li>At the bottom of the screen, tap <strong>Profile Deletion</strong>. </li><li>Tap <strong>Delete</strong> to confirm deletion. </li></ol><p><br></p><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
   <string name="faq_answer_3"><![CDATA[<p>To change your email/phone number:</p><ol><li>From the Administrator\'s Home Page, tap on the menu button on the top left.</li><li>Tap on <strong>Administrator Controls</strong>.</li><li>Tap on <strong>Edit Account</strong>.</li></ol><p><br></p> <p>If you want to change your email:</p><ol><li>Enter your new email and tap <strong>Save</strong>.</li><li>A confirmation link is sent to confirm your new email. The link will expire after 24 hours and must be clicked on to be associated with your account.</li></ol><p><br></p> <p>If changing your phone number:</p><ol><li> Enter your new phone number and tap <strong>Verify</strong>.</li><li> A code is sent to confirm your new number. The code will expire after 5 minutes and must be entered in the new screen to be associated with your account.</li></ol>]]></string>
-  <string name="faq_answer_4"><![CDATA[<p>%1$s <i>\"O-pee-yah\"</i> (Finnish) - \"to learn\"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
-  <string name="faq_answer_5"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has \"Administrator\" written under their name is the Administrator. </p>]]></string>
+  <string name="faq_answer_4"><![CDATA[<p>%1$s <i>"O-pee-yah"</i> (Finnish) - "to learn"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
+  <string name="faq_answer_5"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has "Administrator" written under their name is the Administrator. </p>]]></string>
   <string name="faq_answer_6"><![CDATA[<p>If the Exploration Player is not loading</p><p><br></p><p>Check to see if the app is up to date:</p><p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. </li></ul><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above </li></ul><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
   <string name="faq_answer_7"><![CDATA[<p>If your audio is not playing</p><p><br></p><p>Check to see if the app is up to date:</p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet may cause the audio to load irregularly, making it difficult to play. </li></ul><p><br></p><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above</li></ul><p><br></p><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
   <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
-  <string name="select_a_topic_to_start">Select a Topic to Start</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
+  <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
+  <string name="state_fragment_item_selection_no_items_selected_hint_text">Please select all correct choices.</string>
+  <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
+  <string name="state_fragment_item_selection_max_items_selected_hint_text">No more than %s choices may be selected.</string>
+  <string name="survey_activity_title">Survey</string>
+  <string name="survey_previous_button">Previous</string>
+  <string name="survey_submit_button">Submit</string>
+  <string name="survey_free_form_text_hint">Leave your feedback here</string>
+  <string name="survey_continue_survey_button">Continue Survey</string>
+  <string name="survey_exit_button">Exit</string>
+  <string name="survey_exit_button_description">Exit Survey</string>
+  <string name="survey_exit_confirmation_text">Are you sure you want to exit the survey?</string>
+  <string name="survey_onboarding_message_text">Your feedback helps us serve learners like you better. Would you like to complete a short survey about your experience?</string>
+  <string name="survey_begin_survey_button">Begin Survey</string>
+  <string name="survey_maybe_later_button">Maybe Later</string>
+  <string name="survey_thank_you_message_text">Thank you for completing the survey. We hope you\'ve enjoyed using %s!</string>
+  <string name="survey_exit_survey_button">Exit survey</string>
+  <string name="survey_onboarding_title_text">We\'d love your feedback!</string>
+  <string name="survey_thank_you_title_text">Thank you</string>
+  <string name="survey_nps_not_at_all_likely_label">0 - Not at all likely</string>
+  <string name="survey_nps_extremely_likely_label">10 - Extremely likely</string>
+  <string name="user_type_question">Please select one of the following:</string>
+  <string name="user_type_answer_learner">I am a learner</string>
+  <string name="user_type_answer_teacher">I am a teacher</string>
+  <string name="user_type_answer_parent">I am a parent</string>
+  <string name="user_type_answer_other">Other</string>
+  <string name="market_fit_question">How would you feel if you could no longer use %s?</string>
+  <string name="market_fit_answer_very_disappointed">Very disappointed</string>
+  <string name="market_fit_answer_somewhat_disappointed">Somewhat disappointed</string>
+  <string name="market_fit_answer_not_disappointed">Not disappointed</string>
+  <string name="market_fit_answer_wont_use_oppia">N/A - I don\’t use %s anymore</string>
+  <string name="nps_promoter_feedback_question">We are glad you have enjoyed your experience with %s. Please share what helped you the most:</string>
+  <string name="nps_passive_feedback_question">Thanks for responding! How can we provide a better experience?</string>
+  <string name="nps_detractor_feedback_question">Help us improve your experience! Please share  the primary reason for your score:</string>
+  <string name="nps_score_question">On a scale from 0–10, how likely are you to recommend %s to a friend or colleague?</string>
+  <string name="previous_subtopic_talkback_text">The previous subtopic is %s</string>
+  <string name="next_subtopic_talkback_text">The next subtopic is %s</string>
 </resources>

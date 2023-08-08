@@ -1,0 +1,226 @@
+syntax = "proto3";
+
+package model;
+
+import "languages.proto";
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Corresponds to a single survey.
+message Survey {
+  // The ID of the survey. This is a string value that uniquely identifies the survey.
+  // The ID should ostensibly be unique across all surveys globally for the purpose of analysis.
+  // This field is used to retrieve information about a survey, and should be treated as read-only.
+  string survey_id = 1;
+
+  // A list of questions which if not answered in full, the survey is considered incomplete.
+  repeated SurveyQuestion mandatory_questions = 2;
+
+  // An optional question that allows the user to provide additional feedback during the survey.
+  SurveyQuestion optional_question = 3;
+}
+
+// Represents a question that is part of the Survey.
+message SurveyQuestion {
+  // The ID of the survey question. This is a string value that uniquely identifies the question
+  // within the context of the survey, and is guaranteed to be unique within the survey scope only.
+  string question_id = 1;
+
+  // The semantic name of the question used to identify it in the analytics dashboard.
+  SurveyQuestionName question_name = 2;
+
+  // The type of question.
+  oneof question_type {
+    // Corresponds to a question with multiple choices.
+    SurveyQuestionOptionList multiple_choice = 3;
+
+    // Corresponds to a question with multiple choices and a free-text 'other' option.
+    SurveyQuestionOptionList multiple_choice_with_other = 4;
+
+    // Indicates whether this question takes a free-text response.
+    bool free_form_text = 5;
+  }
+
+  // The language to which this question is localized.
+  OppiaLanguage language = 6;
+}
+
+// Represents a list of answer options for a multiple choice question.
+message SurveyQuestionOptionList {
+  repeated SurveyQuestionOption options = 1;
+}
+
+// Corresponds to the semantic name given to each question.
+enum SurveyQuestionName {
+  // The question name is unknown.
+  QUESTION_NAME_UNSPECIFIED = 0;
+
+  // Corresponds to the name of the user type question.
+  USER_TYPE = 1;
+
+  // Corresponds to the market fit question.
+  MARKET_FIT = 2;
+
+  // Corresponds to the NPS question.
+  NPS = 3;
+
+  // Corresponds to the open-ended question for a NPS promoter.
+  PROMOTER_FEEDBACK = 4;
+
+  // Corresponds to the open-ended question for a NPS passive.
+  PASSIVE_FEEDBACK = 5;
+
+  // Corresponds to the open-ended question for a NPS detractor.
+  DETRACTOR_FEEDBACK = 6;
+}
+
+// Represents the multiple choice answer available for a question.
+message SurveyQuestionOption {
+  // The ID of this question option. It is a string that uniquely identifies the question option
+  // within the context of a survey question. It is only unique within the scope of a survey.
+  string question_option_id = 1;
+
+  // The semantic name of the question this answer option is tied to.
+  SurveyQuestionName question_name = 2;
+
+  // The type of answer this option represents.
+  oneof answer {
+    // The enum representation of the type of user answer option.
+    UserTypeAnswer user_type = 3;
+
+    // The enum representation of the market fit answer option.
+    MarketFitAnswer market_fit = 4;
+
+    // The integer value representing the nps score option.
+    int32 nps_score = 5;
+  }
+}
+
+// Represents an answer that was selected by a user for a survey question.
+message SurveySelectedAnswer {
+  // The ID of the survey to which this answer is tied. This is a string value that uniquely
+  // identifies the survey globally.
+  string survey_id = 1;
+
+  // Semantic name of the question the response is tied to.
+  SurveyQuestionName question_name = 2;
+
+  // The ID of the survey question. This is a string value that uniquely identifies the question
+  // within the context of the survey, and is guaranteed to be unique within the survey scope only.
+  string question_id = 3;
+
+  // The value of the answer the user gave.
+  oneof answer {
+    // The enum representation of the type of user answer selected.
+    UserTypeAnswer user_type = 4;
+
+    // The enum representation of the market fit answer selected.
+    MarketFitAnswer market_fit = 5;
+
+    // The integer value representing the nps score selected by the user.
+    int32 nps_score = 6;
+
+    // The string value representing the free text answer entered by a user.
+    string free_form_answer = 7;
+  }
+}
+
+// Represents the different types of users who could be taking the survey.
+// Consists of answer options for the user type question.
+enum UserTypeAnswer {
+  // User type unknown.
+  USER_TYPE_UNSPECIFIED = 0;
+
+  // Corresponds to a user who is a learner.
+  LEARNER = 1;
+
+  // Corresponds to a user who is a teacher.
+  TEACHER = 2;
+
+  // Corresponds to a user who is a parent.
+  PARENT = 3;
+
+  // Corresponds to an unspecified or unknown type of user.
+  OTHER = 4;
+}
+
+// Represents general opinion of the user about the Oppia android app.
+// Consists of answer options for the market fit question.
+enum MarketFitAnswer {
+  // Answer unknown.
+  MARKET_FIT_ANSWER_UNSPECIFIED = 0;
+
+  // Corresponds to the answer for Very Disappointed.
+  VERY_DISAPPOINTED = 1;
+
+  // Corresponds to the answer for Disappointed.
+  DISAPPOINTED = 2;
+
+  // Corresponds to the answer for Not Disappointed.
+  NOT_DISAPPOINTED = 3;
+
+  // Corresponds to the answer for N/A - Don't use Oppia Anymore.
+  NOT_APPLICABLE_WONT_USE_OPPIA_ANYMORE = 4;
+}
+
+// Represents the status of the survey at the time it is exited.
+enum SurveyCompletionStatus {
+  // The completion status is unknown.
+  SURVEY_COMPLETION_STATUS_UNSPECIFIED = 0;
+
+  // Corresponds to the survey being declined, not started.
+  DECLINED = 1;
+
+  // Corresponds to the survey being exited before the mandatory questions are completed.
+  EXITED_NOT_COMPLETED = 2;
+
+  // Corresponds to the mandatory part of the survey being completed.
+  MANDATORY_PART_COMPLETED = 3;
+
+  // Corresponds to the optional part of the survey being completed.
+  FULLY_COMPLETED = 4;
+}
+
+// Corresponds to a survey question that exists ephemerally in the UI and will disappear
+// once the user finishes or exits the survey session.
+message EphemeralSurveyQuestion {
+  // The actual question the user is currently viewing.
+  SurveyQuestion question = 1;
+
+  // Indicates whether this question has a previous question that has been answered,
+  // or if this is the initial question.
+  bool has_previous_question = 2;
+
+  // Indicates whether this question has an upcoming question that can be navigated to.
+  bool has_next_question = 3;
+
+  // Indicates possible states a question can take depending on whether a user needs to provide an
+  // answer or has navigated to a previous question, or has reached the last question.
+  oneof question_type {
+    // A pending question that requires an answer to continue.
+    bool pending_question = 4;
+
+    // The SurveySelectedAnswer given to complete this question.
+    SurveySelectedAnswer selected_answer = 5;
+
+    // Present if this is the last question in the survey.
+    bool terminal_question = 6;
+  }
+
+  // Corresponds the index of the current question in the survey, starting at 0. This index is
+  // guaranteed to be unique for a specific question and will be equal to the total question count if
+  // the learner has reached the end of the survey.
+  int32 current_question_index = 7;
+
+  // Corresponds to the number of questions in the survey. This value will never change in the same
+  // survey instance.
+  int32 total_question_count = 8;
+}
+
+// Top-level proto used to store the user selected answers in a survey, and is expected to only
+// exist ephemerally in memory during the survey session.
+message SelectedAnswerDatabase {
+  // Map from question ID to SurveySelectedAnswer for that question.
+  map<string, SurveySelectedAnswer> selected_answer = 1;
+}

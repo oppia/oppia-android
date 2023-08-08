@@ -25,7 +25,11 @@ private const val STROKE_DASH_GAP_IN_DEGREE = 12
  *
  * Reference: // https://stackoverflow.com/a/39210676
  */
-class SegmentedCircularProgressView : View {
+class SegmentedCircularProgressView @JvmOverloads constructor(
+  context: Context,
+  attrs: AttributeSet? = null,
+  defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
@@ -45,6 +49,7 @@ class SegmentedCircularProgressView : View {
   private var chaptersInProgress: Int = 0
   private var totalChapters: Int = 0
 
+  /** Sets StoryChapterDetails to this view for displaying and finally initialises the view. */
   fun setStoryChapterDetails(
     totalChaptersCount: Int,
     chaptersFinishedCount: Int,
@@ -62,30 +67,34 @@ class SegmentedCircularProgressView : View {
     }
   }
 
-  constructor(context: Context) : super(context)
-  constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-    context,
-    attrs,
-    defStyleAttr
-  )
-
   private fun initialise() {
     chaptersNotStarted = totalChapters - chaptersFinished - chaptersInProgress
     strokeWidth = dpToPx(4)
     calculateSweepAngle()
 
     chapterFinishedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    setupArcPaint(chapterFinishedArcPaint, R.color.oppia_progress_chapter_finished)
+    setupArcPaint(
+      chapterFinishedArcPaint,
+      R.color.component_color_lessons_tab_activity_chapter_completed_progress_color
+    )
 
     chapterInProgressArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    setupArcPaint(chapterInProgressArcPaint, R.color.oppia_progress_chapter_in_progress)
+    setupArcPaint(
+      chapterInProgressArcPaint,
+      R.color.component_color_lessons_tab_activity_chapter_in_progress_progress_color
+    )
 
     chapterNotStartedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     if (chaptersFinished != 0) {
-      setupArcPaint(chapterNotStartedArcPaint, R.color.oppia_progress_chapter_not_finished)
+      setupArcPaint(
+        chapterNotStartedArcPaint,
+        R.color.component_color_lessons_tab_activity_chapter_not_finished_progress_color
+      )
     } else {
-      setupArcPaint(chapterNotStartedArcPaint, R.color.color_def_grey_shade_20)
+      setupArcPaint(
+        chapterNotStartedArcPaint,
+        R.color.component_color_lessons_tab_activity_chapter_not_started_progress_color
+      )
     }
   }
 

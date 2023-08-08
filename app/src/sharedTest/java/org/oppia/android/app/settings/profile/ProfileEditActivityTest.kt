@@ -3,6 +3,7 @@ package org.oppia.android.app.settings.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -13,7 +14,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -40,7 +40,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -62,6 +61,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -161,18 +161,20 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEditActivity_hasCorrectActivityLabel() {
-    profileManagementController.updateName(
-      ProfileId.newBuilder().setInternalId(1).build(),
-      newName = "Yash"
-    )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
         profileId = 1
       )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Yash"))))
+    ).use { activityScenario ->
+      activityScenario.onActivity {
+        val titleToolbar = it.findViewById<Toolbar>(R.id.profile_edit_toolbar)
+        val titleToolbarText = titleToolbar.title
+
+        assertThat(titleToolbarText).isEqualTo(
+          context.getString(R.string.profile_edit_activity_title)
+        )
+      }
     }
   }
 
@@ -282,7 +284,6 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
       onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
@@ -301,7 +302,6 @@ class ProfileEditActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Admin"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
@@ -320,7 +320,6 @@ class ProfileEditActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
       onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
@@ -337,30 +336,11 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Admin"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_updateName_checkNewNameDisplayed() {
-    profileManagementController.updateName(
-      ProfileId.newBuilder().setInternalId(1).build(),
-      newName = "Akshay"
-    )
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Akshay"))))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Akshay")))
     }
   }
 
@@ -392,7 +372,7 @@ class ProfileEditActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

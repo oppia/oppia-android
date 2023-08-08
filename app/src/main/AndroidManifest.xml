@@ -16,12 +16,8 @@
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
     <!-- NOTE TO DEVELOPER: You can enable debug logs for fast upload & better inspection in Firebase console using https://support.google.com/analytics/answer/7201382. -->
-    <meta-data
-      android:name="firebase_analytics_collection_deactivated"
-      android:value="true" />
-    <meta-data
-      android:name="firebase_crashlytics_collection_enabled"
-      android:value="false" />
+    <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+    <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
     <meta-data
       android:name="automatic_app_expiration_enabled"
       android:value="false" />
@@ -35,6 +31,10 @@
     <activity
       android:name=".app.testing.AdministratorControlsFragmentTestActivity"
       android:label="@string/administrator_controls_fragment_test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.testing.SpotlightFragmentTestActivity"
+      android:label="@string/test_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
@@ -158,6 +158,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileEditActivity"
+      android:label="@string/profile_edit_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileListActivity"
@@ -175,6 +176,7 @@
       android:name=".app.splash.SplashActivity"
       android:label="@string/app_name"
       android:screenOrientation="portrait"
+      android:exported="true"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -189,8 +191,10 @@
       android:name=".app.story.StoryActivity"
       android:label="@string/story_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".app.testing.AppCompatCheckBoxBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.AudioFragmentTestActivity" />
     <activity android:name=".app.testing.BindableAdapterTestActivity" />
+    <activity android:name=".app.testing.CircularProgressIndicatorAdaptersTestActivity" />
     <activity android:name=".app.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".app.testing.DragDropTestActivity" />
     <activity android:name=".app.testing.DrawableBindingAdaptersTestActivity" />
@@ -303,6 +307,11 @@
     <activity
       android:name=".app.testing.activity.TestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.survey.SurveyActivity"
+      android:label="@string/survey_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:windowSoftInputMode="adjustNothing" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"

@@ -12,8 +12,8 @@
       android:fontFamily="sans-serif-medium"
       android:text="@string/select_a_topic_to_start"
       android:padding="10dp"
-      android:background="@color/color_def_oppia_stroke_blue"
-      android:textColor="@color/oppia_primary_text"
+      android:background="@color/component_color_test_margin_bindable_adapter_activity_background_color"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="18sp" />
   </FrameLayout>
 </layout>

@@ -108,7 +108,7 @@ class DragViewAction(
   }
 }
 
-/** Class to find coordinates of an item within your RecyclerView.*/
+/** Class to find coordinates of an item within your RecyclerView. */
 class RecyclerViewCoordinatesProvider(
   private val position: Int,
   private val childItemCoordinatesProvider: CoordinatesProvider
@@ -120,7 +120,7 @@ class RecyclerViewCoordinatesProvider(
   }
 }
 
-/** Class to find coordinates of a child with a given id.*/
+/** Class to find coordinates of a child with a given id. */
 class ChildViewCoordinatesProvider(
   private val childViewId: Int,
   private val insideChildViewCoordinatesProvider: CoordinatesProvider
@@ -134,7 +134,7 @@ class ChildViewCoordinatesProvider(
   }
 }
 
-/**Class to provide coordinates above and under a View.*/
+/** Class to provide coordinates above and under a View. */
 enum class CustomGeneralLocation : CoordinatesProvider {
   UNDER_RIGHT {
     override fun calculateCoordinates(view: View): FloatArray {

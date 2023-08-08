@@ -46,6 +46,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -212,7 +213,8 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
-          translationController
+          translationController,
+          index = 0
         )
         val promotedStoryViewModelProfile2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
@@ -220,7 +222,8 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
-          translationController
+          translationController,
+          index = 0
         )
 
         assertThat(promotedStoryViewModelProfile1).isNotEqualTo(promotedStoryViewModelProfile2)
@@ -240,7 +243,8 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 2,
           entityType = "entity",
           promotedStory = promotedStory1,
-          translationController
+          translationController,
+          index = 0
         )
         val promotedStoryViewModelStoryCount3 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
@@ -248,7 +252,8 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
-          translationController
+          translationController,
+          index = 0
         )
 
         assertThat(promotedStoryViewModelStoryCount2)
@@ -269,7 +274,8 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity_1",
           promotedStory = promotedStory1,
-          translationController
+          translationController,
+          index = 0
         )
         val promotedStoryViewModelEntity2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
@@ -277,7 +283,8 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity_2",
           promotedStory = promotedStory1,
-          translationController
+          translationController,
+          index = 0
         )
 
         assertThat(promotedStoryViewModelEntity1).isNotEqualTo(promotedStoryViewModelEntity2)
@@ -299,7 +306,8 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
-          translationController
+          translationController,
+          index = 0
         )
         val promotedStoryViewModelStory2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
@@ -307,7 +315,8 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory2,
-          translationController
+          translationController,
+          index = 0
         )
 
         assertThat(promotedStoryViewModelStory1).isNotEqualTo(promotedStoryViewModelStory2)
@@ -361,7 +370,8 @@ class PromotedStoryViewModelTest {
       totalStoryCount = 3,
       entityType = "entity",
       promotedStory = promotedStory1,
-      translationController
+      translationController,
+      index = 0
     )
   }
 
@@ -392,7 +402,7 @@ class PromotedStoryViewModelTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

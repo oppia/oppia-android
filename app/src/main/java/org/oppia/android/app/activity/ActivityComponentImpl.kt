@@ -54,8 +54,11 @@ import org.oppia.android.app.settings.profile.ProfileRenameActivity
 import org.oppia.android.app.settings.profile.ProfileResetPinActivity
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.survey.SurveyActivity
 import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
+import org.oppia.android.app.testing.AppCompatCheckBoxBindingAdaptersTestActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
+import org.oppia.android.app.testing.CircularProgressIndicatorAdaptersTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
 import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
@@ -74,6 +77,7 @@ import org.oppia.android.app.testing.PoliciesFragmentTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
+import org.oppia.android.app.testing.SpotlightFragmentTestActivity
 import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
@@ -113,10 +117,15 @@ interface ActivityComponentImpl :
   fun inject(administratorControlsActivity: AdministratorControlsActivity)
   fun inject(administratorControlsFragmentTestActivity: AdministratorControlsFragmentTestActivity)
   fun inject(adminPinActivity: AdminPinActivity)
+  fun inject(
+    appCompatCheckBoxBindingAdaptersTestActivity:
+      AppCompatCheckBoxBindingAdaptersTestActivity
+  )
   fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(appVersionActivity: AppVersionActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(audioLanguageActivity: AudioLanguageActivity)
+  fun inject(circularProgressAdaptersTestActivity: CircularProgressIndicatorAdaptersTestActivity)
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(developerOptionsActivity: DeveloperOptionsActivity)
@@ -184,6 +193,7 @@ interface ActivityComponentImpl :
       StateAssemblerPaddingBindingAdaptersTestActivity
   )
 
+  fun inject(spotlightFragmentTestActivity: SpotlightFragmentTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
@@ -197,4 +207,5 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
+  fun inject(surveyActivity: SurveyActivity)
 }

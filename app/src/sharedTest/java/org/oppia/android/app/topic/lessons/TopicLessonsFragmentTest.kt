@@ -17,6 +17,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.hasContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -55,6 +56,9 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ResumeLessonActivityParams
+import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -83,6 +87,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.exploration.testing.FakeExplorationRetriever
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -96,6 +101,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
@@ -146,21 +152,30 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class TopicLessonsFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
-  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-  @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject
+  lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
 
   private val internalProfileId = 0
-
   private lateinit var profileId: ProfileId
 
   @Before
@@ -171,6 +186,7 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    markAllSpotlightsSeen()
   }
 
   @After
@@ -344,6 +360,30 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterIsLocked_contentDescriptionIsCorrect() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_play_state_icon
+        )
+      ).check(matches(isDisplayed()))
+        .check(matches(hasContentDescription()))
+        .check(
+          matches(
+            withContentDescription(
+              "Chapter 2: Order is important is currently locked. Please complete chapter 1: " +
+                "What is a Ratio? to unlock this chapter."
+            )
+          )
+        )
+    }
+  }
+
+  @Test
   fun testLessonsPlayFragment_loadRatiosTopic_chapterCompletedIsCorrectlyDisplayed() {
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId,
@@ -359,6 +399,33 @@ class TopicLessonsFragmentTest {
           targetViewId = R.id.lessons_completed_chapter_view
         )
       ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterCompleted_contentDescriptionIsCorrect() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_index
+        )
+      ).check(matches(isDisplayed()))
+        .check(matches(hasContentDescription()))
+        .check(
+          matches(
+            withContentDescription(
+              "Chapter 1 with title What is a Ratio? is completed"
+            )
+          )
+        )
     }
   }
 
@@ -379,6 +446,34 @@ class TopicLessonsFragmentTest {
           targetViewId = R.id.lessons_in_progress_chapter_container
         )
       ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterInProgress_contentDescriptionIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_play_state_icon
+        )
+      ).check(matches(isDisplayed()))
+        .check(matches(hasContentDescription()))
+        .check(
+          matches(
+            withContentDescription(
+              "Chapter 1 with title What is a Ratio? is in progress"
+            )
+          )
+        )
     }
   }
 
@@ -933,6 +1028,15 @@ class TopicLessonsFragmentTest {
     }
   }
 
+  private fun markAllSpotlightsSeen() {
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -1086,7 +1190,7 @@ class TopicLessonsFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

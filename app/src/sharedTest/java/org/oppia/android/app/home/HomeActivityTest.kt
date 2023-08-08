@@ -63,9 +63,12 @@ import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN_VALUE
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -96,6 +99,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -106,9 +110,9 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -122,6 +126,7 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -192,6 +197,9 @@ class HomeActivityTest {
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
@@ -325,6 +333,40 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.recently_played_stories_text_view)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPromotedStorySpotlight_setToShowOnSecondLogin_notSeenBefore_checkSpotlightShown() {
+    logIntoUserTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.promoted_story_spotlight_hint))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_pressDone_checkSpotlightNotShown() {
+    logIntoUserTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_spotlight_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    // Re-launch the activity.
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -750,6 +792,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
+    markSpotlightSeen(profileId1)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -877,6 +920,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickPromotedStory_opensTopicActivity() {
+    markSpotlightSeen(profileId1)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -959,6 +1003,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_firstTestTopic_topicSummary_opensTopicActivityThroughPlayIntent() {
     logIntoUserTwice()
+    markSpotlightSeen(profileId1)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(5)
@@ -1129,6 +1174,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
     logIntoUserTwice()
+    markSpotlightSeen(profileId1)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -1348,6 +1394,7 @@ class HomeActivityTest {
   fun testHomeActivity_noTopicsStarted_tabletPortraitDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
+    markSpotlightSeen(profileId)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
@@ -1363,6 +1410,7 @@ class HomeActivityTest {
   fun testHomeActivity_noTopicsStarted_tabletLandscapeDisplaysTopicsIn4Columns() {
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
+    markSpotlightSeen(profileId)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1737,6 +1785,57 @@ class HomeActivityTest {
     }
   }
 
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
+    appStringIetfTag = "pcm",
+    appStringAndroidLanguageId = "pcm",
+    appStringAndroidRegionId = "NG"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
+  fun testHomeActivity_initialNigerianPidginContext_isInLtrLayout() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val layoutDirection = displayLocale.getLayoutDirection()
+      assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
+    }
+  }
+
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
+    appStringIetfTag = "pcm",
+    appStringAndroidLanguageId = "pcm",
+    appStringAndroidRegionId = "NG"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testHomeActivity_initialNigerianPidginContext_hasNaijaDisplayLocale() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the display locale is set up correctly (for string formatting).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val localeContext = displayLocale.localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(NIGERIAN_PIDGIN)
+    }
+  }
+
+  private fun markSpotlightSeen(profileId: ProfileId) {
+    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.PROMOTED_STORIES)
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun createHomeActivityIntent(profileId: Int): Intent {
     return HomeActivity.createHomeActivity(context, profileId)
   }
@@ -1862,7 +1961,7 @@ class HomeActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -1885,7 +1984,7 @@ class HomeActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -1916,5 +2015,6 @@ class HomeActivityTest {
   private companion object {
     private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
     private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val NIGERIA_NAIJA_LOCALE = Locale("pcm", "NG")
   }
 }

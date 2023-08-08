@@ -14,7 +14,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_topic_info_fragment_background_color"
+    android:background="@color/component_color_shared_screen_primary_background_color"
     android:overScrollMode="never"
     android:scrollbars="none">
 
@@ -56,7 +56,7 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topicTitle}"
-        android:textColor="@color/component_color_topic_info_fragment_topic_name_text_color"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/topic_thumbnail_image_view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.storyCountText}"
-        android:textColor="@color/component_color_topic_info_fragment_story_count_text_color"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -106,7 +106,7 @@
         android:onClick="@{(v) -> viewModel.clickSeeMore()}"
         android:paddingTop="8dp"
         android:text="@{viewModel.isDescriptionExpanded() ? @string/see_less : @string/see_more}"
-        android:textColor="@color/component_color_topic_info_fragment_see_more_text_color"
+        android:textColor="@color/component_color_shared_active_text_color"
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="@{viewModel.isSeeMoreVisible() ? View.VISIBLE : View.GONE}"
@@ -122,10 +122,10 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="32dp"
-        app:srcCompat="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/see_more_text_view"
+        app:srcCompat="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
         app:tint="@color/component_color_topic_info_fragment_download_status_image_color" />
 
       <TextView
@@ -136,7 +136,7 @@
         android:layout_marginStart="12dp"
         android:fontFamily="sans-serif"
         android:text="@string/topic_downloaded"
-        android:textColor="@color/component_color_topic_info_fragment_download_story_count_text_color"
+        android:textColor="@color/component_color_shared_download_story_text_color"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
         app:layout_constraintHorizontal_bias="0.0"
@@ -152,7 +152,7 @@
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topicSizeText}"
-        android:textColor="@color/component_color_topic_info_fragment_download_story_size_text_color"
+        android:textColor="@color/component_color_shared_download_story_text_color"
         android:textSize="18sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"

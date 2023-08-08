@@ -11,7 +11,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 # TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
-    api_level = 30,
+    api_level = 31,
     build_tools_version = "29.0.2",
 )
 
@@ -125,27 +125,25 @@ git_repository(
 # to correctly size in-line SVGs (such as those needed for LaTeX-based math expressions).
 git_repository(
     name = "androidsvg",
-    commit = "4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf",
+    commit = "1265eb1087056cf3fc2e10442e5545bc65c109ce",
     remote = "https://github.com/oppia/androidsvg",
-    shallow_since = "1647295507 -0700",
+    shallow_since = "1686302944 -0700",
+)
+
+git_repository(
+    name = "android-spotlight",
+    commit = "ebde38335bfb56349eae57e705b611ead9addb15",
+    remote = "https://github.com/oppia/android-spotlight",
+    shallow_since = "1668824029 -0800",
 )
 
 # A custom fork of KotliTeX that removes resources artifacts that break the build, and updates the
 # min target SDK version to be compatible with Oppia.
 git_repository(
     name = "kotlitex",
-    commit = "6b7db8ff9e0f4a70bdaa25f482143e038fd0c301",
+    commit = "43139c140833c7120f351d63d74b42c253d2b213",
     remote = "https://github.com/oppia/kotlitex",
     shallow_since = "1647554845 -0700",
-)
-
-# A custom fork of Android-MarqueeView that is updated with latest dependencies compatible with Oppia and also
-# min target SDK version set to be compatible with Oppia.
-git_repository(
-    name = "marqueeview",
-    commit = "a935a78c88a01958716396e6f2cb4abf4559eccc",
-    remote = "https://github.com/oppia/Android-MarqueeView",
-    shallow_since = "1663393399 -0400",
 )
 
 bind(

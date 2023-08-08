@@ -89,6 +89,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -416,7 +417,7 @@ class NavigationDrawerActivityProdTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(hasTextColor(R.color.highlighted_nav_menu_item)))
+      ).check(matches(hasTextColor(R.color.component_color_drawer_fragment_selected_text_color)))
     }
   }
 
@@ -530,7 +531,7 @@ class NavigationDrawerActivityProdTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(hasTextColor(R.color.highlighted_nav_menu_item)))
+      ).check(matches(hasTextColor(R.color.component_color_drawer_fragment_selected_text_color)))
     }
   }
 
@@ -993,7 +994,7 @@ class NavigationDrawerActivityProdTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

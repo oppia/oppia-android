@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.text.Spannable
+import android.text.TextUtils
 import android.text.style.ClickableSpan
 import android.view.View
 import android.view.View.TEXT_ALIGNMENT_VIEW_START
@@ -23,7 +24,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -31,13 +31,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import asia.ivity.android.marqueeview.MarqueeView
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -94,6 +92,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -236,14 +235,11 @@ class StoryFragmentTest {
 
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
-    val storyMarqueeView: MarqueeView =
-      activityTestRule.activity.findViewById(R.id.story_marquee_view)
-
     ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
-    assertThat(storyMarqueeView, instanceOf(MarqueeView::class.java))
   }
 
   @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
@@ -255,12 +251,10 @@ class StoryFragmentTest {
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
     ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
-    val storyMarqueeView: MarqueeView =
-      activityTestRule.activity.findViewById(R.id.story_marquee_view)
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
-    assertThat(storyMarqueeView, instanceOf(MarqueeView::class.java))
   }
 
   @Test
@@ -456,9 +450,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "Learning about oppia app in First Story. It is very long " +
-              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
-              "There is no second story to follow-up, but there is a second chapter."
+            "This is the outline/summary for the first exploration of the story. It is very long" +
+              " but it has to be fully visible. You wil be learning about Oppia interactions." +
+              " There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
@@ -484,9 +478,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "Learning about oppia app in First Story. It is very long " +
-              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
-              "There is no second story to follow-up, but there is a second chapter."
+            "This is the outline/summary for the first exploration of the story. It is very long" +
+              " but it has to be fully visible. You wil be learning about Oppia interactions." +
+              " There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
@@ -965,7 +959,7 @@ class StoryFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

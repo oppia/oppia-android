@@ -13,13 +13,14 @@
     android:id="@+id/help_item_text_view"
     style="@style/Subtitle1ViewStart"
     android:layout_width="match_parent"
-    android:background="@drawable/general_item_border"
+    android:background="@drawable/general_item_background_border"
     android:onClick="@{() -> viewModel.onClick(viewModel.title)}"
     android:paddingStart="16dp"
     android:paddingTop="20dp"
     android:paddingEnd="16dp"
     android:paddingBottom="20dp"
     android:text="@{viewModel.title}"
+    android:textColor="@color/component_color_shared_primary_dark_text_color"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 </layout>

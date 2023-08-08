@@ -11,10 +11,12 @@ class ChapterSummaryViewModel(
   val chapterPlayState: ChapterPlayState,
   val explorationId: String,
   val chapterTitle: String,
+  val previousChapterTitle: String?,
   val storyId: String,
   private val index: Int,
   private val chapterSummarySelector: ChapterSummarySelector,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  val storyIndex: Int
 ) : ObservableViewModel() {
 
   fun onClick(explorationId: String) {
@@ -22,14 +24,32 @@ class ChapterSummaryViewModel(
   }
 
   fun computeChapterPlayStateIconContentDescription(): String {
-    return if (chapterPlayState == ChapterPlayState.COMPLETED) {
-      resourceHandler.getStringInLocaleWithWrapping(
-        R.string.chapter_completed, (index + 1).toString(), chapterTitle
-      )
-    } else {
-      resourceHandler.getStringInLocaleWithWrapping(
-        R.string.chapter_in_progress, (index + 1).toString(), chapterTitle
-      )
+    return when (chapterPlayState) {
+      ChapterPlayState.COMPLETED -> {
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.chapter_completed, (index + 1).toString(), chapterTitle
+        )
+      }
+      ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> {
+        if (previousChapterTitle != null) {
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.chapter_locked_prerequisite_title_label,
+            (index + 1).toString(),
+            chapterTitle,
+            index.toString(),
+            previousChapterTitle
+          )
+        } else {
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.chapter_prerequisite_title_label_without_chapter_title
+          )
+        }
+      }
+      else -> {
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.chapter_in_progress, (index + 1).toString(), chapterTitle
+        )
+      }
     }
   }
 

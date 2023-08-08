@@ -8,7 +8,7 @@ import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.policies.PoliciesFragment
 import javax.inject.Inject
 
-/** The presenter for [PoliciesFragmentTestActivity] */
+/** The presenter for [PoliciesFragmentTestActivity]. */
 @ActivityScope
 class PoliciesFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity

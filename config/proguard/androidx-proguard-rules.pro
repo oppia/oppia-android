@@ -36,6 +36,14 @@
 -keep class * extends androidx.room.RoomDatabase
 -keep @androidx.room.Entity class *
 
+# CoordinatorLayout uses reflection to load Behavior subclasses (see #4712 for context), so they
+# can't be renamed.
+-keep class * extends androidx.coordinatorlayout.widget.CoordinatorLayout$Behavior
+-keepclassmembers class * extends androidx.coordinatorlayout.widget.CoordinatorLayout$Behavior {
+    # Constructors may be referenced via reflection, so make sure they don't get removed.
+    <init>(...);
+}
+
 # A strange unknown issue that arises within a Room class (it seems an actual dependency is missing
 # within Room).
 -dontwarn androidx.room.paging.LimitOffsetDataSource

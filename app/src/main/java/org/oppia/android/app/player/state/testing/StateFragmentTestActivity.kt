@@ -4,12 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -31,9 +32,9 @@ internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
 internal const val TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_should_save_partial_progress"
 
-/** Test Activity used for testing StateFragment */
+/** Test Activity used for testing StateFragment. */
 class StateFragmentTestActivity :
-  InjectableAppCompatActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   StopStatePlayingSessionWithSavedProgressListener,
   StateKeyboardButtonListener,
   AudioButtonListener,
@@ -46,10 +47,14 @@ class StateFragmentTestActivity :
   lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    profileId = ProfileId.newBuilder().apply {
+      internalId = intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1)
+    }.build()
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
 
@@ -95,6 +100,10 @@ class StateFragmentTestActivity :
 
   override fun scrollToTop() {
     stateFragmentTestActivityPresenter.scrollToTop()
+  }
+
+  fun stopExploration(isCompletion: Boolean) {
+    stateFragmentTestActivityPresenter.stopExploration(isCompletion)
   }
 
   override fun dismiss() {}

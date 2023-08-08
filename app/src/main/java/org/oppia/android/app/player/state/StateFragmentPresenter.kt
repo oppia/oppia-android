@@ -25,6 +25,7 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
@@ -34,14 +35,18 @@ import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
-import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
+import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
+import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.SplitScreenManager
-import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.topic.StoryProgressController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -66,14 +71,17 @@ class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val context: Context,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
   private val oppiaLogger: OppiaLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val viewModel: StateViewModel,
+  private val accessibilityService: AccessibilityService,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val surveyGatingController: SurveyGatingController
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -88,10 +96,8 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var helpIndex: HelpIndex
+  private var forceAnnouncedForHintsBar = false
 
-  private val viewModel: StateViewModel by lazy {
-    getStateViewModel()
-  }
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState().toLiveData()
@@ -111,6 +117,7 @@ class StateFragmentPresenter @Inject constructor(
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
+    viewModel.initializeProfile(profileId)
 
     binding = StateFragmentBinding.inflate(
       inflater,
@@ -182,8 +189,7 @@ class StateFragmentPresenter @Inject constructor(
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     markExplorationCompleted()
-    (activity as StopStatePlayingSessionWithSavedProgressListener)
-      .deleteCurrentProgressAndStopSession(isCompletion = true)
+    maybeShowSurveyDialog(profileId, topicId)
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -259,10 +265,6 @@ class StateFragmentPresenter @Inject constructor(
 
   fun revealSolution() {
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
-  }
-
-  private fun getStateViewModel(): StateViewModel {
-    return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
 
   private fun getAudioFragment(): Fragment? {
@@ -406,11 +408,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun dismissConceptCard() {
-    fragment.childFragmentManager.findFragmentByTag(
-      CONCEPT_CARD_DIALOG_FRAGMENT_TAG
-    )?.let { dialogFragment ->
-      fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
-    }
+    ConceptCardFragment.dismissAll(fragment.childFragmentManager)
   }
 
   private fun moveToNextState() {
@@ -432,8 +430,7 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  fun setAudioBarVisibility(visibility: Boolean) =
-    getStateViewModel().setAudioBarVisibility(visibility)
+  fun setAudioBarVisibility(visibility: Boolean) = viewModel.setAudioBarVisibility(visibility)
 
   fun scrollToTop() {
     binding.stateRecyclerView.smoothScrollToPosition(0)
@@ -462,6 +459,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
       setHintOpenedAndUnRevealed(false)
@@ -495,6 +493,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
     if (isHintUnrevealed) {
+
       val hintBulbAnimation = AnimationUtils.loadAnimation(
         context,
         R.anim.hint_bulb_animation
@@ -506,12 +505,68 @@ class StateFragmentPresenter @Inject constructor(
         activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
           return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
             if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
+            // Make a forced announcement when the hint bar becomes visible so that the non sighted
+            // users know about the availability of hints. Instead of suddenly changing the focus of
+            // the app (which is a bad practice) to the hints bar upon availability, make a forced
+            // announcement. The forced announcement should be called after 5 seconds after the
+            // hints bar appears otherwise it might interrupt with the submit button's content
+            // description during Talkback.
+            if (!forceAnnouncedForHintsBar) {
+              forceAnnouncedForHintsBar = true
+              accessibilityService.announceForAccessibilityForView(
+                binding.hintsAndSolutionFragmentContainer,
+                resourceHandler.getStringInLocale(
+                  R.string.state_fragment_hint_bar_forced_announcement_text
+                )
+              )
+            }
           }
         }
       }
     } else {
       binding.hintBulb.clearAnimation()
     }
+  }
+
+  private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
+    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+      .observe(
+        activity,
+        { gatingResult ->
+          when (gatingResult) {
+            is AsyncResult.Pending -> {
+              oppiaLogger.d("StateFragment", "A gating decision is pending")
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "StateFragment",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
+              (activity as StopStatePlayingSessionWithSavedProgressListener)
+                .deleteCurrentProgressAndStopSession(isCompletion = true)
+            }
+            is AsyncResult.Success -> {
+              if (gatingResult.value) {
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .commitNow()
+              } else {
+                (activity as StopStatePlayingSessionWithSavedProgressListener)
+                  .deleteCurrentProgressAndStopSession(isCompletion = true)
+              }
+            }
+          }
+        }
+      )
   }
 
   /**
@@ -534,5 +589,13 @@ class StateFragmentPresenter @Inject constructor(
         bounceInterpolator.getInterpolation(1f - input * 2f)
       } else bounceInterpolator.getInterpolation(input * 2f - 1f)
     }
+  }
+
+  companion object {
+    private val SURVEY_QUESTIONS = listOf(
+      SurveyQuestionName.USER_TYPE,
+      SurveyQuestionName.MARKET_FIT,
+      SurveyQuestionName.NPS
+    )
   }
 }

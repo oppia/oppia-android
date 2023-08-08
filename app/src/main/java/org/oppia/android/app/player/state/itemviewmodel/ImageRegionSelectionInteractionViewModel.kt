@@ -103,7 +103,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      timeToStartNoticeAnimationMs: Long?
     ): StateItemViewModel {
       return ImageRegionSelectionInteractionViewModel(
         entityId,

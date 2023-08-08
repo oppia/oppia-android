@@ -58,7 +58,6 @@
   <dimen name="drag_drop_item_exploration_view_margin_start">144dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_start">144dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_start">144dp</dimen>
-  <dimen name="profile_chooser_fragment_margin_top_profile_not_added">124dp</dimen>
 
   <dimen name="continue_interaction_item_exploration_view_margin_end">112dp</dimen>
   <dimen name="continue_interaction_item_exploration_view_margin_start">112dp</dimen>
@@ -67,7 +66,6 @@
   <dimen name="drag_drop_item_exploration_view_margin_end">112dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_end">112dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_end">112dp</dimen>
-  <dimen name="profile_chooser_margin_top_profile_not_added">84dp</dimen>
 
   <dimen name="drag_drop_item_exploration_split_view_margin_top">40dp</dimen>
   <dimen name="drag_drop_item_question_split_view_margin_top">40dp</dimen>
@@ -506,4 +504,11 @@
   <dimen name="topic_fragment_tab_layout_margin_start">64dp</dimen>
   <dimen name="topic_fragment_tab_layout_margin_end">64dp</dimen>
   <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
+
+  <!-- ProfileChooserFragment -->
+  <dimen name="profile_chooser_profile_select_text_margin_start">64dp</dimen>
+  <dimen name="profile_chooser_margin_top_profile_already_added">24dp</dimen>
+  <dimen name="profile_chooser_margin_top_profile_not_added">124dp</dimen>
+  <dimen name="profile_chooser_administrator_controls_margin_bottom">32dp</dimen>
+  <dimen name="profile_chooser_setting_icon_margin_end">64dp</dimen>
 </resources>

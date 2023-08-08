@@ -53,6 +53,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -116,22 +117,33 @@ class ProfileAndDeviceIdActivityTest {
     private const val FIXED_APPLICATION_ID = 123456789L
   }
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @get:Rule
   var activityRule =
     ActivityScenarioRule<ProfileAndDeviceIdActivity>(
       ProfileAndDeviceIdActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var oppiaClock: OppiaClock
-  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject lateinit var syncStatusManager: SyncStatusManager
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject
+  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject
+  lateinit var syncStatusManager: SyncStatusManager
 
   @Before
   fun setUp() {
@@ -175,7 +187,7 @@ class ProfileAndDeviceIdActivityTest {
   fun testActivity_withOnlyAdminProfile_hasOneProfileListed() {
     // Verify that the fragment has actually loaded by checking to make sure there are items listed
     // in its recycler view.
-    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 3))
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 4))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -217,7 +229,7 @@ class ProfileAndDeviceIdActivityTest {
       MathEquationInputModule::class, MetricLogSchedulerModule::class,
       TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
-      ApplicationLifecycleModule::class
+      ApplicationLifecycleModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

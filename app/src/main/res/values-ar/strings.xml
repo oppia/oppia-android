@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Authors:
+* Alshamiri1
 * Meno25
 * MohamedMedhat
 * Mouradeq
+* Sarah zoubida
+* Seanlip
 -->
 <resources>
   <string name="nav_header_desc">أعلى قائمة التنقل</string>
@@ -32,7 +35,6 @@
   <string name="cellular_data_alert_dialog_description">تشغيل الصوت عبر الإنترنت قد يستخدم الكثير من بيانات الهاتف.</string>
   <string name="cellular_data_alert_dialog_checkbox">لا تُظهِر هذه الرسالة مُجددًا</string>
   <string name="concept_card_toolbar_title">بطاقة المفهوم</string>
-  <string name="concept_card_close_icon_description">الضغط هنا سوف يغلق بطاقة المفهوم</string>
   <string name="revision_card_toolbar_title">بطاقة المراجعة</string>
   <string name="unsaved_exploration_dialog_title">هل تريد المغادرة إلى صفحة الموضوع؟</string>
   <string name="unsaved_exploration_dialog_description">لن يتم حفظ تقدمك.</string>
@@ -42,6 +44,9 @@
   <string name="stop_exploration_dialog_description">لن يتم حفظ تقدمك.</string>
   <string name="stop_exploration_dialog_cancel_button">إلغاء</string>
   <string name="stop_exploration_dialog_leave_button">مغادرة</string>
+  <string name="exploration_exit_button_spotlight_hint">اخرج في أي وقت باستخدام هذا الزر. سنحفظ تقدمك.</string>
+  <string name="voiceover_icon_spotlight_hint">هل ترغب في أن يقرأ %s لك؟ اضغط على هذا الزر لتجربته!</string>
+  <string name="voiceover_language_icon_spotlight_hint">انقر لتغيير لغة التعليق الصوتي.</string>
   <string name="progress_database_full_dialog_title">تم الوصول إلى الحد الأقصى من سعة التخزين</string>
   <string name="progress_database_full_dialog_description">سوف يتم حذف تقدمك في درس %s</string>
   <string name="progress_database_full_dialog_continue_button">استمرار</string>
@@ -51,6 +56,13 @@
   <string name="topic_name_text_view">النسب والاستدلال النسبي</string>
   <string name="topic_practice_skills_description">قم باختيار المهارات التي تريد أن تتدرب عليها.</string>
   <string name="topic_practice_start">ابدأ</string>
+  <string name="info_tab_content_description">تفاصيل حول الموضوع.</string>
+  <string name="revision_tab_content_description">راجع المفاهيم المدروسة من الدروس المكتملة هنا.</string>
+  <string name="practice_tab_content_description">تدرب على المفاهيم المكتسبة من الدروس المكتملة.</string>
+  <string name="lessons_tab_content_description">انقر هنا لبدء تشغيل درس.</string>
+  <string name="topic_lessons_tab_spotlight_hint">ابحث عن كل دروسك هنا.</string>
+  <string name="topic_revision_tab_spotlight_hint">راجع المفاهيم المكتسبة من الدروس المكتملة هنا.</string>
+  <string name="first_chapter_spotlight_hint">انقر هنا لبدء تشغيل درس.</string>
   <string name="state_continue_button">استمرار</string>
   <string name="state_continue_submit">تقديم</string>
   <string name="previous_state_description">التوجه إلى البطاقة السابقة</string>
@@ -83,6 +95,7 @@
   <string name="chapter_completed">تم انهاء الفصل %s الذي يحمل عنوان %s</string>
   <string name="chapter_in_progress">الفصل %s الذي يحمل عنوان %s ما زال قيد التقدم</string>
   <string name="chapter_prerequisite_title_label">قم بإنهاء الفصل %s: %s لكي تفتح هذا الفصل.</string>
+  <string name="chapter_prerequisite_title_label_without_chapter_title">أكمل الفصل السابق لفتح هذا الفصل.</string>
   <string name="text_input_default_content_description">أدخل النص.</string>
   <string name="fractions_default_hint_text">أدخل كسر عشري في الصيغة (بسط/مقام)، أو عدد كسري في الصيغة (عدد بسط/مقام).</string>
   <string name="fractions_default_hint_text_no_integer">أدخل كسر عشري في الصيغة بسط/مقام.</string>
@@ -167,7 +180,6 @@
   <string name="size_gb">%s ج.ب</string>
   <string name="correct">صحيح!</string>
   <string name="topic_prefix">الموضوع: %s</string>
-  <string name="chapter_count_with_story_name">%1$s في %2$s</string>
   <plurals name="chapter_count">
     <item quantity="zero">و لا فصل</item>
     <item quantity="one">فصلًا واحدًا</item>
@@ -313,11 +325,17 @@
   <string name="home_activity_back_dialog_cancel">إلغاء</string>
   <string name="home_activity_back_dialog_exit">خروج</string>
   <string name="home_activity_title">الصفحة الرئيسية</string>
+  <string name="promoted_story_spotlight_hint">من الآن يمكنك مشاهدة الدروس المقترحة لك هنا.</string>
+  <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="profile_list_activity_title">الملفات الشخصية</string>
+  <string name="profile_edit_activity_title">تعديل الملفات الشخصية</string>
   <string name="profile_edit_created">تم الإنشاء في %s</string>
   <string name="profile_last_used">آخر استخدام</string>
   <string name="profile_edit_rename">تغيير الاسم</string>
   <string name="profile_edit_reset">إعادة ضبط رقم التعريف الشخصي</string>
+  <string name="profile_edit_mark_chapter_completion">علم الفصول المكتملة</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_label">شغل مبدل اللغات السريع</string>
+  <string name="profile_edit_enable_quick_lesson_language_switching_explanation">السماح لهذا المستخدم بالتبديل بسرعة بين اللغة الإنجليزية والسواحيلية ضمن درس.</string>
   <string name="profile_edit_delete">حذف الملف الشخصي</string>
   <string name="profile_edit_delete_dialog_title">هل تريد حذف هذا الملف الشخصي نهائيًا؟</string>
   <string name="profile_edit_delete_dialog_message">سيتم حذف كل التقدم ولن تتمكن من استعادته.</string>
@@ -400,14 +418,16 @@
   <string name="no_new_hint_available">لا يوجد تلميح جديد متاح</string>
   <string name="show_hints_and_solution">إظهار الملاحظات والحل</string>
   <string name="hint_list_item_number">تلميح %s</string>
-  <string name="hints_andSolution_close_icon_description">العودة للسابق</string>
+  <string name="hints_and_solution_close_icon_description" fuzzy="true">العودة للسابق</string>
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="show_solution">عرض الحل</string>
   <string name="reveal_solution">عرض الحل</string>
+  <string name="hint_list_solution_title">الحل</string>
   <string name="reveal_hint">عرض الملاحظة</string>
   <string name="hide_hint">إخفاء تلميح</string>
   <string name="hide_solution">إخفاء الحل</string>
-  <string name="the_only_solution_is">الحل الوحيد هو :</string>
+  <string name="hints_list_exclusive_solution_text">الحل الوحيد هو :%s</string>
+  <string name="hints_list_possible_solution_text">أحد الاجابات هي : %s</string>
   <string name="this_will_reveal_the_solution">سوف يتم إظهار الحل. هل أنت متأكد؟</string>
   <string name="reveal">إظهار</string>
   <string name="just_now">الآن</string>
@@ -511,16 +531,19 @@
   <string name="faq_question_6">لماذا لا يتم تحميل مشغل الاستكشاف؟</string>
   <string name="faq_question_7">لماذا لا يتم تشغيل الصوت الخاص بي؟</string>
   <string name="faq_question_9">لا أجد سؤالي هنا.  ماذا الان؟</string>
-  <string name="faq_answer_1">&lt;p&gt;إذا كانت هذه هي المرة الأولى التي تنشئ فيها ملفًا شخصيًا وليس لديك رقم تعريف شخصي: &lt;/p&gt; &lt;p&gt; 1. من منتقي الملف الشخصي ، اضغط على&lt;strong&gt; قم بإعداد ملفات تعريف متعددة&lt;/strong&gt;&lt;/p&gt;&lt;p&gt; 2. قم بإنشاء رقم تعريف شخصي و&lt;strong&gt;احفظ&lt;/strong&gt;&lt;/p&gt; &lt;p&gt; 3. املأ جميع البيانات للملف الشخصي.&lt;/p&gt; &lt;ol&gt; &lt;li&gt;(اختياري) قم بتحميل صورة.&lt;/li&gt; &lt;li&gt;إدخال اسم.&lt;/li&gt; &lt;li&gt;(اختياري) قم بتعيين رقم تعريف شخصي مكون من 3 أرقام.&lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. اضغط&lt;strong&gt;إنشاء&lt;/strong&gt; . تمت إضافة هذا الملف الشخصي إلى منتقي ملف التعريف الخاص بك!&lt;br/&gt; &lt;br/&gt; إذا قمت بإنشاء ملف تعريف من قبل ولديك رقم تعريف شخصي:&lt;/p&gt;&lt;p&gt; 1. من منتقي الملف الشخصي ، اضغط على&lt;strong&gt;إضافة الملف الشخصي&lt;/strong&gt;&lt;/p&gt; &lt;p&gt; 2. أدخل رقم التعريف الشخصي الخاص بك وانقر فوق&lt;strong&gt;إرسال&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;3. املأ جميع الحقول للملف الشخصي.&lt;/p&gt; &lt;ol&gt; &lt;li&gt;(اختياري) قم بتحميل صورة.&lt;/li&gt; &lt;li&gt;إدخال اسم.&lt;/li&gt; &lt;li&gt;(اختياري) قم بتعيين رقم تعريف شخصي مكون من 3 أرقام.&lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. اضغط&lt;strong&gt;إنشاء&lt;/strong&gt; . تمت إضافة هذا الملف الشخصي إلى منتقي ملف التعريف الخاص بك!&lt;br/&gt;&lt;br/&gt; ملاحظة: فقط ال&lt;u&gt;مدير&lt;/u&gt; قادر على إدارة الملفات الشخصية.&lt;/p&gt;</string>
-  <string name="faq_answer_2">&lt;p&gt;بمجرد حذف ملف التعريف:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;&lt;li&gt;لا يمكن استعادة ملف التعريف.&lt;/li&gt;&lt;/p&gt;&lt;p&gt;&lt;li&gt;سيتم حذف معلومات الملف الشخصي مثل الاسم والصور والتقدم بشكل دائم.&lt;/li&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;لحذف ملف تعريف (باستثناء&lt;u&gt;المسؤول&lt;/u&gt;&lt;/p&gt;&lt;p&gt;1. من الصفحة الرئيسية للمسؤول ، اضغط على زر القائمة أعلى اليسار.&lt;/p&gt;&lt;p&gt;2. اضغط على&lt;strong&gt;ضوابط المسؤول&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;3. اضغط على&lt;strong&gt;تحرير ملفات التعريف&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;4. اضغط على الملف الشخصي الذي ترغب في حذفه.&lt;/p&gt;&lt;p&gt;5. في الجزء السفلي من الشاشة ، انقر فوق&lt;strong&gt;حذف الملف الشخصي&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;6. اضغط&lt;strong&gt;حذف&lt;/strong&gt;لتأكيد الحذف.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;ملاحظة:&lt;u&gt;المسؤول&lt;/u&gt;فقط هو القادر على إدارة الملفات الشخصية.&lt;/p&gt;</string>
-  <string name="faq_answer_3">&lt;p&gt;لتغيير بريدك الإلكتروني / رقم هاتفك:&lt;/p&gt; &lt;p&gt;1. من الصفحة الرئيسية للمشرف ، اضغط على زر القائمة أعلى اليسار.&lt;/p&gt; &lt;p&gt;2. اضغط على &lt;strong&gt; عناصر تحكم المسؤول &lt;/ strong&gt;.&lt;/p&gt; &lt;p&gt;3. اضغط على &lt;strong&gt; تعديل الحساب &lt;/ strong&gt;.&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;إذا كنت تريد تغيير بريدك الإلكتروني:&lt;/p&gt; &lt;p&gt;4. أدخل بريدك الإلكتروني الجديد وانقر على &lt;strong&gt; حفظ &lt;/ strong&gt;.&lt;/p&gt; &lt;p&gt;5. يتم إرسال رابط التأكيد لتأكيد بريدك الإلكتروني الجديد. ستنتهي صلاحية الرابط بعد 24 ساعة ويجب النقر عليه لربطه بحسابك.&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;في حالة تغيير رقم هاتفك: &lt;/ p&gt; &lt;p&gt; 4. أدخل رقم هاتفك الجديد وانقر على &lt;strong&gt; تحقق &lt;/ strong&gt;.&lt;/p&gt; &lt;p&gt;5. يتم إرسال رمز لتأكيد رقمك الجديد. ستنتهي صلاحية الرمز بعد 5 دقائق ويجب إدخاله في الشاشة الجديدة لربطه بحسابك.&lt;/p&gt;</string>
+  <string name="faq_answer_1">&lt;p&gt;إذا كانت هذه هي المرة الأولى التي تنشئ فيها ملفًا شخصيًا وليس لديك رقم تعريف شخصي: &lt;ol&gt;&lt;li&gt; من منتقي الملف الشخصي ، اضغط على&lt;strong&gt; قم بإعداد ملفات تعريف متعددة&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; قم بإنشاء رقم تعريف شخصي و&lt;strong&gt;احفظ&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; املأ جميع البيانات للملف الشخصي.&lt;ol&gt;&lt;li&gt;(اختياري) قم بتحميل صورة.&lt;/li&gt; &lt;li&gt;إدخال اسم.&lt;/li&gt; &lt;li&gt;(اختياري) قم بتعيين رقم تعريف شخصي مكون من 3 أرقام.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt; اضغط&lt;strong&gt;إنشاء&lt;/strong&gt; . تمت إضافة هذا الملف الشخصي إلى منتقي ملف التعريف الخاص بك!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt; إذا قمت بإنشاء ملف تعريف من قبل ولديك رقم تعريف شخصي:&lt;ol&gt;&lt;li&gt; من منتقي الملف الشخصي ، اضغط على&lt;strong&gt;إضافة الملف الشخصي&lt;/strong&gt;&lt;/li&gt; &lt;li&gt; أدخل رقم التعريف الشخصي الخاص بك وانقر فوق&lt;strong&gt;إرسال&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; املأ جميع الحقول للملف الشخصي. &lt;ol&gt; &lt;li&gt;(اختياري) قم بتحميل صورة.&lt;/li&gt; &lt;li&gt;إدخال اسم.&lt;/li&gt; &lt;li&gt;(اختياري) قم بتعيين رقم تعريف شخصي مكون من 3 أرقام. &lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt; اضغط&lt;strong&gt;إنشاء&lt;/strong&gt; . تمت إضافة هذا الملف الشخصي إلى منتقي ملف التعريف الخاص بك!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;br&gt;&lt;p&gt; ملاحظة: فقط ال&lt;u&gt;مدير&lt;/u&gt; قادر على إدارة الملفات الشخصية.&lt;/p&gt;</string>
+  <string name="faq_answer_2">&lt;p&gt;بمجرد حذف ملف التعريف:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;لا يمكن استعادة ملف التعريف.&lt;/li&gt;&lt;li&gt;سيتم حذف معلومات الملف الشخصي مثل الاسم والصور والتقدم بشكل دائم.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;لحذف ملف تعريف (باستثناء&lt;u&gt;المسؤول&lt;/u&gt;):&lt;/p&gt;&lt;ol&gt;&lt;li&gt; من الصفحة الرئيسية للمسؤول ، اضغط على زر القائمة أعلى اليسار.&lt;/li&gt;&lt;li&gt; اضغط على&lt;strong&gt;ضوابط المسؤول&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt; اضغط على&lt;strong&gt;تحرير ملفات التعريف&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt; اضغط على الملف الشخصي الذي ترغب في حذفه.&lt;/li&gt;&lt;li&gt; في الجزء السفلي من الشاشة ، انقر فوق&lt;strong&gt;حذف الملف الشخصي&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt; اضغط&lt;strong&gt;حذف&lt;/strong&gt;لتأكيد الحذف. &lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt; ملاحظة:&lt;u&gt;المسؤول&lt;/u&gt;فقط هو القادر على إدارة الملفات الشخصية.&lt;/p&gt;</string>
+  <string name="faq_answer_3">&lt;p&gt;لتغيير بريدك الإلكتروني / رقم هاتفك:&lt;/p&gt;&lt;ol&gt;&lt;li&gt; من الصفحة الرئيسية للمشرف ، اضغط على زر القائمة أعلى اليسار.&lt;/li&gt;&lt;li&gt; اضغط على &lt;strong&gt; عناصر تحكم المسؤول &lt;/strong&gt;.&lt;/li&gt;&lt;li&gt; اضغط على &lt;strong&gt; تعديل الحساب &lt;/strong&gt;.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;إذا كنت تريد تغيير بريدك الإلكتروني:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;أدخل بريدك الإلكتروني الجديد وانقر على &lt;strong&gt; حفظ &lt;/strong&gt;.&lt;/li&gt;&lt;li&gt; يتم إرسال رابط التأكيد لتأكيد بريدك الإلكتروني الجديد. ستنتهي صلاحية الرابط بعد 24 ساعة ويجب النقر عليه لربطه بحسابك.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;في حالة تغيير رقم هاتفك: &lt;/p&gt;&lt;ol&gt;&lt;li&gt; أدخل رقم هاتفك الجديد وانقر على &lt;strong&gt; تحقق &lt;/strong&gt;.&lt;/li&gt;&lt;li&gt; يتم إرسال رمز لتأكيد رقمك الجديد. ستنتهي صلاحية الرمز بعد 5 دقائق ويجب إدخاله في الشاشة الجديدة لربطه بحسابك.&lt;/li&gt;&lt;/ol&gt;</string>
   <string name="faq_answer_4">&lt;p&gt;%1$s &lt;i&gt;\"أو-بي-يا\"&lt;/i&gt;(فنلندية) - \"للتعلم\"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$sمهمتنا هي مساعدة أي شخص على تعلم أي شيء يريده بطريقة فعالة وممتعة.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;من خلال إنشاء مجموعة من الدروس المجانية عالية الجودة والفعالة بشكل واضح بمساعدة معلمين من جميع أنحاء العالم ، تهدف %1$s إلى تزويد الطلاب بتعليم جيد - بغض النظر عن مكان وجودهم أو الموارد التقليدية التي يمكنهم الوصول إليها.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;كطالب ، يمكنك أن تبدأ مغامرتك التعليمية من خلال تصفح الموضوعات المدرجة في الصفحة الرئيسية!&lt;/p&gt;</string>
   <string name="faq_answer_5">&lt;p&gt;المشرف هو المستخدم الرئيسي الذي يدير ملفات التعريف والإعدادات لكل ملف تعريف على حسابه. هم على الأرجح والدك أو معلمك أو وصي عليك الذي أنشأ هذا الملف الشخصي لك.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;يمكن للمسؤولين إدارة الملفات الشخصية وتعيين أرقام التعريف الشخصية وتغيير الإعدادات الأخرى ضمن حساباتهم. بناءً على ملف التعريف الخاص بك ، قد تكون أذونات المسؤول مطلوبة لبعض الميزات مثل تنزيل الموضوعات وتغيير رقم التعريف الشخصي وغير ذلك.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;لمعرفة من هو المسؤول لديك ، انتقل إلى منتقي الملف الشخصي. الملف الشخصي الأول المدرج ولديه \"المسؤول\" مكتوب باسمه هو المسؤول.&lt;/p&gt;</string>
-  <string name="faq_answer_6">&lt;p&gt;إذا لم يتم تحميل مشغل الاستكشاف&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;&lt;p&gt; &lt;ol&gt; &lt;li&gt; انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار &lt;/li&gt; &lt;/ol&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;p&gt; &lt;li&gt; إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;اطلب من المشرف التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;p&gt; &lt;li&gt; اطلب من المشرف استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;p&gt; &lt;li&gt; أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org. &lt;/li&gt; &lt;/p&gt;</string>
-  <string name="faq_answer_7">&lt;p&gt;إذا لم يتم تشغيل الصوت الخاص بك&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;&lt;p&gt; &lt;li&gt;انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار&lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;p&gt; &lt;li&gt;إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. قد يتسبب الإنترنت البطيء في تحميل الصوت بشكل غير منتظم ، مما يجعل من الصعب تشغيله.&lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;اطلب من المسؤول التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;p&gt; &lt;li&gt;اطلب من المسؤول استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه&lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;p&gt; &lt;li&gt;أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org.&lt;/li&gt;&lt;/p&gt;</string>
+  <string name="faq_answer_6">&lt;p&gt;إذا لم يتم تحميل مشغل الاستكشاف&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;&lt;p&gt; &lt;ul&gt; &lt;li&gt; انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;اطلب من المشرف التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; اطلب من المشرف استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
+  <string name="faq_answer_7">&lt;p&gt;إذا لم يتم تشغيل الصوت الخاص بك&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. قد يتسبب الإنترنت البطيء في تحميل الصوت بشكل غير منتظم ، مما يجعل من الصعب تشغيله.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;اطلب من المسؤول التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;اطلب من المسؤول استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org.&lt;/li&gt;&lt;/ul&gt;</string>
   <string name="faq_answer_9">&lt;p&gt; إذا لم تتمكن من العثور على سؤالك أو كنت ترغب في الإبلاغ عن خطأ ، فاتصل بنا على admin@oppia.org. &lt;/p&gt;</string>
   <string name="profile_edit_fragment_test_activity_label">نشاط اختبار جزء تحرير ملف التعريف</string>
   <string name="administrator_controls_fragment_test_activity_label">يتحكم المسؤول في نشاط اختبار التجزئة</string>
-  <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="revision_navigation_cards_header">أكمل دراستك</string>
+  <string name="state_fragment_hint_bar_forced_announcement_text">انتقل إلى الجزء السفلي من الشاشة للحصول على تلميح.</string>
+  <string name="state_fragment_item_selection_no_items_selected_hint_text">اختر كل الإجابات الصحيحة من فضلك.</string>
+  <string name="state_fragment_item_selection_some_items_selected_hint_text">يمكنك أن تختار المزيد من الخيارات</string>
+  <string name="state_fragment_item_selection_max_items_selected_hint_text">لا يمكنك اختيار أكثر من %s خيار.</string>
 </resources>

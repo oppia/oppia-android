@@ -44,7 +44,7 @@ class AudioViewModel @Inject constructor(
   var selectedLanguageUnavailable = ObservableBoolean()
   var selectedLanguageName = ObservableField<String>("")
 
-  /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
+  /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state. */
   enum class UiAudioPlayStatus {
     FAILED,
     LOADING,
@@ -117,31 +117,31 @@ class AudioViewModel @Inject constructor(
         val ensuredLanguageCode = if (languages.contains("en")) "en" else languages.first()
         fallbackLanguageCode = ensuredLanguageCode
         audioPlayerController.changeDataSource(
-          voiceOverToUri(voiceoverMap[ensuredLanguageCode]), currentContentId
+          voiceOverToUri(voiceoverMap[ensuredLanguageCode]), currentContentId, ensuredLanguageCode
         )
       }
     }
   }
 
-  /** Sets language code for data binding and changes data source to correct audio */
+  /** Sets language code for data binding and changes data source to correct audio. */
   fun setAudioLanguageCode(languageCode: String) {
     selectedLanguageCode = languageCode
     currentLanguageCode.set(languageCode)
     audioPlayerController.changeDataSource(
-      voiceOverToUri(voiceoverMap[languageCode]), currentContentId
+      voiceOverToUri(voiceoverMap[languageCode]), currentContentId, languageCode
     )
   }
 
-  /** Plays or pauses AudioController depending on passed in state */
+  /** Plays or pauses AudioController depending on passed in state. */
   fun togglePlayPause(type: UiAudioPlayStatus?) {
     if (type == UiAudioPlayStatus.PLAYING) {
-      audioPlayerController.pause()
+      audioPlayerController.pause(isFromExplicitUserAction = true)
     } else {
       audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     }
   }
 
-  fun pauseAudio() = audioPlayerController.pause()
+  fun pauseAudio() = audioPlayerController.pause(isFromExplicitUserAction = false)
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()
 

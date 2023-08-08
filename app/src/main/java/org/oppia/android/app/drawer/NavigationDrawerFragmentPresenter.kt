@@ -419,7 +419,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
-            R.color.slide_drawer_open_status_bar,
+            R.color.component_color_shared_slide_drawer_open_status_bar_color,
             activity,
             false
           )
@@ -427,9 +427,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
+          // It's possible in some rare cases for the activity to be gone while the drawer is
+          // closing (possibly an out-of-lifecycle call from the AndroidX component).
+          fragment.activity?.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
-            R.color.oppia_primary_dark,
+            R.color.component_color_shared_activity_status_bar_color,
             activity,
             false
           )
@@ -456,7 +458,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
-            R.color.slide_drawer_open_status_bar,
+            R.color.component_color_shared_slide_drawer_open_status_bar_color,
             activity,
             false
           )
@@ -466,7 +468,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
-            R.color.oppia_primary_dark,
+            R.color.component_color_shared_activity_status_bar_color,
             activity,
             false
           )

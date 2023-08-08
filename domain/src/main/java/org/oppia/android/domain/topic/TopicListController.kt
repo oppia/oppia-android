@@ -212,7 +212,6 @@ class TopicListController @Inject constructor(
           baseMessage = StoryRecord.getDefaultInstance()
         )
       }
-      val firstStoryId = storyRecords.getOrNull(0)?.storyId
       TopicSummary.newBuilder().apply {
         this.topicId = topicId
         putAllWrittenTranslations(topicRecord.writtenTranslationsMap)

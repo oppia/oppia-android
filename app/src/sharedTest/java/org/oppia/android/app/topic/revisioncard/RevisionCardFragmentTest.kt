@@ -21,6 +21,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -78,6 +79,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -95,6 +97,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
@@ -182,6 +185,50 @@ class RevisionCardFragmentTest {
   }
 
   @Test
+  fun testRevisionCard_previousSubtopicTitle_whatIsAFraction_hasCorrectContentDescription() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.prev_subtopic_title)).check(
+        matches(
+          ViewMatchers.withContentDescription(
+            "The previous subtopic is What is a Fraction?"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_nextSubtopicTitle_mixedNumbers_hasCorrectContentDescription() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.next_subtopic_title)).check(
+        matches(
+          ViewMatchers.withContentDescription(
+            "The next subtopic is Mixed Numbers"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testRevisionCardTest_initialise_openBottomSheet_showsBottomSheet() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
@@ -199,6 +246,39 @@ class RevisionCardFragmentTest {
 
       onView(withId(R.id.options_menu_bottom_sheet_container)).inRoot(isDialog())
         .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_openSubtopicWithOnlyOneSubtopicInList_checkContinueStudyingTextNotShown() {
+    launch<ExplorationActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        TEST_TOPIC_ID_0,
+        SUBTOPIC_TOPIC_ID,
+        1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.continue_studying_text_view)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_openSubtopicWithMultipleSubtopicsInList_checkContinueStudyingTextIsShown() {
+    launch<ExplorationActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.continue_studying_text_view)).perform(scrollTo())
+      onView(withId(R.id.continue_studying_text_view)).check(matches(isDisplayed()))
     }
   }
 
@@ -720,7 +800,7 @@ class RevisionCardFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

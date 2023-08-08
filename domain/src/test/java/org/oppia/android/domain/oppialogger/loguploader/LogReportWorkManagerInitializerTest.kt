@@ -10,6 +10,7 @@ import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.DelegatingWorkerFactory
 import androidx.work.NetworkType
+import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
@@ -35,7 +36,6 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWork
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -44,6 +44,8 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
@@ -58,7 +60,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = LogReportWorkManagerInitializerTest.TestApplication::class)
 class LogReportWorkManagerInitializerTest {
 
   @Inject
@@ -75,9 +77,6 @@ class LogReportWorkManagerInitializerTest {
 
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-
-  @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
@@ -117,7 +116,7 @@ class LogReportWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    logReportWorkManagerInitializer.onCreate()
+    logReportWorkManagerInitializer.onCreate(WorkManager.getInstance(context))
     testCoroutineDispatchers.runCurrent()
 
     val enqueuedEventWorkRequestId = logReportWorkManagerInitializer.getWorkRequestForEventsId()
@@ -250,10 +249,7 @@ class LogReportWorkManagerInitializerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerLogReportWorkManagerInitializerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -306,7 +302,7 @@ class LogReportWorkManagerInitializerTest {
       CpuPerformanceSnapshotterModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -315,5 +311,19 @@ class LogReportWorkManagerInitializerTest {
     }
 
     fun inject(logUploadWorkRequestTest: LogReportWorkManagerInitializerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerLogReportWorkManagerInitializerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: LogReportWorkManagerInitializerTest) {
+      component.inject(test)
+    }
+
+    override fun getDataProvidersInjector() = component
   }
 }

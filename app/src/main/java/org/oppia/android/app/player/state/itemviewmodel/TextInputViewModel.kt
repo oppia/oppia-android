@@ -107,7 +107,8 @@ class TextInputViewModel private constructor(
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      timeToStartNoticeAnimationMs: Long?
     ): StateItemViewModel {
       return TextInputViewModel(
         interaction,

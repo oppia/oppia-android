@@ -43,8 +43,14 @@ abstract class AbstractOppiaApplication(
       // in Bazel.
       AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
-    FirebaseApp.initializeApp(applicationContext)
-    WorkManager.initialize(applicationContext, workManagerConfiguration)
+    // The current WorkManager version doesn't work in SDK 31+, so disable it.
+    // TODO(#4751): Re-enable WorkManager for S+.
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+      FirebaseApp.initializeApp(applicationContext)
+      WorkManager.initialize(applicationContext, workManagerConfiguration)
+      val workManager = WorkManager.getInstance(applicationContext)
+      component.getAnalyticsStartupListenerStartupListeners().forEach { it.onCreate(workManager) }
+    }
     component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
   }
 

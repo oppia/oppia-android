@@ -5,7 +5,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_faq_single_activity_container_background_color">
+    android:background="@color/component_color_shared_screen_tertiary_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/faq_single_app_bar_layout"
@@ -20,13 +20,12 @@
         android:id="@+id/faq_single_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_faq_single_activity_toolbar_color"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/color_def_white" />
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -40,7 +39,6 @@
       <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/component_color_faq_single_activity_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/faq_single_activity_scroll_padding_bottom"
@@ -49,7 +47,7 @@
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/component_color_faq_single_activity_container_background_color"
+          android:background="@color/component_color_shared_content_container_background_color"
           android:orientation="vertical"
           android:paddingStart="@dimen/faq_single_padding_start"
           android:paddingTop="@dimen/faq_single_padding_top"
@@ -62,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:textColor="@color/component_color_faq_single_activity_text_color"
+            android:textColor="@color/component_color_shared_primary_text_color"
             android:textSize="18sp" />
 
           <TextView
@@ -72,7 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/component_color_faq_single_activity_text_color"
+            android:textColor="@color/component_color_shared_primary_text_color"
+            android:textColorLink="@color/component_color_shared_link_text_color"
             android:textSize="16sp" />
         </LinearLayout>
       </ScrollView>

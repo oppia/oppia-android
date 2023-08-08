@@ -22,7 +22,7 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TextInputActionTestActivity
@@ -34,6 +34,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -76,7 +77,7 @@ class ApplicationLifecycleObserverTest {
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Inject
   lateinit var profileManagementController: ProfileManagementController
@@ -154,7 +155,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInForegroundContextThat {
       hasLearnerIdThat().isNotEmpty()
@@ -169,7 +170,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInForegroundContextThat {
       hasLearnerIdThat().isEmpty()
@@ -185,7 +186,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isNotEmpty()
@@ -200,7 +201,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isEmpty()
@@ -395,7 +396,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun setUpTestApplicationWithLearnerStudy() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 
@@ -454,7 +455,7 @@ class ApplicationLifecycleObserverTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class
+      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

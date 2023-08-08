@@ -8,12 +8,12 @@ recorded_voiceover {
   }
 }
 written_translation {
-  key: "content"
+  key: "title"
   value {
   }
 }
 written_translation {
-  key: "title"
+  key: "content"
   value {
   }
 }

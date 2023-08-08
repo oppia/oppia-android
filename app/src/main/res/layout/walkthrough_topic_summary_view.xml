@@ -45,7 +45,7 @@
         android:id="@+id/bottom_topic_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/topic_title_background"
+        android:background="@color/component_color_shared_secondary_container_background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -66,7 +66,7 @@
           android:maxLines="2"
           android:minLines="2"
           android:text="@{viewModel.name}"
-          android:textColor="@color/color_def_white"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="14sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -79,7 +79,7 @@
           android:fontFamily="sans-serif-light"
           android:lines="1"
           android:text="@{viewModel.computeWalkthroughLessonCountText()}"
-          android:textColor="@color/color_def_white_80"
+          android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="14sp"
           android:textStyle="italic"
           app:layout_constraintStart_toStartOf="parent"

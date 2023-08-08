@@ -55,6 +55,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -62,6 +63,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
@@ -115,19 +117,17 @@ private const val TEST_SUB_TOPIC_ID = 1
 class ViewEventLogsFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
   @Inject
   lateinit var context: Context
-
   @Inject
   lateinit var oppiaLogger: OppiaLogger
-
+  @Inject
+  lateinit var analyticsController: AnalyticsController
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
@@ -137,6 +137,7 @@ class ViewEventLogsFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     logMultipleEvents()
+    testCoroutineDispatchers.runCurrent()
   }
 
   @After
@@ -486,25 +487,33 @@ class ViewEventLogsFragmentTest {
     }
   }
 
-  /** Logs multiple event logs so that the recyclerview in [ViewEventLogsFragment] gets populated */
+  /**
+   * Logs multiple event logs so that the recyclerview in [ViewEventLogsFragment] gets populated.
+   */
   private fun logMultipleEvents() {
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenProfileChooserContext())
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenProfileChooserContext(), profileId = null
+    )
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 10000)
-    oppiaLogger.logImportantEvent(eventContext = oppiaLogger.createOpenHomeContext())
+    analyticsController.logImportantEvent(
+      eventContext = oppiaLogger.createOpenHomeContext(), profileId = null
+    )
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 20000)
-    oppiaLogger.logImportantEvent(oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID))
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID), profileId = null
+    )
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 30000)
-    oppiaLogger.logImportantEvent(
-      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID), profileId = null
     )
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 40000)
-    oppiaLogger.logImportantEvent(
-      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID), profileId = null
     )
   }
 
@@ -583,7 +592,7 @@ class ViewEventLogsFragmentTest {
       MetricLogSchedulerModule::class, PerformanceMetricsAssessorModule::class,
       PerformanceMetricsConfigurationsModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
 

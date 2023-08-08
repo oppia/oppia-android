@@ -20,12 +20,11 @@
         android:id="@+id/my_downloads_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/oppia_primary"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/my_downloads_activity_title"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/color_def_white" />
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
 
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/my_downloads_tabs_container"
@@ -33,14 +32,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        app:tabBackground="@color/oppia_primary"
+        app:tabBackground="@color/component_color_shared_activity_toolbar_color"
         app:tabGravity="fill"
-        app:tabIconTint="@color/tab_icon_color_selector"
+        app:tabIconTint="@color/component_color_shared_tab_icon_color_selector"
         app:tabIndicatorColor="@android:color/white"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
         app:tabTextAppearance="@style/AppTabTextAppearance"
-        app:tabTextColor="@color/tab_icon_color_selector" />
+        app:tabTextColor="@color/component_color_shared_tab_icon_color_selector" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

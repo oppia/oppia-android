@@ -1,13 +1,14 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
@@ -17,15 +18,25 @@ import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
+import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -46,7 +57,9 @@ class ExplorationActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val surveyGatingController: SurveyGatingController
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -61,6 +74,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private lateinit var oldestCheckpointExplorationId: String
   private lateinit var oldestCheckpointExplorationTitle: String
+  private lateinit var binding: ExplorationActivityBinding
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
@@ -75,7 +89,7 @@ class ExplorationActivityPresenter @Inject constructor(
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
+    binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
       activity,
       R.layout.exploration_activity
     )
@@ -89,7 +103,7 @@ class ExplorationActivityPresenter @Inject constructor(
     activity.setSupportActionBar(explorationToolbar)
 
     binding.explorationToolbarTitle.setOnClickListener {
-      binding.explorationMarqueeView.startMarquee()
+      binding.explorationToolbarTitle.isSelected = true
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
@@ -124,6 +138,42 @@ class ExplorationActivityPresenter @Inject constructor(
         TAG_EXPLORATION_MANAGER_FRAGMENT
       ).commitNow()
     }
+
+    if (getSpotlightManager() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_spotlight_fragment_placeholder,
+        SpotlightFragment.newInstance(profileId.internalId),
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+      ).commitNow()
+    }
+  }
+
+  fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
+    if (numberOfLogins >= 3) {
+      // Spotlight the voice-over icon after 3 or more logins, and only if it's visible. Note that
+      // the doOnPreDraw here ensures that the visibility check for the button is up-to-date before
+      // a decision is made on whether to show the button.
+      binding.actionAudioPlayer.doOnPreDraw {
+        if (it.visibility == View.VISIBLE) {
+          val audioPlayerSpotlightTarget = SpotlightTarget(
+            it,
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.voiceover_icon_spotlight_hint,
+              resourceHandler.getStringInLocale(R.string.app_name)
+            ),
+            SpotlightShape.Circle,
+            Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+          )
+          checkNotNull(getSpotlightManager()).requestSpotlight(audioPlayerSpotlightTarget)
+        }
+      }
+    }
+  }
+
+  private fun getSpotlightManager(): SpotlightManager? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
   }
 
   fun loadExplorationFragment(readingTextSize: ReadingTextSize) {
@@ -146,7 +196,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  /** Action for onOptionsItemSelected */
+  /** Action for onOptionsItemSelected. */
   fun handleOnOptionsItemSelected(itemId: Int): Boolean {
     return when (itemId) {
       R.id.action_options -> {
@@ -227,15 +277,18 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
         activity,
-        Observer<AsyncResult<Any?>> {
+        {
           when (it) {
             is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
             is AsyncResult.Failure ->
               oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
             is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              backPressActivitySelector()
-              (activity as ExplorationActivity).finish()
+              if (isCompletion) {
+                maybeShowSurveyDialog(profileId, topicId)
+              } else {
+                backPressActivitySelector()
+              }
             }
           }
         }
@@ -454,5 +507,53 @@ class ExplorationActivityPresenter @Inject constructor(
         else -> showUnsavedExplorationDialogFragment()
       }
     }
+  }
+
+  private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
+    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+      .observe(
+        activity,
+        { gatingResult ->
+          when (gatingResult) {
+            is AsyncResult.Pending -> {
+              oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "ExplorationActivity",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
+              backPressActivitySelector()
+            }
+            is AsyncResult.Success -> {
+              if (gatingResult.value) {
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .addToBackStack(null)
+                  .commit()
+              } else {
+                backPressActivitySelector()
+              }
+            }
+          }
+        }
+      )
+  }
+
+  companion object {
+    private val SURVEY_QUESTIONS = listOf(
+      SurveyQuestionName.USER_TYPE,
+      SurveyQuestionName.MARKET_FIT,
+      SurveyQuestionName.NPS
+    )
   }
 }

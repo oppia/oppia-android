@@ -141,7 +141,8 @@ class FractionInteractionViewModel private constructor(
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      timeToStartNoticeAnimationMs: Long?
     ): StateItemViewModel {
       return FractionInteractionViewModel(
         interaction,

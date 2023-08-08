@@ -100,12 +100,19 @@ class RegexPatternValidationCheckTest {
     "Activity should never be subclassed. Use AppCompatActivity, instead."
   private val subclassedAppCompatActivityErrorMessage =
     "Never subclass AppCompatActivity directly. Instead, use InjectableAppCompatActivity."
+  private val subclassedInjectableAppCompatActivityErrorMessage =
+    "Never subclass InjectableAppCompatActivity directly. Instead, use " +
+      "InjectableSystemLocalizedAppCompatActivity or InjectableAutoLocalizedAppCompatActivity."
   private val subclassedDialogFragmentErrorMessage =
     "DialogFragment should never be subclassed. Use InjectableDialogFragment, instead."
   private val androidActivityConfigChangesErrorMessage =
     "Never explicitly handle configuration changes. Instead, use saved instance states for" +
       " retaining state across rotations. For other types of configuration changes, follow up" +
       " with the developer mailing list with how to proceed if you think this is a legitimate case."
+  private val androidManifestFirebaseAnalyticsEnabledErrorMessage =
+    "Firebase analytics collection should always be explicitly deactivated in develop."
+  private val androidManifestFirebaseCrashlyticsEnabledErrorMessage =
+    "Firebase crashlytics collection should always be explicitly deactivated in develop."
   private val nonCompatDrawableUsedErrorMessage =
     "Drawable start/end/top/bottom & image source should use the compat versions, instead, e.g.:" +
       " app:drawableStartCompat or app:srcCompat, to ensure that vector drawables can load" +
@@ -164,6 +171,44 @@ class RegexPatternValidationCheckTest {
     "Only colors from color_palette.xml may be used in component_colors.xml."
   private val doesNotReferenceColorFromColorDefs =
     "Only colors from color_defs.xml may be used in color_palette.xml."
+  private val doesNotReferenceColorFromComponentColorInLayouts =
+    "Only colors from component_colors.xml may be used in layouts."
+  private val doesNotReferenceColorFromComponentColorInKotlinFiles =
+    "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments, " +
+      "Views and Presenters)."
+  private val doesNotUseWorkManagerGetInstance =
+    "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one" +
+      " using getInstance (as the latter may create a WorkManager if one isn't already present, " +
+      "and the application may intend to disable it)."
+  private val doesNotUsePostOrPostDelayed =
+    "Prefer avoiding post() and postDelayed() methods as they can can lead to subtle and " +
+      "difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when " +
+      "an operation needs to run at a future time. For cases when state needs to be synchronized " +
+      "with a view, use doOnPreDraw or doOnLayout instead. For more context on the underlying " +
+      "issue, see: https://betterprogramming.pub/stop-using-post-postdelayed-in-your" +
+      "-android-views-9d1c8eeaadf2."
+  private val badKdocShouldFitOnOneLine =
+    "Badly formatted KDoc. KDocs should either fit entirely on one line, e.g. \"/** My KDoc. */\"" +
+      " or on multiple lines with the \"/**\" by itself. See other KDocs in the codebase for" +
+      " references."
+  private val badSingleLineKdocShouldHaveSpacesAfterOpening =
+    "Badly formatted KDoc. Single-line KDocs should have one space after the \"/**\" and no other" +
+      " characters."
+  private val badSingleLineKdocShouldHaveExactlyOneSpaceAfterOpening =
+    "Badly formatted KDoc. Single-line KDocs should have exactly one space after the \"/**\"."
+  private val badSingleLineKdocShouldHaveSpacesBeforeEnding =
+    "Badly formatted KDoc. Single-line KDocs should always end with a single space before the" +
+      " final \"*/\"."
+  private val badSingleLineKdocShouldHaveExactlyOneSpaceBeforeEnding =
+    "Badly formatted KDoc. Single-line KDocs should always end with exactly one space before the" +
+      " final \"*/\"."
+  private val badKdocOrBlockCommentShouldEndWithCorrectEnding =
+    "Badly formatted KDoc or block comment. KDocs and block comments should only end with \"*/\"."
+  private val badKdocParamsAndPropertiesShouldHaveNameFollowing =
+    "Badly formatted KDoc param or property at-clause: the name of the parameter or property" +
+      " should immediately follow the at-clause without any additional linking with brackets."
+  private val badSingleLineKdocShouldEndWithPunctuation =
+    "Badly formatted KDoc. Single-line KDocs should end with punctuation."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1435,6 +1480,28 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
+  fun testFileContent_subclassedInjectableAppCompatActivity_fileContentIsNotCorrect() {
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val prohibitedContent = "class SomeActivity: InjectableAppCompatActivity() {}"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/SomeActivity.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + requiredContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $subclassedInjectableAppCompatActivityErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
   fun testFileContent_subclassedDialogFragment_fileContentIsNotCorrect() {
     val prohibitedContent = "class SomeDialogFragment: DialogFragment() {}"
     tempFolder.newFolder("testfiles", "app", "src", "main")
@@ -1462,6 +1529,8 @@ class RegexPatternValidationCheckTest {
         <?xml version="1.0" encoding="utf-8"?>
         <manifest package="org.oppia.android">
           <application android:name=".app.application.OppiaApplication">
+            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+            <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
             <activity
               android:name=".app.ExampleActivity"
               android:configChanges="orientation" />
@@ -1480,7 +1549,67 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:6: $androidActivityConfigChangesErrorMessage
+        $stringFilePath:8: $androidActivityConfigChangesErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_manifestWithFirebaseCrashlyticsEnabled_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <?xml version="1.0" encoding="utf-8"?>
+        <manifest package="org.oppia.android">
+          <application android:name=".app.application.OppiaApplication">
+            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="true" />
+            <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+          </application>
+        </manifest>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $androidManifestFirebaseCrashlyticsEnabledErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_manifestWithFirebaseAnalyticsEnabled_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <?xml version="1.0" encoding="utf-8"?>
+        <manifest package="org.oppia.android">
+          <application android:name=".app.application.OppiaApplication">
+            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+            <meta-data android:name="firebase_analytics_collection_deactivated" android:value="false" />
+          </application>
+        </manifest>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $androidManifestFirebaseAnalyticsEnabledErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -1903,7 +2032,7 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_doesNotHaveHexColorValue_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_add_profile_activity_switch_text_color">@color/color_palette_dark_text_color</color>
+        <color name="component_color_shared_primary_dark_text_color">@color/color_palette_dark_text_color</color>
         <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
         <color name="component_color_add_profile_activity_layout_background_color">@color/color_palette_background_color</color>
       """.trimIndent()
@@ -2150,6 +2279,135 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
+  fun testFileContent_xmlLayouts_includesNonColorComponentReferences_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColor="@color/color_defs_shared_primary_text_color"
+        android:textColor="@color/color_palette_primary_text_color"
+        android:textColor="#003933"
+        android:background="@color/component_color_shared_primary_text_color"
+        android:background="@color/color_defs_shared_primary_text_color"
+        android:background="@color/color_palette_primary_text_color"
+        android:background="#003933"
+        app:tint="@color/component_color_shared_primary_text_color"
+        app:tint="@color/color_defs_shared_primary_text_color"
+        app:tint="@color/color_palette_primary_text_color"
+        app:tint="#003933"
+        app:strokeColor="@color/component_color_shared_primary_text_color"
+        app:strokeColor="@color/color_defs_shared_primary_text_color"
+        app:strokeColor="@color/color_palette_primary_text_color"
+        app:strokeColor="#003933"
+        app:cardBackgroundColor="@color/component_color_shared_primary_text_color"
+        app:cardBackgroundColor="@color/color_defs_shared_primary_text_color"
+        app:cardBackgroundColor="@color/color_palette_primary_text_color"
+        app:cardBackgroundColor="#003933"
+        android:background="@color/component_color_shared_primary_text_color"
+        android:background="@color/color_defs_shared_primary_text_color"
+        android:background="@color/color_palette_primary_text_color"
+        android:background="#003933"
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "layout")
+    val stringFilePath = "app/src/main/res/layout/test_layout.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:2: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:3: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:4: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:6: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:7: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:8: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:10: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:11: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:12: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:14: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:15: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:16: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:18: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:19: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:20: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:22: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:23: $doesNotReferenceColorFromComponentColorInLayouts
+        $stringFilePath:24: $doesNotReferenceColorFromComponentColorInLayouts
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  // TODO(#5075): Add test for drawables file that checks color uses only component colors
+
+  @Test
+  fun testFileContent_kotlinFiles_includesNonColorComponentReferences_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        decorateWithScreenName(HOME_ACTIVITY)
+        R.color.component_color_shared_activity_status_bar_color
+        R.color.color_def_avatar_background_1
+        R.color.color_palette_primary_color
+      """.trimIndent()
+
+    tempFolder.newFolder(
+      "testfiles",
+      "app",
+      "src",
+      "main",
+      "java",
+      "org",
+      "oppia",
+      "android",
+      "app"
+    )
+
+    val stringFilePath1 = "app/src/main/java/org/oppia/android/app/HomeActivity.kt"
+    val stringFilePath2 = "app/src/main/java/org/oppia/android/app/TestFileActivityPresenter.kt"
+    val stringFilePath3 = "app/src/main/java/org/oppia/android/app/TestFileFragment.kt"
+    val stringFilePath4 = "app/src/main/java/org/oppia/android/app/TestFileFragmentPresenter.kt"
+    val stringFilePath5 = "app/src/main/java/org/oppia/android/app/TestFileView.kt"
+    val stringFilePath6 = "app/src/main/java/org/oppia/android/app/TestFileViewPresenter.kt"
+
+    tempFolder.newFile("testfiles/$stringFilePath1").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath2").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath3").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath4").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath5").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath6").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath1:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath1:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath2:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath2:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath3:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath3:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath4:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath4:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath5:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath5:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath6:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $stringFilePath6:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
   fun testFileContent_colorPalette_referencesColorFromColorDefs_fileContentIsCorrect() {
     val prohibitedContent =
       """
@@ -2258,6 +2516,309 @@ class RegexPatternValidationCheckTest {
     runScript()
 
     assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_referenceGetInstance_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        val workManager = WorkManager.getInstance(context)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/SomeInitializer.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUseWorkManagerGetInstance
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_postDelayedUsed_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        binding.view.postDelayed({ binding.view.visibility = View.GONE }, 1000)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUsePostOrPostDelayed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_postUsed_withParenthesis_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        binding.view.post({ binding.view.visibility = View.GONE })
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUsePostOrPostDelayed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_postUsed_withCurlyBraces_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        binding.view.post { binding.view.visibility = View.GONE }
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUsePostOrPostDelayed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_kdocNotFittingLineFormatting_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        /** Content here.
+         */
+        /** Correct KDoc. */
+        /**
+         * Correct KDoc.
+         */
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $badKdocShouldFitOnOneLine
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_singleLineKdocWithExtraCharactersAfterStart_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        /**Content here. */
+        /*** Content here. */
+        /** Correct KDoc. */
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $badSingleLineKdocShouldHaveSpacesAfterOpening
+        $stringFilePath:2: $badSingleLineKdocShouldHaveSpacesAfterOpening
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_singleLineKdocWithExtraSpacesAfterStart_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        /**  Content here. */
+        /**   Content here. */
+        /** Correct KDoc. */
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $badSingleLineKdocShouldHaveExactlyOneSpaceAfterOpening
+        $stringFilePath:2: $badSingleLineKdocShouldHaveExactlyOneSpaceAfterOpening
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_multipleCommentTypesWithExtraCharactersBeforeEnd_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        /** Content here.*/
+        /** Content here. **/
+        /** Correct KDoc. */
+        
+        /*
+         * Incorrect block comment.
+         **/
+        /*
+         * Correct block comment.
+         */
+        /**
+         * Incorrect KDoc comment.
+         **/
+        /**
+         * Correct KDoc comment.
+         */
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    // Two patterns are combined in this check because they slightly overlap in affected cases (e.g.
+    // line 2 fails due to three different checks), and one pattern is subequently needed for the
+    // test to pass (punctuation).
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $badSingleLineKdocShouldHaveSpacesBeforeEnding
+        $stringFilePath:2: $badSingleLineKdocShouldHaveSpacesBeforeEnding
+        $stringFilePath:2: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+        $stringFilePath:7: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+        $stringFilePath:13: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+        $stringFilePath:2: $badSingleLineKdocShouldEndWithPunctuation
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_singleLineKdocWithExtraSpacesBeforeEnd_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        /** Content here.  */
+        /** Content here.   */
+        /** Correct KDoc. */
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $badSingleLineKdocShouldHaveExactlyOneSpaceBeforeEnding
+        $stringFilePath:2: $badSingleLineKdocShouldHaveExactlyOneSpaceBeforeEnding
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_kdocWithPropertiesAndParameters_withLinksAfter_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        /**
+         * Summary fragment.
+         *
+         * @property [invalid] and explanation
+         * @property valid and explanation
+         * @param [invalid] and explanation
+         * @param valid and explanation
+         */
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:4: $badKdocParamsAndPropertiesShouldHaveNameFollowing
+        $stringFilePath:6: $badKdocParamsAndPropertiesShouldHaveNameFollowing
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_singleLineKdocDoesNotEndWithPunctuation_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        /** Content here */
+        /** Correct KDoc. */
+        /** Correct KDoc! */
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    // 'Punctuation' currently assumes a period.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $badSingleLineKdocShouldEndWithPunctuation
+        $stringFilePath:3: $badSingleLineKdocShouldEndWithPunctuation
+        $wikiReferenceNote
+        """.trimIndent()
+      )
   }
 
   /** Runs the regex_pattern_validation_check. */

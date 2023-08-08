@@ -5,7 +5,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oppia_grey_background"
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:paddingBottom="@dimen/policies_fragment_page_scroll_padding_bottom"
@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/color_def_white"
+      android:background="@color/component_color_shared_content_container_background_color"
       android:paddingStart="@dimen/policies_fragment_page_padding_start"
       android:paddingTop="@dimen/policies_fragment_page_padding_top"
       android:paddingEnd="@dimen/policies_fragment_page_padding_end"
@@ -26,7 +26,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorLink="@color/component_color_shared_link_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +37,8 @@
         style="@style/Body"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorLink="@color/component_color_shared_link_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

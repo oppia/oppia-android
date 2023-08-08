@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.audio
 
-import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +7,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.SeekBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -19,8 +19,12 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
@@ -30,6 +34,8 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
@@ -47,7 +53,8 @@ class AudioFragmentPresenter @Inject constructor(
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val viewModelProvider: ViewModelProvider<AudioViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableSpotlightUi private val enableSpotlightUi: PlatformParameterValue<Boolean>
 ) {
   var userIsSeeking = false
   var userProgress = 0
@@ -60,7 +67,10 @@ class AudioFragmentPresenter @Inject constructor(
     getAudioViewModel()
   }
 
-  /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
+  private var isPauseAudioRequestPending = false
+  private lateinit var binding: AudioFragmentBinding
+
+  /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -78,7 +88,7 @@ class AudioFragmentPresenter @Inject constructor(
         }
       )
 
-    val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.audioProgressSeekBar.setOnSeekBarChangeListener(
       object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -101,6 +111,15 @@ class AudioFragmentPresenter @Inject constructor(
       Observer {
         prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
         binding.audioProgressSeekBar.isEnabled = prepared
+
+        // This check will execute any pending pause request that causes issues with
+        // audio not being paused as the user navigates through lessons in a topic.
+        // Check #1801 for more details, and specifically
+        // https://github.com/oppia/oppia-android/pull/4629#issuecomment-1410005186
+        // for notes on why this fix works.
+        if (prepared && isPauseAudioRequestPending) {
+          pauseAudio()
+        }
       }
     )
 
@@ -111,6 +130,25 @@ class AudioFragmentPresenter @Inject constructor(
     }
     subscribeToAudioLanguageLiveData()
     return binding.root
+  }
+
+  private fun startSpotlights() {
+    val audioLanguageIconSpotlightTarget = SpotlightTarget(
+      binding.audioLanguageIcon,
+      resourceHandler.getStringInLocale(R.string.voiceover_language_icon_spotlight_hint),
+      SpotlightShape.Circle,
+      Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
+    )
+
+    checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(
+      audioLanguageIconSpotlightTarget
+    )
+  }
+
+  private fun getSpotlightManager(): SpotlightManager? {
+    return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
   }
 
   private fun getProfileData(): LiveData<String> {
@@ -137,6 +175,8 @@ class AudioFragmentPresenter @Inject constructor(
       AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "fr"
       AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "zh"
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> "pt"
+      AudioLanguage.ARABIC_LANGUAGE -> "ar"
+      AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> "pcm"
       AudioLanguage.NO_AUDIO, AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "en"
     }
@@ -154,14 +194,14 @@ class AudioFragmentPresenter @Inject constructor(
     return getAudioLanguage(profile.audioLanguage)
   }
 
-  /** Sets selected language code in presenter and ViewModel */
+  /** Sets selected language code in presenter and ViewModel. */
   fun languageSelected(language: String) {
     if (viewModel.selectedLanguageCode != language) {
       viewModel.setAudioLanguageCode(language)
     }
   }
 
-  /** Shows language dialog fragment with language list from exploration */
+  /** Shows language dialog fragment with language list from exploration. */
   fun showLanguageDialogFragment() {
     val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_LANGUAGE_DIALOG)
     if (previousFragment != null) {
@@ -174,14 +214,14 @@ class AudioFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
   }
 
-  /** Pauses audio if in prepared state */
+  /** Pauses audio if in prepared state. */
   fun handleOnStop() {
     if (!activity.isChangingConfigurations && prepared) {
       viewModel.pauseAudio()
     }
   }
 
-  /** Releases audio player resources */
+  /** Releases audio player resources. */
   fun handleOnDestroy() {
     if (!activity.isChangingConfigurations) {
       viewModel.handleRelease()
@@ -198,8 +238,11 @@ class AudioFragmentPresenter @Inject constructor(
     viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
-    if (prepared)
+    isPauseAudioRequestPending = true
+    if (prepared && isPauseAudioRequestPending) {
       viewModel.pauseAudio()
+      isPauseAudioRequestPending = false
+    }
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
@@ -258,11 +301,12 @@ class AudioFragmentPresenter @Inject constructor(
     audioButtonListener.scrollToTop()
     if (feedbackId == null) {
       // This isn't reloading content since it's the first case of the content auto-playing.
-      loadMainContentAudio(allowAutoPlay = true, reloadingContent = false)
+      loadMainContentAudio(allowAutoPlay = !enableSpotlightUi.value, reloadingContent = false)
     } else {
-      loadFeedbackAudio(feedbackId!!, true)
+      loadFeedbackAudio(feedbackId!!, !enableSpotlightUi.value)
     }
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
+    startSpotlights()
   }
 
   private fun hideAudioFragment() {

@@ -16,7 +16,7 @@ import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragme
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.SplashActivityBinding
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController

@@ -1,0 +1,22 @@
+"""
+Constructs for setting up lifecycle safe timer factory for injection in the Dagger graph.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "lifecycle_safe_timer_factory",
+    srcs = [
+        "LifecycleSafeTimerFactory.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+dagger_rules()

@@ -41,6 +41,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -50,7 +51,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
@@ -70,7 +71,8 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -97,7 +99,7 @@ class AudioPlayerControllerTest {
   @Inject lateinit var audioPlayerController: AudioPlayerController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var explorationProgressController: ExplorationProgressController
@@ -115,7 +117,7 @@ class AudioPlayerControllerTest {
   fun testController_initializePlayer_invokePrepared_reportsSuccessfulInit() {
     setUpMediaReadyApplication()
     audioPlayerController.initializeMediaPlayer()
-    audioPlayerController.changeDataSource(TEST_URL, contentId = null)
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
 
     shadowMediaPlayer.invokePreparedListener()
 
@@ -138,7 +140,7 @@ class AudioPlayerControllerTest {
     setUpMediaReadyApplication()
     arrangeMediaPlayer()
 
-    audioPlayerController.pause()
+    audioPlayerController.pause(isFromExplicitUserAction = true)
 
     assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
   }
@@ -182,7 +184,7 @@ class AudioPlayerControllerTest {
 
     audioPlayerController.releaseMediaPlayer()
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
-    audioPlayerController.changeDataSource(TEST_URL, contentId = null)
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value).isPending()
@@ -207,7 +209,7 @@ class AudioPlayerControllerTest {
     setUpMediaReadyApplication()
     arrangeMediaPlayer()
 
-    audioPlayerController.changeDataSource(TEST_URL2, contentId = null)
+    audioPlayerController.changeDataSource(TEST_URL2, contentId = null, languageCode = "en")
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value).isPending()
@@ -219,7 +221,7 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
-    audioPlayerController.changeDataSource(TEST_URL2, contentId = null)
+    audioPlayerController.changeDataSource(TEST_URL2, contentId = null, languageCode = "en")
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value).isPending()
@@ -269,7 +271,7 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
-    audioPlayerController.pause()
+    audioPlayerController.pause(isFromExplicitUserAction = true)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
@@ -323,7 +325,7 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     audioPlayerController.seekTo(500)
-    audioPlayerController.changeDataSource(TEST_URL2, contentId = null)
+    audioPlayerController.changeDataSource(TEST_URL2, contentId = null, languageCode = "en")
     shadowMediaPlayer.invokePreparedListener()
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
 
@@ -355,7 +357,7 @@ class AudioPlayerControllerTest {
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.advanceTimeBy(500) // Play part of the audio track before pausing.
-    audioPlayerController.pause()
+    audioPlayerController.pause(isFromExplicitUserAction = true)
     testCoroutineDispatchers.advanceTimeBy(2000)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
@@ -386,7 +388,7 @@ class AudioPlayerControllerTest {
   fun testScheduling_observeData_removeObserver_verifyTestDoesNotHang() {
     setUpMediaReadyApplication()
     val playProgress = audioPlayerController.initializeMediaPlayer()
-    audioPlayerController.changeDataSource(TEST_URL, contentId = null)
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
     testCoroutineDispatchers.runCurrent()
 
     playProgress.observeForever(mockAudioPlayerObserver)
@@ -402,13 +404,13 @@ class AudioPlayerControllerTest {
     setUpMediaReadyApplication()
     val playProgress =
       audioPlayerController.initializeMediaPlayer()
-    audioPlayerController.changeDataSource(TEST_URL, contentId = null)
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
     testCoroutineDispatchers.runCurrent()
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.advanceTimeBy(2000)
     playProgress.observeForever(mockAudioPlayerObserver)
-    audioPlayerController.pause()
+    audioPlayerController.pause(isFromExplicitUserAction = true)
     playProgress.removeObserver(mockAudioPlayerObserver)
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
 
@@ -419,7 +421,7 @@ class AudioPlayerControllerTest {
   fun testController_invokeErrorListener_invokePrepared_verifyAudioStatusIsFailure() {
     setUpMediaReadyApplication()
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
-    audioPlayerController.changeDataSource(TEST_URL, contentId = null)
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
 
     shadowMediaPlayer.invokeErrorListener(/* what= */ 0, /* extra= */ 0)
     shadowMediaPlayer.invokePreparedListener()
@@ -453,7 +455,7 @@ class AudioPlayerControllerTest {
   fun testError_notPrepared_invokePause_fails() {
     setUpMediaReadyApplication()
     val exception = assertThrows(IllegalStateException::class) {
-      audioPlayerController.pause()
+      audioPlayerController.pause(isFromExplicitUserAction = true)
     }
 
     assertThat(exception).hasMessageThat().contains("Media Player not in a prepared state")
@@ -473,7 +475,7 @@ class AudioPlayerControllerTest {
   fun testController_initializePlayer_invokePrepared_reportsFailure_logsException() {
     setUpMediaReadyApplication()
     audioPlayerController.initializeMediaPlayer()
-    audioPlayerController.changeDataSource(TEST_FAIL_URL, contentId = null)
+    audioPlayerController.changeDataSource(TEST_FAIL_URL, contentId = null, languageCode = "en")
 
     shadowMediaPlayer.invokePreparedListener()
     val exception = fakeExceptionLogger.getMostRecentException()
@@ -488,10 +490,11 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer(contentId = "test_content_id")
 
     audioPlayerController.play(isPlayingFromAutoPlay = true, reloadingMainContent = true)
+    testCoroutineDispatchers.runCurrent()
 
     // No audio event is logged when an auto-play corresponds to a new content card (since it's
     // continuing a play from an earlier state that was already logged).
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
@@ -503,10 +506,11 @@ class AudioPlayerControllerTest {
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
 
     audioPlayerController.play(isPlayingFromAutoPlay = true, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
     // This is the default case: when the user opens the audio bar it will auto-play audio (but not
     // 'reload' the main content since it's an initial load).
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val exploration = loadExploration(explorationId)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
@@ -535,10 +539,11 @@ class AudioPlayerControllerTest {
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = true)
+    testCoroutineDispatchers.runCurrent()
 
     // This case is only hypothetically possible, but shouldn't happen in practice (since main
     // content is always auto-played when reloaded).
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val exploration = loadExploration(explorationId)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
@@ -562,18 +567,20 @@ class AudioPlayerControllerTest {
   fun testPlay_prepared_notReloadingMainContent_notAutoPlaying_studyOn_logsPlayEvent() {
     setUpMediaReadyApplicationWithLearnerStudy()
     val explorationId = TEST_EXPLORATION_ID_5
-    arrangeMediaPlayer(contentId = "test_content_id")
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
     // This case corresponds to the user manually playing audio (e.g. after pausing).
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val exploration = loadExploration(explorationId)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
       hasContentIdThat().isEqualTo("test_content_id")
+      hasLanguageCodeThat().isEqualTo("sw")
       hasExplorationDetailsThat {
         hasTopicIdThat().isEqualTo("test_topic_id")
         hasStoryIdThat().isEqualTo("test_story_id")
@@ -598,9 +605,10 @@ class AudioPlayerControllerTest {
     beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
     // If there's no content ID then it'll be missing from the log.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasPlayVoiceOverContextThat().hasContentIdThat().isEmpty()
   }
 
@@ -611,15 +619,139 @@ class AudioPlayerControllerTest {
     logIntoAnalyticsReadyAdminProfile()
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
 
-    // No event should be logged if outside an exploration and playing audio (such as for
+    // No event should be logged if outside an exploration when playing/pausing audio (such as for
     // questions).
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
-  private fun arrangeMediaPlayer(contentId: String? = null) {
+  @Test
+  fun testPause_playing_explicitUserAction_studyOn_logsPauseEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
+
+    audioPlayerController.pause(isFromExplicitUserAction = true)
+    testCoroutineDispatchers.runCurrent()
+
+    // This case corresponds to the user manually pausing audio.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val exploration = loadExploration(explorationId)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasPauseVoiceOverContextThat {
+      hasContentIdThat().isEqualTo("test_content_id")
+      hasLanguageCodeThat().isEqualTo("sw")
+      hasExplorationDetailsThat {
+        hasTopicIdThat().isEqualTo("test_topic_id")
+        hasStoryIdThat().isEqualTo("test_story_id")
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+        hasVersionThat().isEqualTo(exploration.version)
+        hasStateNameThat().isEqualTo(exploration.initStateName)
+        hasSessionIdThat().isNotEmpty()
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isNotEmpty()
+          hasInstallationIdThat().isNotEmpty()
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testPause_playing_explicitAction_missingContentId_studyOn_logsPauseEventWithoutContentId() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = null)
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
+
+    audioPlayerController.pause(isFromExplicitUserAction = true)
+    testCoroutineDispatchers.runCurrent()
+
+    // If there's no content ID then it'll be missing from the log.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasPauseVoiceOverContextThat().hasContentIdThat().isEmpty()
+  }
+
+  @Test
+  fun testPause_playing_explicitUserAction_outsideExp_studyOn_doesNotLogEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    arrangeMediaPlayer(contentId = "test_content_id")
+    logIntoAnalyticsReadyAdminProfile()
+    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
+    fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
+
+    audioPlayerController.pause(isFromExplicitUserAction = true)
+    testCoroutineDispatchers.runCurrent()
+
+    // No event should be logged if outside an exploration when playing/pausing audio (such as for
+    // questions).
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testPause_playing_notExplicitUserAction_studyOn_doesNotLogEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    testCoroutineDispatchers.runCurrent()
+    fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
+
+    audioPlayerController.pause(isFromExplicitUserAction = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Automatic pausing (such as navigating away from a lesson) should not logged an event.
+    // This case corresponds to the user manually pausing audio.
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testPause_notPlaying_explicitUserAction_studyOn_doesNotLogEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    testCoroutineDispatchers.runCurrent()
+    fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
+
+    audioPlayerController.pause(isFromExplicitUserAction = true)
+    testCoroutineDispatchers.runCurrent()
+
+    // Pausing when not actually playing should never log an event since it's an invalid state.
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testPause_notPlaying_notExplicitUserAction_studyOn_doesNotLogEvent() {
+    setUpMediaReadyApplicationWithLearnerStudy()
+    val explorationId = TEST_EXPLORATION_ID_5
+    arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
+    logIntoAnalyticsReadyAdminProfile()
+    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    testCoroutineDispatchers.runCurrent()
+    fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
+
+    audioPlayerController.pause(isFromExplicitUserAction = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Pausing when not actually playing should never log an event since it's an invalid state.
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+  }
+
+  private fun arrangeMediaPlayer(contentId: String? = null, languageCode: String = "en") {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
-    audioPlayerController.changeDataSource(TEST_URL, contentId)
+    audioPlayerController.changeDataSource(TEST_URL, contentId, languageCode)
     shadowMediaPlayer.invokePreparedListener()
     testCoroutineDispatchers.runCurrent()
   }
@@ -705,8 +837,19 @@ class AudioPlayerControllerTest {
     // within the same application instance.
     @Provides
     @Singleton
-    @LearnerStudyAnalytics
+    @EnableLearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      // Snapshot the value so that it doesn't change between injection and use.
+      val enableFeature = enableLearnerStudyAnalytics
+      return object : PlatformParameterValue<Boolean> {
+        override val value: Boolean = enableFeature
+      }
+    }
+
+    @Provides
+    @Singleton
+    @EnableLoggingLearnerStudyIds
+    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
       return object : PlatformParameterValue<Boolean> {
@@ -730,7 +873,7 @@ class AudioPlayerControllerTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
-      HintsAndSolutionConfigModule::class, LoggerModule::class
+      HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
