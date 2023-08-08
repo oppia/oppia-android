@@ -435,7 +435,6 @@
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">Abeg select all di correct choices.</string>
   <string name="unsupported_app_version_dialog_title">Unsupported app version</string>
-  <string name="unsupported_app_version_dialog_message">Dis version of di app no longer dey supported. Abeg update am from di Play Store.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Close app</string>
   <string name="splash_screen_developer_label">Developer Build</string>
   <string name="splash_screen_alpha_label">Alpha</string>

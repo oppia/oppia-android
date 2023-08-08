@@ -502,8 +502,8 @@
   <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
     App update required
   </string>
-  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">
-    A new version of Oppia is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.
+  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's app has expired.">
+    A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.
   </string>
   <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
     Close app
@@ -515,7 +515,7 @@
     New update available
   </string>
   <string name="optional_app_update_dialog_message" description="The main message of the dialog shown when an optional app update is available.">
-    A new version of Oppia is now available. We recommend that you update the app for bug fixes and a better learning experience.
+    A new version of %s is now available. We recommend that you update the app for bug fixes and a better learning experience.
   </string>
   <string name="optional_app_update_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an optional app update is available.">
     Dismiss
@@ -527,7 +527,7 @@
     Update your Android OS
   </string>
   <string name="os_deprecation_dialog_message" description="The main message of the dialog shown when an the OS the user is using is no longer supported.">
-    We recommend updating your Android OS to take advantage of Oppia\'s new features and lessons.\n\nVisit your phone\'s Settings app to update your OS.
+    We recommend updating your Android OS to take advantage of %s\'s new features and lessons.\n\nVisit your phone\'s Settings app to update your OS.
   </string>
   <string name="os_deprecation_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an the OS the user is using is no longer supported.">
     Dismiss

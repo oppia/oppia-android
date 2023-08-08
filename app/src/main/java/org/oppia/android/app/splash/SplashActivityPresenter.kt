@@ -32,6 +32,8 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
+import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
+import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val BETA_NOTICE_DIALOG_FRAGMENT_TAG = "beta_notice_dialog"
