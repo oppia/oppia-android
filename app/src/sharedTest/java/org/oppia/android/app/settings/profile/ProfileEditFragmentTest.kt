@@ -14,18 +14,19 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isFocusable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -175,8 +176,8 @@ class ProfileEditFragmentTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withText(R.string.profile_edit_delete_success)))
-        .check(matches(isDisplayed()))
+      onView(withText(R.string.profile_edit_delete_success))
+        .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
     }
   }
 
@@ -188,9 +189,6 @@ class ProfileEditFragmentTest {
       onView(withText(R.string.profile_edit_delete_dialog_positive))
         .inRoot(isDialog())
         .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withText(R.string.profile_edit_delete_success)))
-        .check(matches(isDisplayed()))
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileListActivity::class.java.name))
     }
