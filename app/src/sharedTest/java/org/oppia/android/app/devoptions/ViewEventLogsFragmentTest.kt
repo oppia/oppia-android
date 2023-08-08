@@ -103,6 +103,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.annotation.SQLiteMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -113,6 +114,7 @@ private const val TEST_SUB_TOPIC_ID = 1
 
 /** Tests for [ViewEventLogsFragment]. */
 @RunWith(AndroidJUnit4::class)
+@SQLiteMode(SQLiteMode.Mode.NATIVE)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ViewEventLogsFragmentTest.TestApplication::class,
