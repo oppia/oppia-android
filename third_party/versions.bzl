@@ -84,10 +84,10 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "android.arch.core:core-testing": "1.1.1",
     "androidx.arch.core:core-testing": "2.1.0",
-    "androidx.test.espresso:espresso-accessibility": "3.5.0",
-    "androidx.test.espresso:espresso-contrib": "3.5.0",
-    "androidx.test.espresso:espresso-core": "3.5.0-alpha03",
-    "androidx.test.espresso:espresso-intents": "3.5.0",
+    "androidx.test.espresso:espresso-accessibility": "3.1.0",
+    "androidx.test.espresso:espresso-contrib": "3.1.0",
+    "androidx.test.espresso:espresso-core": "3.1.0",
+    "androidx.test.espresso:espresso-intents": "3.1.0",
     "androidx.test.ext:junit": "1.1.1",
     "androidx.test.ext:truth": "1.4.0",
     "androidx.test:core": "1.0.0",
@@ -110,8 +110,8 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "2.19.0",
-    "org.robolectric:annotations": "4.7",
-    "org.robolectric:robolectric": "4.7",
+    "org.robolectric:annotations": "4.10.3",
+    "org.robolectric:robolectric": "4.10.3",
     "org.snakeyaml:snakeyaml-engine": "2.6",
 }
 
