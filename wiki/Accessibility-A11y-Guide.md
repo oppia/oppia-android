@@ -87,7 +87,7 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 * [Display speech output as Text: Talkback](https://developer.android.com/guide/topics/ui/accessibility/testing#optional_talkback_developer_settings)
 
 ### Developers Videos
-* [Accessibility Scanner Tutorial](https://youtu.be/LF5AgGI5H3A)
+* [How to use Accessibility Scanner? - Tutorial](https://youtu.be/LF5AgGI5H3A)
   * [Presentation Slides](https://docs.google.com/presentation/d/1PM_gs3TV2LVKFv6WuF9CUQHWbK7koepAxypzxeZTFzE/edit?usp=sharing)
 
 ## Using AccessibilityTestRule in Espresso Tests
