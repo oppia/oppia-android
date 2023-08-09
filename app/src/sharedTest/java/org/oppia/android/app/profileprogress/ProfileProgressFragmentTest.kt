@@ -376,6 +376,19 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
+  fun testFragment_imageSelectAvatar_configChange_profilePictureDialogIsVisible() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
+      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
+    }
+  }
+
+  @Test
   fun testProfileProgressFragment_noProgress_ongoingTopicCountIsZero() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
