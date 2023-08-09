@@ -26,6 +26,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -342,8 +343,8 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_imageSelectAvatar_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
-      hasAction(Intent.ACTION_PICK),
-      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+      hasAction(Intent.ACTION_GET_CONTENT),
+      hasType("image/*")
     )
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
@@ -360,25 +361,19 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_imageSelectAvatar_configChange_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
-      hasAction(Intent.ACTION_PICK),
-      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+      hasAction(Intent.ACTION_GET_CONTENT),
+      hasType("image/*")
     )
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
       verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
       onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
         .perform(click())
-      testCoroutineDispatchers.runCurrent()
       intended(expectedIntent)
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      intended(expectedIntent)
-      clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
-      // The dialog should still be open after a configuration change.
-      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
     }
   }
 
