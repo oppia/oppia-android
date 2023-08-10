@@ -8,7 +8,7 @@
   - [Using a11y scanner in android](#using-a11y-scanner-in-android)
   - [Using Talkback in android](#using-talkback-in-android)
   - [Useful Resources](#useful-resources)
-  - [Developers Videos](#developers-videos)
+  - [Developer Videos](#developer-videos)
 - [Using AccessibilityTestRule in Espresso Tests](#using-accessibilitytestrule-in-espresso-tests)
 - [Auditing the app](#auditing-the-app)
 - [General Tips to make app Accessible](#general-tips-to-make-app-accessible)
@@ -56,6 +56,8 @@ By default tablet emulators do not contain **Play Store** app and therefore you 
 * Clickable items
 * Text and image contrast
 
+[How to use Accessibility Scanner? - Video Tutorial](https://youtu.be/LF5AgGI5H3A)
+
 #### How to Use?
 1. Open **Google Play Store**
 2. Download/Install **Accessibility Scanner** app
@@ -79,14 +81,13 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 5. Read all the instructions written on the screen as using Talkback requires specific steps.
 6. Turn on **Use Service** -> **Allow**
 
-
 ### Useful Resources
 * [Android A11Y Overview](https://support.google.com/accessibility/android/answer/6006564)
 * [Using A11Y Menu](https://support.google.com/accessibility/android/answer/9078941)
 * [Getting started with Talkback](https://support.google.com/accessibility/android/answer/6283677)
 * [Display speech output as Text: Talkback](https://developer.android.com/guide/topics/ui/accessibility/testing#optional_talkback_developer_settings)
 
-### Developers Videos
+### Developer Videos
 * [How to use Accessibility Scanner? - Tutorial](https://youtu.be/LF5AgGI5H3A)
   * [Presentation Slides](https://docs.google.com/presentation/d/1PM_gs3TV2LVKFv6WuF9CUQHWbK7koepAxypzxeZTFzE/edit?usp=sharing)
 
