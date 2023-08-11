@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Enabled state -->
+  <item android:drawable="@drawable/survey_nps_radio_selected_color" android:state_enabled="true" />
+  <!-- Disabled state -->
+  <item android:drawable="@drawable/survey_nps_radio_unselected_color" android:state_enabled="false" />
+</selector>
