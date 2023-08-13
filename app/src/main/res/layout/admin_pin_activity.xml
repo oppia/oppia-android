@@ -13,10 +13,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <androidx.appcompat.widget.Toolbar
+      android:id="@+id/admin_pin_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:background="?attr/colorPrimary"
+      android:elevation="4dp"
+      style="@style/AdminpinToolbarTextAppearance"
+      app:titleTextAppearance="@style/AdminpinToolbarTextAppearance"
+      app:titleTextColor="@color/component_color_shared_activity_toolbar_text_color"
+      app:navigationIcon="@drawable/ic_close_white_24dp"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- NestedScrollView below the Toolbar -->
     <androidx.core.widget.NestedScrollView
       android:id="@+id/scrollViewAdminPin"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginTop="0dp"
+      app:layout_constraintTop_toBottomOf="@id/admin_pin_toolbar"
+      app:layout_constraintBottom_toBottomOf="parent"
       android:background="@color/component_color_shared_screen_secondary_background_color"
       android:fillViewport="true"
       android:overScrollMode="never"
