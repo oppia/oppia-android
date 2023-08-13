@@ -46,13 +46,13 @@ class AdminPinActivityPresenter @Inject constructor(
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
 
-
     binding.apply {
       lifecycleOwner = activity
       viewModel = adminViewModel
     }
 
-    binding.adminPinToolbar.title=resourceHandler.getStringInLocale(R.string.admin_auth_activity_add_profiles_title)
+    binding.adminPinToolbar.title = resourceHandler
+      .getStringInLocale(R.string.admin_auth_activity_add_profiles_title)
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputPinEditText.onTextChanged { pin ->
