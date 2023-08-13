@@ -460,9 +460,9 @@
   <string name="resume_lesson_activity_title">Retomar lição</string>
   <string name="resume_lesson_button">Continuar</string>
   <string name="start_over_lesson_button">Recomeçar</string>
-  <string name="home_screen_good_morning_greeting_fragment">Bom dia,</string>
-  <string name="home_screen_good_afternoon_greeting_fragment">Boa tarde,</string>
-  <string name="home_screen_good_evening_greeting_fragment">Boa noite,</string>
+  <string name="home_screen_good_morning_greeting_fragment">Bom dia, \u0020</string>
+  <string name="home_screen_good_afternoon_greeting_fragment">Boa tarde, \u0020</string>
+  <string name="home_screen_good_evening_greeting_fragment">Boa noite, \u0020</string>
   <string name="policy_activity_title">Página de Política</string>
   <string name="privacy_policy_title">Política de Privacidade</string>
   <string name="privacy_policy_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/privacy-policy\"&gt;esta páginage&lt;/a&gt; para acessar a última versão desta política de privacidade.</string>

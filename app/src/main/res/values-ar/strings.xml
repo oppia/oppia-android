@@ -514,9 +514,9 @@
   <string name="resume_lesson_activity_title">استئناف الدرس</string>
   <string name="resume_lesson_button">تابع</string>
   <string name="start_over_lesson_button">ابدأ من جديد</string>
-  <string name="home_screen_good_morning_greeting_fragment">صباح الخير</string>
-  <string name="home_screen_good_afternoon_greeting_fragment">مساء الخير</string>
-  <string name="home_screen_good_evening_greeting_fragment">مساء الخير،</string>
+  <string name="home_screen_good_morning_greeting_fragment">صباح الخير \u0020</string>
+  <string name="home_screen_good_afternoon_greeting_fragment">مساء الخير \u0020</string>
+  <string name="home_screen_good_evening_greeting_fragment">مساء الخير، \u0020</string>
   <string name="policy_activity_title">صفحة السياسة</string>
   <string name="privacy_policy_title">سياسة الخصوصية</string>
   <string name="privacy_policy_web_link">يرجى زيارة &lt;a href=\"https://www.oppia.org/privacy-policy\"&gt;هذه الصفحة&lt;/a&gt; للحصول على أحدث إصدار من سياسة الخصوصية هذه.</string>
