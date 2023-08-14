@@ -13,14 +13,14 @@ class WelcomeViewModel(
   dateTimeUtil: DateTimeUtil
 ) : HomeItemViewModel() {
 
-  /** Text [String] to greet the learner and display on-screen when launching the home activity. */
+  /** Text [String] to greet the learner. */
   val greeting: String = dateTimeUtil.getGreetingMessage()
 
   /**
-   * Returns the user-readable portion of the welcome screen greeting that contains the user's name.
+   *  Returns the string which contains greeting message with user's name and display on-screen when launching the home activity.
    */
-  fun computeProfileNameText(): String {
-    return resourceHandler.getStringInLocaleWithWrapping(R.string.welcome_profile_name, profileName)
+  fun welcomeText(): String {
+  return "$greeting ${resourceHandler.getStringInLocaleWithWrapping(R.string.welcome_profile_name, profileName)}"
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
