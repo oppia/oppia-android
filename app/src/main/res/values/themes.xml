@@ -62,7 +62,7 @@
     <item name="android:background">@color/component_color_shared_activity_action_bar_color</item>
   </style>
 
-  <style name="OppiaAdminpinTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar" >
+  <style name="OppiaAdminPinTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar" >
     <item name="android:background">@color/component_color_shared_activity_action_bar_color</item>
   </style>
 
