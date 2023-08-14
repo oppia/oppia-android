@@ -32,10 +32,11 @@ There are various manual and automated tests to check if app is accessible by al
 
 **[Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en)** : Using Accessibility Scanner we can take screenshots of each and every screen in the Oppia-app manually and the Accessibility Scanner app will give the output for the individual screenshot mentioning all the errors.
 
+[Here](https://youtu.be/LF5AgGI5H3A) is a video tutorial on how to set up and use the Accessibility Scanner.
+
 **Screen Reader**: Screen readers like **Talkback** can be used to test the app manually. Talkback app is used by blind people to navigate to different items in the screen and get audio based output. This app will not give any error like Accessibility Scanner. 
 
 **[AccessibilityChecks](https://developer.android.com/guide/topics/ui/accessibility/testing#automated)**: Developers can activate the `AccessibilityChecks` in all `Espresso` test cases which will give errors related to accessibility.
-
 
 ## Setting up Accessibility Scanner and Talkback
 
@@ -55,8 +56,6 @@ By default tablet emulators do not contain **Play Store** app and therefore you 
 * Touch target size
 * Clickable items
 * Text and image contrast
-
-[How to use Accessibility Scanner? - Video Tutorial](https://youtu.be/LF5AgGI5H3A)
 
 #### How to Use?
 1. Open **Google Play Store**
