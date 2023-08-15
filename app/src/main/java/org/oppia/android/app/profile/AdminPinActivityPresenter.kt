@@ -45,8 +45,6 @@ class AdminPinActivityPresenter @Inject constructor(
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
 
-
-
     binding.apply {
       lifecycleOwner = activity
       viewModel = adminViewModel
