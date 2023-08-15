@@ -7,7 +7,8 @@ import org.oppia.android.app.splash.DeprecationNoticeActionType
 import org.oppia.android.app.testing.activity.TestActivity
 
 /** [TestActivity] for setting up a test environment for testing the beta notice dialog. */
-class ForcedAppDeprecationNoticeDialogFragmentTestActivity: TestActivity(),
+class ForcedAppDeprecationNoticeDialogFragmentTestActivity :
+  TestActivity(),
   DeprecationNoticeActionListener {
   /**
    * [DeprecationNoticeActionListener] that must be initialized by the test, and is presumed to be a
@@ -30,5 +31,4 @@ class ForcedAppDeprecationNoticeDialogFragmentTestActivity: TestActivity(),
   override fun onNegativeActionButtonClicked(noticeType: DeprecationNoticeActionType) {
     mockCallbackListener.onNegativeActionButtonClicked(noticeType)
   }
-
 }

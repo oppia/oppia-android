@@ -35,7 +35,7 @@ class OptionalAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
         )
       }
       .setNegativeButton(R.string.optional_app_update_dialog_dismiss_button_text) { _, _ ->
-        deprecationNoticeExitAppListener.onPositiveActionButtonClicked(
+        deprecationNoticeExitAppListener.onNegativeActionButtonClicked(
           DeprecationNoticeActionType.DISMISS
         )
       }

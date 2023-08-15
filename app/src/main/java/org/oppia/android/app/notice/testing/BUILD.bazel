@@ -19,6 +19,19 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "forced_app_deprecation_notice_dialog_fragment_test_activity",
+    testonly = True,
+    srcs = [
+        "ForcedAppDeprecationNoticeDialogFragmentTestActivity.kt",
+    ],
+    visibility = ["//app:app_testing_visibility"],
+    deps = [
+        "//app",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
+    ],
+)
+
+kt_android_library(
     name = "general_availability_upgrade_notice_dialog_fragment_test_activity",
     testonly = True,
     srcs = [
@@ -32,23 +45,10 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "forced_app_deprecation_notice_dialog_fragment_test_activity",
-    testonly = True,
-    srcs = [
-        "ForcedAppDeprecationNoticeDialogFragmentTestActivity.kt"
-    ],
-    visibility = ["//app:app_testing_visibility"],
-    deps = [
-        "//app",
-        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
-    ],
-)
-
-kt_android_library(
     name = "optional_app_deprecation_notice_dialog_fragment_test_activity",
     testonly = True,
     srcs = [
-        "OptionalAppDeprecationNoticeDialogFragmentTestActivity.kt"
+        "OptionalAppDeprecationNoticeDialogFragmentTestActivity.kt",
     ],
     visibility = ["//app:app_testing_visibility"],
     deps = [
@@ -61,7 +61,7 @@ kt_android_library(
     name = "os_deprecation_notice_dialog_fragment_test_activity",
     testonly = True,
     srcs = [
-        "OsDeprecationNoticeDialogFragmentTestActivity.kt"
+        "OsDeprecationNoticeDialogFragmentTestActivity.kt",
     ],
     visibility = ["//app:app_testing_visibility"],
     deps = [

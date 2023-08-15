@@ -1,26 +1,26 @@
 package org.oppia.android.app.notice
 
 import android.app.Application
+import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.R
@@ -38,6 +38,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.notice.testing.ForcedAppDeprecationNoticeDialogFragmentTestActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.splash.DeprecationNoticeActionType
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -94,6 +95,8 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [ForcedAppDeprecationNoticeDialogFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -119,16 +122,12 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
   @Mock
   lateinit var mockDeprecationNoticeActionListener: DeprecationNoticeActionListener
 
+  @Inject
+  lateinit var context: Context
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-  }
-
-  @Test
-  fun dummyTest() {
-    launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
-      assert(true).equals(true)
-    }
   }
 
   @Test
@@ -136,6 +135,61 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
     launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
       onDialogView(ViewMatchers.withText(R.string.unsupported_app_version_dialog_title))
         .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_hasExpectedContentMessageTextUnderTitle() {
+    launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
+      val appName = context.resources.getString(R.string.app_name)
+      val expectedString = context.resources.getString(
+        R.string.unsupported_app_version_dialog_message,
+        appName
+      )
+      onDialogView(ViewMatchers.withText(expectedString))
+        .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_hasUpdateButton() {
+    launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
+      onDialogView(
+        ViewMatchers.withText(R.string.unsupported_app_version_dialog_update_button_text)
+      ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_clickOnUpdateButton_callsCallbackListener_withUpdateDeprecationActionType() {
+    launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
+      clickOnDialogView(
+        ViewMatchers.withText(R.string.unsupported_app_version_dialog_update_button_text)
+      )
+
+      verify(mockDeprecationNoticeActionListener)
+        .onPositiveActionButtonClicked(DeprecationNoticeActionType.UPDATE)
+    }
+  }
+
+  @Test
+  fun testFragment_hasCloseAppButton() {
+    launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
+      onDialogView(
+        ViewMatchers.withText(R.string.unsupported_app_version_dialog_close_button_text)
+      ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_clockOnCloseAppButton_callsCallbackListener_withCloseDeprecationActionType() {
+    launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
+      clickOnDialogView(
+        ViewMatchers.withText(R.string.unsupported_app_version_dialog_close_button_text)
+      )
+
+      verify(mockDeprecationNoticeActionListener)
+        .onNegativeActionButtonClicked(DeprecationNoticeActionType.CLOSE)
     }
   }
 
