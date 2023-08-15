@@ -16,8 +16,7 @@ class ForcedAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
     }
   }
 
-  @Inject lateinit var forcedAppDeprecationNoticeDialogFragmentPresenter:
-    ForcedAppDeprecationNoticeDialogFragmentPresenter
+  @Inject lateinit var presenter: ForcedAppDeprecationNoticeDialogFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -25,6 +24,6 @@ class ForcedAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return forcedAppDeprecationNoticeDialogFragmentPresenter.handleOnCreateDialog()
+    return presenter.handleOnCreateDialog()
   }
 }

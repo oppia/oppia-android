@@ -5,8 +5,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.splash.DeprecationNoticeActionType
-import javax.inject.Inject
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
 
 /** Presenter class responsible for showing an OS deprecation dialog to the user. */
 class OsDeprecationNoticeDialogFragmentPresenter @Inject constructor(
@@ -23,10 +23,12 @@ class OsDeprecationNoticeDialogFragmentPresenter @Inject constructor(
 
     val dialog = AlertDialog.Builder(activity, R.style.DeprecationAlertDialogTheme)
       .setTitle(R.string.os_deprecation_dialog_title)
-      .setMessage(resourceHandler.getStringInLocaleWithWrapping(
-        R.string.os_deprecation_dialog_message,
-        appName
-      ))
+      .setMessage(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.os_deprecation_dialog_message,
+          appName
+        )
+      )
       .setNegativeButton(R.string.os_deprecation_dialog_dismiss_button_text) { _, _ ->
         deprecationNoticeExitAppListener.onPositiveActionButtonClicked(
           DeprecationNoticeActionType.DISMISS
