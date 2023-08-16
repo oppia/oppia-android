@@ -17,6 +17,7 @@
       android:id="@+id/topic_app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:background="@color/component_color_shared_activity_toolbar_color"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
       app:layout_constraintBottom_toTopOf="@+id/topic_tabs_viewpager_container"
       app:layout_constraintEnd_toEndOf="parent"
