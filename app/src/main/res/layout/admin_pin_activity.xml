@@ -17,10 +17,10 @@
     <androidx.appcompat.widget.Toolbar
       android:id="@+id/admin_pin_toolbar"
       android:layout_width="match_parent"
-      android:layout_height="?attr/actionBarSize"
-
+      android:layout_height="wrap_content"
+      android:minHeight="?attr/actionBarSize"
       android:elevation="4dp"
-android:theme="@style/OppiaActionBarTheme"
+      android:theme="@style/OppiaActionBarTheme"
       style="@style/AdminPinToolbarTextAppearance"
       app:titleTextAppearance="@style/AdminPinToolbarTextAppearance"
       app:titleTextColor="@color/component_color_shared_activity_toolbar_text_color"
