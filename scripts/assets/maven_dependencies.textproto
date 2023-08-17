@@ -579,8 +579,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.google.errorprone:error_prone_annotations:2.7.1"
-  artifact_version: "2.7.1"
+  artifact_name: "com.google.errorprone:error_prone_annotations:2.9.0"
+  artifact_version: "2.9.0"
   license {
     license_name: "Apache 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1027,8 +1027,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.ow2.asm:asm:9.1"
-  artifact_version: "9.1"
+  artifact_name: "org.ow2.asm:asm:9.2"
+  artifact_version: "9.2"
   license {
     license_name: "BSD-3-Clause"
     original_link: "https://asm.ow2.io/license.html"
