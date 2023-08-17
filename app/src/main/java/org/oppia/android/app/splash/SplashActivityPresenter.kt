@@ -67,14 +67,14 @@ class SplashActivityPresenter @Inject constructor(
     subscribeToOnboardingFlow()
   }
 
-  /** */
+  /** Handles cases where the user clicks the close app option on a deprecation notice dialog. */
   fun handleOnCloseAppButtonClicked() {
     // If the app close button is clicked for the deprecation notice, finish the activity to close
     // the app.
     activity.finish()
   }
 
-  /** */
+  /** Handle cases where the user clicks the update option on a deprecation notice dialog. */
   fun handleOnUpdateButtonClicked() {
     // If the Update button is clicked for the deprecation notice, launch the Play Store and open
     // the Oppia app's page.
@@ -101,7 +101,7 @@ class SplashActivityPresenter @Inject constructor(
     }
   }
 
-  /** */
+  /** Handle cases where the user dismisses the deprecation notice dialog. */
   fun handleOnDismissButtonClicked() {
     // If the Dismiss button is clicked for the deprecation notice, the dialog is automatically
     // dismissed. Navigate to profile chooser activity.

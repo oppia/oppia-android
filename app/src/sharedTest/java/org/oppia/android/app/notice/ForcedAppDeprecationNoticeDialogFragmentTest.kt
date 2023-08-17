@@ -168,7 +168,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
       )
 
       verify(mockDeprecationNoticeActionListener)
-        .onPositiveActionButtonClicked(DeprecationNoticeActionType.UPDATE)
+        .onActionButtonClicked(DeprecationNoticeActionType.UPDATE)
     }
   }
 
@@ -189,7 +189,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
       )
 
       verify(mockDeprecationNoticeActionListener)
-        .onNegativeActionButtonClicked(DeprecationNoticeActionType.CLOSE)
+        .onActionButtonClicked(DeprecationNoticeActionType.CLOSE)
     }
   }
 

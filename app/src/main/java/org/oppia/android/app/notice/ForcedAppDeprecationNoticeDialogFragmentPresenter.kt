@@ -30,12 +30,12 @@ class ForcedAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
         )
       )
       .setPositiveButton(R.string.unsupported_app_version_dialog_update_button_text) { _, _ ->
-        deprecationNoticeExitAppListener.onPositiveActionButtonClicked(
+        deprecationNoticeExitAppListener.onActionButtonClicked(
           DeprecationNoticeActionType.UPDATE
         )
       }
       .setNegativeButton(R.string.unsupported_app_version_dialog_close_button_text) { _, _ ->
-        deprecationNoticeExitAppListener.onNegativeActionButtonClicked(
+        deprecationNoticeExitAppListener.onActionButtonClicked(
           DeprecationNoticeActionType.CLOSE
         )
       }

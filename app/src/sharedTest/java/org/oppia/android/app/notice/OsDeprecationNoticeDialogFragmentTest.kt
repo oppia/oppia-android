@@ -165,7 +165,7 @@ class OsDeprecationNoticeDialogFragmentTest {
       clickOnDialogView(ViewMatchers.withText(R.string.os_deprecation_dialog_dismiss_button_text))
 
       verify(mockDeprecationNoticeActionListener)
-        .onNegativeActionButtonClicked(DeprecationNoticeActionType.DISMISS)
+        .onActionButtonClicked(DeprecationNoticeActionType.DISMISS)
     }
   }
 

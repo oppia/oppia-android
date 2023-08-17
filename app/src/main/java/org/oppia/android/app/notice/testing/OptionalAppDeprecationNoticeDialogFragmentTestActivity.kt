@@ -24,11 +24,7 @@ class OptionalAppDeprecationNoticeDialogFragmentTestActivity :
       .showNow(supportFragmentManager, "optional_app_deprecation_dialog")
   }
 
-  override fun onPositiveActionButtonClicked(noticeType: DeprecationNoticeActionType) {
-    mockCallbackListener.onPositiveActionButtonClicked(noticeType)
-  }
-
-  override fun onNegativeActionButtonClicked(noticeType: DeprecationNoticeActionType) {
-    mockCallbackListener.onNegativeActionButtonClicked(noticeType)
+  override fun onActionButtonClicked(noticeType: DeprecationNoticeActionType) {
+    mockCallbackListener.onActionButtonClicked(noticeType)
   }
 }

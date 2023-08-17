@@ -60,15 +60,7 @@ class SplashActivity :
     return builderInjector.getFragmentComponentBuilderProvider().get().setFragment(fragment).build()
   }
 
-  override fun onPositiveActionButtonClicked(noticeType: DeprecationNoticeActionType) {
-    when (noticeType) {
-      DeprecationNoticeActionType.CLOSE -> splashActivityPresenter.handleOnCloseAppButtonClicked()
-      DeprecationNoticeActionType.DISMISS -> splashActivityPresenter.handleOnDismissButtonClicked()
-      DeprecationNoticeActionType.UPDATE -> splashActivityPresenter.handleOnUpdateButtonClicked()
-    }
-  }
-
-  override fun onNegativeActionButtonClicked(noticeType: DeprecationNoticeActionType) {
+  override fun onActionButtonClicked(noticeType: DeprecationNoticeActionType) {
     when (noticeType) {
       DeprecationNoticeActionType.CLOSE -> splashActivityPresenter.handleOnCloseAppButtonClicked()
       DeprecationNoticeActionType.DISMISS -> splashActivityPresenter.handleOnDismissButtonClicked()
