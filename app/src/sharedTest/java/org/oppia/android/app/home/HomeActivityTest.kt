@@ -1563,7 +1563,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good morning,"
+        stringToMatch = "Good morning, Admin!"
       )
     }
   }
@@ -1653,7 +1653,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "صباح الخير"
+        stringToMatch = "Admin صباح الخير!"
       )
     }
   }
@@ -1723,7 +1723,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Bom dia,"
+        stringToMatch = "Bom dia, Admin!"
       )
     }
   }
