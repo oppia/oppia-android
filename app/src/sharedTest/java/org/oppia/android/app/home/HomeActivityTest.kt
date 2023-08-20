@@ -1623,7 +1623,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Bom dia,"
+        stringToMatch = "Bom dia, Admin!"
       )
       assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(1)
       // Verify that the display locale is set up correctly (for string formatting).
@@ -1653,7 +1653,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Admin صباح الخير!"
+        stringToMatch = "!Admin صباح الخير"
       )
     }
   }
