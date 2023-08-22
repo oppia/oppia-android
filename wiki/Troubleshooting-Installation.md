@@ -10,9 +10,12 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
 1. If you find any error related to `cURL`, please set up cURL on your machine. For Linux, you can use `sudo apt install curl`. No need to set up `cURL` for Windows as you are using git bash command line.<br>
 
+
 2. If you find any error which says `java: command not found`, please check you have Java installed correctly in your machine and the [environment path variable](https://www.java.com/en/download/help/path.html) is also set up correctly.
 
+
 3. If you find any error related to Kotlin or Java/Checkstyle while pushing the code, please check [this link](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow#how-to-fix-push-failures).
+
 
 4. If you see the error
 
@@ -21,6 +24,7 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
    ```
 
    then please follow the 2nd step mentioned in [this wiki](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-oppia-android) for Mac with Apple silicon(M1/M2) chips.
+
 
 5. If you see the error
 
@@ -70,6 +74,7 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
     ```
     [Steps](https://docs.bazel.build/versions/main/tutorial/android-app.html#integrate-with-the-android-sdk) to add ANDROID_HOME environment variable.
 
+
 2. If you encounter the following:
 
    ```
@@ -79,10 +84,32 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
    
    Try to delete the `.bazelrc` file to solve the above error. 
 
+
 3. **java.lang.ClassNotFoundException: com.android.tools.r8.compatdx.CompatDx**
 
    If, when building the app binary, you encounter a failure that indicates that the CompatDx file cannot be found, this is likely due to you using a newer version of the Android build tools. You can manually downgrade to an older version of build-tools (particularly 29.0.2). Unfortunately, this can't be done through Android Studio but it can be done over a terminal. Follow the instructions listed [here](https://github.com/oppia/oppia-android/issues/3024#issuecomment-884513455) to downgrade your build tools & then try to build the app again.
 
+
+4. If you encounter this error while building bazel in Mac M1:
+      ```
+      ERROR: /Users/OpenSource/oppia-android/model/src/main/proto/BUILD.bazel:167:20: Generating JavaLite proto_library //model/src/main/proto:profile_proto failed: (Segmentation fault): protoc failed: error executing command bazel-out/darwin-opt-exec-2B5CBBC6/bin/external/com_google_protobuf/protoc '--proto_path=bazel-out/android-armeabi-v7a-fastbuild/bin/model/src/main/proto/_virtual_imports/languages_proto' ... (remaining 8 argument(s) skipped)
+
+      Use --sandbox_debug to see verbose messages from the sandbox protoc failed: error executing command bazel-out/darwin-opt-exec-2B5CBBC6/bin/external/com_google_protobuf/protoc '--proto_path=bazel-out/android-armeabi-v7a-fastbuild/bin/model/src/main/proto/_virtual_imports/languages_proto' ... (remaining 8 argument(s) skipped)
+      ```
+
+   **Follow these steps to solve this error:**
+      ```
+      xcode-select --install
+      sudo xcodebuild -licence
+      sudo xcode-select -r 
+      sudo xcode-select -s /Library/Developer/CommandLineTools
+      xcode-select -p 
+      ```
+   After you successfully run above commands, build app using Bazel by following command:
+      ```
+      bazel clean --expunge
+      bazel build //:oppia --noexperimental_check_desugar_deps
+      ```
 
 ### Can’t find a particular issue?
 
