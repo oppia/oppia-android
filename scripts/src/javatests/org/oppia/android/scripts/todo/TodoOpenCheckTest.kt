@@ -43,7 +43,7 @@ class TodoOpenCheckTest {
 
   @Test
   fun testTodoCheck_noJsonFilePresent_checkShouldFail() {
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -103,7 +103,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -141,7 +141,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -185,7 +185,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -239,7 +239,7 @@ class TodoOpenCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -340,7 +340,7 @@ class TodoOpenCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -391,7 +391,7 @@ class TodoOpenCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 

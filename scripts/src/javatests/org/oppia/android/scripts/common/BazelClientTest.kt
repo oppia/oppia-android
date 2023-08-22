@@ -48,7 +48,7 @@ class BazelClientTest {
   fun testRetrieveTestTargets_emptyFolder_fails() {
     val bazelClient = BazelClient(tempFolder.root)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       bazelClient.retrieveAllTestTargets()
     }
 
@@ -62,7 +62,7 @@ class BazelClientTest {
     val bazelClient = BazelClient(tempFolder.root)
     testBazelWorkspace.initEmptyWorkspace()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       bazelClient.retrieveAllTestTargets()
     }
 

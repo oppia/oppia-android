@@ -73,7 +73,7 @@ class XmlSyntaxCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TestFile.xml")
     tempFile.writeText(invalidXml)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -112,7 +112,7 @@ class XmlSyntaxCheckTest {
     tempFile1.writeText(invalidXmlForFile1)
     tempFile2.writeText(invalidXmlForFile2)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -163,7 +163,7 @@ class XmlSyntaxCheckTest {
     tempFile2.writeText(invalidXmlForFile2)
     tempFile3.writeText(invalidXmlForFile3)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 

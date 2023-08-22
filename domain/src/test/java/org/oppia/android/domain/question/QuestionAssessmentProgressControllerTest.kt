@@ -134,7 +134,7 @@ class QuestionAssessmentProgressControllerTest {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     // Can't retrieve the current question until the training session is started.
-    assertThrows(UninitializedPropertyAccessException::class) {
+    assertThrows<UninitializedPropertyAccessException>() {
       questionAssessmentProgressController.getCurrentQuestion()
     }
   }

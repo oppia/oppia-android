@@ -281,7 +281,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -357,7 +357,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -387,7 +387,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -416,7 +416,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -442,7 +442,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -468,7 +468,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -495,7 +495,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -522,7 +522,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -550,7 +550,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -577,7 +577,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -604,7 +604,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -632,7 +632,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -668,7 +668,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -709,7 +709,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -755,7 +755,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -800,7 +800,7 @@ class KdocValidityCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -879,7 +879,7 @@ class KdocValidityCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -913,7 +913,7 @@ class KdocValidityCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 

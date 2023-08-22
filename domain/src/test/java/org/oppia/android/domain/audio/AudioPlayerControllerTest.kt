@@ -433,7 +433,7 @@ class AudioPlayerControllerTest {
   @Test
   fun testController_notInitialized_releasePlayer_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       audioPlayerController.releaseMediaPlayer()
     }
 
@@ -444,7 +444,7 @@ class AudioPlayerControllerTest {
   @Test
   fun testError_notPrepared_invokePlay_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     }
 
@@ -454,7 +454,7 @@ class AudioPlayerControllerTest {
   @Test
   fun testError_notPrepared_invokePause_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       audioPlayerController.pause(isFromExplicitUserAction = true)
     }
 
@@ -464,7 +464,7 @@ class AudioPlayerControllerTest {
   @Test
   fun testError_notPrepared_invokeSeekTo_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       audioPlayerController.seekTo(500)
     }
 

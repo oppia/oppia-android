@@ -52,7 +52,7 @@ class TestFileCheckTest {
     tempFolder.newFile("testfiles/ProdFile1Test.kt")
     tempFolder.newFile("testfiles/ProdFile2.kt")
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -73,7 +73,7 @@ class TestFileCheckTest {
     tempFolder.newFile("testfiles/ProdFile2.kt")
     tempFolder.newFile("testfiles/ProdFile3.kt")
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 
@@ -95,7 +95,7 @@ class TestFileCheckTest {
     tempFolder.newFile("testfiles/ProdFile3.kt")
     tempFolder.newFile("testfiles/ProdFile2.kt")
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       runScript()
     }
 

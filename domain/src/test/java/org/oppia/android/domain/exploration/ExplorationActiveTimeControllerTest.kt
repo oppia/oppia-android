@@ -223,7 +223,7 @@ class ExplorationActiveTimeControllerTest {
   fun testStopTimer_beforeStarting_isFailure() {
     setUpTestApplicationComponent()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       stopExploration()
     }
     assertThat(exception)
