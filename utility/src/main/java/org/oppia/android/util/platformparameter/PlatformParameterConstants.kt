@@ -125,7 +125,7 @@ const val FAST_LANGUAGE_SWITCHING_IN_LESSON = "fast_language_switching_in_lesson
 /**
  * The default enabled state for the feature corresponding to [EnableFastLanguageSwitchingInLesson].
  */
-const val FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE = true
+const val FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE = false
 
 /**
  * Qualifier for a feature flag that controls whether learner study IDs should be generated and
