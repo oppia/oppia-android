@@ -24,7 +24,6 @@
       style="@style/AdminPinToolbarTextAppearance"
       app:titleTextAppearance="@style/AdminPinToolbarTextAppearance"
       app:titleTextColor="@color/component_color_shared_activity_toolbar_text_color"
-      app:navigationIcon="@drawable/ic_close_white_24dp"
       app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView

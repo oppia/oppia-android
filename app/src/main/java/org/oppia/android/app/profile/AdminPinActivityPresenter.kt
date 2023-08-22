@@ -2,8 +2,10 @@ package org.oppia.android.app.profile
 
 import android.content.Context
 import android.view.KeyEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
@@ -38,12 +40,14 @@ class AdminPinActivityPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
-    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
 
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
+
+    activity.setSupportActionBar(binding.adminPinToolbar)
+    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
+    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
 
     binding.apply {
       lifecycleOwner = activity
