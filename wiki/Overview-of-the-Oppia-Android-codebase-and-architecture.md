@@ -152,33 +152,33 @@ Following these steps would lead to completing the entire task with all the code
 
 **Task:**  
 
-Finding code from a string ( e g., topic description under topic info tab) that you see in UI when running the app all the way to the UI components, domain controllers and the tests ultimately behind that text appearing.
+Finding code from a string ( e g., story name under lessons tab) that you see in UI when running the app all the way to the UI components, domain controllers and the tests ultimately behind that text appearing.
 
-<img width="300" height="600" alt="example 2 task image" src="https://user-images.githubusercontent.com/53645584/167693638-fbd3455f-3b10-4992-9c19-4e2892e75119.png">
+<img width="300" height="600" alt="example 2 task image" src="https://github.com/oppia/oppia-android/assets/76530270/a1785b0e-7c8e-4ece-a375-e9042f1002da">
 
 **Walkthrough:**
 
-**Finding the UI component (topic description)**
+**Finding the UI component (story name)**
 
 1.  The first step is to identify the id of the UI component that is responsible for displaying the text. We can do this by using the layout inspector of the android studio.
     
-2.  To do this, run the app on an emulator. Now navigate to the screen that displays the UI component, i.e. the topic info tab.
+2.  To do this, run the app on an emulator. Now navigate to the screen that displays the UI component, i.e. the lessons tab.
     
-3.  Next, open the layout inspector from the android studio, and click on the UI component displaying the topic description. Now all the attributes of this UI component are displayed on the right side of the layout inspector. Here, you can see this UI component's id, i.e. topic_description text_view.
+3.  Next, open the layout inspector from the android studio, and click on the UI component displaying the story name. Now all the attributes of this UI component are displayed on the right side of the layout inspector. Here, you can see this UI component's id, i.e. story_name_text_view.
 
-<img width="750" alt="example 2 layout inspector screenshot" src="https://lh5.googleusercontent.com/_3fkwPRvaQa4LU_ag-q7lq4AA3Qn5iofINL0ReVxufK27CVu-abIA972_ZBz6Mo38R1ZFK4q_JB-2N8c51TZ1jDOM-YO8IBGrb29ECJbnnSOGmYg4-nBhYCLcCuBvOi_y4TFSYVmweIMyn8Ucg">
+<img width="750" alt="example 2 layout inspector screenshot" src="https://github.com/oppia/oppia-android/assets/76530270/e4a198a8-d257-47d1-9e4a-dc08f159843f">
 
-4.  Now we have to find the file with a UI component with this id. We can do this by pressing double shift and then typing the id. Doing this, we see the id is the id of a text view present in the file topic_info_fragment.xml.
+4.  Now we have to find the file with a UI component with this id. We can do this by pressing double shift and then typing the id. Doing this, we see the id is the id of a text view present in the file topic_lessons_story_summary.xml.
     
-5.  Now that we know that the text view is present in topic_info_fragment.xml, according to the app architecture, we know that the name of this fragment is TopicInfoFragment. The files responsible for displaying this fragment are TopicInfoFragment.kt and TopicInfoFragmentPresenter.kt.
+5.  Now that we know that the text view is present in topic_lessons_story_summary.xml, according to the app architecture, we know that the name of this fragment is TopicLessonsFragment. The files responsible for displaying this fragment are TopicLessonsFragment.kt and TopicLessonsFragmentPresenter.kt.
     
-6.  Looking at the XML code for topic_description_text_view, we can see that TopicInfoViewModel sets the text in the text view using databinding.
+6.  Looking at the XML code for story_name_text_view, we can see that StorySummaryViewModel sets the text in the text view using databinding.
 
 **Finding the business logic for the UI component, i.e. domain controllers**
 
-1.  Following the app architecture used by Oppia, TopicInfoViewModel should be initialized in the TopicInfoFragmentPresenter.
+1.  Following the app architecture used by Oppia, StorySummaryViewModel should be initialized in the TopicLessonsFragmentPresenter.
     
-2.  Here we can see that the topic description is being updated in the viewModel by the TopicController. Therefore the business logic for getting the topic description will be present in the file TopicController.
+2.  Here we can see that the story name is being updated in the viewModel by the TranslationController. Therefore the business logic for getting the story name will be present in the file TranslationController.
 
 **Finding the tests** 
 
@@ -186,9 +186,9 @@ There are two sets of tests:
 - Tests to test the UI component
 - Tests to test the business logic of the UI component
 
-Since the UI component is present in the TopicInfoFramgnet, the UI component tests are present in the file TopicInfoFragmentTest.
+Since the UI component is present in the TopicLessonsFragment, the UI component tests are present in the file TopicLessonsFragmentTest.
 
-Similarly, since the business logic is present in the file TopicController, the tests for this controller can be found in the file TopicControllerTest.
+Similarly, since the business logic is present in the file TranslationController, the tests for this controller can be found in the file TranslationControllerTest.
 
 ## Dependency Injection
 

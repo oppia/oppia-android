@@ -480,4 +480,156 @@
     <item name="android:paddingTop">4dp</item>
     <item name="android:paddingBottom">4dp</item>
   </style>
+
+  <style name="SurveyFreeFormAnswerEditText" parent="Widget.AppCompat.EditText">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textCursorDrawable">@drawable/color_cursor</item>
+    <item name="android:background">@drawable/survey_edit_text_background_border</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:imeOptions">actionDone</item>
+    <item name="android:gravity">start</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:paddingBottom">8dp</item>
+    <item name="android:paddingEnd">12dp</item>
+    <item name="android:paddingStart">12dp</item>
+    <item name="android:paddingTop">8dp</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+    <item name="android:textColorHint">@color/component_color_shared_edit_text_hint_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- Survey Primary Button -->
+  <style name="SurveyPrimaryButton" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:paddingEnd">12dp</item>
+    <item name="android:paddingStart">12dp</item>
+    <item name="android:minWidth">144dp</item>
+    <item name="android:layout_margin">@dimen/survey_popup_button_margin</item>
+    <item name="android:background">@drawable/rounded_button_white_background_color</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/component_color_begin_survey_button_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- Survey Secondary Button -->
+  <style name="SurveySecondaryButton" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:paddingEnd">12dp</item>
+    <item name="android:paddingStart">12dp</item>
+    <item name="android:minWidth">144dp</item>
+    <item name="android:layout_margin">@dimen/survey_popup_button_margin</item>
+    <item name="android:background">@drawable/rounded_button_white_outline_color</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- Survey Previous Button -->
+  <style name="SurveyPreviousButton" parent="BorderlessMaterialButton">
+    <item name="android:padding">12dp</item>
+    <item name="android:gravity">center</item>
+    <item name="android:minWidth">144dp</item>
+    <item name="android:layout_margin">@dimen/survey_navigation_buttons_margin</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/component_color_survey_previous_button_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- Survey Next Button -->
+  <style name="SurveyNextButton" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:padding">12dp</item>
+    <item name="android:gravity">center</item>
+    <item name="android:minWidth">144dp</item>
+    <item name="android:layout_margin">@dimen/survey_navigation_buttons_margin</item>
+    <item name="android:background">@drawable/state_button_primary_background</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- Survey Submit Button -->
+  <style name="SurveySubmitButton" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:paddingEnd">12dp</item>
+    <item name="android:paddingStart">12dp</item>
+    <item name="android:minWidth">144dp</item>
+    <item name="android:background">@drawable/state_button_primary_background</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- Survey Exit Confirmation Dialog -->
+  <style name="ExitSurveyConfirmationDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
+    <item name="android:windowNoTitle">false</item>
+    <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
+    <!-- Set this to true if you want Full Screen without status bar -->
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowIsFloating">true</item>
+    <!-- This is important! Don't forget to set window background -->
+    <item name="android:windowIsTranslucent">false</item>
+    <item name="android:windowBackground">@drawable/survey_confirmation_dialog_background</item>
+    <!-- Additionally if you want animations when dialog opening -->
+    <item name="android:windowEnterAnimation">@anim/slide_up</item>
+    <item name="android:windowExitAnimation">@anim/slide_down</item>
+  </style>
+
+  <style name="SurveyQuestionTextStyle" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">20sp</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+  </style>
+
+  <style name="SurveyPopupHeaderStyle" parent="TextViewCenterHorizontal">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/component_color_survey_popup_header_text_color</item>
+    <item name="android:layout_margin">@dimen/survey_text_margin</item>
+    <item name="android:textSize">@dimen/survey_popup_header_text_size</item>
+    <item name="android:fontFamily">sans-serif</item>
+  </style>
+
+  <style name="SurveyPopupMessageStyle" parent="TextViewStart">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/component_color_survey_popup_message_color</item>
+    <item name="android:layout_margin">@dimen/survey_popup_message_margin</item>
+    <item name="android:textSize">@dimen/survey_popup_message_text_size</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textAllCaps">false</item>
+  </style>
+
+  <style name="SurveyNpsHintTextStyle">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+    <item name="android:layout_marginTop">@dimen/survey_nps_hint_text_margin</item>
+    <item name="android:layout_marginBottom">@dimen/survey_nps_hint_text_margin</item>
+    <item name="android:textSize">@dimen/survey_popup_message_text_size</item>
+    <item name="android:textStyle">italic</item>
+    <item name="android:fontFamily">sans-serif-light</item>
+  </style>
+
+  <!-- Survey On-boarding Dialog -->
+  <style name="SurveyOnboardingDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
+    <item name="android:windowNoTitle">false</item>
+    <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
+    <!-- Set this to true if you want Full Screen without status bar -->
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowIsFloating">false</item>
+    <!-- This is important! Don't forget to set window background -->
+    <item name="android:windowIsTranslucent">false</item>
+    <item name="android:windowBackground">@color/component_color_survey_background_color</item>
+    <!-- Additionally if you want animations when dialog opening -->
+    <item name="android:windowEnterAnimation">@anim/slide_up</item>
+    <item name="android:windowExitAnimation">@anim/slide_down</item>
+  </style>
 </resources>

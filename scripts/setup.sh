@@ -28,3 +28,6 @@ bash ../oppia-android/scripts/buf_download.sh
 
 # Add protobuf platform for M1 Mac
 bash ../oppia-android/scripts/buf_m1_mac_setup.sh
+
+# Download buildifier
+bash ../oppia-android/scripts/buildifier_download.sh

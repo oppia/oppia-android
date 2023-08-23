@@ -155,16 +155,25 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class TopicLessonsFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
-  @Inject lateinit var spotlightStateController: SpotlightStateController
-  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-  @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject
+  lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
@@ -368,7 +377,8 @@ class TopicLessonsFragmentTest {
         .check(
           matches(
             withContentDescription(
-              "Complete Chapter 1: What is a Ratio? to unlock this chapter."
+              "Chapter 2: Order is important is currently locked. Please complete chapter 1: " +
+                "What is a Ratio? to unlock this chapter."
             )
           )
         )

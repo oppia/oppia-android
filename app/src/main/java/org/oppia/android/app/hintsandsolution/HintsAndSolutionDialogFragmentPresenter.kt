@@ -92,7 +92,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.hintsAndSolutionToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.hintsAndSolutionToolbar.setNavigationContentDescription(
-      R.string.hints_andSolution_close_icon_description
+      R.string.hints_and_solution_close_icon_description
     )
     binding.hintsAndSolutionToolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? HintsAndSolutionListener)?.dismiss()

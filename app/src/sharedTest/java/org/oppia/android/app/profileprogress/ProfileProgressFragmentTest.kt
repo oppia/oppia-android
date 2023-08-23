@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
-import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -24,8 +23,8 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -136,7 +135,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -150,14 +148,26 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileProgressFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   private val internalProfileId = 0
 
@@ -183,7 +193,7 @@ class ProfileProgressFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createProfileProgressActivityIntent(profileId: ProfileId): Intent {
+  private fun createProfileProgressActivityIntent(profileId: Int): Intent {
     return ProfileProgressActivity.createProfileProgressActivityIntent(
       ApplicationProvider.getApplicationContext(),
       profileId
@@ -192,7 +202,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_checkProfileName_profileNameIsCorrect() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -204,7 +214,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_checkProfileName_profileNameIsCorrect() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       verifyItemDisplayedOnProfileProgressListItem(
@@ -218,7 +228,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_checkAccessibilityFlowIsCorrect() {
     launch<ProfileProgressActivity>(
-      createProfileProgressActivityIntent(profileId)
+      createProfileProgressActivityIntent(internalProfileId)
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
@@ -248,7 +258,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_configChange_checkAccessibilityFlowIsCorrect() {
     launch<ProfileProgressActivity>(
-      createProfileProgressActivityIntent(profileId)
+      createProfileProgressActivityIntent(internalProfileId)
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -280,7 +290,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_tablet_checkAccessibilityFlowIsCorrect() {
     launch<ProfileProgressActivity>(
-      createProfileProgressActivityIntent(profileId)
+      createProfileProgressActivityIntent(internalProfileId)
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
@@ -309,7 +319,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_profilePictureEditDialogIsDisplayed() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
       testCoroutineDispatchers.runCurrent()
@@ -319,7 +329,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_openProfilePictureEditDialog_configChange_dialogIsStillOpen() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
       verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
@@ -331,12 +341,12 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_imageSelectAvatar_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
-      hasAction(Intent.ACTION_PICK),
-      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+      hasAction(Intent.ACTION_GET_CONTENT),
+      hasType("image/*")
     )
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
       verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
@@ -349,31 +359,38 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_imageSelectAvatar_configChange_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
-      hasAction(Intent.ACTION_PICK),
-      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+      hasAction(Intent.ACTION_GET_CONTENT),
+      hasType("image/*")
     )
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
       verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
       onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
         .perform(click())
-      testCoroutineDispatchers.runCurrent()
       intended(expectedIntent)
+    }
+  }
+
+  @Test
+  fun testFragment_imageSelectAvatar_configChange_profilePictureDialogIsVisible() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
+      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      intended(expectedIntent)
-      clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
-      // The dialog should still be open after a configuration change.
       verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
     }
   }
 
   @Test
   fun testProfileProgressFragment_noProgress_ongoingTopicCountIsZero() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -398,7 +415,7 @@ class ProfileProgressFragmentTest {
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -423,7 +440,7 @@ class ProfileProgressFragmentTest {
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -437,7 +454,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_noProgress_ongoingTopicDescriptionIsCorrect() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -462,7 +479,7 @@ class ProfileProgressFragmentTest {
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -487,7 +504,7 @@ class ProfileProgressFragmentTest {
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -501,7 +518,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_noProgress_completedStoriesCountIsZero() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -522,7 +539,7 @@ class ProfileProgressFragmentTest {
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -534,7 +551,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_noProgress_completedStoriesDescriptionIsCorrect() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -554,7 +571,7 @@ class ProfileProgressFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -570,7 +587,7 @@ class ProfileProgressFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -590,7 +607,7 @@ class ProfileProgressFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -611,7 +628,7 @@ class ProfileProgressFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -632,7 +649,7 @@ class ProfileProgressFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -642,14 +659,9 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 1, targetViewId = R.id.topic_name_text_view)
       intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
-      it.onActivity { activity ->
-        assertThat(
-          activity.intent.extractCurrentUserProfileId()
-            .internalId
-        ).isEqualTo(internalProfileId)
-      }
     }
   }
 
@@ -659,7 +671,7 @@ class ProfileProgressFragmentTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -695,7 +707,7 @@ class ProfileProgressFragmentTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
@@ -719,7 +731,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_noProgress_topicCountIsNotClickable() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -733,7 +745,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_noProgress_storyCountIsNotClickable() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -747,7 +759,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_noProgress_storyCountIsNotClickable() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -776,17 +788,17 @@ class ProfileProgressFragmentTest {
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.ongoing_topics_container)
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
-      it.onActivity { activity ->
-        assertThat(
-          activity.intent.extractCurrentUserProfileId()
-            .internalId
-        ).isEqualTo(internalProfileId)
-      }
+      intended(
+        hasExtra(
+          OngoingTopicListActivity.ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY,
+          internalProfileId
+        )
+      )
     }
   }
 
@@ -801,39 +813,16 @@ class ProfileProgressFragmentTest {
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.completed_stories_container)
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
-      it.onActivity { activity ->
-        assertThat(
-          activity.intent.extractCurrentUserProfileId()
-            .internalId
-        ).isEqualTo(internalProfileId)
-      }
-    }
-  }
-
-  @Test
-  fun testProfileProgressFragment_createFragmentWithProfileId_verifyProfileIdInBundle() {
-    storyProgressTestHelper.markCompletedRatiosStory0(
-      profileId = profileId,
-      timestampOlderThanOneWeek = false
-    )
-    storyProgressTestHelper.markCompletedFractionsStory0(
-      profileId = profileId,
-      timestampOlderThanOneWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId)).use {
-      it.onActivity { activity ->
-        val fragment = activity.supportFragmentManager.findFragmentById(
-          R.id.profile_progress_fragment_placeholder
+      intended(
+        hasExtra(
+          CompletedStoryListActivity.PROFILE_ID_EXTRA_KEY,
+          internalProfileId
         )
-        val profileId = fragment?.arguments?.extractCurrentUserProfileId()
-
-        assertThat(profileId).isEqualTo(this.profileId)
-      }
+      )
     }
   }
 
@@ -940,7 +929,7 @@ class ProfileProgressFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
