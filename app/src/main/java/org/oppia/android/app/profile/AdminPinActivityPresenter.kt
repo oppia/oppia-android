@@ -117,7 +117,7 @@ class AdminPinActivityPresenter @Inject constructor(
               AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
                 activity.startActivity(
                   AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                    context, activity.intent.extractCurrentUserProfileId()
+                    context, profileId
                   )
                 )
                 activity.finish()
@@ -129,7 +129,7 @@ class AdminPinActivityPresenter @Inject constructor(
                     activity.intent.getIntExtra(
                       ADMIN_PIN_COLOR_RGB_EXTRA_KEY, -10710042
                     ),
-                    activity.intent.extractCurrentUserProfileId()
+                    profileId
                   )
                 )
                 activity.finish()

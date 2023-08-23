@@ -61,7 +61,7 @@ class ProfileEditFragment :
     )
   }
 
-  override fun deleteProfileByInternalProfileId(profileId: ProfileId) {
+  override fun deleteProfileByProfileId(profileId: ProfileId) {
     profileEditFragmentPresenter.deleteProfile(profileId)
   }
 

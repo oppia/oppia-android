@@ -6,5 +6,5 @@ import org.oppia.android.app.model.ProfileId
 interface ProfileEditDialogInterface {
 
   /** Handles profile deletion in [ProfileEditFragment]. */
-  fun deleteProfileByInternalProfileId(profileId: ProfileId)
+  fun deleteProfileByProfileId(profileId: ProfileId)
 }

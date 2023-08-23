@@ -82,7 +82,7 @@ class AdministratorControlsActivity :
       PROFILE_LIST_FRAGMENT
     }
     profileId = savedInstanceState?.extractCurrentUserProfileId()
-      ?: ProfileId.newBuilder().apply { internalId = -1 }.build()
+      ?: ProfileId.newBuilder().setInternalId(-1).build()
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
       lastLoadedFragment,

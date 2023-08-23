@@ -53,7 +53,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { dialog, _ ->
-        profileEditDialogInterface.deleteProfileByInternalProfileId(profileId)
+        profileEditDialogInterface.deleteProfileByProfileId(profileId)
       }
       .create()
     return alertDialog
