@@ -192,13 +192,13 @@ class RevisionCardActivityTest {
 
   @Test
   fun testRevisionCardActivity_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
       subtopicId = 1
     ).use { scenario ->
       scenario.onActivity { activity ->
-        fakeAccessibilityService.setScreenReaderEnabled(false)
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
@@ -214,13 +214,13 @@ class RevisionCardActivityTest {
 
   @Test
   fun testRevisionCardActivity_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
       subtopicId = 1
     ).use { scenario ->
       scenario.onActivity { activity ->
-        fakeAccessibilityService.setScreenReaderEnabled(true)
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
@@ -236,13 +236,13 @@ class RevisionCardActivityTest {
 
   @Test
   fun testRevisionCardActivity_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
       subtopicId = 1
     ).use { scenario ->
       scenario.onActivity { activity ->
-        fakeAccessibilityService.setScreenReaderEnabled(false)
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
@@ -258,13 +258,13 @@ class RevisionCardActivityTest {
 
   @Test
   fun testRevisionCardActivity_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
       subtopicId = 1
     ).use { scenario ->
       scenario.onActivity { activity ->
-        fakeAccessibilityService.setScreenReaderEnabled(true)
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)

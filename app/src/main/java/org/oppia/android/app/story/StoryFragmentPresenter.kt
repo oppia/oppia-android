@@ -90,7 +90,6 @@ class StoryFragmentPresenter @Inject constructor(
     binding.storyToolbar.setNavigationOnClickListener {
       (activity as StoryActivity).finish()
     }
-
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.storyToolbarTitle.setOnClickListener {
         binding.storyToolbarTitle.isSelected = true

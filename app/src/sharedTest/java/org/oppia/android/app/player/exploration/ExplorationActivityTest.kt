@@ -329,6 +329,7 @@ class ExplorationActivityTest {
   @Test
   fun testExploration_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
     markAllSpotlightsSeen()
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -338,7 +339,6 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     )
-    fakeAccessibilityService.setScreenReaderEnabled(false)
     val explorationToolbarTitle: TextView =
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -352,6 +352,7 @@ class ExplorationActivityTest {
   @Test
   fun testExploration_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     markAllSpotlightsSeen()
+    fakeAccessibilityService.setScreenReaderEnabled(true)
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -361,7 +362,6 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     )
-    fakeAccessibilityService.setScreenReaderEnabled(true)
     val explorationToolbarTitle: TextView =
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -375,6 +375,7 @@ class ExplorationActivityTest {
   @Test
   fun testExploration_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     markAllSpotlightsSeen()
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -384,7 +385,6 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     )
-    fakeAccessibilityService.setScreenReaderEnabled(false)
     val explorationToolbarTitle: TextView =
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
@@ -398,6 +398,7 @@ class ExplorationActivityTest {
   @Test
   fun testExploration_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     markAllSpotlightsSeen()
+    fakeAccessibilityService.setScreenReaderEnabled(true)
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -407,7 +408,6 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     )
-    fakeAccessibilityService.setScreenReaderEnabled(true)
     val explorationToolbarTitle: TextView =
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)

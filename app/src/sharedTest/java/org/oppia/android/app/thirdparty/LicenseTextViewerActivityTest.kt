@@ -158,13 +158,13 @@ class LicenseTextViewerActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
         licenseIndex = 0
       )
     )
-    fakeAccessibilityService.setScreenReaderEnabled(false)
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
@@ -179,13 +179,13 @@ class LicenseTextViewerActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
         licenseIndex = 0
       )
     )
-    fakeAccessibilityService.setScreenReaderEnabled(true)
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
@@ -200,13 +200,13 @@ class LicenseTextViewerActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
         licenseIndex = 0
       )
     )
-    fakeAccessibilityService.setScreenReaderEnabled(false)
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
@@ -221,13 +221,13 @@ class LicenseTextViewerActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
         licenseIndex = 0
       )
     )
-    fakeAccessibilityService.setScreenReaderEnabled(true)
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)

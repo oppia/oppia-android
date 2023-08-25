@@ -64,12 +64,12 @@ class TopicFragmentPresenter @Inject constructor(
     this.internalProfileId = internalProfileId
     this.topicId = topicId
 
-    binding.topicToolbar.getChildAt(0).setOnClickListener {
+    binding.topicToolbar.setNavigationOnClickListener {
       (activity as TopicActivity).finish()
     }
-    val readerEnabled = accessibilityService.isScreenReaderEnabled()
-    if (!readerEnabled) {
-      binding.topicToolbar.setOnClickListener {
+    val screenReaderEnabled = accessibilityService.isScreenReaderEnabled()
+    if (!accessibilityService.isScreenReaderEnabled()) {
+      binding.topicToolbarTitle.setOnClickListener {
         binding.topicToolbarTitle.isSelected = true
       }
     }

@@ -232,9 +232,9 @@ class StoryFragmentTest {
   // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
+    accessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
-    accessibilityService.setScreenReaderEnabled(false)
 
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
@@ -249,9 +249,9 @@ class StoryFragmentTest {
   // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
+    accessibilityService.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
-    accessibilityService.setScreenReaderEnabled(true)
 
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
@@ -266,9 +266,9 @@ class StoryFragmentTest {
   // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    accessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
-    accessibilityService.setScreenReaderEnabled(false)
 
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
@@ -282,9 +282,9 @@ class StoryFragmentTest {
   // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    accessibilityService.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
-    accessibilityService.setScreenReaderEnabled(true)
 
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
