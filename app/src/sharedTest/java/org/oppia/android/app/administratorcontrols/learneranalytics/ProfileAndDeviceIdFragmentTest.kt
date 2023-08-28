@@ -9,7 +9,6 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
@@ -24,6 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.content.IntentSubject.assertThat
 import androidx.work.Configuration
@@ -62,7 +62,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
-import org.oppia.android.app.testing.activity.TestActivity.Companion.createIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -148,6 +147,12 @@ import javax.inject.Singleton
 class ProfileAndDeviceIdFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  var activityRule =
+    ActivityScenarioRule<TestActivity>(
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
+
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
@@ -188,587 +193,559 @@ class ProfileAndDeviceIdFragmentTest {
 
   @Test
   fun testFragment_withOnlyAdminProfile_hasThreeItems() {
-    runInTestActivityAndAddFragment {
-      // There should be three items: a header, a profile, and the sync status.
-      onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 4))
-    }
+    initializeActivityAndAddFragment()
+
+    // There should be three items: a header, a profile, and the sync status.
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 4))
   }
 
   @Test
   fun testFragment_withOnlyAdminProfile_hasDeviceIdHeader() {
-    runInTestActivityAndAddFragment {
-      onDeviceIdLabelAt(position = 0).check(matches(isDisplayed()))
-    }
+    initializeActivityAndAddFragment()
+
+    onDeviceIdLabelAt(position = 0).check(matches(isDisplayed()))
   }
 
   @Test
   fun testFragment_hasDeviceId() {
-    runInTestActivityAndAddFragment {
-      onDeviceIdLabelAt(position = 0).check(matches(withText(containsString("113e04cc09a3"))))
-    }
+    initializeActivityAndAddFragment()
+
+    onDeviceIdLabelAt(position = 0).check(matches(withText(containsString("113e04cc09a3"))))
   }
 
   @Test
   fun testFragment_deviceId_hasCopyButton() {
-    runInTestActivityAndAddFragment {
-      onDeviceIdCopyButtonAt(position = 0).check(matches(isDisplayed()))
-    }
+    initializeActivityAndAddFragment()
+
+    onDeviceIdCopyButtonAt(position = 0).check(matches(isDisplayed()))
   }
 
   @Test
   fun testFragment_deviceId_clickCopyButton_copiesDeviceIdToClipboard() {
-    runInTestActivityAndAddFragment {
-      onDeviceIdCopyButtonAt(position = 0).perform(click())
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
 
-      val clipData = getCurrentClipData()
-      assertThat(clipData?.description?.label).isEqualTo("Oppia installation ID")
-      assertThat(clipData?.itemCount).isEqualTo(1)
-      assertThat(clipData?.getItemAt(0)?.text).isEqualTo("113e04cc09a3")
-    }
+    onDeviceIdCopyButtonAt(position = 0).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    val clipData = getCurrentClipData()
+    assertThat(clipData?.description?.label).isEqualTo("Oppia installation ID")
+    assertThat(clipData?.itemCount).isEqualTo(1)
+    assertThat(clipData?.getItemAt(0)?.text).isEqualTo("113e04cc09a3")
   }
 
   @Test
   fun testFragment_withOnlyAdminProfile_hasOneProfileListed() {
-    runInTestActivityAndAddFragment {
-      onProfileNameAt(position = 1).check(matches(isDisplayed()))
-    }
+    initializeActivityAndAddFragment()
+
+    onProfileNameAt(position = 1).check(matches(isDisplayed()))
   }
 
   @Test
   fun testFragment_profileEntry_hasProfileName() {
-    runInTestActivityAndAddFragment {
-      onProfileNameAt(position = 1).check(matches(withText("Admin")))
-    }
+    initializeActivityAndAddFragment()
+
+    onProfileNameAt(position = 1).check(matches(withText("Admin")))
   }
 
   @Test
   fun testFragment_profileEntry_hasLearnerId() {
-    runInTestActivityAndAddFragment {
-      onLearnerIdAt(position = 1).check(matches(withText("8dcbbd21")))
-    }
+    initializeActivityAndAddFragment()
+
+    onLearnerIdAt(position = 1).check(matches(withText("8dcbbd21")))
   }
 
   @Test
   fun testFragment_profileEntry_hasCopyButton() {
-    runInTestActivityAndAddFragment {
-      onLearnerIdCopyButtonAt(position = 1).check(matches(isDisplayed()))
-    }
+    initializeActivityAndAddFragment()
+
+    onLearnerIdCopyButtonAt(position = 1).check(matches(isDisplayed()))
   }
 
   @Test
   fun testFragment_profileEntry_clickFirstCopyButton_copiesAdminLearnerIdToClipboard() {
-    runInTestActivityAndAddFragment {
-      onLearnerIdCopyButtonAt(position = 1).perform(click())
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
 
-      val clipData = getCurrentClipData()
-      assertThat(clipData?.description?.label).isEqualTo("Admin's learner ID")
-      assertThat(clipData?.itemCount).isEqualTo(1)
-      assertThat(clipData?.getItemAt(0)?.text).isEqualTo("8dcbbd21")
-    }
+    onLearnerIdCopyButtonAt(position = 1).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    val clipData = getCurrentClipData()
+    assertThat(clipData?.description?.label).isEqualTo("Admin's learner ID")
+    assertThat(clipData?.itemCount).isEqualTo(1)
+    assertThat(clipData?.getItemAt(0)?.text).isEqualTo("8dcbbd21")
   }
 
   @Test
   fun testFragment_multipleProfiles_listsAllProfiles() {
     profileTestHelper.addMoreProfiles(numProfiles = 5)
 
-    runInTestActivityAndAddFragment {
-      // Header + admin + 5 new profiles + sync status = 8 items.
-      onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 9))
-    }
+    initializeActivityAndAddFragment()
+
+    // Header + admin + 5 new profiles + sync status = 8 items.
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 9))
   }
 
   @Test
   fun testFragment_multipleProfiles_adminIsFirst() {
     profileTestHelper.addMoreProfiles(numProfiles = 5)
 
-    runInTestActivityAndAddFragment {
-      onProfileNameAt(position = 1).check(matches(withText("Admin")))
-    }
+    initializeActivityAndAddFragment()
+
+    onProfileNameAt(position = 1).check(matches(withText("Admin")))
   }
 
   @Test
   fun testFragment_multipleProfiles_secondEntryHasDifferentName() {
     profileTestHelper.addMoreProfiles(numProfiles = 5)
 
-    runInTestActivityAndAddFragment {
-      // The second entry is not the admin.
-      onProfileNameAt(position = 2).check(matches(withText("A")))
-    }
+    initializeActivityAndAddFragment()
+
+    // The second entry is not the admin.
+    onProfileNameAt(position = 2).check(matches(withText("A")))
   }
 
   @Test
   fun testFragment_multipleProfiles_secondEntryHasDifferentLearnerIdThanFirst() {
     profileTestHelper.addMoreProfiles(numProfiles = 5)
 
-    runInTestActivityAndAddFragment {
-      // The second profile has a different learner ID.
-      onLearnerIdAt(position = 1).check(matches(withText("8dcbbd21")))
-      onLearnerIdAt(position = 2).check(matches(withText("208663b0")))
-    }
+    initializeActivityAndAddFragment()
+
+    // The second profile has a different learner ID.
+    onLearnerIdAt(position = 1).check(matches(withText("8dcbbd21")))
+    onLearnerIdAt(position = 2).check(matches(withText("208663b0")))
   }
 
   @Test
   fun testFragment_multipleProfiles_copySecondEntry_copiesDifferentLearnerIdThanFirst() {
     profileTestHelper.addMoreProfiles(numProfiles = 5)
 
-    runInTestActivityAndAddFragment {
-      onLearnerIdCopyButtonAt(position = 2).perform(click())
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
 
-      val clipData = getCurrentClipData()
-      assertThat(clipData?.description?.label).isEqualTo("A's learner ID")
-      assertThat(clipData?.itemCount).isEqualTo(1)
-      assertThat(clipData?.getItemAt(0)?.text).isEqualTo("208663b0")
-    }
+    onLearnerIdCopyButtonAt(position = 2).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    val clipData = getCurrentClipData()
+    assertThat(clipData?.description?.label).isEqualTo("A's learner ID")
+    assertThat(clipData?.itemCount).isEqualTo(1)
+    assertThat(clipData?.getItemAt(0)?.text).isEqualTo("208663b0")
   }
 
   @Test
   fun testFragment_initialState_deviceIdCopyButtonHasCopyLabel() {
-    runInTestActivityAndAddFragment {
-      onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
-    }
+    initializeActivityAndAddFragment()
+
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
   }
 
   @Test
   fun testFragment_adminProfile_initialState_learnerIdCopyButtonHasCopyLabel() {
-    runInTestActivityAndAddFragment {
-      onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copy")))
-    }
+    initializeActivityAndAddFragment()
+
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copy")))
   }
 
   @Test
   fun testFragment_adminProfile_clickDeviceIdCopyButton_deviceIdIsCopiedButNotLearnerId() {
-    runInTestActivityAndAddFragment {
-      onDeviceIdCopyButtonAt(position = 0).perform(click())
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
 
-      onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copied")))
-      onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copy")))
-    }
+    onDeviceIdCopyButtonAt(position = 0).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copied")))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copy")))
   }
 
   @Test
   fun testFragment_adminProfile_clickLearnerIdCopyButton_learnerIdIsCopiedButNotDeviceId() {
-    runInTestActivityAndAddFragment {
-      onLearnerIdCopyButtonAt(position = 1).perform(click())
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
 
-      onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
-      onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copied")))
-    }
+    onLearnerIdCopyButtonAt(position = 1).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copied")))
   }
 
   @Test
   fun testFragment_adminProfile_clickLearnerIdCopyButton_copyInOtherApp_nothingIsCopied() {
-    runInTestActivityAndAddFragment {
-      onLearnerIdCopyButtonAt(position = 1).perform(click())
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
+    onLearnerIdCopyButtonAt(position = 1).perform(click())
+    testCoroutineDispatchers.runCurrent()
 
-      updateClipDataAsThoughFromAnotherApp()
+    updateClipDataAsThoughFromAnotherApp()
 
-      // Changing the clipboard in a different app should reset the labels.
-      onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
-      onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copy")))
-    }
+    // Changing the clipboard in a different app should reset the labels.
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copy")))
   }
 
   @Test
   fun testFragment_adminProfile_clickLearnerIdCopyButton_rotate_learnerIdStillCopied() {
-    runInTestActivityAndAddFragment {
-      onLearnerIdCopyButtonAt(position = 1).perform(click())
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
+    onLearnerIdCopyButtonAt(position = 1).perform(click())
+    testCoroutineDispatchers.runCurrent()
 
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
 
-      // The button label should be restored after a rotation.
-      onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
-      onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copied")))
-    }
+    // The button label should be restored after a rotation.
+    onDeviceIdCopyButtonAt(position = 0).check(matches(withText("Copy")))
+    onLearnerIdCopyButtonAt(position = 1).check(matches(withText("Copied")))
   }
 
   @Test
   fun testFragment_multipleProfiles_rotate_profilesStillPresent() {
     profileTestHelper.addMoreProfiles(numProfiles = 5)
+    initializeActivityAndAddFragment()
 
-    runInTestActivityAndAddFragment {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 9))
-    }
+    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 9))
   }
 
   @Test
   fun testFragment_firstEntry_noAdminEvents_hasZeroAdminEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
+    initializeActivityAndAddFragment()
 
-    runInTestActivityAndAddFragment {
-      onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-      onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-    }
+    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("0")))
+    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("0")))
   }
 
   @Test
   fun testFragment_firstEntry_adminEvents_notUploaded_hasSomeAdminEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log a couple of events.
-      logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
+    // Log a couple of events.
+    logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
 
-      // Two are awaiting upload, but neither have been uploaded yet.
-      onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("2")))
-      onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-    }
+    // Two are awaiting upload, but neither have been uploaded yet.
+    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("2")))
+    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("0")))
   }
 
   @Test
   fun testFragment_firstEntry_adminEvents_uploaded_hasSomeAdminEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log a couple of events, upload them, then log one more event.
-      logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
-      connectOnlyToFlushWorkerQueue()
-      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    // Log a couple of events, upload them, then log one more event.
+    logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
+    connectOnlyToFlushWorkerQueue()
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
 
-      // Two should be uploaded, and one waiting upload.
-      onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("1")))
-      onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("2")))
-    }
+    // Two should be uploaded, and one waiting upload.
+    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("1")))
+    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("2")))
   }
 
   @Test
   fun testFragment_firstEntry_noGenericEvents_hasZeroGenericEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
+    initializeActivityAndAddFragment()
 
-    runInTestActivityAndAddFragment {
-      onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-      onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-    }
+    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
+    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
   }
 
   @Test
   fun testFragment_firstEntry_genericEvents_notUploaded_hasSomeGenericEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log a couple of events off of the admin profile.
-      logTwoAnalyticsEvents(profileId = null)
+    // Log a couple of events off of the admin profile.
+    logTwoAnalyticsEvents(profileId = null)
 
-      onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("2")))
-      onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-    }
+    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("2")))
+    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
   }
 
   @Test
   fun testFragment_firstEntry_genericEvents_uploaded_hasSomeGenericEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log a couple of events, upload them, then log one more event, off of the admin profile.
-      logTwoAnalyticsEvents(profileId = null)
-      connectOnlyToFlushWorkerQueue()
-      logAnalyticsEvent(profileId = null)
+    // Log a couple of events, upload them, then log one more event, off of the admin profile.
+    logTwoAnalyticsEvents(profileId = null)
+    connectOnlyToFlushWorkerQueue()
+    logAnalyticsEvent(profileId = null)
 
-      onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("1")))
-      onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("2")))
-    }
+    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("1")))
+    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("2")))
   }
 
   @Test
   fun testFragment_firstEntry_mixOfAdminAndGenericEvents_someUploaded_reportsAllEvents() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log & upload a mix of events with and without the admin profile.
-      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-      logThreeAnalyticsEvents(profileId = null)
-      connectOnlyToFlushWorkerQueue()
-      logAnalyticsEvent(profileId = null)
-      logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
+    // Log & upload a mix of events with and without the admin profile.
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    logThreeAnalyticsEvents(profileId = null)
+    connectOnlyToFlushWorkerQueue()
+    logAnalyticsEvent(profileId = null)
+    logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
 
-      // Event counts should be represented in the correct places.
-      onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("2")))
-      onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("1")))
-      onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("1")))
-      onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("3")))
-    }
+    // Event counts should be represented in the correct places.
+    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("2")))
+    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("1")))
+    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("1")))
+    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("3")))
   }
 
   @Test
   fun testFragment_secondEntry_noLearnerEvents_hasZeroLearnerEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
+    initializeActivityAndAddFragment()
 
-    runInTestActivityAndAddFragment {
-      onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-      onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-    }
+    onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("0")))
+    onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("0")))
   }
 
   @Test
   fun testFragment_secondEntry_learnerEvents_notUploaded_hasSomeLearnerEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log a couple of events.
-      logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
+    // Log a couple of events.
+    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
 
-      // Two are awaiting upload, but neither have been uploaded yet.
-      onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("2")))
-      onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-    }
+    // Two are awaiting upload, but neither have been uploaded yet.
+    onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("2")))
+    onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("0")))
   }
 
   @Test
   fun testFragment_secondEntry_learnerEvents_uploaded_hasSomeLearnerEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log a couple of events, upload them, then log one more event.
-      logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
-      connectOnlyToFlushWorkerQueue()
-      logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+    // Log a couple of events, upload them, then log one more event.
+    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
+    connectOnlyToFlushWorkerQueue()
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
 
-      // Two should be uploaded, and one waiting upload.
-      onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("1")))
-      onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("2")))
-    }
+    // Two should be uploaded, and one waiting upload.
+    onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("1")))
+    onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("2")))
   }
 
   @Test
   fun testFragment_secondEntry_learnerEvents_hasZeroAdminOrGenericEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log a couple of events, upload them, then log one more event, for a learner profile.
-      logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
-      connectOnlyToFlushWorkerQueue()
-      logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+    // Log a couple of events, upload them, then log one more event, for a learner profile.
+    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
+    connectOnlyToFlushWorkerQueue()
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
 
-      // The admin profile's event counts shouldn't change since the only logged events were for a
-      // specific learner profile.
-      onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-      onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("0")))
-      onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-      onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
-    }
+    // The admin profile's event counts shouldn't change since the only logged events were for a
+    // specific learner profile.
+    onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("0")))
+    onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("0")))
+    onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
+    onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("0")))
   }
 
   @Test
   fun testFragment_secondEntry_adminAndGenericEvents_uploaded_hasZeroLearnerEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log a couple of events generically and for the admin profile.
-      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-      logAnalyticsEvent(profileId = null)
-      connectOnlyToFlushWorkerQueue()
-      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-      logAnalyticsEvent(profileId = null)
+    // Log a couple of events generically and for the admin profile.
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    logAnalyticsEvent(profileId = null)
+    connectOnlyToFlushWorkerQueue()
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    logAnalyticsEvent(profileId = null)
 
-      // No events should be reported for the learner since it didn't have any events uploaded.
-      onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-      onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("0")))
-    }
+    // No events should be reported for the learner since it didn't have any events uploaded.
+    onAwaitingUploadLearnerEventsCountAt(position = 2).check(matches(withText("0")))
+    onUploadedLearnerEventsCountAt(position = 2).check(matches(withText("0")))
   }
 
   @Test
   fun testFragment_initialState_profileDataHasYetToBeCollected() {
-    runInTestActivityAndAddFragment {
-      onSyncStatusAt(position = 2)
-        .check(matches(withText(containsString("No data has been collected yet to upload"))))
-    }
+    initializeActivityAndAddFragment()
+
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("No data has been collected yet to upload"))))
   }
 
   @Test
   fun testFragment_initialState_wait_profileDataHasYetToBeCollected() {
-    runInTestActivityAndAddFragment {
-      testCoroutineDispatchers.advanceTimeBy(delayTimeMillis = TimeUnit.SECONDS.toMillis(1))
+    initializeActivityAndAddFragment()
 
-      onSyncStatusAt(position = 2)
-        .check(matches(withText(containsString("No data has been collected yet to upload"))))
-    }
+    testCoroutineDispatchers.advanceTimeBy(delayTimeMillis = TimeUnit.SECONDS.toMillis(1))
+
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("No data has been collected yet to upload"))))
   }
 
   @Test
   fun testFragment_eventLogged_waitingForUpload_indicatorTextMentionsWaiting() {
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Enqueue the event, but don't actually begin uploading it, then reconnect to the network.
-      // Note that the extra event log is a slight hack to force a refresh of the status indicator
-      // (since network changes are polled when there are other changes to represent rather than
-      // being actively "pushed" by the system).
-      logAnalyticsEvent()
-      connectNetwork()
-      logAnalyticsEvent()
+    // Enqueue the event, but don't actually begin uploading it, then reconnect to the network. Note
+    // that the extra event log is a slight hack to force a refresh of the status indicator (since
+    // network changes are polled when there are other changes to represent rather than being
+    // actively "pushed" by the system).
+    logAnalyticsEvent()
+    connectNetwork()
+    logAnalyticsEvent()
 
-      // The status indicator is suggesting that events can be uploaded (and there are some
-      // available to upload), they just haven't been scheduled yet.
-      onSyncStatusAt(position = 2)
-        .check(matches(withText(containsString("Waiting to schedule data uploading worker…"))))
-    }
+    // The status indicator is suggesting that events can be uploaded (and there are some available
+    // to upload), they just haven't been scheduled yet.
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("Waiting to schedule data uploading worker…"))))
   }
 
   @Test
   fun testFragment_eventLogged_waitingForUpload_uploadStarted_profileDataIsCurrentlyUploading() {
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Unfortunately, it's tricky to pause the actual upload worker so this is a hacky way to
-      // produce the same situation to ensure the label is correct.
-      logAnalyticsEvent()
-      syncStatusManager.forceSyncStatus(SyncStatus.DATA_UPLOADING)
-      testCoroutineDispatchers.runCurrent()
+    // Unfortunately, it's tricky to pause the actual upload worker so this is a hacky way to
+    // produce the same situation to ensure the label is correct.
+    logAnalyticsEvent()
+    syncStatusManager.forceSyncStatus(SyncStatus.DATA_UPLOADING)
+    testCoroutineDispatchers.runCurrent()
 
-      onSyncStatusAt(position = 2)
-        .check(matches(withText(containsString("Profile data is currently uploading"))))
-    }
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("Profile data is currently uploading"))))
   }
 
   @Test
   fun testFragment_noConnectivity_indicatorTextMentionsDataCannotBeUploaded() {
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Enqueue an event but don't reconnect to the network.
-      logAnalyticsEvent()
+    // Enqueue an event but don't reconnect to the network.
+    logAnalyticsEvent()
 
-      // The status indicator is suggesting that internet connectivity needs to resume in order to
-      // upload events.
-      onSyncStatusAt(position = 2)
-        .check(
-          matches(
-            withText(
-              containsString(
-                "Please connect to a WiFi or Cellular network in order to upload profile data"
-              )
+    // The status indicator is suggesting that internet connectivity needs to resume in order to
+    // upload events.
+    onSyncStatusAt(position = 2)
+      .check(
+        matches(
+          withText(
+            containsString(
+              "Please connect to a WiFi or Cellular network in order to upload profile data"
             )
           )
         )
-    }
+      )
   }
 
   @Test
   fun testFragment_eventLogged_waitForUpload_profileDataIsUploaded() {
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      logAnalyticsEvent()
-      connectNetwork()
-      flushEventWorkerQueue()
+    logAnalyticsEvent()
+    connectNetwork()
+    flushEventWorkerQueue()
 
-      onSyncStatusAt(position = 2)
-        .check(matches(withText(containsString("All profile data has been uploaded"))))
-    }
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("All profile data has been uploaded"))))
   }
 
   @Test
   fun testFragment_eventLogged_uploadError_profileDataHasError() {
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
-      logAnalyticsEvent()
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
 
-      // An upload error can currently only be simulated by directly influencing the sync manager.
-      syncStatusManager.forceSyncStatus(SyncStatus.UPLOAD_ERROR)
-      testCoroutineDispatchers.runCurrent()
+    // An upload error can currently only be simulated by directly influencing the sync manager.
+    syncStatusManager.forceSyncStatus(SyncStatus.UPLOAD_ERROR)
+    testCoroutineDispatchers.runCurrent()
 
-      onSyncStatusAt(position = 2)
-        .check(
-          matches(withText(containsString("Something went wrong when trying to upload events")))
-        )
-    }
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("Something went wrong when trying to upload events"))))
   }
 
   @Test
   fun testFragment_eventLogged_uploadError_anotherLogged_wait_profileDataIsUploading() {
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
-      logAnalyticsEvent()
-      syncStatusManager.reportUploadError()
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
+    syncStatusManager.reportUploadError()
+    testCoroutineDispatchers.runCurrent()
 
-      logAnalyticsEvent()
-      connectNetwork()
-      flushEventWorkerQueue()
+    logAnalyticsEvent()
+    connectNetwork()
+    flushEventWorkerQueue()
 
-      onSyncStatusAt(position = 2)
-        .check(matches(withText(containsString("All profile data has been uploaded"))))
-    }
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("All profile data has been uploaded"))))
   }
 
   @Test
   fun testFragment_rotate_profileDataHasYetToBeCollected() {
-    runInTestActivityAndAddFragment {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
 
-      onSyncStatusAt(position = 2)
-        .check(matches(withText(containsString("No data has been collected yet to upload"))))
-    }
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
+
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("No data has been collected yet to upload"))))
   }
 
   @Test
   fun testFragment_eventLogged_waitingForUpload_rotate_profileDataIsCurrentlyUploading() {
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
-      logAnalyticsEvent()
-      syncStatusManager.forceSyncStatus(SyncStatus.DATA_UPLOADING)
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
+    syncStatusManager.forceSyncStatus(SyncStatus.DATA_UPLOADING)
+    testCoroutineDispatchers.runCurrent()
 
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
 
-      onSyncStatusAt(position = 2)
-        .check(matches(withText(containsString("Profile data is currently uploading"))))
-    }
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("Profile data is currently uploading"))))
   }
 
   @Test
   fun testFragment_eventLogged_waitForUpload_rotate_profileDataIsUploaded() {
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
-      logAnalyticsEvent()
-      connectNetwork()
-      flushEventWorkerQueue()
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
+    connectNetwork()
+    flushEventWorkerQueue()
 
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
 
-      onSyncStatusAt(position = 2)
-        .check(matches(withText(containsString("All profile data has been uploaded"))))
-    }
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("All profile data has been uploaded"))))
   }
 
   @Test
   fun testFragment_eventsLogged_uploadError_rotate_profileDataHasError() {
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
-      logAnalyticsEvent()
-      syncStatusManager.forceSyncStatus(SyncStatus.UPLOAD_ERROR)
-      testCoroutineDispatchers.runCurrent()
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent()
+    syncStatusManager.forceSyncStatus(SyncStatus.UPLOAD_ERROR)
+    testCoroutineDispatchers.runCurrent()
 
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
 
-      onSyncStatusAt(position = 2)
-        .check(
-          matches(withText(containsString("Something went wrong when trying to upload events")))
-        )
-    }
+    onSyncStatusAt(position = 2)
+      .check(matches(withText(containsString("Something went wrong when trying to upload events"))))
   }
 
   @Test
@@ -776,140 +753,128 @@ class ProfileAndDeviceIdFragmentTest {
     // Use fake time so that the generated event logs are consistent across runs.
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     profileTestHelper.addMoreProfiles(numProfiles = 2)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // Log & upload some events, then enqueue others.
-      logThreeAnalyticsEvents(profileId = null)
-      logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
-      logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
-      logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_1)
-      connectOnlyToFlushWorkerQueue()
-      logAnalyticsEvent(profileId = null)
-      logThreeAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
-      logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
-      logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_1)
-      connectNetwork()
-      logAnalyticsEvent(profileId = null) // Log an event to trigger tracking the network change.
+    // Log & upload some events, then enqueue others.
+    logThreeAnalyticsEvents(profileId = null)
+    logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_1)
+    connectOnlyToFlushWorkerQueue()
+    logAnalyticsEvent(profileId = null)
+    logThreeAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
+    logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_1)
+    connectNetwork()
+    logAnalyticsEvent(profileId = null) // Log an event to trigger tracking the network change.
 
-      onShareIdsAndEventsButtonAt(position = 5).perform(click())
-      testCoroutineDispatchers.runCurrent()
+    onShareIdsAndEventsButtonAt(position = 5).perform(click())
+    testCoroutineDispatchers.runCurrent()
 
-      val expectedShareText =
-        """
-        Oppia app installation ID: 113e04cc09a3
-        - Profile name: Admin, learner ID: 8dcbbd21
-          - Uploading learner events: 3
-          - Uploaded learner events: 2
-          - Uploading uncategorized events: 1
-          - Uploaded uncategorized events: 4
-        - Profile name: A, learner ID: 208663b0
-          - Uploading learner events: 2
-          - Uploaded learner events: 1
-        - Profile name: B, learner ID: 92d0c6e2
-          - Uploading learner events: 1
-          - Uploaded learner events: 2
-        Current sync status: Waiting to schedule data uploading worker….
-        Event log encoding integrity checks:
-        - First 40 chars of encoded string: H4sIAAAAAAAA/+PSlGBUUj3FqMTFX5JaXBKfk5pY
-        - Last 40 chars of encoded string: BzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA
-        - SHA-1 hash (unwrapped event string): 1ee817dd58dcb25c9af4fbfc3c89c86b730f6680
-        - Total event string length (unwrapped): 140
-        Encoded event logs:
-        H4sIAAAAAAAA/+PSlGBUUj3FqMTFX5JaXBKfk5pYlJdaFJ+ZIgQRyMwrLknMyQEKcBkSrVSLwYjBisGJ
-        gU5ajEnVwsTBSDdNTELEBzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA
-        """.trimIndent()
-      val intents = getIntents()
-      assertThat(intents).hasSize(1)
-      assertThat(intents.single()).hasAction(Intent.ACTION_SEND)
-      assertThat(intents.single()).hasType("text/plain")
-      assertThat(intents.single()).extras().containsKey(Intent.EXTRA_TEXT)
-      assertThat(intents.single()).extras().string(Intent.EXTRA_TEXT).isEqualTo(expectedShareText)
-    }
+    val expectedShareText =
+      """
+      Oppia app installation ID: 113e04cc09a3
+      - Profile name: Admin, learner ID: 8dcbbd21
+        - Uploading learner events: 3
+        - Uploaded learner events: 2
+        - Uploading uncategorized events: 1
+        - Uploaded uncategorized events: 4
+      - Profile name: A, learner ID: 208663b0
+        - Uploading learner events: 2
+        - Uploaded learner events: 1
+      - Profile name: B, learner ID: 92d0c6e2
+        - Uploading learner events: 1
+        - Uploaded learner events: 2
+      Current sync status: Waiting to schedule data uploading worker….
+      Event log encoding integrity checks:
+      - First 40 chars of encoded string: H4sIAAAAAAAA/+PSlGBUUj3FqMTFX5JaXBKfk5pY
+      - Last 40 chars of encoded string: BzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA
+      - SHA-1 hash (unwrapped event string): 1ee817dd58dcb25c9af4fbfc3c89c86b730f6680
+      - Total event string length (unwrapped): 140
+      Encoded event logs:
+      H4sIAAAAAAAA/+PSlGBUUj3FqMTFX5JaXBKfk5pYlJdaFJ+ZIgQRyMwrLknMyQEKcBkSrVSLwYjBisGJ
+      gU5ajEnVwsTBSDdNTELEBzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA
+      """.trimIndent()
+    val intents = getIntents()
+    assertThat(intents).hasSize(1)
+    assertThat(intents.single()).hasAction(Intent.ACTION_SEND)
+    assertThat(intents.single()).hasType("text/plain")
+    assertThat(intents.single()).extras().containsKey(Intent.EXTRA_TEXT)
+    assertThat(intents.single()).extras().string(Intent.EXTRA_TEXT).isEqualTo(expectedShareText)
   }
 
   @Test
   fun testFragment_noEventsPending_uploadLogsButtonDisabled() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      // The upload button should be disabled when there are no events to upload.
-      onUploadLogsButtonAt(position = 4).check(matches(not(isEnabled())))
-    }
+    // The upload button should be disabled when there are no events to upload.
+    onUploadLogsButtonAt(position = 4).check(matches(not(isEnabled())))
   }
 
   @Test
   fun testFragment_multipleEventsPending_noConnection_uploadLogsButtonDisabled() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      logAnalyticsEvent(profileId = null)
-      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-      logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+    logAnalyticsEvent(profileId = null)
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
 
-      // The button is still disabled since there's no internet connection.
-      onUploadLogsButtonAt(position = 4).check(matches(not(isEnabled())))
-    }
+    // The button is still disabled since there's no internet connection.
+    onUploadLogsButtonAt(position = 4).check(matches(not(isEnabled())))
   }
 
   @Test
   fun testFragment_multipleEventsPending_uploadLogsButtonEnabled() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
 
-      logAnalyticsEvent(profileId = null)
-      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-      logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
-      connectNetwork()
-      logAnalyticsEvent(profileId = null) // Log an event to trigger tracking the network change.
+    logAnalyticsEvent(profileId = null)
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+    connectNetwork()
+    logAnalyticsEvent(profileId = null) // Log an event to trigger tracking the network change.
 
-      // With events pending & connectivity, the upload button should now be available to press.
-      onUploadLogsButtonAt(position = 4).check(matches(isEnabled()))
-    }
+    // With events pending & connectivity, the upload button should now be available to press.
+    onUploadLogsButtonAt(position = 4).check(matches(isEnabled()))
   }
 
   @Test
   fun testFragment_multipleEventsPending_clickUploadLogs_wait_uploadsEventLogs() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runInTestActivityAndAddFragment {
-      disconnectNetwork() // Ensure events are cached.
-      logAnalyticsEvent(profileId = null)
-      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-      logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
-      connectNetwork()
-      logAnalyticsEvent(profileId = null) // Log an event to trigger tracking the network change.
-      fakeAnalyticsEventLogger.clearAllEvents()
+    initializeActivityAndAddFragment()
+    disconnectNetwork() // Ensure events are cached.
+    logAnalyticsEvent(profileId = null)
+    logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+    logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+    connectNetwork()
+    logAnalyticsEvent(profileId = null) // Log an event to trigger tracking the network change.
+    fakeAnalyticsEventLogger.clearAllEvents()
 
-      // Click the 'upload logs' button and wait.
-      onUploadLogsButtonAt(position = 4).perform(click())
-      testCoroutineDispatchers.runCurrent()
+    // Click the 'upload logs' button and wait.
+    onUploadLogsButtonAt(position = 4).perform(click())
+    testCoroutineDispatchers.runCurrent()
 
-      // The events should be uploaded.
-      assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(3)
-    }
+    // The events should be uploaded.
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(3)
   }
 
-  private fun runInTestActivityAndAddFragment(testBlock: () -> Unit) {
-    launchActivityAndAddFragment().use { scenario ->
-      scenario.onActivity { activity ->
-        activity.setContentView(R.layout.test_activity)
+  private fun initializeActivityAndAddFragment() {
+    activityRule.scenario.onActivity { activity ->
+      activity.setContentView(R.layout.test_activity)
 
-        activity.supportFragmentManager.beginTransaction()
-          .add(R.id.test_fragment_placeholder, ProfileAndDeviceIdFragment())
-          .commitNow()
-      }
-      connectNetwork() // Start with internet connectivity.
-      testCoroutineDispatchers.runCurrent()
-
-      testBlock()
+      activity.supportFragmentManager.beginTransaction()
+        .add(R.id.test_fragment_placeholder, ProfileAndDeviceIdFragment())
+        .commitNow()
     }
+    connectNetwork() // Start with internet connectivity.
+    testCoroutineDispatchers.runCurrent()
   }
-
-  private fun launchActivityAndAddFragment() =
-    ActivityScenario.launch<TestActivity>(createIntent(ApplicationProvider.getApplicationContext()))
 
   private fun scrollTo(position: Int) {
     onView(withId(R.id.profile_and_device_id_recycler_view))
