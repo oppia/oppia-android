@@ -241,8 +241,8 @@ class StoryFragmentTest {
     ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
-    assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
