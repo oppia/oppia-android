@@ -453,7 +453,7 @@
   <string name="no_new_hint_available">No new hint available</string>
   <string name="show_hints_and_solution">Show hints and solution</string>
   <string name="hint_list_item_number">Hint %s</string>
-  <string name="hints_andSolution_close_icon_description">Navigate up</string>
+  <string name="hints_and_solution_close_icon_description">Close</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="show_solution">Show solution</string>
   <string name="reveal_solution">Show Solution</string>
@@ -623,4 +623,6 @@
   <string name="nps_passive_feedback_question">Thanks for responding! How can we provide a better experience?</string>
   <string name="nps_detractor_feedback_question">Help us improve your experience! Please share  the primary reason for your score:</string>
   <string name="nps_score_question">On a scale from 0–10, how likely are you to recommend %s to a friend or colleague?</string>
+  <string name="previous_subtopic_talkback_text">The previous subtopic is %s</string>
+  <string name="next_subtopic_talkback_text">The next subtopic is %s</string>
 </resources>

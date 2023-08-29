@@ -777,6 +777,7 @@
   <dimen name="survey_question_text_margin">28dp</dimen>
   <dimen name="survey_question_recycler_view_margin">28dp</dimen>
   <dimen name="survey_navigation_buttons_margin">28dp</dimen>
+  <dimen name="survey_navigation_buttons_container_margin">14dp</dimen>
   <dimen name="survey_shared_corner_radius">4dp</dimen>
   <dimen name="survey_popup_header_text_size">28sp</dimen>
   <dimen name="survey_popup_message_text_size">14sp</dimen>
@@ -784,4 +785,5 @@
   <dimen name="survey_popup_button_margin">32dp</dimen>
   <dimen name="survey_nps_options_margin">8dp</dimen>
   <dimen name="survey_nps_hint_text_margin">16dp</dimen>
+  <dimen name="survey_button_corner_radius">4dp</dimen>
 </resources>

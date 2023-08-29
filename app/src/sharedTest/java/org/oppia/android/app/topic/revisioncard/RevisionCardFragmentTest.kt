@@ -21,6 +21,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -181,6 +182,50 @@ class RevisionCardFragmentTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+  }
+
+  @Test
+  fun testRevisionCard_previousSubtopicTitle_whatIsAFraction_hasCorrectContentDescription() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.prev_subtopic_title)).check(
+        matches(
+          ViewMatchers.withContentDescription(
+            "The previous subtopic is What is a Fraction?"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_nextSubtopicTitle_mixedNumbers_hasCorrectContentDescription() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.next_subtopic_title)).check(
+        matches(
+          ViewMatchers.withContentDescription(
+            "The next subtopic is Mixed Numbers"
+          )
+        )
+      )
+    }
   }
 
   @Test

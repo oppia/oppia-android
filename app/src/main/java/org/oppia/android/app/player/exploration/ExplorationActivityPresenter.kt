@@ -62,7 +62,8 @@ class ExplorationActivityPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val surveyGatingController: SurveyGatingController
 ) {
-  @Inject lateinit var accessibilityService: AccessibilityService
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
 
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -287,20 +288,23 @@ class ExplorationActivityPresenter @Inject constructor(
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
     explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
-        activity
-      ) {
-        when (it) {
-          is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
-          is AsyncResult.Failure ->
-            oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
-          is AsyncResult.Success -> {
-            oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-            if (isCompletion) {
-              maybeShowSurveyDialog(profileId, topicId)
+        activity,
+        {
+          when (it) {
+            is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
+            is AsyncResult.Failure ->
+              oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
+            is AsyncResult.Success -> {
+              oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
+              if (isCompletion) {
+                maybeShowSurveyDialog(profileId, topicId)
+              } else {
+                backPressActivitySelector()
+              }
             }
           }
         }
-      }
+      )
   }
 
   fun onKeyboardAction(actionCode: Int) {
@@ -320,8 +324,6 @@ class ExplorationActivityPresenter @Inject constructor(
    * current exploration.
    */
   fun backButtonPressed() {
-    // check if survey should be shown
-    maybeShowSurveyDialog(profileId, topicId)
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {

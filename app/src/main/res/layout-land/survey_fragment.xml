@@ -78,7 +78,9 @@
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/survey_question_text_margin"
+        android:layout_marginStart="@dimen/survey_question_text_margin"
+        android:layout_marginTop="@dimen/survey_question_text_margin"
+        android:layout_marginEnd="@dimen/survey_question_text_margin"
         android:fontFamily="sans-serif-medium"
         android:text="@{viewModel.questionText}"
         android:textColor="@color/component_color_shared_primary_text_color"
@@ -91,13 +93,14 @@
         android:id="@+id/survey_answers_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/survey_question_recycler_view_margin"
+        android:layout_marginStart="@dimen/survey_question_recycler_view_margin"
+        android:layout_marginTop="@dimen/survey_question_recycler_view_margin"
+        android:layout_marginEnd="@dimen/survey_question_recycler_view_margin"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:scrollbars="none"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/survey_question_text"
         tools:itemCount="1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -106,6 +109,8 @@
       android:id="@+id/survey_buttons_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/survey_navigation_buttons_container_margin"
+      android:layout_marginBottom="@dimen/survey_navigation_buttons_container_margin"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent">
@@ -121,8 +126,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/survey_previous_button"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintStart_toStartOf="parent" />
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
 
         <Button
           android:id="@+id/survey_next_button"
@@ -133,8 +138,8 @@
           android:enabled="@{viewModel.canMoveToNextQuestion}"
           android:text="@string/next"
           android:textColor="@{viewModel.canMoveToNextQuestion ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent" />
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
