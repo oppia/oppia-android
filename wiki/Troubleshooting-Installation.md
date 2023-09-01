@@ -96,20 +96,29 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
       Use --sandbox_debug to see verbose messages from the sandbox protoc failed: error executing command bazel-out/darwin-opt-exec-2B5CBBC6/bin/external/com_google_protobuf/protoc '--proto_path=bazel-out/android-armeabi-v7a-fastbuild/bin/model/src/main/proto/_virtual_imports/languages_proto' ... (remaining 8 argument(s) skipped)
       ```
+Bazel requires Xcode commandline tools to build on M1, and the Xcode license also needs to be accepted.
 
    **Follow these steps to solve this error:**
-      ```
-      xcode-select --install
-      sudo xcodebuild -licence
-      sudo xcode-select -r 
-      sudo xcode-select -s /Library/Developer/CommandLineTools
-      xcode-select -p 
-      ```
-   After you successfully run above commands, build app using Bazel by following command:
+
+- Install the commandline tools: `xcode-select --install`
+
+- Accept the Xcode licence: `sudo xcodebuild -licence`
+
+- Reset the xcode select path: `sudo xcode-select -r `
+
+ - Set the xcode select path to use CommandLineTools: `sudo xcode-select -s /Library/Developer/CommandLineTools`
+
+- Confirm that the path was correctly set. The expected output is: `/Library/Developer/CommandLineTools`
+
+      xcode-select -p
+
+After you successfully run above commands, build app using Bazel by following command:
+
       ```
       bazel clean --expunge
       bazel build //:oppia --noexperimental_check_desugar_deps
       ```
+The `--noexperimental_check_desugar_deps` flag is explained in the [bazel blog](https://blog.bazel.build/2018/12/19/bazel-0.21.html#android).
 
 ### Can’t find a particular issue?
 
