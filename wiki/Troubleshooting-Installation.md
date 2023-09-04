@@ -112,7 +112,7 @@ Bazel requires Xcode commandline tools to build on M1, and the Xcode license als
 
       xcode-select -p
 
-After you successfully run above commands, build app using Bazel by following command:
+After successfully running the above commands, build the app using Bazel by running the following command:
 
       ```
       bazel clean --expunge
