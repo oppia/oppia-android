@@ -24,7 +24,7 @@ class DebugFirestoreEventLogger @Inject constructor(
   }
 
   /** Returns the list of all [EventLog]s logged since the app opened. */
-  fun getEventList(): List<EventLog> = eventList
+  override fun getEventList(): List<EventLog> = eventList
 
   /** Returns the most recently logged event. */
   fun getMostRecentEvent(): EventLog = getEventList().last()

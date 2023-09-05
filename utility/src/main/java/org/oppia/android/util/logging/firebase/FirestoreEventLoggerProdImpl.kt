@@ -15,6 +15,8 @@ class FirestoreEventLoggerProdImpl private constructor(
     uploadOptionalResponseDocument(eventLog)
   }
 
+  override fun getEventList(): List<EventLog> = listOf()
+
   private fun uploadOptionalResponseDocument(eventLog: EventLog) {
     val eventContext = eventLog.context.optionalResponse
     val document = hashMapOf(

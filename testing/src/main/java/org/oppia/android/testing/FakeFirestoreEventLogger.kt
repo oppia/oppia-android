@@ -38,4 +38,7 @@ class FakeFirestoreEventLogger @Inject constructor() : FirestoreEventLogger {
 
   /** Returns the number of events logged to date (and not cleared by [clearAllEvents]). */
   fun getEventListCount(): Int = eventList.size
+
+  /** Returns the list of all [EventLog]s logged since the app opened. */
+  override fun getEventList(): List<EventLog> = eventList
 }

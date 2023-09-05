@@ -16,7 +16,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import dagger.Binds
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -43,7 +47,7 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
-import org.oppia.android.domain.auth.AuthenticationModule
+import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -63,9 +67,12 @@ import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
-import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
@@ -76,6 +83,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeAuthenticationController
+import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -88,14 +97,19 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
+import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
+import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
+import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
+import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -141,7 +155,7 @@ class ViewEventLogsFragmentTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Inject
-  lateinit var debugFirestoreEventLogger: DebugFirestoreEventLogger
+  lateinit var firestoreEventLogger: FirestoreEventLogger
 
   @Before
   fun setUp() {
@@ -584,24 +598,19 @@ class ViewEventLogsFragmentTest {
       oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID), profileId = null
     )
 
-    logOptionalSurveyResponseEvent()
-  }
-
-  private fun logOptionalSurveyResponseEvent() {
-    debugFirestoreEventLogger.uploadEvent(
-      EventLog.newBuilder()
-        .setContext(
-          createOptionalSurveyResponseContext(
-            "survey_id",
-            profileId = null,
-            answer = "some response"
-          )
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        createOptionalSurveyResponseContext(
+          "survey_id",
+          profileId = null,
+          answer = "some response"
         )
-        .setPriority(EventLog.Priority.ESSENTIAL)
-        .setTimestamp(TEST_TIMESTAMP + 50000)
-        .build()
-    )
-    testCoroutineDispatchers.runCurrent()
+      )
+      .setPriority(EventLog.Priority.ESSENTIAL)
+      .setTimestamp(TEST_TIMESTAMP + 50000)
+      .build()
+
+    firestoreEventLogger.uploadEvent(eventLog)
   }
 
   private fun createOptionalSurveyResponseContext(
@@ -669,6 +678,57 @@ class ViewEventLogsFragmentTest {
     )
   }
 
+  @Module
+  class TestLogStorageModule {
+    @Provides
+    @EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @PerformanceMetricsLogStorageCacheSize
+    fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
+  }
+
+  @Module
+  interface TestAuthModule {
+    @Binds
+    fun bindFakeAuthenticationController(
+      fakeAuthenticationController: FakeAuthenticationController
+    ): AuthenticationListener
+  }
+
+  @Module
+  class TestLogReportingModule {
+    @Provides
+    @Singleton
+    fun provideExceptionLogger(): ExceptionLogger =
+      FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
+
+    @Provides
+    @Singleton
+    fun provideDebugEventLogger(debugAnalyticsEventLogger: DebugAnalyticsEventLogger):
+      AnalyticsEventLogger = debugAnalyticsEventLogger
+
+    @Provides
+    @Singleton
+    fun providePerformanceMetricsEventLogger(
+      factory: FirebaseAnalyticsEventLogger.Factory
+    ): PerformanceMetricsEventLogger =
+      factory.createPerformanceMetricEventLogger()
+
+    @Provides
+    @Singleton
+    fun provideFakeFirestoreEventLogger(): FirestoreEventLogger = FakeFirestoreEventLogger()
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -680,8 +740,8 @@ class ViewEventLogsFragmentTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, DebugLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, TestLogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
@@ -699,7 +759,7 @@ class ViewEventLogsFragmentTest {
       PerformanceMetricsConfigurationsModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      AuthenticationModule::class,
+      TestAuthModule::class,
     ]
   )
 
