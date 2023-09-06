@@ -335,6 +335,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
+    markSpotlightSeen(TOPIC_LESSON_TAB)
     fakeAccessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
@@ -356,6 +357,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
+    markSpotlightSeen(TOPIC_LESSON_TAB)
     fakeAccessibilityService.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
@@ -377,6 +379,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
+    markSpotlightSeen(TOPIC_LESSON_TAB)
     fakeAccessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
@@ -397,6 +400,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
+    markSpotlightSeen(TOPIC_LESSON_TAB)
     fakeAccessibilityService.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
