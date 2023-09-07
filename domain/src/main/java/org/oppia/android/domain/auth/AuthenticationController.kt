@@ -9,7 +9,7 @@ import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
 
 /** Controller for signing in and retrieving a Firebase user. */
-class AuthenticationController private constructor(
+class AuthenticationController(
   private val firebaseAuth: FirebaseAuth
 ) : AuthenticationListener {
   /** Returns the current signed in user or null if there is no authenticated user. */
