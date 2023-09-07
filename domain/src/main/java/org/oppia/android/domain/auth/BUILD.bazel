@@ -38,8 +38,8 @@ kt_android_library(
 
 kt_android_library(
     name = "fake_authentication_controller_factory",
-    srcs = ["FakeAuthenticationControllerFactory.kt"],
     testonly = True,
+    srcs = ["FakeAuthenticationControllerFactory.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":auth_module",
