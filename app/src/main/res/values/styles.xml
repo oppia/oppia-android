@@ -170,7 +170,7 @@
     <item name="boxCornerRadiusBottomStart">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusTopEnd">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusTopStart">@dimen/text_input_layout_corner_radius</item>
-    <item name="boxStrokeColor">@color/component_color_shared_text_input_layout_stroke_color</item>
+    <item name="boxStrokeColor">@color/component_color_text_layout</item>
     <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
     <item name="errorEnabled">true</item>
     <item name="errorIconTint">@color/component_color_shared_text_input_layout_error_color</item>
@@ -631,5 +631,9 @@
     <!-- Additionally if you want animations when dialog opening -->
     <item name="android:windowEnterAnimation">@anim/slide_up</item>
     <item name="android:windowExitAnimation">@anim/slide_down</item>
+  </style>
+
+  <style name="AdminPinToolbarTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textSize">20sp</item>
   </style>
 </resources>
