@@ -150,6 +150,7 @@
     <activity
       android:name=".app.profile.AdminPinActivity"
       android:label="@string/admin_pin_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.PinPasswordActivity"
