@@ -170,7 +170,7 @@
     <item name="boxCornerRadiusBottomStart">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusTopEnd">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusTopStart">@dimen/text_input_layout_corner_radius</item>
-    <item name="boxStrokeColor">@color/component_color_textlayout</item>
+    <item name="boxStrokeColor">@color/component_color_text_layout</item>
     <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
     <item name="errorEnabled">true</item>
     <item name="errorIconTint">@color/component_color_shared_text_input_layout_error_color</item>
