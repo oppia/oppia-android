@@ -35,8 +35,8 @@
 
     <ImageView
       android:id="@+id/splash_oppia_logo"
-      android:layout_width="228dp"
-      android:layout_height="88dp"
+      android:layout_width="@dimen/_200sdp"
+      android:layout_height="@dimen/_80sdp"
       android:importantForAccessibility="no"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
