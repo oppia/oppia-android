@@ -209,6 +209,13 @@ class RegexPatternValidationCheckTest {
       " should immediately follow the at-clause without any additional linking with brackets."
   private val badSingleLineKdocShouldEndWithPunctuation =
     "Badly formatted KDoc. Single-line KDocs should end with punctuation."
+  private val activityTestRuleShouldNotBeUsed =
+    "ActivityTestRule is deprecated since it operates test activities in sometimes unsafe" +
+      " situations. Use ActivityScenario, instead."
+  private val activityScenarioRuleShouldNotBeUsed =
+    "ActivityScenarioRule can result in order dependence when static state leaks across tests" +
+      " (such as static module variables), and can make staging much more difficult for platform" +
+      " parameters. Use ActivityScenario directly, instead."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -2644,6 +2651,50 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $badSingleLineKdocShouldEndWithPunctuation
         $stringFilePath:3: $badSingleLineKdocShouldEndWithPunctuation
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_referencesActivityTestRule_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+      import androidx.test.rule.ActivityTestRule
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "test", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/test/java/org/oppia/android/PresenterTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $activityTestRuleShouldNotBeUsed
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_referencesActivityScenarioRule_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+      import androidx.test.ext.junit.rules.ActivityScenarioRule
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "test", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/test/java/org/oppia/android/PresenterTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $activityScenarioRuleShouldNotBeUsed
         $wikiReferenceNote
         """.trimIndent()
       )
