@@ -13,7 +13,7 @@ class ForcedAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  private val deprecationNoticeExitAppListener by lazy {
+  private val deprecationNoticeActionListener by lazy {
     activity as DeprecationNoticeActionListener
   }
 
@@ -30,12 +30,12 @@ class ForcedAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
         )
       )
       .setPositiveButton(R.string.unsupported_app_version_dialog_update_button_text) { _, _ ->
-        deprecationNoticeExitAppListener.onActionButtonClicked(
+        deprecationNoticeActionListener.onActionButtonClicked(
           DeprecationNoticeActionType.UPDATE
         )
       }
       .setNegativeButton(R.string.unsupported_app_version_dialog_close_button_text) { _, _ ->
-        deprecationNoticeExitAppListener.onActionButtonClicked(
+        deprecationNoticeActionListener.onActionButtonClicked(
           DeprecationNoticeActionType.CLOSE
         )
       }

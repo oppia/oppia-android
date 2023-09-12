@@ -78,11 +78,6 @@ class SplashActivityPresenter @Inject constructor(
   fun handleOnUpdateButtonClicked() {
     // If the Update button is clicked for the deprecation notice, launch the Play Store and open
     // the Oppia app's page.
-
-    // Launch profile selection activity in case the user presses the back button
-    activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
-    activity.finish()
-
     val packageName = activity.packageName
 
     try {
@@ -99,6 +94,9 @@ class SplashActivityPresenter @Inject constructor(
         )
       )
     }
+
+    // Finish splash activity to close the app in anticipation of an update.
+    activity.finish()
   }
 
   /** Handle cases where the user dismisses the deprecation notice dialog. */

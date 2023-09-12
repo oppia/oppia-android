@@ -13,7 +13,7 @@ class OsDeprecationNoticeDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  private val deprecationNoticeExitAppListener by lazy {
+  private val deprecationNoticeActionListener by lazy {
     activity as DeprecationNoticeActionListener
   }
 
@@ -30,7 +30,7 @@ class OsDeprecationNoticeDialogFragmentPresenter @Inject constructor(
         )
       )
       .setNegativeButton(R.string.os_deprecation_dialog_dismiss_button_text) { _, _ ->
-        deprecationNoticeExitAppListener.onActionButtonClicked(
+        deprecationNoticeActionListener.onActionButtonClicked(
           DeprecationNoticeActionType.DISMISS
         )
       }
