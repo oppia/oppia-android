@@ -80,6 +80,8 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 5. Read all the instructions written on the screen as using Talkback requires specific steps.
 6. Turn on **Use Service** -> **Allow**
 
+[Here](https://youtu.be/xpIM9xlowjs) is a video tutorial on "How to use Talkback and what does its output mean?".
+
 ### Useful Resources
 * [Android A11Y Overview](https://support.google.com/accessibility/android/answer/6006564)
 * [Using A11Y Menu](https://support.google.com/accessibility/android/answer/9078941)
@@ -89,6 +91,8 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 ### Developer Videos
 * [How to use Accessibility Scanner? - Tutorial](https://youtu.be/LF5AgGI5H3A)
   * [Presentation Slides](https://docs.google.com/presentation/d/1PM_gs3TV2LVKFv6WuF9CUQHWbK7koepAxypzxeZTFzE/edit?usp=sharing)
+* [How to use Talkback and what does its output mean? - Tutorial](https://youtu.be/xpIM9xlowjs)
+  * [Presentation Slides](https://docs.google.com/presentation/d/17SeKJLKT-rUNa_Yupe97bMFSsjTNzp83jX-lZPKEtnQ/edit?usp=sharing)
 
 ## Using AccessibilityTestRule in Espresso Tests
 [AccessibilityTestRule](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/AccessibilityTestRule.kt) is a JUnit rule to enable `AccessibilityChecks` in all Espresso Tests. This rule covers all errors shown by Accessibility Scanner and more but only for all those UI elements which are getting used in the test case.
