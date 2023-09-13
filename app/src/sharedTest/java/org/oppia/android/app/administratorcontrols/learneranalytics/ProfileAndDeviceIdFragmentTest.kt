@@ -56,6 +56,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -103,6 +104,9 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.logging.EventLogSubject.LearnerDetailsContextSubject
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -117,6 +121,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
@@ -130,7 +135,10 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.security.MessageDigest
+import java.util.Base64
 import java.util.concurrent.TimeUnit
+import java.util.zip.GZIPInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -158,6 +166,7 @@ class ProfileAndDeviceIdFragmentTest {
   @Inject lateinit var syncStatusManager: TestSyncStatusManager
   @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private val clipboardManager by lazy {
     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -795,7 +804,7 @@ class ProfileAndDeviceIdFragmentTest {
       onShareIdsAndEventsButtonAt(position = 5).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val expectedShareText =
+      val expectedShareTextPattern =
         """
         Oppia app installation ID: 113e04cc09a3
         - Profile name: Admin, learner ID: 8dcbbd21
@@ -811,20 +820,49 @@ class ProfileAndDeviceIdFragmentTest {
           - Uploaded learner events: 2
         Current sync status: Waiting to schedule data uploading worker….
         Event log encoding integrity checks:
-        - First 40 chars of encoded string: H4sIAAAAAAAA/+PSlGBUUj3FqMTFX5JaXBKfk5pY
-        - Last 40 chars of encoded string: BzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA
-        - SHA-1 hash (unwrapped event string): 1ee817dd58dcb25c9af4fbfc3c89c86b730f6680
-        - Total event string length (unwrapped): 140
-        Encoded event logs:
-        H4sIAAAAAAAA/+PSlGBUUj3FqMTFX5JaXBKfk5pYlJdaFJ+ZIgQRyMwrLknMyQEKcBkSrVSLwYjBisGJ
-        gU5ajEnVwsTBSDdNTELEBzGNlJIepORoISdAydHERJ4m4sMLAFFY60EUAwAA
-        """.trimIndent()
+        - First 40 chars of encoded string: ([\p{Alnum}/\\+=]+)
+        - Last 40 chars of encoded string: ([\p{Alnum}/\\+=]+)
+        - SHA-1 hash \(unwrapped event string\): (\p{XDigit}+)
+        - Total event string length \(unwrapped\): (\p{Digit}+)
+        Encoded event logs:([\p{Alnum}/+=\p{Space}]+)
+        """.trimIndent().toRegex()
       val intents = getIntents()
+      val extraText = intents.singleOrNull()?.getStringExtra(Intent.EXTRA_TEXT)
       assertThat(intents).hasSize(1)
       assertThat(intents.single()).hasAction(Intent.ACTION_SEND)
       assertThat(intents.single()).hasType("text/plain")
       assertThat(intents.single()).extras().containsKey(Intent.EXTRA_TEXT)
-      assertThat(intents.single()).extras().string(Intent.EXTRA_TEXT).isEqualTo(expectedShareText)
+      assertThat(extraText).matches(expectedShareTextPattern.toPattern())
+      val (encodingPrefix, encodingSuffix, shaHash, encodingLength, rawEncodedLogs) =
+        extraText?.let { expectedShareTextPattern.matchEntire(it) }?.destructured!!
+      val unwrappedEncodedLogs = rawEncodedLogs.trim().replace(" ", "").replace("\n", "")
+      // Verify that the correct _values_ are being outputted, even if the specific values might
+      // differ slightly (depending on the running platform).
+      assertThat(encodingPrefix).isEqualTo(unwrappedEncodedLogs.take(40))
+      assertThat(encodingSuffix).isEqualTo(unwrappedEncodedLogs.takeLast(40))
+      assertThat(shaHash).isEqualTo(unwrappedEncodedLogs.computeSha1Hash())
+      assertThat(encodingLength.toInt()).isEqualTo(unwrappedEncodedLogs.length)
+      // Verify the encoded events themselves are correct by decoding them and analyzing the loaded
+      // proto (since the string can vary somewhat).
+      val eventLogs = decodeEventLogString(unwrappedEncodedLogs)
+      assertThat(eventLogs.eventLogsToUploadCount).isEqualTo(7)
+      assertThat(eventLogs.uploadedEventLogsCount).isEqualTo(9)
+      assertThat(eventLogs.eventLogsToUploadList[0]).hasCommonPropsWithNoProfileId()
+      assertThat(eventLogs.eventLogsToUploadList[1]).hasCommonPropsWithProfile(ADMIN_PROFILE_ID)
+      assertThat(eventLogs.eventLogsToUploadList[2]).hasCommonPropsWithProfile(ADMIN_PROFILE_ID)
+      assertThat(eventLogs.eventLogsToUploadList[3]).hasCommonPropsWithProfile(ADMIN_PROFILE_ID)
+      assertThat(eventLogs.eventLogsToUploadList[4]).hasCommonPropsWithProfile(LEARNER_PROFILE_ID_0)
+      assertThat(eventLogs.eventLogsToUploadList[5]).hasCommonPropsWithProfile(LEARNER_PROFILE_ID_0)
+      assertThat(eventLogs.eventLogsToUploadList[6]).hasCommonPropsWithProfile(LEARNER_PROFILE_ID_1)
+      assertThat(eventLogs.uploadedEventLogsList[0]).hasCommonPropsWithNoProfileId()
+      assertThat(eventLogs.uploadedEventLogsList[1]).hasCommonPropsWithNoProfileId()
+      assertThat(eventLogs.uploadedEventLogsList[2]).hasCommonPropsWithNoProfileId()
+      assertThat(eventLogs.uploadedEventLogsList[3]).hasCommonPropsWithProfile(ADMIN_PROFILE_ID)
+      assertThat(eventLogs.uploadedEventLogsList[4]).hasCommonPropsWithProfile(ADMIN_PROFILE_ID)
+      assertThat(eventLogs.uploadedEventLogsList[5]).hasCommonPropsWithProfile(LEARNER_PROFILE_ID_0)
+      assertThat(eventLogs.uploadedEventLogsList[6]).hasCommonPropsWithProfile(LEARNER_PROFILE_ID_1)
+      assertThat(eventLogs.uploadedEventLogsList[7]).hasCommonPropsWithProfile(LEARNER_PROFILE_ID_1)
+      assertThat(eventLogs.uploadedEventLogsList[8]).hasCommonPropsWithNoProfileId()
     }
   }
 
@@ -976,7 +1014,7 @@ class ProfileAndDeviceIdFragmentTest {
 
   private fun logAnalyticsEvent(profileId: ProfileId? = null) {
     learnerAnalyticsLogger.logAppInForeground(
-      installationId = "test_install_id", profileId, learnerId = "test_learner_id"
+      installationId = TEST_INSTALLATION_ID, profileId, learnerId = TEST_LEARNER_ID
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -1015,6 +1053,48 @@ class ProfileAndDeviceIdFragmentTest {
     connectNetwork()
     flushEventWorkerQueue()
     disconnectNetwork()
+  }
+
+  private fun String.computeSha1Hash(): String {
+    return machineLocale.run {
+      MessageDigest.getInstance("SHA-1")
+        .digest(this@computeSha1Hash.toByteArray())
+        .joinToString("") { "%02x".formatForMachines(it) }
+    }
+  }
+
+  private fun decodeEventLogString(encodedEventLogs: String): OppiaEventLogs {
+    return GZIPInputStream(Base64.getDecoder().decode(encodedEventLogs).inputStream()).use { inps ->
+      OppiaEventLogs.newBuilder().mergeFrom(inps).build()
+    }
+  }
+
+  private fun EventLogSubject.hasCommonProperties() {
+    hasNoLanguageInformation()
+    hasTimestampThat().isEqualTo(0)
+    isEssentialPriority()
+    hasAppInForegroundContextThat().hasDefaultIds()
+  }
+
+  private fun EventLogSubject.hasCommonPropsWithNoProfileId() {
+    hasCommonProperties()
+    hasNoProfileId()
+  }
+
+  private fun EventLogSubject.hasCommonPropsWithProfile(profileId: ProfileId) {
+    hasCommonProperties()
+    hasProfileIdThat().isEqualTo(profileId)
+  }
+
+  private fun EventLogSubject.hasNoLanguageInformation() {
+    hasAppLanguageSelectionThat().isEqualToDefaultInstance()
+    hasWrittenTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+    hasAudioTranslationLanguageSelectionThat().isEqualToDefaultInstance()
+  }
+
+  private fun LearnerDetailsContextSubject.hasDefaultIds() {
+    hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+    hasInstallationIdThat().isEqualTo(TEST_INSTALLATION_ID)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -1091,6 +1171,8 @@ class ProfileAndDeviceIdFragmentTest {
 
   private companion object {
     private const val DEFAULT_APPLICATION_ID = 123456789L
+    private const val TEST_LEARNER_ID = "test_learner_id"
+    private const val TEST_INSTALLATION_ID = "test_install_id"
 
     private val ADMIN_PROFILE_ID = createProfileId(internalProfileId = 0)
     private val LEARNER_PROFILE_ID_0 = createProfileId(internalProfileId = 1)
