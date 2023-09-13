@@ -108,6 +108,7 @@
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_rename_button" />
 
@@ -128,6 +129,7 @@
         android:textSize="16sp"
         android:visibility="@{viewModel.isAllowedToMarkFinishedChapters ? View.VISIBLE : View.GONE}"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_reset_button" />
 
@@ -216,10 +218,10 @@
           android:text="@string/profile_edit_allow_download_heading"
           android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="16sp"
+          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@+id/profile_edit_allow_download_switch"
           app:layout_constraintHorizontal_bias="0.0"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
           android:id="@+id/profile_edit_allow_download_sub"
@@ -258,7 +260,6 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/profile_edit_delete_margin_bottom"
         android:background="@drawable/general_item_background_border"
         android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
@@ -272,7 +273,8 @@
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_edit_enable_in_lesson_language_switching_container" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>

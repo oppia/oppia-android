@@ -356,7 +356,7 @@
   <string name="are_you_interested">Je, unavutiwa na:\n%s?</string>
   <string name="new_hint_available">Kidokezo kipya kinapatikana</string>
   <string name="show_hints_and_solution">Onyesha vidokezo na suluhisho</string>
-  <string name="hints_andSolution_close_icon_description">Nenda juu</string>
+  <string name="hints_and_solution_close_icon_description">Funga</string>
   <string name="hints_toolbar_title">Vidokezo</string>
   <string name="reveal_solution" fuzzy="true">Fichua Suluhisho</string>
   <string name="reveal_hint" fuzzy="true">Fichua Kidokezo</string>

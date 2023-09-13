@@ -65,6 +65,10 @@ import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.story.StoryFragment
+import org.oppia.android.app.survey.ExitSurveyConfirmationDialogFragment
+import org.oppia.android.app.survey.SurveyFragment
+import org.oppia.android.app.survey.SurveyOutroDialogFragment
+import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
 import org.oppia.android.app.testing.DragDropTestFragment
 import org.oppia.android.app.testing.ExplorationTestActivityPresenter
 import org.oppia.android.app.testing.ImageRegionSelectionTestFragment
@@ -177,4 +181,8 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)
   fun inject(walkthroughTopicListFragment: WalkthroughTopicListFragment)
   fun inject(walkthroughWelcomeFragment: WalkthroughWelcomeFragment)
+  fun inject(surveyFragment: SurveyFragment)
+  fun inject(exitSurveyConfirmationDialogFragment: ExitSurveyConfirmationDialogFragment)
+  fun inject(surveyWelcomeDialogFragment: SurveyWelcomeDialogFragment)
+  fun inject(surveyOutroDialogFragment: SurveyOutroDialogFragment)
 }
