@@ -210,7 +210,7 @@ class LicenseTextViewerActivityTest {
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
     Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())
@@ -231,7 +231,7 @@ class LicenseTextViewerActivityTest {
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
     Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())

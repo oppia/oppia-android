@@ -36,7 +36,8 @@ class TopicFragmentPresenter @Inject constructor(
   @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  @Inject lateinit var accessibilityService: AccessibilityService
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
 
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
@@ -67,7 +68,6 @@ class TopicFragmentPresenter @Inject constructor(
     binding.topicToolbar.setNavigationOnClickListener {
       (activity as TopicActivity).finish()
     }
-    val screenReaderEnabled = accessibilityService.isScreenReaderEnabled()
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.topicToolbarTitle.setOnClickListener {
         binding.topicToolbarTitle.isSelected = true
