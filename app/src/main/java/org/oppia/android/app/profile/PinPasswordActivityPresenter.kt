@@ -55,6 +55,14 @@ class PinPasswordActivityPresenter @Inject constructor(
       (activity as PinPasswordActivity).finish()
     }
 
+    binding.apply {
+        pinPasswordInputPinEditText.setOnClickListener {
+            pinPasswordInputPinEditText.isFocusable = true
+            pinPasswordInputPinEditText.isFocusableInTouchMode = true
+            pinPasswordInputPinEditText.requestFocus()
+        }
+    }
+
     binding.showPin.setOnClickListener {
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
       if (!pinViewModel.showPassword.get()!!) {
