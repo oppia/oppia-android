@@ -83,13 +83,13 @@ public final class TextViewBindingAdapters {
     } else if (timeDifferenceMillis < TimeUnit.MINUTES.toMillis(50)) {
       return getPluralString(
               resourceHandler,
-          R.plurals.minutes,
+          R.plurals.minutes_ago,
           (int) TimeUnit.MILLISECONDS.toMinutes(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(1)) {
       return getPluralString(
               resourceHandler,
-          R.plurals.hours,
+          R.plurals.hours_ago,
           (int) TimeUnit.MILLISECONDS.toHours(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(2)) {
@@ -97,7 +97,7 @@ public final class TextViewBindingAdapters {
     }
     return getPluralString(
             resourceHandler,
-        R.plurals.days,
+        R.plurals.days_ago,
         (int) TimeUnit.MILLISECONDS.toDays(timeDifferenceMillis)
     );
   }

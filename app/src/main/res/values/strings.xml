@@ -481,17 +481,18 @@
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes">
-    <item quantity="one">a minute</item>
-    <item quantity="other">%s minutes</item>
+  <plurals name="minutes_ago">
+    <item quantity="zero">zero minutes ago</item>
+    <item quantity="one">a minute ago</item>
+    <item quantity="other">%s minutes ago</item>
   </plurals>
-  <plurals name="hours">
-    <item quantity="one">an hour</item>
-    <item quantity="other">%s hours</item>
+  <plurals name="hours_ago">
+    <item quantity="one">an hour ago</item>
+    <item quantity="other">%s hours ago</item>
   </plurals>
-  <plurals name="days">
-    <item quantity="one">a day</item>
-    <item quantity="other">%s days</item>
+  <plurals name="days_ago">
+    <item quantity="one">a day ago</item>
+    <item quantity="other">%s days ago</item>
   </plurals>
   <!-- ViewTags -->
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
