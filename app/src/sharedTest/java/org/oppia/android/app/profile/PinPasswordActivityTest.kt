@@ -188,8 +188,8 @@ class PinPasswordActivityTest {
         adminPin = adminPin,
         profileId = adminId
       )
-    ).use{
-      onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(not(hasFocus())))
+    ).use {
+      onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(hasFocus()))
     }
   }
 
