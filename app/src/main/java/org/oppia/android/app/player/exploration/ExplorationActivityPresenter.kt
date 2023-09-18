@@ -38,6 +38,7 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -61,6 +62,9 @@ class ExplorationActivityPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val surveyGatingController: SurveyGatingController
 ) {
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
+
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
   private lateinit var profileId: ProfileId
@@ -89,7 +93,7 @@ class ExplorationActivityPresenter @Inject constructor(
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
+    binding = DataBindingUtil.setContentView(
       activity,
       R.layout.exploration_activity
     )
@@ -102,8 +106,10 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationToolbarTitle = binding.explorationToolbarTitle
     activity.setSupportActionBar(explorationToolbar)
 
-    binding.explorationToolbarTitle.setOnClickListener {
-      binding.explorationToolbarTitle.isSelected = true
+    if (!accessibilityService.isScreenReaderEnabled()) {
+      binding.explorationToolbarTitle.setOnClickListener {
+        binding.explorationToolbarTitle.isSelected = true
+      }
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
@@ -181,7 +187,11 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
-          profileId, topicId, storyId, explorationId, readingTextSize
+          profileId,
+          topicId,
+          storyId,
+          explorationId,
+          readingTextSize
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
@@ -211,7 +221,8 @@ class ExplorationActivityPresenter @Inject constructor(
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, profileId.internalId,
+          activity,
+          profileId.internalId,
           /* isFromNavigationDrawer= */false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -266,7 +277,8 @@ class ExplorationActivityPresenter @Inject constructor(
     // without deleting any checkpoints.
     if (::oldestCheckpointExplorationId.isInitialized) {
       explorationDataController.deleteExplorationProgressById(
-        profileId, oldestCheckpointExplorationId
+        profileId,
+        oldestCheckpointExplorationId
       )
     }
     stopExploration(isCompletion = false)
@@ -340,7 +352,8 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationLiveData.observe(activity) {
       explorationToolbarTitle.text =
         translationController.extractString(
-          it.exploration.translatableTitle, it.writtenTranslationContext
+          it.exploration.translatableTitle,
+          it.writtenTranslationContext
         )
     }
   }
@@ -363,7 +376,9 @@ class ExplorationActivityPresenter @Inject constructor(
     return when (ephemeralExpResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralExpResult.error
+          "ExplorationActivity",
+          "Failed to retrieve answer outcome",
+          ephemeralExpResult.error
         )
         EphemeralExploration.getDefaultInstance()
       }
@@ -472,7 +487,9 @@ class ExplorationActivityPresenter @Inject constructor(
         }
         is AsyncResult.Failure -> {
           oppiaLogger.e(
-            "ExplorationActivity", "Failed to retrieve oldest saved checkpoint details.", it.error
+            "ExplorationActivity",
+            "Failed to retrieve oldest saved checkpoint details.",
+            it.error
           )
         }
         is AsyncResult.Pending -> {} // Wait for an actual result.
@@ -512,41 +529,40 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
     surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
       .observe(
-        activity,
-        { gatingResult ->
-          when (gatingResult) {
-            is AsyncResult.Pending -> {
-              oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "ExplorationActivity",
-                "Failed to retrieve gating decision",
-                gatingResult.error
-              )
+        activity
+      ) { gatingResult ->
+        when (gatingResult) {
+          is AsyncResult.Pending -> {
+            oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ExplorationActivity",
+              "Failed to retrieve gating decision",
+              gatingResult.error
+            )
+            backPressActivitySelector()
+          }
+          is AsyncResult.Success -> {
+            if (gatingResult.value) {
+              val dialogFragment =
+                SurveyWelcomeDialogFragment.newInstance(
+                  profileId,
+                  topicId,
+                  explorationId,
+                  SURVEY_QUESTIONS
+                )
+              val transaction = activity.supportFragmentManager.beginTransaction()
+              transaction
+                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                .addToBackStack(null)
+                .commit()
+            } else {
               backPressActivitySelector()
-            }
-            is AsyncResult.Success -> {
-              if (gatingResult.value) {
-                val dialogFragment =
-                  SurveyWelcomeDialogFragment.newInstance(
-                    profileId,
-                    topicId,
-                    explorationId,
-                    SURVEY_QUESTIONS
-                  )
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction
-                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                  .addToBackStack(null)
-                  .commit()
-              } else {
-                backPressActivitySelector()
-              }
             }
           }
         }
-      )
+      }
   }
 
   companion object {

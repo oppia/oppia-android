@@ -186,7 +186,9 @@ class StoryFragmentTest {
 
   @get:Rule
   var activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
-    StoryActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    StoryActivity::class.java, /* initialTouchMode= */
+    true, /* launchActivity= */
+    false
   )
 
   private val internalProfileId = 0
@@ -227,9 +229,10 @@ class StoryFragmentTest {
     }
   }
 
-  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
-  // its view
-  fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test
+  fun testStoryFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
+    accessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
 
@@ -239,12 +242,47 @@ class StoryFragmentTest {
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
-  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
-  // its view
-  fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test
+  fun testStoryFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
+    accessibilityService.setScreenReaderEnabled(true)
+    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
+    testCoroutineDispatchers.runCurrent()
+
+    val storyToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
+    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    onView(withId(R.id.story_toolbar_title)).perform(click())
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.isSelected).isEqualTo(false)
+    assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test
+  fun testStoryFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    accessibilityService.setScreenReaderEnabled(false)
+    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
+    testCoroutineDispatchers.runCurrent()
+
+    val storyToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
+    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+    onView(withId(R.id.story_toolbar_title)).perform(click())
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
+    assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test
+  fun testStoryFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    accessibilityService.setScreenReaderEnabled(true)
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
 
@@ -254,6 +292,7 @@ class StoryFragmentTest {
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.isSelected).isEqualTo(false)
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -877,7 +916,9 @@ class StoryFragmentTest {
   private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
     val viewText = text
     return (viewText as Spannable).getSpans(
-      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+      /* start= */ 0, /* end= */
+      text.length,
+      ClickableSpan::class.java
     ).map {
       viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
     }
