@@ -8,6 +8,7 @@
   - [Using a11y scanner in android](#using-a11y-scanner-in-android)
   - [Using Talkback in android](#using-talkback-in-android)
   - [Useful Resources](#useful-resources)
+  - [Developer Videos](#developer-videos)
 - [Using AccessibilityTestRule in Espresso Tests](#using-accessibilitytestrule-in-espresso-tests)
 - [Auditing the app](#auditing-the-app)
 - [General Tips to make app Accessible](#general-tips-to-make-app-accessible)
@@ -31,10 +32,11 @@ There are various manual and automated tests to check if app is accessible by al
 
 **[Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en)** : Using Accessibility Scanner we can take screenshots of each and every screen in the Oppia-app manually and the Accessibility Scanner app will give the output for the individual screenshot mentioning all the errors.
 
+[Here](https://youtu.be/LF5AgGI5H3A) is a video tutorial on how to set up and use the Accessibility Scanner.
+
 **Screen Reader**: Screen readers like **Talkback** can be used to test the app manually. Talkback app is used by blind people to navigate to different items in the screen and get audio based output. This app will not give any error like Accessibility Scanner. 
 
 **[AccessibilityChecks](https://developer.android.com/guide/topics/ui/accessibility/testing#automated)**: Developers can activate the `AccessibilityChecks` in all `Espresso` test cases which will give errors related to accessibility.
-
 
 ## Setting up Accessibility Scanner and Talkback
 
@@ -78,6 +80,7 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 5. Read all the instructions written on the screen as using Talkback requires specific steps.
 6. Turn on **Use Service** -> **Allow**
 
+[Here](https://youtu.be/xpIM9xlowjs) is a video tutorial on "How to use Talkback and what does its output mean?".
 
 ### Useful Resources
 * [Android A11Y Overview](https://support.google.com/accessibility/android/answer/6006564)
@@ -85,6 +88,11 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 * [Getting started with Talkback](https://support.google.com/accessibility/android/answer/6283677)
 * [Display speech output as Text: Talkback](https://developer.android.com/guide/topics/ui/accessibility/testing#optional_talkback_developer_settings)
 
+### Developer Videos
+* [How to use Accessibility Scanner? - Tutorial](https://youtu.be/LF5AgGI5H3A)
+  * [Presentation Slides](https://docs.google.com/presentation/d/1PM_gs3TV2LVKFv6WuF9CUQHWbK7koepAxypzxeZTFzE/edit?usp=sharing)
+* [How to use Talkback and what does its output mean? - Tutorial](https://youtu.be/xpIM9xlowjs)
+  * [Presentation Slides](https://docs.google.com/presentation/d/17SeKJLKT-rUNa_Yupe97bMFSsjTNzp83jX-lZPKEtnQ/edit?usp=sharing)
 
 ## Using AccessibilityTestRule in Espresso Tests
 [AccessibilityTestRule](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/AccessibilityTestRule.kt) is a JUnit rule to enable `AccessibilityChecks` in all Espresso Tests. This rule covers all errors shown by Accessibility Scanner and more but only for all those UI elements which are getting used in the test case.

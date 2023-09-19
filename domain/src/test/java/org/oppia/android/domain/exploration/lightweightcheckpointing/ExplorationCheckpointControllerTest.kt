@@ -1000,7 +1000,7 @@ class ExplorationCheckpointControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      ExplorationProgressModule::class
+      ExplorationProgressModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -37,7 +37,7 @@ import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
 import org.oppia.android.util.platformparameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
 import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
@@ -296,7 +296,7 @@ class TestPlatformParameterModule {
     private var enableSpotlightUi = true
     private var enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
     private var minimumLearningTime =
-      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VAL
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE
     private var gracePeriodInDays = NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
