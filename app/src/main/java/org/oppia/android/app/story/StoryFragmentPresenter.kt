@@ -65,8 +65,9 @@ class StoryFragmentPresenter @Inject constructor(
   private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
   private lateinit var profileId: ProfileId
 
-  @Inject lateinit var storyViewModel: StoryViewModel
   @Inject lateinit var accessibilityService: AccessibilityService
+
+  @Inject lateinit var storyViewModel: StoryViewModel
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -74,7 +75,7 @@ class StoryFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String
-  ): View? {
+  ): View {
     binding = StoryFragmentBinding.inflate(
       inflater,
       container,
@@ -89,9 +90,10 @@ class StoryFragmentPresenter @Inject constructor(
     binding.storyToolbar.setNavigationOnClickListener {
       (activity as StoryActivity).finish()
     }
-
-    binding.storyToolbarTitle.setOnClickListener {
-      binding.storyToolbarTitle.isSelected = true
+    if (!accessibilityService.isScreenReaderEnabled()) {
+      binding.storyToolbarTitle.setOnClickListener {
+        binding.storyToolbarTitle.isSelected = true
+      }
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -274,11 +276,17 @@ class StoryFragmentPresenter @Inject constructor(
     // one.
     val startPlayingProvider = if (canHavePartialProgressSaved) {
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId,
+        topicId,
+        storyId,
+        explorationId
       )
     } else {
       explorationDataController.replayExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId,
+        topicId,
+        storyId,
+        explorationId
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->
