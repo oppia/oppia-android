@@ -1121,7 +1121,7 @@ states {
               }
             }
           }
-          rule_type: "CaseSensitiveEquals"
+          rule_type: "Equals"
         }
       }
       default_outcome {
@@ -2807,7 +2807,7 @@ states {
               }
             }
           }
-          rule_type: "CaseSensitiveEquals"
+          rule_type: "Equals"
         }
         rule_specs {
           input {
