@@ -482,7 +482,7 @@
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes_ago">
-    <item quantity="zero">zero minutes ago</item>
+    <item quantity="zero">0 minute ago</item>
     <item quantity="one">a minute ago</item>
     <item quantity="other">%s minutes ago</item>
   </plurals>
