@@ -42,7 +42,6 @@ class NavigationDrawerHeaderViewModel @Inject constructor(
   }
 
   private fun computeProfileStoryProgressText(): String {
-    // TODO(#3843): Either combine these strings into one or use separate views to display them.
     return resourceHandler.getQuantityStringInLocaleWithWrapping(
       R.plurals.completed_story_count,
       completedStoryCount,
