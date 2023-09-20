@@ -267,4 +267,5 @@
   <color name="color_palette_edit_text_unselected_color">@color/color_def_grey</color>
   <color name="color_palette_edit_text_inactive_color">@color/color_def_black_87</color>
   <color name="color_palette_edit_text_active_color">@color/color_def_black_87</color>
+  <color name="color_palette_button_shadow_color">@color/color_def_black_25</color>
 </resources>
