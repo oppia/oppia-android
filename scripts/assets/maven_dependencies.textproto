@@ -932,9 +932,10 @@ maven_dependency {
   artifact_name: "org.codehaus.mojo:animal-sniffer-annotations:1.18"
   artifact_version: "1.18"
   license {
-    license_name: "The Apache Software License, Version 2.0"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    license_name: "The MIT License"
+    original_link: "https://opensource.org/licenses/MIT"
+    extracted_copy_link {
+      url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/mit-license.txt"
     }
   }
 }
