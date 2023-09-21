@@ -116,6 +116,9 @@ class AudioViewModel @Inject constructor(
         selectedLanguageUnavailable.set(true)
         val ensuredLanguageCode = if (languages.contains("en")) "en" else languages.first()
         fallbackLanguageCode = ensuredLanguageCode
+        if (!languages.contains(defaultLanguage)) {
+        languages.add(defaultLanguage)
+        }
         audioPlayerController.changeDataSource(
           voiceOverToUri(voiceoverMap[ensuredLanguageCode]), currentContentId, ensuredLanguageCode
         )
