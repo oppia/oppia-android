@@ -468,7 +468,6 @@
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
   <string name="last_logged_in_recently">recently</string>
-  <string name="time_ago">%s</string>
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>
   <string name="return_to_lesson">Return to lesson</string>
@@ -482,7 +481,7 @@
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes_ago">
-    <item quantity="zero">0 minute ago</item>
+    <item quantity="zero">0 minutes ago</item>
     <item quantity="one">a minute ago</item>
     <item quantity="other">%s minutes ago</item>
   </plurals>

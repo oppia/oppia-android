@@ -107,13 +107,9 @@ public final class TextViewBindingAdapters {
       @PluralsRes int pluralsResId,
       int count
   ) {
-    // TODO(#3841): Combine these strings together.
-    return resourceHandler.getStringInLocaleWithWrapping(
-        R.string.time_ago,
-        resourceHandler.getQuantityStringInLocaleWithWrapping(
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
             pluralsResId, count, String.valueOf(count)
-        )
-    );
+        );
   }
 
   private static long ensureTimestampIsInMilliseconds(long lastVisitedTimestamp) {
