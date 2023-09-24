@@ -256,7 +256,7 @@ class NavigationDrawerActivityProdTest {
   }
 
   @Test
-  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileProgressIsDisplayedCorrectly() {
+  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileStoryProgressIsDisplayedCorrectly() {
     storyProfileTestHelper.markCompletedRatiosStory1Exp0(
       ProfileId.newBuilder().setInternalId(
         internalProfileId
@@ -270,10 +270,32 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(
         allOf(
-          withId(R.id.profile_progress_text_view),
-          isDescendantOfA(withId(R.id.header_linear_layout))
+          withId(R.id.profile_story_progress_text_view),
+          isDescendantOfA(withId(R.id.progress_linear_layout))
         )
-      ).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
+      ).check(matches(withText("1 Story Completed")))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileTopicProgressIsDisplayedCorrectly() {
+    storyProfileTestHelper.markCompletedRatiosStory1Exp0(
+      ProfileId.newBuilder().setInternalId(
+        internalProfileId
+      ).build(),
+      timestampOlderThanOneWeek = false
+    )
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(
+        allOf(
+          withId(R.id.profile_topic_progress_text_view),
+          isDescendantOfA(withId(R.id.progress_linear_layout))
+        )
+      ).check(matches(withText("1 Topic in Progress")))
     }
   }
 
