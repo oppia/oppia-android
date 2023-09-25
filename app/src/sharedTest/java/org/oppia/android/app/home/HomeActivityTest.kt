@@ -1639,6 +1639,7 @@ class HomeActivityTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialArabicContext_displaysStringsInArabic() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
