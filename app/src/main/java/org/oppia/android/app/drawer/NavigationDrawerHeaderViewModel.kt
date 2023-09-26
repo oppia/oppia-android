@@ -22,7 +22,10 @@ class NavigationDrawerHeaderViewModel @Inject constructor(
   val profile = ObservableField(Profile.getDefaultInstance())
   private var ongoingTopicCount = DEFAULT_ONGOING_TOPIC_COUNT
   private var completedStoryCount = DEFAULT_COMPLETED_STORY_COUNT
-  val profileProgressText: ObservableField<String> = ObservableField(computeProfileProgressText())
+  val profileTopicProgressText: ObservableField<String> =
+    ObservableField(computeProfileTopicProgressText())
+  val profileStoryProgressText: ObservableField<String> =
+    ObservableField(computeProfileStoryProgressText())
 
   fun onHeaderClicked() {
     routeToProfileProgressListener.routeToProfileProgress(profile.get()!!.id.internalId)
@@ -30,25 +33,29 @@ class NavigationDrawerHeaderViewModel @Inject constructor(
 
   fun setOngoingTopicProgress(ongoingTopicCount: Int) {
     this.ongoingTopicCount = ongoingTopicCount
-    profileProgressText.set(computeProfileProgressText())
+    profileTopicProgressText.set(computeProfileTopicProgressText())
   }
 
   fun setCompletedStoryProgress(completedStoryCount: Int) {
     this.completedStoryCount = completedStoryCount
-    profileProgressText.set(computeProfileProgressText())
+    profileStoryProgressText.set(computeProfileStoryProgressText())
   }
 
-  private fun computeProfileProgressText(): String {
-    // TODO(#3843): Either combine these strings into one or use separate views to display them.
-    val completedStoryCountText =
-      resourceHandler.getQuantityStringInLocaleWithWrapping(
-        R.plurals.completed_story_count, completedStoryCount, completedStoryCount.toString()
-      )
-    val ongoingTopicCountText =
-      resourceHandler.getQuantityStringInLocaleWithWrapping(
-        R.plurals.ongoing_topic_count, ongoingTopicCount, ongoingTopicCount.toString()
-      )
-    val barSeparator = resourceHandler.getStringInLocale(R.string.bar_separator)
-    return "$completedStoryCountText$barSeparator$ongoingTopicCountText"
+  private fun computeProfileStoryProgressText(): String {
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.completed_story_count,
+      completedStoryCount,
+      completedStoryCount.toString()
+    )
+  }
+
+  fun getBarSeparator() = resourceHandler.getStringInLocale(R.string.bar_separator)
+
+  private fun computeProfileTopicProgressText(): String {
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.ongoing_topic_count,
+      ongoingTopicCount,
+      ongoingTopicCount.toString()
+    )
   }
 }

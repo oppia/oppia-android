@@ -227,4 +227,5 @@
   <color name="color_palette_nps_unselected_background_color">@color/color_def_pale_green</color>
   <color name="color_palette_edit_text_inactive_color">@color/color_def_black_87</color>
   <color name="color_palette_edit_text_active_color">@color/color_def_white</color>
+  <color name="color_palette_button_shadow_color">@color/color_def_black_25</color>
 </resources>
