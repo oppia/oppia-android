@@ -1,5 +1,5 @@
 """
-Library for providing authentication with Firebase functionality in the app.
+Tests for libraries providing authentication with Firebase functionality.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
