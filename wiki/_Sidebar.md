@@ -15,6 +15,8 @@
     * [Overview of the Oppia Android codebase and architecture](https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture)
   * Bazel
     * [Bazel setup instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions)
+    * [Bazel Setup Instructions for Linux](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Linux)
+    * [Bazel Setup Instructions for Mac](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Mac)
     * [Bazel Setup Instructions for Windows](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows)
   * Key Workflows
     * [Guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)

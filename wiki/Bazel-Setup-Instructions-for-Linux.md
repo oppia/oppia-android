@@ -25,9 +25,15 @@ Oppia Android also requires OpenJDK 8. The Bazel installation instructions above
 
    You can confirm that this is set up using the command `java -version`, which should result in three lines being printed out with the first one showing "openjdk version "1.8.0_292".
 
+> **Tip:** Newer linux distributions may not have openjdk-8 anymore. This has been reported for Debian and Ubuntu. If this is your case, **openjdk-11** it's been tested as a viable alternative.
+
 ### 3. Install Python 2
 
 Ensure that you have Python 2 installed and make sure that it is currently active on your environment. You can do this by using the ``python --version`` command which should show Python 2.X.X. If it doesn’t, click [here](https://linuxconfig.org/install-python-2-on-ubuntu-20-04-focal-fossa-linux) for a resource on how to install and update Linux to use Python 2.
+
+> **Tip:** Newer linux distributions may not have the python command and instead use python2 and python3. Bazel <5 requires `python` and that [cannot be configured](https://stackoverflow.com/questions/62802126/how-to-stop-bazel-from-relying-on-python2). Creating an alias won't solve the problem, you'll need a symlink. To create one, you can run the following:
+>
+> `sudo apt install python-is-python2`
 
 ### 4. Set up the ANDROID_HOME environment variable
 
