@@ -211,7 +211,7 @@ kt_android_library(
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging/firebase:firestore_logger_impl",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],

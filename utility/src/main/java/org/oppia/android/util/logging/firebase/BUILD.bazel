@@ -93,7 +93,6 @@ kt_android_library(
     srcs = [
         "FirestoreEventLoggerProdImpl.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":firestore_logger",
         "//third_party:androidx_work_work-runtime",
