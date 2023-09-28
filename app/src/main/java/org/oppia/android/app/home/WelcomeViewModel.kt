@@ -20,7 +20,11 @@ class WelcomeViewModel(
    *  Returns the string which contains greeting message with user's name and
    *  display on-screen when launching the home activity.
    */
-  fun computeWelcomeText(): String = resourceHandler.getStringInLocaleWithWrapping(R.string.welcome_profile_name, greeting, profileName)
+  fun computeWelcomeText(): String = resourceHandler.getStringInLocaleWithWrapping(
+    R.string.welcome_profile_name,
+    greeting,
+    profileName
+  )
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel
