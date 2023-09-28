@@ -406,7 +406,6 @@
   <string name="reveal">Show</string>
   <string name="just_now">just now</string>
   <string name="last_logged_in_recently">recently</string>
-  <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Go back to topic</string>
   <string name="return_to_lesson">Go back to lesson</string>
@@ -419,18 +418,6 @@
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes">
-    <item quantity="one">a minute</item>
-    <item quantity="other">%s minutes</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="one">an hour</item>
-    <item quantity="other">%s hours</item>
-  </plurals>
-  <plurals name="days">
-    <item quantity="one">a day</item>
-    <item quantity="other">%s days</item>
-  </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">Abeg select all di correct choices.</string>

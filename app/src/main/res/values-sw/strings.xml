@@ -364,7 +364,6 @@
   <string name="reveal" fuzzy="true">Fichua</string>
   <string name="just_now">sasa hivi</string>
   <string name="last_logged_in_recently">hivi karibuni</string>
-  <string name="time_ago">%s iliyopita</string>
   <string name="yesterday">jana</string>
   <string name="return_to_topic">Rudi kwenye mada</string>
   <string name="explanation">Ufafanuzi:</string>
@@ -376,18 +375,6 @@
   <string name="up_button_disabled">Juu</string>
   <string name="down_button_disabled">Chini</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes">
-    <item quantity="one">dakika</item>
-    <item quantity="other">dakika %s</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="one">saa</item>
-    <item quantity="other">saa %s</item>
-  </plurals>
-  <plurals name="days">
-    <item quantity="one">siku</item>
-    <item quantity="other">siku %s</item>
-  </plurals>
   <string name="topic_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
   <string name="ongoing_recycler_view_tag">Inaendelea_kuchakata tena_mtazamo_tag</string>
   <string name="item_selection_text" fuzzy="true">Tafadhali chagua angalau chaguo moja.</string>

@@ -432,7 +432,6 @@
   <string name="reveal">إظهار</string>
   <string name="just_now">الآن</string>
   <string name="last_logged_in_recently">حديثاً</string>
-  <string name="time_ago">منذ %s</string>
   <string name="yesterday">أمس</string>
   <string name="return_to_topic">العودة إلى الموضوع</string>
   <string name="return_to_lesson">العودة إلى الدرس</string>
@@ -445,30 +444,6 @@
   <string name="up_button_disabled">أعلى</string>
   <string name="down_button_disabled">أسفل</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes">
-    <item quantity="zero">و لا دقيقة</item>
-    <item quantity="one">دقيقة واحدة</item>
-    <item quantity="two">دقيقتان</item>
-    <item quantity="few">%s دقيقة</item>
-    <item quantity="many">%s دقيقة</item>
-    <item quantity="other">%s دقيقة</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="zero">و لا ساعة</item>
-    <item quantity="one">ساعة واحدة</item>
-    <item quantity="two">ساعتان</item>
-    <item quantity="few">%s ساعة</item>
-    <item quantity="many">%s ساعة</item>
-    <item quantity="other">%s ساعة</item>
-  </plurals>
-  <plurals name="days">
-    <item quantity="zero">و لا يوم</item>
-    <item quantity="one">يوم واحدة</item>
-    <item quantity="two">يومان</item>
-    <item quantity="few">%s يوم</item>
-    <item quantity="many">%s يوم</item>
-    <item quantity="other">%s يوم</item>
-  </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>
