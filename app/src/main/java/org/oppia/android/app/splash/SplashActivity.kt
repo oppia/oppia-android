@@ -12,10 +12,10 @@ import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.model.ScreenName.SPLASH_ACTIVITY
 import org.oppia.android.app.notice.BetaNoticeClosedListener
 import org.oppia.android.app.notice.DeprecationNoticeActionListener
+import org.oppia.android.app.notice.DeprecationNoticeExitAppListener
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeClosedListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.notice.DeprecationNoticeExitAppListener
 
 /** Enum class for the various deprecation notice actions available to the user. */
 enum class DeprecationNoticeActionType {

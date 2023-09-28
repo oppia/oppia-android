@@ -13,8 +13,8 @@ import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
+import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
-import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -32,7 +32,6 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
-import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val BETA_NOTICE_DIALOG_FRAGMENT_TAG = "beta_notice_dialog"
