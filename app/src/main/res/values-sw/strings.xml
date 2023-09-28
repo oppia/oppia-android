@@ -392,6 +392,7 @@
   <string name="ongoing_recycler_view_tag">Inaendelea_kuchakata tena_mtazamo_tag</string>
   <string name="item_selection_text" fuzzy="true">Tafadhali chagua angalau chaguo moja.</string>
   <string name="unsupported_app_version_dialog_title">Toleo la programu lisilotumika</string>
+  <string name="unsupported_app_version_dialog_message">Toleo hili la programu halitumiki tena. Tafadhali isasishe kupitia hifadhi ya michezo.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Funga programu</string>
   <string name="ratio_content_description_separator">kwa</string>
   <string name="ratio_default_hint_text">Weka uwiano katika fomu x:y.</string>
