@@ -500,16 +500,25 @@
   <string name="item_selection_text">Please select all correct choices.</string>
   <!-- SplashActivity -->
   <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
-    App update required
+    Unsupported app version
   </string>
-  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's app has expired.">
-    A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.
+  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">
+    This version of the app is no longer supported. Please update it through the Play Store.
   </string>
   <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
     Close app
   </string>
-  <string name="unsupported_app_version_dialog_update_button_text" description="The update button text of the dialog shown when a user's pre-release app has expired.">
+  <string name="forced_app_update_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
+    App update required
+  </string>
+  <string name="forced_app_update_dialog_message" description="The main message of the dialog shown when a user's app has expired.">
+    A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.
+  </string>
+  <string name="forced_app_update_dialog_update_button_text" description="The update button text of the dialog shown when a user's pre-release app has expired.">
     Update
+  </string>
+  <string name="forced_app_update_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
+    Close app
   </string>
   <string name="optional_app_update_dialog_title" description="The title of the dialog shown when an optional app update is available.">
     New update available

@@ -32,6 +32,7 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
+import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val BETA_NOTICE_DIALOG_FRAGMENT_TAG = "beta_notice_dialog"
@@ -208,7 +209,7 @@ class SplashActivityPresenter @Inject constructor(
       StartupMode.APP_IS_DEPRECATED -> {
         showDialog(
           AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
-          ForcedAppDeprecationNoticeDialogFragment::newInstance
+          AutomaticAppDeprecationNoticeDialogFragment::newInstance
         )
       }
       else -> {

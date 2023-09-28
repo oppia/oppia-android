@@ -133,7 +133,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasExpectedTitle() {
     launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(ViewMatchers.withText(R.string.unsupported_app_version_dialog_title))
+      onDialogView(ViewMatchers.withText(R.string.forced_app_update_dialog_title))
         .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
   }
@@ -143,7 +143,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
     launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
       val appName = context.resources.getString(R.string.app_name)
       val expectedString = context.resources.getString(
-        R.string.unsupported_app_version_dialog_message,
+        R.string.forced_app_update_dialog_message,
         appName
       )
       onDialogView(ViewMatchers.withText(expectedString))
@@ -155,7 +155,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
   fun testFragment_hasUpdateButton() {
     launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
       onDialogView(
-        ViewMatchers.withText(R.string.unsupported_app_version_dialog_update_button_text)
+        ViewMatchers.withText(R.string.forced_app_update_dialog_update_button_text)
       ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
   }
@@ -164,7 +164,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
   fun testFragment_clickOnUpdateButton_callsCallbackListener_withUpdateDeprecationActionType() {
     launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
       clickOnDialogView(
-        ViewMatchers.withText(R.string.unsupported_app_version_dialog_update_button_text)
+        ViewMatchers.withText(R.string.forced_app_update_dialog_update_button_text)
       )
 
       verify(mockDeprecationNoticeActionListener)
@@ -176,7 +176,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
   fun testFragment_hasCloseAppButton() {
     launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
       onDialogView(
-        ViewMatchers.withText(R.string.unsupported_app_version_dialog_close_button_text)
+        ViewMatchers.withText(R.string.forced_app_update_dialog_close_button_text)
       ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
   }
@@ -185,7 +185,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
   fun testFragment_clockOnCloseAppButton_callsCallbackListener_withCloseDeprecationActionType() {
     launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
       clickOnDialogView(
-        ViewMatchers.withText(R.string.unsupported_app_version_dialog_close_button_text)
+        ViewMatchers.withText(R.string.forced_app_update_dialog_close_button_text)
       )
 
       verify(mockDeprecationNoticeActionListener)

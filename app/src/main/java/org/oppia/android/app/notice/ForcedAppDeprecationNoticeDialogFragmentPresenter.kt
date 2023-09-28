@@ -22,19 +22,19 @@ class ForcedAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
 
     val dialog = AlertDialog.Builder(activity, R.style.DeprecationAlertDialogTheme)
-      .setTitle(R.string.unsupported_app_version_dialog_title)
+      .setTitle(R.string.forced_app_update_dialog_title)
       .setMessage(
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.unsupported_app_version_dialog_message,
+          R.string.forced_app_update_dialog_message,
           appName
         )
       )
-      .setPositiveButton(R.string.unsupported_app_version_dialog_update_button_text) { _, _ ->
+      .setPositiveButton(R.string.forced_app_update_dialog_update_button_text) { _, _ ->
         deprecationNoticeActionListener.onActionButtonClicked(
           DeprecationNoticeActionType.UPDATE
         )
       }
-      .setNegativeButton(R.string.unsupported_app_version_dialog_close_button_text) { _, _ ->
+      .setNegativeButton(R.string.forced_app_update_dialog_close_button_text) { _, _ ->
         deprecationNoticeActionListener.onActionButtonClicked(
           DeprecationNoticeActionType.CLOSE
         )

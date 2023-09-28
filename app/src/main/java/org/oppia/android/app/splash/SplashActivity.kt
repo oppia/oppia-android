@@ -15,6 +15,7 @@ import org.oppia.android.app.notice.DeprecationNoticeActionListener
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeClosedListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.notice.DeprecationNoticeExitAppListener
 
 /** Enum class for the various deprecation notice actions available to the user. */
 enum class DeprecationNoticeActionType {
@@ -37,6 +38,7 @@ enum class DeprecationNoticeActionType {
 class SplashActivity :
   AppCompatActivity(),
   FragmentComponentFactory,
+  DeprecationNoticeExitAppListener,
   DeprecationNoticeActionListener,
   BetaNoticeClosedListener,
   GeneralAvailabilityUpgradeNoticeClosedListener {
@@ -67,6 +69,8 @@ class SplashActivity :
       DeprecationNoticeActionType.UPDATE -> splashActivityPresenter.handleOnUpdateButtonClicked()
     }
   }
+
+  override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnCloseAppButtonClicked()
 
   override fun onBetaNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnBetaNoticeOkayButtonClicked(permanentlyDismiss)
