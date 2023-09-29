@@ -1,9 +1,12 @@
 package org.oppia.android.app.profile
 
+import android.content.Context
 import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
@@ -53,6 +56,15 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     binding.pinPasswordToolbar.setNavigationOnClickListener {
       (activity as PinPasswordActivity).finish()
+    }
+
+    binding.pinPasswordInputPinEditText.setOnClickListener { pinEditText ->
+      pinEditText.isFocusable = true
+      pinEditText.isFocusableInTouchMode = true
+      pinEditText.requestFocus()
+      val imm = activity.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE)
+        as InputMethodManager
+      imm.showSoftInput(pinEditText, InputMethodManager.SHOW_IMPLICIT)
     }
 
     binding.showPin.setOnClickListener {
