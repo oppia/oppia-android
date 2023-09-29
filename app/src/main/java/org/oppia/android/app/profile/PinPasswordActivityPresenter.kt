@@ -58,15 +58,6 @@ class PinPasswordActivityPresenter @Inject constructor(
       (activity as PinPasswordActivity).finish()
     }
 
-    binding.pinPasswordInputPinEditText.setOnClickListener { pinEditText ->
-      pinEditText.isFocusable = true
-      pinEditText.isFocusableInTouchMode = true
-      pinEditText.requestFocus()
-      val imm = activity.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE)
-        as InputMethodManager
-      imm.showSoftInput(pinEditText, InputMethodManager.SHOW_IMPLICIT)
-    }
-
     binding.showPin.setOnClickListener {
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
       if (!pinViewModel.showPassword.get()!!) {
