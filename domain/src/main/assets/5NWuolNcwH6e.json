@@ -861,7 +861,7 @@
                 }
               }
             }, {
-              "rule_type": "CaseSensitiveEquals",
+              "rule_type": "Equals",
               "inputs": {
                 "x": {
                   "contentId": "947c6855-b9e6-459d-a8f6-2b239e51d37f",
@@ -2176,7 +2176,7 @@
                 }
               }
             }, {
-              "rule_type": "CaseSensitiveEquals",
+              "rule_type": "Equals",
               "inputs": {
                 "x": {
                   "contentId": "5d0d1769-2754-4f6a-9690-ba3675ce953d",
