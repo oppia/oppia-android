@@ -1,6 +1,5 @@
 package org.oppia.android.app.profile
 
-
 import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
