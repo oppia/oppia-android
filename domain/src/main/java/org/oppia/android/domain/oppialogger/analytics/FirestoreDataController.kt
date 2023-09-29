@@ -7,7 +7,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.auth.AuthenticationListener
+import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -29,7 +29,7 @@ class FirestoreDataController @Inject constructor(
   private val eventLogger: FirestoreEventLogger,
   private val exceptionLogger: ExceptionLogger,
   private val oppiaClock: OppiaClock,
-  private val authenticationListener: AuthenticationListener,
+  private val authenticationWrapper: AuthenticationWrapper,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @FirestoreLogStorageCacheSize private val logStorageCacheSize: Int
 ) {
@@ -93,8 +93,8 @@ class FirestoreDataController @Inject constructor(
   }
 
   private suspend fun authenticateAndUploadToFirestore(eventLog: EventLog) {
-    if (authenticationListener.getCurrentSignedInUser() == null) {
-      when (val signInResult = authenticationListener.signInAnonymously().await()) {
+    if (authenticationWrapper.getCurrentSignedInUser() == null) {
+      when (val signInResult = authenticationWrapper.signInAnonymously().await()) {
         is AsyncResult.Success -> {
           consoleLogger.i("FirestoreDataController", "Sign in succeeded")
           eventLogger.uploadEvent(eventLog)

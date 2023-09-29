@@ -22,7 +22,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.auth.AuthenticationListener
+import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -320,7 +320,7 @@ class LogReportWorkManagerInitializerTest {
     @Binds
     fun bindFakeAuthenticationController(
       fakeAuthenticationController: FakeAuthenticationController
-    ): AuthenticationListener
+    ): AuthenticationWrapper
   }
 
   // TODO(#89): Move this to a common test application component.

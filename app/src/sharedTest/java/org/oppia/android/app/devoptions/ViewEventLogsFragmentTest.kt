@@ -47,7 +47,7 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
-import org.oppia.android.domain.auth.AuthenticationListener
+import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -702,7 +702,7 @@ class ViewEventLogsFragmentTest {
     @Binds
     fun bindFakeAuthenticationController(
       fakeAuthenticationController: FakeAuthenticationController
-    ): AuthenticationListener
+    ): AuthenticationWrapper
   }
 
   @Module

@@ -15,7 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.oppia.android.domain.auth.AuthenticationController
-import org.oppia.android.domain.auth.AuthenticationListener
+import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -34,7 +34,7 @@ import javax.inject.Singleton
 class AuthenticationModuleTest {
 
   @Inject
-  lateinit var listener: AuthenticationListener
+  lateinit var wrapper: AuthenticationWrapper
 
   @Before
   fun setUp() {
@@ -43,7 +43,7 @@ class AuthenticationModuleTest {
 
   @Test
   fun testModule_injectsInstanceOfAuthenticationListener() {
-    assertThat(listener).isInstanceOf(AuthenticationController::class.java)
+    assertThat(wrapper).isInstanceOf(AuthenticationController::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -67,7 +67,7 @@ class AuthenticationModuleTest {
     @Provides
     @Singleton
     fun provideAuthenticationController():
-      AuthenticationListener = AuthenticationController(mock(FirebaseAuth::class.java))
+      AuthenticationWrapper = AuthenticationController(mock(FirebaseAuth::class.java))
   }
 
   // TODO(#89): Move this to a common test application component.

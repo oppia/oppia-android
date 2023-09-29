@@ -24,7 +24,7 @@ import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.auth.AuthenticationListener
+import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -423,7 +423,7 @@ class FirestoreDataControllerTest {
     @Binds
     fun bindFakeAuthenticationController(
       fakeAuthenticationController: FakeAuthenticationController
-    ): AuthenticationListener
+    ): AuthenticationWrapper
   }
 
   // TODO(#89): Move this to a common test application component.

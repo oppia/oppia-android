@@ -2,14 +2,14 @@ package org.oppia.android.testing
 
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CompletableDeferred
-import org.oppia.android.domain.auth.AuthenticationListener
+import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** A test specific fake for the AuthenticationController. */
 @Singleton
-class FakeAuthenticationController @Inject constructor() : AuthenticationListener {
+class FakeAuthenticationController @Inject constructor() : AuthenticationWrapper {
   private var signInIsSuccessful = true
   private var currentUser: FirebaseUser? = null
 

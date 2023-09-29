@@ -13,7 +13,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.auth.AuthenticationListener
+import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -32,7 +32,7 @@ import javax.inject.Singleton
 class TestAuthenticationModuleTest {
 
   @Inject
-  lateinit var listener: AuthenticationListener
+  lateinit var listener: AuthenticationWrapper
 
   @Before
   fun setUp() {
@@ -64,7 +64,7 @@ class TestAuthenticationModuleTest {
   interface AuthenticationModule {
     @Binds
     fun provideAuthenticationController(fakeAuthenticationController: FakeAuthenticationController):
-      AuthenticationListener
+      AuthenticationWrapper
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 class AuthenticationController @Inject constructor(
   private val firebaseAuth: FirebaseAuth
-) : AuthenticationListener {
+) : AuthenticationWrapper {
   /** Returns the current signed in user or null if there is no authenticated user. */
   override fun getCurrentSignedInUser(): FirebaseUser? {
     return firebaseAuth.currentUser

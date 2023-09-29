@@ -21,7 +21,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
-import org.oppia.android.domain.auth.AuthenticationListener
+import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -47,7 +47,7 @@ class FakeAuthenticationControllerTest {
   lateinit var fakeAuthenticationController: FakeAuthenticationController
 
   @Inject
-  lateinit var authenticationListener: AuthenticationListener
+  lateinit var authenticationListener: AuthenticationWrapper
 
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundDispatcher: CoroutineDispatcher
@@ -128,7 +128,7 @@ class FakeAuthenticationControllerTest {
     @Binds
     fun bindFakeAuthenticationController(
       fakeAuthenticationController: FakeAuthenticationController
-    ): AuthenticationListener
+    ): AuthenticationWrapper
   }
 
   // TODO(#89): Move this to a common test application component.

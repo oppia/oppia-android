@@ -6,11 +6,11 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-/** Provides an implementation of [AuthenticationListener]. */
+/** Provides an implementation of [AuthenticationWrapper]. */
 @Module
 class AuthenticationModule {
   @Provides
   @Singleton
   fun provideAuthenticationController():
-    AuthenticationListener = AuthenticationController(Firebase.auth)
+    AuthenticationWrapper = AuthenticationController(Firebase.auth)
 }
