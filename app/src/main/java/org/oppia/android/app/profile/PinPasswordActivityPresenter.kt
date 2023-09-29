@@ -1,12 +1,10 @@
 package org.oppia.android.app.profile
 
-import android.content.Context
+
 import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
