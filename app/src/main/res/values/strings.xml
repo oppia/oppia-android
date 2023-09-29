@@ -20,8 +20,8 @@
   <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="audio_dialog_offline_title">Currently Offline</string>
   <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
-  <string name="audio_dialog_offline_positive">OK</string>
-  <string name="cellular_data_alert_dialog_okay_button">OK</string>
+  <string name="audio_dialog_offline_positive">Ok</string>
+  <string name="cellular_data_alert_dialog_okay_button">Ok</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
