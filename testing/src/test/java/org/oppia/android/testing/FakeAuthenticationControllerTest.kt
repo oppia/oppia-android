@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
 import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -54,14 +55,18 @@ class FakeAuthenticationControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private lateinit var mockFirebaseUser: FirebaseUser
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    mockFirebaseUser = mock(FirebaseUser::class.java)
   }
 
   @Test
   fun testAuthentication_getCurrentSignedInUser() {
-    val user = authenticationListener.getCurrentSignedInUser()
+    fakeAuthenticationController.setSignedInUser(mockFirebaseUser)
+    val user = fakeAuthenticationController.getCurrentSignedInUser()
 
     assertThat(user).isInstanceOf(FirebaseUser::class.java)
   }

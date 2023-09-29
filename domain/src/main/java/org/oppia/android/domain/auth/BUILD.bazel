@@ -36,17 +36,4 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
-    name = "fake_authentication_controller_factory",
-    testonly = True,
-    srcs = ["FakeAuthenticationControllerFactory.kt"],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":auth_module",
-        "//third_party:com_google_firebase_firebase-auth-ktx",
-        "//third_party:javax_inject_javax_inject",
-        "//third_party:org_mockito_mockito-core",
-    ],
-)
-
 dagger_rules()

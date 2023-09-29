@@ -1,10 +1,11 @@
-package org.oppia.android.domain.auth
 
+import AuthenticationModuleTest.AuthenticationModule
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.auth.FirebaseAuth
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -12,7 +13,9 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.auth.AuthenticationModuleTest.AuthenticationModule
+import org.mockito.Mockito.mock
+import org.oppia.android.domain.auth.AuthenticationController
+import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -63,8 +66,8 @@ class AuthenticationModuleTest {
   class AuthenticationModule {
     @Provides
     @Singleton
-    fun provideAuthenticationController(factory: FakeAuthenticationControllerFactory):
-      AuthenticationListener = factory.create()
+    fun provideAuthenticationController():
+      AuthenticationListener = AuthenticationController(mock(FirebaseAuth::class.java))
   }
 
   // TODO(#89): Move this to a common test application component.

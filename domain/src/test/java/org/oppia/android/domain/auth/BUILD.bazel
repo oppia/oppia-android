@@ -14,7 +14,6 @@ oppia_android_test(
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/auth:auth_module",
-        "//domain/src/main/java/org/oppia/android/domain/auth:fake_authentication_controller_factory",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

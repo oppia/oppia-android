@@ -2,14 +2,14 @@ package org.oppia.android.domain.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CompletableDeferred
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Controller for signing in and retrieving a Firebase user. */
-class AuthenticationController(
+@Singleton
+class AuthenticationController @Inject constructor(
   private val firebaseAuth: FirebaseAuth
 ) : AuthenticationListener {
   /** Returns the current signed in user or null if there is no authenticated user. */
@@ -29,13 +29,5 @@ class AuthenticationController(
       }
 
     return deferredResult
-  }
-
-  /** Application-scoped injectable factory for creating a new [AuthenticationController]. */
-  class Factory @Inject constructor() {
-    private val firebaseAuth = Firebase.auth
-
-    /** Returns a new [AuthenticationController] for the current application context. */
-    fun create(): AuthenticationController = AuthenticationController(firebaseAuth)
   }
 }

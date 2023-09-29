@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -13,7 +14,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.auth.AuthenticationListener
-import org.oppia.android.domain.auth.FakeAuthenticationControllerFactory
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -61,11 +61,10 @@ class TestAuthenticationModuleTest {
   }
 
   @Module
-  class AuthenticationModule {
-    @Provides
-    @Singleton
-    fun provideAuthenticationController(factory: FakeAuthenticationControllerFactory):
-      AuthenticationListener = factory.create()
+  interface AuthenticationModule {
+    @Binds
+    fun provideAuthenticationController(fakeAuthenticationController: FakeAuthenticationController):
+      AuthenticationListener
   }
 
   // TODO(#89): Move this to a common test application component.
