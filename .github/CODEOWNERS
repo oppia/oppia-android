@@ -98,6 +98,7 @@
 /testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricAssessor.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricsEventLogger.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/TestAuthenticationModule.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/test/java/org/oppia/android/testing/TestAuthenticationModuleTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/TestImageLoaderModule.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/TestLogReportingModule.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeAnalyticsEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
