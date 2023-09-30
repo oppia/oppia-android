@@ -413,12 +413,12 @@
   <string name="app_version_activity_title">App Version</string>
   <!-- OptionsActivity -->
   <string name="app_language_activity_title">App Language</string>
-  <string name="audio_language_activity_title">Default Audio Language</string>
+  <string name="audio_language_activity_title">Preferred Audio Language</string>
   <string name="reading_text_size_activity_title">Reading Text Size</string>
   <string name="title_reading_text_size">Reading Text Size</string>
   <string name="story_text_will_look_like_this">Story text will look like this.</string>
   <string name="constant_string_for_text_size">A</string>
-  <string name="audio_language">Default Audio</string>
+  <string name="audio_language">Preferred Audio Language</string>
   <string name="app_language">App Language</string>
   <string name="reading_text_size">Reading Text Size</string>
   <string name="reading_text_size_small">Small</string>
