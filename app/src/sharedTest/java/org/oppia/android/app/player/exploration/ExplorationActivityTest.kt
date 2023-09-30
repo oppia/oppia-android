@@ -1062,7 +1062,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.cellular_data_dialog_checkbox))
         .inRoot(isDialog())
         .perform(click())
-      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button)))
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_okay_button)))
         .inRoot(isDialog())
         .perform(click())
 

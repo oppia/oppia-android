@@ -15,13 +15,13 @@
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
   <string name="audio_unavailable_in_selected_language">%s audio is unavailable.</string>
-  <string name="audio_language_select_dialog_okay_button">OK</string>
+  <string name="audio_language_select_dialog_okay_button">Ok</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="audio_dialog_offline_title">Currently Offline</string>
   <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
-  <string name="audio_dialog_offline_positive">OK</string>
-  <string name="cellular_data_alert_dialog_okay_button">OK</string>
+  <string name="audio_dialog_offline_positive">Ok</string>
+  <string name="cellular_data_alert_dialog_okay_button">Ok</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
@@ -376,7 +376,7 @@
   <!-- ProfileRenameActivity -->
   <string name="profile_rename_activity_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
-  <string name="profile_rename_save">save</string>
+  <string name="profile_rename_save">Save</string>
   <!-- ProfileResetPinActivity -->
   <string name="profile_reset_pin_activity_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
