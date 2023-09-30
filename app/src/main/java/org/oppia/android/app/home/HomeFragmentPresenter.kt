@@ -101,7 +101,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
     return multiTypeBuilderFactory.create<HomeItemViewModel, ViewType> { viewModel ->
-      binding.homeFragmentProgressBar.visibility=View.GONE
+      binding.homeFragmentProgressBar.visibility = View.GONE
       when (viewModel) {
         is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
         is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
