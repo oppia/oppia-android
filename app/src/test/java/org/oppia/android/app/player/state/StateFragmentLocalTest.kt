@@ -1410,7 +1410,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickCancelInRevealSolutionDialog(scenario)
 
-      onView(withText("SHOW SOLUTION"))
+      onView(withText("Show solution"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }

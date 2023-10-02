@@ -11,7 +11,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -94,6 +93,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -125,14 +125,29 @@ private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
   qualifiers = "port-xxhdpi"
 )
 class RevisionCardActivityTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -150,7 +165,11 @@ class RevisionCardActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID, 1, FRACTIONS_SUBTOPIC_LIST_SIZE
+      context,
+      1,
+      FRACTIONS_TOPIC_ID,
+      1,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.REVISION_CARD_ACTIVITY)
@@ -173,7 +192,8 @@ class RevisionCardActivityTest {
   }
 
   @Test
-  fun testRevisionCardActivity_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+  fun testRevisionCardActivity_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
@@ -185,15 +205,39 @@ class RevisionCardActivityTest {
           activity.findViewById(R.id.revision_card_toolbar_title)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-        onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
+        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(true)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }
 
   @Test
-  fun testRevisionCardActivity_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+  fun testRevisionCardActivity_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+
+        val revisionCardToolbarTitle: TextView =
+          activity.findViewById(R.id.revision_card_toolbar_title)
+        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
+        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(false)
+        assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+  @Test
+  fun testRevisionCardActivity_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
@@ -207,6 +251,29 @@ class RevisionCardActivityTest {
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(true)
+        assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+  @Test
+  fun testRevisionCardActivity_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+
+        val revisionCardToolbarTitle: TextView =
+          activity.findViewById(R.id.revision_card_toolbar_title)
+        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
+        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(false)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -368,9 +435,13 @@ class RevisionCardActivityTest {
   private fun createRevisionCardActivityIntent(
     internalProfileId: Int,
     topicId: String,
-    subtopicId: Int,
+    subtopicId: Int
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
-    context, internalProfileId, topicId, subtopicId, FRACTIONS_SUBTOPIC_LIST_SIZE
+    context,
+    internalProfileId,
+    topicId,
+    subtopicId,
+    FRACTIONS_SUBTOPIC_LIST_SIZE
   )
 
   private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {

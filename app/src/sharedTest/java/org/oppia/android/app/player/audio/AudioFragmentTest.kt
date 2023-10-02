@@ -335,7 +335,7 @@ class AudioFragmentTest {
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withText("OK")).inRoot(isDialog()).perform(click())
+      onView(withText("Ok")).inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.play_pause_audio_icon))
