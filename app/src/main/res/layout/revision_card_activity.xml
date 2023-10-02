@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -37,7 +37,8 @@
           android:layout_gravity="end"
           android:minWidth="48dp"
           android:minHeight="48dp"
-          android:scaleType="center" />
+          android:scaleType="center"
+          android:contentDescription="@string/options_menu_content_description" />
 
         <TextView
           android:id="@+id/revision_card_toolbar_title"

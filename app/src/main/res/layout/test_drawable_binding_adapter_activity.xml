@@ -7,5 +7,6 @@
   <ImageView
     android:id="@+id/view_for_drawable_binding_adapters_test"
     android:layout_width="match_parent"
-    android:layout_height="320dp" />
+    android:layout_height="320dp"
+    android:contentDescription="@string/drawable_binding_content_description" />
 </LinearLayout>

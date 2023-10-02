@@ -115,7 +115,8 @@
             app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
             app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
             app:layout_constraintTop_toTopOf="@id/chapter_thumbnail"
-            app:srcCompat="@drawable/ic_baseline_lock_24" />
+            app:srcCompat="@drawable/ic_baseline_lock_24"
+            android:contentDescription="@string/lock_icon_content_description" />
 
           <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
