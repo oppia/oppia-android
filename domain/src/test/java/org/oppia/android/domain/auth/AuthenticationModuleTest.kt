@@ -42,7 +42,7 @@ class AuthenticationModuleTest {
   }
 
   @Test
-  fun testModule_injectsInstanceOfAuthenticationListener() {
+  fun testModule_injectsInstanceOfAuthenticationWrapper() {
     assertThat(wrapper).isInstanceOf(AuthenticationController::class.java)
   }
 

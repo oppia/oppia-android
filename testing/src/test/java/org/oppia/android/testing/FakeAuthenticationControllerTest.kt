@@ -47,7 +47,7 @@ class FakeAuthenticationControllerTest {
   lateinit var fakeAuthenticationController: FakeAuthenticationController
 
   @Inject
-  lateinit var authenticationListener: AuthenticationWrapper
+  lateinit var authenticationWrapper: AuthenticationWrapper
 
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundDispatcher: CoroutineDispatcher

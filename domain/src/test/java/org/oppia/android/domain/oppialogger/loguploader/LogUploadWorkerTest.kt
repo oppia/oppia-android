@@ -69,7 +69,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADIN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
-import org.oppia.android.util.logging.firebase.FirestoreEventLogger
+import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -111,7 +111,7 @@ class LogUploadWorkerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
   @field:[Inject MockFirestoreEventLogger]
-  lateinit var mockFirestoreEventLogger: FirestoreEventLogger
+  lateinit var mockFirestoreEventLogger: DebugFirestoreEventLogger
 
   private lateinit var context: Context
 
@@ -565,8 +565,8 @@ class LogUploadWorkerTest {
     @Singleton
     @MockFirestoreEventLogger
     fun bindMockFirestoreEventLogger(fakeFirestoreLogger: FakeFirestoreEventLogger):
-      FirestoreEventLogger {
-        return mock(FirestoreEventLogger::class.java).also {
+      DebugFirestoreEventLogger {
+        return mock(DebugFirestoreEventLogger::class.java).also {
           `when`(it.uploadEvent(anyOrNull())).then { answer ->
             fakeFirestoreLogger.uploadEvent(
               answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
@@ -590,8 +590,8 @@ class LogUploadWorkerTest {
 
     @Provides
     fun bindFakeFirestoreEventLogger(
-      @MockFirestoreEventLogger delegate: FirestoreEventLogger
-    ): FirestoreEventLogger = delegate
+      @MockFirestoreEventLogger delegate: DebugFirestoreEventLogger
+    ): DebugFirestoreEventLogger = delegate
   }
 
   @Module

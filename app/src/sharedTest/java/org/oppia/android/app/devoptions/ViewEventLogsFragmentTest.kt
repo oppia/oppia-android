@@ -103,10 +103,12 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
+import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
+import org.oppia.android.util.logging.firebase.FirestoreEventLoggerProdImpl
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -155,7 +157,7 @@ class ViewEventLogsFragmentTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Inject
-  lateinit var firestoreEventLogger: FirestoreEventLogger
+  lateinit var debugFirestoreEventLogger: DebugFirestoreEventLogger
 
   @Before
   fun setUp() {
@@ -610,7 +612,7 @@ class ViewEventLogsFragmentTest {
       .setTimestamp(TEST_TIMESTAMP + 50000)
       .build()
 
-    firestoreEventLogger.uploadEvent(eventLog)
+    debugFirestoreEventLogger.uploadEvent(eventLog)
   }
 
   private fun createOptionalSurveyResponseContext(
@@ -726,7 +728,12 @@ class ViewEventLogsFragmentTest {
 
     @Provides
     @Singleton
-    fun provideFakeFirestoreEventLogger(): FirestoreEventLogger = FakeFirestoreEventLogger()
+    fun provideFakeFirestoreEventLogger(): DebugFirestoreEventLogger = FakeFirestoreEventLogger()
+
+    @Provides
+    @Singleton
+    fun provideFirestoreLogger(factory: FirestoreEventLoggerProdImpl.Factory):
+      FirestoreEventLogger = factory.createFirestoreEventLogger()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

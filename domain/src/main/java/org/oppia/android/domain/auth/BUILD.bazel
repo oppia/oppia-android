@@ -17,7 +17,7 @@ kt_android_library(
 
 kt_android_library(
     name = "authentication_listener",
-    srcs = ["AuthenticationListener.kt"],
+    srcs = ["AuthenticationWrapper.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:com_google_firebase_firebase-auth-ktx",

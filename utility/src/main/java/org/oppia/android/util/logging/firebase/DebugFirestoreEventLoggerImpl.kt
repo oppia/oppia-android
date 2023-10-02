@@ -6,15 +6,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * A debug implementation of [FirestoreEventLogger] used in developer-only builds of the event.
+ * An implementation of [DebugFirestoreEventLogger] used in developer-only builds of the app.
  *
  * It forwards events to a production [FirestoreEventLogger] for real logging, but it also records logged
  * events for later retrieval (e.g. via [getEventList]).
  */
 @Singleton
-class DebugFirestoreEventLogger @Inject constructor(
+class DebugFirestoreEventLoggerImpl @Inject constructor(
   factory: FirestoreEventLoggerProdImpl.Factory
-) : FirestoreEventLogger {
+) : DebugFirestoreEventLogger, FirestoreEventLogger {
   private val realEventLogger by lazy { factory.createFirestoreEventLogger() }
   private val eventList = CopyOnWriteArrayList<EventLog>()
 

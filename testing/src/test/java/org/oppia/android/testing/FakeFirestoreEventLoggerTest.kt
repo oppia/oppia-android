@@ -18,7 +18,7 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.logging.firebase.FirestoreEventLogger
+import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -36,7 +36,7 @@ class FakeFirestoreEventLoggerTest {
   lateinit var fakeEventLogger: FakeFirestoreEventLogger
 
   @Inject
-  lateinit var eventLogger: FirestoreEventLogger
+  lateinit var eventLogger: DebugFirestoreEventLogger
 
   private val eventLog1 = EventLog.newBuilder().setPriority(Priority.ESSENTIAL).build()
   private val eventLog2 = EventLog.newBuilder().setPriority(Priority.OPTIONAL).build()
