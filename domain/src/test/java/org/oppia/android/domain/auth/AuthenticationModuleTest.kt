@@ -1,5 +1,5 @@
+package org.oppia.android.domain.auth
 
-import AuthenticationModuleTest.AuthenticationModule
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -14,8 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
-import org.oppia.android.domain.auth.AuthenticationController
-import org.oppia.android.domain.auth.AuthenticationWrapper
+import org.oppia.android.domain.auth.AuthenticationModuleTest.AuthenticationModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
