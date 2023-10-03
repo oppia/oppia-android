@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.audio
 
+import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
@@ -19,6 +20,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
 import javax.inject.Inject
+import org.oppia.android.app.model.AudioLanguage
 
 /** [ObservableViewModel] for audio-player state. */
 @FragmentScope
@@ -97,6 +99,34 @@ class AudioViewModel @Inject constructor(
     voiceoverMap = voiceoverMapping.voiceoverMappingMap
     currentContentId = targetContentId
     languages = voiceoverMap.keys.toList().map { machineLocale.run { it.toMachineLowerCase() } }
+//  languages=languages.filter {
+//    it in listOf<String>("hi-en","hi","fr","zh","pt","ar","pcm","en")
+//  }
+
+    val supportedlanguagecode= mutableListOf<String>()
+    val supportedLanguages=AudioLanguage.values().toList()
+
+    supportedLanguages.forEach {
+      when(it){
+        AudioLanguage.HINDI_AUDIO_LANGUAGE-> supportedlanguagecode.add("hi")
+        AudioLanguage.FRENCH_AUDIO_LANGUAGE-> supportedlanguagecode.add("fr")
+        AudioLanguage.CHINESE_AUDIO_LANGUAGE-> supportedlanguagecode.add("zh")
+        AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE-> {
+          supportedlanguagecode.add("pt")
+          supportedlanguagecode.add("pt-br")
+        }
+        AudioLanguage.ENGLISH_AUDIO_LANGUAGE-> supportedlanguagecode.add("en")
+        AudioLanguage.ARABIC_LANGUAGE->supportedlanguagecode.add("ar")
+        AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE->supportedlanguagecode.add("pcm")
+      }
+    }
+    supportedlanguagecode.add("hi-en")
+
+    languages=languages.filter {
+      it in supportedlanguagecode
+    }
+
+
     selectedLanguageUnavailable.set(false)
 
     val localeLanguageCode =

@@ -3,6 +3,7 @@ package org.oppia.android.app.player.audio
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import org.oppia.android.R
@@ -70,6 +71,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
         "pcm" -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
         else -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       }
+
       if (languageCode == "hi-en") {
         languageNameArrayList.add("Hinglish")
       } else {
