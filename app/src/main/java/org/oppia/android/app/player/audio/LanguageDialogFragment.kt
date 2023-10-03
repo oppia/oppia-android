@@ -3,7 +3,6 @@ package org.oppia.android.app.player.audio
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import org.oppia.android.R
