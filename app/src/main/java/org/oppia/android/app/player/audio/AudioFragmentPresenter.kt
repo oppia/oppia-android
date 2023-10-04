@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
@@ -168,20 +167,6 @@ class AudioFragmentPresenter @Inject constructor(
     )
   }
 
-  /** Gets language code by [AudioLanguage]. */
-  private fun getAudioLanguage(audioLanguage: AudioLanguage): String {
-    return when (audioLanguage) {
-      AudioLanguage.HINDI_AUDIO_LANGUAGE -> "hi"
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "fr"
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "zh"
-      AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> "pt"
-      AudioLanguage.ARABIC_LANGUAGE -> "ar"
-      AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> "pcm"
-      AudioLanguage.NO_AUDIO, AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "en"
-    }
-  }
-
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
     val profile = when (profileResult) {
       is AsyncResult.Failure -> {
@@ -191,7 +176,7 @@ class AudioFragmentPresenter @Inject constructor(
       is AsyncResult.Pending -> Profile.getDefaultInstance()
       is AsyncResult.Success -> profileResult.value
     }
-    return getAudioLanguage(profile.audioLanguage)
+    return viewModel.getAudioLanguage(profile.audioLanguage)
   }
 
   /** Sets selected language code in presenter and ViewModel. */

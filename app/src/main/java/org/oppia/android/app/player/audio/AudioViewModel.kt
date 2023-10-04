@@ -92,37 +92,16 @@ class AudioViewModel @Inject constructor(
     val targetContentId = contentId ?: state.content.contentId
     val voiceoverMapping =
       state.recordedVoiceoversMap[targetContentId] ?: VoiceoverMapping.getDefaultInstance()
-
     autoPlay = allowAutoPlay
     this.reloadingMainContent = reloadingMainContent
     voiceoverMap = voiceoverMapping.voiceoverMappingMap
     currentContentId = targetContentId
-    languages = voiceoverMap.keys.toList().map { machineLocale.run { it.toMachineLowerCase() } }
-//  languages=languages.filter {
-//    it in listOf<String>("hi-en","hi","fr","zh","pt","ar","pcm","en")
-//  }
-
-    val supportedlanguagecode = mutableListOf<String>()
-    val supportedLanguages = AudioLanguage.values().toList()
-
-    supportedLanguages.forEach {
-      when (it) {
-        AudioLanguage.HINDI_AUDIO_LANGUAGE -> supportedlanguagecode.add("hi")
-        AudioLanguage.FRENCH_AUDIO_LANGUAGE -> supportedlanguagecode.add("fr")
-        AudioLanguage.CHINESE_AUDIO_LANGUAGE -> supportedlanguagecode.add("zh")
-        AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> {
-          supportedlanguagecode.add("pt")
-          supportedlanguagecode.add("pt-br")
-        }
-        AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> supportedlanguagecode.add("en")
-        AudioLanguage.ARABIC_LANGUAGE -> supportedlanguagecode.add("ar")
-        AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> supportedlanguagecode.add("pcm")
+    languages = voiceoverMap.keys.toList().filter {
+      it in getSupportedLanguageCodes()
+    }.map {
+      machineLocale.run {
+        it.toMachineLowerCase()
       }
-    }
-    supportedlanguagecode.add("hi-en")
-
-    languages = languages.filter {
-      it in supportedlanguagecode
     }
 
     selectedLanguageUnavailable.set(false)
@@ -149,6 +128,31 @@ class AudioViewModel @Inject constructor(
         )
       }
     }
+  }
+
+  /** Gets language code by [AudioLanguage]. */
+  fun getAudioLanguage(audioLanguage: AudioLanguage): String {
+    return when (audioLanguage) {
+      AudioLanguage.HINDI_AUDIO_LANGUAGE -> "hi"
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "fr"
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "zh"
+      AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> "pt"
+      AudioLanguage.ARABIC_LANGUAGE -> "ar"
+      AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> "pcm"
+      AudioLanguage.NO_AUDIO,
+      AudioLanguage.UNRECOGNIZED,
+      AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "en"
+    }
+  }
+
+  fun getSupportedLanguageCodes(): MutableList<String> {
+    val supportedAudioLanguageCodes = AudioLanguage.values().toList()
+      .map { audioLanguage ->
+        getAudioLanguage(audioLanguage)
+      } as MutableList<String>
+    supportedAudioLanguageCodes.add("hi-en")
+    return supportedAudioLanguageCodes
   }
 
   /** Sets language code for data binding and changes data source to correct audio. */
