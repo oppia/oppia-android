@@ -112,10 +112,14 @@ These are tests that are in non-app modules, such as **domain** or **utility**.
    - ![](../../../Desktop/Screenshot 2023-10-04 at 18.49.55.png)
 
 ### Next Steps
-Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
+- Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
 
-To learn about how we write tests at oppia-android, please refer to: [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing).
+- When you are ready to submit a PR, please follow [these instructions](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR) on submitting a PR.
 
-If you run into any issues during your setup, search our [discussions](https://github.com/oppia/oppia-android/discussions) forum or start a new discussion.
+- To learn about how we write tests at oppia-android, please refer to: [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing).
 
-Please see  [Troubleshooting-Installation](https://github.com/oppia/oppia-android/wiki/Troubleshooting-Installation) for solutions to some common setup issues.
+- To get started with Bazel, please see [Oppia-Bazel-Setup-Instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions) and follow the instructions appropriate to your OS.
+
+- If you run into any issues during your setup, search our [discussions](https://github.com/oppia/oppia-android/discussions) forum or start a new discussion.
+
+- Please see  [Troubleshooting-Installation](https://github.com/oppia/oppia-android/wiki/Troubleshooting-Installation) for solutions to some common setup issues.
