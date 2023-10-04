@@ -70,7 +70,6 @@ class LanguageDialogFragment : InjectableDialogFragment() {
         "pcm" -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
         else -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       }
-
       if (languageCode == "hi-en") {
         languageNameArrayList.add("Hinglish")
       } else {
