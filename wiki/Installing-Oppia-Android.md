@@ -89,14 +89,14 @@ We run tests in either Espresso(`app` module tests) or Robolectric(non-app modul
 
    **Note**: If you don't have any available devices in this list, please follow [these instructions](#run-the-app-from-android-studio) to create one.
 3. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'HomeActivityTest'**.
-![](../../../Desktop/Screenshot 2023-10-04 at 18.22.18.png)
+![](https://user-images.githubusercontent.com/59600948/272657131-96e5354b-13a9-4709-969a-b9494a65c30f.png)
 4. An "**Edit Configuration**" dialog will show up, and you should add the following settings under the general tab:
    - For module, select **oppia-android.app**
    - For Test, select **Class**
    - For Instrumentation class, **org.oppia.android.testing.OppiaTestRunner**, will be selected by default.
    - For target, select the **Use the device/snapshot dropdown** option.
    - Verify that your setup looks like below:
-   -![](../../../Desktop/Screenshot 2023-10-04 at 18.29.10.png)
+   -![](https://user-images.githubusercontent.com/59600948/272657260-2e654891-61be-467a-8ebd-c997aa2abda6.png)
 - Finally, Click the "Apply" and "Okay" buttons.
 - You may need to repeat step (3) above to run the test with the new configuration.
 - Subsequent runs of any app module tests will not require editing the configuration.
@@ -109,7 +109,7 @@ These are tests that are in non-app modules, such as **domain** or **utility**.
 1. In Android Studio, open the desired test file, e.g., `AnalyticsControllerTest`.
 2. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'AnalyticsControllerTest'**.
    - You will notice that the emulator is greyed out, but the run window will open to show the running tests:
-   - ![](../../../Desktop/Screenshot 2023-10-04 at 18.49.55.png)
+   - ![](https://user-images.githubusercontent.com/59600948/272657015-158117e5-47d2-40fc-a38b-5dee6c347556.png)
 
 ### Next Steps
 - Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
