@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
@@ -22,12 +23,14 @@
       android:id="@+id/text_input_interaction_view"
       style="@style/InputInteractionEditText"
       android:hint="@{viewModel.hintText}"
+      android:contentDescription="@{viewModel.hintText.length() == 0 ? @string/text_input_default_content_description : ``}"
       android:inputType="text"
       android:text="@={viewModel.answerText}"
       android:textColorHint="@color/component_color_shared_edit_text_hint_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:textChangedListener="@{viewModel.answerTextWatcher}" />
+      app:textChangedListener="@{viewModel.answerTextWatcher}"
+      tools:ignore="ContentDescription" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

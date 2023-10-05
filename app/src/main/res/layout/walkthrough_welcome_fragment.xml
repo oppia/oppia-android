@@ -62,7 +62,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/walkthrough_welcome_description_text_view"
-        android:contentDescription="@string/walkthrough_welcome_content_description" />
+        android:importantForAccessibility="no" />
 
       <Button
         android:id="@+id/walkthrough_welcome_next_button"

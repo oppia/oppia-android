@@ -7,5 +7,5 @@
     android:id="@+id/test_url_parser_image_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:contentDescription="@string/test_url_parser_content_description" />
+    android:importantForAccessibility="no" />
 </FrameLayout>

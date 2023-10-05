@@ -31,7 +31,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/walkthrough_final_title_text_view"
         app:srcCompat="@drawable/ic_portrait_onboarding_0"
-        android:contentDescription="@string/walkthrough_final_content_description" />
+        android:importantForAccessibility="no" />
 
       <LinearLayout
         android:layout_width="match_parent"
