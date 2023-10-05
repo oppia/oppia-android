@@ -146,11 +146,12 @@ class AudioViewModel @Inject constructor(
     }
   }
 
-  fun getSupportedLanguageCodes(): MutableList<String> {
-    val supportedAudioLanguageCodes = AudioLanguage.values().toList()
+  fun getSupportedLanguageCodes(): List<String> {
+    val supportedAudioLanguageCodes = AudioLanguage.values()
       .map { audioLanguage ->
         getAudioLanguage(audioLanguage)
-      } as MutableList<String>
+      }
+      .toMutableList()
     supportedAudioLanguageCodes.add("hi-en")
     return supportedAudioLanguageCodes
   }
