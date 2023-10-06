@@ -25,7 +25,7 @@ Oppia Android also requires OpenJDK 8. The Bazel installation instructions above
 
    You can confirm that this is set up using the command `java -version`, which should result in three lines being printed out with the first one showing "openjdk version "1.8.0_292".
 
-> **Tip:** Newer linux distributions may not have openjdk-8 anymore. This has been reported for Debian and Ubuntu. If this is your case, **openjdk-11** has been tested as a viable alternative. 
+> **Tip:** Newer linux distributions may not have openjdk-8 anymore. This has been reported for Debian and Ubuntu. If this is your case, **openjdk-11** has been tested as a viable alternative.
 
 ### 3. Install Python 2
 
