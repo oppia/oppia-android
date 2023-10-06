@@ -6,6 +6,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.LicenseTextViewerActivityBinding
+import org.oppia.android.util.accessibility.AccessibilityService
 import javax.inject.Inject
 
 /** The presenter for [LicenseTextViewerActivity]. */
@@ -14,6 +15,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
+  @Inject lateinit var accessibilityService: AccessibilityService
 
   /** Handles onCreate() method of the [LicenseTextViewerActivity]. */
   fun handleOnCreate(dependencyIndex: Int, licenseIndex: Int) {
@@ -44,8 +46,10 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       (activity as LicenseTextViewerActivity).finish()
     }
 
-    binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
-      binding.licenseTextViewerActivityToolbarTitle.isSelected = true
+    if (!accessibilityService.isScreenReaderEnabled()) {
+      binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
+        binding.licenseTextViewerActivityToolbarTitle.isSelected = true
+      }
     }
 
     if (getLicenseTextViewerFragment() == null) {

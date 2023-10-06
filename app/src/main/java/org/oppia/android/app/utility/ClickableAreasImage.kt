@@ -30,6 +30,7 @@ class ClickableAreasImage(
       if (motionEvent.action == MotionEvent.ACTION_DOWN) {
         onPhotoTap(motionEvent.x, motionEvent.y)
       }
+      view.performClick()
       return@setOnTouchListener false
     }
   }
@@ -110,10 +111,11 @@ class ClickableAreasImage(
       newView.isFocusable = true
       newView.isFocusableInTouchMode = true
       newView.tag = clickableArea.label
-      newView.setOnTouchListener { _, event ->
+      newView.setOnTouchListener { view, event ->
         if (event.action == MotionEvent.ACTION_DOWN) {
           showOrHideRegion(newView, clickableArea)
         }
+        view.performClick()
         return@setOnTouchListener true
       }
       if (isAccessibilityEnabled) {
