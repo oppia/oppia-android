@@ -1,5 +1,8 @@
 package org.oppia.android.app.home
 
+import android.opengl.Visibility
+import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -94,6 +97,11 @@ class HomeViewModel(
     }
   }
 
+  fun hideProgressBar(){
+    val homefragment_progressbar=activity.findViewById<ProgressBar>(R.id.home_fragment_progress_bar)
+    homefragment_progressbar.visibility=View.GONE
+  }
+
   /**
    * [LiveData] of the list of items displayed in the HomeFragment RecyclerView. The list backing this live data will
    * automatically update if constituent parts of the UI change (e.g. if the promoted story list changes). If an error
@@ -111,7 +119,10 @@ class HomeViewModel(
           listOf()
         }
         is AsyncResult.Pending -> listOf()
-        is AsyncResult.Success -> itemListResult.value
+        is AsyncResult.Success -> {
+          hideProgressBar()
+          itemListResult.value
+        }
       }
     }
   }
