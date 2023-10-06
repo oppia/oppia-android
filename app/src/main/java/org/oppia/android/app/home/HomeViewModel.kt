@@ -97,7 +97,9 @@ class HomeViewModel(
   }
 
   fun hideProgressBar() {
-    val homefragment_progressbar = activity.findViewById<ProgressBar>(R.id.home_fragment_progress_bar)
+    val homefragment_progressbar = activity.findViewById<ProgressBar>(
+      R.id.home_fragment_progress_bar
+    )
     homefragment_progressbar.visibility = View.GONE
   }
 
