@@ -1,6 +1,5 @@
 package org.oppia.android.app.home
 
-import android.opengl.Visibility
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
@@ -97,9 +96,9 @@ class HomeViewModel(
     }
   }
 
-  fun hideProgressBar(){
-    val homefragment_progressbar=activity.findViewById<ProgressBar>(R.id.home_fragment_progress_bar)
-    homefragment_progressbar.visibility=View.GONE
+  fun hideProgressBar() {
+    val homefragment_progressbar = activity.findViewById<ProgressBar>(R.id.home_fragment_progress_bar)
+    homefragment_progressbar.visibility = View.GONE
   }
 
   /**
