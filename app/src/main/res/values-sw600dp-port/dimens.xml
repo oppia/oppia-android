@@ -523,4 +523,5 @@
   <dimen name="resume_lesson_chapter_flexbox_margin_start">72dp</dimen>
   <dimen name="resume_lesson_chapter_flexbox_margin_end">72dp</dimen>
   <dimen name="resume_lesson_chapter_flexbox_margin_top">32dp</dimen>
+  <dimen name="resume_lesson_start_over_button_margin">8dp</dimen>
 </resources>
