@@ -786,4 +786,16 @@
   <dimen name="survey_nps_options_margin">8dp</dimen>
   <dimen name="survey_nps_hint_text_margin">16dp</dimen>
   <dimen name="survey_button_corner_radius">4dp</dimen>
+
+  <!--  ResumeLessonFragment-->
+  <dimen name="resume_lesson_chapter_title_text_margin_start">32dp</dimen>
+  <dimen name="resume_lesson_chapter_title_text_margin_end">32dp</dimen>
+  <dimen name="resume_lesson_chapter_title_text_margin_top">32dp</dimen>
+  <dimen name="resume_lesson_chapter_title_text_margin_bottom">16dp</dimen>
+  <dimen name="resume_lesson_chapter_description_text_margin_start">32dp</dimen>
+  <dimen name="resume_lesson_chapter_description_text_margin_end">32dp</dimen>
+  <dimen name="resume_lesson_chapter_description_text_margin_top">16dp</dimen>
+  <dimen name="resume_lesson_chapter_flexbox_margin_start">28dp</dimen>
+  <dimen name="resume_lesson_chapter_flexbox_margin_end">28dp</dimen>
+  <dimen name="resume_lesson_chapter_flexbox_margin_top">32dp</dimen>
 </resources>
