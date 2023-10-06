@@ -26,7 +26,8 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:srcCompat="@drawable/ic_rounded_arrow_up_right"
-      app:tint="@color/component_color_shared_spotlight_overlay_arrow_color" />
+      app:tint="@color/component_color_shared_spotlight_overlay_arrow_color"
+      android:contentDescription="@string/spotlight_overlay_arrow_content_description" />
 
     <com.google.android.material.card.MaterialCardView
       android:layout_width="0dp"
@@ -71,7 +72,8 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           app:srcCompat="@drawable/ic_close_black_24"
-          app:tint="@color/component_color_shared_close_spotlight_button_color" />
+          app:tint="@color/component_color_shared_close_spotlight_button_color"
+          android:contentDescription="@string/close_spotlight_button_content_description" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
   </androidx.constraintlayout.widget.ConstraintLayout>
