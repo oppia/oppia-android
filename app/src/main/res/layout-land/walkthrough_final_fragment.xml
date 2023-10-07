@@ -26,7 +26,8 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:srcCompat="@drawable/ic_portrait_onboarding_0" />
+      app:srcCompat="@drawable/ic_portrait_onboarding_0"
+      android:importantForAccessibility="no" />
 
     <LinearLayout
       android:id="@+id/walkthrough_button_container"
