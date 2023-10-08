@@ -14,7 +14,7 @@ import java.util.Objects
 
 // TODO(#3766): Restrict to be 'internal'.
 /** Implementation of [OppiaLocale.DisplayLocale]. */
-class DisplayLocaleImpl(
+open class DisplayLocaleImpl(
   localeContext: OppiaLocaleContext,
   private val machineLocale: MachineLocale,
   private val androidLocaleFactory: AndroidLocaleFactory,
