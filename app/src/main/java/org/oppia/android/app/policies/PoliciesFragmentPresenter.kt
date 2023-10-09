@@ -1,24 +1,24 @@
 package org.oppia.android.app.policies
 
-import android.view.View
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.PoliciesFragmentBinding
-import org.oppia.android.util.parser.html.HtmlParser
-import org.oppia.android.util.parser.html.PolicyType
-import javax.inject.Inject
-import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.util.locale.AndroidLocaleFactory
 import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.parser.html.PolicyType
 
 /** The presenter for [PoliciesFragment]. */
 @FragmentScope
