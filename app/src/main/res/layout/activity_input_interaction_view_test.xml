@@ -122,7 +122,7 @@
         android:layout_margin="8dp"
         android:background="@drawable/edit_text_background"
         android:focusable="true"
-        android:hint="Write the digit here."
+        android:hint="@string/text_number_input_hint"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textColorHint="@color/component_color_shared_edit_text_hint_color"
         android:longClickable="false"
@@ -154,7 +154,7 @@
         android:layout_margin="8dp"
         android:background="@drawable/edit_text_background"
         android:focusable="true"
-        android:hint="Write here."
+        android:hint="@string/text_text_input_hint"
         android:inputType="text"
         android:longClickable="false"
         android:maxLength="200"
@@ -181,7 +181,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:onClick="getPendingAnswerErrorOnSubmitClick"
-        android:text="Submit"
+        android:text="@string/state_submit_button"
         android:textColor="@color/component_color_shared_secondary_4_text_color" />
     </LinearLayout>
   </ScrollView>
