@@ -36,7 +36,8 @@
           android:visibility="gone"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          app:srcCompat="@drawable/ic_language_icon_grey_24dp" />
+          app:srcCompat="@drawable/ic_language_icon_grey_24dp"
+          android:contentDescription="@string/language_icon_content_description" />
 
         <TextView
           style="@style/Subtitle1ViewCenter"
@@ -115,7 +116,8 @@
         android:paddingTop="12dp"
         android:paddingEnd="16dp"
         android:paddingBottom="12dp"
-        app:srcCompat="@drawable/ic_settings_grey_48dp" />
+        app:srcCompat="@drawable/ic_settings_grey_48dp"
+        android:contentDescription="@string/setting_icon_content_description" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
