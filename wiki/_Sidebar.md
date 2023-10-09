@@ -56,7 +56,8 @@
   * Bazel
     * [Gradle Bazel Migration Best Practices and FAQ](https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ)    
     * [Updating Maven Dependencies](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies)
-  * [Internationalization](https://github.com/oppia/oppia-android/wiki/Internationalization) 
+  * [Internationalization](https://github.com/oppia/oppia-android/wiki/Internationalization)
+  * [Terminology in Oppia](https://github.com/oppia/oppia-android/wiki/Terminology-in-Oppia)
   * Past Events
     * Google Summer of Code (note: links are to oppia/oppia): [2021](https://github.com/oppia/oppia/wiki/Google-Summer-of-Code-2021), [2020](https://github.com/oppia/oppia/wiki/Google-Summer-of-Code-2020)
     * [SLoP 2020](https://github.com/oppia/oppia-android/wiki/SLoP-2020)
