@@ -7,13 +7,13 @@
     android:id="@+id/open_dialog_0"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/concept_card_one"
+    android:text="@string/concept_card_one_button_text"
     android:textAllCaps="false"/>
 
   <Button
     android:id="@+id/open_dialog_1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/concept_card_two"
+    android:text="@string/concept_card_two_button_text"
     android:textAllCaps="false" />
 </LinearLayout>

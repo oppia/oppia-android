@@ -5,7 +5,7 @@
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Exploration Player</string>
-  <string name="play_exploration">Play exploration</string>
+  <string name="play_exploration_button_text">Play exploration</string>
   <string name="help_activity_title">Help</string>
   <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Switch Profile</string>
@@ -28,8 +28,8 @@
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
-  <string name="concept_card_one">Concept Card 1</string>
-  <string name="concept_card_two">Concept Card 2</string>
+  <string name="concept_card_one_button_text">Concept Card 1</string>
+  <string name="concept_card_two_button_text">Concept Card 2</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
   <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
@@ -604,5 +604,5 @@
   <string name="profile_picture_image_view_content_description">Profile Picture Image View</string>
   <string name="lock_icon_content_description">Lock Icon</string>
   <string name="download_status_image_content_description">Download Status</string>
-  <string name="font_scale_html_content">html Content</string>
+  <string name="font_scale_html_content_text">html Content</string>
 </resources>
