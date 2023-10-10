@@ -3,9 +3,8 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
     <import type="org.oppia.android.R" />
-
+    <import type="android.view.View" />
     <variable
       name="viewModel"
       type="org.oppia.android.app.home.HomeViewModel" />
@@ -22,6 +21,7 @@
       android:layout_width="60dp"
       android:layout_height="60dp"
       android:layout_gravity="center"
+      android:visibility="@{viewModel.isProgressBarVisible?View.VISIBLE:View.GONE}"
       />
 
     <androidx.recyclerview.widget.RecyclerView
