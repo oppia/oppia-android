@@ -1071,7 +1071,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_loading_bar)).check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
         .check(doesNotExist())
     }
