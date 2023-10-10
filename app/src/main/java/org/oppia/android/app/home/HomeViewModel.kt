@@ -59,7 +59,7 @@ class HomeViewModel(
     R.integer.promoted_story_list_limit
   )
 
-  val isProgressBarVisible=ObservableField(true)
+  val isProgressBarVisible = ObservableField(true)
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
