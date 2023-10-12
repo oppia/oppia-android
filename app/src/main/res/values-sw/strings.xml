@@ -18,13 +18,13 @@
   <string name="drawer_close_content_description">Orodha ya Uelekezaji Funga</string>
   <string name="audio_play_description">Cheza Sauti</string>
   <string name="audio_pause_description">Sitisha sauti</string>
-  <string name="audio_language_select_dialog_okay_button">sawa</string>
+  <string name="audio_language_select_dialog_okay_button" fuzzy="true">sawa</string>
   <string name="audio_language_select_dialog_cancel_button">futa</string>
   <string name="audio_language_select_dialog_title">Lugha ya Sauti</string>
   <string name="audio_dialog_offline_title">Nje ya Mtandao kwa sasa</string>
   <string name="audio_dialog_offline_message">Hakikisha kuwa Wi-Fi au data ya mtandao wa simu imewashwa, kisha ujaribu tena.</string>
-  <string name="audio_dialog_offline_positive">sawa</string>
-  <string name="cellular_data_alert_dialog_okay_button">sawa</string>
+  <string name="audio_dialog_offline_positive" fuzzy="true">sawa</string>
+  <string name="cellular_data_alert_dialog_okay_button" fuzzy="true">sawa</string>
   <string name="cellular_data_alert_dialog_cancel_button">futa</string>
   <string name="cellular_data_alert_dialog_title">Kwa sasa ipo kwenye Data ya Simu</string>
   <string name="cellular_data_alert_dialog_description">Kutiririsha sauti kunaweza kutumia data nyingi ya mtandao wa simu.</string>
@@ -152,11 +152,11 @@
   <string name="number_error_starting_with_floating_point">Tafadhali anza jibu lako kwa nambari (k.m.,”0” katika 0.5).</string>
   <string name="number_error_invalid_format">Tafadhali weka nambari halali.</string>
   <string name="number_error_larger_than_fifteen_characters">Jibu linaweza kuwa na tarakimu zisizozidi 15 (0–9) au alama (. au -).</string>
-  <string name="ratio_error_invalid_chars">Tafadhali andika uwiano unaojumuisha tarakimu zilizotenganishwa na koloni(k.m. 1:2 au 1:2:3).</string>
-  <string name="ratio_error_invalid_format">Tafadhali weka uwiano sahihi (k.m. 1:2 au 1:2:3).</string>
-  <string name="ratio_error_invalid_colons">Jibu lako lina koloni mbili (:) karibu na kila moja.</string>
-  <string name="ratio_error_invalid_size">Idadi ya masharti si sawa na masharti yanayohitajika.</string>
-  <string name="ratio_error_includes_zero">Uwiano hauwezi kuwa na 0 kama kipengele.</string>
+  <string name="ratio_error_invalid_chars" fuzzy="true">Tafadhali andika uwiano unaojumuisha tarakimu zilizotenganishwa na koloni(k.m. 1:2 au 1:2:3).</string>
+  <string name="ratio_error_invalid_format" fuzzy="true">Tafadhali weka uwiano sahihi (k.m. 1:2 au 1:2:3).</string>
+  <string name="ratio_error_invalid_colons" fuzzy="true">Jibu lako lina koloni mbili (:) karibu na kila moja.</string>
+  <string name="ratio_error_invalid_size" fuzzy="true">Idadi ya masharti si sawa na masharti yanayohitajika.</string>
+  <string name="ratio_error_includes_zero" fuzzy="true">Uwiano hauwezi kuwa na 0 kama kipengele.</string>
   <string name="unknown_size">Ukubwa usiojulikana</string>
   <string name="size_bytes">Baiti %s</string>
   <string name="size_kb">%s KB</string>
@@ -164,11 +164,11 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Sahihi!</string>
   <string name="topic_prefix">Mada: %s</string>
-  <plurals name="chapter_count">
+  <plurals name="chapter_count" fuzzy="true">
     <item quantity="one">Sura 1</item>
     <item quantity="other">Sura %s</item>
   </plurals>
-  <plurals name="story_count">
+  <plurals name="story_count" fuzzy="true">
     <item quantity="one">Hadithi 1</item>
     <item quantity="other">Hadithi %s</item>
   </plurals>
@@ -176,7 +176,7 @@
     <item quantity="one">%s kati ya Sura %s Imekamilika</item>
     <item quantity="other">%s ya Sura %s Imekamilika</item>
   </plurals>
-  <plurals name="lesson_count">
+  <plurals name="lesson_count" fuzzy="true">
     <item quantity="one">Somo 1</item>
     <item quantity="other">Masomo %s</item>
   </plurals>
@@ -290,7 +290,7 @@
   <string name="profile_picture_edit_alert_dialog_choose_from_library">Chagua Kutoka kwa Maktaba</string>
   <string name="profile_rename_activity_title">Badilisha Jina la Wasifu</string>
   <string name="profile_rename_label">Jina Jipya</string>
-  <string name="profile_rename_save">Hifadhi</string>
+  <string name="profile_rename_save" fuzzy="true">Hifadhi</string>
   <string name="profile_reset_pin_activity_title">Weka upya Nambari ya Siri</string>
   <string name="profile_reset_pin_main">Weka Nambari mpya ya Siri ili mtumiaji aiweke anapofikia wasifu wake.</string>
   <string name="profile_reset_pin_user_pin_label">Nambari ya Siri ya tarakimu 3*</string>
@@ -323,12 +323,12 @@
   <string name="app_last_update_date">Sasisho la mwisho lilisakinishwa kwenye %s. Tumia nambari ya toleo iliyo hapo juu kutuma maoni kuhusu hitilafu.</string>
   <string name="app_version_activity_title">Toleo la Programu</string>
   <string name="app_language_activity_title">Lugha ya Programu</string>
-  <string name="audio_language_activity_title">Lugha chaguomsingi ya Sauti</string>
+  <string name="audio_language_activity_title" fuzzy="true">Lugha chaguomsingi ya Sauti</string>
   <string name="reading_text_size_activity_title">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="title_reading_text_size">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="story_text_will_look_like_this">Nakala ya hadithi itaonekana hivi.</string>
   <string name="constant_string_for_text_size">A</string>
-  <string name="audio_language">Sauti Chaguomsingi</string>
+  <string name="audio_language" fuzzy="true">Sauti Chaguomsingi</string>
   <string name="app_language">Lugha ya Programu</string>
   <string name="reading_text_size">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="reading_text_size_small">Ndogo</string>
@@ -364,7 +364,6 @@
   <string name="reveal" fuzzy="true">Fichua</string>
   <string name="just_now">sasa hivi</string>
   <string name="last_logged_in_recently">hivi karibuni</string>
-  <string name="time_ago">%s iliyopita</string>
   <string name="yesterday">jana</string>
   <string name="return_to_topic">Rudi kwenye mada</string>
   <string name="explanation">Ufafanuzi:</string>
@@ -376,26 +375,14 @@
   <string name="up_button_disabled">Juu</string>
   <string name="down_button_disabled">Chini</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes">
-    <item quantity="one">dakika</item>
-    <item quantity="other">dakika %s</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="one">saa</item>
-    <item quantity="other">saa %s</item>
-  </plurals>
-  <plurals name="days">
-    <item quantity="one">siku</item>
-    <item quantity="other">siku %s</item>
-  </plurals>
   <string name="topic_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
   <string name="ongoing_recycler_view_tag">Inaendelea_kuchakata tena_mtazamo_tag</string>
   <string name="item_selection_text" fuzzy="true">Tafadhali chagua angalau chaguo moja.</string>
-  <string name="unsupported_app_version_dialog_title">Toleo la programu lisilotumika</string>
-  <string name="unsupported_app_version_dialog_message">Toleo hili la programu halitumiki tena. Tafadhali isasishe kupitia hifadhi ya michezo.</string>
-  <string name="unsupported_app_version_dialog_close_button_text">Funga programu</string>
-  <string name="ratio_content_description_separator">kwa</string>
-  <string name="ratio_default_hint_text">Weka uwiano katika fomu x:y.</string>
+  <string name="unsupported_app_version_dialog_title" fuzzy="true">Toleo la programu lisilotumika</string>
+  <string name="unsupported_app_version_dialog_message" fuzzy="true">Toleo hili la programu halitumiki tena. Tafadhali isasishe kupitia hifadhi ya michezo.</string>
+  <string name="unsupported_app_version_dialog_close_button_text" fuzzy="true">Funga programu</string>
+  <string name="ratio_content_description_separator" fuzzy="true">kwa</string>
+  <string name="ratio_default_hint_text" fuzzy="true">Weka uwiano katika fomu x:y.</string>
   <string name="smallest_text_size_content_description">Maandishi madogo zaidi</string>
   <string name="largest_text_size_content_description">Maandishi kubwa zaidi</string>
   <string name="coming_soon">Inakuja Hivi Karibuni</string>
