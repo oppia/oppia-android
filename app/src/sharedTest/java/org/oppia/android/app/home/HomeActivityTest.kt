@@ -247,7 +247,6 @@ class HomeActivityTest {
   }
 
   @Test
-<<<<<<< HEAD
   fun testHomeActivity_loadingItemsPending_progressbarIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
 
