@@ -247,6 +247,19 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_loadingItemsPending_progressbarIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_fragment_progress_bar)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
   fun testHomeActivity_withAdminProfile_profileNameIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
