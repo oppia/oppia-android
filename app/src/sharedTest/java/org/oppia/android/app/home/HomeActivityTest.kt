@@ -273,8 +273,6 @@ class HomeActivityTest {
   }
 
   @Test
-=======
->>>>>>> 136bb440ba294dac28c22dc5a8da5af46c943aed
   fun testHomeActivity_hasCorrectActivityLabel() {
     launch(HomeActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
