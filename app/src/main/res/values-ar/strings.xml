@@ -23,13 +23,13 @@
   <string name="audio_play_description">تشغيل الصوت</string>
   <string name="audio_pause_description">إيقاف الصوت مؤقتًا</string>
   <string name="audio_unavailable_in_selected_language">صوت %s غير متوفر.</string>
-  <string name="audio_language_select_dialog_okay_button">موافق</string>
+  <string name="audio_language_select_dialog_okay_button" fuzzy="true">موافق</string>
   <string name="audio_language_select_dialog_cancel_button">إلغاء</string>
   <string name="audio_language_select_dialog_title">لغة الصوت</string>
   <string name="audio_dialog_offline_title">غير متصل بالإنترنت</string>
   <string name="audio_dialog_offline_message">من فضلك تأكد من وجود اتصال بالإنترنت عن طريق شبكة الوايفاي أو بيانات الهاتف، ثم حاول مرة أخرى.</string>
-  <string name="audio_dialog_offline_positive">حسنًا</string>
-  <string name="cellular_data_alert_dialog_okay_button">موافق</string>
+  <string name="audio_dialog_offline_positive" fuzzy="true">حسنًا</string>
+  <string name="cellular_data_alert_dialog_okay_button" fuzzy="true">موافق</string>
   <string name="cellular_data_alert_dialog_cancel_button">إلغاء</string>
   <string name="cellular_data_alert_dialog_title">متصل بالإنترنت عن طريق بيانات الهاتف</string>
   <string name="cellular_data_alert_dialog_description">تشغيل الصوت عبر الإنترنت قد يستخدم الكثير من بيانات الهاتف.</string>
@@ -168,11 +168,11 @@
   <string name="number_error_starting_with_floating_point">من فضلك إبدأ إجابتك برقم (0 او 0.5 على سبيل المثال)</string>
   <string name="number_error_invalid_format">من فضلك قم بإدخال رقم صالح.</string>
   <string name="number_error_larger_than_fifteen_characters">يمكن أن تحتوي الإجابة على 15 رقمًا (0-9) على الأكثر أو الرموز (. أو -)</string>
-  <string name="ratio_error_invalid_chars">من فضلك قم بكتابة نسبة تتكون من أرقام مفصولة بنقطتين رأسيتين (1:2 أو 1:2:3 على سبيل المثال).</string>
-  <string name="ratio_error_invalid_format">من فضلك أدخل نسبة صحيحة (1:2 أو 1:2:3 على سبيل المثال)</string>
-  <string name="ratio_error_invalid_colons">إجابتك تحتوي على نقطتين رأسيتين (:) متتاليتين.</string>
-  <string name="ratio_error_invalid_size">عدد الحدود لا يساوي العدد المطلوب.</string>
-  <string name="ratio_error_includes_zero">لا يمكن أن تحتوي النسب على 0 كعنصر.</string>
+  <string name="ratio_error_invalid_chars" fuzzy="true">من فضلك قم بكتابة نسبة تتكون من أرقام مفصولة بنقطتين رأسيتين (1:2 أو 1:2:3 على سبيل المثال).</string>
+  <string name="ratio_error_invalid_format" fuzzy="true">من فضلك أدخل نسبة صحيحة (1:2 أو 1:2:3 على سبيل المثال)</string>
+  <string name="ratio_error_invalid_colons" fuzzy="true">إجابتك تحتوي على نقطتين رأسيتين (:) متتاليتين.</string>
+  <string name="ratio_error_invalid_size" fuzzy="true">عدد الحدود لا يساوي العدد المطلوب.</string>
+  <string name="ratio_error_includes_zero" fuzzy="true">لا يمكن أن تحتوي النسب على 0 كعنصر.</string>
   <string name="unknown_size">الحجم مجهول</string>
   <string name="size_bytes">%s بايت</string>
   <string name="size_kb">%s ك.ب</string>
@@ -180,7 +180,7 @@
   <string name="size_gb">%s ج.ب</string>
   <string name="correct">صحيح!</string>
   <string name="topic_prefix">الموضوع: %s</string>
-  <plurals name="chapter_count">
+  <plurals name="chapter_count" fuzzy="true">
     <item quantity="zero">و لا فصل</item>
     <item quantity="one">فصلًا واحدًا</item>
     <item quantity="two">فصلان</item>
@@ -188,7 +188,7 @@
     <item quantity="many">%s من الفصول</item>
     <item quantity="other">%s من الفصول</item>
   </plurals>
-  <plurals name="story_count">
+  <plurals name="story_count" fuzzy="true">
     <item quantity="zero">و لا قصة</item>
     <item quantity="one">قصة واحدة</item>
     <item quantity="two">قصتان</item>
@@ -204,7 +204,7 @@
     <item quantity="many">%s فصول مكتملة من %s</item>
     <item quantity="other">%s فصول مكتملة من %s</item>
   </plurals>
-  <plurals name="lesson_count">
+  <plurals name="lesson_count" fuzzy="true">
     <item quantity="zero">و لا درس</item>
     <item quantity="one">درسًا واحدًا</item>
     <item quantity="two">درسان</item>
@@ -212,7 +212,7 @@
     <item quantity="many">%s درس</item>
     <item quantity="other">%s درس</item>
   </plurals>
-  <plurals name="completed_story_count">
+  <plurals name="completed_story_count" fuzzy="true">
     <item quantity="zero">و لا قصة مكتملة</item>
     <item quantity="one">قصة واحدة مكتملة</item>
     <item quantity="two">قصتان مكتملتان</item>
@@ -220,7 +220,7 @@
     <item quantity="many">%s قصة مكتملة</item>
     <item quantity="other">%s قصة مكتملة</item>
   </plurals>
-  <plurals name="ongoing_topic_count">
+  <plurals name="ongoing_topic_count" fuzzy="true">
     <item quantity="zero">و لا موضوع في تقدم</item>
     <item quantity="one">موضوع واحد في تقدم</item>
     <item quantity="two">موضوعان في تقدم</item>
@@ -350,7 +350,7 @@
   <string name="profile_picture_edit_alert_dialog_choose_from_library">اختيار من المعرض</string>
   <string name="profile_rename_activity_title">إعادة تسمية الملف الشخصي</string>
   <string name="profile_rename_label">الاسم الجديد</string>
-  <string name="profile_rename_save">حفظ</string>
+  <string name="profile_rename_save" fuzzy="true">حفظ</string>
   <string name="profile_reset_pin_activity_title">إعادة ضبط رقم التعريف الشخصي</string>
   <string name="profile_reset_pin_main">أدخل رقم تعريف شخصي جديد للمستخدم كي يستخدمه عند الدخول إلى ملفه الشخصي.</string>
   <string name="profile_reset_pin_user_pin_label">رقم تعريف شخصي مكون من 3 أرقام</string>
@@ -383,12 +383,12 @@
   <string name="app_last_update_date">تم تثبيت آخر إصدار في %s. قم باستخدام رقم الإصدار في الأعلى للإبلاغ عن أعطال التطبيق.</string>
   <string name="app_version_activity_title">إصدار التطبيق</string>
   <string name="app_language_activity_title">لغة التطبيق</string>
-  <string name="audio_language_activity_title">لغة الصوت الافتراضية</string>
+  <string name="audio_language_activity_title" fuzzy="true">لغة الصوت الافتراضية</string>
   <string name="reading_text_size_activity_title">حجم النص المقروء</string>
   <string name="title_reading_text_size">حجم النص المقروء</string>
   <string name="story_text_will_look_like_this">سيظهر نص القصة بهذا الشكل.</string>
   <string name="constant_string_for_text_size">أ</string>
-  <string name="audio_language">الصوت الافتراضي</string>
+  <string name="audio_language" fuzzy="true">الصوت الافتراضي</string>
   <string name="app_language">لغة التطبيق</string>
   <string name="reading_text_size">حجم النص المقروء</string>
   <string name="reading_text_size_small">صغير</string>
@@ -432,7 +432,6 @@
   <string name="reveal">إظهار</string>
   <string name="just_now">الآن</string>
   <string name="last_logged_in_recently">حديثاً</string>
-  <string name="time_ago">منذ %s</string>
   <string name="yesterday">أمس</string>
   <string name="return_to_topic">العودة إلى الموضوع</string>
   <string name="return_to_lesson">العودة إلى الدرس</string>
@@ -445,36 +444,12 @@
   <string name="up_button_disabled">أعلى</string>
   <string name="down_button_disabled">أسفل</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes">
-    <item quantity="zero">و لا دقيقة</item>
-    <item quantity="one">دقيقة واحدة</item>
-    <item quantity="two">دقيقتان</item>
-    <item quantity="few">%s دقيقة</item>
-    <item quantity="many">%s دقيقة</item>
-    <item quantity="other">%s دقيقة</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="zero">و لا ساعة</item>
-    <item quantity="one">ساعة واحدة</item>
-    <item quantity="two">ساعتان</item>
-    <item quantity="few">%s ساعة</item>
-    <item quantity="many">%s ساعة</item>
-    <item quantity="other">%s ساعة</item>
-  </plurals>
-  <plurals name="days">
-    <item quantity="zero">و لا يوم</item>
-    <item quantity="one">يوم واحدة</item>
-    <item quantity="two">يومان</item>
-    <item quantity="few">%s يوم</item>
-    <item quantity="many">%s يوم</item>
-    <item quantity="other">%s يوم</item>
-  </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>
-  <string name="unsupported_app_version_dialog_title">إصدار تطبيق غير مدعوم</string>
-  <string name="unsupported_app_version_dialog_message">هذا الإصدار من التطبيق لم يعد مدعومًا. من فضلك قم بتحديث التطبيق من خلال متجر بلاي (Play Store)</string>
-  <string name="unsupported_app_version_dialog_close_button_text">إغلاق التطبيق</string>
+  <string name="unsupported_app_version_dialog_title" fuzzy="true">إصدار تطبيق غير مدعوم</string>
+  <string name="unsupported_app_version_dialog_message" fuzzy="true">هذا الإصدار من التطبيق لم يعد مدعومًا. من فضلك قم بتحديث التطبيق من خلال متجر بلاي (Play Store)</string>
+  <string name="unsupported_app_version_dialog_close_button_text" fuzzy="true">إغلاق التطبيق</string>
   <string name="splash_screen_developer_label">بناء المطور</string>
   <string name="splash_screen_alpha_label">ألفا</string>
   <string name="splash_screen_beta_label">بيتا</string>
@@ -486,8 +461,8 @@
   <string name="general_availability_notice_dialog_message">مرحبًا! يتم الآن تحديث تطبيقك إلى إصدار التوفر العام. إذا واجهت مشاكل أثناء استخدام التطبيق ، أو كانت لديك أسئلة ، فيرجى الاتصال بنا على android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">لا تظهر هذه الرسالة مرة أخرى</string>
   <string name="general_availability_notice_dialog_close_button_text">نعم</string>
-  <string name="ratio_content_description_separator">إلى</string>
-  <string name="ratio_default_hint_text">أدخل نسبة في الصيغة س:ص.</string>
+  <string name="ratio_content_description_separator" fuzzy="true">إلى</string>
+  <string name="ratio_default_hint_text" fuzzy="true">أدخل نسبة في الصيغة س:ص.</string>
   <string name="text_input_default_hint_text">انقر هنا لإدخال نص.</string>
   <string name="smallest_text_size_content_description">أصغر حجمًا للنص</string>
   <string name="largest_text_size_content_description">أكبر حجمًا للنص</string>
