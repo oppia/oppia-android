@@ -266,7 +266,7 @@ class HomeActivityTest {
       onView(withId(R.id.home_fragment_progress_bar)).check(
         matches(
           not(
-            isDisplayed()
+           isDisplayed()
           )
         )
       )

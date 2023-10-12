@@ -59,6 +59,13 @@ class HomeViewModel(
     R.integer.promoted_story_list_limit
   )
 
+/**
+ * A Boolean property indicating the visibility state of a progress bar.
+ * This property is used to control the visibility of a progress bar in a user interface.
+ * When set to true, the progress bar is made visible, indicating that an ongoing task
+ * or operation is in progress. When set to false, the progress bar is hidden, indicating
+ * that the operation has completed.
+ */
   val isProgressBarVisible = ObservableField(true)
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
