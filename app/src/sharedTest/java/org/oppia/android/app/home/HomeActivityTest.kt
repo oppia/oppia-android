@@ -259,6 +259,21 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_loadingItemsSuccess_checkProgressbarIsNotDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_fragment_progress_bar)).check(
+        matches(
+          not(
+            isDisplayed()
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testHomeActivity_hasCorrectActivityLabel() {
     launch(HomeActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
