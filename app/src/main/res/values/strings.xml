@@ -176,7 +176,7 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
-  <string name="welcome_profile_name">%s!</string>
+  <string name="welcome_profile_name">%s %s!</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
@@ -581,4 +581,19 @@
   <string name="nps_score_question">On a scale from 0–10, how likely are you to recommend %s to a friend or colleague?</string>
   <string name="previous_subtopic_talkback_text">The previous subtopic is %s</string>
   <string name="next_subtopic_talkback_text">The next subtopic is %s</string>
+
+  <string name="app_info_icon_content_description">App Info</string>
+  <string name="spotlight_overlay_arrow_content_description">Spotlight Overlay Arrow</string>
+  <string name="close_spotlight_button_content_description">Close Spotlight Button</string>
+  <string name="previous_state_navigation_button_content_description">Previous State Navigation Button</string>
+  <string name="developer_options_icon_content_description">Developer Options Icon</string>
+  <string name="administrator_controls_icon_content_description">Administrator Controls Icon</string>
+  <string name="options_menu_content_description">Options Menu</string>
+  <string name="previous_button_content_description">Previous Button</string>
+  <string name="next_button_content_description">Next Button</string>
+  <string name="language_icon_content_description">Language Icon</string>
+  <string name="setting_icon_content_description">Setting Icon</string>
+  <string name="profile_picture_image_view_content_description">Profile Picture Image View</string>
+  <string name="lock_icon_content_description">Lock Icon</string>
+  <string name="download_status_image_content_description">Download Status</string>
 </resources>
