@@ -1,5 +1,6 @@
 package org.oppia.android.app.topic.lessons
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
