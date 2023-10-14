@@ -42,6 +42,7 @@
       android:contentDescription="@string/edit_profile_picture_content_description"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="12dp"
+      android:paddingEnd="0dp"
       android:paddingTop="12dp"
       android:elevation="4dp"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
