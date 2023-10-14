@@ -15,7 +15,7 @@
       android:id="@+id/sample_spotlight_target"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="This is a sample text view"
+      android:text="@string/sample_text_view_text"
       style="@style/TextViewStart"
       android:layout_marginTop="80dp"
       android:layout_marginStart="80dp"
