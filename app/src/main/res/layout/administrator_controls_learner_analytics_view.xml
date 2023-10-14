@@ -22,7 +22,7 @@
       android:paddingTop="28dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
-      android:text="Learner Study Analytics"
+      android:text="@string/learner_analytics_label_text"
       android:textColor="@color/component_color_shared_active_text_color"
       app:layout_constraintBottom_toTopOf="@id/profile_and_device_id_text_view"
       app:layout_constraintEnd_toEndOf="parent"
