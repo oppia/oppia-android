@@ -10,7 +10,7 @@
     android:id="@+id/play_exploration_button"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Play exploration"
+    android:text="@string/play_exploration_button_text"
     android:textAllCaps="false"/>
 
   <FrameLayout
