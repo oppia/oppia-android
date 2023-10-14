@@ -63,6 +63,7 @@
   <string name="previous_state_description">Navigate to the previous card</string>
   <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
+  <string name="submit_button_text">Submit</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
@@ -71,7 +72,7 @@
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
-  <string name="sample_text_view">This is a sample text view</string>
+  <string name="sample_text_view_text">This is a sample text view</string>
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
@@ -361,7 +362,7 @@
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
   <!-- ProfileAndDeviceIDsActivity -->
-  <string name="learner_analytics_title">Learner Study Analytics</string>
+  <string name="learner_analytics_label_text">Learner Study Analytics</string>
   <!-- AdministratorControlsFragment -->
   <string name="administrator_controls_general_label">General</string>
   <string name="administrator_controls_edit_account">Edit account</string>
@@ -488,8 +489,8 @@
   <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">\u0020to\u0020</string>
   <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">Enter a ratio in the form x:y.</string>
   <string name="text_input_default_hint_text">Tap here to enter text.</string>
-  <string name="text_number_input_hint">Write the digit here.</string>
-  <string name="text_text_input_hint">Write here.</string>
+  <string name="test_number_input_interaction_hint">Write the digit here.</string>
+  <string name="test_text_input_interaction_hint">Write here.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>
