@@ -37,12 +37,12 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/audio_loading_bar"
+        android:id="@+id/audio_fragment_voiceover_progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="@{viewModel.playStatusLiveData == UiAudioPlayStatus.LOADING ? View.VISIBLE : View.GONE}"
-        app:indicatorColor="@color/component_color_shared_icon_white_color"
+        app:indicatorColor="@color/component_color_audio_fragment_voiceover_progressbar_color"
         app:indicatorSize="@dimen/audio_fragment_progress_indicator_size"
         app:trackThickness="@dimen/audio_fragment_progress_indicator_track_thickness"
         app:layout_constraintBottom_toBottomOf="parent"
