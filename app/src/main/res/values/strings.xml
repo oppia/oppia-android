@@ -15,13 +15,13 @@
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
   <string name="audio_unavailable_in_selected_language">%s audio is unavailable.</string>
-  <string name="audio_language_select_dialog_okay_button">Ok</string>
+  <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="audio_dialog_offline_title">Currently Offline</string>
   <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
-  <string name="audio_dialog_offline_positive">Ok</string>
-  <string name="cellular_data_alert_dialog_okay_button">Ok</string>
+  <string name="audio_dialog_offline_positive">OK</string>
+  <string name="cellular_data_alert_dialog_okay_button">OK</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
@@ -371,7 +371,7 @@
   <string name="administrator_controls_account_actions_label">Account Actions</string>
   <string name="administrator_controls_log_out">Log Out</string>
   <string name="log_out_dialog_cancel_button">Cancel</string>
-  <string name="log_out_dialog_okay_button">Ok</string>
+  <string name="log_out_dialog_okay_button">OK</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
   <!-- AppVersionFragment -->
   <string name="app_version_name">App Version %s</string>

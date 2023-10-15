@@ -393,7 +393,7 @@
   <string name="great">Ótimo</string>
   <string name="lets_get_started">Vamos começar.</string>
   <string name="yes">Sim</string>
-  <string name="no">Não...</string>
+  <string name="no">Não&#8230;</string>
   <string name="pick_a_different_topic">Escolha um\ntópico diferente.</string>
   <string name="are_you_interested">Você está interessado em:\n%s?</string>
   <string name="new_hint_available">Nova dica disponível</string>
