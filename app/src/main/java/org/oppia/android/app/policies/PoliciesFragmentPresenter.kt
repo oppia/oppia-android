@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.OppiaLocaleContext
@@ -19,6 +18,7 @@ import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.PolicyType
+import javax.inject.Inject
 
 /** The presenter for [PoliciesFragment]. */
 @FragmentScope
@@ -83,7 +83,7 @@ class PoliciesFragmentPresenter @Inject constructor(
       }
     }
 
-/**
+    /**
      * Ensure that the Terms of Service and Privacy Policy are displayed with a left-aligned layout,
      * even when the app is set to an RTL language.
      */
