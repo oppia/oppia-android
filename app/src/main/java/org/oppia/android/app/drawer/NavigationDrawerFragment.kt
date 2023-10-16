@@ -20,6 +20,10 @@ class NavigationDrawerFragment :
   @Inject
   lateinit var navigationDrawerFragmentPresenter: NavigationDrawerFragmentPresenter
 
+  private lateinit var drawerLayout: DrawerLayout
+  private lateinit var toolbar: Toolbar
+  private var menuItemId: Int = 0
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
@@ -30,11 +34,16 @@ class NavigationDrawerFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return navigationDrawerFragmentPresenter.handleCreateView(inflater, container)
+    val navigationDrawerFragmentView =
+      navigationDrawerFragmentPresenter.handleCreateView(inflater, container)
+    navigationDrawerFragmentPresenter.setUpDrawer(drawerLayout, toolbar, menuItemId)
+    return navigationDrawerFragmentView
   }
 
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
-    navigationDrawerFragmentPresenter.setUpDrawer(drawerLayout, toolbar, menuItemId)
+    this.drawerLayout = drawerLayout
+    this.toolbar = toolbar
+    this.menuItemId = menuItemId
   }
 
   override fun routeToProfileProgress(profileId: Int) {
