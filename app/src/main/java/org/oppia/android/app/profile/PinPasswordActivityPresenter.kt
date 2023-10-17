@@ -1,6 +1,8 @@
 package org.oppia.android.app.profile
 
+import android.content.Context
 import android.text.method.PasswordTransformationMethod
+import android.view.accessibility.AccessibilityManager
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -69,6 +71,12 @@ class PinPasswordActivityPresenter @Inject constructor(
         )
       }
     }
+
+    val am = (activity).getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    val isTalkbackEnabled=am.isTouchExplorationEnabled()
+
+    if(!isTalkbackEnabled)
+      binding.pinPasswordInputPinEditText.requestFocus()
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.pinPasswordInputPinEditText.onTextChanged { pin ->
