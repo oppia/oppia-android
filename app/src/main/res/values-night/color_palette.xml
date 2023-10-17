@@ -171,7 +171,7 @@
   <color name="color_palette_shared_card_border_stroke_color">@color/color_def_accessible_light_grey_2</color>
   <color name="color_palette_lesson_in_progress_chapter_index_background_color">@color/color_def_oppia_green</color>
   <color name="color_palette_lesson_in_progress_chapter_name_background_color">@color/color_def_accessible_grey</color>
-  <color name="color_palette_lessons_locked_chapter_container_background_color">@color/color_def_accessible_light_grey_2</color>
+  <color name="color_palette_lessons_locked_chapter_container_background_color">@color/color_def_accessible_light_grey</color>
   <color name="color_palette_lesson_locked_chapter_name_text_color">@color/color_def_white_80</color>
   <color name="color_palette_lesson_locked_chapter_name_background_color">@color/color_def_accessible_light_grey</color>
   <color name="color_palette_lessons_locked_vertical_divider_color">@color/color_def_dark_silver</color>
