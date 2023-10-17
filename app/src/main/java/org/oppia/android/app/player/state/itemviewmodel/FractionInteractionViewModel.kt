@@ -43,12 +43,17 @@ class FractionInteractionViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            answerText.isNotEmpty()
+            true // Allow submit on empty answer
           )
         }
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    // Apply defaults:
+    errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      null,
+      true
+    )
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -64,23 +69,28 @@ class FractionInteractionViewModel private constructor(
 
   /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    if (answerText.isNotEmpty()) {
-      when (category) {
-        AnswerErrorCategory.REAL_TIME -> {
+    when (category) {
+      AnswerErrorCategory.REAL_TIME -> {
+        if (answerText.isNotEmpty()) {
           pendingAnswerError =
             FractionParsingUiError.createFromParsingError(
               fractionParser.getRealTimeAnswerError(answerText.toString())
             ).getErrorMessageFromStringRes(resourceHandler)
-        }
-        AnswerErrorCategory.SUBMIT_TIME -> {
-          pendingAnswerError =
-            FractionParsingUiError.createFromParsingError(
-              fractionParser.getSubmitTimeError(answerText.toString())
-            ).getErrorMessageFromStringRes(resourceHandler)
+        } else {
+          pendingAnswerError = null
         }
       }
-      errorMessage.set(pendingAnswerError)
+      AnswerErrorCategory.SUBMIT_TIME -> {
+        pendingAnswerError = if (answerText.isNotEmpty()) {
+          FractionParsingUiError.createFromParsingError(
+            fractionParser.getSubmitTimeError(answerText.toString())
+          ).getErrorMessageFromStringRes(resourceHandler)
+        } else {
+          resourceHandler.getStringInLocale(R.string.interaction_answer_empty_on_submit)
+        }
+      }
     }
+    errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
 
