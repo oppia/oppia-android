@@ -32,7 +32,7 @@
 /app/**/*.java @oppia/android-frontend-reviewers
 
 # All app resource files.
-/app/src/main/res/**/*.xml @oppia/android-frontend-reviewers
+/app/src/main/res/**/*.xml @MohitGUpta121
 
 # Exemptions to resource shrinking.
 /app/src/main/res/raw/shrink_exemptions.xml @oppia/android-dev-workflow-reviewers
