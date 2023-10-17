@@ -134,7 +134,8 @@ class OptionalAppDeprecationNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasExpectedTitle() {
     launchOptionalAppDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.optional_app_update_dialog_title)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.optional_app_update_dialog_title))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -153,7 +154,8 @@ class OptionalAppDeprecationNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasUpdateButton() {
     launchOptionalAppDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.optional_app_update_dialog_update_button_text)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.optional_app_update_dialog_update_button_text))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -170,7 +172,8 @@ class OptionalAppDeprecationNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasDismissButton() {
     launchOptionalAppDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.optional_app_update_dialog_dismiss_button_text)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.optional_app_update_dialog_dismiss_button_text))
+        .check(matches(isDisplayed()))
     }
   }
 

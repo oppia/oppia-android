@@ -10,8 +10,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
@@ -134,7 +134,8 @@ class OsDeprecationNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasExpectedTitle() {
     launchOsDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.os_deprecation_dialog_title)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.os_deprecation_dialog_title))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -153,7 +154,8 @@ class OsDeprecationNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasDismissButton() {
     launchOsDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.os_deprecation_dialog_dismiss_button_text)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.os_deprecation_dialog_dismiss_button_text))
+        .check(matches(isDisplayed()))
     }
   }
 

@@ -153,7 +153,8 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasUpdateButton() {
     launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.forced_app_update_dialog_update_button_text)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.forced_app_update_dialog_update_button_text))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -170,7 +171,8 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasCloseAppButton() {
     launchForcedAppDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.forced_app_update_dialog_close_button_text)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.forced_app_update_dialog_close_button_text))
+        .check(matches(isDisplayed()))
     }
   }
 
