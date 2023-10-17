@@ -81,13 +81,10 @@ class FractionInteractionViewModel private constructor(
         }
       }
       AnswerErrorCategory.SUBMIT_TIME -> {
-        pendingAnswerError = if (answerText.isNotEmpty()) {
+        pendingAnswerError =
           FractionParsingUiError.createFromParsingError(
             fractionParser.getSubmitTimeError(answerText.toString())
           ).getErrorMessageFromStringRes(resourceHandler)
-        } else {
-          resourceHandler.getStringInLocale(R.string.interaction_answer_empty_on_submit)
-        }
       }
     }
     errorMessage.set(pendingAnswerError)
