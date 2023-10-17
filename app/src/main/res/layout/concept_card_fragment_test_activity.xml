@@ -8,7 +8,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     style="?android:attr/buttonBarButtonStyle"
-    android:text="Concept Card 1"
+    android:text="@string/concept_card_one_button_text"
     android:textAllCaps="false"/>
 
   <Button
@@ -16,6 +16,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     style="?android:attr/buttonBarButtonStyle"
-    android:text="Concept Card 2"
+    android:text="@string/concept_card_two_button_text"
     android:textAllCaps="false" />
 </LinearLayout>
