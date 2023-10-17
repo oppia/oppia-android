@@ -39,7 +39,6 @@ class SplashActivity :
   AppCompatActivity(),
   FragmentComponentFactory,
   DeprecationNoticeExitAppListener,
-  DeprecationNoticeActionListener,
   BetaNoticeClosedListener,
   GeneralAvailabilityUpgradeNoticeClosedListener {
 
@@ -62,15 +61,7 @@ class SplashActivity :
     return builderInjector.getFragmentComponentBuilderProvider().get().setFragment(fragment).build()
   }
 
-  override fun onActionButtonClicked(noticeType: DeprecationNoticeActionType) {
-    when (noticeType) {
-      DeprecationNoticeActionType.CLOSE -> splashActivityPresenter.handleOnCloseAppButtonClicked()
-      DeprecationNoticeActionType.DISMISS -> splashActivityPresenter.handleOnDismissButtonClicked()
-      DeprecationNoticeActionType.UPDATE -> splashActivityPresenter.handleOnUpdateButtonClicked()
-    }
-  }
-
-  override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnCloseAppButtonClicked()
+  override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnDeprecationNoticeCloseAppButtonClicked()
 
   override fun onBetaNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnBetaNoticeOkayButtonClicked(permanentlyDismiss)

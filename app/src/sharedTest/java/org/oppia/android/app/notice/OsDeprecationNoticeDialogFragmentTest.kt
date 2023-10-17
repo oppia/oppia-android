@@ -8,9 +8,10 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
@@ -133,8 +134,7 @@ class OsDeprecationNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasExpectedTitle() {
     launchOsDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(ViewMatchers.withText(R.string.os_deprecation_dialog_title))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      onDialogView(withText(R.string.os_deprecation_dialog_title)).check(matches(isDisplayed()))
     }
   }
 
@@ -146,23 +146,21 @@ class OsDeprecationNoticeDialogFragmentTest {
         R.string.os_deprecation_dialog_message,
         appName
       )
-      onDialogView(ViewMatchers.withText(expectedString))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      onDialogView(withText(expectedString)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testFragment_hasDismissButton() {
     launchOsDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(ViewMatchers.withText(R.string.os_deprecation_dialog_dismiss_button_text))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      onDialogView(withText(R.string.os_deprecation_dialog_dismiss_button_text)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testFragment_clickOnDismissButton_callsCallbackListener_withDismissDeprecationActionType() {
     launchOsDeprecationNoticeDialogFragmentTestActivity {
-      clickOnDialogView(ViewMatchers.withText(R.string.os_deprecation_dialog_dismiss_button_text))
+      clickOnDialogView(withText(R.string.os_deprecation_dialog_dismiss_button_text))
 
       verify(mockDeprecationNoticeActionListener)
         .onActionButtonClicked(DeprecationNoticeActionType.DISMISS)
@@ -194,7 +192,7 @@ class OsDeprecationNoticeDialogFragmentTest {
 
   private companion object {
     private fun onDialogView(matcher: Matcher<View>) = Espresso.onView(matcher)
-      .inRoot(RootMatchers.isDialog())
+      .inRoot(isDialog())
   }
 
   @Singleton
