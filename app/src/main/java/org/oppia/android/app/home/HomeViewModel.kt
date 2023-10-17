@@ -1,6 +1,7 @@
 package org.oppia.android.app.home
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -58,6 +59,15 @@ class HomeViewModel(
     R.integer.promoted_story_list_limit
   )
 
+/**
+   * A Boolean property indicating the visibility state of a progress bar.
+   * This property is used to control the visibility of a progress bar in a user interface.
+   * When set to true, the progress bar is made visible, indicating that an ongoing task
+   * or operation is in progress or pending or failed. When set to false, the progress bar is hidden, indicating
+   * that the operation has completed.
+   */
+  val isProgressBarVisible = ObservableField(true)
+
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
   }
@@ -111,7 +121,10 @@ class HomeViewModel(
           listOf()
         }
         is AsyncResult.Pending -> listOf()
-        is AsyncResult.Success -> itemListResult.value
+        is AsyncResult.Success -> {
+          isProgressBarVisible.set(false)
+          itemListResult.value
+        }
       }
     }
   }
