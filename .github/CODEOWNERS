@@ -5,8 +5,8 @@
 #   following:                                                                 #
 #   (a) Make sure there are other folks on your codeowner team.                #
 #   (b) Send a note to them and make sure they can cover your reviews while    #
-#     absent, and tell them when you'll be back. Please include @BenHenning,   #
-#     @seanlip, and @adhiamboperes on that note.                               #
+#     absent, and tell them when you'll be back. Please include                #
+#     on that note.                                                            #
 #   (c) Update your GitHub status to "busy" to make sure you don't get         #
 #     reviews. @MohitGupta121                                                  #
 #   (d) When you're back, change your status back so that you get new reviews. #
