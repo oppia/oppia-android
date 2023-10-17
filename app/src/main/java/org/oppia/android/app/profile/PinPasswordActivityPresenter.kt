@@ -73,9 +73,9 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
 
     val am = (activity).getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-    val isTalkbackEnabled=am.isTouchExplorationEnabled()
+    val isTalkbackEnabled = am.isTouchExplorationEnabled()
 
-    if(!isTalkbackEnabled)
+    if (!isTalkbackEnabled)
       binding.pinPasswordInputPinEditText.requestFocus()
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
