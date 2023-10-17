@@ -1,7 +1,6 @@
 package org.oppia.android.app.databinding;
 
 import android.content.res.ColorStateList;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
