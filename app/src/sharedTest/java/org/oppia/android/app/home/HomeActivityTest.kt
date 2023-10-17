@@ -309,7 +309,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good morning, Admin!"
+        stringToMatch = "Good test, Admin!"
       )
     }
   }
