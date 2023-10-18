@@ -116,6 +116,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -146,6 +147,9 @@ class PinPasswordActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val adminPin = "12345"
   private val adminId = 0
@@ -181,7 +185,8 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_keyboardIsVisibleByDefault() {
+  fun testPinPassword_withAdmin_readOff_keyboardIsVisible() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -190,6 +195,20 @@ class PinPasswordActivityTest {
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(hasFocus()))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_readOn_keyboardIsNotVisible() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(not(hasFocus())))
     }
   }
 
