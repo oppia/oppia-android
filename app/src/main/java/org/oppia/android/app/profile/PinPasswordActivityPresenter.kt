@@ -1,8 +1,6 @@
 package org.oppia.android.app.profile
 
-import android.content.Context
 import android.text.method.PasswordTransformationMethod
-import android.view.accessibility.AccessibilityManager
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +19,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 import kotlin.system.exitProcess
+import org.oppia.android.util.accessibility.AccessibilityService
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -33,6 +32,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<PinPasswordViewModel>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
+  @Inject lateinit var accessibilityService: AccessibilityService
   private val pinViewModel by lazy {
     getPinPasswordViewModel()
   }
@@ -72,11 +72,8 @@ class PinPasswordActivityPresenter @Inject constructor(
       }
     }
 
-    val am = (activity).getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-    val isTalkbackEnabled = am.isTouchExplorationEnabled()
-
-    if (!isTalkbackEnabled)
-      binding.pinPasswordInputPinEditText.requestFocus()
+    if (!accessibilityService.isScreenReaderEnabled())
+        binding.pinPasswordInputPinEditText.requestFocus()
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.pinPasswordInputPinEditText.onTextChanged { pin ->
