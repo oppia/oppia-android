@@ -28,6 +28,10 @@ const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
 @Qualifier
 annotation class FlagEnableDownloadsSupportIsServerProvided
 
+/** The feature flag name corresponding to [FlagEnableDownloadsSupportIsServerProvided]. */
+const val FLAG_ENABLE_DOWNLOADS_SUPPORT_IS_SERVER_PROVIDED =
+  "flag_enable_downloads_support_is_server_provided"
+
 /**
  * Default value for the feature flag sync status tracker corresponding to
  * [FlagEnableDownloadsSupportIsServerProvided].
@@ -47,6 +51,10 @@ const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = true
  */
 @Qualifier
 annotation class FlagEnableLanguageSelectionUiIsServerProvided
+
+/** The feature flag name corresponding to [FlagEnableLanguageSelectionUiIsServerProvided]. */
+const val FLAG_ENABLE_LANGUAGE_SELECTION_UI_IS_SERVER_PROVIDED =
+  "flag_enable_language_selection_ui_is_server_provided"
 
 /**
  * Default value for the feature flag sync status tracker corresponding to
@@ -69,6 +77,10 @@ const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
  */
 @Qualifier
 annotation class FlagEnableExtraTopicTabsUiIsServerProvided
+
+/** The feature flag name corresponding to [FlagEnableExtraTopicTabsUiIsServerProvided]. */
+const val FLAG_ENABLE_EXTRA_TOPIC_TABS_UI_IS_SERVER_PROVIDED =
+  "flag_enable_extra_topic_tabs_ui_is_server_provided"
 
 /**
  * Default value for the feature flag sync status tracker corresponding to
@@ -96,11 +108,15 @@ const val LEARNER_STUDY_ANALYTICS = "learner_study_analytics"
 const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = false
 
 /**
- * Qualifier to keep track of the sync status of the [EnableLearnerStudyAnalytics] and help determine
- * if the value of the feature flag is server-provided or default.
+ * Qualifier to keep track of the sync status of the [EnableLearnerStudyAnalytics] and help
+ * determine if the value of the feature flag is server-provided or default.
  */
 @Qualifier
 annotation class FlagEnableLearnerStudyAnalyticsIsServerProvided
+
+/** The feature flag name corresponding to [FlagEnableLearnerStudyAnalyticsIsServerProvided]. */
+const val FLAG_ENABLE_LEARNER_STUDY_ANALYTICS_IS_SERVER_PROVIDED =
+  "flag_enable_learner_study_analytics_is_server_provided"
 
 /**
  * Default value for the feature flag sync status tracker corresponding to
@@ -126,11 +142,17 @@ const val FAST_LANGUAGE_SWITCHING_IN_LESSON = "fast_language_switching_in_lesson
 const val FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE = false
 
 /**
- * Qualifier to keep track of the sync status of the [EnableFastLanguageSwitchingInLesson] and help determine
- * if the value of the feature flag is server-provided or default.
+ * Qualifier to keep track of the sync status of the [EnableFastLanguageSwitchingInLesson] and help
+ * determine if the value of the feature flag is server-provided or default.
  */
 @Qualifier
 annotation class FlagEnableFastLanguageSwitchingInLessonIsServerProvided
+
+/** The feature flag name corresponding to
+ * [FlagEnableFastLanguageSwitchingInLessonIsServerProvided].
+ */
+const val FLAG_ENABLE_FAST_LANGUAGE_SWITCHING_IN_LESSON_IS_SERVER_PROVIDED =
+  "flag_enable_fast_language_switching_in_lesson_is_server_provided"
 
 /**
  * Default value for the feature flag sync status tracker corresponding to
@@ -153,11 +175,15 @@ const val LOGGING_LEARNER_STUDY_IDS = "logging_learner_study_ids"
 const val LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE = false
 
 /**
- * Qualifier to keep track of the sync status of the [EnableLoggingLearnerStudyIds] and help determine
- * if the value of the feature flag is server-provided or default.
+ * Qualifier to keep track of the sync status of the [EnableLoggingLearnerStudyIds] and help
+ * determine if the value of the feature flag is server-provided or default.
  */
 @Qualifier
 annotation class FlagEnableLoggingLearnerStudyIdsIsServerProvided
+
+/** The feature flag name corresponding to [FlagEnableLoggingLearnerStudyIdsIsServerProvided]. */
+const val FLAG_ENABLE_LOGGING_LEARNER_STUDY_IDS_IS_SERVER_PROVIDED =
+  "flag_enable_logging_learner_study_ids_is_server_provided"
 
 /**
  * Default value for the feature flag sync status tracker corresponding to
@@ -173,11 +199,15 @@ annotation class EnableEditAccountsOptionsUi
 const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false
 
 /**
- * Qualifier to keep track of the sync status of the [EnableEditAccountsOptionsUi] and help determine
- * if the value of the feature flag is server-provided or default.
+ * Qualifier to keep track of the sync status of the [EnableEditAccountsOptionsUi] and help
+ * determine if the value of the feature flag is server-provided or default.
  */
 @Qualifier
 annotation class FlagEnableEditAccountsOptionsUiIsServerProvided
+
+/** The feature flag name corresponding to [FlagEnableEditAccountsOptionsUiIsServerProvided]. */
+const val FLAG_ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_IS_SERVER_PROVIDED =
+  "flag_enable_edit_accounts_options_ui_is_server_provided"
 
 /**
  * Default value for the feature flag sync status tracker corresponding to
@@ -201,6 +231,11 @@ const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
  */
 @Qualifier
 annotation class FlagEnablePerformanceMetricsCollectionIsServerProvided
+
+/** The feature flag name corresponding to [FlagEnablePerformanceMetricsCollectionIsServerProvided].
+ */
+const val FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED =
+  "flag_enable_performance_metrics_collection_is_server_provided"
 
 /**
  * Default value for the feature flag sync status tracker corresponding to
@@ -226,6 +261,10 @@ const val ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE = true
 @Qualifier
 annotation class FlagEnableContinueButtonAnimationIsServerProvided
 
+/** The feature flag name corresponding to [FlagEnableContinueButtonAnimationIsServerProvided]. */
+const val FLAG_ENABLE_CONTINUE_BUTTON_ANIMATION_IS_SERVER_PROVIDED =
+  "flag_enable_continue_button_animation_is_server_provided"
+
 /**
  * Default value for the feature flag sync status tracker corresponding to
  * [FlagEnableContinueButtonAnimationIsServerProvided].
@@ -245,6 +284,10 @@ const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = false
  */
 @Qualifier
 annotation class FlagEnableSpotlightUiIsServerProvided
+
+/** The feature flag name corresponding to [FlagEnableSpotlightUiIsServerProvided]. */
+const val FLAG_ENABLE_SPOTLIGHT_UI_IS_SERVER_PROVIDED =
+  "flag_enable_spotlight_ui_is_server_provided"
 
 /**
  * Default value for the feature flag sync status tracker corresponding to
@@ -271,11 +314,18 @@ const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
 @Qualifier
 annotation class FlagEnableInteractionConfigChangeStateRetentionIsServerProvided
 
+/** The feature flag name corresponding to
+ * [FlagEnableInteractionConfigChangeStateRetentionIsServerProvided].
+ */
+const val FLAG_ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_IS_SERVER_PROVIDED =
+  "flag_enable_interaction_config_change_state_retention_is_server_provided"
+
 /**
  * Default value for the feature flag sync status tracker corresponding to
  * [FlagEnableInteractionConfigChangeStateRetentionIsServerProvided].
  */
-const val FLAG_ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_IS_SERVER_PROVIDED_DEFAULT_VALUE = false
+const val FLAG_ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_IS_SERVER_PROVIDED_DEFAULT_VALUE =
+  false
 
 /**
  * Qualifier for the [EnableAppAndOsDeprecation] feature flag that controls whether to enable
@@ -295,6 +345,10 @@ const val ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
  */
 @Qualifier
 annotation class FlagEnableAppAndOsDeprecationIsServerProvided
+
+/** The feature flag name corresponding to [FlagEnableAppAndOsDeprecationIsServerProvided]. */
+const val FLAG_ENABLE_APP_AND_OS_DEPRECATION_IS_SERVER_PROVIDED =
+  "flag_enable_app_and_os_deprecation_is_server_provided"
 
 /**
  * Default value for the feature flag sync status tracker corresponding to
