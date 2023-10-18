@@ -15,11 +15,11 @@ import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.PinPasswordActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 import kotlin.system.exitProcess
-import org.oppia.android.util.accessibility.AccessibilityService
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -73,7 +73,7 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
 
     if (!accessibilityService.isScreenReaderEnabled())
-        binding.pinPasswordInputPinEditText.requestFocus()
+      binding.pinPasswordInputPinEditText.requestFocus()
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.pinPasswordInputPinEditText.onTextChanged { pin ->
