@@ -77,6 +77,7 @@
           android:background="@drawable/state_button_primary_background"
           android:clickable="true"
           android:enabled="true"
+          android:focusable="true"
           android:onClick="@{(v) -> viewModel.onParseButtonClicked()}"
           android:text="@string/math_expression_parse_button_label"
           android:textSize="14sp"

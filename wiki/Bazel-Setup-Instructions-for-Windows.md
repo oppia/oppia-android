@@ -66,6 +66,8 @@ sudo dnf install java-1.8.0-openjdk
 ```
 - Set the default Java version to jdk-8 by running the following command `sudo update-alternatives --config java` and selecting the number with jdk-8.
 
+#### Follow [these instructions](https://www.java.com/en/download/help/path.html) to correctly set up $JAVA_HOME.
+
 **Python 2**
 
 Unfortunately, some of the Bazel build actions in the Android pipeline require Python 2 to be installed:
