@@ -1097,7 +1097,7 @@ class ExplorationActivityTest {
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
       )
-      // waitForTheView(withText("What is a Ratio?"))
+      waitForTheView(withText("What is a Ratio?"))
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
