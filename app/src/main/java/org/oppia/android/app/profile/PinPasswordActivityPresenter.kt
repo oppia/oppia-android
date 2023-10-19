@@ -72,10 +72,9 @@ class PinPasswordActivityPresenter @Inject constructor(
       }
     }
 
-     // If the screen reader is off, the EditText will receive focus.
-     // If the screen reader is on, the EditText won't receive focus.
-     // We need this because if we give focus to the EditText when the screen reader is on,
-     // talkBack will automatically focus on the EditText when the user enters the activity.
+    // If the screen reader is off, the EditText will receive focus.
+    // If the screen reader is on, the EditText won't receive focus.
+    // This is needed because requesting focus on the EditText when the screen reader is on gives TalkBack priority over other views in the screen, ignoring view hierachy.
     if (!accessibilityService.isScreenReaderEnabled())
       binding.pinPasswordInputPinEditText.requestFocus()
 
