@@ -185,7 +185,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_readOff_keyboardIsVisible() {
+  fun testPinPassword_withAdmin_screenReaderOff_keyboardIsVisible() {
     fakeAccessibilityService.setScreenReaderEnabled(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -199,7 +199,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_readOn_keyboardIsNotVisible() {
+  fun testPinPassword_withAdmin_screenReaderOn_keyboardIsNotVisible() {
     fakeAccessibilityService.setScreenReaderEnabled(true)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
