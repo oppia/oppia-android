@@ -98,6 +98,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -147,6 +148,9 @@ class PinPasswordActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+
   private val adminPin = "12345"
   private val adminId = 0
   private val userId = 1
@@ -181,7 +185,8 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_keyboardIsVisibleByDefault() {
+  fun testPinPassword_withAdmin_screenReaderOff_keyboardIsVisible() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -190,6 +195,20 @@ class PinPasswordActivityTest {
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(hasFocus()))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_screenReaderOn_keyboardIsNotVisible() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(not(hasFocus())))
     }
   }
 
