@@ -70,7 +70,7 @@ If the link does point to a valid license then choose the most appropriate categ
 1. scrapable_link: If the license text is plain text and the URL mentioned can be scraped directly from the original_link of the license. 
                    e.g - https://www.apache.org/licenses/LICENSE-2.0.txt
 2. extracted_copy_link: If the license text is plain text but can not be scraped directly from the original_link of the license.
-                        e.g - https://www.opensource.org/licenses/bsd-license
+                        e.g - https://opensource.org/license/bsd-3-clause
 3. direct_link_only: If the license text is not plain text, it's best to display only the link of the license.
                      e.g - https://developer.android.com/studio/terms.html
 
