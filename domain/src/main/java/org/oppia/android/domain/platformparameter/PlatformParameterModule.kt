@@ -185,7 +185,7 @@ class PlatformParameterModule {
     return platformParameterSingleton.getBooleanPlatformParameter(
       FLAG_ENABLE_LEARNER_STUDY_ANALYTICS_IS_SERVER_PROVIDED
     ) ?: PlatformParameterValue.createDefaultParameter(
-        FLAG_ENABLE_LEARNER_STUDY_ANALYTICS_IS_SERVER_PROVIDED_DEFAULT_VALUE
+      FLAG_ENABLE_LEARNER_STUDY_ANALYTICS_IS_SERVER_PROVIDED_DEFAULT_VALUE
     )
   }
 
@@ -208,8 +208,8 @@ class PlatformParameterModule {
     return platformParameterSingleton.getBooleanPlatformParameter(
       FLAG_ENABLE_FAST_LANGUAGE_SWITCHING_IN_LESSON_IS_SERVER_PROVIDED
     ) ?: PlatformParameterValue.createDefaultParameter(
-        FLAG_ENABLE_FAST_LANGUAGE_SWITCHING_IN_LESSON_IS_SERVER_PROVIDED_DEFAULT_VALUE
-      )
+      FLAG_ENABLE_FAST_LANGUAGE_SWITCHING_IN_LESSON_IS_SERVER_PROVIDED_DEFAULT_VALUE
+    )
   }
 
   @Provides
@@ -229,8 +229,8 @@ class PlatformParameterModule {
     return platformParameterSingleton.getBooleanPlatformParameter(
       FLAG_ENABLE_LOGGING_LEARNER_STUDY_IDS_IS_SERVER_PROVIDED
     ) ?: PlatformParameterValue.createDefaultParameter(
-        FLAG_ENABLE_LOGGING_LEARNER_STUDY_IDS_IS_SERVER_PROVIDED_DEFAULT_VALUE
-      )
+      FLAG_ENABLE_LOGGING_LEARNER_STUDY_IDS_IS_SERVER_PROVIDED_DEFAULT_VALUE
+    )
   }
 
   @Provides
@@ -262,8 +262,8 @@ class PlatformParameterModule {
     return platformParameterSingleton.getBooleanPlatformParameter(
       FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED
     ) ?: PlatformParameterValue.createDefaultParameter(
-        FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED_DEFAULT_VALUE
-      )
+      FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED_DEFAULT_VALUE
+    )
   }
 
   @Provides
@@ -318,8 +318,8 @@ class PlatformParameterModule {
     return platformParameterSingleton.getBooleanPlatformParameter(
       FLAG_ENABLE_SPOTLIGHT_UI_IS_SERVER_PROVIDED
     ) ?: PlatformParameterValue.createDefaultParameter(
-        FLAG_ENABLE_SPOTLIGHT_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
-      )
+      FLAG_ENABLE_SPOTLIGHT_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
+    )
   }
 
   @Provides
@@ -338,8 +338,8 @@ class PlatformParameterModule {
     return platformParameterSingleton.getBooleanPlatformParameter(
       FLAG_ENABLE_EXTRA_TOPIC_TABS_UI_IS_SERVER_PROVIDED
     ) ?: PlatformParameterValue.createDefaultParameter(
-        FLAG_ENABLE_EXTRA_TOPIC_TABS_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
-      )
+      FLAG_ENABLE_EXTRA_TOPIC_TABS_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
+    )
   }
 
   @Provides
@@ -378,7 +378,7 @@ class PlatformParameterModule {
     return platformParameterSingleton.getBooleanPlatformParameter(
       FLAG_ENABLE_CONTINUE_BUTTON_ANIMATION_IS_SERVER_PROVIDED
     ) ?: PlatformParameterValue.createDefaultParameter(
-        FLAG_ENABLE_CONTINUE_BUTTON_ANIMATION_IS_SERVER_PROVIDED_DEFAULT_VALUE
+      FLAG_ENABLE_CONTINUE_BUTTON_ANIMATION_IS_SERVER_PROVIDED_DEFAULT_VALUE
     )
   }
 
@@ -398,8 +398,8 @@ class PlatformParameterModule {
     return platformParameterSingleton.getBooleanPlatformParameter(
       FLAG_ENABLE_APP_AND_OS_DEPRECATION_IS_SERVER_PROVIDED
     ) ?: PlatformParameterValue.createDefaultParameter(
-        FLAG_ENABLE_APP_AND_OS_DEPRECATION_IS_SERVER_PROVIDED_DEFAULT_VALUE
-      )
+      FLAG_ENABLE_APP_AND_OS_DEPRECATION_IS_SERVER_PROVIDED_DEFAULT_VALUE
+    )
   }
 
   @Provides

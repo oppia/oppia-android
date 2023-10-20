@@ -111,11 +111,14 @@ class PlatformParameterSyncUpWorker private constructor(
       if (response != null) {
         val responseBody = checkNotNull(response.body())
         val platformParameterList = parseNetworkResponse(responseBody)
-        if (platformParameterList.isEmpty()) {
+
+        // Add boolean flags
+        val platformParameterListWithSyncStatusFlags = addSyncStatusFlags(platformParameterList)
+        if (platformParameterListWithSyncStatusFlags.isEmpty()) {
           throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
         }
         val cachingResult = platformParameterController
-          .updatePlatformParameterDatabase(platformParameterList)
+          .updatePlatformParameterDatabase(platformParameterListWithSyncStatusFlags)
           .retrieveData()
         if (cachingResult is AsyncResult.Failure) {
           throw IllegalStateException(cachingResult.error)
@@ -130,6 +133,27 @@ class PlatformParameterSyncUpWorker private constructor(
       exceptionsController.logNonFatalException(e)
       Result.failure()
     }
+  }
+
+  private fun addSyncStatusFlags(
+    platformParameterList: List<PlatformParameter>
+  ): List<PlatformParameter> {
+    val modifiedList = mutableListOf<PlatformParameter>()
+
+    for (param in platformParameterList) {
+      modifiedList.add(param)
+
+      val syncStatusParamKey = "flag_" + param.name + "_is_server_provided"
+
+      // Add it to the modified list
+      val paramSyncStatusTracker = PlatformParameter.newBuilder().setName(syncStatusParamKey)
+      paramSyncStatusTracker.boolean = true
+      paramSyncStatusTracker.build()
+
+      modifiedList.add(paramSyncStatusTracker.build())
+    }
+
+    return modifiedList
   }
 
   /** Creates an instance of [PlatformParameterSyncUpWorker] by properly injecting dependencies. */
