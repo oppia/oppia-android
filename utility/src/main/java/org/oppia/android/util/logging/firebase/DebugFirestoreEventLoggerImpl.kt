@@ -22,7 +22,7 @@ class DebugFirestoreEventLoggerImpl @Inject constructor(
     realEventLogger.uploadEvent(eventLog)
   }
 
-  /** Returns the list of all [EventLog]s logged since the app opened. */
+  /** Returns the list of all [EventLog]s logged for Firestore. */
   override fun getEventList(): List<EventLog> = eventList
 
   /** Returns the most recently logged event. */

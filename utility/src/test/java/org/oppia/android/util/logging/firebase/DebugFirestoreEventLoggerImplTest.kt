@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -14,18 +13,15 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.testing.FakeFirestoreEventLogger
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -41,9 +37,6 @@ class DebugFirestoreEventLoggerImplTest {
   @Inject
   lateinit var debugFirestoreLoggerImpl: DebugFirestoreEventLoggerImpl
 
-  @Inject
-  lateinit var debugFirestoreLogger: DebugFirestoreEventLogger
-
   private val eventLog1 = EventLog.newBuilder().setPriority(EventLog.Priority.ESSENTIAL).build()
   private val eventLog2 = EventLog.newBuilder().setPriority(EventLog.Priority.ESSENTIAL).build()
 
@@ -54,7 +47,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_returnsEvent() {
-    debugFirestoreLogger.uploadEvent(eventLog1)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
     val event = debugFirestoreLoggerImpl.getMostRecentEvent()
 
     Truth.assertThat(event).isEqualTo(eventLog1)
@@ -63,8 +56,8 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEventTwice_returnsLatestEvent() {
-    debugFirestoreLogger.uploadEvent(eventLog1)
-    debugFirestoreLogger.uploadEvent(eventLog2)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog2)
     val event = debugFirestoreLoggerImpl.getMostRecentEvent()
 
     Truth.assertThat(event).isEqualTo(eventLog2)
@@ -72,9 +65,9 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_clearAllEvents_logEventAgain_returnsLatestEvent() {
-    debugFirestoreLogger.uploadEvent(eventLog1)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
     debugFirestoreLoggerImpl.clearAllEvents()
-    debugFirestoreLogger.uploadEvent(eventLog2)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog2)
     val event = debugFirestoreLoggerImpl.getMostRecentEvent()
 
     Truth.assertThat(event).isEqualTo(eventLog2)
@@ -87,7 +80,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_clearAllEvents_getMostRecent_returnsFailure() {
-    debugFirestoreLogger.uploadEvent(eventLog1)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
     debugFirestoreLoggerImpl.clearAllEvents()
 
     val eventException = assertThrows(NoSuchElementException::class) {
@@ -107,7 +100,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_clearAllEvents_returnsEmptyList() {
-    debugFirestoreLogger.uploadEvent(eventLog1)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
     debugFirestoreLoggerImpl.clearAllEvents()
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
@@ -116,8 +109,8 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logMultipleEvents_clearAllEvents_returnsEmptyList() {
-    debugFirestoreLogger.uploadEvent(eventLog1)
-    debugFirestoreLogger.uploadEvent(eventLog2)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog2)
     debugFirestoreLoggerImpl.clearAllEvents()
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
@@ -126,7 +119,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_returnsNonEmptyList() {
-    debugFirestoreLogger.uploadEvent(eventLog1)
+    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
     Truth.assertThat(isListEmpty).isFalse()
@@ -161,36 +154,6 @@ class DebugFirestoreEventLoggerImplTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-  }
-
-  @Module
-  class TestLogReportingModule {
-    @Provides
-    @Singleton
-    fun provideExceptionLogger(): ExceptionLogger =
-      FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
-
-    @Provides
-    @Singleton
-    fun provideDebugEventLogger(debugAnalyticsEventLogger: DebugAnalyticsEventLogger):
-      AnalyticsEventLogger = debugAnalyticsEventLogger
-
-    @Provides
-    @Singleton
-    fun providePerformanceMetricsEventLogger(
-      factory: FirebaseAnalyticsEventLogger.Factory
-    ): PerformanceMetricsEventLogger =
-      factory.createPerformanceMetricEventLogger()
-
-    @Provides
-    fun provideDebugFirestoreEventLogger(
-      debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl
-    ): DebugFirestoreEventLogger = debugFirestoreEventLogger
-
-    @Provides
-    fun provideFirestoreEventLogger(
-      fakeFirestoreEventLogger: FakeFirestoreEventLogger
-    ): FirestoreEventLogger = fakeFirestoreEventLogger
   }
 
   // TODO(#89): Move this to a common test application component.
