@@ -30,6 +30,29 @@
         android:layout_height="match_parent"
         android:background="@color/component_color_shared_screen_tertiary_background_color" />
 
+      <ImageButton
+        android:id="@+id/help_multipane_options_back_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@color/component_color_shared_transparent_background_color"
+        android:contentDescription="@string/help_activity_back_arrow_description"
+        android:padding="12dp"
+        android:tint="@color/component_color_shared_multipane_icon_color"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_arrow_back_black_24_dp" />
+
+      <TextView
+        android:id="@+id/help_multipane_options_title_textview"
+        style="@style/Heading3ViewCenterVertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/component_color_shared_primary_text_color" />
+
+      <FrameLayout
+        android:id="@+id/multipane_options_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+
       <View
         android:id="@+id/help_activity_toolbar_shadow_view"
         android:layout_width="match_parent"
