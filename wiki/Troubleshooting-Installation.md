@@ -14,7 +14,7 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 2. If you find any error which says `java: command not found`, please check you have Java installed correctly in your machine and the [environment path variable](https://www.java.com/en/download/help/path.html) is also set up correctly.
 
 
-3. If you find any error related to Kotlin or Java/Checkstyle while pushing the code, please check [this link](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow#how-to-fix-push-failures).
+3. If you find any error related to Kotlin or Java/Checkstyle while pushing the code, please check [this link](https://github.com/oppia/oppia-android/wiki/Frequent-Errors-and-Solutions#push-failed).
 
 
 4. If you see the error
