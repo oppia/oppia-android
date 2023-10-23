@@ -148,7 +148,8 @@ const val FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE = false
 @Qualifier
 annotation class FlagEnableFastLanguageSwitchingInLessonIsServerProvided
 
-/** The feature flag name corresponding to
+/**
+ * The feature flag name corresponding to
  * [FlagEnableFastLanguageSwitchingInLessonIsServerProvided].
  */
 const val FLAG_ENABLE_FAST_LANGUAGE_SWITCHING_IN_LESSON_IS_SERVER_PROVIDED =
@@ -232,7 +233,8 @@ const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
 @Qualifier
 annotation class FlagEnablePerformanceMetricsCollectionIsServerProvided
 
-/** The feature flag name corresponding to [FlagEnablePerformanceMetricsCollectionIsServerProvided].
+/**
+ * The feature flag name corresponding to [FlagEnablePerformanceMetricsCollectionIsServerProvided].
  */
 const val FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED =
   "flag_enable_performance_metrics_collection_is_server_provided"
@@ -314,7 +316,8 @@ const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
 @Qualifier
 annotation class FlagEnableInteractionConfigChangeStateRetentionIsServerProvided
 
-/** The feature flag name corresponding to
+/**
+ * The feature flag name corresponding to
  * [FlagEnableInteractionConfigChangeStateRetentionIsServerProvided].
  */
 const val FLAG_ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_IS_SERVER_PROVIDED =
