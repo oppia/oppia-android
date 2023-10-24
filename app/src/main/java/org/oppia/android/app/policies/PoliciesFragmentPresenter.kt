@@ -50,7 +50,7 @@ class PoliciesFragmentPresenter @Inject constructor(
     if (policyPage == PolicyPage.PRIVACY_POLICY) {
       policyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
       val spannedContent: Spanned = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        Html.fromHtml(policyDescription,Html.FROM_HTML_MODE_COMPACT)
+        Html.fromHtml(policyDescription, Html.FROM_HTML_MODE_COMPACT)
       } else {
         @Suppress("DEPRECATION")
         Html.fromHtml(policyDescription)
