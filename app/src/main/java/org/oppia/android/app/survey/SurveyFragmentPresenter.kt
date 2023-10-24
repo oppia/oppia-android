@@ -175,11 +175,10 @@ class SurveyFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentQuestion() {
     ephemeralQuestionLiveData.observe(
-      fragment,
-      {
-        processEphemeralQuestionResult(it)
-      }
-    )
+      fragment.viewLifecycleOwner
+    ) {
+      processEphemeralQuestionResult(it)
+    }
   }
 
   private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralSurveyQuestion>) {
