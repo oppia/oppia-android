@@ -1,5 +1,5 @@
 **Working on your first pull request?** Pull requests (PRs) can be tricky to understand at first, so if the instructions on this page don't make sense to you, check out these resources:
-- The free series [How to Contribute to an Open Source Project on GitHub](https://app.egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+- The free series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github)
 - [Atlassian's tutorial on pull requests](https://www.atlassian.com/git/tutorials/making-a-pull-request).
 
 Here are the steps for making a PR to the Oppia Android codebase:

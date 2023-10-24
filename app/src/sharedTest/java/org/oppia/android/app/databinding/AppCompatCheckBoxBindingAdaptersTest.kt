@@ -127,7 +127,7 @@ class AppCompatCheckBoxBindingAdaptersTest {
     activityRule.scenario.onActivity {
       val appCompatCheckBox: AppCompatCheckBox = getAppCompatCheckBox(it)
       setButtonTint(appCompatCheckBox, colorRgb)
-      assertThat(appCompatCheckBox.supportButtonTintList?.defaultColor).isEqualTo(colorRgb)
+      assertThat(appCompatCheckBox.buttonTintList?.defaultColor).isEqualTo(colorRgb)
     }
   }
 
