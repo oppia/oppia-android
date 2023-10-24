@@ -1,15 +1,10 @@
 package org.oppia.android.app.policies
 
-import android.content.Intent
-import android.net.Uri
+
 import android.os.Build
 import android.text.Html
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,39 +50,30 @@ class PoliciesFragmentPresenter @Inject constructor(
     var policyDescription = ""
     var policyWebLink = ""
     if (policyPage == PolicyPage.PRIVACY_POLICY) {
-//      policyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
-//      binding.policyDescriptionTextView.text = makeLinksClickable(policyDescription)
-//      binding.policyDescriptionTextView.movementMethod = LinkMovementMethod.getInstance()
-//
-//      policyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
-//      binding.policyWebLinkTextView.text = makeLinksClickable(policyWebLink)
-//      binding.policyWebLinkTextView.movementMethod = LinkMovementMethod.getInstance()
-
-        policyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
-        val spannedContent: Spanned = if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
-          Html.fromHtml(policyDescription,Html.FROM_HTML_MODE_COMPACT)
-        }else{
-          @Suppress("DEPRECATION")
-          Html.fromHtml(policyDescription)
-        }
-        binding.policyDescriptionTextView.text = spannedContent
-        binding.policyDescriptionTextView.movementMethod = LinkMovementMethod.getInstance()
-
-        policyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
-        val policyWebLinkSpanned: Spanned = if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
-          Html.fromHtml(policyWebLink,Html.FROM_HTML_MODE_LEGACY)
-        }else{
-          @Suppress("DEPRECATION")
-          Html.fromHtml(policyWebLink)
-        }
-        binding.policyWebLinkTextView.text = policyWebLinkSpanned
-        binding.policyWebLinkTextView.movementMethod = LinkMovementMethod.getInstance()
-    }
-    else if (policyPage == PolicyPage.TERMS_OF_SERVICE) {
-      policyDescription = resourceHandler.getStringInLocale(R.string.terms_of_service_content)
+      policyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
       val spannedContent: Spanned = if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
         Html.fromHtml(policyDescription,Html.FROM_HTML_MODE_COMPACT)
-      }else{
+      } else {
+        @Suppress("DEPRECATION")
+        Html.fromHtml(policyDescription)
+      }
+      binding.policyDescriptionTextView.text = spannedContent
+      binding.policyDescriptionTextView.movementMethod = LinkMovementMethod.getInstance()
+
+      policyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
+      val policyWebLinkSpanned: Spanned = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        Html.fromHtml(policyWebLink,Html.FROM_HTML_MODE_LEGACY)
+      } else {
+        @Suppress("DEPRECATION")
+        Html.fromHtml(policyWebLink)
+      }
+      binding.policyWebLinkTextView.text = policyWebLinkSpanned
+      binding.policyWebLinkTextView.movementMethod = LinkMovementMethod.getInstance()
+    } else if (policyPage == PolicyPage.TERMS_OF_SERVICE) {
+      policyDescription = resourceHandler.getStringInLocale(R.string.terms_of_service_content)
+      val spannedContent: Spanned = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        Html.fromHtml(policyDescription,Html.FROM_HTML_MODE_COMPACT)
+      } else {
         @Suppress("DEPRECATION")
         Html.fromHtml(policyDescription)
       }
@@ -95,9 +81,9 @@ class PoliciesFragmentPresenter @Inject constructor(
       binding.policyDescriptionTextView.movementMethod = LinkMovementMethod.getInstance()
 
       policyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
-      val policyWebLinkSpanned: Spanned = if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
+      val policyWebLinkSpanned: Spanned = if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
         Html.fromHtml(policyWebLink,Html.FROM_HTML_MODE_LEGACY)
-      }else{
+      } else {
         @Suppress("DEPRECATION")
         Html.fromHtml(policyWebLink)
       }
