@@ -93,6 +93,18 @@
       android:label="@string/test_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.notice.testing.ForcedAppDeprecationNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.notice.testing.OptionalAppDeprecationNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.notice.testing.OsDeprecationNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.onboarding.OnboardingActivity"
       android:label="@string/onboarding_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
