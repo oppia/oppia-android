@@ -31,7 +31,10 @@ import org.oppia.android.app.mydownloads.MyDownloadsFragment
 import org.oppia.android.app.mydownloads.UpdatesTabFragment
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
+import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
+import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
+import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
 import org.oppia.android.app.onboarding.OnboardingFragment
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.android.app.options.AppLanguageFragment
@@ -113,7 +116,10 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
-  fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
+  fun inject(
+    automaticAppDeprecationNoticeDialogFragment:
+      AutomaticAppDeprecationNoticeDialogFragment
+  )
   fun inject(betaNoticeDialogFragment: BetaNoticeDialogFragment)
   fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
@@ -127,6 +133,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(explorationTestActivityTestFragment: ExplorationTestActivityPresenter.TestFragment)
   fun inject(faqListFragment: FAQListFragment)
   fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
+  fun inject(forcedAppDeprecationNoticeDialogFragment: ForcedAppDeprecationNoticeDialogFragment)
   fun inject(fragment: GeneralAvailabilityUpgradeNoticeDialogFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(hintsAndSolutionDialogFragment: HintsAndSolutionDialogFragment)
@@ -146,7 +153,9 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
+  fun inject(optionalAppDeprecationNoticeDialogFragment: OptionalAppDeprecationNoticeDialogFragment)
   fun inject(optionFragment: OptionsFragment)
+  fun inject(osDeprecationNoticeDialogFragment: OsDeprecationNoticeDialogFragment)
   fun inject(policiesFragment: PoliciesFragment)
   fun inject(profileAndDeviceIdFragment: ProfileAndDeviceIdFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)

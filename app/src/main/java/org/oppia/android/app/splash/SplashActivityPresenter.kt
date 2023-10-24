@@ -1,5 +1,8 @@
 package org.oppia.android.app.splash
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -64,9 +67,43 @@ class SplashActivityPresenter @Inject constructor(
     subscribeToOnboardingFlow()
   }
 
-  fun handleOnCloseAppButtonClicked() {
+  /** Handles cases where the user clicks the close app option on a deprecation notice dialog. */
+  fun handleOnDeprecationNoticeCloseAppButtonClicked() {
     // If the app close button is clicked for the deprecation notice, finish the activity to close
     // the app.
+    activity.finish()
+  }
+
+  /** Handles cases where the user clicks the update option on a deprecation notice dialog. */
+  fun handleOnDeprecationNoticeUpdateButtonClicked() {
+    // If the Update button is clicked for the deprecation notice, launch the Play Store and open
+    // the Oppia app's page.
+    val packageName = activity.packageName
+
+    try {
+      activity.startActivity(
+        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
+      )
+    } catch (e: ActivityNotFoundException) {
+      activity.startActivity(
+        Intent(
+          Intent.ACTION_VIEW,
+          Uri.parse(
+            "https://play.google.com/store/apps/details?id=$packageName"
+          )
+        )
+      )
+    }
+
+    // Finish splash activity to close the app in anticipation of an update.
+    activity.finish()
+  }
+
+  /** Handles cases where the user dismisses the deprecation notice dialog. */
+  fun handleOnDeprecationNoticeDialogDismissed() {
+    // If the Dismiss button is clicked for the deprecation notice, the dialog is automatically
+    // dismissed. Navigate to profile chooser activity.
+    activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
     activity.finish()
   }
 
