@@ -3,7 +3,6 @@
 
 -dontwarn com.google.firebase.components.Component$Instantiation
 -dontwarn com.google.firebase.components.Component$ComponentType
--dontwarn com.google.firebase.firestore.remote.FirestoreChannel
 -dontwarn javax.naming.**
 
 -keep class * implements com.google.firebase.components.ComponentRegistrar

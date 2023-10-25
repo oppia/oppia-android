@@ -1018,4 +1018,12 @@ android_library(
     ],
 )
 
+android_library(
+    name = "firestore_deps",
+    exports = [
+        "//third_party:com_google_auto_value_auto-value-annotations",
+        "//third_party:org_checkerframework_checker-qual",
+    ],
+)
+
 dagger_rules()
