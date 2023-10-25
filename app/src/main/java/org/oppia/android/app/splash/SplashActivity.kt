@@ -16,6 +16,16 @@ import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeClosedListen
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
+/** Enum class for the various deprecation notice actions available to the user. */
+enum class DeprecationNoticeActionType {
+  /** Action for when the user presses the 'Close' option on a deprecation dialog. */
+  CLOSE,
+  /** Action for when the user presses the 'Dismiss' option on a deprecation dialog. */
+  DISMISS,
+  /** Action for when the user presses the 'Update' option on a deprecation dialog. */
+  UPDATE
+}
+
 /**
  * An activity that shows a temporary loading page until the app is fully loaded then navigates to
  * the profile selection screen.
@@ -47,10 +57,12 @@ class SplashActivity :
 
   override fun createFragmentComponent(fragment: Fragment): FragmentComponent {
     val builderInjector = activityComponent as FragmentComponentBuilderInjector
-    return builderInjector.getFragmentComponentBuilderProvider().get().setFragment(fragment).build()
+    return builderInjector.getFragmentComponentBuilderProvider().get()
+      .setFragment(fragment).build()
   }
 
-  override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnCloseAppButtonClicked()
+  override fun onCloseAppButtonClicked() = splashActivityPresenter
+    .handleOnDeprecationNoticeCloseAppButtonClicked()
 
   override fun onBetaNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnBetaNoticeOkayButtonClicked(permanentlyDismiss)
