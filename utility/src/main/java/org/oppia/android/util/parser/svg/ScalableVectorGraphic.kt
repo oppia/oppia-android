@@ -90,10 +90,14 @@ class ScalableVectorGraphic {
     val fontMetrics = textPaint?.fontMetrics
     val fontHeight = fontMetrics?.descent?.minus(fontMetrics.ascent) ?: 0f
 
-    val adjustedWidth = imageFileNameWidth?.convertExToPx(fontHeight) ?: documentWidth ?: DEFAULT_SIZE_PX
-    val adjustedHeight = imageFileNameHeight?.convertExToPx(fontHeight) ?: documentHeight?: DEFAULT_SIZE_PX
+    val adjustedWidth =
+      imageFileNameWidth?.convertExToPx(fontHeight) ?: documentWidth ?: DEFAULT_SIZE_PX
+    val adjustedHeight =
+      imageFileNameHeight?.convertExToPx(fontHeight) ?: documentHeight ?: DEFAULT_SIZE_PX
 
-    val verticalAlignment = textPaint?.let { adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options)) } ?: 0f
+    val verticalAlignment = textPaint?.let {
+      adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options))
+    } ?: 0f
 
     return SvgSizeSpecs(
       adjustedWidth,
