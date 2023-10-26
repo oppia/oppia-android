@@ -14,26 +14,32 @@ annotation class TestStringParam
 const val TEST_STRING_PARAM_NAME = "test_string_param_name"
 
 /**
- * Default value for the test string platform parameter. Only used in tests related to platform parameter.
+ * Default value for the test string platform parameter. Only used in tests related to platform
+ * parameter.
  */
 const val TEST_STRING_PARAM_DEFAULT_VALUE = "test_string_param_default_value"
 
 /**
- * Server value for the test string platform parameter. Only used in tests related to platform parameter.
+ * Server value for the test string platform parameter. Only used in tests related to platform
+ * parameter.
  */
 const val TEST_STRING_PARAM_SERVER_VALUE = "test_string_param_value"
 
 /**
- * Name for the test string platform parameter. Only used in tests related to platform parameter.
+ * Feature flag sync status name for the test string platform parameter. This name helps retrieve
+ * the sync status of the [TestStringParam]. Only used in tests related to platform parameter.
  */
-const val TEST_STRING_PARAM_SYNC_STATUS_FLAG_NAME = "flag_test_string_param_name_is_server_provided"
+const val FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED =
+  "flag_test_string_param_name_is_server_provided"
 
 /**
- * Default value for the test string platform parameter. Only used in tests related to platform parameter.
+ * Default value for the feature flag sync status tracker for the [TestStringParam]. Only used in
+ * tests related to platform parameter.
  */
-const val TEST_STRING_PARAM_SYNC_STATUS_FLAG_DEFAULT_VALUE = false
+const val FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED_DEFAULT_VALUE = false
 
 /**
- * Server value for the test string platform parameter. Only used in tests related to platform parameter.
+ * Server value for the test string platform parameter. Only used in tests related to platform
+ * parameter.
  */
 const val TEST_STRING_PARAM_SYNC_STATUS_FLAG_SERVER_VALUE = true

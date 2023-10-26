@@ -112,8 +112,7 @@ class PlatformParameterSyncUpWorker private constructor(
         val responseBody = checkNotNull(response.body())
         val platformParameterList = parseNetworkResponse(responseBody)
 
-        // Add boolean flags
-        val platformParameterListWithSyncStatusFlags = addSyncStatusFlags(platformParameterList)
+        val platformParameterListWithSyncStatusFlags = platformParameterList.addSyncStatusFlags()
         if (platformParameterListWithSyncStatusFlags.isEmpty()) {
           throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
         }
@@ -135,18 +134,16 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
-  private fun addSyncStatusFlags(
-    platformParameterList: List<PlatformParameter>
-  ): List<PlatformParameter> {
+  private fun List<PlatformParameter>.addSyncStatusFlags(): List<PlatformParameter> {
     val modifiedList = mutableListOf<PlatformParameter>()
 
-    for (param in platformParameterList) {
+    for (param in this) {
       modifiedList.add(param)
-
       val syncStatusParamKey = "flag_" + param.name + "_is_server_provided"
 
-      // Add it to the modified list
       val paramSyncStatusTracker = PlatformParameter.newBuilder().setName(syncStatusParamKey)
+      // Update the boolean status of the derived syncStatusParamKey to true. This is necessary
+      // since sync status flags are local only and don't have a preset value.
       paramSyncStatusTracker.boolean = true
       paramSyncStatusTracker.build()
 

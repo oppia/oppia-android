@@ -9,7 +9,7 @@ import javax.inject.Qualifier
  *  - Feature Flag Name - The name begins with Enable_
  *  - Feature Flag Default Value
  *  - Feature Flag Status - A boolean that keeps track of whether the feature flag
- *  has been synced with Oppia Web or not.
+ *  has been synced with Oppia Web.
  */
 
 /**
@@ -216,11 +216,11 @@ const val FLAG_ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_IS_SERVER_PROVIDED =
  */
 const val FLAG_ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE = false
 
-/** Qualifier for the platform parameter that controls whether to record performance metrics. */
+/** Qualifier for the feature flag that controls whether to record performance metrics. */
 @Qualifier
 annotation class EnablePerformanceMetricsCollection
 
-/** Name of the platform parameter that controls whether to record performance metrics. */
+/** Name of the feature flag that controls whether to record performance metrics. */
 const val ENABLE_PERFORMANCE_METRICS_COLLECTION = "enable_performance_metrics_collection"
 
 /** Default value for whether to record performance metrics. */
@@ -246,7 +246,7 @@ const val FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED =
 const val FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED_DEFAULT_VALUE = false
 
 /**
- * Qualifier for the platform parameter that controls whether to animate the continue button
+ * Qualifier for the feature flag that controls whether to animate the continue button
  * interaction and navigation items. This is used to disable the animation during testing because
  * Espresso has known problems while testing views that contain animations.
  */

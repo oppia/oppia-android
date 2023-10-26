@@ -43,6 +43,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.testing.platformparameter.FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_DEFAULT_VALUE
@@ -50,7 +51,6 @@ import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SYNC_STATUS_FLAG_NAME
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SYNC_STATUS_FLAG_SERVER_VALUE
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -115,7 +115,7 @@ class PlatformParameterSyncUpWorkerTest {
     .build()
 
   private val expectedTestStringParameterFlagStatus = PlatformParameter.newBuilder()
-    .setName(TEST_STRING_PARAM_SYNC_STATUS_FLAG_NAME)
+    .setName(FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED)
     .setBoolean(TEST_STRING_PARAM_SYNC_STATUS_FLAG_SERVER_VALUE)
     .build()
 
@@ -360,13 +360,10 @@ class PlatformParameterSyncUpWorkerTest {
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
     // Controller in the form of a Map, therefore verify the retrieved values from that Map.
-    val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
-    assertThat(platformParameterMap)
-      .containsEntry(TEST_STRING_PARAM_NAME, expectedTestStringParameter)
-
     val platformParameterMapFlagStatus = platformParameterSingleton.getPlatformParameterMap()
-    assertThat(platformParameterMapFlagStatus)
-      .containsEntry(TEST_STRING_PARAM_SYNC_STATUS_FLAG_NAME, expectedTestStringParameterFlagStatus)
+    assertThat(platformParameterMapFlagStatus).containsEntry(
+      FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED, expectedTestStringParameterFlagStatus
+    )
   }
 
   private fun setUpTestApplicationComponent() {
