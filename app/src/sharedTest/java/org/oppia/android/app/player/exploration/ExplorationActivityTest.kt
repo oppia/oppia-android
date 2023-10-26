@@ -100,6 +100,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -264,7 +265,9 @@ class ExplorationActivityTest {
   // TODO(#388): Fill in remaining tests for this activity.
   @get:Rule
   var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
-    ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    ExplorationActivity::class.java, /* initialTouchMode= */
+    true, /* launchActivity= */
+    false
   )
 
   @Test
@@ -324,8 +327,9 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+  fun testExploration_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
     markAllSpotlightsSeen()
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -341,12 +345,60 @@ class ExplorationActivityTest {
 
     onView(withId(R.id.exploration_toolbar_title)).perform(click())
     assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(explorationToolbarTitle.isSelected).isEqualTo(true)
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
-  fun testExploration_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+  fun testExploration_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     markAllSpotlightsSeen()
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    )
+    val explorationToolbarTitle: TextView =
+      explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
+    ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    onView(withId(R.id.exploration_toolbar_title)).perform(click())
+    assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(explorationToolbarTitle.isSelected).isEqualTo(false)
+    assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  @Test
+  fun testExploration_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    markAllSpotlightsSeen()
+    fakeAccessibilityService.setScreenReaderEnabled(false)
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    )
+    val explorationToolbarTitle: TextView =
+      explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
+    ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+    onView(withId(R.id.exploration_toolbar_title)).perform(click())
+    assertThat(explorationToolbarTitle.isSelected).isEqualTo(true)
+    assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  @Test
+  fun testExploration_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    markAllSpotlightsSeen()
+    fakeAccessibilityService.setScreenReaderEnabled(true)
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -362,6 +414,7 @@ class ExplorationActivityTest {
 
     onView(withId(R.id.exploration_toolbar_title)).perform(click())
     assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(explorationToolbarTitle.isSelected).isEqualTo(false)
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -800,8 +853,10 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
@@ -827,8 +882,10 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
@@ -855,8 +912,10 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
@@ -938,8 +997,10 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
@@ -979,8 +1040,10 @@ class ExplorationActivityTest {
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
@@ -999,7 +1062,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.cellular_data_dialog_checkbox))
         .inRoot(isDialog())
         .perform(click())
-      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button)))
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_okay_button)))
         .inRoot(isDialog())
         .perform(click())
 
@@ -1130,8 +1193,10 @@ class ExplorationActivityTest {
     networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
@@ -2070,7 +2135,7 @@ class ExplorationActivityTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
+        TEST_EXPLORATION_ID_2
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
@@ -2130,7 +2195,7 @@ class ExplorationActivityTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
+        TEST_EXPLORATION_ID_2
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
@@ -2164,7 +2229,7 @@ class ExplorationActivityTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
+        TEST_EXPLORATION_ID_2
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
@@ -2218,7 +2283,8 @@ class ExplorationActivityTest {
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
       val dataSource = createAudioDataSource(
-        explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
+        explorationId = RATIOS_EXPLORATION_ID_0,
+        audioFileName = "content-en-057j51i2es.mp3"
       )
       addShadowMediaPlayerException(dataSource!!, IOException("Test does not have networking"))
     }
@@ -2229,10 +2295,12 @@ class ExplorationActivityTest {
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
       val dataSource = createAudioDataSource(
-        explorationId = FRACTIONS_EXPLORATION_ID_0, audioFileName = "content-en-nb3k4zuyir.mp3"
+        explorationId = FRACTIONS_EXPLORATION_ID_0,
+        audioFileName = "content-en-nb3k4zuyir.mp3"
       )
       val dataSource2 = createAudioDataSource(
-        explorationId = FRACTIONS_EXPLORATION_ID_0, audioFileName = "content-hi-en-l8ik9pdxj2a.mp3"
+        explorationId = FRACTIONS_EXPLORATION_ID_0,
+        audioFileName = "content-hi-en-l8ik9pdxj2a.mp3"
       )
       addShadowMediaPlayerException(dataSource!!, IOException("Test does not have networking"))
       addShadowMediaPlayerException(dataSource2!!, IOException("Test does not have networking"))
@@ -2244,7 +2312,9 @@ class ExplorationActivityTest {
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
     val addException =
       shadowMediaPlayerClass.getDeclaredMethod(
-        "addException", dataSource.javaClass, IOException::class.java
+        "addException",
+        dataSource.javaClass,
+        IOException::class.java
       )
     addException.invoke(/* obj= */ null, dataSource, exception)
   }
@@ -2260,7 +2330,9 @@ class ExplorationActivityTest {
     val dataSourceClass = classLoader.loadClass("org.robolectric.shadows.util.DataSource")
     val toDataSource =
       dataSourceClass.getDeclaredMethod(
-        "toDataSource", String::class.java, Map::class.java
+        "toDataSource",
+        String::class.java,
+        Map::class.java
       )
     return toDataSource.invoke(/* obj= */ null, audioUrl, /* headers= */ null)
   }
@@ -2422,10 +2494,9 @@ class ExplorationActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder

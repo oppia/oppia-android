@@ -27,6 +27,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionDebugModule
@@ -99,7 +100,7 @@ import javax.inject.Singleton
     SyncStatusModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     DeveloperBuildFlavorModule::class, EventLoggingConfigurationModule::class,
-    CpuPerformanceSnapshotterModule::class
+    CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {

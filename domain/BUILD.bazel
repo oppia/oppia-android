@@ -32,6 +32,7 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/domain/oppialogger/**/*.kt",
     "src/main/java/org/oppia/android/domain/util/*.kt",
     "src/main/java/org/oppia/android/domain/state/*.kt",
+    "src/main/java/org/oppia/android/domain/survey/*.kt",
 ])
 
 DOMAIN_ASSETS = generate_assets_list_from_text_protos(
@@ -198,6 +199,7 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
     "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding:deprecation_controller",
     "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
     "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",

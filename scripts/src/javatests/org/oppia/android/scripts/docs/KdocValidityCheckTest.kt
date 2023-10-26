@@ -44,7 +44,7 @@ class KdocValidityCheckTest {
     val testContent =
       """
       /**
-       * Returns the string corresponding to this error's string resources, or null if there 
+       * Returns the string corresponding to this error's string resources, or null if there
        * is none.
        */
       fun getErrorMessageFromStringRes(context: Context): String? {
@@ -258,7 +258,7 @@ class KdocValidityCheckTest {
     val testContent =
       """
       val testVal = "testContent"
-      
+
       fun provideContext(application: Application): Context
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFileTest.kt")
@@ -279,16 +279,14 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -350,21 +348,19 @@ class KdocValidityCheckTest {
   fun testKdoc_class_withoutKdoc_checkShouldFail() {
     val testContent =
       """
-      class TestClass {}  
+      class TestClass {}
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -380,21 +376,19 @@ class KdocValidityCheckTest {
         class NestedClass {
           class NestedLevel2Class {}
         }
-      }  
+      }
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:5
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -407,16 +401,14 @@ class KdocValidityCheckTest {
       /** Test KDoc 1. */
       class TestClass {
         val testVal = "test"
-        
+
         fun testFunc(){}
-      }  
+      }
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -424,7 +416,7 @@ class KdocValidityCheckTest {
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:5
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -440,9 +432,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -450,7 +440,7 @@ class KdocValidityCheckTest {
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -466,16 +456,14 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -493,16 +481,14 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -520,9 +506,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -531,7 +515,7 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -542,15 +526,13 @@ class KdocValidityCheckTest {
     val testContent =
       """
       const val TABLE_USER_ATTRIBUTE_EMPID = "_id"
-      
+
       const val TABLE_USER_ATTRIBUTE_DATA = "data"
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -558,7 +540,7 @@ class KdocValidityCheckTest {
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -570,21 +552,19 @@ class KdocValidityCheckTest {
       """
       fun getErrorMessageFromStringRes(context: Context): String? {
         return error?.let(context::getString)
-      }  
+      }
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -602,16 +582,14 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -625,14 +603,12 @@ class KdocValidityCheckTest {
         WELCOME(0),
         TOPIC_LIST(1),
         FINAL(2)
-      }  
+      }
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -642,7 +618,7 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -653,22 +629,20 @@ class KdocValidityCheckTest {
     val testContent =
       """
       interface ChapterSelector {
-        
+
         fun chapterSelected(chapterIndex: Int, nextStoryIndex: Int, explorationId: String)
-      
+
         fun chapterUnselected(chapterIndex: Int, nextStoryIndex: Int)
-        
+
         interface ChildInterface {
           fun testFunction()
         }
-      }  
+      }
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -679,7 +653,7 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:5
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:7
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:8
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -693,11 +667,11 @@ class KdocValidityCheckTest {
       class TestClass {
         companion object {
           val pos = 1
-          
+
           fun incrementedPosition(position: Int): Int {
             return position+1
           }
-          
+
           fun decrementedPosition(position: Int): Int {
             return position-1
           }
@@ -707,9 +681,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -718,7 +690,7 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:6
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:10
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -746,23 +718,21 @@ class KdocValidityCheckTest {
     val testContent =
       """
       import javax.inject.Qualifier
-      
+
       @Qualifier
       annotation class DelayShowAdditionalHintsFromWrongAnswerMillis
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -773,7 +743,7 @@ class KdocValidityCheckTest {
     val testContent1 =
       """
       import javax.inject.Qualifier
-      
+
       @Qualifier
       annotation class DelayShowAdditionalHintsFromWrongAnswerMillis
       """.trimIndent()
@@ -781,9 +751,9 @@ class KdocValidityCheckTest {
       """
       class TestClass {
         fun testFunc(){}
-        
+
         private val testVal = "test"
-        
+
         val testVal2 = "test2"
       }
       """.trimIndent()
@@ -798,9 +768,7 @@ class KdocValidityCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -811,7 +779,7 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:6
       - ${retrieveTestFilesDirectoryPath()}/TempFile3.kt:1
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -823,9 +791,9 @@ class KdocValidityCheckTest {
       """
       /** test kdoc. */
       val testVal1 = "test content"
-        
+
       val testVal2 = "test content"
-      
+
       fun getErrorMessageFromStringRes(context: Context): String? {
         return error?.let(context::getString)
       }
@@ -856,7 +824,7 @@ class KdocValidityCheckTest {
       """
       /** test Kdoc1. */
       val testVal = "test content"
-      
+
       /** test Kdoc2. */
       fun getErrorMessageFromStringRes(context: Context): String? {
         return error?.let(context::getString)
@@ -877,9 +845,7 @@ class KdocValidityCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -911,9 +877,7 @@ class KdocValidityCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -921,10 +885,10 @@ class KdocValidityCheckTest {
       Redundant exemptions:
       - app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt
       Please remove them from scripts/assets/kdoc_validity_exemptions.textproto
-      
+
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/HomeActivity.kt:1
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)

@@ -153,6 +153,7 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -164,7 +165,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_noExploration_throwsException() {
     // Can't retrieve the current state until the play session is started.
-    assertThrows(UninitializedPropertyAccessException::class) {
+    assertThrows<UninitializedPropertyAccessException>() {
       explorationProgressController.getCurrentState()
     }
   }
@@ -2595,6 +2596,31 @@ class ExplorationProgressControllerTest {
     }
   }
 
+  @Test
+  fun testStartExp_thenEndExp_callsExplorationStartedListener_andCallsExplorationEndedListener() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    explorationActiveTimeController.onAppInForeground()
+
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_4)
+
+    val sessionTime = TimeUnit.MINUTES.toMillis(5)
+
+    testCoroutineDispatchers.advanceTimeBy(sessionTime)
+
+    endExploration()
+
+    assertThat(getAggregateTopicTime()).isEqualTo(sessionTime)
+  }
+
+  private fun getAggregateTopicTime(): Long {
+    return monitorFactory.waitForNextSuccessfulResult(
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        this.profileId,
+        TEST_TOPIC_ID_0
+      )
+    ).topicLearningTimeMs
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -3180,7 +3206,8 @@ class ExplorationProgressControllerTest {
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterSingletonModule::class
+      SyncStatusModule::class, PlatformParameterSingletonModule::class,
+      ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

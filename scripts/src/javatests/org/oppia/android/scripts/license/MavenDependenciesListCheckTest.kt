@@ -112,7 +112,7 @@ class MavenDependenciesListCheckTest {
     val coordsList = listOf(DATA_BINDING_DEP, FIREBASE_ANALYTICS_DEP)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -189,7 +189,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -254,7 +254,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -331,7 +331,7 @@ class MavenDependenciesListCheckTest {
     val coordsList = listOf(GLIDE_DEP)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -411,7 +411,7 @@ class MavenDependenciesListCheckTest {
     val coordsList = listOf(GLIDE_DEP)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -488,7 +488,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -567,7 +567,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironmentWithUpdatedFirebaseDependency(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -646,7 +646,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -781,7 +781,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -831,7 +831,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,
@@ -887,7 +887,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
         scriptBgDispatcher,

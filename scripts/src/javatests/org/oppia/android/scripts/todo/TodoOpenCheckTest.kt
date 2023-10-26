@@ -44,9 +44,7 @@ class TodoOpenCheckTest {
 
   @Test
   fun testTodoCheck_noJsonFilePresent_checkShouldFail() {
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(
       "open_issues.json: No such file exists"
@@ -104,9 +102,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -117,9 +113,9 @@ class TodoOpenCheckTest {
       - TempFile.txt:3
       - TempFile.txt:4
       - TempFile.txt:5
-      
+
       $wikiReferenceNote
-      
+
       $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -144,9 +140,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -155,9 +149,9 @@ class TodoOpenCheckTest {
       - TempFile.txt:1
       - TempFile.txt:2
       - TempFile.txt:5
-      
+
       $wikiReferenceNote
-      
+
       $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -190,9 +184,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -200,13 +192,13 @@ class TodoOpenCheckTest {
       TODOs not in correct format:
       - TempFile1.kt:2
       - TempFile2.kt:1
-      
+
       TODOs not corresponding to open issues on GitHub:
       - TempFile1.kt:1
       - TempFile2.kt:3
-      
+
       $wikiReferenceNote
-      
+
       $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -246,9 +238,7 @@ class TodoOpenCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -257,13 +247,13 @@ class TodoOpenCheckTest {
       - Activity.kt:2
       - Fragment.kt:1
       - Presenter.kt:2
-      
+
       TODOs not corresponding to open issues on GitHub:
       - Fragment.kt:3
       - Presenter.kt:1
-      
+
       $wikiReferenceNote
-      
+
       $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -349,9 +339,7 @@ class TodoOpenCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -361,7 +349,7 @@ class TodoOpenCheckTest {
       - TempFile1.kt:2
       - TempFile2.kt:1
       Please remove them from scripts/assets/todo_exemptions.textproto
-      
+
       $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -403,9 +391,7 @@ class TodoOpenCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -413,15 +399,15 @@ class TodoOpenCheckTest {
       Redundant exemptions (there are no TODOs corresponding to these lines):
       - extra_dir/TempFile1.kt:2
       Please remove them from scripts/assets/todo_exemptions.textproto
-      
+
       TODOs not in correct format:
       - TempFile2.kt:1
-      
+
       TODOs not corresponding to open issues on GitHub:
       - extra_dir/TempFile1.kt:3
-      
+
       $wikiReferenceNote
-      
+
       $reRunNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -473,17 +459,17 @@ class TodoOpenCheckTest {
       Redundant exemptions (there are no TODOs corresponding to these lines):
       - extra_dir/TempFile1.kt:2
       Please remove them from scripts/assets/todo_exemptions.textproto
-      
+
       TODOs not in correct format:
       - TempFile2.kt:1
-      
+
       TODOs not corresponding to open issues on GitHub:
       - extra_dir/TempFile1.kt:3
-      
+
       $wikiReferenceNote
-      
+
       Regenerated exemptions:
-      
+
       todo_open_exemption {
         exempted_file_path: "TempFile2.kt"
         line_number: 1

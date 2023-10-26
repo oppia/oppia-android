@@ -38,7 +38,7 @@ class TestNoOpAssetRepositoryTest {
 
   @Test
   fun testLoadTextFileFromLocalAssets_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       assetRepository.loadTextFileFromLocalAssets("asset.json")
     }
 
@@ -57,7 +57,7 @@ class TestNoOpAssetRepositoryTest {
     assetRepository.primeTextFileFromLocalAssets("asset.json")
 
     // Priming doesn't do anything, so the exception is still thrown.
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       assetRepository.loadTextFileFromLocalAssets("asset.json")
     }
 
@@ -66,7 +66,7 @@ class TestNoOpAssetRepositoryTest {
 
   @Test
   fun testLoadProtoFromLocalAssets_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       assetRepository.loadProtoFromLocalAssets("test", TestMessage.getDefaultInstance())
     }
 
@@ -107,7 +107,7 @@ class TestNoOpAssetRepositoryTest {
 
   @Test
   fun testLoadRemoteBinaryAsset_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       assetRepository.loadRemoteBinaryAsset("https://example.com/test.pb")
     }
 
@@ -117,7 +117,7 @@ class TestNoOpAssetRepositoryTest {
 
   @Test
   fun testLoadImageAssetFromLocalAssets_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       assetRepository.loadImageAssetFromLocalAssets("https://example.com/test.png")
     }
 
@@ -137,7 +137,7 @@ class TestNoOpAssetRepositoryTest {
     assetRepository.primeRemoteBinaryAsset("https://example.com/test.pb")
 
     // Priming doesn't do anything, so the exception is still thrown.
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       assetRepository.loadRemoteBinaryAsset("https://example.com/test.pb")
     }
 

@@ -61,7 +61,7 @@ class RetrieveLicenseTextsTest {
 
   @Test
   fun testScript_oneArgument_printsUsageStringAndThrowsException() {
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockLicenseFetcher).main(arrayOf())
     }
 
@@ -71,7 +71,7 @@ class RetrieveLicenseTextsTest {
 
   @Test
   fun testScript_oneArguments_printsUsageStringAndThrowsException() {
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}/values"
@@ -90,7 +90,7 @@ class RetrieveLicenseTextsTest {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",
@@ -109,7 +109,7 @@ class RetrieveLicenseTextsTest {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",
@@ -139,7 +139,7 @@ class RetrieveLicenseTextsTest {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",

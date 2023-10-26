@@ -44,7 +44,7 @@ class TodoIssueResolvedCheckTest {
     val testContent1 =
       """
       // Test comment 1
-      
+
       // Test comment 2
       """.trimIndent()
     val testContent2 =
@@ -68,7 +68,7 @@ class TodoIssueResolvedCheckTest {
     val testContent1 =
       """
       // TODO(#169877): test description 1
-      
+
       // TODO(#1021211): test description 2
       """.trimIndent()
     val testContent2 =
@@ -92,7 +92,7 @@ class TodoIssueResolvedCheckTest {
     val testContent1 =
       """
       // TODO(#169877): test description 1
-      
+
       // TODO(#1021211): test description 2
       """.trimIndent()
     val testContent2 =
@@ -104,7 +104,7 @@ class TodoIssueResolvedCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows(Exception::class) { runScript(169877, "abmzuyt") }
+    val exception = assertThrows<Exception>() { runScript(169877, "abmzuyt") }
 
     assertThat(exception).hasMessageThat().contains(CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -112,7 +112,7 @@ class TodoIssueResolvedCheckTest {
       The following TODOs are unresolved for the closed issue:
       - TempFile1.kt:1
       - TempFile2.bazel:3
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -127,7 +127,7 @@ class TodoIssueResolvedCheckTest {
     val testContent1 =
       """
       // TODO(#169877): test description 1
-      
+
       // TODO(#1021211): test description 2
       """.trimIndent()
     val testContent2 =
@@ -139,7 +139,7 @@ class TodoIssueResolvedCheckTest {
     val testContent3 =
       """
       <!-- TODO(#169877): test description 4 -->
-      
+
       <!-- TODO(#174144): test description 5 -->
       <!-- TODO(#169877): test description 6 -->
       """.trimIndent()
@@ -147,7 +147,7 @@ class TodoIssueResolvedCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows(Exception::class) { runScript(169877, "abmzuyt") }
+    val exception = assertThrows<Exception>() { runScript(169877, "abmzuyt") }
 
     assertThat(exception).hasMessageThat().contains(CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -157,7 +157,7 @@ class TodoIssueResolvedCheckTest {
       - TempFile3.xml:1
       - TempFile3.xml:4
       - extra_dir/TempFile1.kt:1
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -171,7 +171,7 @@ class TodoIssueResolvedCheckTest {
     val testContent1 =
       """
       // TODO(#169877): test description 1
-      
+
       // TODO(#1021211): test description 2
       """.trimIndent()
     val testContent2 =
@@ -183,7 +183,7 @@ class TodoIssueResolvedCheckTest {
     val testContent3 =
       """
       <!-- TODO(#169877): test description 4 -->
-      
+
       <!-- TODO(#174144): test description 5 -->
       <!-- TODO(#169877): test description 6 -->
       """.trimIndent()
@@ -191,7 +191,7 @@ class TodoIssueResolvedCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    assertThrows(Exception::class) { runScript(169877, "abmzuyt") }
+    assertThrows<Exception>() { runScript(169877, "abmzuyt") }
     val fileContentList = File("${tempFolder.root}/testfiles/script_failures.txt").readLines()
     assertThat(fileContentList).containsExactly(
       "The issue is reopened because of the following unresolved TODOs:",
