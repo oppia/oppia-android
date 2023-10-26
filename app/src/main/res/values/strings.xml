@@ -5,6 +5,7 @@
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Exploration Player</string>
+  <string name="play_exploration_button_text">Play exploration</string>
   <string name="help_activity_title">Help</string>
   <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Switch Profile</string>
@@ -15,18 +16,20 @@
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
   <string name="audio_unavailable_in_selected_language">%s audio is unavailable.</string>
-  <string name="audio_language_select_dialog_okay_button">OK</string>
+  <string name="audio_language_select_dialog_okay_button">Ok</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="audio_dialog_offline_title">Currently Offline</string>
   <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
-  <string name="audio_dialog_offline_positive">OK</string>
-  <string name="cellular_data_alert_dialog_okay_button">OK</string>
+  <string name="audio_dialog_offline_positive">Ok</string>
+  <string name="cellular_data_alert_dialog_okay_button">Ok</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="concept_card_one_button_text">Concept Card 1</string>
+  <string name="concept_card_two_button_text">Concept Card 2</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
   <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
@@ -60,6 +63,7 @@
   <string name="previous_state_description">Navigate to the previous card</string>
   <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
+  <string name="submit_button_text">Submit</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
@@ -68,6 +72,7 @@
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
+  <string name="sample_text_view_text">This is a sample text view</string>
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
@@ -164,21 +169,11 @@
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
   <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
-  <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">
-    Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).
-  </string>
-  <string name="ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">
-    Please enter a valid ratio (e.g. 1:2 or 1:2:3).
-  </string>
-  <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">
-    Your answer has two colons (:) next to each other.
-  </string>
-  <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">
-    Number of terms is not equal to the required terms.
-  </string>
-  <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">
-    Ratios cannot have 0 as an element.
-  </string>
+  <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">Please enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">Your answer has two colons (:) next to each other.</string>
+  <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">Number of terms is not equal to the required terms.</string>
+  <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">Ratios cannot have 0 as an element.</string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%s Bytes</string>
   <string name="size_kb">%s KB</string>
@@ -186,56 +181,32 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
-  <string name="welcome_profile_name">%s!</string>
+  <string name="welcome_profile_name">%s %s!</string>
   <plurals name="chapter_count">
-    <item quantity="one">
-      1 Chapter
-    </item>
-    <item quantity="other">
-      %s Chapters
-    </item>
+    <item quantity="one">1 Chapter</item>
+    <item quantity="other">%s Chapters</item>
   </plurals>
   <plurals name="story_count">
-    <item quantity="one">
-      1 Story
-    </item>
-    <item quantity="other">
-      %s Stories
-    </item>
+    <item quantity="one">1 Story</item>
+    <item quantity="other">%s Stories</item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="one">%s of %s Chapter Completed</item>
     <item quantity="other">%s of %s Chapters Completed</item>
   </plurals>
   <plurals name="lesson_count">
-    <item quantity="one">
-      1 Lesson
-    </item>
-    <item quantity="other">
-      %s Lessons
-    </item>
+    <item quantity="one">1 Lesson</item>
+    <item quantity="other">%s Lessons</item>
   </plurals>
   <plurals name="completed_story_count">
-    <item quantity="one">
-      1 Story Completed
-    </item>
-    <item quantity="other">
-      %s Stories Completed
-    </item>
-    <item quantity="zero">
-      %s Stories Completed
-    </item>
+    <item quantity="one">1 Story Completed</item>
+    <item quantity="other">%s Stories Completed</item>
+    <item quantity="zero">%s Stories Completed</item>
   </plurals>
   <plurals name="ongoing_topic_count">
-    <item quantity="one">
-      1 Topic in Progress
-    </item>
-    <item quantity="other">
-      %s Topics in Progress
-    </item>
-    <item quantity="zero">
-      %s Topics in Progress
-    </item>
+    <item quantity="one">1 Topic in Progress</item>
+    <item quantity="other">%s Topics in Progress</item>
+    <item quantity="zero">%s Topics in Progress</item>
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
@@ -376,7 +347,7 @@
   <!-- ProfileRenameActivity -->
   <string name="profile_rename_activity_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
-  <string name="profile_rename_save">save</string>
+  <string name="profile_rename_save">Save</string>
   <!-- ProfileResetPinActivity -->
   <string name="profile_reset_pin_activity_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
@@ -390,6 +361,8 @@
   <string name="add_profile_required">Required</string>
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
+  <!-- ProfileAndDeviceIDsActivity -->
+  <string name="learner_analytics_label_text">Learner Study Analytics</string>
   <!-- AdministratorControlsFragment -->
   <string name="administrator_controls_general_label">General</string>
   <string name="administrator_controls_edit_account">Edit account</string>
@@ -413,12 +386,12 @@
   <string name="app_version_activity_title">App Version</string>
   <!-- OptionsActivity -->
   <string name="app_language_activity_title">App Language</string>
-  <string name="audio_language_activity_title">Default Audio Language</string>
+  <string name="audio_language_activity_title">Preferred Audio Language</string>
   <string name="reading_text_size_activity_title">Reading Text Size</string>
   <string name="title_reading_text_size">Reading Text Size</string>
   <string name="story_text_will_look_like_this">Story text will look like this.</string>
   <string name="constant_string_for_text_size">A</string>
-  <string name="audio_language">Default Audio</string>
+  <string name="audio_language">Preferred Audio Language</string>
   <string name="app_language">App Language</string>
   <string name="reading_text_size">Reading Text Size</string>
   <string name="reading_text_size_small">Small</string>
@@ -468,7 +441,6 @@
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
   <string name="last_logged_in_recently">recently</string>
-  <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>
   <string name="return_to_lesson">Return to lesson</string>
@@ -481,17 +453,18 @@
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes">
-    <item quantity="one">a minute</item>
-    <item quantity="other">%s minutes</item>
+  <plurals name="minutes_ago">
+    <item quantity="zero">0 minutes ago</item>
+    <item quantity="one">a minute ago</item>
+    <item quantity="other">%s minutes ago</item>
   </plurals>
-  <plurals name="hours">
-    <item quantity="one">an hour</item>
-    <item quantity="other">%s hours</item>
+  <plurals name="hours_ago">
+    <item quantity="one">an hour ago</item>
+    <item quantity="other">%s hours ago</item>
   </plurals>
-  <plurals name="days">
-    <item quantity="one">a day</item>
-    <item quantity="other">%s days</item>
+  <plurals name="days_ago">
+    <item quantity="one">a day ago</item>
+    <item quantity="other">%s days ago</item>
   </plurals>
   <!-- ViewTags -->
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
@@ -508,6 +481,39 @@
   <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
     Close app
   </string>
+  <string name="forced_app_update_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
+    App update required
+  </string>
+  <string name="forced_app_update_dialog_message" description="The main message of the dialog shown when a user's app has expired.">
+    A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.
+  </string>
+  <string name="forced_app_update_dialog_update_button_text" description="The update button text of the dialog shown when a user's pre-release app has expired.">
+    Update
+  </string>
+  <string name="forced_app_update_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
+    Close app
+  </string>
+  <string name="optional_app_update_dialog_title" description="The title of the dialog shown when an optional app update is available.">
+    New update available
+  </string>
+  <string name="optional_app_update_dialog_message" description="The main message of the dialog shown when an optional app update is available.">
+    A new version of %s is now available. We recommend that you update the app for bug fixes and a better learning experience.
+  </string>
+  <string name="optional_app_update_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an optional app update is available.">
+    Dismiss
+  </string>
+  <string name="optional_app_update_dialog_update_button_text" description="The update button text of the dialog shown when an optional app update is available.">
+    Update
+  </string>
+  <string name="os_deprecation_dialog_title" description="The title of the dialog shown when an the OS the user is using is no longer supported.">
+    Update your Android OS
+  </string>
+  <string name="os_deprecation_dialog_message" description="The main message of the dialog shown when an the OS the user is using is no longer supported.">
+    We recommend updating your Android OS to take advantage of %s\'s new features and lessons.\n\nVisit your phone\'s Settings app to update your OS.
+  </string>
+  <string name="os_deprecation_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an the OS the user is using is no longer supported.">
+    Dismiss
+  </string>
   <string name="splash_screen_developer_label">Developer Build</string>
   <string name="splash_screen_alpha_label">Alpha</string>
   <string name="splash_screen_beta_label">Beta</string>
@@ -519,13 +525,11 @@
   <string name="general_availability_notice_dialog_message">Hello! Your app is now being updated to the General Availability version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
-  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
-    \u0020to\u0020
-  </string>
-  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">
-    Enter a ratio in the form x:y.
-  </string>
+  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">\u0020to\u0020</string>
+  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">Enter a ratio in the form x:y.</string>
   <string name="text_input_default_hint_text">Tap here to enter text.</string>
+  <string name="test_number_input_interaction_hint">Write the digit here.</string>
+  <string name="test_text_input_interaction_hint">Write here.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>
@@ -625,4 +629,20 @@
   <string name="nps_score_question">On a scale from 0–10, how likely are you to recommend %s to a friend or colleague?</string>
   <string name="previous_subtopic_talkback_text">The previous subtopic is %s</string>
   <string name="next_subtopic_talkback_text">The next subtopic is %s</string>
+
+  <string name="app_info_icon_content_description">App Info</string>
+  <string name="spotlight_overlay_arrow_content_description">Spotlight Overlay Arrow</string>
+  <string name="close_spotlight_button_content_description">Close Spotlight Button</string>
+  <string name="previous_state_navigation_button_content_description">Previous State Navigation Button</string>
+  <string name="developer_options_icon_content_description">Developer Options Icon</string>
+  <string name="administrator_controls_icon_content_description">Administrator Controls Icon</string>
+  <string name="options_menu_content_description">Options Menu</string>
+  <string name="previous_button_content_description">Previous Button</string>
+  <string name="next_button_content_description">Next Button</string>
+  <string name="language_icon_content_description">Language Icon</string>
+  <string name="setting_icon_content_description">Setting Icon</string>
+  <string name="profile_picture_image_view_content_description">Profile Picture Image View</string>
+  <string name="lock_icon_content_description">Lock Icon</string>
+  <string name="download_status_image_content_description">Download Status</string>
+  <string name="font_scale_html_content_text">html Content</string>
 </resources>

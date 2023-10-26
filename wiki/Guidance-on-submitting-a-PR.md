@@ -1,5 +1,5 @@
 **Working on your first pull request?** Pull requests (PRs) can be tricky to understand at first, so if the instructions on this page don't make sense to you, check out these resources:
-- The free series [How to Contribute to an Open Source Project on GitHub](https://app.egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+- The free series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github)
 - [Atlassian's tutorial on pull requests](https://www.atlassian.com/git/tutorials/making-a-pull-request).
 
 Here are the steps for making a PR to the Oppia Android codebase:
@@ -153,6 +153,7 @@ You have successfully created a pull request! Now, wait for your code to get rev
 ### Clarification regarding **Assignees** and **Reviewers** section.
 1. **Reviewers**: This section is generally ignored by anyone who looks at the PR. It will be filled automatically by Oppiabot. Once this section is filled out, it generally should not change throughout the timeline of the PR.  
 2. **Assignees**: The main section to look at is the 'Assignees' field, which indicates the person(s) whom the PR is currently blocked on. Specifically:
+   - When a PR is created, the assignees section is blank. You can assign a reviewer by leaving a comment on the PR mentioning the reviewer, e.g "@Reviewer, PTAL". **Oppiabot** will assign the reviewer for you.
    - Initially, when the PR is submitted, the **Assignees** and **Reviewers** sections should be the same. 
    - Once a reviewer has reviewed the PR, they should de-assign themselves and assign it back to the PR author.
    - Similarly, once the author has made the requested changes, they should assign it back to the appropriate reviewer and de-assign themselves.

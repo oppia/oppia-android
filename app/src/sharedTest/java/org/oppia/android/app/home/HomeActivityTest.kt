@@ -247,14 +247,28 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withAdminProfile_profileNameIsDisplayed() {
+  fun testHomeActivity_loadingItemsPending_progressbarIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_fragment_progress_bar)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_loadingItemsSuccess_checkProgressbarIsNotDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.profile_name_text_view,
-        stringToMatch = "Admin!"
+      onView(withId(R.id.home_fragment_progress_bar)).check(
+        matches(
+          not(
+            isDisplayed()
+          )
+        )
       )
     }
   }
@@ -271,59 +285,61 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_withAdminProfile_configChange_profileNameIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
-        targetViewId = R.id.profile_name_text_view,
-        stringToMatch = "Admin!"
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Good evening, Admin!"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed() {
+  fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed_withAdminProfileName() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good morning,"
+        stringToMatch = "Good morning, Admin!"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed() {
+  fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed_withAdminProfileName() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good afternoon,"
+        stringToMatch = "Good afternoon, Admin!"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed() {
+  fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed_withAdminProfileName() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good evening,"
+        stringToMatch = "Good evening, Admin!"
       )
     }
   }
@@ -1094,7 +1110,7 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.profile_name_text_view
+          R.id.welcome_text_view
         )
       ).check(matches(not(isEllipsized())))
     }
@@ -1113,7 +1129,7 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.profile_name_text_view
+          R.id.welcome_text_view
         )
       ).check(matches(not(isEllipsized())))
     }
@@ -1131,7 +1147,7 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.profile_name_text_view
+          R.id.welcome_text_view
         )
       ).check(matches(not(isEllipsized())))
     }
@@ -1150,7 +1166,7 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.profile_name_text_view
+          R.id.welcome_text_view
         )
       ).check(matches(not(isEllipsized())))
     }
@@ -1574,7 +1590,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good morning,"
+        stringToMatch = "Good morning, Admin!"
       )
     }
   }
@@ -1634,7 +1650,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Bom dia,"
+        stringToMatch = "Bom dia, Admin!"
       )
       assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(1)
       // Verify that the display locale is set up correctly (for string formatting).
@@ -1664,7 +1680,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "صباح الخير"
+        stringToMatch = "صباح الخير \u200F\u202AAdmin\u202C\u200F!"
       )
     }
   }
@@ -1734,7 +1750,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Bom dia,"
+        stringToMatch = "Bom dia, Admin!"
       )
     }
   }
