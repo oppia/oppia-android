@@ -2209,9 +2209,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/res/drawable/test_layout.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
