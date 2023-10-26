@@ -71,8 +71,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
-    fragment: QuestionPlayerFragment
+    profileId: ProfileId
   ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
       inflater,
@@ -178,10 +177,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentQuestion() {
     ephemeralQuestionLiveData.observe(
-      fragment
-    ) {
-      processEphemeralQuestionResult(it)
-    }
+      fragment,
+      Observer {
+        processEphemeralQuestionResult(it)
+      }
+    )
   }
 
   private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>) {

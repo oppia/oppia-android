@@ -53,7 +53,7 @@ class QuestionPlayerFragment :
       "Expected arguments to be passed to QuestionPlayerFragment"
     }
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
-    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId, this)
+    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId)
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
