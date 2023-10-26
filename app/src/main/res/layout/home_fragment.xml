@@ -3,9 +3,8 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
     <import type="org.oppia.android.R" />
-
+    <import type="android.view.View" />
     <variable
       name="viewModel"
       type="org.oppia.android.app.home.HomeViewModel" />
@@ -16,6 +15,15 @@
     android:layout_height="match_parent"
     android:background="@color/component_color_shared_screen_primary_background_color"
     android:gravity="center">
+
+    <ProgressBar
+      android:id="@+id/home_fragment_progress_bar"
+      android:layout_width="60dp"
+      android:layout_height="60dp"
+      android:layout_gravity="center"
+      android:indeterminateTint="@color/component_color_home_activity_progressbar_color"
+      android:visibility="@{viewModel.isProgressBarVisible?View.VISIBLE:View.GONE}"
+      />
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/home_recycler_view"

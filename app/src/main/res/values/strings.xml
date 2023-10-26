@@ -5,6 +5,7 @@
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Exploration Player</string>
+  <string name="play_exploration_button_text">Play exploration</string>
   <string name="help_activity_title">Help</string>
   <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Switch Profile</string>
@@ -27,6 +28,8 @@
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="concept_card_one_button_text">Concept Card 1</string>
+  <string name="concept_card_two_button_text">Concept Card 2</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
   <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
@@ -60,6 +63,7 @@
   <string name="previous_state_description">Navigate to the previous card</string>
   <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
+  <string name="submit_button_text">Submit</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
@@ -68,6 +72,7 @@
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
+  <string name="sample_text_view_text">This is a sample text view</string>
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
@@ -356,6 +361,8 @@
   <string name="add_profile_required">Required</string>
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
+  <!-- ProfileAndDeviceIDsActivity -->
+  <string name="learner_analytics_label_text">Learner Study Analytics</string>
   <!-- AdministratorControlsFragment -->
   <string name="administrator_controls_general_label">General</string>
   <string name="administrator_controls_edit_account">Edit account</string>
@@ -465,9 +472,48 @@
   <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
   <string name="item_selection_text">Please select all correct choices.</string>
   <!-- SplashActivity -->
-  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">Unsupported app version</string>
-  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">This version of the app is no longer supported. Please update it through the Play Store.</string>
-  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
+  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
+    Unsupported app version
+  </string>
+  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">
+    This version of the app is no longer supported. Please update it through the Play Store.
+  </string>
+  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
+    Close app
+  </string>
+  <string name="forced_app_update_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
+    App update required
+  </string>
+  <string name="forced_app_update_dialog_message" description="The main message of the dialog shown when a user's app has expired.">
+    A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.
+  </string>
+  <string name="forced_app_update_dialog_update_button_text" description="The update button text of the dialog shown when a user's pre-release app has expired.">
+    Update
+  </string>
+  <string name="forced_app_update_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
+    Close app
+  </string>
+  <string name="optional_app_update_dialog_title" description="The title of the dialog shown when an optional app update is available.">
+    New update available
+  </string>
+  <string name="optional_app_update_dialog_message" description="The main message of the dialog shown when an optional app update is available.">
+    A new version of %s is now available. We recommend that you update the app for bug fixes and a better learning experience.
+  </string>
+  <string name="optional_app_update_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an optional app update is available.">
+    Dismiss
+  </string>
+  <string name="optional_app_update_dialog_update_button_text" description="The update button text of the dialog shown when an optional app update is available.">
+    Update
+  </string>
+  <string name="os_deprecation_dialog_title" description="The title of the dialog shown when an the OS the user is using is no longer supported.">
+    Update your Android OS
+  </string>
+  <string name="os_deprecation_dialog_message" description="The main message of the dialog shown when an the OS the user is using is no longer supported.">
+    We recommend updating your Android OS to take advantage of %s\'s new features and lessons.\n\nVisit your phone\'s Settings app to update your OS.
+  </string>
+  <string name="os_deprecation_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an the OS the user is using is no longer supported.">
+    Dismiss
+  </string>
   <string name="splash_screen_developer_label">Developer Build</string>
   <string name="splash_screen_alpha_label">Alpha</string>
   <string name="splash_screen_beta_label">Beta</string>
@@ -482,6 +528,8 @@
   <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">\u0020to\u0020</string>
   <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">Enter a ratio in the form x:y.</string>
   <string name="text_input_default_hint_text">Tap here to enter text.</string>
+  <string name="test_number_input_interaction_hint">Write the digit here.</string>
+  <string name="test_text_input_interaction_hint">Write here.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>
@@ -596,4 +644,5 @@
   <string name="profile_picture_image_view_content_description">Profile Picture Image View</string>
   <string name="lock_icon_content_description">Lock Icon</string>
   <string name="download_status_image_content_description">Download Status</string>
+  <string name="font_scale_html_content_text">html Content</string>
 </resources>
