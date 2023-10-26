@@ -3,9 +3,9 @@ package org.oppia.android.util.parser.svg
 import android.graphics.Picture
 import android.graphics.RectF
 import android.text.TextPaint
-import com.caverock.androidsvg.RenderOptions
-import com.caverock.androidsvg.SVG
-import com.caverock.androidsvg.utils.RenderOptionsBase
+import com.caverock.androidsvg.androidrendering.RenderOptions
+import com.caverock.androidsvg.androidrendering.RenderOptionsBase
+import com.caverock.androidsvg.androidrendering.SVG
 import org.oppia.android.util.parser.image.ImageTransformation
 
 /**
