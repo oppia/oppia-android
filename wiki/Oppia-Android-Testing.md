@@ -116,10 +116,10 @@ public class MyActivityTest {
 <img width="425" alt="Screenshot 2020-04-13 at 2 51 02 PM" src="https://user-images.githubusercontent.com/9396084/79109714-83525980-7d96-11ea-99d7-f83ea81a8a50.png">
 
 2. Add **Android JUnit** 
-<img width="1070" alt="Screenshot 2020-04-13 at 2 51 31 PM" src="https://user-images.githubusercontent.com/9396084/79109717-851c1d00-7d96-11ea-92c1-2e8a9c6ef88f.png">
+<img width="1070" alt="Screenshot 2020-04-13 at 2 51 31 PM" src="https://github.com/oppia/oppia-android/assets/76530270/87caf3fc-37d9-472d-92fd-b8ec49fb6b49">
 
 3. Enter following information - (a.) **Name** (Normally class name) (b.)**Use classpath of module** (c.) **Class**
-<img width="1074" alt="Screenshot 2020-04-13 at 3 18 39 PM" src="https://user-images.githubusercontent.com/9396084/79111450-307aa100-7d9a-11ea-8b9d-81aac26e104d.png">
+<img width="1074" alt="Screenshot 2020-04-13 at 3 18 39 PM" src="https://github.com/oppia/oppia-android/assets/76530270/7f1fd566-9da5-4295-b683-86a2606330c1">
 
 
 4. Press `OK` to run the test cases in robolectric.

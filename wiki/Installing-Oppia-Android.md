@@ -12,9 +12,9 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 
 ## Prepare developer environment
 
-1. Download/Install [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads). 
+1. Download/Install [Android Studio Bumblebee | Patch 3](https://developer.android.com/studio/archive). 
    
-   **Note**: We recommend installing **Android Studio Bumblebee** because newer versions of Android Studio[ do not support running tests where shared source sets are used](https://issuetracker.google.com/issues/232007221#comment18), a configuration we use at Oppia.
+   **Note**: We recommend installing **Android Studio Bumblebee | 2021.1.1 Patch 3** because newer versions of Android Studio[ do not support running tests where shared source sets are used](https://issuetracker.google.com/issues/232007221#comment18), a configuration we use at Oppia.
    
    **Direct download Url**: [Windows](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-windows.exe) | [Linux](https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2021.1.1.23/android-studio-2021.1.1.23-linux.tar.gz) | [Intel Mac](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-mac.dmg) | [Apple Silicon Mac](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-mac_arm.dmg)
 
@@ -22,10 +22,13 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 
 2. Configure your Android Studio
    - In Android Studio, open Tools > SDK Manager.
-     - In the "SDK Platforms" tab (which is the default), select `API Level 28` and also `API Level 31` (for Bazel support).
+     - In the "SDK Platforms" tab (which is the default), select `API Level 28` and also `API Level 30` (for Bazel support).
      - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 29.0.2 (this is needed for Bazel support).
 
    - Then, click "Apply" to download and install these two SDKs/Tools.
+   
+   - Must have **JDK 11** is selected:
+     - In Android Studio, open Settings > Build, Execution, Deployment > Build Tools > Gradle and edit the Gradle JDK field.
 
 ## Install oppia-android
 
@@ -81,28 +84,7 @@ Please follow these steps to set up Oppia Android on your local machine.
 ## Set up and run tests
 Testing the app is an integral part of our development process. You will need to test all code changes to ensure that the app works correctly, therefore it is important to ensure that your test configuration works.
 
-We run tests in either Espresso(`app` module tests) or Robolectric(non-app module tests), meaning tests will run in either the emulator or on Gradle/Bazel via the terminal.
-
-### Configure Emulator Tests
-1. In Android Studio, open the desired test file, e.g., `HomeActivityTest`.
-2. In the Android Studio toolbar, click on the `Available Devices` option. Select an emulator that has between API 28-30.
-
-   **Note**: If you don't have any available devices in this list, please follow [these instructions](#run-the-app-from-android-studio) to create one.
-3. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'HomeActivityTest'**.
-![](https://user-images.githubusercontent.com/59600948/272657131-96e5354b-13a9-4709-969a-b9494a65c30f.png)
-4. An "**Edit Configuration**" dialog will show up, and you should add the following settings under the general tab:
-   - For module, select **oppia-android.app**
-   - For Test, select **Class**
-   - For Instrumentation class, **org.oppia.android.testing.OppiaTestRunner**, will be selected by default.
-   - For target, select the **Use the device/snapshot dropdown** option.
-   - Verify that your setup looks like below:
-   -![](https://user-images.githubusercontent.com/59600948/272657260-2e654891-61be-467a-8ebd-c997aa2abda6.png)
-- Finally, Click the "Apply" and "Okay" buttons.
-- You may need to repeat step (3) above to run the test with the new configuration.
-- Subsequent runs of any app module tests will not require editing the configuration.
-- This configuration will run all the tests in that class.
-5. To run only a specific test in a file:
-   - Search or scroll down to the desired test name, to the left of the test name, click on the run icon and select **Run '`test name`''**.
+Robolectric allows for faster unit testing of Android applications without the need for device or emulator setup.
 
 ### Configure Robolectric Tests
 These are tests that are in non-app modules, such as **domain** or **utility**.
@@ -111,6 +93,31 @@ These are tests that are in non-app modules, such as **domain** or **utility**.
    - You will notice that the emulator is greyed out, but the run window will open to show the running tests:
    - ![](https://user-images.githubusercontent.com/59600948/272657015-158117e5-47d2-40fc-a38b-5dee6c347556.png)
 
+You can find step-by-step guidance for setting up and running Robolectric Tests in this [wiki](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing#robolectric).
+
+***Espresso is slower for unit testing Android applications compared to Robolectric, so we recommend to use Robolectric.***
+
+### Configure Emulator Tests
+1. In Android Studio, open the desired test file, e.g., `HomeActivityTest`.
+2. In the Android Studio toolbar, click on the `Available Devices` option. Select an emulator that has between API 28-30.
+
+   **Note**: If you don't have any available devices in this list, please follow [these instructions](#run-the-app-from-android-studio) to create one.
+3. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'HomeActivityTest'**.
+   ![](https://user-images.githubusercontent.com/59600948/272657131-96e5354b-13a9-4709-969a-b9494a65c30f.png)
+4. An "**Edit Configuration**" dialog will show up, and you should add the following settings under the general tab:
+   - For module, select **oppia-android.app**
+   - For Test, select **Class**
+   - For Instrumentation class, **org.oppia.android.testing.OppiaTestRunner**, will be selected by default.
+   - For target, select the **Use the device/snapshot dropdown** option.
+   - Verify that your setup looks like below:
+     -![](https://user-images.githubusercontent.com/59600948/272657260-2e654891-61be-467a-8ebd-c997aa2abda6.png)
+- Finally, Click the "Apply" and "Okay" buttons.
+- You may need to repeat step (3) above to run the test with the new configuration.
+- Subsequent runs of any app module tests will not require editing the configuration.
+- This configuration will run all the tests in that class.
+5. To run only a specific test in a file:
+   - Search or scroll down to the desired test name, to the left of the test name, click on the run icon and select **Run '`test name`''**.
+   
 ### Next Steps
 - Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
 
