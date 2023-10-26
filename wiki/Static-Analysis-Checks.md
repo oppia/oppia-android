@@ -12,6 +12,7 @@
     - [TODO open checks](#todo-open-checks)
     - [TODO issue resolved check](#todo-issue-resolved-check)
     - [How to run static checks locally](#how-to-run-static-checks-locally)
+    - [Developer Video - Understanding CI check failures](#developer-video---understanding-ci-check-failures)
 
 # Background
 Static analysis is a method of debugging by examining source code before a program is run. It’s done by analyzing a set of code against a set (or multiple sets) of coding rules.
@@ -241,3 +242,6 @@ To fix failing tests from GitHub CI individually, follow the steps below.
 - You can also go to scripts/static_checks.sh to view the failing check and run it locally.
 
 Note: Before running the script command in your local terminal, make sure you have Bazel installed. To learn how to set up Bazel for Oppia Android, follow these [instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions). Also make sure you have oppia-android-tools installed since static checks rely on these tools to be able to perform some of the checks. To install oppia-android-tools, run `bash scripts/setup.sh` in the oppia-android directory.
+
+### Developer Video - Understanding CI check failures
+Learn how to interpret and troubleshoot oppia-android CI check failures in this insightful [developer video](https://youtu.be/I2bRf6fvgJ0?si=35sAagbUFSk6bOBA).
