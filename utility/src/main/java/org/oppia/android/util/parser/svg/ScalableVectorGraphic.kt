@@ -79,12 +79,41 @@ class ScalableVectorGraphic {
     )
   }
 
+  fun computeSizeSpecsForTextPicture(textPaint: TextPaint?): SvgSizeSpecs {
+    val options = textPaint?.let { RenderOptionsBase().textPaint(it) } ?: RenderOptionsBase()
+    val documentWidth = parsedSvg.value.getDocumentWidthOrNull(options)
+    val documentHeight = parsedSvg.value.getDocumentHeightOrNull(options)
+
+    val imageFileNameWidth = extractedWidth?.toFloat()
+    val imageFileNameHeight = extractedHeight?.toFloat()
+
+    val fontMetrics = textPaint?.fontMetrics
+    val fontHeight = fontMetrics?.descent?.minus(fontMetrics.ascent) ?: 0f
+
+    val adjustedWidth = imageFileNameWidth?.convertExToPx(fontHeight) ?: documentWidth ?: DEFAULT_SIZE_PX
+    val adjustedHeight = imageFileNameHeight?.convertExToPx(fontHeight) ?: documentHeight?: DEFAULT_SIZE_PX
+
+    val verticalAlignment = textPaint?.let { adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options)) } ?: 0f
+
+    return SvgSizeSpecs(
+      adjustedWidth,
+      adjustedHeight,
+      renderedWidth = adjustedWidth,
+      renderedHeight = adjustedHeight,
+      verticalAlignment
+    )
+  }
+
+  private fun Float.convertExToPx(fontHeight: Float): Float {
+    return this * fontHeight * 0.5f
+  }
+
   /**
    * Returns an Android [Picture] including the draw instructions for rendering this SVG within a
    * line of text whose size and style is configured by the provided [textPaint].
    */
   fun renderToTextPicture(textPaint: TextPaint): Picture {
-    return computeSizeSpecs(textPaint).let { (width, height, _) ->
+    return computeSizeSpecsForTextPicture(textPaint).let { (width, height, _) ->
       val options =
         RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
       parsedSvg.value.renderToPicture(options)

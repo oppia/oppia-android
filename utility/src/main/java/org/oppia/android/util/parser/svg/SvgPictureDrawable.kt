@@ -89,9 +89,11 @@ abstract class SvgPictureDrawable(
   /** See [getIntrinsicWidth]. */
   override fun getIntrinsicHeight(): Int = intrinsicSize.renderedHeight.toInt()
 
-  override fun setAlpha(alpha: Int) { /* Unsupported. */ }
+  override fun setAlpha(alpha: Int) { /* Unsupported. */
+  }
 
-  override fun setColorFilter(colorFilter: ColorFilter?) { /* Unsupported. */ }
+  override fun setColorFilter(colorFilter: ColorFilter?) { /* Unsupported. */
+  }
 
   override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
@@ -100,11 +102,17 @@ abstract class SvgPictureDrawable(
    * when [textPaint] is null and text rendering when otherwise.
    */
   protected fun reinitialize(textPaint: TextPaint?) {
-    picture = textPaint?.let {
-      scalableVectorGraphic.renderToTextPicture(it)
-    } ?: scalableVectorGraphic.renderToBlockPicture()
+    val newPicture = if (textPaint != null) {
+      intrinsicSize = scalableVectorGraphic.computeSizeSpecsForTextPicture(textPaint)
+      scalableVectorGraphic.renderToTextPicture(textPaint)
+    } else {
+      intrinsicSize = scalableVectorGraphic.computeSizeSpecs(null)
+      scalableVectorGraphic.renderToBlockPicture()
+    }
+
+    picture = newPicture
+
     // TODO(#4246): Fix both SVG rendering performance and upscaling to ensure images aren't blurry.
-    intrinsicSize = scalableVectorGraphic.computeSizeSpecs(textPaint)
     if (scalableVectorGraphic.shouldBeRenderedAsBitmap()) {
       recomputeBitmap()
     }
