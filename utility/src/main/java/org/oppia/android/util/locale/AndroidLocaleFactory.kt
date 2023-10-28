@@ -55,13 +55,28 @@ class AndroidLocaleFactory @Inject constructor(
    */
   fun createAndroidLocale(localeContext: OppiaLocaleContext): Locale {
     // Note: computeIfAbsent is used here instead of getOrPut to ensure atomicity across multiple
-    // threads calling into this create function.
-    return memoizedLocales.computeIfAbsent(localeContext) {
-      val chooser = profileChooserSelector.findBestChooser(localeContext)
-      val primaryLocaleSource = LocaleSource.createFromPrimary(localeContext)
-      val fallbackLocaleSource = LocaleSource.createFromFallback(localeContext)
-      val proposal = chooser.findBestProposal(primaryLocaleSource, fallbackLocaleSource)
-      return@computeIfAbsent proposal.computedLocale
+    // threads calling into this create function. ( computeIfAbsent is introduced in API Level 24 )
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      memoizedLocales.computeIfAbsent(localeContext) {
+        val chooser = profileChooserSelector.findBestChooser(localeContext)
+        val primaryLocaleSource = LocaleSource.createFromPrimary(localeContext)
+        val fallbackLocaleSource = LocaleSource.createFromFallback(localeContext)
+        val proposal = chooser.findBestProposal(primaryLocaleSource, fallbackLocaleSource)
+        return@computeIfAbsent proposal.computedLocale
+      }
+    } else {
+      // Note : Using get/PutIfAbsent For API Level below 24 as computeIfAbsent is introduced in API Level 24
+      val locale = memoizedLocales[localeContext]
+      return if(locale != null){
+        locale
+      } else{
+        val chooser = profileChooserSelector.findBestChooser(localeContext)
+        val primaryLocaleSource = LocaleSource.createFromPrimary(localeContext)
+        val fallbackLocaleSource = LocaleSource.createFromFallback(localeContext)
+        val proposal = chooser.findBestProposal(primaryLocaleSource, fallbackLocaleSource)
+        memoizedLocales.putIfAbsent(localeContext , proposal.computedLocale)
+        proposal.computedLocale
+      }
     }
   }
 

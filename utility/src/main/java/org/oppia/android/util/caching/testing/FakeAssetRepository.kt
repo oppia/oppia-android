@@ -1,5 +1,6 @@
 package org.oppia.android.util.caching.testing
 
+import android.os.Build
 import com.google.protobuf.MessageLite
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.AssetRepositoryImpl
@@ -66,17 +67,43 @@ class FakeAssetRepository @Inject constructor(
   }
 
   private fun loadTextFile(assetName: String): String {
-    return trackedAssets.computeIfAbsent(assetName) {
-      prodImpl.loadTextFileFromLocalAssets(assetName)
-    } as? String ?: error("Asset doesn't exist: $assetName")
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      trackedAssets.computeIfAbsent(assetName) {
+        prodImpl.loadTextFileFromLocalAssets(assetName)
+      } as? String ?: error("Asset doesn't exist: $assetName")
+    } else {
+      val textData = trackedAssets[assetName]
+      return if(textData != null){
+        textData as? String ?: error("Asset doesn't exist: $assetName")
+      } else{
+        val dataFromFile = prodImpl.loadTextFileFromLocalAssets(assetName)
+        trackedAssets.putIfAbsent(assetName , dataFromFile)
+        dataFromFile as? String ?: error("Asset doesn't exist: $assetName")
+      }
+    }
   }
 
   private fun <T : MessageLite> loadProtoFile(assetName: String, defaultMessage: T): T? {
-    return trackedAssets.computeIfAbsent(assetName) {
-      prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
-    }?.let { protoAsset ->
-      @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
-      protoAsset as? T
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      trackedAssets.computeIfAbsent(assetName) {
+        prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
+      }?.let { protoAsset ->
+        @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
+        protoAsset as? T
+      }
+    } else {
+      val protoFile = trackedAssets[assetName]
+      if(protoFile != null){
+        @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
+        return protoFile as? T
+      }
+      else{
+        val loadedProtoFile =  prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
+        if (loadedProtoFile != null) {
+          trackedAssets.putIfAbsent(assetName , loadedProtoFile)
+        }
+        loadedProtoFile
+      }
     }
   }
 
