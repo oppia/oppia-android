@@ -74,7 +74,7 @@ class AndroidLocaleFactory @Inject constructor(
         val primaryLocaleSource = LocaleSource.createFromPrimary(localeContext)
         val fallbackLocaleSource = LocaleSource.createFromFallback(localeContext)
         val proposal = chooser.findBestProposal(primaryLocaleSource, fallbackLocaleSource)
-        memoizedLocales.putIfAbsent(localeContextg, proposal.computedLocale)
+        memoizedLocales.putIfAbsent(localeContext, proposal.computedLocale)
         proposal.computedLocale
       }
     }
