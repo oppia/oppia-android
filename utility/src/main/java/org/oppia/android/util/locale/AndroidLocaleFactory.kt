@@ -67,14 +67,14 @@ class AndroidLocaleFactory @Inject constructor(
     } else {
       // Note : Using get/PutIfAbsent For API Level below 24 as computeIfAbsent is introduced in API Level 24
       val locale = memoizedLocales[localeContext]
-      return if(locale != null){
+      return if (locale != null) {
         locale
-      } else{
+      } else {
         val chooser = profileChooserSelector.findBestChooser(localeContext)
         val primaryLocaleSource = LocaleSource.createFromPrimary(localeContext)
         val fallbackLocaleSource = LocaleSource.createFromFallback(localeContext)
         val proposal = chooser.findBestProposal(primaryLocaleSource, fallbackLocaleSource)
-        memoizedLocales.putIfAbsent(localeContext , proposal.computedLocale)
+        memoizedLocales.putIfAbsent(localeContextg, proposal.computedLocale)
         proposal.computedLocale
       }
     }

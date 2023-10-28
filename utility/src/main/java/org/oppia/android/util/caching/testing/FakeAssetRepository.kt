@@ -73,11 +73,11 @@ class FakeAssetRepository @Inject constructor(
       } as? String ?: error("Asset doesn't exist: $assetName")
     } else {
       val textData = trackedAssets[assetName]
-      return if(textData != null){
+      return if (textData != null) {
         textData as? String ?: error("Asset doesn't exist: $assetName")
-      } else{
+      } else {
         val dataFromFile = prodImpl.loadTextFileFromLocalAssets(assetName)
-        trackedAssets.putIfAbsent(assetName , dataFromFile)
+        trackedAssets.putIfAbsent(assetName, dataFromFile)
         dataFromFile as? String ?: error("Asset doesn't exist: $assetName")
       }
     }
@@ -93,14 +93,13 @@ class FakeAssetRepository @Inject constructor(
       }
     } else {
       val protoFile = trackedAssets[assetName]
-      if(protoFile != null){
+      if (protoFile != null) {
         @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
         return protoFile as? T
-      }
-      else{
-        val loadedProtoFile =  prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
+      } else {
+        val loadedProtoFile = prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
         if (loadedProtoFile != null) {
-          trackedAssets.putIfAbsent(assetName , loadedProtoFile)
+          trackedAssets.putIfAbsent(assetName, loadedProtoFile)
         }
         loadedProtoFile
       }
