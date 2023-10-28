@@ -79,7 +79,6 @@ class HtmlParser private constructor(
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
     if (isRtl) {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_RTL
-
     } else {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
     }
@@ -87,13 +86,13 @@ class HtmlParser private constructor(
 
     var htmlContent = rawString
 
-    if(isRtl){
+    if (isRtl) {
       val regex = Regex("""<oppia-noninteractive-image [^>]*>.*?</oppia-noninteractive-image>""")
       val modifiedHtmlContent = rawString.replace(regex) {
         val oppiaImageTag = it.value
         """<div style="text-align: center;">$oppiaImageTag</div>"""
       }
-      htmlContent=modifiedHtmlContent
+      htmlContent = modifiedHtmlContent
     }
 
     if ("\n\t" in htmlContent) {
