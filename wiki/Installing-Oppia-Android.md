@@ -27,7 +27,7 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 
    - Then, click "Apply" to download and install these two SDKs/Tools.
    
-   - Must have **JDK 11** is selected:
+   - Must have **JDK 11** selected:
      - In Android Studio, open Settings > Build, Execution, Deployment > Build Tools > Gradle and edit the Gradle JDK field.
 
 ## Install oppia-android
@@ -84,18 +84,35 @@ Please follow these steps to set up Oppia Android on your local machine.
 ## Set up and run tests
 Testing the app is an integral part of our development process. You will need to test all code changes to ensure that the app works correctly, therefore it is important to ensure that your test configuration works.
 
-Robolectric allows for faster unit testing of Android applications without the need for device or emulator setup.
+We strongly recommend running tests on Robolectric which is faster because it does not require a physical device or emulator setup.
 
 ### Configure Robolectric Tests
+**Step-by-Step guidance for setting up and running app modules robolectric test:**
+
+1. Go to **Edit Configuration** in Android Studio (Bumblebee | 2021.1.1 Patch 3)
+   ![](https://user-images.githubusercontent.com/9396084/79109714-83525980-7d96-11ea-99d7-f83ea81a8a50.png)
+
+2. Click on Add(+) -> **JUnit**
+   ![](https://github.com/oppia/oppia-android/assets/76530270/87caf3fc-37d9-472d-92fd-b8ec49fb6b49)
+
+3. Enter following information:
+   - a) Name of test. Example: In my case "SplashActivityTest"
+   - b) Make sure select "java 11" and oppia-android.app
+   - c) Class path of Test class. Example: In my case "org.oppia.android.app.splash.
+   SplashActivityTest"
+   - d) Press `OK` to select the test.
+   ![](https://github.com/oppia/oppia-android/assets/76530270/5901624a-df76-4b27-8f31-6077a68fcb89)
+
+4. Click on "Run" button to run robolectric test. (In my case "SplashActivityTest")
+   ![](https://github.com/oppia/oppia-android/assets/76530270/75a6b998-90c5-4f0a-8886-78f96970be90)
+
 These are tests that are in non-app modules, such as **domain** or **utility**.
 1. In Android Studio, open the desired test file, e.g., `AnalyticsControllerTest`.
 2. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'AnalyticsControllerTest'**.
    - You will notice that the emulator is greyed out, but the run window will open to show the running tests:
    - ![](https://user-images.githubusercontent.com/59600948/272657015-158117e5-47d2-40fc-a38b-5dee6c347556.png)
 
-You can find step-by-step guidance for setting up and running Robolectric Tests in this [wiki](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing#robolectric).
-
-***Espresso is slower for unit testing Android applications compared to Robolectric, so we recommend to use Robolectric.***
+**Espresso is slower for running tests, so we recommend using Robolectric.**
 
 ### Configure Emulator Tests
 1. In Android Studio, open the desired test file, e.g., `HomeActivityTest`.
@@ -119,7 +136,7 @@ You can find step-by-step guidance for setting up and running Robolectric Tests 
    - Search or scroll down to the desired test name, to the left of the test name, click on the run icon and select **Run '`test name`''**.
    
 ### Next Steps
-- Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
+- Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
 
 - When you are ready to submit a PR, please follow [these instructions](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR) on submitting a PR.
 
