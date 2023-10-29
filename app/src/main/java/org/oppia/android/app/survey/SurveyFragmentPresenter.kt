@@ -175,7 +175,7 @@ class SurveyFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentQuestion() {
     ephemeralQuestionLiveData.observe(
-      fragment
+      fragment.viewLifecycleOwner
     ) {
       processEphemeralQuestionResult(it)
     }
