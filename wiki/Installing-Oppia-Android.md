@@ -112,7 +112,7 @@ These are tests that are in non-app modules, such as **domain** or **utility**.
    - ![](https://user-images.githubusercontent.com/59600948/272657015-158117e5-47d2-40fc-a38b-5dee6c347556.png)
 
 ### Next Steps
-- Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
+- Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/labels/good%20first%20issue) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
 
 - When you are ready to submit a PR, please follow [these instructions](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR) on submitting a PR.
 
