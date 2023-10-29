@@ -1,9 +1,20 @@
 package org.oppia.android.app.policies
 
+import android.content.Intent
+import android.net.Uri
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.text.HtmlCompat
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PoliciesFragmentArguments
@@ -49,35 +60,64 @@ class PoliciesFragmentPresenter @Inject constructor(
       policyDescription =
         resourceHandler.getStringInLocale(R.string.privacy_policy_content)
       policyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
+      binding.policyDescriptionTextView.text = htmlParserFactory.create(
+        policyOppiaTagActionListener = this,
+        displayLocale = resourceHandler.getDisplayLocale()
+      ).parseOppiaHtml(
+        policyDescription,
+        binding.policyDescriptionTextView,
+        supportsLinks = true,
+        supportsConceptCards = false
+      )
+
+      binding.policyWebLinkTextView.text = htmlParserFactory.create(
+        gcsResourceName = "",
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = false,
+        customOppiaTagActionListener = null,
+        resourceHandler.getDisplayLocale()
+      ).parseOppiaHtml(
+        policyWebLink,
+        binding.policyWebLinkTextView,
+        supportsLinks = true,
+        supportsConceptCards = false
+      )
     } else if (policyPage == PolicyPage.TERMS_OF_SERVICE) {
       policyDescription =
         resourceHandler.getStringInLocale(R.string.terms_of_service_content)
-      policyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
+      val spannableString = SpannableString(HtmlCompat.fromHtml(policyDescription, HtmlCompat.FROM_HTML_MODE_LEGACY))
+      val uri = "https://www.oppia.org"
+      val spanStart = policyDescription.indexOf(uri) - 4
+      val spanEnd = spanStart + uri.length
+      val clickableSpan = object : ClickableSpan() {
+        override fun onClick(widget: View) {
+          val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+          activity.startActivity(intent)
+        }
+
+        override fun updateDrawState(ds: TextPaint) {
+          super.updateDrawState(ds)
+          ds.isUnderlineText = true
+        }
+      }
+      spannableString.setSpan(clickableSpan, spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+      binding.policyDescriptionTextView.text = spannableString
+      binding.policyDescriptionTextView.movementMethod = LinkMovementMethod.getInstance()
+      binding.policyWebLinkTextView.text = htmlParserFactory.create(
+        gcsResourceName = "",
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = false,
+        customOppiaTagActionListener = null,
+        resourceHandler.getDisplayLocale()
+      ).parseOppiaHtml(
+        policyWebLink,
+        binding.policyWebLinkTextView,
+        supportsLinks = true,
+        supportsConceptCards = false
+      )
     }
-
-    binding.policyDescriptionTextView.text = htmlParserFactory.create(
-      policyOppiaTagActionListener = this,
-      displayLocale = resourceHandler.getDisplayLocale()
-    ).parseOppiaHtml(
-      policyDescription,
-      binding.policyDescriptionTextView,
-      supportsLinks = true,
-      supportsConceptCards = false
-    )
-
-    binding.policyWebLinkTextView.text = htmlParserFactory.create(
-      gcsResourceName = "",
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = false,
-      customOppiaTagActionListener = null,
-      resourceHandler.getDisplayLocale()
-    ).parseOppiaHtml(
-      policyWebLink,
-      binding.policyWebLinkTextView,
-      supportsLinks = true,
-      supportsConceptCards = false
-    )
   }
 
   override fun onPolicyPageLinkClicked(policyType: PolicyType) {
