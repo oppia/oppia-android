@@ -134,20 +134,19 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
-  private fun List<PlatformParameter>.addSyncStatusFlags(): List<PlatformParameter> {
+ private fun List<PlatformParameter>.addSyncStatusFlags(): List<PlatformParameter> {
     val modifiedList = mutableListOf<PlatformParameter>()
 
     for (param in this) {
       modifiedList.add(param)
       val syncStatusParamKey = "flag_" + param.name + "_is_server_provided"
 
-      val paramSyncStatusTracker = PlatformParameter.newBuilder().setName(syncStatusParamKey)
-      // Update the boolean status of the derived syncStatusParamKey to true. This is necessary
-      // since sync status flags are local only and don't have a preset value.
-      paramSyncStatusTracker.boolean = true
-      paramSyncStatusTracker.build()
-
-      modifiedList.add(paramSyncStatusTracker.build())
+      val paramSyncStatusTracker = PlatformParameter.newBuilder().apply { 
+        name =syncStatusParamKey
+        boolean = true // Indicates that sync status flags are up to date since they are local only
+      }
+        .build()
+      modifiedList.add(paramSyncStatusTracker)
     }
 
     return modifiedList
