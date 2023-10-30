@@ -29,19 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-      <TextView
-      android:id="@+id/options_activity_selected_options_title"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/component_color_shared_primary_text_color"
-        android:textSize="18sp" />
-
-      <FrameLayout
-        android:id="@+id/multipane_options_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp" />
-
       <View
         android:layout_width="match_parent"
         android:layout_height="6dp"
