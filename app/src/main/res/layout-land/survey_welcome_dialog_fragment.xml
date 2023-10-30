@@ -10,9 +10,10 @@
       android:id="@+id/survey_onboarding_title_text"
       style="@style/SurveyPopupHeaderStyle"
       android:text="@string/survey_onboarding_title_text"
+
+      app:layout_constraintBottom_toTopOf="@id/survey_onboarding_title_guide"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintBottom_toTopOf="@id/survey_onboarding_title_guide"
       app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -22,10 +23,11 @@
       android:orientation="horizontal"
       app:layout_constraintGuide_percent="0.10" />
 
-    <org.oppia.android.app.customview.SurveyOnboardingBackgroundView
+    <org.oppia.android.app.customview.OppiaCurveBackgroundView
       android:id="@+id/survey_onboarding_background"
       android:layout_width="match_parent"
       android:layout_height="0dp"
+      app:customBackgroundColor="@color/component_color_survey_popup_background_color"
       app:layout_constraintTop_toBottomOf="@id/survey_onboarding_title_guide" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -38,9 +40,9 @@
     <TextView
       android:id="@+id/survey_onboarding_text"
       style="@style/SurveyPopupMessageStyle"
+      android:text="@string/survey_onboarding_message_text"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      android:text="@string/survey_onboarding_message_text"
       app:layout_constraintTop_toTopOf="@id/survey_onboarding_center_guide" />
 
     <Button
