@@ -14,7 +14,8 @@ import javax.inject.Qualifier
  * Qualifier for the platform parameter that controls whether the user has support for manually
  * downloading topics.
  */
-@Qualifier annotation class EnableDownloadsSupport
+@Qualifier
+annotation class EnableDownloadsSupport
 
 /** Default value for feature flag corresponding to [EnableDownloadsSupport]. */
 const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
@@ -117,7 +118,8 @@ const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = false
  *
  * This is generally expected to only be used in tandem with [EnableLearnerStudyAnalytics].
  */
-@Qualifier annotation class EnableFastLanguageSwitchingInLesson
+@Qualifier
+annotation class EnableFastLanguageSwitchingInLesson
 
 /** The platform parameter name corresponding to [EnableFastLanguageSwitchingInLesson]. */
 const val FAST_LANGUAGE_SWITCHING_IN_LESSON = "fast_language_switching_in_lesson"
@@ -133,7 +135,8 @@ const val FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE = false
  *
  * This is generally expected to only be used in tandem with [EnableLearnerStudyAnalytics].
  */
-@Qualifier annotation class EnableLoggingLearnerStudyIds
+@Qualifier
+annotation class EnableLoggingLearnerStudyIds
 
 /** The platform parameter name corresponding to [EnableLoggingLearnerStudyIds]. */
 const val LOGGING_LEARNER_STUDY_IDS = "logging_learner_study_ids"
@@ -359,3 +362,13 @@ const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES =
  * experience with the app.
  */
 const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE = 5
+
+/** Qualifier for the platform parameter that toggles the new onboarding flow. */
+@Qualifier
+annotation class EnableNewOnboardingUi
+
+/** Name of the platform parameter that toggles the new onboarding flow. */
+const val ENABLE_NEW_ONBOARDING_FLOW = "enable_new_onboarding_flow"
+
+/** Default value of the platform parameter corresponding to [EnableNewOnboardingUi]. */
+const val ENABLE_NEW_ONBOARDING_FLOW_DEFAULT_VALUE = false
