@@ -8,13 +8,15 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 - [Install oppia-android](#install-oppia-android)
 - [Run the app from Android Studio](#run-the-app-from-android-studio)
 - [Run the tests](#set-up-and-run-tests)
+  - [Step-by-Step guidance for setting up and running app modules robolectric test](#step-by-step-guidance-for-setting-up-and-running-app-modules-robolectric-test)
+  - [For tests that are in non-app modules, such as **domain** or **utility**:](#for-tests-that-are-in-non-app-modules-such-as-domain-or-utility)
 
 
 ## Prepare developer environment
 
-1. Download/Install [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads). 
+1. Download/Install [Android Studio Bumblebee | Patch 3](https://developer.android.com/studio/archive). 
    
-   **Note**: We recommend installing **Android Studio Bumblebee** because newer versions of Android Studio[ do not support running tests where shared source sets are used](https://issuetracker.google.com/issues/232007221#comment18), a configuration we use at Oppia.
+   **Note**: We recommend installing **Android Studio Bumblebee | 2021.1.1 Patch 3** because newer versions of Android Studio[ do not support running tests where shared source sets are used](https://issuetracker.google.com/issues/232007221#comment18), a configuration we use at Oppia.
    
    **Direct download Url**: [Windows](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-windows.exe) | [Linux](https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2021.1.1.23/android-studio-2021.1.1.23-linux.tar.gz) | [Intel Mac](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-mac.dmg) | [Apple Silicon Mac](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-mac_arm.dmg)
 
@@ -22,10 +24,13 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 
 2. Configure your Android Studio
    - In Android Studio, open Tools > SDK Manager.
-     - In the "SDK Platforms" tab (which is the default), select `API Level 28` and also `API Level 31` (for Bazel support).
+     - In the "SDK Platforms" tab (which is the default), select `API Level 28` and also `API Level 30` (for Bazel support).
      - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 29.0.2 (this is needed for Bazel support).
 
    - Then, click "Apply" to download and install these two SDKs/Tools.
+   
+   - Must have **JDK 11** selected:
+     - In Android Studio, open Settings > Build, Execution, Deployment > Build Tools > Gradle and edit the Gradle JDK field.
 
 ## Install oppia-android
 
@@ -81,38 +86,65 @@ Please follow these steps to set up Oppia Android on your local machine.
 ## Set up and run tests
 Testing the app is an integral part of our development process. You will need to test all code changes to ensure that the app works correctly, therefore it is important to ensure that your test configuration works.
 
-We run tests in either Espresso(`app` module tests) or Robolectric(non-app module tests), meaning tests will run in either the emulator or on Gradle/Bazel via the terminal.
+We strongly recommend running tests on Robolectric which is faster because it does not require a physical device or emulator setup.
+
+### Configure Robolectric Tests
+
+#### Step-by-Step guidance for setting up and running app modules robolectric test:
+
+1. Go to **Edit Configuration** in Android Studio (Bumblebee | 2021.1.1 Patch 3)
+   ![](https://user-images.githubusercontent.com/9396084/79109714-83525980-7d96-11ea-99d7-f83ea81a8a50.png)
+
+2. Click on Add(+) -> **JUnit**
+   ![](https://github.com/oppia/oppia-android/assets/76530270/87caf3fc-37d9-472d-92fd-b8ec49fb6b49)
+
+3. Enter following information:
+   - a) Name of test. Example: In my case "SplashActivityTest"
+   - b) Make sure select "java 11" and oppia-android.app
+   - c) Class path of Test class. Example: In my case "org.oppia.android.app.splash.
+   SplashActivityTest"
+   - d) Press `OK` to select the test.
+   ![](https://github.com/oppia/oppia-android/assets/76530270/5901624a-df76-4b27-8f31-6077a68fcb89)
+
+4. Click on "Run" button to run robolectric test. (In my case "SplashActivityTest")
+   ![](https://github.com/oppia/oppia-android/assets/76530270/75a6b998-90c5-4f0a-8886-78f96970be90)
+
+#### For tests that are in non-app modules, such as **domain** or **utility**::
+
+1. In Android Studio, open the desired test file, e.g., `AnalyticsControllerTest`.
+2. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'AnalyticsControllerTest'**.
+   - You will notice that the emulator is greyed out, but the run window will open to show the running tests:
+   ![](https://user-images.githubusercontent.com/59600948/272657015-158117e5-47d2-40fc-a38b-5dee6c347556.png)
 
 ### Configure Emulator Tests
+
+**Espresso is slower for running tests, so we recommend using Robolectric.**
+
 1. In Android Studio, open the desired test file, e.g., `HomeActivityTest`.
 2. In the Android Studio toolbar, click on the `Available Devices` option. Select an emulator that has between API 28-30.
 
    **Note**: If you don't have any available devices in this list, please follow [these instructions](#run-the-app-from-android-studio) to create one.
+
 3. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'HomeActivityTest'**.
-![](https://user-images.githubusercontent.com/59600948/272657131-96e5354b-13a9-4709-969a-b9494a65c30f.png)
+   ![](https://user-images.githubusercontent.com/59600948/272657131-96e5354b-13a9-4709-969a-b9494a65c30f.png)
+
 4. An "**Edit Configuration**" dialog will show up, and you should add the following settings under the general tab:
    - For module, select **oppia-android.app**
    - For Test, select **Class**
    - For Instrumentation class, **org.oppia.android.testing.OppiaTestRunner**, will be selected by default.
    - For target, select the **Use the device/snapshot dropdown** option.
    - Verify that your setup looks like below:
-   -![](https://user-images.githubusercontent.com/59600948/272657260-2e654891-61be-467a-8ebd-c997aa2abda6.png)
+   
+     ![](https://user-images.githubusercontent.com/59600948/272657260-2e654891-61be-467a-8ebd-c997aa2abda6.png)
 - Finally, Click the "Apply" and "Okay" buttons.
 - You may need to repeat step (3) above to run the test with the new configuration.
 - Subsequent runs of any app module tests will not require editing the configuration.
 - This configuration will run all the tests in that class.
 5. To run only a specific test in a file:
    - Search or scroll down to the desired test name, to the left of the test name, click on the run icon and select **Run '`test name`''**.
-
-### Configure Robolectric Tests
-These are tests that are in non-app modules, such as **domain** or **utility**.
-1. In Android Studio, open the desired test file, e.g., `AnalyticsControllerTest`.
-2. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'AnalyticsControllerTest'**.
-   - You will notice that the emulator is greyed out, but the run window will open to show the running tests:
-   - ![](https://user-images.githubusercontent.com/59600948/272657015-158117e5-47d2-40fc-a38b-5dee6c347556.png)
-
+   
 ### Next Steps
-- Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
+- Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
 
 - When you are ready to submit a PR, please follow [these instructions](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR) on submitting a PR.
 
