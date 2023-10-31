@@ -27,10 +27,10 @@
     <com.google.android.material.imageview.ShapeableImageView
       android:layout_width="64dp"
       android:layout_height="64dp"
-      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
       profile:src="@{viewModel.profile.avatar}" />
 
     <TextView
@@ -44,16 +44,47 @@
       android:textColor="@color/component_color_shared_secondary_4_text_color"
       android:textSize="14sp" />
 
-    <TextView
-      android:id="@+id/profile_progress_text_view"
-      style="@style/TextViewStart"
+    <LinearLayout
+      android:id="@+id/progress_linear_layout"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="4dp"
-      android:layout_marginBottom="8dp"
-      android:fontFamily="sans-serif"
-      android:text="@{viewModel.profileProgressText}"
-      android:textColor="@color/component_color_shared_secondary_4_text_color"
-      android:textSize="14sp" />
+      android:orientation="horizontal">
+
+      <TextView
+        android:id="@+id/profile_story_progress_text_view"
+        style="@style/TextViewStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif"
+        android:text="@{viewModel.profileStoryProgressText}"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
+        android:textSize="14sp" />
+
+      <TextView
+        android:id="@+id/profile_topic_separator"
+        style="@style/TextViewStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif"
+        android:text="@{viewModel.getBarSeparator()}"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
+        android:textSize="14sp" />
+
+      <TextView
+        android:id="@+id/profile_topic_progress_text_view"
+        style="@style/TextViewStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif"
+        android:text="@{viewModel.profileTopicProgressText}"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
+        android:textSize="14sp" />
+    </LinearLayout>
   </LinearLayout>
 </layout>

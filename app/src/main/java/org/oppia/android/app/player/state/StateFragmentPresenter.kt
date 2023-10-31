@@ -202,7 +202,10 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
+    val answer = viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+    if (answer != null) {
+      handleSubmitAnswer(answer)
+    }
   }
 
   fun onResponsesHeaderClicked() {
@@ -215,7 +218,10 @@ class StateFragmentPresenter @Inject constructor(
   fun handleKeyboardAction() {
     hideKeyboard()
     if (viewModel.getCanSubmitAnswer().get() == true) {
-      handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
+      val answer = viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+      if (answer != null) {
+        handleSubmitAnswer(answer)
+      }
     }
   }
 

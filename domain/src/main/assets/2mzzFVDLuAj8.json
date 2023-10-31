@@ -2463,7 +2463,7 @@
                 }
               }
             }, {
-              "rule_type": "CaseSensitiveEquals",
+              "rule_type": "Equals",
               "inputs": {
                 "x": {
                   "contentId": "14186351-eee4-40fa-8f20-960306cfe465",
@@ -2818,7 +2818,7 @@
                 }
               }
             }, {
-              "rule_type": "CaseSensitiveEquals",
+              "rule_type": "Equals",
               "inputs": {
                 "x": {
                   "contentId": "c78bf24e-b510-4bac-a107-28a03dfa1c22",
@@ -2826,7 +2826,7 @@
                 }
               }
             }, {
-              "rule_type": "CaseSensitiveEquals",
+              "rule_type": "Equals",
               "inputs": {
                 "x": {
                   "contentId": "338cb82a-5e6f-460a-8fa0-5a2510c1a31e",

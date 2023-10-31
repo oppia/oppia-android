@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
  <item>
     <shape android:shape="rectangle">
-      <solid android:color="#25000000" />
+      <solid android:color="@color/component_color_button_shadow_color" />
       <corners android:radius="@dimen/survey_shared_corner_radius" />
     </shape>
   </item>
