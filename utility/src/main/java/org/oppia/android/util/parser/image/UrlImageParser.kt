@@ -235,6 +235,11 @@ class UrlImageParser private constructor(
       private val autoResizeImage: Boolean
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 
+      private fun isRTLMode(): Boolean {
+        return ViewCompat.getLayoutDirection(htmlContentTextView) == ViewCompat
+          .LAYOUT_DIRECTION_RTL
+      }
+
       override fun computeBounds(
         context: Context,
         drawable: D,
@@ -304,11 +309,6 @@ class UrlImageParser private constructor(
             drawableHeight *= multipleFactor
             drawableWidth *= multipleFactor
           }
-        }
-
-        fun isRTLMode(): Boolean {
-          return ViewCompat.getLayoutDirection(htmlContentTextView) == ViewCompat
-            .LAYOUT_DIRECTION_RTL
         }
 
         val drawableLeft = if (imageCenterAlign && !isRTLMode()) {
