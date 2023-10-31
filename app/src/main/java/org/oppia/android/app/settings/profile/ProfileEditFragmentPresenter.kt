@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.google.common.util.concurrent.FutureCallback
+import com.google.common.util.concurrent.Futures
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
@@ -153,10 +155,10 @@ class ProfileEditFragmentPresenter @Inject constructor(
         fragment,
         Observer {
           if (it is AsyncResult.Success) {
-            snackbarManager.showSnackbar(
-              R.string.profile_edit_delete_success,
-              SnackbarController.SnackbarDuration.LONG
-            )
+//            snackbarManager.showSnackbar(
+//              R.string.profile_edit_delete_success,
+//              SnackbarController.SnackbarDuration.LONG
+//            )
             if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
               val intent =
                 Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)

@@ -1,6 +1,7 @@
 package org.oppia.android.domain.snackbar
 
 import androidx.annotation.StringRes
+import com.google.common.util.concurrent.SettableFuture
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -8,6 +9,8 @@ import java.util.LinkedList
 import java.util.Queue
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Deferred
+import org.oppia.android.util.data.AsyncResult
 
 private const val GET_CURRENT_SNACKBAR_REQUEST_PROVIDER_ID =
   "get_current_snackbar_request_provider_id"
@@ -19,60 +22,63 @@ class SnackbarController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
 ) {
 
-  private val _snackbarRequestQueue: Queue<SnackbarRequest.ShowSnackbar> = LinkedList()
+  private var showFuture: Deferred<Unit>? = null
+  val dismissFuture = SettableFuture.create<Unit>()
+  private val _snackbarRequestQueue: Queue<ShowSnackbarRequest> = LinkedList()
 
   /** Queue of the snackbar requests that are to be shown based on FIFO. */
-  val snackbarRequestQueue: Queue<SnackbarRequest.ShowSnackbar>
+  val snackbarRequestQueue: Queue<ShowSnackbarRequest>
     get() = _snackbarRequestQueue
 
-  /**
-   * Gets the snackbar that is enqueued first.
-   *
-   * @return a [DataProvider] of the current request
-   */
-  fun getCurrentSnackbar(): DataProvider<SnackbarRequest> {
+  val currentState = CurrentSnackbarState.NotShowing
+
+
+  fun getCurrentSnackbarState(): DataProvider<CurrentSnackbarState> {
+
     val currentRequest = _snackbarRequestQueue.peek()
-    return dataProviders.createInMemoryDataProvider(GET_CURRENT_SNACKBAR_REQUEST_PROVIDER_ID) {
-      return@createInMemoryDataProvider currentRequest
-        ?: SnackbarRequest.ShowNothing
+
+    if (_snackbarRequestQueue.isEmpty()){
+      return dataProviders.createInMemoryDataProvider(CurrentSnackbarState.NotShowing){
+        return@createInMemoryDataProvider CurrentSnackbarState.NotShowing
+      }
     }
+
+//    if ()
+
   }
 
-  /**
-   * Enqueue the snackbar request that is to be shown and notify subscribers that it has changed.
-   *
-   * @param request that is to be added in the queue
-   */
-  fun enqueueSnackbar(request: SnackbarRequest.ShowSnackbar) {
+  fun enqueueSnackbar(request: ShowSnackbarRequest) {
     _snackbarRequestQueue.add(request)
     notifyPotentialSnackbarChange()
   }
 
-  /** Dismiss the current snackbar and notify subscribers that the [DataProvider] has changed. */
-  fun dismissCurrentSnackbar() {
-    _snackbarRequestQueue.remove()
-    notifyPotentialSnackbarChange()
+  fun notifySnackbarShowing(snackbarId: Int, onShow: Deferred<Unit>, onDismiss: Deferred<Unit>) {
+    // onDismiss is resolved when the snackbar by unique ID snackbarId is no longer showing.
+
+    showFuture = onShow
+
   }
 
   private fun notifyPotentialSnackbarChange() {
     asyncDataSubscriptionManager.notifyChangeAsync(GET_CURRENT_SNACKBAR_REQUEST_PROVIDER_ID)
   }
 
-  /** Sealed class that encapsulates the SnackbarRequest behaviour. */
-  sealed class SnackbarRequest {
+  sealed class CurrentSnackbarState {
+    object NotShowing : CurrentSnackbarState()
 
-    /**
-     * For showing the snackbar.
-     *
-     * @param messageStringId The message string of string resource that is to be displayed
-     * @param duration The duration for which snackbar is to be shown
-     */
-    data class ShowSnackbar(@StringRes val messageStringId: Int, val duration: SnackbarDuration) :
-      SnackbarRequest()
+    data class Showing(val request: ShowSnackbarRequest, val snackbarId: Int) :
+      CurrentSnackbarState()
 
-    /** For not showing snackbar and dismissing the snackbar if present in the queue. */
-    object ShowNothing : SnackbarRequest()
+    data class WaitingToShow(val nextRequest: ShowSnackbarRequest, val snackbarId: Int) :
+      CurrentSnackbarState()
   }
+
+  data class ShowSnackbarRequest(
+    @StringRes val messageStringId: Int,
+    val duration: SnackbarDuration
+  )
+
+  private data class Snackbar(val request: ShowSnackbarRequest, val snackbarId: Int)
 
   /** These are for the length of the snackbar that is to be shown. */
   enum class SnackbarDuration {
