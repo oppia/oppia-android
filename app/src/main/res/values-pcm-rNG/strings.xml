@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Authors:
 * Busayo
+* Confidence
 * Osetiemoria
 -->
 <resources>
@@ -9,6 +10,7 @@
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Lesson Player</string>
+  <string name="play_exploration_button_text">play exploration</string>
   <string name="help_activity_title">Help</string>
   <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Change Profile</string>
@@ -19,18 +21,19 @@
   <string name="audio_play_description">Play di audio</string>
   <string name="audio_pause_description">Pause di audio</string>
   <string name="audio_unavailable_in_selected_language">%s audio no dey available.</string>
-  <string name="audio_language_select_dialog_okay_button" fuzzy="true">OK</string>
+  <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel am</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="audio_dialog_offline_title">You dey offline</string>
   <string name="audio_dialog_offline_message">Make sure sey Wi-Fi or mobile data dey on, den try am again.</string>
-  <string name="audio_dialog_offline_positive" fuzzy="true">OK</string>
-  <string name="cellular_data_alert_dialog_okay_button" fuzzy="true">OK</string>
+  <string name="audio_dialog_offline_positive">OK</string>
+  <string name="cellular_data_alert_dialog_okay_button">OK</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel am</string>
   <string name="cellular_data_alert_dialog_title">Na your data you dey use now</string>
   <string name="cellular_data_alert_dialog_description">Playing di audio go use plenti mobile data.</string>
   <string name="cellular_data_alert_dialog_checkbox">No show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="concept_card_one_button_text">Concept Card 1</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
   <string name="unsaved_exploration_dialog_title">Comot go the topic page?</string>
   <string name="unsaved_exploration_dialog_description">Wetin you don do before no go save</string>
