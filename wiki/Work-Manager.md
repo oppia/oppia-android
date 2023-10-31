@@ -34,8 +34,8 @@ There are a few WorkManager classes you need to know about:
 
 
 In Oppia we are using WorkManager in two scenarios :
-- To upload cached Logs (for Analytics) over FirebaseAnalytics whenever data connection and battery requirements are met. This was implemented by @Sarthak2601 during GSoC'20, for more details you can go through the [proposal idea](https://github.com/oppia/oppia/wiki/pdfs/GSoC2020SarthakAgarwal.pdf) 
-- To sync up the PlatformParameters from OppiaBackend whenever the app starts and the data + battery requirements are met. This was implemented by @ARJUPTA during GSoC'21, for more details you can go through the [proposal idea](https://github.com/oppia/oppia/wiki/pdfs/GSoC2021ArjunGupta.pdf)
+- To upload cached Logs (for Analytics) over FirebaseAnalytics whenever data connection and battery requirements are met. This was implemented by @Sarthak2601 during GSoC'20, for more details you can go through the [proposal idea](https://github.com/oppia/oppia-web-developer-docs/blob/develop/pdfs/GSoC2020SarthakAgarwal.pdf) 
+- To sync up the PlatformParameters from OppiaBackend whenever the app starts and the data + battery requirements are met. This was implemented by @ARJUPTA during GSoC'21, for more details you can go through the [proposal idea](https://github.com/oppia/oppia-web-developer-docs/blob/develop/pdfs/GSoC2021ArjunGupta.pdf)
 
 # How to use WorkManager
 If you want to introduce a new feature or any change to the existing WorkManager implementation in oppia-android, here is the basic structure of files you need to keep in mind :
@@ -168,4 +168,4 @@ In Oppia we write tests for both the Worker and its Initializer class. You can t
 
 Worker Tests - *[PlatformParameterSyncUpWorkerTest](https://github.com/oppia/oppia-android/blob/develop/domain/src/test/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkerTest.kt) OR [LogUploadWorkerTest](https://github.com/oppia/oppia-android/blob/develop/domain/src/test/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorkerTest.kt)*
 
-Initializer Tests - *[PlatformParameterSyncUpWorkManagerInitializerTest](https://github.com/oppia/oppia-android/blob/develop/domain/src/test/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkManagerInitializerTest.kt) OR [LogUploadWorkManagerInitializerTest](https://github.com/oppia/oppia-android/blob/develop/domain/src/test/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorkManagerInitializerTest.kt)*
+Initializer Tests - *[PlatformParameterSyncUpWorkManagerInitializerTest](https://github.com/oppia/oppia-android/blob/develop/domain/src/test/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkManagerInitializerTest.kt) OR [LogUploadWorkManagerInitializerTest](https://github.com/oppia/oppia-android/blob/develop/domain/src/test/java/org/oppia/android/domain/oppialogger/loguploader/LogReportWorkManagerInitializerTest.kt)*
