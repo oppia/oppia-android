@@ -12,15 +12,17 @@
 ## Overview
 Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. It uses a human-readable, high-level build language.
 
-### Installation
-
 **WARNING: We recommend to not use the Android Studio Bazel plugin since it currently has compatibility issues with the project.**
 
-**Instructions for setting up Bazel on different Operating Systems:**
+### Installation
 
-- [For Windows/Ubuntu/Fedora](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows)
-- [For Mac including M1/M2](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Mac)
-- [For Linux](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Linux)
+1. Download and Install Java 8 using the links from the [Java website](https://www.java.com/en/download/).
+
+2. **Select your Operating System for instructions on setting up Bazel:**
+
+   - [For Windows/Ubuntu/Fedora](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows)
+   - [For Mac including M1/M2](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Mac)
+   - [For Linux](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Linux)
 
 ### Building the app
 

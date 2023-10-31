@@ -7,7 +7,7 @@
 - [How to fix the most common issues?](#how-to-fix-the-most-common-issues) 
 
 # Installation
-Once you had completed all the [installation steps](https://github.com/oppia/oppia-android/wiki#prerequisites), you will be having a `ktlint` file in your `opensource/oppia-android-tools` folder. 
+Once you have completed all the [installation steps](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android), you will have a `ktlint` file in your `opensource/oppia-android-tools` folder.
 
 # Commands 
 

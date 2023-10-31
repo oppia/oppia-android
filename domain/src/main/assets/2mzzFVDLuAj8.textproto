@@ -3011,7 +3011,7 @@ states {
               }
             }
           }
-          rule_type: "CaseSensitiveEquals"
+          rule_type: "Equals"
         }
       }
       answer_groups {
@@ -3472,7 +3472,7 @@ states {
               }
             }
           }
-          rule_type: "CaseSensitiveEquals"
+          rule_type: "Equals"
         }
         rule_specs {
           input {
@@ -3484,7 +3484,7 @@ states {
               }
             }
           }
-          rule_type: "CaseSensitiveEquals"
+          rule_type: "Equals"
         }
       }
       answer_groups {
