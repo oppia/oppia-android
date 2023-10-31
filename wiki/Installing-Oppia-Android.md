@@ -9,7 +9,7 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 - [Run the app from Android Studio](#run-the-app-from-android-studio)
 - [Run the tests](#set-up-and-run-tests)
   - [Step-by-Step guidance for setting up and running app modules robolectric test](#step-by-step-guidance-for-setting-up-and-running-app-modules-robolectric-test)
-  - [These are tests that are in non-app modules, such as domain or utility](#these-are-tests-that-are-in-non-app-modules-such-as-domain-or-utility)
+  - [For tests that are in non-app modules, such as **domain** or **utility**:](#for-tests-that-are-in-non-app-modules-such-as-domain-or-utility)
 
 
 ## Prepare developer environment
@@ -109,7 +109,7 @@ We strongly recommend running tests on Robolectric which is faster because it do
 4. Click on "Run" button to run robolectric test. (In my case "SplashActivityTest")
    ![](https://github.com/oppia/oppia-android/assets/76530270/75a6b998-90c5-4f0a-8886-78f96970be90)
 
-#### These are tests that are in non-app modules, such as **domain** or **utility**:
+#### For tests that are in non-app modules, such as **domain** or **utility**::
 
 1. In Android Studio, open the desired test file, e.g., `AnalyticsControllerTest`.
 2. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'AnalyticsControllerTest'**.
