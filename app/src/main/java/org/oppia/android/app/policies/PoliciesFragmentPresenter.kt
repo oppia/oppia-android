@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.HtmlCompat
+import java.util.regex.Pattern
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PoliciesFragmentArguments
@@ -57,66 +58,34 @@ class PoliciesFragmentPresenter @Inject constructor(
     var policyWebLink = ""
 
     if (policyPage == PolicyPage.PRIVACY_POLICY) {
-      policyDescription =
-        resourceHandler.getStringInLocale(R.string.privacy_policy_content)
+      policyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
       policyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
-      binding.policyDescriptionTextView.text = htmlParserFactory.create(
-        policyOppiaTagActionListener = this,
-        displayLocale = resourceHandler.getDisplayLocale()
-      ).parseOppiaHtml(
-        policyDescription,
-        binding.policyDescriptionTextView,
-        supportsLinks = true,
-        supportsConceptCards = false
-      )
-
-      binding.policyWebLinkTextView.text = htmlParserFactory.create(
-        gcsResourceName = "",
-        entityType = "",
-        entityId = "",
-        imageCenterAlign = false,
-        customOppiaTagActionListener = null,
-        resourceHandler.getDisplayLocale()
-      ).parseOppiaHtml(
-        policyWebLink,
-        binding.policyWebLinkTextView,
-        supportsLinks = true,
-        supportsConceptCards = false
-      )
+      updatePolicyDescriptionTvWithParsedHtml(binding, policyDescription)
+      updatePolicyWebLinkTvWithParsedHtml(binding, policyWebLink)
     } else if (policyPage == PolicyPage.TERMS_OF_SERVICE) {
       policyDescription =
         resourceHandler.getStringInLocale(R.string.terms_of_service_content)
-      val spannableString = SpannableString(HtmlCompat.fromHtml(policyDescription, HtmlCompat.FROM_HTML_MODE_LEGACY))
+      val spannableString =
+        SpannableString(HtmlCompat.fromHtml(policyDescription, HtmlCompat.FROM_HTML_MODE_LEGACY))
       val uri = "https://www.oppia.org"
-      val spanStart = policyDescription.indexOf(uri) - 4
-      val spanEnd = spanStart + uri.length
+      val res = uri.toRegex().find(spannableString)
+      val spanStart = res?.range?.first!!
+      val spanEnd = res.range.last
       val clickableSpan = object : ClickableSpan() {
         override fun onClick(widget: View) {
           val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
           activity.startActivity(intent)
         }
-
         override fun updateDrawState(ds: TextPaint) {
           super.updateDrawState(ds)
           ds.isUnderlineText = true
         }
       }
-      spannableString.setSpan(clickableSpan, spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+      spannableString.setSpan(clickableSpan, spanStart, spanEnd+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
       binding.policyDescriptionTextView.text = spannableString
       binding.policyDescriptionTextView.movementMethod = LinkMovementMethod.getInstance()
-      binding.policyWebLinkTextView.text = htmlParserFactory.create(
-        gcsResourceName = "",
-        entityType = "",
-        entityId = "",
-        imageCenterAlign = false,
-        customOppiaTagActionListener = null,
-        resourceHandler.getDisplayLocale()
-      ).parseOppiaHtml(
-        policyWebLink,
-        binding.policyWebLinkTextView,
-        supportsLinks = true,
-        supportsConceptCards = false
-      )
+      policyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
+      updatePolicyWebLinkTvWithParsedHtml(binding, policyWebLink)
     }
   }
 
@@ -127,5 +96,31 @@ class PoliciesFragmentPresenter @Inject constructor(
       PolicyType.TERMS_OF_SERVICE ->
         (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.TERMS_OF_SERVICE)
     }
+  }
+  private fun updatePolicyWebLinkTvWithParsedHtml(binding: PoliciesFragmentBinding, policyWebLink: String){
+    binding.policyWebLinkTextView.text = htmlParserFactory.create(
+      gcsResourceName = "",
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      customOppiaTagActionListener = null,
+      resourceHandler.getDisplayLocale()
+    ).parseOppiaHtml(
+      policyWebLink,
+      binding.policyWebLinkTextView,
+      supportsLinks = true,
+      supportsConceptCards = false
+    )
+  }
+  private fun updatePolicyDescriptionTvWithParsedHtml(binding: PoliciesFragmentBinding, policyDescription: String){
+    binding.policyDescriptionTextView.text = htmlParserFactory.create(
+      policyOppiaTagActionListener = this,
+      displayLocale = resourceHandler.getDisplayLocale()
+    ).parseOppiaHtml(
+      policyDescription,
+      binding.policyDescriptionTextView,
+      supportsLinks = true,
+      supportsConceptCards = false
+    )
   }
 }
