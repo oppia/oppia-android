@@ -8,6 +8,8 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 - [Install oppia-android](#install-oppia-android)
 - [Run the app from Android Studio](#run-the-app-from-android-studio)
 - [Run the tests](#set-up-and-run-tests)
+  - [Step-by-Step guidance for setting up and running app modules robolectric test](#step-by-step-guidance-for-setting-up-and-running-app-modules-robolectric-test)
+  - [These are tests that are in non-app modules, such as domain or utility](#these-are-tests-that-are-in-non-app-modules-such-as-domain-or-utility)
 
 
 ## Prepare developer environment
@@ -87,7 +89,8 @@ Testing the app is an integral part of our development process. You will need to
 We strongly recommend running tests on Robolectric which is faster because it does not require a physical device or emulator setup.
 
 ### Configure Robolectric Tests
-**Step-by-Step guidance for setting up and running app modules robolectric test:**
+
+#### Step-by-Step guidance for setting up and running app modules robolectric test:
 
 1. Go to **Edit Configuration** in Android Studio (Bumblebee | 2021.1.1 Patch 3)
    ![](https://user-images.githubusercontent.com/9396084/79109714-83525980-7d96-11ea-99d7-f83ea81a8a50.png)
@@ -106,15 +109,17 @@ We strongly recommend running tests on Robolectric which is faster because it do
 4. Click on "Run" button to run robolectric test. (In my case "SplashActivityTest")
    ![](https://github.com/oppia/oppia-android/assets/76530270/75a6b998-90c5-4f0a-8886-78f96970be90)
 
-These are tests that are in non-app modules, such as **domain** or **utility**.
+#### These are tests that are in non-app modules, such as **domain** or **utility**:
+
 1. In Android Studio, open the desired test file, e.g., `AnalyticsControllerTest`.
 2. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'AnalyticsControllerTest'**.
    - You will notice that the emulator is greyed out, but the run window will open to show the running tests:
    - ![](https://user-images.githubusercontent.com/59600948/272657015-158117e5-47d2-40fc-a38b-5dee6c347556.png)
 
+### Configure Emulator Tests
+
 **Espresso is slower for running tests, so we recommend using Robolectric.**
 
-### Configure Emulator Tests
 1. In Android Studio, open the desired test file, e.g., `HomeActivityTest`.
 2. In the Android Studio toolbar, click on the `Available Devices` option. Select an emulator that has between API 28-30.
 
