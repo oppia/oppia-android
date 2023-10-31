@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
@@ -234,6 +235,11 @@ class UrlImageParser private constructor(
       private val autoResizeImage: Boolean
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 
+      private fun isRTLMode(): Boolean {
+        return ViewCompat.getLayoutDirection(htmlContentTextView) == ViewCompat
+          .LAYOUT_DIRECTION_RTL
+      }
+
       override fun computeBounds(
         context: Context,
         drawable: D,
@@ -304,11 +310,13 @@ class UrlImageParser private constructor(
             drawableWidth *= multipleFactor
           }
         }
-        val drawableLeft = if (imageCenterAlign) {
+
+        val drawableLeft = if (imageCenterAlign && !isRTLMode()) {
           calculateInitialMargin(maxAvailableWidth, drawableWidth)
         } else {
           0f
         }
+
         val drawableTop = 0f
         val drawableRight = drawableLeft + drawableWidth
         val drawableBottom = drawableTop + drawableHeight
