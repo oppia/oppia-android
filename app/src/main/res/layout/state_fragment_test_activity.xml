@@ -31,7 +31,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="16dp"
-      android:text="Play exploration"
+      android:text="@string/play_exploration_button_text"
       android:textAllCaps="false"
       android:visibility="@{viewModel.hasExplorationStarted ? View.GONE : View.VISIBLE}" />
   </FrameLayout>

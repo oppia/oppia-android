@@ -1,12 +1,12 @@
 **Important:** Please read the [Oppia Android coding style guide](https://github.com/oppia/oppia-android/wiki/Coding-style-guide) before making any code changes.
 
-**Working on your first Pull Request?** You can learn how from this free series: [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
+**Working on your first Pull Request?** You can learn how from this free series: [How to Contribute to an Open Source Project on GitHub](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github).
 
-*If your change isn't trivial, please [talk to us](https://gitter.im/oppia/oppia-android) before you start working on it -- this helps avoid duplication of effort, and allows us to offer advice and suggestions. For larger changes, it may be better to first create a short doc outlining a suggested implementation plan, and send it to the Android dev team for feedback.*
+*If your change isn't trivial, please talk to us via [github-discussions](https://github.com/oppia/oppia-android/discussions) before you start working on it -- this helps avoid duplication of effort, and allows us to offer advice and suggestions. For larger changes, it may be better to first create a short doc outlining a suggested implementation plan, and send it to the Android dev team for feedback.*
 
 The following instructions describe how to make a one-off code change using a feature branch. (In case you're interested, we mainly use the [Gitflow workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).) Please follow them carefully, otherwise your code review may be delayed.
 
-You might also find this reference for the [Android Studio UI-based Github workflow](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow) helpful.
+You might also find this reference for the [Android Studio UI-based Github workflow](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#making-a-local-code-change-using-android-studios-ui-based-github-workflow) helpful.
 
 1. **Choose a descriptive branch name.** It should be lowercase and hyphen-separated, such as `splash-screen`. Also, it shouldn't start with `hotfix` or `release`.
 2. **Before coding anything, create a new branch with this name, starting from 'develop'.** I.e., run:
