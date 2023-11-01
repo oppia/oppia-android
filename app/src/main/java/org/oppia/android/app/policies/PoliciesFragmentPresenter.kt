@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.HtmlCompat
@@ -60,8 +61,8 @@ class PoliciesFragmentPresenter @Inject constructor(
     if (policyPage == PolicyPage.PRIVACY_POLICY) {
       policyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
       policyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
-      updatePolicyDescriptionTvWithParsedHtml(binding, policyDescription)
-      updatePolicyWebLinkTvWithParsedHtml(binding, policyWebLink)
+      updatePolicyTextViewWithParsedHtml(binding.policyDescriptionTextView, policyDescription)
+      updatePolicyTextViewWithParsedHtml(binding.policyWebLinkTextView, policyWebLink)
     } else if (policyPage == PolicyPage.TERMS_OF_SERVICE) {
       policyDescription =
         resourceHandler.getStringInLocale(R.string.terms_of_service_content)
@@ -85,7 +86,7 @@ class PoliciesFragmentPresenter @Inject constructor(
       binding.policyDescriptionTextView.text = spannableString
       binding.policyDescriptionTextView.movementMethod = LinkMovementMethod.getInstance()
       policyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
-      updatePolicyWebLinkTvWithParsedHtml(binding, policyWebLink)
+      updatePolicyTextViewWithParsedHtml(binding.policyWebLinkTextView, policyWebLink)
     }
   }
 
@@ -97,8 +98,8 @@ class PoliciesFragmentPresenter @Inject constructor(
         (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.TERMS_OF_SERVICE)
     }
   }
-  private fun updatePolicyWebLinkTvWithParsedHtml(binding: PoliciesFragmentBinding, policyWebLink: String){
-    binding.policyWebLinkTextView.text = htmlParserFactory.create(
+  private fun updatePolicyTextViewWithParsedHtml(textView: TextView, policyWebLink: String){
+    textView.text = htmlParserFactory.create(
       gcsResourceName = "",
       entityType = "",
       entityId = "",
@@ -107,18 +108,7 @@ class PoliciesFragmentPresenter @Inject constructor(
       resourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
       policyWebLink,
-      binding.policyWebLinkTextView,
-      supportsLinks = true,
-      supportsConceptCards = false
-    )
-  }
-  private fun updatePolicyDescriptionTvWithParsedHtml(binding: PoliciesFragmentBinding, policyDescription: String){
-    binding.policyDescriptionTextView.text = htmlParserFactory.create(
-      policyOppiaTagActionListener = this,
-      displayLocale = resourceHandler.getDisplayLocale()
-    ).parseOppiaHtml(
-      policyDescription,
-      binding.policyDescriptionTextView,
+      textView,
       supportsLinks = true,
       supportsConceptCards = false
     )
