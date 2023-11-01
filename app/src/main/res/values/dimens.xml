@@ -769,4 +769,11 @@
   <dimen name="resume_lesson_chapter_flexbox_margin_end">28dp</dimen>
   <dimen name="resume_lesson_chapter_flexbox_margin_top">32dp</dimen>
   <dimen name="resume_lesson_start_over_button_margin">8dp</dimen>
+
+  <!-- Onboarding App Language -->
+  <dimen name="onboarding_language_button_margin">28dp</dimen>
+  <dimen name="onboarding_language_text_margin">28dp</dimen>
+  <dimen name="onboarding_language_title_text_size">36sp</dimen>
+  <dimen name="onboarding_language_subtitle_text_size">24sp</dimen>
+  <dimen name="onboarding_language_message_text_size">16sp</dimen>
 </resources>
