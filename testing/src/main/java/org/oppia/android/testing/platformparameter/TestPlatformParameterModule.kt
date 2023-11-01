@@ -99,7 +99,6 @@ class TestPlatformParameterModule {
       ?: PlatformParameterValue.createDefaultParameter(TEST_BOOLEAN_PARAM_DEFAULT_VALUE)
   }
 
-  @TestStringParam
   @Provides
   @Singleton
   fun provideFlagTestStringParam(
