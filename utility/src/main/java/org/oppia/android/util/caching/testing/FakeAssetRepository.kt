@@ -72,14 +72,14 @@ class FakeAssetRepository @Inject constructor(
         prodImpl.loadTextFileFromLocalAssets(assetName)
       } as? String ?: error("Asset doesn't exist: $assetName")
     } else {
-      val textData = trackedAssets[assetName]
-      return if (textData != null) {
-        textData as? String ?: error("Asset doesn't exist: $assetName")
-      } else {
-        val dataFromFile = prodImpl.loadTextFileFromLocalAssets(assetName)
-        trackedAssets.putIfAbsent(assetName, dataFromFile)
-        dataFromFile as? String ?: error("Asset doesn't exist: $assetName")
+      val textData = trackedAssets[assetName] ?: synchronized(trackedAssets) {
+        trackedAssets[assetName] ?: run {
+          val dataFromFile = prodImpl.loadTextFileFromLocalAssets(assetName)
+          trackedAssets[assetName] = dataFromFile
+          dataFromFile
+        }
       }
+      return textData as? String ?: error("Asset doesn't exist: $assetName")
     }
   }
 
@@ -92,17 +92,17 @@ class FakeAssetRepository @Inject constructor(
         protoAsset as? T
       }
     } else {
-      val protoFile = trackedAssets[assetName]
-      if (protoFile != null) {
-        @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
-        return protoFile as? T
-      } else {
-        val loadedProtoFile = prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
-        if (loadedProtoFile != null) {
-          trackedAssets.putIfAbsent(assetName, loadedProtoFile)
+      val protoFile = trackedAssets[assetName] ?: synchronized(trackedAssets) {
+        trackedAssets[assetName] ?: kotlin.run {
+          val loadedProtoFile = prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
+          if (loadedProtoFile != null) {
+            trackedAssets.putIfAbsent(assetName, loadedProtoFile)
+          }
+          loadedProtoFile
         }
-        loadedProtoFile
       }
+      @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
+      return protoFile as? T
     }
   }
 
