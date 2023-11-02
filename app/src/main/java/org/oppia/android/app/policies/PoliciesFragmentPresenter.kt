@@ -83,10 +83,9 @@ class PoliciesFragmentPresenter @Inject constructor(
       }
     }
 
-    /**
-     * Ensure that the Terms of Service and Privacy Policy are displayed with a left-aligned layout,
-     * even when the app is set to an RTL language.
-     */
+
+     // Ensure that the Terms of Service and Privacy Policy are displayed with a left-aligned layout,
+     // even when the app is set to an RTL language.
     if (resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL) {
       binding.policyDescriptionTextView.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
     }
