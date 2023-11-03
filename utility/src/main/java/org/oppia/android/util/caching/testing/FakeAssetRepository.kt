@@ -67,43 +67,20 @@ class FakeAssetRepository @Inject constructor(
   }
 
   private fun loadTextFile(assetName: String): String {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      trackedAssets.computeIfAbsent(assetName) {
+    return (trackedAssets[assetName] ?: synchronized(trackedAssets) {
+      trackedAssets.getOrPut(assetName) {
         prodImpl.loadTextFileFromLocalAssets(assetName)
-      } as? String ?: error("Asset doesn't exist: $assetName")
-    } else {
-      val textData = trackedAssets[assetName] ?: synchronized(trackedAssets) {
-        trackedAssets[assetName] ?: run {
-          val dataFromFile = prodImpl.loadTextFileFromLocalAssets(assetName)
-          trackedAssets[assetName] = dataFromFile
-          dataFromFile
-        }
       }
-      return textData as? String ?: error("Asset doesn't exist: $assetName")
-    }
+    }) as? String ?: error("Asset doesn't exist: $assetName")
   }
 
   private fun <T : MessageLite> loadProtoFile(assetName: String, defaultMessage: T): T? {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      trackedAssets.computeIfAbsent(assetName) {
+    @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
+    return (trackedAssets[assetName] ?: synchronized(trackedAssets) {
+      trackedAssets.getOrPut(assetName) {
         prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
-      }?.let { protoAsset ->
-        @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
-        protoAsset as? T
       }
-    } else {
-      val protoFile = trackedAssets[assetName] ?: synchronized(trackedAssets) {
-        trackedAssets[assetName] ?: kotlin.run {
-          val loadedProtoFile = prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
-          if (loadedProtoFile != null) {
-            trackedAssets.putIfAbsent(assetName, loadedProtoFile)
-          }
-          loadedProtoFile
-        }
-      }
-      @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
-      return protoFile as? T
-    }
+    }) as? T
   }
 
   private fun fetchLoadedProtoFile(assetName: String) = trackedAssets[assetName] as? MessageLite

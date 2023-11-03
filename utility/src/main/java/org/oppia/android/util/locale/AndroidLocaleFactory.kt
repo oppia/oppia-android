@@ -54,27 +54,17 @@ class AndroidLocaleFactory @Inject constructor(
    * @return the best [Locale] to match the provided [localeContext]
    */
   fun createAndroidLocale(localeContext: OppiaLocaleContext): Locale {
-    // Note: computeIfAbsent is used here instead of getOrPut to ensure atomicity across multiple
-    // threads calling into this create function. ( computeIfAbsent is introduced in API Level 24 )
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      memoizedLocales.computeIfAbsent(localeContext) {
+    // Note: Here we acquire lock on memoizedLocales if the Locale object is not created yet ,
+    // this is to avoid unnecessary computation for the same object when the function is called
+    // by multiple threads
+    return memoizedLocales[localeContext] ?: synchronized(memoizedLocales) {
+      memoizedLocales.getOrPut(localeContext) {
         val chooser = profileChooserSelector.findBestChooser(localeContext)
         val primaryLocaleSource = LocaleSource.createFromPrimary(localeContext)
         val fallbackLocaleSource = LocaleSource.createFromFallback(localeContext)
         val proposal = chooser.findBestProposal(primaryLocaleSource, fallbackLocaleSource)
-        return@computeIfAbsent proposal.computedLocale
-      }
-    } else {
-      // Note : Using get/PutIfAbsent For API Level below 24 as computeIfAbsent is introduced in API Level 24
-      val locale = memoizedLocales[localeContext] ?: synchronized(memoizedLocales) {
-        val chooser = profileChooserSelector.findBestChooser(localeContext)
-        val primaryLocaleSource = LocaleSource.createFromPrimary(localeContext)
-        val fallbackLocaleSource = LocaleSource.createFromFallback(localeContext)
-        val proposal = chooser.findBestProposal(primaryLocaleSource, fallbackLocaleSource)
-        memoizedLocales.putIfAbsent(localeContext, proposal.computedLocale)
         proposal.computedLocale
       }
-      return locale
     }
   }
 
