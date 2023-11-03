@@ -1,6 +1,5 @@
 package org.oppia.android.util.caching.testing
 
-import android.os.Build
 import com.google.protobuf.MessageLite
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.AssetRepositoryImpl
@@ -67,20 +66,25 @@ class FakeAssetRepository @Inject constructor(
   }
 
   private fun loadTextFile(assetName: String): String {
-    return (trackedAssets[assetName] ?: synchronized(trackedAssets) {
-      trackedAssets.getOrPut(assetName) {
-        prodImpl.loadTextFileFromLocalAssets(assetName)
+    return (
+      trackedAssets[assetName] ?: synchronized(trackedAssets) {
+        trackedAssets.getOrPut(assetName) {
+          prodImpl.loadTextFileFromLocalAssets(assetName)
+        }
       }
-    }) as? String ?: error("Asset doesn't exist: $assetName")
+      ) as? String ?: error("Asset doesn't exist: $assetName")
+
   }
 
   private fun <T : MessageLite> loadProtoFile(assetName: String, defaultMessage: T): T? {
     @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
-    return (trackedAssets[assetName] ?: synchronized(trackedAssets) {
-      trackedAssets.getOrPut(assetName) {
-        prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
+    return (
+      trackedAssets[assetName] ?: synchronized(trackedAssets) {
+        trackedAssets.getOrPut(assetName) {
+          prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
+        }
       }
-    }) as? T
+      ) as? T
   }
 
   private fun fetchLoadedProtoFile(assetName: String) = trackedAssets[assetName] as? MessageLite
