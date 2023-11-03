@@ -73,7 +73,6 @@ class FakeAssetRepository @Inject constructor(
         }
       }
       ) as? String ?: error("Asset doesn't exist: $assetName")
-
   }
 
   private fun <T : MessageLite> loadProtoFile(assetName: String, defaultMessage: T): T? {
