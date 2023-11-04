@@ -76,7 +76,7 @@ class FakeAssetRepository @Inject constructor(
   }
 
   private fun <T : MessageLite> loadProtoFile(assetName: String, defaultMessage: T): T? {
-    @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
+    @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit
     return (
       trackedAssets[assetName] ?: synchronized(trackedAssets) {
         trackedAssets.getOrPut(assetName) {
