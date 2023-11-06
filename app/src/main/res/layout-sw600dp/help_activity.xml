@@ -47,7 +47,8 @@
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/multipane_guideline"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_back_black_24_dp" />
+        app:srcCompat="@drawable/ic_arrow_back_black_24_dp"
+        tools:ignore="InconsistentLayout" />
 
       <TextView
         android:id="@+id/help_multipane_options_title_textview"
@@ -61,7 +62,8 @@
         android:textColor="@color/component_color_shared_primary_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/help_multipane_options_back_button"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="InconsistentLayout" />
 
       <FrameLayout
         android:id="@+id/multipane_options_container"
@@ -71,7 +73,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/multipane_guideline"
-        app:layout_constraintTop_toBottomOf="@id/help_multipane_options_title_textview" />
+        app:layout_constraintTop_toBottomOf="@id/help_multipane_options_title_textview"
+        tools:ignore="InconsistentLayout" />
 
       <androidx.constraintlayout.widget.Guideline
         android:id="@+id/multipane_guideline"
