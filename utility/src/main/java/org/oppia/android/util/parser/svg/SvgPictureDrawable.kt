@@ -104,7 +104,7 @@ abstract class SvgPictureDrawable(
       intrinsicSize = scalableVectorGraphic.computeSizeSpecsForTextPicture(textPaint)
       scalableVectorGraphic.renderToTextPicture(textPaint)
     } else {
-      intrinsicSize = scalableVectorGraphic.computeSizeSpecs(null)
+      intrinsicSize = scalableVectorGraphic.computeSizeSpecs()
       scalableVectorGraphic.renderToBlockPicture()
     }
 

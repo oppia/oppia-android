@@ -39,18 +39,14 @@ class ScalableVectorGraphic {
   }
 
   /**
-   * Returns the [SvgSizeSpecs] corresponding to this SVG, based on the specified [textPaint]. If a
-   * [TextPaint] is supplied, the returns specs will include text-based adjustments (for in-line
-   * images). Otherwise, the returned specs will be arranged for rendering the SVG in a standalone
-   * manner.
+   * Returns the [SvgSizeSpecs] corresponding to this SVG.
+   *
+   * The returned specs will be arranged for rendering the SVG in a standalone manner.
    */
-  fun computeSizeSpecs(textPaint: TextPaint?): SvgSizeSpecs {
-    val options = RenderOptionsBase().also { if (textPaint != null) it.textPaint(textPaint) }
+  fun computeSizeSpecs(): SvgSizeSpecs {
+    val options = RenderOptionsBase()
     val documentWidth = parsedSvg.value.getDocumentWidthOrNull(options)
     val documentHeight = parsedSvg.value.getDocumentHeightOrNull(options)
-    val verticalAlignment = if (textPaint != null) {
-      adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options))
-    } else 0f
 
     val viewBox: RectF? = parsedSvg.value.documentViewBox
     val viewBoxWidth = viewBox?.width()
@@ -75,10 +71,15 @@ class ScalableVectorGraphic {
       intrinsicHeight,
       renderedWidth = imageFileNameWidth ?: intrinsicWidth,
       renderedHeight = imageFileNameHeight ?: intrinsicHeight,
-      verticalAlignment
+      verticalAlignment = 0f
     )
   }
 
+  /**
+   * Returns the [SvgSizeSpecs] corresponding to this SVG, based on the specified [textPaint].
+   * Based on the supplied [TextPaint], the returned specs will include text-based adjustments
+   * (for in-line images).
+   */
   fun computeSizeSpecsForTextPicture(textPaint: TextPaint?): SvgSizeSpecs {
     val options = textPaint?.let { RenderOptionsBase().textPaint(it) } ?: RenderOptionsBase()
     val documentWidth = parsedSvg.value.getDocumentWidthOrNull(options)
