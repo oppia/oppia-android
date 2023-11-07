@@ -1583,6 +1583,7 @@ class KenyaAlphaEventBundleCreatorTest {
       val enableFeature = enableLoggingLearnerStudyIds
       return object : PlatformParameterValue<Boolean> {
         override val value: Boolean = enableFeature
+        override val isSynced: Boolean = false
       }
     }
   }
