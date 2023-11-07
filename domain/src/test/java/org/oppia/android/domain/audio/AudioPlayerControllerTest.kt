@@ -843,6 +843,7 @@ class AudioPlayerControllerTest {
       val enableFeature = enableLearnerStudyAnalytics
       return object : PlatformParameterValue<Boolean> {
         override val value: Boolean = enableFeature
+        override val isSynced: Boolean = false
       }
     }
 
@@ -854,6 +855,7 @@ class AudioPlayerControllerTest {
       val enableFeature = enableLearnerStudyAnalytics
       return object : PlatformParameterValue<Boolean> {
         override val value: Boolean = enableFeature
+        override val isSynced: Boolean = false
       }
     }
   }

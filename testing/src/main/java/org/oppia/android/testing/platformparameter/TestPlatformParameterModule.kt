@@ -100,18 +100,6 @@ class TestPlatformParameterModule {
   }
 
   @Provides
-  @Singleton
-  fun provideFlagTestStringParam(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
   @SplashScreenWelcomeMsg
   fun provideSplashScreenWelcomeMsgParam(
     platformParameterSingleton: PlatformParameterSingleton

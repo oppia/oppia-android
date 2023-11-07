@@ -9,16 +9,23 @@ import org.oppia.android.app.model.PlatformParameter
  */
 interface PlatformParameterValue<T> {
   val value: T
+  val isSynced: Boolean
 
   companion object {
     /**
      *  Creates a Platform Parameter Implementation containing the default value for a particular
      *  Platform Parameter
      */
-    fun <T> createDefaultParameter(defaultValue: T): PlatformParameterValue<T> {
+    fun <T> createDefaultParameter(
+      defaultValue: T,
+      defaultIsSynced: Boolean = false
+    ): PlatformParameterValue<T> {
       return object : PlatformParameterValue<T> {
         override val value: T
           get() = defaultValue
+
+        override val isSynced: Boolean
+          get() = defaultIsSynced
       }
     }
   }

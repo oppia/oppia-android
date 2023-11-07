@@ -81,7 +81,7 @@ class PlatformParameterSyncUpWorker private constructor(
    */
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
     return response.map {
-      val platformParameter = PlatformParameter.newBuilder().setName(it.key)
+      val platformParameter = PlatformParameter.newBuilder().setName(it.key).setIsSynced(true)
       when (val value = it.value) {
         is String -> platformParameter.string = value
         is Int -> platformParameter.integer = value
@@ -112,12 +112,11 @@ class PlatformParameterSyncUpWorker private constructor(
         val responseBody = checkNotNull(response.body())
         val platformParameterList = parseNetworkResponse(responseBody)
 
-        val platformParameterListWithSyncStatusFlags = platformParameterList.addSyncStatusFlags()
-        if (platformParameterListWithSyncStatusFlags.isEmpty()) {
+        if (platformParameterList.isEmpty()) {
           throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
         }
         val cachingResult = platformParameterController
-          .updatePlatformParameterDatabase(platformParameterListWithSyncStatusFlags)
+          .updatePlatformParameterDatabase(platformParameterList)
           .retrieveData()
         if (cachingResult is AsyncResult.Failure) {
           throw IllegalStateException(cachingResult.error)
@@ -132,24 +131,6 @@ class PlatformParameterSyncUpWorker private constructor(
       exceptionsController.logNonFatalException(e)
       Result.failure()
     }
-  }
-
-  private fun List<PlatformParameter>.addSyncStatusFlags(): List<PlatformParameter> {
-    val modifiedList = mutableListOf<PlatformParameter>()
-
-    for (param in this) {
-      modifiedList.add(param)
-      val syncStatusParamName = "flag_" + param.name + "_is_server_provided"
-
-      val paramSyncStatusTracker = PlatformParameter.newBuilder().apply {
-        name = syncStatusParamName
-        boolean = true // Indicates that sync status flags are up to date since they are local only
-      }
-        .build()
-      modifiedList.add(paramSyncStatusTracker)
-    }
-
-    return modifiedList
   }
 
   /** Creates an instance of [PlatformParameterSyncUpWorker] by properly injecting dependencies. */

@@ -26,6 +26,8 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
     return object : PlatformParameterValue<String> {
       override val value: String
         get() = parameter.string
+      override val isSynced: Boolean
+        get() = parameter.isSynced
     }
   }
 
@@ -38,6 +40,8 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
     return object : PlatformParameterValue<Int> {
       override val value: Int
         get() = parameter.integer
+      override val isSynced: Boolean
+        get() = parameter.isSynced
     }
   }
 
@@ -50,6 +54,8 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
     return object : PlatformParameterValue<Boolean> {
       override val value: Boolean
         get() = parameter.boolean
+      override val isSynced: Boolean
+        get() = parameter.isSynced
     }
   }
 }

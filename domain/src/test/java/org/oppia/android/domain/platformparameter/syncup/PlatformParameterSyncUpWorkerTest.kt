@@ -43,7 +43,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
-import org.oppia.android.testing.platformparameter.FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_DEFAULT_VALUE
@@ -51,7 +50,6 @@ import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SYNC_STATUS_FLAG_SERVER_VALUE
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -97,26 +95,25 @@ class PlatformParameterSyncUpWorkerTest {
   private val expectedTestStringParameter = PlatformParameter.newBuilder()
     .setName(TEST_STRING_PARAM_NAME)
     .setString(TEST_STRING_PARAM_SERVER_VALUE)
+    .setIsSynced(true)
     .build()
 
   private val expectedTestIntegerParameter = PlatformParameter.newBuilder()
     .setName(TEST_INTEGER_PARAM_NAME)
     .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE)
+    .setIsSynced(true)
     .build()
 
   private val defaultTestIntegerParameter = PlatformParameter.newBuilder()
     .setName(TEST_INTEGER_PARAM_NAME)
     .setInteger(TEST_INTEGER_PARAM_DEFAULT_VALUE)
+    .setIsSynced(false)
     .build()
 
   private val expectedTestBooleanParameter = PlatformParameter.newBuilder()
     .setName(TEST_BOOLEAN_PARAM_NAME)
     .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE)
-    .build()
-
-  private val expectedTestStringParameterFlagStatus = PlatformParameter.newBuilder()
-    .setName(FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED)
-    .setBoolean(TEST_STRING_PARAM_SYNC_STATUS_FLAG_SERVER_VALUE)
+    .setIsSynced(true)
     .build()
 
   // Not including "expectedTestBooleanParameter" in this list to prove that a refresh took place
@@ -360,10 +357,56 @@ class PlatformParameterSyncUpWorkerTest {
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
     // Controller in the form of a Map, therefore verify the retrieved values from that Map.
-    val platformParameterMapFlagStatus = platformParameterSingleton.getPlatformParameterMap()
-    assertThat(platformParameterMapFlagStatus).containsEntry(
-      FLAG_TEST_STRING_PARAM_IS_SERVER_PROVIDED, expectedTestStringParameterFlagStatus
-    )
+    val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
+
+    // Previous String Platform Parameter is still same in the Database.
+    assertThat(platformParameterMap)
+      .containsEntry(TEST_STRING_PARAM_NAME, expectedTestStringParameter)
+
+    // Is synced boolean of the platform parameter is true
+    assertThat(platformParameterMap[TEST_STRING_PARAM_NAME]!!.isSynced).isEqualTo(true)
+  }
+
+  @Test
+  fun testSyncUpWorker_databaseNotEmpty_getEmptyResponse_verifySyncStatusNotUpdated() {
+    // Set up versionName to get incorrect network response from mock platform parameter service.
+    setUpApplicationForContext(MockPlatformParameterService.appVersionForEmptyResponse)
+
+    // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
+    // Work request that is not first.
+    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
+
+    val workManager = WorkManager.getInstance(context)
+
+    val inputData = Data.Builder().putString(
+      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+      .setInputData(inputData)
+      .build()
+
+    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val workInfo = workManager.getWorkInfoById(request.id)
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+
+    val exceptionMessage = fakeExceptionLogger.getMostRecentException().message
+    assertThat(exceptionMessage)
+      .isEqualTo(PlatformParameterSyncUpWorker.EMPTY_RESPONSE_EXCEPTION_MSG)
+
+    // Retrieve the previously cached Platform Parameters from Cache Store.
+    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
+
+    // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
+    // Controller in the form of a Map, therefore verify the retrieved values from that Map.
+    val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
+
+    // Previous integer sync status is still the same in the database
+    assertThat(platformParameterMap[TEST_INTEGER_PARAM_NAME]!!.isSynced).isEqualTo(false)
   }
 
   private fun setUpTestApplicationComponent() {

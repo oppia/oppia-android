@@ -18,6 +18,8 @@ message PlatformParameter {
     // Indicates a string-typed platform parameter.
     string string = 4;
   }
+  // Indicates that the platform parameter is synced
+  bool is_synced = 5;
 }
 
 // Format of platform parameters stored on disk. It closely resembles the JSON response in cache.

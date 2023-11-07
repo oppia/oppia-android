@@ -31,40 +31,7 @@ import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollecti
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_APP_AND_OS_DEPRECATION_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_APP_AND_OS_DEPRECATION_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_CONTINUE_BUTTON_ANIMATION_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_CONTINUE_BUTTON_ANIMATION_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_DOWNLOADS_SUPPORT_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_DOWNLOADS_SUPPORT_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_EXTRA_TOPIC_TABS_UI_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_EXTRA_TOPIC_TABS_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_FAST_LANGUAGE_SWITCHING_IN_LESSON_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_FAST_LANGUAGE_SWITCHING_IN_LESSON_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_LANGUAGE_SELECTION_UI_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_LANGUAGE_SELECTION_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_LEARNER_STUDY_ANALYTICS_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_LEARNER_STUDY_ANALYTICS_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_LOGGING_LEARNER_STUDY_IDS_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_LOGGING_LEARNER_STUDY_IDS_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_SPOTLIGHT_UI_IS_SERVER_PROVIDED
-import org.oppia.android.util.platformparameter.FLAG_ENABLE_SPOTLIGHT_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
-import org.oppia.android.util.platformparameter.FlagEnableAppAndOsDeprecationIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnableContinueButtonAnimationIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnableDownloadsSupportIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnableExtraTopicTabsUiIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnableFastLanguageSwitchingInLessonIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnableInteractionConfigChangeStateRetentionIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnableLanguageSelectionUiIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnableLearnerStudyAnalyticsIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnableLoggingLearnerStudyIdsIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnablePerformanceMetricsCollectionIsServerProvided
-import org.oppia.android.util.platformparameter.FlagEnableSpotlightUiIsServerProvided
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
@@ -108,18 +75,6 @@ class PlatformParameterModule {
     PlatformParameterValue.createDefaultParameter(ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE)
 
   @Provides
-  @FlagEnableDownloadsSupportIsServerProvided
-  fun provideFlagEnableDownloadsSupportIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_DOWNLOADS_SUPPORT_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_DOWNLOADS_SUPPORT_IS_SERVER_PROVIDED_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
   @SplashScreenWelcomeMsg
   fun provideSplashScreenWelcomeMsgParam(
     platformParameterSingleton: PlatformParameterSingleton
@@ -149,18 +104,6 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @FlagEnableLanguageSelectionUiIsServerProvided
-  fun provideFlagEnableLanguageSelectionUiIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_LANGUAGE_SELECTION_UI_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_LANGUAGE_SELECTION_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
   @EnableEditAccountsOptionsUi
   fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
@@ -178,18 +121,6 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @FlagEnableLearnerStudyAnalyticsIsServerProvided
-  fun provideFlagEnableLearnerStudyAnalyticsIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_LEARNER_STUDY_ANALYTICS_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_LEARNER_STUDY_ANALYTICS_IS_SERVER_PROVIDED_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
   @EnableFastLanguageSwitchingInLesson
   fun provideFastInLessonLanguageSwitching(
     platformParameterSingleton: PlatformParameterSingleton
@@ -201,36 +132,12 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @FlagEnableFastLanguageSwitchingInLessonIsServerProvided
-  fun provideFlagEnableFastLanguageSwitchingInLessonIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_FAST_LANGUAGE_SWITCHING_IN_LESSON_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_FAST_LANGUAGE_SWITCHING_IN_LESSON_IS_SERVER_PROVIDED_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
   @EnableLoggingLearnerStudyIds
   fun provideLoggingLearnerStudyIds(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(LOGGING_LEARNER_STUDY_IDS)
       ?: PlatformParameterValue.createDefaultParameter(LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE)
-  }
-
-  @Provides
-  @FlagEnableLoggingLearnerStudyIdsIsServerProvided
-  fun provideFlagEnableLoggingLearnerStudyIdsIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_LOGGING_LEARNER_STUDY_IDS_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_LOGGING_LEARNER_STUDY_IDS_IS_SERVER_PROVIDED_DEFAULT_VALUE
-    )
   }
 
   @Provides
@@ -251,18 +158,6 @@ class PlatformParameterModule {
       ENABLE_PERFORMANCE_METRICS_COLLECTION
     ) ?: PlatformParameterValue.createDefaultParameter(
       ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
-  @FlagEnablePerformanceMetricsCollectionIsServerProvided
-  fun provideFlagEnablePerformanceMetricsCollectionIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_PERFORMANCE_METRICS_COLLECTION_IS_SERVER_PROVIDED_DEFAULT_VALUE
     )
   }
 
@@ -311,34 +206,10 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @FlagEnableSpotlightUiIsServerProvided
-  fun provideFlagEnableSpotlightUiIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_SPOTLIGHT_UI_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_SPOTLIGHT_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
   @EnableExtraTopicTabsUi
   fun provideEnableExtraTopicTabsUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
       ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
-  @FlagEnableExtraTopicTabsUiIsServerProvided
-  fun provideFlagEnableExtraTopicTabsUiIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_EXTRA_TOPIC_TABS_UI_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_EXTRA_TOPIC_TABS_UI_IS_SERVER_PROVIDED_DEFAULT_VALUE
     )
   }
 
@@ -351,18 +222,6 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @FlagEnableInteractionConfigChangeStateRetentionIsServerProvided
-  fun provideFlagEnableInteractionConfigChangeStateRetentionIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_IS_SERVER_PROVIDED_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
   @EnableContinueButtonAnimation
   fun provideEnableContinueButtonAnimation(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
@@ -371,34 +230,10 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @FlagEnableContinueButtonAnimationIsServerProvided
-  fun provideFlagEnableContinueButtonAnimationIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_CONTINUE_BUTTON_ANIMATION_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_CONTINUE_BUTTON_ANIMATION_IS_SERVER_PROVIDED_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
   @EnableAppAndOsDeprecation
   fun provideEnableAppAndOsDeprecation(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
       ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
-  @FlagEnableAppAndOsDeprecationIsServerProvided
-  fun provideFlagEnableAppAndOsDeprecationIsServerProvided(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      FLAG_ENABLE_APP_AND_OS_DEPRECATION_IS_SERVER_PROVIDED
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      FLAG_ENABLE_APP_AND_OS_DEPRECATION_IS_SERVER_PROVIDED_DEFAULT_VALUE
     )
   }
 

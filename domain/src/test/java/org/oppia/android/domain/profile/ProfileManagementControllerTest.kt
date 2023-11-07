@@ -1358,6 +1358,7 @@ class ProfileManagementControllerTest {
       val enableFeature = enableLearnerStudyAnalytics
       return object : PlatformParameterValue<Boolean> {
         override val value: Boolean = enableFeature
+        override val isSynced: Boolean = true
       }
     }
 
@@ -1369,6 +1370,7 @@ class ProfileManagementControllerTest {
       val enableFeature = enableLearnerStudyAnalytics
       return object : PlatformParameterValue<Boolean> {
         override val value: Boolean = enableFeature
+        override val isSynced: Boolean = true
       }
     }
   }
