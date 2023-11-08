@@ -2,6 +2,7 @@ package org.oppia.android.domain.hintsandsolution
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +16,6 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import kotlinx.coroutines.Job
 
 /**
  * Production implementation of [HintHandler] that implements hints & solutions in parity with the
