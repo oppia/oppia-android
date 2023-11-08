@@ -68,10 +68,11 @@ class FakeAssetRepository @Inject constructor(
   private fun loadTextFile(assetName: String): String {
     return (
       trackedAssets[assetName] ?: synchronized(trackedAssets) {
-        prodImpl.loadTextFileFromLocalAssets(assetName)?.let { loadedFile ->
-          trackedAssets.putIfAbsent(assetName, loadedFile)
-          loadedFile
-        }
+        trackedAssets[assetName] ?: prodImpl.loadTextFileFromLocalAssets(assetName)
+          ?.let { loadedFile ->
+            trackedAssets.putIfAbsent(assetName, loadedFile)
+            loadedFile
+          }
       }
       ) as? String ?: error("Asset doesn't exist: $assetName")
   }
@@ -80,7 +81,10 @@ class FakeAssetRepository @Inject constructor(
     @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit
     return (
       trackedAssets[assetName] ?: synchronized(trackedAssets) {
-        prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)?.let { loadedFile ->
+        trackedAssets[assetName] ?: prodImpl.maybeLoadProtoFromLocalAssets(
+          assetName,
+          defaultMessage
+        )?.let { loadedFile ->
           trackedAssets.putIfAbsent(assetName, loadedFile)
           loadedFile
         }
