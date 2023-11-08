@@ -15,6 +15,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 
 /**
  * Production implementation of [HintHandler] that implements hints & solutions in parity with the
@@ -305,20 +306,20 @@ class HintHandlerProdImpl private constructor(
 //  }
 
   private var hintJob: Job? = null
-  private var initialDelayMs: Long =0
-  private var startedTimeMs: Long =0
+  private var initialDelayMs: Long = 0
+  private var startedTimeMs: Long = 0
   lateinit var helpIndexToShowAdditional: HelpIndex
   var targetSequenceNumber = hintSequenceNumber
-  private fun scheduleShowHint(delayMs: Long,helpIndexToShow: HelpIndex){
+  private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
     targetSequenceNumber = ++hintSequenceNumber
-    helpIndexToShowAdditional=helpIndexToShow
+    helpIndexToShowAdditional = helpIndexToShow
     hintJob?.cancel()
     initialDelayMs = delayMs
     startedTimeMs = System.currentTimeMillis()
 
-    hintJob =CoroutineScope(backgroundCoroutineDispatcher).launch{
+    hintJob = CoroutineScope(backgroundCoroutineDispatcher).launch {
       delay(delayMs)
-      showHint(targetSequenceNumber,helpIndexToShow)
+      showHint(targetSequenceNumber, helpIndexToShow)
     }
   }
 
@@ -332,10 +333,10 @@ class HintHandlerProdImpl private constructor(
   // Resume the timer
   fun resumeHintTimer() {
     if (hintJob?.isCancelled == true) {
-      startedTimeMs=System.currentTimeMillis()
-      hintJob =CoroutineScope(backgroundCoroutineDispatcher).launch{
+      startedTimeMs = System.currentTimeMillis()
+      hintJob = CoroutineScope(backgroundCoroutineDispatcher).launch {
         delay(initialDelayMs)
-        showHint(targetSequenceNumber,helpIndexToShowAdditional)
+        showHint(targetSequenceNumber, helpIndexToShowAdditional)
       }
     }
   }
