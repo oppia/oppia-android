@@ -1080,8 +1080,12 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
-    markAllSpotlightsSeen()
-    setUpAudio()
+    getApplicationDependencies(
+      internalProfileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1091,13 +1095,7 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
-      )
-      // waitForTheView(withText("What is a Ratio?"))
+      waitForTheView(withText("What is a Ratio?"))
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
