@@ -9,6 +9,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.Futures.immediateFuture
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
+import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Future
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -26,7 +27,16 @@ private const val GET_CURRENT_SNACKBAR_STATUS_PROVIDER_ID =
   "get_current_snackbar_status_provider_id"
 
 class SnackbarManager @Inject constructor(private val activity: AppCompatActivity, private val snackbarController: SnackbarController) {
-  private var currentShowingSnackbarId: Int? = null
+  private var currentShowingSnackbarId: String? = null
+
+
+  fun showSnackbar(@StringRes messageStringId: Int, duration: SnackbarController.SnackbarDuration){
+    currentShowingSnackbarId = UUID.randomUUID().toString()
+
+    showSnackbar(contentView, showRequest)
+
+
+  }
 
   // Must be called by activities wishing to show snackbars.
   fun enableShowingSnackbars(contentView: View) {
@@ -40,8 +50,6 @@ class SnackbarManager @Inject constructor(private val activity: AppCompatActivit
 //              snackbarController.snackbarRequestQueue.peek()?.let { showSnackbar(contentView, it) }
 //            }
 
-            snackbarController.notifySnackbarShowing(request.snackbarId, )
-
           }
 
           is SnackbarController.CurrentSnackbarState.NotShowing -> {
@@ -50,11 +58,13 @@ class SnackbarManager @Inject constructor(private val activity: AppCompatActivit
 
           is SnackbarController.CurrentSnackbarState.WaitingToShow -> {
 
+            snackbarController.notifySnackbarShowing(
 
           }
 
         }
         else -> {
+
 
         }
       }
@@ -79,7 +89,6 @@ class SnackbarManager @Inject constructor(private val activity: AppCompatActivit
     Snackbar.make(activityView, showRequest.messageStringId, duration)
       .addCallback(object : Snackbar.Callback() {
         override fun onShown(snackbar: Snackbar) {
-
 //          snackbarController.notifySnackbarShowing()
           showFuture.set(Unit)
         }
