@@ -71,12 +71,13 @@ class FractionInteractionViewModel private constructor(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
-        pendingAnswerError = if (answerText.isNotEmpty()) {
-          FractionParsingUiError.createFromParsingError(
-            fractionParser.getRealTimeAnswerError(answerText.toString())
-          ).getErrorMessageFromStringRes(resourceHandler)
+        if (answerText.isNotEmpty()) {
+          pendingAnswerError =
+            FractionParsingUiError.createFromParsingError(
+              fractionParser.getRealTimeAnswerError(answerText.toString())
+            ).getErrorMessageFromStringRes(resourceHandler)
         } else {
-          null
+          pendingAnswerError = null
         }
       }
       AnswerErrorCategory.SUBMIT_TIME -> {
