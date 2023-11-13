@@ -1,5 +1,6 @@
 package org.oppia.android.util.math
 
+import android.text.TextUtils
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.util.extensions.normalizeWhitespace
 
@@ -24,6 +25,9 @@ class FractionParser {
    * detection should be done using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
+    if (TextUtils.isEmpty(text)) {
+      return FractionParsingError.EMPTY_INPUT
+    }
     if (invalidCharsLengthRegex.find(text) != null) {
       return FractionParsingError.NUMBER_TOO_LONG
     }
@@ -130,6 +134,9 @@ class FractionParser {
      * Indicates that at least one of the numbers present in the string is too long to be
      * precisely represented in a fraction.
      */
-    NUMBER_TOO_LONG
+    NUMBER_TOO_LONG,
+
+    /** The input text was empty.  */
+    EMPTY_INPUT
   }
 }
