@@ -18,6 +18,9 @@ import javax.inject.Qualifier
  */
 @Qualifier annotation class EnableDownloadsSupport
 
+/** Name of the feature flag that controls whether to enable downloads support. */
+const val DOWNLOADS_SUPPORT = "downloads_support"
+
 /** Default value for feature flag corresponding to [EnableDownloadsSupport]. */
 const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
 
@@ -33,6 +36,9 @@ const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = true
  */
 @Qualifier
 annotation class EnableExtraTopicTabsUi
+
+/** Name of the feature flag that controls whether to enable the extra topics tab UI. */
+const val EXTRA_TOPIC_TABS_UI = "extra_topics_tab_ui"
 
 /** Default value for the feature flag corresponding to [EnableExtraTopicTabsUi]. */
 const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
@@ -91,6 +97,9 @@ const val LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE = false
 @Qualifier
 annotation class EnableEditAccountsOptionsUi
 
+/** Name of the feature flag that controls whether to enable the edit account options UI. */
+const val EDIT_ACCOUNTS_OPTIONS_UI = "edit_accounts_options_ui"
+
 /** Default value for the feature flag corresponding to [EnableEditAccountsOptionsUi]. */
 const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false
 
@@ -119,6 +128,9 @@ const val ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE = true
 @Qualifier
 annotation class EnableSpotlightUi
 
+/** Name of the feature flag that controls whether to enable the spotlight UI. */
+const val SPOTLIGHT_UI = "spotlight_ui"
+
 /** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
 const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = false
 
@@ -128,6 +140,11 @@ const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = false
  */
 @Qualifier
 annotation class EnableInteractionConfigChangeStateRetention
+
+/** Name of the feature flag that controls whether input interaction state is correctly retained
+ * across configuration changes.
+ */
+const val INTERACTION_CONFIG_CHANGE_STATE_RETENTION = "interaction_config_change_state_retention"
 
 /**
  * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
@@ -140,6 +157,9 @@ const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
  */
 @Qualifier
 annotation class EnableAppAndOsDeprecation
+
+/** Name of the feature flag that controls whether to enable app and os deprecation. */
+const val APP_AND_OS_DEPRECATION = "app_and_os_deprecation"
 
 /**
  * Default value for the feature flag corresponding to [EnableAppAndOsDeprecation].
