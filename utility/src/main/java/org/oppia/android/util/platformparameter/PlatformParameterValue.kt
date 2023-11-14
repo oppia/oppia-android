@@ -1,6 +1,7 @@
 package org.oppia.android.util.platformparameter
 
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.model.PlatformParameter.SyncStatus
 
 /**
  * Generic interface that is used to provide platform parameter values corresponding to the
@@ -9,7 +10,7 @@ import org.oppia.android.app.model.PlatformParameter
  */
 interface PlatformParameterValue<T> {
   val value: T
-  val isSynced: Boolean
+  val syncStatus: SyncStatus
 
   companion object {
     /**
@@ -18,14 +19,11 @@ interface PlatformParameterValue<T> {
      */
     fun <T> createDefaultParameter(
       defaultValue: T,
-      defaultIsSynced: Boolean = false
+      defaultIsSynced: SyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
     ): PlatformParameterValue<T> {
       return object : PlatformParameterValue<T> {
-        override val value: T
-          get() = defaultValue
-
-        override val isSynced: Boolean
-          get() = defaultIsSynced
+        override val value = defaultValue
+        override val syncStatus = defaultIsSynced
       }
     }
   }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -81,7 +82,8 @@ class PlatformParameterSyncUpWorker private constructor(
    */
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
     return response.map {
-      val platformParameter = PlatformParameter.newBuilder().setName(it.key).setIsSynced(true)
+      val platformParameter = PlatformParameter.newBuilder().setName(it.key)
+        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
       when (val value = it.value) {
         is String -> platformParameter.string = value
         is Int -> platformParameter.integer = value
