@@ -136,7 +136,7 @@ class FractionParser {
      */
     NUMBER_TOO_LONG,
 
-    /** The input text was empty. */
+    /** Indicates that the input text was empty. */
     EMPTY_INPUT
   }
 }
