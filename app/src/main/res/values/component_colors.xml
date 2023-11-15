@@ -223,6 +223,7 @@
   <!-- Home Activity -->
   <color name="component_color_home_activity_view_all_text_color">@color/color_palette_view_all_text_color</color>
   <color name="component_color_home_activity_layout_greeting_text_line_color">@color/color_palette_layout_below_greeting_text_color</color>
+  <color name="component_color_home_activity_progressbar_color">@color/color_palette_progress_bar_solid_color</color>
   <!-- CONFETTI COLORS -->
   <color name="component_color_confetti_red_color">@color/color_palette_confetti_red_color</color>
   <color name="component_color_confetti_yellow_color">@color/color_palette_confetti_yellow_color</color>
@@ -244,6 +245,7 @@
   <color name="component_color_concept_card_fragment_toolbar_color">@color/color_palette_concept_card_toolbar_color</color>
   <!-- Audio Fragment -->
   <color name="component_color_audio_fragment_background_color">@color/color_palette_audio_fragment_background_color</color>
+  <color name="component_color_audio_fragment_voiceover_progressbar_color">@color/color_palette_icon_background_secondary_color</color>
   <color name="component_color_audio_fragment_seekbar_progress_color">@color/color_palette_icon_background_secondary_color</color>
   <color name="component_color_audio_fragment_seekbar_color">@color/color_palette_seekbar_progress_background_color</color>
   <color name="component_color_audio_fragment_seekbar_thumb_shadow_color">@color/color_palette_seekbar_thumb_shadow_color</color>
