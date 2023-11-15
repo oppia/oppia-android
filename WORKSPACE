@@ -125,9 +125,9 @@ git_repository(
 # to correctly size in-line SVGs (such as those needed for LaTeX-based math expressions).
 git_repository(
     name = "androidsvg",
-    commit = "1265eb1087056cf3fc2e10442e5545bc65c109ce",
+    commit = "5bc9c7553e94c3476e8ea32baea3c77567228fcd",
     remote = "https://github.com/oppia/androidsvg",
-    shallow_since = "1686302944 -0700",
+    shallow_since = "1686304726 -0700",
 )
 
 git_repository(
