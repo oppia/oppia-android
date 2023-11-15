@@ -141,7 +141,8 @@ const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = false
 @Qualifier
 annotation class EnableInteractionConfigChangeStateRetention
 
-/** Name of the feature flag that controls whether input interaction state is correctly retained
+/**
+ * Name of the feature flag that controls whether input interaction state is correctly retained
  * across configuration changes.
  */
 const val INTERACTION_CONFIG_CHANGE_STATE_RETENTION = "interaction_config_change_state_retention"

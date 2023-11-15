@@ -1,4 +1,3 @@
-
 package org.oppia.android.domain.oppialogger.analytics
 
 import android.app.Activity
