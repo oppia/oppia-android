@@ -11,8 +11,6 @@ import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -25,8 +23,6 @@ class ContinueButtonView @JvmOverloads constructor(
   defStyleAttr: Int = R.style.StateButtonActive
 ) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr) {
 
-  @field:[Inject EnableContinueButtonAnimation]
-  lateinit var enableContinueButtonAnimation: PlatformParameterValue<Boolean>
   @Inject lateinit var fragment: Fragment
   @Inject lateinit var oppiaClock: OppiaClock
   @Inject lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
