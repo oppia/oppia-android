@@ -9,7 +9,6 @@ import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
 import org.oppia.android.util.platformparameter.ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
@@ -17,7 +16,6 @@ import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
-import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
@@ -207,14 +205,6 @@ class TestPlatformParameterModule {
     PlatformParameterValue.createDefaultParameter(enableInteractionConfigChangeStateRetention)
 
   @Provides
-  @EnableContinueButtonAnimation
-  fun provideEnableContinueButtonAnimation(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
-      enableContinueButtonAnimation
-    )
-  }
-
-  @Provides
   @EnableSpotlightUi
   fun provideEnableSpotlightUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
@@ -304,7 +294,6 @@ class TestPlatformParameterModule {
     fun forceEnableDownloadsSupport(value: Boolean) {
       enableDownloadsSupport = value
     }
-    private var enableContinueButtonAnimation = ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -352,12 +341,6 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnablePerformanceMetricsCollection(value: Boolean) {
       enablePerformanceMetricsCollection = value
-    }
-
-    /** Enables forcing [EnableContinueButtonAnimation] platform parameter flag from tests. */
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun forceEnableContinueButtonAnimation(value: Boolean) {
-      enableContinueButtonAnimation = value
     }
 
     /** Enables forcing [EnableSpotlightUi] platform parameter flag from tests. */
