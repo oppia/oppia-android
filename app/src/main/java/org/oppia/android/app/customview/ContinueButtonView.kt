@@ -23,10 +23,14 @@ class ContinueButtonView @JvmOverloads constructor(
   defStyleAttr: Int = R.style.StateButtonActive
 ) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr) {
 
-  @Inject lateinit var fragment: Fragment
-  @Inject lateinit var oppiaClock: OppiaClock
-  @Inject lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
-  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var fragment: Fragment
+  @Inject
+  lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
 
   private var shouldAnimateContinueButtonLateinit: Boolean? = null
   private val shouldAnimateContinueButton: Boolean
@@ -115,11 +119,11 @@ class ContinueButtonView @JvmOverloads constructor(
 
   private fun startAnimating() {
     val animation = AnimationUtils.loadAnimation(context, R.anim.wobble_button_animation)
-      startAnimation(animation)
-      // Repeat the animation after a fixed interval.
-      lifecycleSafeTimerFactory.createTimer(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS)
-        .observe(fragment) {
-          startAnimating()
-        }
-    }
+    startAnimation(animation)
+    // Repeat the animation after a fixed interval.
+    lifecycleSafeTimerFactory.createTimer(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS)
+      .observe(fragment) {
+        startAnimating()
+      }
+  }
 }
