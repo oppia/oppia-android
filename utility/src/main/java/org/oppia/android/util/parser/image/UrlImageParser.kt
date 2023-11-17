@@ -268,6 +268,8 @@ class UrlImageParser private constructor(
 
         var drawableWidth = drawable.intrinsicWidth.toFloat()
         var drawableHeight = drawable.intrinsicHeight.toFloat()
+        val maxContentItemPadding =
+          context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
         if (autoResizeImage) {
           // Treat the drawable's dimensions as dp so that the image scales for higher density
           // displays.
@@ -291,8 +293,7 @@ class UrlImageParser private constructor(
             drawableHeight *= multipleFactor
             drawableWidth *= multipleFactor
           }
-          val maxContentItemPadding =
-            context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
+
           val maximumImageSize = maxAvailableWidth - maxContentItemPadding
           if (drawableWidth >= maximumImageSize) {
             // The multipleFactor value is used to make sure that the aspect ratio of the image
@@ -310,6 +311,8 @@ class UrlImageParser private constructor(
             drawableWidth *= multipleFactor
           }
         }
+
+        drawableWidth-=maxContentItemPadding
 
         val drawableLeft = if (imageCenterAlign && !isRTLMode()) {
           calculateInitialMargin(maxAvailableWidth, drawableWidth)
