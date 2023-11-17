@@ -286,25 +286,25 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun stopExploration(isCompletion: Boolean) {
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
-    explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
-      .observe(
-        activity,
-        {
-          when (it) {
-            is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
-            is AsyncResult.Failure ->
-              oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
-            is AsyncResult.Success -> {
-              oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              if (isCompletion) {
-                maybeShowSurveyDialog(profileId, topicId)
-              } else {
-                backPressActivitySelector()
-              }
-            }
+    explorationDataController.stopPlayingExploration(isCompletion).toLiveData().observe(activity) {
+      when (it) {
+        is AsyncResult.Pending ->
+          oppiaLogger.d("ExplorationActivity", "Stopping exploration")
+        is AsyncResult.Failure -> {
+          oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
+          // Allow the user to always exit if they get into a broken state.
+          backPressActivitySelector()
+        }
+        is AsyncResult.Success -> {
+          oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
+          if (isCompletion) {
+            maybeShowSurveyDialog(profileId, topicId)
+          } else {
+            backPressActivitySelector()
           }
         }
-      )
+      }
+    }
   }
 
   fun onKeyboardAction(actionCode: Int) {

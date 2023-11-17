@@ -1899,6 +1899,38 @@ class ExplorationActivityTest {
   }
 
   @Test
+  fun testExpActivity_pressBack_whenProgressControllerBroken_stillEndsActivity() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    )
+    explorationDataController.startPlayingNewExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    // Simulate cases when the data controller enters a bad state by pre-finishing the exploration
+    // prior to trying to exit. While this seems impossible, it's been observed in real situations
+    // without a known cause. If it does happen, the user needs to have an escape hatch to actually
+    // leave. See #5233.
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+    testCoroutineDispatchers.runCurrent()
+    pressBack()
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_contentIsInEnglish() {
     updateContentLanguage(
@@ -2304,13 +2336,15 @@ class ExplorationActivityTest {
     explorationId: String,
     shouldSavePartialProgress: Boolean
   ): Intent {
+    // Note that the parent screen is defaulted to TOPIC_SCREEN_LESSONS_TAB since that's the most
+    // typical route to playing an exploration.
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       topicId,
       storyId,
       explorationId,
-      parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
+      parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
       shouldSavePartialProgress
     )
   }
