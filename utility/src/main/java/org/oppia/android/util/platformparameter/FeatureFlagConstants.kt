@@ -113,17 +113,6 @@ const val ENABLE_PERFORMANCE_METRICS_COLLECTION = "enable_performance_metrics_co
 /** Default value for whether to record performance metrics. */
 const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
 
-/**
- * Qualifier for the feature flag that controls whether to animate the continue button
- * interaction and navigation items. This is used to disable the animation during testing because
- * Espresso has known problems while testing views that contain animations.
- */
-@Qualifier
-annotation class EnableContinueButtonAnimation
-
-/** Default value for whether to enable continue button animation. */
-const val ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE = true
-
 /** Qualifier for the feature flag corresponding to enabling the spotlight UI. */
 @Qualifier
 annotation class EnableSpotlightUi
