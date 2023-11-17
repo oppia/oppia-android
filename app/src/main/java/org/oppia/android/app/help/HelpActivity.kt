@@ -82,7 +82,7 @@ class HelpActivity :
       selectedLicenseIndex,
       policiesActivityParams
     )
-    title = resourceHandler.getStringInLocale(R.string.menu_help)
+    title = resourceHandler.getStringInLocale(R.string.menu_help_text)
   }
 
   companion object {

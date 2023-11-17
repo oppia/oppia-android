@@ -186,7 +186,7 @@ class ProfilePictureActivityTest {
   fun testProfilePictureActivity_pressNavigateUp_finishesActivity() {
     launch(ProfilePictureActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        onView(withContentDescription(R.string.navigate_up)).perform(click())
+        onView(withContentDescription(R.string.navigate_up_text)).perform(click())
         assertThat(activity.isFinishing).isTrue()
       }
     }

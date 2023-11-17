@@ -103,7 +103,7 @@ class PinPasswordActivityPresenter @Inject constructor(
               )
           } else {
             pinViewModel.errorMessage.set(
-              resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin)
+              resourceHandler.getStringInLocale(R.string.pin_password_activity_incorrect_pin_error)
             )
             binding.pinPasswordInputPinEditText.startAnimation(
               AnimationUtils.loadAnimation(
@@ -177,14 +177,14 @@ class PinPasswordActivityPresenter @Inject constructor(
     pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
     val resetDataButtonText =
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.admin_forgot_pin_reset_app_data_button_text, appName
+        R.string.pin_password_activity_reset_app_data_button_text, appName
       )
     alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(R.string.pin_password_forgot_title)
+      .setTitle(R.string.pin_password_activity_dialog_forgot_title)
       .setMessage(
-        resourceHandler.getStringInLocaleWithWrapping(R.string.admin_forgot_pin_message, appName)
+        resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_activity_dialog_forgot_message, appName)
       )
-      .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+      .setNegativeButton(R.string.admin_settings_dialog_cancel_button_text) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()
       }
@@ -202,19 +202,19 @@ class PinPasswordActivityPresenter @Inject constructor(
     alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.admin_confirm_app_wipe_title, appName
+          R.string.pin_password_activity_reset_dialog_title, appName
         )
       )
       .setMessage(
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.admin_confirm_app_wipe_message, appName
+          R.string.pin_password_activity_reset_dialog_message, appName
         )
       )
-      .setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
+      .setNegativeButton(R.string.pin_password_activity_reset_dialog_negative_button_text) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { dialog, _ ->
+      .setPositiveButton(R.string.pin_password_activity_reset_dialog_postive_button_text) { dialog, _ ->
         profileManagementController.deleteAllProfiles().toLiveData().observe(
           activity,
           {
@@ -244,8 +244,8 @@ class PinPasswordActivityPresenter @Inject constructor(
 
   private fun showSuccessDialog() {
     AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setMessage(R.string.pin_password_success)
-      .setPositiveButton(R.string.pin_password_close) { dialog, _ ->
+      .setMessage(R.string.pin_password_activity_success_text)
+      .setPositiveButton(R.string.pin_password_activity_close_text) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
   }

@@ -69,7 +69,7 @@ class HintsAndSolutionViewModel private constructor(
   ): HintViewModel {
     return HintViewModel(
       title = resourceHandler.getStringInLocaleWithWrapping(
-        R.string.hint_list_item_number,
+        R.string.hint_solution_dialog_reveal_hint_text,
         resourceHandler.toHumanReadableString(hintIndex + 1)
       ),
       hintSummary = translationController.extractString(

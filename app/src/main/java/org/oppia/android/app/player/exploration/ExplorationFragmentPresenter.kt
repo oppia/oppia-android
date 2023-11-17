@@ -95,7 +95,7 @@ class ExplorationFragmentPresenter @Inject constructor(
         // This toolbar contains only one image button, which is the back navigation icon.
         val backButtonSpotlightTarget = SpotlightTarget(
           it,
-          resourceHandler.getStringInLocale(R.string.exploration_exit_button_spotlight_hint),
+          resourceHandler.getStringInLocale(R.string.exploration_activity_exit_button_spotlight_hint),
           SpotlightShape.Circle,
           Spotlight.FeatureCase.LESSONS_BACK_BUTTON
         )

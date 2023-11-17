@@ -25,7 +25,7 @@ public final class TextViewBindingAdapters {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
     String time = resourceHandler.computeDateString(timestamp);
     textView.setText(resourceHandler.getStringInLocaleWithWrapping(
-        R.string.profile_edit_created,
+        R.string.profile_edit_activity_created_text,
         time
     ));
   }
@@ -34,7 +34,7 @@ public final class TextViewBindingAdapters {
   @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
-    String profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_last_used);
+    String profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_edit_activity_last_used_text);
     String timeAgoTimeStamp = getTimeAgo(textView, timestamp);
     String profileLastVisited = resourceHandler.getStringInLocaleWithWrapping(
         R.string.profile_last_visited,

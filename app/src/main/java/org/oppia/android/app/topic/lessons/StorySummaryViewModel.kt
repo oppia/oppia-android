@@ -55,16 +55,16 @@ class StorySummaryViewModel(
   fun computeProgressContainerContentDescription(): String {
     return if (storyPercentage.get()!! < 100) {
       "${storyProgressPercentageText.get()} " +
-        resourceHandler.getStringInLocale(R.string.status_in_progress)
+        resourceHandler.getStringInLocale(R.string.topic_fragment_lessons_story_status_in_progress)
     } else {
       "${storyProgressPercentageText.get()} " +
-        resourceHandler.getStringInLocale(R.string.status_completed)
+        resourceHandler.getStringInLocale(R.string.topic_fragment_lessons_story_status_completed)
     }
   }
 
   private fun computeStoryProgressPercentageText(storyPercentage: Int): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.topic_story_progress_percentage, storyPercentage.toString()
+      R.string.topic_fragment_lessons_story_progress_percentage, storyPercentage.toString()
     )
   }
 

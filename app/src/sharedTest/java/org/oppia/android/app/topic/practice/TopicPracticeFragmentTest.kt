@@ -176,7 +176,7 @@ class TopicPracticeFragmentTest {
       ).check(
         matches(
           withText(
-            R.string.topic_practice_master_these_skills
+            R.string.topic_fragment_practice_master_skills_text
           )
         )
       )
@@ -359,7 +359,7 @@ class TopicPracticeFragmentTest {
       ).check(
         matches(
           withText(
-            R.string.topic_practice_master_these_skills
+            R.string.topic_fragment_practice_master_skills_text
           )
         )
       )
@@ -373,7 +373,7 @@ class TopicPracticeFragmentTest {
       ).check(
         matches(
           withText(
-            R.string.topic_practice_master_these_skills
+            R.string.topic_fragment_practice_master_skills_text
           )
         )
       )

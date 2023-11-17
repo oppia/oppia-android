@@ -49,7 +49,7 @@ class NavigationDrawerHeaderViewModel @Inject constructor(
     )
   }
 
-  fun getBarSeparator() = resourceHandler.getStringInLocale(R.string.bar_separator)
+  fun getBarSeparator() = resourceHandler.getStringInLocale(R.string.navigation_drawer_fragment_bar_separator_text)
 
   private fun computeProfileTopicProgressText(): String {
     return resourceHandler.getQuantityStringInLocaleWithWrapping(

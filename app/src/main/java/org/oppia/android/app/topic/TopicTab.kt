@@ -15,30 +15,30 @@ enum class TopicTab(
   INFO(
     positionWithTwoTabs = -1,
     positionWithFourTabs = 0,
-    tabLabelResId = R.string.info,
+    tabLabelResId = R.string.topic_fragment_info,
     tabIconResId = R.drawable.ic_info_icon_24dp,
-    contentDescriptionResId = R.string.info_tab_content_description
+    contentDescriptionResId = R.string.topic_fragment_info_tab_content_description
   ),
   LESSONS(
     positionWithTwoTabs = 0,
     positionWithFourTabs = 1,
-    tabLabelResId = R.string.lessons,
+    tabLabelResId = R.string.topic_fragment_lessons,
     tabIconResId = R.drawable.ic_lessons_icon_24dp,
-    contentDescriptionResId = R.string.lessons_tab_content_description
+    contentDescriptionResId = R.string.topic_fragment_lessons_tab_content_description
   ),
   PRACTICE(
     positionWithTwoTabs = -1,
     positionWithFourTabs = 2,
-    tabLabelResId = R.string.practice,
+    tabLabelResId = R.string.topic_fragment_practice,
     tabIconResId = R.drawable.ic_practice_icon_24dp,
-    contentDescriptionResId = R.string.practice_tab_content_description
+    contentDescriptionResId = R.string.topic_fragment_practice_tab_content_description
   ),
   REVISION(
     positionWithTwoTabs = 1,
     positionWithFourTabs = 3,
-    tabLabelResId = R.string.revision,
+    tabLabelResId = R.string.topic_fragment_revision,
     tabIconResId = R.drawable.ic_revision_icon_24dp,
-    contentDescriptionResId = R.string.revision_tab_content_description
+    contentDescriptionResId = R.string.topic_fragment_revision_tab_content_description
   );
 
   companion object {

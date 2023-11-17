@@ -342,8 +342,8 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -361,10 +361,10 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_options)).perform(click())
+      onView(withText(R.string.menu_options_text)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -382,10 +382,10 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_help)).perform(click())
+      onView(withText(R.string.menu_help_text)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -405,10 +405,10 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_my_downloads)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_menu_my_downloads_text)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -426,17 +426,17 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.administrator_controls)).perform(click())
+      onView(withText(R.string.administrator_controls_activity_title)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withText(R.string.administrator_controls),
+          withText(R.string.administrator_controls_activity_title),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
       ).check(matches(hasTextColor(R.color.component_color_drawer_fragment_selected_text_color)))
@@ -451,8 +451,8 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -471,10 +471,10 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_options)).perform(click())
+      onView(withText(R.string.menu_options_text)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -493,10 +493,10 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_help)).perform(click())
+      onView(withText(R.string.menu_help_text)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -517,10 +517,10 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_my_downloads)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_menu_my_downloads_text)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -538,10 +538,10 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.administrator_controls)).perform(click())
+      onView(withText(R.string.administrator_controls_activity_title)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -550,7 +550,7 @@ class NavigationDrawerActivityProdTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withText(R.string.administrator_controls),
+          withText(R.string.administrator_controls_activity_title),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
       ).check(matches(hasTextColor(R.color.component_color_drawer_fragment_selected_text_color)))
@@ -565,7 +565,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_options)).perform(click())
+      onView(withText(R.string.menu_options_text)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
@@ -581,7 +581,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_help)).perform(click())
+      onView(withText(R.string.menu_help_text)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
@@ -599,7 +599,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_my_downloads)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_menu_my_downloads_text)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
@@ -615,7 +615,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
@@ -631,7 +631,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.administrator_controls)).perform(click())
+      onView(withText(R.string.administrator_controls_activity_title)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
@@ -647,7 +647,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_options)).perform(click())
+      onView(withText(R.string.menu_options_text)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -664,7 +664,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_help)).perform(click())
+      onView(withText(R.string.menu_help_text)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -683,7 +683,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_my_downloads)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_menu_my_downloads_text)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -700,7 +700,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -717,7 +717,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.administrator_controls)).perform(click())
+      onView(withText(R.string.administrator_controls_activity_title)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -803,7 +803,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_my_downloads)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_menu_my_downloads_text)).perform(click())
       intended(hasComponent(MyDownloadsActivity::class.java.name))
     }
   }
@@ -814,7 +814,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -827,11 +827,11 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-      onView(withText(R.string.home_activity_back_dialog_exit))
+      onView(withText(R.string.home_activity_back_dialog_exit_button))
         .inRoot(isDialog())
         .perform(click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
@@ -858,11 +858,11 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -876,7 +876,7 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -891,13 +891,13 @@ class NavigationDrawerActivityProdTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_help)).perform(click())
+      onView(withText(R.string.menu_help_text)).perform(click())
       intended(hasComponent(HelpActivity::class.java.name))
     }
   }
 
   private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {
-    onView(withContentDescription(R.string.drawer_open_content_description))
+    onView(withContentDescription(R.string.navigation_drawer_fragment_open_content_description))
       .check(matches(isCompletelyDisplayed()))
       .perform(click())
 

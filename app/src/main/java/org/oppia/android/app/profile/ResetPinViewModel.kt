@@ -25,7 +25,7 @@ class ResetPinViewModel @Inject constructor(
 
   private fun computeResetPinInputPinHint(name: String): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.admin_settings_enter_user_new_pin, name
+      R.string.admin_settings_dialog_new_pin_text, name
     )
   }
 }

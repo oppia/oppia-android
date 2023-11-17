@@ -85,17 +85,17 @@ class LanguageDialogFragment : InjectableDialogFragment() {
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
-      .setTitle(R.string.audio_language_select_dialog_title)
+      .setTitle(R.string.audio_language_dialog_title)
       .setSingleChoiceItems(options, selectedIndex) { dialog, which ->
         selectedIndex = which
       }
-      .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { _, _ ->
+      .setPositiveButton(R.string.audio_language_dialog_okay_button_text) { _, _ ->
         if (selectedIndex != -1) {
           languageInterface.onLanguageSelected(languageCodeArrayList[selectedIndex])
         }
         dismiss()
       }
-      .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { _, _ ->
+      .setNegativeButton(R.string.audio_language_dialog_cancel_button_text) { _, _ ->
         dismiss()
       }
       .create()

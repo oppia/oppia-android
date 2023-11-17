@@ -297,7 +297,7 @@ class RevisionCardFragmentTest {
 
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
+      onView(withText(context.getString(R.string.menu_help_text))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
@@ -324,7 +324,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
+      onView(withText(context.getString(R.string.menu_options_text))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       intended(hasComponent(OptionsActivity::class.java.name))
@@ -352,7 +352,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close)))
+      onView(withText(context.getString(R.string.exploration_activity_options_menu_close_text)))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -373,7 +373,7 @@ class RevisionCardFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.revision_card_toolbar_title))
+      onView(withId(R.id.topic_fragment_lessons_revision_card_title))
         .check(matches(withText("What is a Fraction?")))
     }
   }
@@ -516,7 +516,7 @@ class RevisionCardFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.revision_card_toolbar_title))
+      onView(withId(R.id.topic_fragment_lessons_revision_card_title))
         .check(matches(withText("What is a Fraction?")))
     }
   }

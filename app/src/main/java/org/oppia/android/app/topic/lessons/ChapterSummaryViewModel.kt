@@ -27,13 +27,13 @@ class ChapterSummaryViewModel(
     return when (chapterPlayState) {
       ChapterPlayState.COMPLETED -> {
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.chapter_completed, (index + 1).toString(), chapterTitle
+          R.string.topic_fragment_lessons_chapter_completed_text, (index + 1).toString(), chapterTitle
         )
       }
       ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> {
         if (previousChapterTitle != null) {
           resourceHandler.getStringInLocaleWithWrapping(
-            R.string.chapter_locked_prerequisite_title_label,
+            R.string.topic_fragment_lessons_chapter_locked_prerequisite_label,
             (index + 1).toString(),
             chapterTitle,
             index.toString(),
@@ -41,13 +41,13 @@ class ChapterSummaryViewModel(
           )
         } else {
           resourceHandler.getStringInLocaleWithWrapping(
-            R.string.chapter_prerequisite_title_label_without_chapter_title
+            R.string.topic_fragment_lessons_without_chapter_prerequisite_label
           )
         }
       }
       else -> {
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.chapter_in_progress, (index + 1).toString(), chapterTitle
+          R.string.topic_fragment_lessons_chapter_in_progress_text, (index + 1).toString(), chapterTitle
         )
       }
     }
@@ -55,7 +55,7 @@ class ChapterSummaryViewModel(
 
   fun computePlayChapterIndexText(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.topic_play_chapter_index, (index + 1).toString()
+      R.string.topic_fragment_lessons_chapter_play_index, (index + 1).toString()
     )
   }
 }

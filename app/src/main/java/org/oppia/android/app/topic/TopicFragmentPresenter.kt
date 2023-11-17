@@ -89,7 +89,7 @@ class TopicFragmentPresenter @Inject constructor(
         lessonsTabView?.let { lessonsTabView ->
           val lessonsTabSpotlightTarget = SpotlightTarget(
             lessonsTabView,
-            resourceHandler.getStringInLocale(R.string.topic_lessons_tab_spotlight_hint),
+            resourceHandler.getStringInLocale(R.string.topic_fragment_lessons_tab_spotlight_hint),
             SpotlightShape.RoundedRectangle,
             Spotlight.FeatureCase.TOPIC_LESSON_TAB
           )
@@ -99,7 +99,7 @@ class TopicFragmentPresenter @Inject constructor(
             val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
             val revisionTabSpotlightTarget = SpotlightTarget(
               revisionTabView!!,
-              resourceHandler.getStringInLocale(R.string.topic_revision_tab_spotlight_hint),
+              resourceHandler.getStringInLocale(R.string.topic_fragment_revision_tab_spotlight_hint),
               SpotlightShape.RoundedRectangle,
               Spotlight.FeatureCase.TOPIC_REVISION_TAB
             )

@@ -94,7 +94,7 @@ class OptionsActivity :
       selectedFragment,
       profileId!!
     )
-    title = resourceHandler.getStringInLocale(R.string.menu_options)
+    title = resourceHandler.getStringInLocale(R.string.menu_options_text)
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -146,7 +146,7 @@ class OptionsActivity :
   override fun loadReadingTextSizeFragment(textSize: ReadingTextSize) {
     selectedFragment = READING_TEXT_SIZE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
-      resourceHandler.getStringInLocale(R.string.reading_text_size)
+      resourceHandler.getStringInLocale(R.string.option_activity_reading_text_size)
     )
     optionActivityPresenter.loadReadingTextSizeFragment(textSize)
   }
@@ -154,7 +154,7 @@ class OptionsActivity :
   override fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
     selectedFragment = APP_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
-      resourceHandler.getStringInLocale(R.string.app_language)
+      resourceHandler.getStringInLocale(R.string.option_activity_app_language_text)
     )
     optionActivityPresenter.loadAppLanguageFragment(appLanguage)
   }
@@ -162,7 +162,7 @@ class OptionsActivity :
   override fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {
     selectedFragment = AUDIO_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
-      resourceHandler.getStringInLocale(R.string.audio_language)
+      resourceHandler.getStringInLocale(R.string.option_activity_audio_language_text)
     )
     optionActivityPresenter.loadAudioLanguageFragment(audioLanguage)
   }

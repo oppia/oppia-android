@@ -27,7 +27,7 @@ class AppVersionViewModel @Inject constructor(
   /** Returns a localized, human-readable lastUpdateDateTime. */
   fun computeLastUpdatedDateText(): String =
     resourceHandler.getStringInLocaleWithWrapping(
-      R.string.app_last_update_date, getDateTime(lastUpdateDateTime)
+      R.string.app_version_fragment_last_update_date_text, getDateTime(lastUpdateDateTime)
     )
 
   private fun getDateTime(lastUpdateTime: Long): String =

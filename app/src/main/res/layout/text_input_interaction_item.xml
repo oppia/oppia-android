@@ -23,7 +23,7 @@
       android:id="@+id/text_input_interaction_view"
       style="@style/InputInteractionEditText"
       android:hint="@{viewModel.hintText}"
-      android:contentDescription="@{viewModel.hintText.length() == 0 ? @string/text_input_default_content_description : ``}"
+      android:contentDescription="@{viewModel.hintText.length() == 0 ? @string/state_fragment_text_input_interaction_content_description : ``}"
       android:inputType="text"
       android:text="@={viewModel.answerText}"
       android:textColorHint="@color/component_color_shared_edit_text_hint_color"

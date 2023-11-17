@@ -26,7 +26,7 @@ class FAQListActivityPresenter @Inject constructor(
 
     faqListActivityToolbar = binding.faqListActivityToolbar
     activity.setSupportActionBar(faqListActivityToolbar)
-    activity.supportActionBar!!.title = resourceHandler.getStringInLocale(R.string.FAQs)
+    activity.supportActionBar!!.title = resourceHandler.getStringInLocale(R.string.faq_list_activity_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 

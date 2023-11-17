@@ -136,7 +136,7 @@
           android:layout_height="wrap_content"
           android:background="@{viewModel.canMoveToNextQuestion ? @drawable/state_button_primary_background : @drawable/state_button_inactive_background}"
           android:enabled="@{viewModel.canMoveToNextQuestion}"
-          android:text="@string/next"
+          android:text="@string/next_text"
           android:textColor="@{viewModel.canMoveToNextQuestion ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent" />

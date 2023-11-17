@@ -907,7 +907,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       onView(withId(R.id.build_flavor_label)).check(matches(isDisplayed()))
       onView(withId(R.id.build_flavor_label))
-        .check(matches(withText(R.string.splash_screen_developer_label)))
+        .check(matches(withText(R.string.splash_activity_build_developer_label)))
     }
   }
 
@@ -921,7 +921,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       onView(withId(R.id.build_flavor_label)).check(matches(isDisplayed()))
       onView(withId(R.id.build_flavor_label))
-        .check(matches(withText(R.string.splash_screen_alpha_label)))
+        .check(matches(withText(R.string.splash_activity_build_alpha_label)))
     }
   }
 
@@ -935,7 +935,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       onView(withId(R.id.build_flavor_label)).check(matches(isDisplayed()))
       onView(withId(R.id.build_flavor_label))
-        .check(matches(withText(R.string.splash_screen_beta_label)))
+        .check(matches(withText(R.string.splash_activity_build_beta_label)))
     }
   }
 

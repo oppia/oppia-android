@@ -32,7 +32,7 @@
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
-        app:navigationContentDescription="@string/navigate_up"
+        app:navigationContentDescription="@string/navigate_up_text"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
         <TextView

@@ -95,7 +95,7 @@
     <activity android:name=".app.player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".app.profile.AddProfileActivity"
-      android:label="@string/add_profile_activity_label"
+      android:label="@string/add_profile_activity_text"
       android:theme="@style/OppiaThemeWithoutActionBarColorAccentColorPrimary" />
     <activity
       android:name=".app.profile.AdminAuthActivity"
@@ -113,7 +113,7 @@
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.ProfileChooserActivity"
-      android:label="@string/profile_chooser_activity_label"
+      android:label="@string/profile_chooser_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfilePictureActivity"
@@ -192,7 +192,7 @@
     <activity android:name=".app.testing.SplashTestActivity" />
     <activity
       android:name=".app.topic.TopicActivity"
-      android:label="@string/topic_page"
+      android:label="@string/topic_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.walkthrough.WalkthroughActivity"

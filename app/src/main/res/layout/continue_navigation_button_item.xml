@@ -54,7 +54,7 @@
       android:layout_width="wrap_content"
       android:gravity="center_vertical"
       android:onClick="@{(v) -> buttonViewModel.continueNavigationButtonListener.onContinueButtonClicked()}"
-      android:text="@string/state_continue_button"
+      android:text="@string/state_fragment_continue_button_text"
       app:continueButtonAnimationTimestampMs="@{buttonViewModel.continueButtonAnimationTimestampMs}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

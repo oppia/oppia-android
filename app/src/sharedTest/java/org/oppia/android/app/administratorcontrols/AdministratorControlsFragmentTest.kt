@@ -178,7 +178,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_account
+        stringIdToMatch = R.string.administrator_controls_fragment_edit_account_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 1,
@@ -187,7 +187,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_profiles
+        stringIdToMatch = R.string.administrator_controls_fragment_edit_profiles_text
       )
     }
   }
@@ -203,7 +203,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_download_permissions_label
+        stringIdToMatch = R.string.administrator_controls_fragment_download_permissions_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 2,
@@ -254,7 +254,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.app_version_text_view,
-        stringIdToMatch = R.string.administrator_controls_app_version
+        stringIdToMatch = R.string.administrator_controls_fragment_app_version_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 4,
@@ -263,7 +263,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 4,
         targetViewId = R.id.log_out_text_view,
-        stringIdToMatch = R.string.administrator_controls_log_out
+        stringIdToMatch = R.string.administrator_controls_fragment_log_out_text
       )
     }
   }

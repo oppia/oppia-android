@@ -281,7 +281,7 @@ class HelpActivityPresenter @Inject constructor(
     when (fragmentTag) {
       LICENSE_LIST_FRAGMENT_TAG -> {
         val thirdPartyDependenciesList = resourceHandler.getStringInLocale(
-          R.string.help_activity_third_party_dependencies_list
+          R.string.help_activity_third_party_dependencies_text
         )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
           .contentDescription = resourceHandler.getStringInLocaleWithoutWrapping(
@@ -291,7 +291,7 @@ class HelpActivityPresenter @Inject constructor(
       }
       LICENSE_TEXT_FRAGMENT_TAG -> {
         val copyrightLicensesList = resourceHandler.getStringInLocale(
-          R.string.help_activity_copyright_licenses_list
+          R.string.help_activity_copyright_licenses_text
         )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
           .contentDescription = resourceHandler.getStringInLocaleWithoutWrapping(
@@ -337,10 +337,10 @@ class HelpActivityPresenter @Inject constructor(
   private fun selectPoliciesFragment(policyPage: PolicyPage) {
     when (policyPage) {
       PolicyPage.PRIVACY_POLICY -> setMultipaneContainerTitle(
-        resourceHandler.getStringInLocale(R.string.privacy_policy_title)
+        resourceHandler.getStringInLocale(R.string.policy_activity_privacy_policy_title)
       )
       PolicyPage.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
-        resourceHandler.getStringInLocale(R.string.terms_of_service_title)
+        resourceHandler.getStringInLocale(R.string.policy_activity_terms_of_service_title)
       )
       else -> { }
     }

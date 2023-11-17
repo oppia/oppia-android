@@ -261,7 +261,7 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("54321"), closeSoftKeyboard())
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin))
+          hasErrorText(context.resources.getString(R.string.pin_password_activity_incorrect_pin_error))
         )
       )
     }
@@ -298,7 +298,7 @@ class PinPasswordActivityTest {
       )
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin))
+          hasErrorText(context.resources.getString(R.string.pin_password_activity_incorrect_pin_error))
         )
       )
     }
@@ -320,7 +320,7 @@ class PinPasswordActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          not(hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin)))
+          not(hasErrorText(context.resources.getString(R.string.pin_password_activity_incorrect_pin_error)))
         )
       )
     }
@@ -366,14 +366,14 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
 
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_settings_incorrect)
+              context.resources.getString(R.string.admin_settings_dialog_incorrect_pin_error_text)
             )
           )
         )
@@ -412,7 +412,7 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
 
@@ -424,14 +424,14 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("32"), closeSoftKeyboard())
 
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.reset_pin_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_length)
+              context.resources.getString(R.string.add_profile_activity_pin_length_error_text)
             )
           )
         )
@@ -469,7 +469,7 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(
@@ -480,19 +480,19 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("321"), closeSoftKeyboard())
 
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.pin_password_close)))
+      onView(withText(context.getString(R.string.pin_password_activity_close_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.pin_password_input_pin_edit_text)).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
-      onView(withText(context.getString(R.string.pin_password_incorrect_pin)))
+      onView(withText(context.getString(R.string.pin_password_activity_incorrect_pin_error)))
         .check(matches(isDisplayed()))
     }
   }
@@ -517,7 +517,7 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(
@@ -528,12 +528,12 @@ class PinPasswordActivityTest {
       )
         .inRoot(isDialog())
         .perform(editTextInputAction.appendText("321"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.pin_password_close)))
+      onView(withText(context.getString(R.string.pin_password_activity_close_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.pin_password_input_pin_edit_text))
@@ -592,11 +592,11 @@ class PinPasswordActivityTest {
         )
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.reset_pin_enter)))
+      onView(withText(context.getString(R.string.pin_password_activity_reset_pin_dialog_title)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -622,7 +622,7 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(
@@ -634,12 +634,12 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
-        withText(context.getString(R.string.pin_password_success))
+        withText(context.getString(R.string.pin_password_activity_success_text))
       ).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
@@ -682,14 +682,14 @@ class PinPasswordActivityTest {
         )
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_settings_incorrect)
+              context.resources.getString(R.string.admin_settings_dialog_incorrect_pin_error_text)
             )
           )
         )
@@ -725,14 +725,14 @@ class PinPasswordActivityTest {
         )
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_settings_incorrect)
+              context.resources.getString(R.string.admin_settings_dialog_incorrect_pin_error_text)
             )
           )
         )
@@ -741,7 +741,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_settings_incorrect)
+              context.resources.getString(R.string.admin_settings_dialog_incorrect_pin_error_text)
             )
           )
         )
@@ -767,14 +767,14 @@ class PinPasswordActivityTest {
         )
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+              context.resources.getString(R.string.admin_auth_activity_null_pin_input_label)
             )
           )
         )
@@ -800,7 +800,7 @@ class PinPasswordActivityTest {
         )
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -808,7 +808,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+              context.resources.getString(R.string.admin_auth_activity_null_pin_input_label)
             )
           )
         )
@@ -839,7 +839,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+              context.resources.getString(R.string.admin_auth_activity_null_pin_input_label)
             )
           )
         )
@@ -870,7 +870,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+              context.resources.getString(R.string.admin_auth_activity_null_pin_input_label)
             )
           )
         )
@@ -896,14 +896,14 @@ class PinPasswordActivityTest {
         )
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+              context.resources.getString(R.string.admin_auth_activity_null_pin_input_label)
             )
           )
         )
@@ -940,7 +940,7 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(
@@ -950,7 +950,7 @@ class PinPasswordActivityTest {
         )
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("11"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -958,7 +958,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_length)
+              context.resources.getString(R.string.add_profile_activity_pin_length_error_text)
             )
           )
         )
@@ -983,7 +983,7 @@ class PinPasswordActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin))
+          hasErrorText(context.resources.getString(R.string.pin_password_activity_incorrect_pin_error))
         )
       )
     }
@@ -1000,7 +1000,7 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
-      onView(withText(context.getString(R.string.pin_password_show))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_activity_show_pin_text))).check(matches(isDisplayed()))
     }
   }
 
@@ -1037,7 +1037,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             withContentDescription(
-              R.string.password_hidden_icon
+              R.string.pin_password_activity_hidden_icon_content_description
             )
           )
         )
@@ -1055,7 +1055,7 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.show_pin)).perform(click())
-      onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_activity_hide_pin_text))).check(matches(isDisplayed()))
     }
   }
 
@@ -1075,7 +1075,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             withContentDescription(
-              R.string.password_shown_icon
+              R.string.pin_password_activity_shown_icon_content_description
             )
           )
         )
@@ -1118,7 +1118,7 @@ class PinPasswordActivityTest {
       closeSoftKeyboard()
       onView(withId(R.id.show_pin)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_activity_hide_pin_text))).check(matches(isDisplayed()))
       onView(withId(R.id.show_hide_password_image_view))
         .check(
           matches(
@@ -1171,14 +1171,14 @@ class PinPasswordActivityTest {
         )
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.admin_settings_submit)))
+      onView(withText(context.getString(R.string.admin_settings_dialog_submit_button_text)))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
         withText(
           containsString(
-            context.resources.getString(R.string.reset_pin_enter_dialog_message, "Ben")
+            context.resources.getString(R.string.pin_password_activity_reset_pin_dialog_message, "Ben")
           )
         )
       ).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -1188,7 +1188,7 @@ class PinPasswordActivityTest {
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =
-    context.resources.getString(R.string.admin_forgot_pin_message, getAppName())
+    context.resources.getString(R.string.pin_password_activity_dialog_forgot_message, getAppName())
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

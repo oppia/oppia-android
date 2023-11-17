@@ -185,7 +185,7 @@ class ConceptCardFragmentTest {
       onView(withId(R.id.open_dialog_0)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withContentDescription(R.string.navigate_up))
+      onView(withContentDescription(R.string.navigate_up_text))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -205,7 +205,7 @@ class ConceptCardFragmentTest {
           instanceOf(TextView::class.java),
           withParent(withId(R.id.concept_card_toolbar))
         )
-      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_toolbar_title)))
+      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_fragment_title)))
     }
   }
 
@@ -222,7 +222,7 @@ class ConceptCardFragmentTest {
           instanceOf(TextView::class.java),
           withParent(withId(R.id.concept_card_toolbar))
         )
-      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_toolbar_title)))
+      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_fragment_title)))
     }
   }
 

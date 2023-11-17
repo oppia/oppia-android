@@ -357,7 +357,7 @@ class HomeActivityTest {
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.promoted_story_spotlight_hint))
+      onView(withText(R.string.home_story_promoted_story_spotlight_hint))
         .check(matches(isDisplayed()))
     }
   }
@@ -374,7 +374,7 @@ class HomeActivityTest {
     // Re-launch the activity.
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.home_story_promoted_story_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -382,7 +382,7 @@ class HomeActivityTest {
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.home_story_promoted_story_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -404,7 +404,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recently_played_stories)
+        stringToMatch = context.getString(R.string.home_activity_recently_played_stories)
       )
     }
   }
@@ -428,7 +428,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.view_all_text_view,
-        stringToMatch = context.getString(R.string.view_all)
+        stringToMatch = context.getString(R.string.home_activity_view_all_text)
       )
     }
   }
@@ -452,7 +452,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.last_played_stories)
+        stringToMatch = context.getString(R.string.home_activity_last_played_stories)
       )
     }
   }
@@ -1229,7 +1229,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
-      onView(withText(R.string.home_activity_back_dialog_exit))
+      onView(withText(R.string.home_activity_back_dialog_exit_button))
         .inRoot(isDialog())
         .perform(click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
@@ -1308,7 +1308,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recently_played_stories)
+        stringToMatch = context.getString(R.string.home_activity_recently_played_stories)
       )
     }
   }
@@ -1327,7 +1327,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.all_topics_text_view,
-        stringToMatch = context.getString((R.string.select_a_topic_to_start))
+        stringToMatch = context.getString((R.string.home_activity_all_topics_text))
       )
     }
   }
@@ -1361,7 +1361,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.all_topics_text_view,
-        stringToMatch = context.getString((R.string.select_a_topic_to_start))
+        stringToMatch = context.getString((R.string.home_activity_all_topics_text))
       )
     }
   }

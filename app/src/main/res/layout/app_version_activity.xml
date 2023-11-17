@@ -22,10 +22,10 @@
       android:background="@color/component_color_shared_activity_toolbar_color"
       android:minHeight="?attr/actionBarSize"
       android:textSize="20sp"
-      app:navigationContentDescription="@string/navigate_up"
+      app:navigationContentDescription="@string/navigate_up_text"
       app:navigationIcon="?attr/homeAsUpIndicator"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-      app:title="@string/administrator_controls_app_version"
+      app:title="@string/administrator_controls_fragment_app_version_text"
       app:titleTextAppearance="@style/ToolbarTextAppearance" />
   </com.google.android.material.appbar.AppBarLayout>
 

@@ -124,7 +124,7 @@ class BottomSheetOptionsMenuTest {
   fun bottomSheetOptionsMenu_selectHelp_callsClickListenerWithActionHelp() {
     launchBottomSheetOptionsMenuTestActivity {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.menu_help)).inRoot(isDialog()).perform(click())
+      onView(withText(R.string.menu_help_text)).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       verify(mockBottomSheetOptionsMenuItemClickListener)
         .handleOnOptionsItemSelected(R.id.action_help)
@@ -135,7 +135,7 @@ class BottomSheetOptionsMenuTest {
   fun bottomSheetOptionsMenu_selectOptions_callsClickListenerWithActionOptions() {
     launchBottomSheetOptionsMenuTestActivity {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.menu_options)).inRoot(isDialog()).perform(click())
+      onView(withText(R.string.menu_options_text)).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       verify(mockBottomSheetOptionsMenuItemClickListener)
         .handleOnOptionsItemSelected(R.id.action_options)
@@ -146,7 +146,7 @@ class BottomSheetOptionsMenuTest {
   fun bottomSheetOptionsMenu_selectClose_closesBottomSheet() {
     launchBottomSheetOptionsMenuTestActivity {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.bottom_sheet_options_menu_close)).inRoot(isDialog()).perform(click())
+      onView(withText(R.string.exploration_activity_options_menu_close_text)).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
     }

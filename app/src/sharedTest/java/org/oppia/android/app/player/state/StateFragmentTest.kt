@@ -308,7 +308,7 @@ class StateFragmentTest {
 
       verifySubmitAnswerButtonIsDisabled()
       onView(withId(R.id.submit_answer_button)).check(
-        matches(withText(R.string.state_submit_button))
+        matches(withText(R.string.state_fragment_submit_button_text))
       )
     }
   }
@@ -324,7 +324,7 @@ class StateFragmentTest {
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
       onView(withId(R.id.submit_answer_button)).check(
-        matches(withText(R.string.state_submit_button))
+        matches(withText(R.string.state_fragment_submit_button_text))
       )
     }
   }
@@ -355,7 +355,7 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
-        matches(withText(R.string.state_continue_button))
+        matches(withText(R.string.state_fragment_continue_button_text))
       )
     }
   }
@@ -388,7 +388,7 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
-        matches(withText(R.string.state_continue_button))
+        matches(withText(R.string.state_fragment_continue_button_text))
       )
     }
   }
@@ -566,7 +566,7 @@ class StateFragmentTest {
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
       onView(withId(R.id.submit_answer_button)).check(
-        matches(withText(R.string.state_submit_button))
+        matches(withText(R.string.state_fragment_submit_button_text))
       )
       onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
@@ -584,7 +584,7 @@ class StateFragmentTest {
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
       onView(withId(R.id.submit_answer_button)).check(
-        matches(withText(R.string.state_submit_button))
+        matches(withText(R.string.state_fragment_submit_button_text))
       )
       onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
@@ -618,7 +618,7 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
-        matches(withText(R.string.state_continue_button))
+        matches(withText(R.string.state_fragment_continue_button_text))
       )
     }
   }
@@ -653,7 +653,7 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
-        matches(withText(R.string.state_continue_button))
+        matches(withText(R.string.state_fragment_continue_button_text))
       )
     }
   }
@@ -1144,7 +1144,7 @@ class StateFragmentTest {
       // Ninth state: end exploration.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_fragment_return_to_topic_button_text))
       )
     }
   }
@@ -1162,7 +1162,7 @@ class StateFragmentTest {
       // Ninth state: end exploration.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_fragment_return_to_topic_button_text))
       )
     }
   }
@@ -1529,7 +1529,7 @@ class StateFragmentTest {
 
       // Verify that the user is now on the sixth state.
       verifyViewTypeIsPresent(NUMERIC_INPUT_INTERACTION)
-      verifyHint(context.resources.getString(R.string.numeric_input_hint))
+      verifyHint(context.resources.getString(R.string.state_fragment_numeric_input_interaction_hint))
     }
   }
 
@@ -2502,7 +2502,7 @@ class StateFragmentTest {
       // Ninth state: end exploration.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_fragment_return_to_topic_button_text))
       )
     }
   }
@@ -3600,7 +3600,7 @@ class StateFragmentTest {
       // Verify that the user is now on the tenth state.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_fragment_return_to_topic_button_text))
       )
     }
   }
@@ -3620,7 +3620,7 @@ class StateFragmentTest {
       // in this interaction.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_fragment_return_to_topic_button_text))
       )
     }
   }
@@ -3640,7 +3640,7 @@ class StateFragmentTest {
       // interaction.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_fragment_return_to_topic_button_text))
       )
     }
   }
@@ -3660,7 +3660,7 @@ class StateFragmentTest {
       // different expressions will match if they evaluate to the same value).
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_fragment_return_to_topic_button_text))
       )
     }
   }
@@ -3699,7 +3699,7 @@ class StateFragmentTest {
       // different expressions will match if they evaluate to the same value).
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_fragment_return_to_topic_button_text))
       )
     }
   }
@@ -3719,7 +3719,7 @@ class StateFragmentTest {
       // the '='.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_fragment_return_to_topic_button_text))
       )
     }
   }

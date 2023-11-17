@@ -412,8 +412,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         fragment.activity,
         drawerLayout,
         toolbar,
-        R.string.drawer_open_content_description,
-        R.string.drawer_close_content_description
+        R.string.navigation_drawer_fragment_open_content_description,
+        R.string.navigation_drawer_fragment_close_content_description
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
@@ -451,8 +451,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         fragment.activity,
         drawerLayout,
         toolbar,
-        R.string.drawer_open_content_description,
-        R.string.drawer_close_content_description
+        R.string.navigation_drawer_fragment_open_content_description,
+        R.string.navigation_drawer_fragment_close_content_description
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)

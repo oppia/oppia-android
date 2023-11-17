@@ -79,10 +79,10 @@ class AddProfileActivityPresenter @Inject constructor(
     }
     val toolbar = activity.findViewById<View>(R.id.add_profile_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar?.title = resourceHandler.getStringInLocale(R.string.add_profile_title)
+    activity.supportActionBar?.title = resourceHandler.getStringInLocale(R.string.add_profile_activity_text)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
-    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
+    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_activity_tool_bar_content_desc)
 
     uploadImageView = binding.addProfileActivityUserImageView
     Glide.with(activity)
@@ -250,7 +250,7 @@ class AddProfileActivityPresenter @Inject constructor(
     if (name.isEmpty()) {
       profileViewModel.nameErrorMsg.set(
         resourceHandler.getStringInLocale(
-          R.string.add_profile_error_name_empty
+          R.string.add_profile_activity_name_empty_error_text
         )
       )
       failed = true
@@ -258,7 +258,7 @@ class AddProfileActivityPresenter @Inject constructor(
     if (pin.isNotEmpty() && pin.length < 3) {
       profileViewModel.pinErrorMsg.set(
         resourceHandler.getStringInLocale(
-          R.string.add_profile_error_pin_length
+          R.string.add_profile_activity_pin_length_error_text
         )
       )
       failed = true
@@ -266,7 +266,7 @@ class AddProfileActivityPresenter @Inject constructor(
     if (pin != confirmPin) {
       profileViewModel.confirmPinErrorMsg.set(
         resourceHandler.getStringInLocale(
-          R.string.add_profile_error_pin_confirm_wrong
+          R.string.add_profile_activity_wrong_confirm_pin_error_text
         )
       )
       failed = true
@@ -289,13 +289,13 @@ class AddProfileActivityPresenter @Inject constructor(
           is ProfileManagementController.ProfileNameNotUniqueException ->
             profileViewModel.nameErrorMsg.set(
               resourceHandler.getStringInLocale(
-                R.string.add_profile_error_name_not_unique
+                R.string.add_profile_activity_name_not_unique_error_text
               )
             )
           is ProfileManagementController.ProfileNameOnlyLettersException ->
             profileViewModel.nameErrorMsg.set(
               resourceHandler.getStringInLocale(
-                R.string.add_profile_error_name_only_letters
+                R.string.add_profile_activity_name_only_letters_error_text
               )
             )
         }
@@ -308,8 +308,8 @@ class AddProfileActivityPresenter @Inject constructor(
   private fun showInfoDialog() {
     profileViewModel.showInfoAlertPopup.set(true)
     alertDialog = AlertDialog.Builder(activity as Context, R.style.OppiaAlertDialogTheme)
-      .setMessage(R.string.add_profile_pin_info)
-      .setPositiveButton(R.string.add_profile_close) { dialog, _ ->
+      .setMessage(R.string.add_profile_activity_pin_info_dialog_text)
+      .setPositiveButton(R.string.add_profile_activity_close_dialog_text) { dialog, _ ->
         profileViewModel.showInfoAlertPopup.set(false)
         dialog.dismiss()
       }

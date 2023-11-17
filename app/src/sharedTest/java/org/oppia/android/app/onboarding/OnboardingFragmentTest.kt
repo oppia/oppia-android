@@ -183,7 +183,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_0_description)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_0_description)))
     }
   }
 
@@ -254,7 +254,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_1_title)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_1_title)))
     }
   }
 
@@ -268,7 +268,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_1_description)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_1_description)))
     }
   }
 
@@ -325,7 +325,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_3_title)))
     }
   }
 
@@ -362,7 +362,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_2_title)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_2_title)))
     }
   }
 
@@ -376,7 +376,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_2_description)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_2_description)))
     }
   }
 
@@ -433,7 +433,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_3_title)))
     }
   }
 
@@ -455,7 +455,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_3_title)))
     }
   }
 
@@ -469,7 +469,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_3_description)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_3_description)))
     }
   }
 
@@ -514,7 +514,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_3_title)))
     }
   }
 
@@ -542,7 +542,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_1_title)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_1_title)))
     }
   }
 
@@ -558,7 +558,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_activity_slide_3_title)))
     }
   }
 
@@ -568,7 +568,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_fragment_next_image_view)).check(
         matches(
           withContentDescription(
-            R.string.next_arrow
+            R.string.onboarding_activity_next_arrow_text
           )
         )
       )
@@ -582,7 +582,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_fragment_next_image_view)).check(
         matches(
           withContentDescription(
-            R.string.next_arrow
+            R.string.onboarding_activity_next_arrow_text
           )
         )
       )
@@ -597,7 +597,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4)
+            context.getString(R.string.onboarding_activity_slide_dots_content_description, 2, 4)
           )
         )
       )
@@ -613,7 +613,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4)
+            context.getString(R.string.onboarding_activity_slide_dots_content_description, 2, 4)
           )
         )
       )
@@ -628,7 +628,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4)
+            context.getString(R.string.onboarding_activity_slide_dots_content_description, 3, 4)
           )
         )
       )
@@ -644,7 +644,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4)
+            context.getString(R.string.onboarding_activity_slide_dots_content_description, 3, 4)
           )
         )
       )
@@ -674,7 +674,7 @@ class OnboardingFragmentTest {
   private fun getAppName(): String = getResources().getString(R.string.app_name)
 
   private fun getOnboardingSlide0Title(): String =
-    getResources().getString(R.string.onboarding_slide_0_title, getAppName())
+    getResources().getString(R.string.onboarding_activity_slide_0_title, getAppName())
 
   private fun scrollToPosition(position: Int): ViewAction {
     return object : ViewAction {

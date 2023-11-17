@@ -201,10 +201,10 @@ class RevisionCardActivityTest {
       scenario.onActivity { activity ->
 
         val revisionCardToolbarTitle: TextView =
-          activity.findViewById(R.id.revision_card_toolbar_title)
+          activity.findViewById(R.id.topic_fragment_lessons_revision_card_title)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
+        onView(withId(R.id.topic_fragment_lessons_revision_card_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(true)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
@@ -223,10 +223,10 @@ class RevisionCardActivityTest {
       scenario.onActivity { activity ->
 
         val revisionCardToolbarTitle: TextView =
-          activity.findViewById(R.id.revision_card_toolbar_title)
+          activity.findViewById(R.id.topic_fragment_lessons_revision_card_title)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
+        onView(withId(R.id.topic_fragment_lessons_revision_card_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(false)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
@@ -245,10 +245,10 @@ class RevisionCardActivityTest {
       scenario.onActivity { activity ->
 
         val revisionCardToolbarTitle: TextView =
-          activity.findViewById(R.id.revision_card_toolbar_title)
+          activity.findViewById(R.id.topic_fragment_lessons_revision_card_title)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
+        onView(withId(R.id.topic_fragment_lessons_revision_card_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(true)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
@@ -267,10 +267,10 @@ class RevisionCardActivityTest {
       scenario.onActivity { activity ->
 
         val revisionCardToolbarTitle: TextView =
-          activity.findViewById(R.id.revision_card_toolbar_title)
+          activity.findViewById(R.id.topic_fragment_lessons_revision_card_title)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
+        onView(withId(R.id.topic_fragment_lessons_revision_card_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(false)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
