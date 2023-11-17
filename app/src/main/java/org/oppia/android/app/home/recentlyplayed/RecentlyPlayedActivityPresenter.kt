@@ -50,13 +50,13 @@ class RecentlyPlayedActivityPresenter @Inject constructor(
         resourceHandler.getStringInLocale(R.string.stories_for_you)
       }
       RecentlyPlayedActivityTitle.LAST_PLAYED_STORIES -> {
-        resourceHandler.getStringInLocale(R.string.last_played_stories)
+        resourceHandler.getStringInLocale(R.string.home_activity_last_played_stories)
       }
       RecentlyPlayedActivityTitle.RECOMMENDED_STORIES -> {
         resourceHandler.getStringInLocale(R.string.recommended_stories)
       }
       else -> {
-        resourceHandler.getStringInLocale(R.string.recently_played_activity)
+        resourceHandler.getStringInLocale(R.string.recently_played_activity_title)
       }
     }
   }

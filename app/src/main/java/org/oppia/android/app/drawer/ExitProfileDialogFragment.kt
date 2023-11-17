@@ -66,10 +66,10 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
     val alertDialog = AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaAlertDialogTheme))
       .setMessage(R.string.home_activity_back_dialog_message)
-      .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
+      .setNegativeButton(R.string.home_activity_back_dialog_cancel_button) { dialog, _ ->
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
+      .setPositiveButton(R.string.home_activity_back_dialog_exit_button) { _, _ ->
         // TODO(#3641): Investigate on using finish instead of intent.
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
         if (!restoreLastCheckedItem) {

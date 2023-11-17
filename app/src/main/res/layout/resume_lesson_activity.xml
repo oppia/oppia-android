@@ -21,7 +21,7 @@
         android:background="@color/component_color_shared_activity_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
-        app:navigationContentDescription="@string/navigate_up"
+        app:navigationContentDescription="@string/navigate_up_text"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/resume_lesson_activity_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance" />

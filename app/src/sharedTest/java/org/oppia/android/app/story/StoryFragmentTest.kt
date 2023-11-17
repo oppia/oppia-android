@@ -216,7 +216,7 @@ class StoryFragmentTest {
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
-    onView(withContentDescription(R.string.navigate_up)).perform(click())
+    onView(withContentDescription(R.string.navigate_up_text)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
@@ -338,7 +338,7 @@ class StoryFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_completed_tick
         )
-      ).check(matches(withContentDescription(R.string.chapter_completed)))
+      ).check(matches(withContentDescription(R.string.topic_fragment_lessons_chapter_completed_text,)))
     }
   }
 

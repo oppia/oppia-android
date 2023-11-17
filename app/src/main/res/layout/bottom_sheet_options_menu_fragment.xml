@@ -18,7 +18,7 @@
       android:drawableTint="@color/component_color_shared_multipane_icon_color"
       android:gravity="center_vertical"
       android:minHeight="48dp"
-      android:text="@string/menu_options"
+      android:text="@string/menu_options_text"
       android:textColor="@color/component_color_shared_primary_dark_text_color"
       android:textSize="20sp"
       app:drawableStartCompat="@drawable/ic_options_icon_grey_24dp" />
@@ -31,7 +31,7 @@
       android:drawableTint="@color/component_color_shared_multipane_icon_color"
       android:gravity="center_vertical"
       android:minHeight="48dp"
-      android:text="@string/menu_help"
+      android:text="@string/menu_help_text"
       android:textColor="@color/component_color_shared_primary_dark_text_color"
       android:textSize="20sp"
       app:drawableStartCompat="@drawable/ic_baseline_help_outline_24" />
@@ -44,7 +44,7 @@
       android:drawableTint="@color/component_color_shared_multipane_icon_color"
       android:gravity="center_vertical"
       android:minHeight="48dp"
-      android:text="@string/bottom_sheet_options_menu_close"
+      android:text="@string/exploration_activity_options_menu_close_text"
       android:textColor="@color/component_color_shared_primary_dark_text_color"
       android:textSize="20sp"
       app:drawableStartCompat="@drawable/ic_baseline_close_24" />

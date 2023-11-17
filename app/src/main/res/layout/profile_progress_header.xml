@@ -25,7 +25,7 @@
       android:layout_width="100dp"
       android:layout_height="100dp"
       android:clickable="true"
-      android:contentDescription="@string/current_profile_picture_content_description"
+      android:contentDescription="@string/add_profile_activity_edit_image_content_description"
       android:elevation="4dp"
       android:focusable="true"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
@@ -40,7 +40,7 @@
     <ImageView
       android:layout_width="48dp"
       android:layout_height="48dp"
-      android:contentDescription="@string/edit_profile_picture_content_description"
+      android:contentDescription="@string/add_profile_activity_edit_user_image_content_description"
       android:elevation="4dp"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="8dp"
@@ -111,7 +111,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:minWidth="60dp"
-          android:text="@{viewModel.ongoingTopicCount != 1 ? @string/topics_in_progress : @string/topic_in_progress}"
+          android:text="@{viewModel.ongoingTopicCount != 1 ? @string/topics_in_progress : @string/profile_progress_activity_topic_in_progress_text}"
           android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="12sp" />
       </LinearLayout>
@@ -161,7 +161,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:minWidth="60dp"
-          android:text="@{viewModel.completedStoryCount != 1 ? @string/stories_completed : @string/story_completed}"
+          android:text="@{viewModel.completedStoryCount != 1 ? @string/profile_progress_activity_stories_completed_text : @string/profile_progress_activity_story_completed_text}"
           android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="12sp" />
       </LinearLayout>
@@ -176,7 +176,7 @@
       android:layout_marginTop="64dp"
       android:fontFamily="sans-serif-medium"
       android:minHeight="48dp"
-      android:text="@string/recently_played_stories"
+      android:text="@string/home_activity_recently_played_stories"
       android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="18sp"
       android:visibility="@{viewModel.headerTextVisibility}"
@@ -195,7 +195,7 @@
       android:fontFamily="sans-serif-medium"
       android:minHeight="48dp"
       android:onClick="@{() -> viewModel.clickOnViewAll()}"
-      android:text="@string/view_all"
+      android:text="@string/home_activity_view_all_text"
       android:textAllCaps="true"
       android:textColor="@color/component_color_profile_progress_activity_view_all_text_color"
       android:textSize="14sp"

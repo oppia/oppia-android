@@ -26,7 +26,7 @@
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
-        app:navigationContentDescription="@string/navigate_up"
+        app:navigationContentDescription="@string/navigate_up_text"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
         <ImageButton
@@ -41,7 +41,7 @@
           android:contentDescription="@string/options_menu_content_description" />
 
         <TextView
-          android:id="@+id/revision_card_toolbar_title"
+          android:id="@+id/topic_fragment_lessons_revision_card_title"
           style="@style/MarqueeToolbarTitleTextView"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

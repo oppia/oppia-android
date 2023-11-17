@@ -18,13 +18,13 @@ class DateTimeUtil @Inject constructor(
     return when (machineLocale.getCurrentTimeOfDay()) {
       OppiaLocale.MachineLocale.TimeOfDay.MID_MORNING,
       OppiaLocale.MachineLocale.TimeOfDay.EARLY_MORNING ->
-        resourceHandler.getStringInLocale(R.string.home_screen_good_morning_greeting_fragment)
+        resourceHandler.getStringInLocale(R.string.home_activity_good_morning_greeting_text)
       OppiaLocale.MachineLocale.TimeOfDay.AFTERNOON ->
-        resourceHandler.getStringInLocale(R.string.home_screen_good_afternoon_greeting_fragment)
+        resourceHandler.getStringInLocale(R.string.home_activity_good_afternoon_greeting_text)
       OppiaLocale.MachineLocale.TimeOfDay.EVENING,
       OppiaLocale.MachineLocale.TimeOfDay.UNKNOWN,
       OppiaLocale.MachineLocale.TimeOfDay.LATE_NIGHT ->
-        resourceHandler.getStringInLocale(R.string.home_screen_good_evening_greeting_fragment)
+        resourceHandler.getStringInLocale(R.string.home_activity_good_evening_greeting_text)
     }
   }
 

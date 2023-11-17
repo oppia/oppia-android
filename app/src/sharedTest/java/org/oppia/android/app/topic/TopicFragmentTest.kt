@@ -213,7 +213,7 @@ class TopicFragmentTest {
 
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.topic_lessons_tab_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.topic_fragment_lessons_tab_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -227,7 +227,7 @@ class TopicFragmentTest {
       )
     )
     testCoroutineDispatchers.runCurrent()
-    onView(withText(R.string.topic_lessons_tab_spotlight_hint)).check(matches(isDisplayed()))
+    onView(withText(R.string.topic_fragment_lessons_tab_spotlight_hint)).check(matches(isDisplayed()))
   }
 
   @Test
@@ -242,7 +242,7 @@ class TopicFragmentTest {
       )
     )
     testCoroutineDispatchers.runCurrent()
-    onView(withText(R.string.first_chapter_spotlight_hint)).check(matches(isDisplayed()))
+    onView(withText(R.string.topic_fragment_first_chapter_spotlight_hint)).check(matches(isDisplayed()))
   }
 
   @Test
@@ -270,7 +270,7 @@ class TopicFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.first_chapter_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.topic_fragment_first_chapter_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -289,7 +289,7 @@ class TopicFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(matches(isDisplayed()))
+      onView(withText(R.string.topic_fragment_revision_tab_spotlight_hint)).check(matches(isDisplayed()))
     }
   }
 
@@ -302,7 +302,7 @@ class TopicFragmentTest {
       createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.topic_fragment_revision_tab_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -328,7 +328,7 @@ class TopicFragmentTest {
       createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.topic_fragment_revision_tab_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -427,7 +427,7 @@ class TopicFragmentTest {
         FRACTIONS_TOPIC_ID
       )
     )
-    onView(withContentDescription(R.string.navigate_up)).perform(click())
+    onView(withContentDescription(R.string.navigate_up_text)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 

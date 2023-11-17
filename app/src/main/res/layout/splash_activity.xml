@@ -48,7 +48,7 @@
       style="@style/Heading2ViewStart"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@{isOnAlphaFlavor ? @string/splash_screen_alpha_label : isOnBetaFlavor ? @string/splash_screen_beta_label : @string/splash_screen_developer_label}"
+      android:text="@{isOnAlphaFlavor ? @string/splash_activity_build_alpha_label : isOnBetaFlavor ? @string/splash_activity_build_beta_label : @string/splash_activity_build_developer_label}"
       android:textColor="@color/component_color_shared_secondary_4_text_color"
       android:textSize="24sp"
       android:visibility="@{(isOnDeveloperFlavor || isOnAlphaFlavor || isOnBetaFlavor) ? View.VISIBLE : View.GONE}"

@@ -153,7 +153,7 @@ class ProfileEditFragmentTest {
   fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_message))
+      onView(withText(R.string.profile_edit_activity_dialog_message))
         .inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
@@ -165,7 +165,7 @@ class ProfileEditFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.profile_edit_delete_dialog_message))
+      onView(withText(R.string.profile_edit_activity_dialog_message))
         .inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
@@ -177,7 +177,7 @@ class ProfileEditFragmentTest {
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.profile_edit_delete_dialog_message))
+      onView(withText(R.string.profile_edit_activity_dialog_message))
         .inRoot(isDialog()).check(matches(isCompletelyDisplayed()))
     }
   }

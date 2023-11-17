@@ -162,7 +162,7 @@ class WalkthroughTopicListFragmentTest {
         )
       ).check(
         matches(
-          withText(R.string.what_do_you_want_to_learn)
+          withText(R.string.walkthrough_activity_topic_header_text)
         )
       )
     }

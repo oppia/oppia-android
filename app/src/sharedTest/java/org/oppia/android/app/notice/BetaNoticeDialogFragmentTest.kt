@@ -139,7 +139,7 @@ class BetaNoticeDialogFragmentTest {
     launchBetaNoticeDialogFragmentTestActivity {
       onDialogView(withId(R.id.beta_notice_dialog_message)).check(matches(isDisplayed()))
       onDialogView(withId(R.id.beta_notice_dialog_message))
-        .check(matches(withText(R.string.beta_notice_dialog_message)))
+        .check(matches(withText(R.string.beta_notice_dialog_message_text)))
       onDialogView(withId(R.id.beta_notice_dialog_message))
         .check(isCompletelyBelow(withText(R.string.beta_notice_dialog_title)))
     }
@@ -151,7 +151,7 @@ class BetaNoticeDialogFragmentTest {
       onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox))
         .check(matches(isDisplayed()))
       onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox))
-        .check(matches(withText(R.string.beta_notice_dialog_do_not_show_again_text)))
+        .check(matches(withText(R.string.beta_notice_dialog_preference_checkbox_text)))
       onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox))
         .check(isCompletelyBelow(withId(R.id.beta_notice_dialog_message)))
     }

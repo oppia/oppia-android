@@ -206,17 +206,17 @@ class NavigationDrawerActivityDebugTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.developer_options)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_developer_options)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withText(R.string.developer_options),
+          withText(R.string.navigation_drawer_fragment_developer_options,
           isDescendantOfA(withId(R.id.developer_options_linear_layout))
         )
       ).check(
@@ -237,10 +237,10 @@ class NavigationDrawerActivityDebugTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.developer_options)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_developer_options)).perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
+      onView(withText(R.string.navigation_drawer_fragment_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel_button))
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
@@ -249,7 +249,7 @@ class NavigationDrawerActivityDebugTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withText(R.string.developer_options),
+          withText(R.string.navigation_drawer_fragment_developer_options,
           isDescendantOfA(withId(R.id.developer_options_linear_layout))
         )
       ).check(
@@ -270,7 +270,7 @@ class NavigationDrawerActivityDebugTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.developer_options)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_developer_options)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
@@ -286,7 +286,7 @@ class NavigationDrawerActivityDebugTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.developer_options)).perform(click())
+      onView(withText(R.string.navigation_drawer_fragment_developer_options)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -338,7 +338,7 @@ class NavigationDrawerActivityDebugTest {
   }
 
   private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {
-    onView(withContentDescription(R.string.drawer_open_content_description))
+    onView(withContentDescription(R.string.navigation_drawer_fragment_open_content_description))
       .check(matches(isCompletelyDisplayed()))
       .perform(click())
 

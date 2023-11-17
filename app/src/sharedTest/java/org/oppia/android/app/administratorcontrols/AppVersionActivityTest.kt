@@ -187,7 +187,7 @@ class AppVersionActivityTest {
       onView(
         withText(
           String.format(
-            context.resources.getString(R.string.app_last_update_date),
+            context.resources.getString(R.string.app_version_fragment_last_update_date_text),
             lastUpdateDate
           )
         )
@@ -224,7 +224,7 @@ class AppVersionActivityTest {
         matches(
           withText(
             String.format(
-              context.resources.getString(R.string.app_last_update_date),
+              context.resources.getString(R.string.app_version_fragment_last_update_date_text),
               lastUpdateDate
             )
           )
@@ -246,7 +246,7 @@ class AppVersionActivityTest {
           3
         )
       )
-      onView(withText(R.string.administrator_controls_app_version)).perform(click())
+      onView(withText(R.string.administrator_controls_fragment_app_version_text)).perform(click())
       intended(hasComponent(AppVersionActivity::class.java.name))
       onView(isRoot()).perform(pressBack())
       onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))

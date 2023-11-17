@@ -58,11 +58,11 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     }
 
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(R.string.admin_settings_heading)
+      .setTitle(R.string.admin_settings_dialog_heading)
       .setView(binding.root)
-      .setMessage(R.string.admin_settings_sub)
-      .setPositiveButton(R.string.admin_settings_submit, null)
-      .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+      .setMessage(R.string.admin_settings_dialog_subject_text)
+      .setPositiveButton(R.string.admin_settings_dialog_submit_button_text, null)
+      .setNegativeButton(R.string.admin_settings_dialog_cancel_button_text) { dialog, _ ->
         dialog.dismiss()
       }
       .create()
@@ -82,7 +82,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
         if (binding.adminSettingsInputPinEditText.text?.isEmpty()!!) {
           adminViewModel.errorMessage.set(
             resourceHandler.getStringInLocale(
-              R.string.admin_auth_null
+              R.string.admin_auth_activity_null_pin_input_label
             )
           )
           return@setOnClickListener
@@ -92,7 +92,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
         } else {
           adminViewModel.errorMessage.set(
             resourceHandler.getStringInLocale(
-              R.string.admin_settings_incorrect
+              R.string.admin_settings_dialog_incorrect_pin_error_text
             )
           )
         }

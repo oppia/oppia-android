@@ -22,7 +22,7 @@
         android:background="@color/component_color_shared_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        app:navigationContentDescription="@string/navigate_up"
+        app:navigationContentDescription="@string/navigate_up_text"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/app_language_activity_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance" />

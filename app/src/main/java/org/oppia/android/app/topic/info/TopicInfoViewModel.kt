@@ -76,7 +76,7 @@ class TopicInfoViewModel @Inject constructor(
       }
     } ?: resourceHandler.getStringInLocale(R.string.unknown_size)
     topicSizeText.set(
-      resourceHandler.getStringInLocaleWithWrapping(R.string.topic_download_text, sizeWithUnit)
+      resourceHandler.getStringInLocaleWithWrapping(R.string.topic_fragment_download_text, sizeWithUnit)
     )
   }
 

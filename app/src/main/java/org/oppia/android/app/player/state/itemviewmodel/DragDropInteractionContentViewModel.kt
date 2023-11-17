@@ -44,28 +44,29 @@ class DragDropInteractionContentViewModel(
   fun computeDragDropMoveUpItemContentDescription(): String {
     return if (itemIndex != 0) {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.move_item_up_content_description, itemIndex.toString()
+        R.string.state_fragment_drag_drop_interaction_move_item_up_content_description, itemIndex.toString()
       )
-    } else resourceHandler.getStringInLocale(R.string.up_button_disabled)
+    } else resourceHandler.getStringInLocale(R.string.state_fragment_drag_drop_interaction_up_button_disabled)
   }
 
   fun computeDragDropMoveDownItemContentDescription(): String {
     return if (itemIndex != listSize - 1) {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.move_item_down_content_description, (itemIndex + 2).toString()
+        R.string.state_fragment_drag_drop_interaction_move_item_down_content_description,
+        (itemIndex + 2).toString()
       )
-    } else resourceHandler.getStringInLocale(R.string.down_button_disabled)
+    } else resourceHandler.getStringInLocale(R.string.state_fragment_drag_drop_interaction_down_button_disabled)
   }
 
   fun computeDragDropGroupItemContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.link_to_item_below, (itemIndex + 2).toString()
+      R.string.state_fragment_drag_drop_interaction_link_to_item_below, (itemIndex + 2).toString()
     )
   }
 
   fun computeDragDropUnlinkItemContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.unlink_items, (itemIndex + 1).toString()
+      R.string.state_fragment_drag_drop_interaction_unlink_items, (itemIndex + 1).toString()
     )
   }
 }

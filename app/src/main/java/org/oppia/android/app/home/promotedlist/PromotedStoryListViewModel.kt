@@ -41,10 +41,10 @@ class PromotedStoryListViewModel(
             resourceHandler.getStringInLocale(R.string.stories_for_you)
         }
         recentlyPlayedStoryList.isNotEmpty() -> {
-          resourceHandler.getStringInLocale(R.string.recently_played_stories)
+          resourceHandler.getStringInLocale(R.string.home_activity_recently_played_stories)
         }
         else -> {
-          resourceHandler.getStringInLocale(R.string.last_played_stories)
+          resourceHandler.getStringInLocale(R.string.home_activity_last_played_stories)
         }
       }
     }

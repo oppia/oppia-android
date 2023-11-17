@@ -123,8 +123,8 @@ class FractionInteractionViewModel private constructor(
       customPlaceholder1.isNotEmpty() -> customPlaceholder1
       customPlaceholder2.isNotEmpty() -> customPlaceholder2
       !allowNonzeroIntegerPart ->
-        resourceHandler.getStringInLocale(R.string.fractions_default_hint_text_no_integer)
-      else -> resourceHandler.getStringInLocale(R.string.fractions_default_hint_text)
+        resourceHandler.getStringInLocale(R.string.state_fragment_fraction_input_interaction_no_integer_hint)
+      else -> resourceHandler.getStringInLocale(R.string.state_fragment_fraction_input_interaction_hint)
     }
   }
 

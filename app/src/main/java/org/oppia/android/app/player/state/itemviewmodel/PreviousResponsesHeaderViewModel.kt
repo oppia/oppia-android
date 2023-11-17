@@ -20,7 +20,7 @@ class PreviousResponsesHeaderViewModel(
   /** Returns the user-readable header text for previous responses. */
   fun computePreviousResponsesHeaderText(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.previous_responses_header, previousAnswerCount.toString()
+      R.string.state_fragment_previous_responses_header, previousAnswerCount.toString()
     )
   }
 }

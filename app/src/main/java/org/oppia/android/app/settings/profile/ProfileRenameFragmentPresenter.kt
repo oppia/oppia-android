@@ -57,7 +57,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
           .nameErrorMsg
           .set(
             resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_empty
+              R.string.add_profile_activity_name_empty_error_text
             )
           )
         return@setOnClickListener
@@ -110,13 +110,13 @@ class ProfileRenameFragmentPresenter @Inject constructor(
         is ProfileManagementController.ProfileNameNotUniqueException ->
           renameViewModel.nameErrorMsg.set(
             resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_not_unique
+              R.string.add_profile_activity_name_not_unique_error_text
             )
           )
         is ProfileManagementController.ProfileNameOnlyLettersException ->
           renameViewModel.nameErrorMsg.set(
             resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_only_letters
+              R.string.add_profile_activity_name_only_letters_error_text
             )
           )
       }

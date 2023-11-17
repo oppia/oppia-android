@@ -217,7 +217,7 @@ class HelpFragmentTest {
           targetViewId = R.id.help_item_text_view
         )
       ).check(
-        matches(withText(R.string.frequently_asked_questions_FAQ))
+        matches(withText(R.string.help_activity_faq_text))
       )
     }
   }
@@ -240,7 +240,7 @@ class HelpFragmentTest {
           position = 0,
           targetViewId = R.id.help_item_text_view
         )
-      ).check(matches(withText(R.string.frequently_asked_questions_FAQ)))
+      ).check(matches(withText(R.string.help_activity_faq_text)))
     }
   }
 
@@ -1112,7 +1112,7 @@ class HelpFragmentTest {
           position = 2,
           targetViewId = R.id.help_item_text_view
         )
-      ).check(matches(withText(R.string.privacy_policy_title)))
+      ).check(matches(withText(R.string.policy_activity_privacy_policy_title)))
     }
   }
 
@@ -1134,7 +1134,7 @@ class HelpFragmentTest {
           position = 3,
           targetViewId = R.id.help_item_text_view
         )
-      ).check(matches(withText(R.string.terms_of_service_title)))
+      ).check(matches(withText(R.string.policy_activity_terms_of_service_title)))
     }
   }
 
@@ -1155,7 +1155,7 @@ class HelpFragmentTest {
       ).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.terms_of_service_title)
+          withText(R.string.policy_activity_terms_of_service_title)
         )
       )
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
@@ -1180,7 +1180,7 @@ class HelpFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.terms_of_service_title)
+          withText(R.string.policy_activity_terms_of_service_title)
         )
       )
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
@@ -1205,7 +1205,7 @@ class HelpFragmentTest {
           targetViewId = R.id.help_item_text_view
         )
       ).check(
-        matches(withText(R.string.privacy_policy_title))
+        matches(withText(R.string.policy_activity_privacy_policy_title))
       )
     }
   }
@@ -1228,7 +1228,7 @@ class HelpFragmentTest {
           targetViewId = R.id.help_item_text_view
         )
       ).check(
-        matches(withText(R.string.terms_of_service_title))
+        matches(withText(R.string.policy_activity_terms_of_service_title))
       )
     }
   }
@@ -1310,7 +1310,7 @@ class HelpFragmentTest {
       ).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.privacy_policy_title)
+          withText(R.string.policy_activity_privacy_policy_title)
         )
       )
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
@@ -1335,7 +1335,7 @@ class HelpFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.privacy_policy_title)
+          withText(R.string.policy_activity_privacy_policy_title)
         )
       )
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
@@ -1373,7 +1373,7 @@ class HelpFragmentTest {
   }
 
   private fun ActivityScenario<HelpActivity>.openNavigationDrawer() {
-    onView(withContentDescription(R.string.drawer_open_content_description))
+    onView(withContentDescription(R.string.navigation_drawer_fragment_open_content_description))
       .check(matches(isCompletelyDisplayed()))
       .perform(click())
 
@@ -1408,12 +1408,12 @@ class HelpFragmentTest {
 
   private fun retrieveThirdPartyDependenciesListString(): String {
     val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
-    return res.getString(R.string.help_activity_third_party_dependencies_list)
+    return res.getString(R.string.help_activity_third_party_dependencies_text)
   }
 
   private fun retrieveCopyrightLicensesListString(): String {
     val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
-    return res.getString(R.string.help_activity_copyright_licenses_list)
+    return res.getString(R.string.help_activity_copyright_licenses_text)
   }
 
   private fun setUpTestApplicationComponent() {

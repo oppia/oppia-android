@@ -348,7 +348,7 @@ class TopicInfoFragmentTest {
       )
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
+      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.topic_fragment_info_see_more_text)))
     }
   }
 
@@ -392,7 +392,7 @@ class TopicInfoFragmentTest {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
+      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.topic_fragment_info_see_less_text)))
     }
   }
 
@@ -405,7 +405,7 @@ class TopicInfoFragmentTest {
     ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
+      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.topic_fragment_info_see_more_text)))
     }
   }
 
@@ -419,7 +419,7 @@ class TopicInfoFragmentTest {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
+      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.topic_fragment_info_see_less_text)))
     }
   }
 

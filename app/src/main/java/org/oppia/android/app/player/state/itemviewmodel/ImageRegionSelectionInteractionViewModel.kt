@@ -76,7 +76,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       clickOnImage = parseClickOnImage(answerTextString)
     }.build()
     plainAnswer = resourceHandler.getStringInLocaleWithWrapping(
-      R.string.image_interaction_answer_text,
+      R.string.state_fragment_image_interaction_answer_text,
       answerTextString
     )
     this.writtenTranslationContext =

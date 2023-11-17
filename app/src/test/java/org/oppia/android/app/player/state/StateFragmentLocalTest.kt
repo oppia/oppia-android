@@ -2035,7 +2035,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer("1/2")
 
       onView(withId(R.id.hint_bulb))
-        .check(matches(withContentDescription(R.string.new_hint_available)))
+        .check(matches(withContentDescription(R.string.question_player_activity_new_hint_available_text)))
     }
   }
 
@@ -2076,7 +2076,7 @@ class StateFragmentLocalTest {
       closeHintsAndSolutionsDialog()
 
       onView(withId(R.id.hint_bulb))
-        .check(matches(withContentDescription(R.string.no_new_hint_available)))
+        .check(matches(withContentDescription(R.string.state_fragment_hint_bulb_content_description)))
     }
   }
 
@@ -2117,7 +2117,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer("1/2")
 
       onView(withId(R.id.open_hint_dialog_arrow))
-        .check(matches(withContentDescription(R.string.show_hints_and_solution)))
+        .check(matches(withContentDescription(R.string.state_fragment_open_hint_content_description)))
     }
   }
 

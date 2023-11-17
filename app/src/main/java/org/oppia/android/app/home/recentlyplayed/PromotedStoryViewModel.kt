@@ -131,7 +131,7 @@ class PromotedStoryViewModel(
    */
   fun computeLessonThumbnailContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.lesson_thumbnail_content_description, nextChapterTitle
+      R.string.home_activity_lesson_thumbnail_description, nextChapterTitle
     )
   }
 }

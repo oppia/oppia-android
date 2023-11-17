@@ -181,7 +181,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:onClick="getPendingAnswerErrorOnSubmitClick"
-        android:text="@string/submit_button_text"
+        android:text="@string/input_interaction_view_test_activity_submit_button"
         android:textColor="@color/component_color_shared_secondary_4_text_color" />
     </LinearLayout>
   </ScrollView>

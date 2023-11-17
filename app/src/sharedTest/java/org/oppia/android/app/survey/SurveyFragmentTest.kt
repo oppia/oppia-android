@@ -264,7 +264,7 @@ class SurveyFragmentTest {
     launch<SurveyActivity>(
       createSurveyActivityIntent()
     ).use {
-      onView(withContentDescription(R.string.navigate_up)).perform(click())
+      onView(withContentDescription(R.string.navigate_up_text)).perform(click())
       onView(withText(context.getString(R.string.survey_exit_confirmation_text)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))

@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif"
-            android:text="@string/no"
+            android:text="@string/walkthrough_activity_no_text"
             android:textColor="@color/component_color_shared_primary_text_color"
             android:textSize="20sp" />
 
@@ -72,7 +72,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="40dp"
             android:fontFamily="sans-serif"
-            android:text="@string/pick_a_different_topic"
+            android:text="@string/walkthrough_activity_pick_different_topic_text"
             android:textColor="@color/component_color_shared_primary_text_color"
             android:textSize="12sp" />
         </com.google.android.material.card.MaterialCardView>
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif"
-            android:text="@string/yes"
+            android:text="@string/walkthrough_activity_yes_text"
             android:textColor="@color/component_color_shared_secondary_6_text_color"
             android:textSize="20sp" />
 
@@ -105,7 +105,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="40dp"
             android:fontFamily="sans-serif"
-            android:text="@string/lets_get_started"
+            android:text="@string/walkthrough_activity_get_started_text"
             android:textColor="@color/component_color_shared_secondary_6_text_color"
             android:textSize="12sp" />
         </com.google.android.material.card.MaterialCardView>
@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:fontFamily="sans-serif"
-        android:text="@string/great"
+        android:text="@string/walkthrough_activity_final_title_text"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"

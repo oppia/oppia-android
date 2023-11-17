@@ -42,14 +42,14 @@ class RevealSolutionDialogFragment : InjectableDialogFragment() {
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
-      .setTitle(R.string.reveal_solution)
+      .setTitle(R.string.hint_solution_dialog_reveal_solution_text)
       .setView(view)
-      .setMessage(resourceHandler.getStringInLocale(R.string.this_will_reveal_the_solution))
-      .setPositiveButton(resourceHandler.getStringInLocale(R.string.reveal)) { _, _ ->
+      .setMessage(resourceHandler.getStringInLocale(R.string.hint_solution_dialog_reveal_dialog_solution_text))
+      .setPositiveButton(resourceHandler.getStringInLocale(R.string.hint_solution_dialog_reveal_dialog_button_text)) { _, _ ->
         revealSolutionInterface.revealSolution()
         dismiss()
       }
-      .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { _, _ ->
+      .setNegativeButton(R.string.cellular_audio_dialog_cancel_button_text) { _, _ ->
         dismiss()
       }
       .create()

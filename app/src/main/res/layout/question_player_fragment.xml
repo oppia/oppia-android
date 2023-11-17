@@ -29,7 +29,7 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif"
-        android:text="@string/question_training_session_finished_header"
+        android:text="@string/topic_fragment_question_end_session_header_text"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="24sp"
         android:visibility="gone"
@@ -44,7 +44,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif"
-        android:text="@string/question_training_session_finished_message"
+        android:text="@string/topic_fragment_question_end_session_body_text"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="16sp"
         android:visibility="gone"
@@ -127,7 +127,7 @@
           android:layout_height="6dp"
           android:layout_gravity="top|end"
           android:layout_margin="8dp"
-          android:contentDescription="@string/new_hint_available"
+          android:contentDescription="@string/question_player_activity_new_hint_available_text"
           android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}"
           app:srcCompat="@drawable/ic_dot_yellow_24dp" />
 
@@ -136,7 +136,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_margin="12dp"
-          android:contentDescription="@string/show_hints_and_solution"
+          android:contentDescription="@string/state_fragment_open_hint_content_description"
           app:srcCompat="@drawable/ic_hint_bulb_white_24dp" />
       </FrameLayout>
 

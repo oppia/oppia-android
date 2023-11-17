@@ -463,7 +463,7 @@ class ExplorationActivityTest {
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player))
-        .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
+        .check(matches(withContentDescription(context.getString(R.string.exploration_activity_audio_player_off_text))))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -492,7 +492,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.voiceover_language_icon_spotlight_hint))
+      onView(withText(R.string.audio_fragment_voiceover_language_icon_spotlight_hint))
         .check(matches(isDisplayed()))
     }
   }
@@ -543,7 +543,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.voiceover_language_icon_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.audio_fragment_voiceover_language_icon_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -567,7 +567,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.exploration_exit_button_spotlight_hint))
+      onView(withText(R.string.exploration_activity_exit_button_spotlight_hint))
         .check(matches(isDisplayed()))
     }
   }
@@ -612,7 +612,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.exploration_exit_button_spotlight_hint))
+      onView(withText(R.string.exploration_activity_exit_button_spotlight_hint))
         .check(doesNotExist())
     }
   }
@@ -739,7 +739,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player))
-        .check(matches(withContentDescription(context.getString(R.string.audio_player_on))))
+        .check(matches(withContentDescription(context.getString(R.string.exploration_activity_audio_player_on_text))))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -767,7 +767,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player))
-        .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
+        .check(matches(withContentDescription(context.getString(R.string.exploration_activity_audio_player_off_text))))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -839,7 +839,7 @@ class ExplorationActivityTest {
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText(context.getString(R.string.audio_dialog_offline_message)))
+      onView(withText(context.getString(R.string.audio_fragment_offline_dialog_message)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -868,7 +868,7 @@ class ExplorationActivityTest {
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+      onView(withText(context.getString(R.string.cellular_audio_dialog_title)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -898,7 +898,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+      onView(withText(context.getString(R.string.cellular_audio_dialog_title)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -929,13 +929,13 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
-          withText(context.getString(R.string.cellular_data_alert_dialog_title)),
+          withText(context.getString(R.string.cellular_audio_dialog_title)),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       )
       onView(
         allOf(
-          withText(context.getString(R.string.audio_language_select_dialog_cancel_button)),
+          withText(context.getString(R.string.audio_language_dialog_cancel_button_text)),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       ).inRoot(isDialog()).perform(click())
@@ -968,14 +968,14 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
-          withText(context.getString(R.string.cellular_data_alert_dialog_title)),
+          withText(context.getString(R.string.cellular_audio_dialog_title)),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       )
 
       onView(
         allOf(
-          withText(context.getString(R.string.cellular_data_alert_dialog_okay_button)),
+          withText(context.getString(R.string.cellular_audio_dialog_okay_button_text)),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       ).inRoot(isDialog()).perform(click())
@@ -1012,13 +1012,13 @@ class ExplorationActivityTest {
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+      onView(withText(context.getString(R.string.cellular_audio_dialog_title)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(withId(R.id.cellular_data_dialog_checkbox))
         .inRoot(isDialog())
         .perform(click())
-      onView(withText(context.getString(R.string.audio_language_select_dialog_cancel_button)))
+      onView(withText(context.getString(R.string.audio_language_dialog_cancel_button_text)))
         .inRoot(isDialog())
         .perform(click())
 
@@ -1027,7 +1027,7 @@ class ExplorationActivityTest {
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.play_pause_audio_icon)).check(matches(not(isDisplayed())))
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+      onView(withText(context.getString(R.string.cellular_audio_dialog_title)))
         .check(doesNotExist())
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1055,13 +1055,13 @@ class ExplorationActivityTest {
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+      onView(withText(context.getString(R.string.cellular_audio_dialog_title)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(withId(R.id.cellular_data_dialog_checkbox))
         .inRoot(isDialog())
         .perform(click())
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_okay_button)))
+      onView(withText(context.getString(R.string.cellular_audio_dialog_okay_button_text)))
         .inRoot(isDialog())
         .perform(click())
 
@@ -1071,7 +1071,7 @@ class ExplorationActivityTest {
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+      onView(withText(context.getString(R.string.cellular_audio_dialog_title)))
         .check(doesNotExist())
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1156,7 +1156,7 @@ class ExplorationActivityTest {
         .inRoot(isDialog())
         .perform(click())
 
-      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button)))
+      onView(withText(context.getString(R.string.audio_language_dialog_okay_button_text)))
         .inRoot(isDialog())
         .perform(click())
 
@@ -1216,7 +1216,7 @@ class ExplorationActivityTest {
       Thread.sleep(1000)
 
       onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+        .check(matches(withContentDescription(context.getString(R.string.audio_fragment_pause_description))))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -1353,7 +1353,7 @@ class ExplorationActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
     pressBack()
-    onView(withText(R.string.unsaved_exploration_dialog_cancel_button)).inRoot(isDialog())
+    onView(withText(R.string.unsaved_exploration_dialog_cancel_button_text)).inRoot(isDialog())
       .perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isFalse()
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1382,7 +1382,7 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     pressBack()
-    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+    onView(withText(R.string.stop_exploration_dialog_leave_button_text)).inRoot(isDialog())
       .perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
   }
@@ -1413,7 +1413,7 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     pressBack()
-    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+    onView(withText(R.string.stop_exploration_dialog_cancel_button_text)).inRoot(isDialog())
       .perform(click())
 
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
@@ -1453,7 +1453,7 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     pressBack()
-    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+    onView(withText(R.string.stop_exploration_dialog_leave_button_text)).inRoot(isDialog())
       .perform(click())
 
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
@@ -1511,7 +1511,7 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-    onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+    onView(withText(R.string.stop_exploration_dialog_progress_full_title)).inRoot(isDialog())
       .check(matches(isDisplayed()))
 
     assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
@@ -1584,7 +1584,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       pressBack()
-      onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+      onView(withText(R.string.stop_exploration_dialog_progress_full_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1620,7 +1620,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-      onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+      onView(withText(R.string.stop_exploration_dialog_progress_full_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1657,9 +1657,9 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-      onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+      onView(withText(R.string.stop_exploration_dialog_progress_full_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
-      onView(withText(R.string.progress_database_full_dialog_back_to_lesson_button))
+      onView(withText(R.string.stop_exploration_dialog_progress_full_back_to_lesson_button))
         .inRoot(isDialog()).perform(click())
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1697,7 +1697,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_continue_button))
+      onView(withText(R.string.stop_exploration_dialog_progress_full_continue_button))
         .inRoot(isDialog()).perform(click())
 
       assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
@@ -1737,7 +1737,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_leave_without_saving_progress_button))
+      onView(withText(R.string.stop_exploration_dialog_progress_full_without_saving_button))
         .inRoot(isDialog()).perform(click())
 
       assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
@@ -1776,7 +1776,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_leave_without_saving_progress_button))
+      onView(withText(R.string.stop_exploration_dialog_progress_full_without_saving_button))
         .inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
@@ -1827,7 +1827,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_continue_button))
+      onView(withText(R.string.stop_exploration_dialog_progress_full_continue_button))
         .inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
@@ -1878,7 +1878,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_back_to_lesson_button))
+      onView(withText(R.string.stop_exploration_dialog_progress_full_back_to_lesson_button))
         .inRoot(isDialog()).perform(click())
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
@@ -2234,7 +2234,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
+      onView(withText(context.getString(R.string.menu_help_text))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
@@ -2268,7 +2268,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
+      onView(withText(context.getString(R.string.menu_options_text))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
@@ -2302,7 +2302,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close)))
+      onView(withText(context.getString(R.string.exploration_activity_options_menu_close_text)))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()

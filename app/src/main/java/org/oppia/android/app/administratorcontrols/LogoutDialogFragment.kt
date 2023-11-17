@@ -30,11 +30,11 @@ class LogoutDialogFragment : InjectableDialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     return AlertDialog.Builder(requireContext(), R.style.OppiaAlertDialogTheme)
-      .setMessage(R.string.log_out_dialog_message)
-      .setNegativeButton(R.string.log_out_dialog_cancel_button) { dialog, _ ->
+      .setMessage(R.string.log_out_dialog_message_text)
+      .setNegativeButton(R.string.log_out_dialog_cancel_button_text) { dialog, _ ->
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
+      .setPositiveButton(R.string.log_out_dialog_okay_button_text) { _, _ ->
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
         startActivity(intent)
       }.create()

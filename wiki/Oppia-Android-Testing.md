@@ -201,7 +201,7 @@ onView(withId(R.id.profile_edit_name)).check(matches(withText("Sean")))
 
 onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed())).check(matches(withText("9")))
 
-onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
+onView(withText(R.string.home_activity_back_dialog_exit_button)).perform(click())
 onView(withId(R.id.story_chapter_list)).perform(
  scrollToPosition<RecyclerView.ViewHolder>(
    1
@@ -233,7 +233,7 @@ fun testOnboardingFragment_checkSlide1Description_isCorrect() {
               withId(R.id.slide_description_text_view),
                isCompletelyDisplayed()
              )
-        ).check(matches(withText(R.string.onboarding_slide_1_description)))
+        ).check(matches(withText(R.string.onboarding_activity_slide_1_description)))
 }
 ```
 ## Testing RecyclerViews at Specific Positions
@@ -349,9 +349,9 @@ at least 90 percent of the view's area is displayed to the user.
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(withId(R.id.log_out_text_view)).perform(click())
-      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
+      onView(withText(R.string.log_out_dialog_message_text)).inRoot(isDialog())
         .check(matches(isDisplayed()))
-      onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
+      onView(withText(R.string.log_out_dialog_okay_button_text)).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
     }
   }

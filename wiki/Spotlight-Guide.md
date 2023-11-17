@@ -126,7 +126,7 @@ Spotlights are tested by checking if the expected hint is shown on the screen or
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.promoted_story_spotlight_hint))
+      onView(withText(R.string.home_story_promoted_story_spotlight_hint))
         .check(matches(isDisplayed()))
       // Or, use check(doesNotExist()) to verify it is not being shown.
     }

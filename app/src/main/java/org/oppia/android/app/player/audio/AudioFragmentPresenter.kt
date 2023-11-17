@@ -135,7 +135,7 @@ class AudioFragmentPresenter @Inject constructor(
   private fun startSpotlights() {
     val audioLanguageIconSpotlightTarget = SpotlightTarget(
       binding.audioLanguageIcon,
-      resourceHandler.getStringInLocale(R.string.voiceover_language_icon_spotlight_hint),
+      resourceHandler.getStringInLocale(R.string.audio_fragment_voiceover_language_icon_spotlight_hint),
       SpotlightShape.Circle,
       Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
     )
@@ -335,10 +335,10 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun showOfflineDialog() {
     AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_title))
-      .setMessage(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_message))
+      .setTitle(resourceHandler.getStringInLocale(R.string.audio_fragment_offline_dialog_title))
+      .setMessage(resourceHandler.getStringInLocale(R.string.audio_fragment_offline_dialog_message))
       .setPositiveButton(
-        resourceHandler.getStringInLocale(R.string.audio_dialog_offline_positive)
+        resourceHandler.getStringInLocale(R.string.audio_fragment_offline_dialog_positive_button_text)
       ) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
