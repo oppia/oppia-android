@@ -85,7 +85,7 @@
     <item name="android:layout_marginEnd">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
     <item name="android:background">@drawable/previous_next_state_image_view_background</item>
-    <item name="android:contentDescription">@string/state_fragment_previous_button_description</item>
+    <item name="android:contentDescription">@string/state_fragment_previous_state_button_description</item>
     <item name="android:padding">12dp</item>
     <item name="srcCompat">@drawable/ic_arrow_back_oppia_dark_blue_24dp</item>
   </style>
@@ -97,7 +97,7 @@
     <item name="android:layout_marginEnd">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
     <item name="android:background">@drawable/previous_next_state_image_view_background</item>
-    <item name="android:contentDescription">@string/state_fragment_next_button_description</item>
+    <item name="android:contentDescription">@string/state_fragment_next_state_button_description</item>
     <item name="android:padding">12dp</item>
     <item name="srcCompat">@drawable/ic_arrow_forward_oppia_dark_blue_24dp</item>
   </style>

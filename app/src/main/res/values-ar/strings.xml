@@ -62,8 +62,8 @@
   <string name="topic_fragment_revision_tab_spotlight_hint">راجع المفاهيم المكتسبة من الدروس المكتملة هنا.</string>
   <string name="topic_fragment_first_chapter_spotlight_hint">انقر هنا لبدء تشغيل درس.</string>
   <string name="state_fragment_continue_button_text">استمرار</string>
-  <string name="state_fragment_previous_button_description">التوجه إلى البطاقة السابقة</string>
-  <string name="state_fragment_next_button_description">التوجه إلى البطاقة القادمة</string>
+  <string name="state_fragment_previous_state_button_description">التوجه إلى البطاقة السابقة</string>
+  <string name="state_fragment_next_state_button_description">التوجه إلى البطاقة القادمة</string>
   <string name="state_fragment_submit_button_text">تقديم</string>
   <string name="state_fragment_replay_button_text">إعادة التشغيل</string>
   <string name="state_fragment_return_to_topic_button_text">العودة إلى الموضوع</string>
@@ -138,7 +138,6 @@
   <string name="navigate_up_text">العودة للسابق</string>
   <string name="recently_played_activity_title">القصص التي تم تشغيلها مؤخرًا</string>
   <string name="topic_fragment_info_topic_downloaded">المواضيع التي تم تنزيلها</string>
-  <string name="downloaded">تم التنزيل</string>
   <string name="exploration_activity_question_player_title">وضع الممارسة</string>
   <string name="topic_fragment_question_training_session_progress">السؤال %s من أصل %s</string>
   <string name="topic_fragment_question_training_session_progress_finished">تمّ</string>
@@ -395,7 +394,7 @@
   <string name="question_player_activity_new_hint_available_text">ملاحظة جديدة متاحة</string>
   <string name="state_fragment_hint_bulb_content_description">لا يوجد تلميح جديد متاح</string>
   <string name="state_fragment_open_hint_content_description">إظهار الملاحظات والحل</string>
-  <string name="hint_solution_dialog_reveal_hint_text">تلميح %s</string>
+  <string name="hint_solution_dialog_hint_list_item_number">تلميح %s</string>
   <string name="hint_solution_dialog_close_icon_description" fuzzy="true">العودة للسابق</string>
   <string name="state_fragment_hint_bar_title">الملاحظات</string>
   <string name="hint_solution_dialog_show_solution_text">عرض الحل</string>
@@ -422,7 +421,6 @@
   <string name="profile_last_visited">%s %s</string>
   <string name="topic_fragment_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_topic_list_fragment_recycler_view_tag">ongoing_recycler_view_tag</string>
-  <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>
   <string name="unsupported_app_version_dialog_title" fuzzy="true">إصدار تطبيق غير مدعوم</string>
   <string name="unsupported_app_version_dialog_message" fuzzy="true">هذا الإصدار من التطبيق لم يعد مدعومًا. من فضلك قم بتحديث التطبيق من خلال متجر بلاي (Play Store)</string>
   <string name="unsupported_app_version_dialog_close_button_text" fuzzy="true">إغلاق التطبيق</string>
@@ -433,6 +431,7 @@
   <string name="beta_notice_dialog_message_text">مرحبًا! يتم الآن تحديث تطبيقك إلى الإصدار التجريبي. إذا واجهت مشاكل أثناء استخدام التطبيق ، أو كانت لديك أسئلة ، فيرجى الاتصال بنا على android-feedback@oppia.org.</string>
   <string name="beta_notice_dialog_preference_checkbox_text">لا تظهر هذه الرسالة مرة أخرى</string>
   <string name="beta_notice_dialog_close_button_text">نعم</string>
+  <string name="hint_solution_dialog_return_to_lesson_button">العودة إلى الدرس</string>
   <string name="general_availability_notice_dialog_title">إشعار التوفر العام</string>
   <string name="general_availability_notice_dialog_message">مرحبًا! يتم الآن تحديث تطبيقك إلى إصدار التوفر العام. إذا واجهت مشاكل أثناء استخدام التطبيق ، أو كانت لديك أسئلة ، فيرجى الاتصال بنا على android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">لا تظهر هذه الرسالة مرة أخرى</string>
@@ -452,7 +451,6 @@
   <string name="state_fragment_correct_submitted_answer">إجابة مقدمة صحيحة</string>
   <string name="state_fragment_correct_submitted_answer_with_append">إجابة مقدمة صحيحة: %s</string>
   <string name="state_fragment_incorrect_submitted_answer">إجابة مقدمة غير صحيحة</string>
-  <string name="incorrect_submitted_answer_with_append">إجابة مقدمة غير صحيحة: %s</string>
   <string name="third_party_dependency_list_activity_title">مكتبات برمجية (Third-party Dependencies)</string>
   <string name="third_party_dependency_version_formatter">إصدار %s</string>
   <string name="license_list_activity_title">رخص حقوق النسخ</string>
