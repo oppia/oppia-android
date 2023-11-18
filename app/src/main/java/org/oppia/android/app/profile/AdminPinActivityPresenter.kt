@@ -6,6 +6,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
@@ -17,7 +18,6 @@ import org.oppia.android.databinding.AdminPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 
 /** The presenter for [AdminPinActivity]. */
 @ActivityScope
@@ -45,7 +45,9 @@ class AdminPinActivityPresenter @Inject constructor(
     activity.setSupportActionBar(binding.adminPinToolbar)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
-    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_activity_tool_bar_content_desc)
+    activity.supportActionBar?.setHomeActionContentDescription(
+      R.string.admin_auth_activity_tool_bar_content_desc
+    )
 
     binding.apply {
       lifecycleOwner = activity

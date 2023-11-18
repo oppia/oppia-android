@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
@@ -36,7 +37,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
@@ -135,7 +135,9 @@ class AudioFragmentPresenter @Inject constructor(
   private fun startSpotlights() {
     val audioLanguageIconSpotlightTarget = SpotlightTarget(
       binding.audioLanguageIcon,
-      resourceHandler.getStringInLocale(R.string.audio_fragment_voiceover_language_icon_spotlight_hint),
+      resourceHandler.getStringInLocale(
+        R.string.audio_fragment_voiceover_language_icon_spotlight_hint
+      ),
       SpotlightShape.Circle,
       Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
     )
@@ -335,10 +337,20 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun showOfflineDialog() {
     AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(resourceHandler.getStringInLocale(R.string.audio_fragment_offline_dialog_title))
-      .setMessage(resourceHandler.getStringInLocale(R.string.audio_fragment_offline_dialog_message))
+      .setTitle(
+        resourceHandler.getStringInLocale(
+          R.string.audio_fragment_offline_dialog_title
+        )
+      )
+      .setMessage(
+        resourceHandler.getStringInLocale(
+          R.string.audio_fragment_offline_dialog_message
+        )
+      )
       .setPositiveButton(
-        resourceHandler.getStringInLocale(R.string.audio_fragment_offline_dialog_positive_button_text)
+        resourceHandler.getStringInLocale(
+          R.string.audio_fragment_offline_dialog_positive_button_text
+        )
       ) { dialog, _ ->
         dialog.dismiss()
       }.create().show()

@@ -16,12 +16,20 @@ class OptionsReadingTextSizeViewModel(
     get() {
       return when (readingTextSize.get()!!) {
         ReadingTextSize.SMALL_TEXT_SIZE ->
-          resourceHandler.getStringInLocale(R.string.option_activity_reading_text_size_small)
+          resourceHandler.getStringInLocale(
+            R.string.option_activity_reading_text_size_small
+          )
         ReadingTextSize.MEDIUM_TEXT_SIZE ->
-          resourceHandler.getStringInLocale(R.string.option_activity_reading_text_size_medium)
+          resourceHandler.getStringInLocale(
+            R.string.option_activity_reading_text_size_medium
+          )
         ReadingTextSize.LARGE_TEXT_SIZE ->
-          resourceHandler.getStringInLocale(R.string.option_activity_reading_text_size_large)
-        else -> resourceHandler.getStringInLocale(R.string.option_activity_reading_text_size_extra_large)
+          resourceHandler.getStringInLocale(
+            R.string.option_activity_reading_text_size_large
+          )
+        else -> resourceHandler.getStringInLocale(
+          R.string.option_activity_reading_text_size_extra_large
+        )
       }
     }
 

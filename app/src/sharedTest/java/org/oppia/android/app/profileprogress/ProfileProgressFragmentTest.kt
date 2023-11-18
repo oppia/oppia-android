@@ -38,6 +38,8 @@ import com.google.protobuf.MessageLite
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
@@ -137,8 +139,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [ProfileProgressFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -459,7 +459,9 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
-        stringToMatch = context.getString(R.string.profile_progress_activity_topics_in_progress_text)
+        stringToMatch = context.getString(
+          R.string.profile_progress_activity_topics_in_progress_text
+        )
       )
     }
   }
@@ -484,7 +486,9 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
-        stringToMatch = context.getString(R.string.profile_progress_activity_topics_in_progress_text)
+        stringToMatch = context.getString(
+          R.string.profile_progress_activity_topics_in_progress_text
+        )
       )
     }
   }
@@ -511,7 +515,9 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
-        stringToMatch = context.getString(R.string.profile_progress_activity_topics_in_progress_text)
+        stringToMatch = context.getString(
+          R.string.profile_progress_activity_topics_in_progress_text
+        )
       )
     }
   }

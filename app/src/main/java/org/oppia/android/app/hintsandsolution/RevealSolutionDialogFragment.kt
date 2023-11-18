@@ -49,7 +49,11 @@ class RevealSolutionDialogFragment : InjectableDialogFragment() {
           R.string.hint_solution_dialog_reveal_dialog_solution_text
         )
       )
-      .setPositiveButton(resourceHandler.getStringInLocale(R.string.hint_solution_dialog_reveal_dialog_button_text)) { _, _ ->
+      .setPositiveButton(
+        resourceHandler.getStringInLocale(
+          R.string.hint_solution_dialog_reveal_dialog_button_text
+        )
+      ) { _, _ ->
         revealSolutionInterface.revealSolution()
         dismiss()
       }

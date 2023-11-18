@@ -44,7 +44,8 @@ class DragDropInteractionContentViewModel(
   fun computeDragDropMoveUpItemContentDescription(): String {
     return if (itemIndex != 0) {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.state_fragment_drag_drop_interaction_move_item_up_content_description, itemIndex.toString()
+        R.string.state_fragment_drag_drop_interaction_move_item_up_content_description,
+        itemIndex.toString()
       )
     } else resourceHandler.getStringInLocale(R.string.state_fragment_drag_drop_interaction_up_button_disabled)
   }
@@ -55,7 +56,9 @@ class DragDropInteractionContentViewModel(
         R.string.state_fragment_drag_drop_interaction_move_item_down_content_description,
         (itemIndex + 2).toString()
       )
-    } else resourceHandler.getStringInLocale(R.string.state_fragment_drag_drop_interaction_down_button_disabled)
+    } else resourceHandler.getStringInLocale(
+      R.string.state_fragment_drag_drop_interaction_down_button_disabled
+    )
   }
 
   fun computeDragDropGroupItemContentDescription(): String {

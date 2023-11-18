@@ -43,6 +43,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import java.io.IOException
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
@@ -166,10 +170,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.IOException
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -463,7 +463,15 @@ class ExplorationActivityTest {
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player))
-        .check(matches(withContentDescription(context.getString(R.string.exploration_activity_audio_player_off_text))))
+        .check(
+          matches(
+            withContentDescription(
+              context.getString(
+                R.string.exploration_activity_audio_player_off_text
+              )
+            )
+          )
+        )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -543,7 +551,9 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.audio_fragment_voiceover_language_icon_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.audio_fragment_voiceover_language_icon_spotlight_hint)).check(
+        doesNotExist()
+      )
     }
   }
 
@@ -739,7 +749,15 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player))
-        .check(matches(withContentDescription(context.getString(R.string.exploration_activity_audio_player_on_text))))
+        .check(
+          matches(
+            withContentDescription(
+              context.getString(
+                R.string.exploration_activity_audio_player_on_text
+              )
+            )
+          )
+        )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -767,7 +785,13 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player))
-        .check(matches(withContentDescription(context.getString(R.string.exploration_activity_audio_player_off_text))))
+        .check(
+          matches(
+            withContentDescription(
+              context.getString(R.string.exploration_activity_audio_player_off_text)
+            )
+          )
+        )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -1216,7 +1240,13 @@ class ExplorationActivityTest {
       Thread.sleep(1000)
 
       onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_fragment_pause_description))))
+        .check(
+          matches(
+            withContentDescription(
+              context.getString(R.string.audio_fragment_pause_description)
+            )
+          )
+        )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -2234,7 +2264,8 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.menu_help_text))).inRoot(isDialog()).perform(click())
+      onView(withText(context.getString(R.string.menu_help_text))).inRoot(isDialog())
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
@@ -2268,7 +2299,8 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.menu_options_text))).inRoot(isDialog()).perform(click())
+      onView(withText(context.getString(R.string.menu_options_text))).inRoot(isDialog())
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(

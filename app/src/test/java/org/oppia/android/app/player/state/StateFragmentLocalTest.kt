@@ -2057,7 +2057,13 @@ class StateFragmentLocalTest {
       submitFractionAnswer("1/2")
 
       onView(withId(R.id.hint_bulb))
-        .check(matches(withContentDescription(R.string.question_player_activity_new_hint_available_text)))
+        .check(
+          matches(
+            withContentDescription(
+              R.string.question_player_activity_new_hint_available_text
+            )
+          )
+        )
     }
   }
 

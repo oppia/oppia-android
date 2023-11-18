@@ -27,7 +27,9 @@ class ChapterSummaryViewModel(
     return when (chapterPlayState) {
       ChapterPlayState.COMPLETED -> {
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.topic_fragment_lessons_chapter_completed_text, (index + 1).toString(), chapterTitle
+          R.string.topic_fragment_lessons_chapter_completed_text,
+          (index + 1).toString(),
+          chapterTitle
         )
       }
       ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> {
@@ -47,7 +49,9 @@ class ChapterSummaryViewModel(
       }
       else -> {
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.topic_fragment_lessons_chapter_in_progress_text, (index + 1).toString(), chapterTitle
+          R.string.topic_fragment_lessons_chapter_in_progress_text,
+          (index + 1).toString(),
+          chapterTitle
         )
       }
     }

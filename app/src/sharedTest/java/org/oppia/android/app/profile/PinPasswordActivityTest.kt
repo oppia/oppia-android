@@ -27,6 +27,8 @@ import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputEditText
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
@@ -115,8 +117,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -261,7 +261,11 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("54321"), closeSoftKeyboard())
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.pin_password_activity_incorrect_pin_error))
+          hasErrorText(
+            context.resources.getString(
+              R.string.pin_password_activity_incorrect_pin_error
+            )
+          )
         )
       )
     }
@@ -298,7 +302,11 @@ class PinPasswordActivityTest {
       )
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.pin_password_activity_incorrect_pin_error))
+          hasErrorText(
+            context.resources.getString(
+              R.string.pin_password_activity_incorrect_pin_error
+            )
+          )
         )
       )
     }
@@ -320,7 +328,13 @@ class PinPasswordActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          not(hasErrorText(context.resources.getString(R.string.pin_password_activity_incorrect_pin_error)))
+          not(
+            hasErrorText(
+              context.resources.getString(
+                R.string.pin_password_activity_incorrect_pin_error
+              )
+            )
+          )
         )
       )
     }
@@ -983,7 +997,11 @@ class PinPasswordActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.pin_password_activity_incorrect_pin_error))
+          hasErrorText(
+            context.resources.getString(
+              R.string.pin_password_activity_incorrect_pin_error
+            )
+          )
         )
       )
     }
@@ -1000,7 +1018,9 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
-      onView(withText(context.getString(R.string.pin_password_activity_show_pin_text))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_activity_show_pin_text))).check(
+        matches(isDisplayed())
+      )
     }
   }
 
@@ -1055,7 +1075,9 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.show_pin)).perform(click())
-      onView(withText(context.getString(R.string.pin_password_activity_hide_pin_text))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_activity_hide_pin_text))).check(
+        matches(isDisplayed())
+      )
     }
   }
 
@@ -1118,7 +1140,9 @@ class PinPasswordActivityTest {
       closeSoftKeyboard()
       onView(withId(R.id.show_pin)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.pin_password_activity_hide_pin_text))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_activity_hide_pin_text))).check(
+        matches(isDisplayed())
+      )
       onView(withId(R.id.show_hide_password_image_view))
         .check(
           matches(
@@ -1178,7 +1202,10 @@ class PinPasswordActivityTest {
       onView(
         withText(
           containsString(
-            context.resources.getString(R.string.pin_password_activity_reset_pin_dialog_message, "Ben")
+            context.resources.getString(
+              R.string.pin_password_activity_reset_pin_dialog_message,
+              "Ben"
+            )
           )
         )
       ).inRoot(isDialog()).check(matches(isDisplayed()))
