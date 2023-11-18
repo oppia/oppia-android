@@ -108,7 +108,7 @@
           android:layout_width="60dp"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
-          android:text="@{viewModel.ongoingTopicCount != 1 ? @string/topics_in_progress : @string/profile_progress_activity_topic_in_progress_text}"
+          android:text="@{viewModel.ongoingTopicCount != 1 ? @string/profile_progress_activity_topics_in_progress_text : @string/profile_progress_activity_topic_in_progress_text}"
           android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="12sp" />
       </LinearLayout>

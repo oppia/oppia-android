@@ -5,7 +5,6 @@
 * Osetiemoria
 -->
 <resources>
-  <string name="nav_header_desc">Navigation header</string>
   <string name="menu_options_text">Options</string>
   <string name="navigation_drawer_fragment_menu_my_downloads_text">My Downloads</string>
   <string name="menu_help_text">Help</string>
@@ -62,8 +61,8 @@
   <string name="topic_fragment_revision_tab_spotlight_hint">Revise concepts wey you learn from lessons wey you don complete here.</string>
   <string name="topic_fragment_first_chapter_spotlight_hint">Click here to start to play a lesson.</string>
   <string name="state_fragment_continue_button_text">Continue</string>
-  <string name="state_fragment_previous_button_description">Go di former card</string>
-  <string name="state_fragment_next_button_description">Go di next card</string>
+  <string name="state_fragment_previous_state_button_description">Go di former card</string>
+  <string name="state_fragment_next_state_button_description">Go di next card</string>
   <string name="state_fragment_submit_button_text">Submit</string>
   <string name="state_fragment_replay_button_text">Replay</string>
   <string name="state_fragment_return_to_topic_button_text">Return To Di Topic</string>
@@ -73,7 +72,6 @@
   <string name="topic_fragment_info_see_less_text">See Less</string>
   <string name="faq_list_activity_title">FAQs</string>
   <string name="faq_list_activity_item_header_text">Featured Questions</string>
-  <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
   <string name="pin_password_activity_title">PIN verification</string>
   <string name="onboarding_activity_title">Introduction</string>
@@ -139,7 +137,6 @@
   <string name="navigate_up_text">Go up</string>
   <string name="recently_played_activity_title">Stories wey you just play</string>
   <string name="topic_fragment_info_topic_downloaded">Topic Wey You Don Download</string>
-  <string name="downloaded">You don download am</string>
   <string name="exploration_activity_question_player_title">Practice Mode</string>
   <string name="topic_fragment_question_training_session_progress">Question %s of %s</string>
   <string name="topic_fragment_question_training_session_progress_finished">Complete</string>
@@ -230,7 +227,6 @@
   <string name="add_profile_activity_create_button_text">Create</string>
   <string name="add_profile_activity_close_dialog_text">Close</string>
   <string name="add_profile_activity_pin_info_dialog_text">With a PIN, nobody else go fit access a profile besides dis assigned user.</string>
-  <string name="add_profile_error_image_failed_store">We fail to save your avatar image. Abeg try again.</string>
   <string name="add_profile_activity_name_not_unique_error_text">Anoda profile don already dey use dis name.</string>
   <string name="add_profile_activity_name_empty_error_text">Abeg put valid name for dis profile.</string>
   <string name="add_profile_activity_name_only_letters_error_text">Abeg choose profile name wey no get nombas or symbols.</string>
@@ -269,10 +265,8 @@
   <string name="pin_password_activity_reset_dialog_message">You dey sure sey you wan delete all %s profiles for dis device? You no fit undo dis operation.</string>
   <string name="pin_password_activity_reset_dialog_postive_button_text">Yes</string>
   <string name="pin_password_activity_reset_dialog_negative_button_text">No</string>
-  <string name="show_hide_password_icon">Show/Hide password icon</string>
   <string name="pin_password_activity_shown_icon_content_description">Password shown icon</string>
   <string name="pin_password_activity_hidden_icon_content_description">Password hidden icon</string>
-  <string name="enter_your_pin">Put your PIN</string>
   <string name="pin_password_activity_toolbar_title">Put PIN</string>
   <string name="admin_settings_dialog_input_pin_hint">Administrator\'s PIN</string>
   <string name="admin_settings_dialog_heading">Access to Administrator Settings</string>
@@ -350,9 +344,6 @@
   <string name="app_language_activity_title">App Language</string>
   <string name="audio_language_activity_title" fuzzy="true">Default Audio Language</string>
   <string name="reading_text_size_activity_title">Reading Text Size</string>
-  <string name="title_reading_text_size">Reading Text Size</string>
-  <string name="story_text_will_look_like_this">Story text go look like dis.</string>
-  <string name="constant_string_for_text_size">A</string>
   <string name="option_activity_audio_language_text" fuzzy="true">Default Audio</string>
   <string name="option_activity_app_language_text">App Language</string>
   <string name="option_activity_reading_text_size">Reading Text Size</string>
@@ -360,9 +351,7 @@
   <string name="option_activity_reading_text_size_medium">Medium</string>
   <string name="option_activity_reading_text_size_large">Large</string>
   <string name="option_activity_reading_text_size_extra_large">Extra Large</string>
-  <string name="slide_seekbar_to_control_text_size">Slide seekbar to control di text size.</string>
   <string name="profile_progress_activity_profile_title">Profile</string>
-  <string name="story_count_text_view">2 Stories</string>
   <string name="profile_progress_activity_topics_in_progress_text">Topics in Progress</string>
   <string name="profile_progress_activity_topic_in_progress_text">Topic in Progress</string>
   <string name="profile_progress_activity_stories_completed_text">Stories Completed</string>
@@ -382,7 +371,7 @@
   <string name="question_player_activity_new_hint_available_text">New hint dey</string>
   <string name="state_fragment_hint_bulb_content_description">No new hint dey</string>
   <string name="state_fragment_open_hint_content_description">Show hints and solution</string>
-  <string name="hint_solution_dialog_reveal_hint_text">Hint %s</string>
+  <string name="hint_solution_dialog_hint_list_item_number">Hint %s</string>
   <string name="hint_solution_dialog_close_icon_description" fuzzy="true">Go up</string>
   <string name="state_fragment_hint_bar_title">Hints</string>
   <string name="hint_solution_dialog_show_solution_text">Show solution</string>
@@ -409,7 +398,6 @@
   <string name="profile_last_visited">%s %s</string>
   <string name="topic_fragment_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_topic_list_fragment_recycler_view_tag">ongoing_recycler_view_tag</string>
-  <string name="item_selection_text">Abeg select all di correct choices.</string>
   <string name="unsupported_app_version_dialog_title" fuzzy="true">Unsupported app version</string>
   <string name="unsupported_app_version_dialog_message" fuzzy="true">Dis version of di app no longer dey supported. Abeg update am from di Play Store.</string>
   <string name="unsupported_app_version_dialog_close_button_text" fuzzy="true">Close app</string>
@@ -423,6 +411,7 @@
   <string name="general_availability_notice_dialog_title">General Availability Notice</string>
   <string name="general_availability_notice_dialog_message">Hello! Your app don dey update to di General Availability version. If you experience any problems while you dey use di app, or get any questions, abeg contact us at android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">No show dis message again</string>
+  <string name="hint_solution_dialog_return_to_lesson_button">Go back to lesson</string>
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
   <string name="ratio_content_description_separator" fuzzy="true">to</string>
   <string name="ratio_default_hint_text" fuzzy="true">Enter a ratio in di form x:y.</string>
@@ -439,7 +428,6 @@
   <string name="state_fragment_correct_submitted_answer">Correct submitted ansa</string>
   <string name="state_fragment_correct_submitted_answer_with_append">Correct submitted ansa: %s</string>
   <string name="state_fragment_incorrect_submitted_answer">Incorrect submitted ansa</string>
-  <string name="incorrect_submitted_answer_with_append">Incorrect submitted ansa: %s</string>
   <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
   <string name="third_party_dependency_version_formatter">version %s</string>
   <string name="license_list_activity_title">Copyright Licenses</string>

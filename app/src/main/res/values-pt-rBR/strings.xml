@@ -11,7 +11,6 @@
 * YuriNikolai
 -->
 <resources>
-  <string name="nav_header_desc">Cabeçalho de navegação</string>
   <string name="menu_options_text">Opções</string>
   <string name="navigation_drawer_fragment_menu_my_downloads_text">Meus Downloads</string>
   <string name="menu_help_text">Ajuda</string>
@@ -66,8 +65,8 @@
   <string name="topic_fragment_revision_tab_spotlight_hint">Revise os conceitos aprendidos nas lições concluídas aqui.</string>
   <string name="topic_fragment_first_chapter_spotlight_hint">Toque aqui para começar a tocar uma lição.</string>
   <string name="state_fragment_continue_button_text">Continuar</string>
-  <string name="state_fragment_previous_button_description">Voltar ao cartão anterior</string>
-  <string name="state_fragment_next_button_description">Avançar para o próximo cartão</string>
+  <string name="state_fragment_previous_state_button_description">Voltar ao cartão anterior</string>
+  <string name="state_fragment_next_state_button_description">Avançar para o próximo cartão</string>
   <string name="state_fragment_submit_button_text">Enviar</string>
   <string name="state_fragment_replay_button_text">Repetir</string>
   <string name="state_fragment_return_to_topic_button_text">Retornar ao Tópico</string>
@@ -77,7 +76,6 @@
   <string name="topic_fragment_info_see_less_text">Veja Menos</string>
   <string name="faq_list_activity_title">FAQs</string>
   <string name="faq_list_activity_item_header_text">Perguntas em Destaque</string>
-  <string name="frequently_asked_questions">Perguntas Frequentes</string>
   <string name="faq_activity_title">FAQs (Perguntas Frequentes)</string>
   <string name="pin_password_activity_title">Verificação de PIN</string>
   <string name="onboarding_activity_title">Introdução</string>
@@ -144,7 +142,6 @@
   <string name="navigate_up_text">Navegar para cima</string>
   <string name="recently_played_activity_title">Histórias Reproduzidas Recentemente</string>
   <string name="topic_fragment_info_topic_downloaded">Tópico Baixado</string>
-  <string name="downloaded">Baixado</string>
   <string name="exploration_activity_question_player_title">Modo de Prática</string>
   <string name="topic_fragment_question_training_session_progress">Questão %s de %s</string>
   <string name="topic_fragment_question_training_session_progress_finished">Concluído</string>
@@ -235,7 +232,6 @@
   <string name="add_profile_activity_create_button_text">Criar</string>
   <string name="add_profile_activity_close_dialog_text">Fechar</string>
   <string name="add_profile_activity_pin_info_dialog_text">Com um PIN, ninguém mais pode acessar um perfil além deste usuário atribuído.</string>
-  <string name="add_profile_error_image_failed_store">Falha ao armazenar sua imagem de avatar. Por favor, tente novamente.</string>
   <string name="add_profile_activity_name_not_unique_error_text">Este nome já está em uso por outro perfil.</string>
   <string name="add_profile_activity_name_empty_error_text">Digite um nome válido para esse perfil.</string>
   <string name="add_profile_activity_name_only_letters_error_text">Escolha um nome de perfil que não inclua números ou símbolos.</string>
@@ -274,10 +270,8 @@
   <string name="pin_password_activity_reset_dialog_message">Tem certeza de que deseja excluir todos os perfis %s neste dispositivo? Esta ação não poderá ser desfeita.</string>
   <string name="pin_password_activity_reset_dialog_postive_button_text">Sim</string>
   <string name="pin_password_activity_reset_dialog_negative_button_text">Não</string>
-  <string name="show_hide_password_icon">Mostrar/Esconder ícone da senha</string>
   <string name="pin_password_activity_shown_icon_content_description">Ícone de mostrar a senha</string>
   <string name="pin_password_activity_hidden_icon_content_description">Ícone de esconder a senha</string>
-  <string name="enter_your_pin">Insira seu PIN</string>
   <string name="pin_password_activity_toolbar_title">Insira o PIN</string>
   <string name="admin_settings_dialog_input_pin_hint">PIN do Administrador</string>
   <string name="admin_settings_dialog_heading">Acesso às configurações do administrador</string>
@@ -349,15 +343,11 @@
   <string name="log_out_dialog_cancel_button_text">Cancelar</string>
   <string name="log_out_dialog_okay_button_text">Ok</string>
   <string name="log_out_dialog_message_text">Tem certeza que deseja sair do seu perfil?</string>
-  <string name="app_version_name">Versão do Aplicativo %s</string>
   <string name="app_version_fragment_last_update_date_text">A última atualização foi instalada em %s. Use o número da versão acima para enviar feedback sobre erros.</string>
   <string name="app_version_activity_title">Versão do Aplicativo</string>
   <string name="app_language_activity_title">Idioma do Aplicativo</string>
   <string name="audio_language_activity_title" fuzzy="true">Idioma Padrão de Áudio</string>
   <string name="reading_text_size_activity_title">Tamanho do Texto de Leitura</string>
-  <string name="title_reading_text_size">Tamanho do Texto de Leitura</string>
-  <string name="story_text_will_look_like_this">O texto da história ficará assim.</string>
-  <string name="constant_string_for_text_size">A</string>
   <string name="option_activity_audio_language_text" fuzzy="true">Áudio Padrão</string>
   <string name="option_activity_app_language_text">Idioma do Aplicativo</string>
   <string name="option_activity_reading_text_size">Tamanho do Texto de Leitura</string>
@@ -365,15 +355,14 @@
   <string name="option_activity_reading_text_size_medium">Médio</string>
   <string name="option_activity_reading_text_size_large">Grande</string>
   <string name="option_activity_reading_text_size_extra_large">Extra Grande</string>
-  <string name="slide_seekbar_to_control_text_size">Deslize a barra para controlar o tamanho do texto.</string>
   <string name="profile_progress_activity_profile_title">Perfil</string>
-  <string name="story_count_text_view">2 Histórias</string>
   <string name="profile_progress_activity_topics_in_progress_text">Tópicos em Andamento</string>
   <string name="profile_progress_activity_topic_in_progress_text">Tópico em Andamento</string>
   <string name="profile_progress_activity_stories_completed_text">Histórias Concluídas</string>
   <string name="profile_progress_activity_story_completed_text">História Concluída</string>
   <string name="options_activity_title">Opções</string>
   <string name="completed_story_list_activity_title">Histórias Concluídas</string>
+  <string name="app_version_fragment_version_name_text">Versão do Aplicativo %s</string>
   <string name="walkthrough_activity_title">Passo a passo do Aplicativo</string>
   <string name="walkthrough_activity_welcome_description">Aprenda novas habilidades matemáticas com histórias que mostram como usá-las no seu dia a dia</string>
   <string name="walkthrough_activity_welcome_text">\"Bem-vindo %s!\"</string>
@@ -387,7 +376,7 @@
   <string name="question_player_activity_new_hint_available_text">Nova dica disponível</string>
   <string name="state_fragment_hint_bulb_content_description">Nova dica disponível</string>
   <string name="state_fragment_open_hint_content_description">Mostrar dicas e solução</string>
-  <string name="hint_solution_dialog_reveal_hint_text">Dica %s</string>
+  <string name="hint_solution_dialog_hint_list_item_number">Dica %s</string>
   <string name="hint_solution_dialog_close_icon_description">Fechar</string>
   <string name="state_fragment_hint_bar_title">Dicas</string>
   <string name="hint_solution_dialog_show_solution_text">Mostrar solução</string>
@@ -414,7 +403,6 @@
   <string name="profile_last_visited">%s %s</string>
   <string name="topic_fragment_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_topic_list_fragment_recycler_view_tag">ongoing_recycler_view_tag</string>
-  <string name="item_selection_text">Por favor, selecione todas as alternativas corretas.</string>
   <string name="unsupported_app_version_dialog_title" fuzzy="true">Versão do aplicativo não suportada</string>
   <string name="unsupported_app_version_dialog_message">Esta versão do aplicativo não é mais suportada. Atualize-a na Play Store.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Fechar aplicativo</string>
@@ -429,6 +417,7 @@
   <string name="general_availability_notice_dialog_message">Olá! Seu aplicativo está sendo atualizado para a versão de disponibilidade geral. Se você tiver problemas ao usar o aplicativo ou tiver dúvidas, entre em contato conosco em android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">Não exibir esta mensagem novamente</string>
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
+  <string name="hint_solution_dialog_return_to_lesson_button">Voltar para a lição</string>
   <string name="ratio_content_description_separator" fuzzy="true"> para</string>
   <string name="ratio_default_hint_text" fuzzy="true">Insira uma razão no formato x:y.</string>
   <string name="state_fragment_text_input_default_hint_text">Clique aqui para inserir texto.</string>
@@ -444,7 +433,6 @@
   <string name="state_fragment_correct_submitted_answer">Resposta correta enviada</string>
   <string name="state_fragment_correct_submitted_answer_with_append">Resposta correta enviada: %s</string>
   <string name="state_fragment_incorrect_submitted_answer">Resposta incorreta enviada</string>
-  <string name="incorrect_submitted_answer_with_append">Resposta incorreta enviada: %s</string>
   <string name="third_party_dependency_list_activity_title">Dependências de terceiros</string>
   <string name="third_party_dependency_version_formatter">versão %s</string>
   <string name="license_list_activity_title">Licença de Direitos Autorais</string>

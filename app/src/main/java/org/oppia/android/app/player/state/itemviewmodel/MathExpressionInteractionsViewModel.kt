@@ -47,6 +47,8 @@ import org.oppia.android.util.math.MathParsingError.TermDividedByZeroError
 import org.oppia.android.util.math.MathParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.MathParsingError.UnnecessarySymbolsError
 import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionError
+import org.oppia.android.util.math.toPlainText
+import org.oppia.android.util.math.toRawLatex
 import javax.inject.Inject
 import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 

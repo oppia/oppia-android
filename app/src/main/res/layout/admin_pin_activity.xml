@@ -133,7 +133,7 @@
           android:clickable="@{viewModel.isButtonActive()}"
           android:enabled="@{viewModel.isButtonActive()}"
           android:minHeight="48dp"
-          android:text="@string/admin_pin_activity_submit_button_text
+          android:text="@string/admin_pin_activity_submit_button_text"
           android:textColor="@{viewModel.isButtonActive() ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
           app:layout_constraintEnd_toEndOf="@id/admin_pin_input_confirm_pin"
           app:layout_constraintTop_toBottomOf="@+id/admin_pin_input_confirm_pin" />

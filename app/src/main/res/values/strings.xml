@@ -183,7 +183,7 @@
   <string name="help_activity_third_party_dependencies_text">third-party dependencies list</string>
   <string name="help_activity_copyright_licenses_text">copyright licenses list</string>
   <!-- HintsAndSolutionDialogFragment -->
-  <string name="hint_solution_dialog_reveal_hint_text">Hint %s</string>
+  <string name="hint_solution_dialog_hint_list_item_number">Hint %s</string>
   <string name="hint_solution_dialog_close_icon_description">Close</string>
   <string name="hint_solution_dialog_show_solution_text">Show solution</string>
   <string name="hint_solution_dialog_reveal_solution_text">Show Solution</string>
@@ -196,7 +196,7 @@
   <string name="hint_solution_dialog_reveal_dialog_solution_text">This will show the solution. Are you sure?</string>
   <string name="hint_solution_dialog_reveal_dialog_button_text">Show</string>
   <string name="hint_solution_dialog_explanation_text">Explanation:</string>
-
+  <string name="hint_solution_dialog_return_to_lesson_button">Return to lesson</string>
   <!-- RecentlyPlayedActivity -->
   <string name="recently_played_activity_title">Recently-Played Stories</string>
 
@@ -243,8 +243,8 @@
   <string name="state_fragment_math_expression_incomplete_function_name_error">Did you mean sqrt? If not, please separate the variables with multiplication symbols.</string>
   <string name="state_fragment_math_expression_generic_error">Sorry, we couldn\'t understand your answer. Please check it to make sure there aren\'t any errors.</string>
   <string name="state_fragment_continue_button_text">Continue</string>
-  <string name="state_fragment_previous_button_description">Navigate to the previous card</string>
-  <string name="state_fragment_next_button_description">Navigate to the next card</string>
+  <string name="state_fragment_previous_state_button_description">Navigate to the previous card</string>
+  <string name="state_fragment_next_state_button_description">Navigate to the next card</string>
   <string name="state_fragment_submit_button_text">Submit</string>
   <string name="state_fragment_replay_button_text">Replay</string>
   <string name="state_fragment_return_to_topic_button_text">Return To Topic</string>

@@ -5,7 +5,6 @@
 * VivianW
 -->
 <resources>
-  <string name="nav_header_desc">kichwa cha urambazaji</string>
   <string name="menu_options_text">Chaguzi</string>
   <string name="navigation_drawer_fragment_menu_my_downloads_text">Vipakuliwa Vyangu</string>
   <string name="menu_help_text">Msaada</string>
@@ -48,8 +47,8 @@
   <string name="topic_fragment_practice_skills_description">Chagua ujuzi ambao ungependa kufanyia mazoezi.</string>
   <string name="topic_fragment_practice_start_button">Anza</string>
   <string name="state_fragment_continue_button_text">Endelea</string>
-  <string name="state_fragment_previous_button_description">Nenda kwenye kadi iliyotangulia</string>
-  <string name="state_fragment_next_button_description">Nenda kwenye kadi iliyofuata</string>
+  <string name="state_fragment_previous_state_button_description">Nenda kwenye kadi iliyotangulia</string>
+  <string name="state_fragment_next_state_button_description">Nenda kwenye kadi iliyofuata</string>
   <string name="state_fragment_submit_button_text">Wasilisha</string>
   <string name="state_fragment_replay_button_text">Cheza tena</string>
   <string name="state_fragment_return_to_topic_button_text">Rudi kwa Mada iliopita</string>
@@ -59,7 +58,6 @@
   <string name="topic_fragment_info_see_less_text">ona kidogo</string>
   <string name="faq_list_activity_title">Maswali Yanayoulizwa Mara kwa Mara</string>
   <string name="faq_list_activity_item_header_text">Maswali Yanayoangaziwa</string>
-  <string name="frequently_asked_questions">maswali yanayoulizwa mara kwa mara</string>
   <string name="faq_activity_title">maswali yanayoulizwa mara kwa mara</string>
   <string name="pin_password_activity_title">Uthibitishaji wa nambari ya siri</string>
   <string name="onboarding_activity_title">Utangulizi</string>
@@ -124,7 +122,6 @@
   <string name="navigate_up_text">Nenda juu/enda juu</string>
   <string name="recently_played_activity_title">Hadithi Zilizochezwa Hivi Karibuni</string>
   <string name="topic_fragment_info_topic_downloaded">Mada Imepakuliwa</string>
-  <string name="downloaded">Imepakuliwa</string>
   <string name="exploration_activity_question_player_title">Hali ya Mazoezi</string>
   <string name="topic_fragment_question_training_session_progress">Swali %s kati ya %s</string>
   <string name="topic_fragment_question_training_session_progress_finished">imekamilika</string>
@@ -205,7 +202,6 @@
   <string name="add_profile_activity_create_button_text">Anzisha</string>
   <string name="add_profile_activity_close_dialog_text">Funga</string>
   <string name="add_profile_activity_pin_info_dialog_text">Ukiwa na Nambari ya Siri, hakuna mtu mwingine anayeweza kufikia wasifu kando na mtumiaji huyu aliyekabidhiwa.</string>
-  <string name="add_profile_error_image_failed_store">Tumeshindwa kuhifadhi picha yako. Tafadhali jaribu tena.</string>
   <string name="add_profile_activity_name_not_unique_error_text">Jina hili tayari linatumiwa na wasifu mwingine.</string>
   <string name="add_profile_activity_name_empty_error_text" fuzzy="true">Tafadhali weka jina la wasifu huu.</string>
   <string name="add_profile_activity_name_only_letters_error_text" fuzzy="true">Majina yanaweza kuwa na herufi pekee. Jaribu jina lingine?</string>
@@ -239,10 +235,8 @@
   <string name="pin_password_activity_success_text">Mabadiliko ya Nambari ya Siri yamefaulu</string>
   <string name="pin_password_activity_dialog_forgot_title">Je, umesahau Nambari ya Siri?</string>
   <string name="pin_password_activity_dialog_forgot_message" fuzzy="true">Ili kuweka upya Nambari yako ya Siri, tafadhali ondoa %s kisha uisakinishe upya.\n\nKumbuka kwamba ikiwa kifaa hakijakuwa mtandaoni, unaweza kupoteza maendeleo ya mtumiaji kwenye akaunti nyingi.</string>
-  <string name="show_hide_password_icon">Onyesha/Ficha ishara ya nenosiri</string>
   <string name="pin_password_activity_shown_icon_content_description">Ishara ya nenosiri iliyoonyeshwa</string>
   <string name="pin_password_activity_hidden_icon_content_description">Ishara ya nenosiri iliyofichwa</string>
-  <string name="enter_your_pin">Weka Nambari yako ya Siri</string>
   <string name="pin_password_activity_toolbar_title">Weka Nambari ya Siri</string>
   <string name="admin_settings_dialog_input_pin_hint">Nambari ya Siri ya Msimamizi</string>
   <string name="admin_settings_dialog_heading">Ufikiaji wa mipangilio ya msimamizi</string>
@@ -313,9 +307,6 @@
   <string name="app_language_activity_title">Lugha ya Programu</string>
   <string name="audio_language_activity_title" fuzzy="true">Lugha chaguomsingi ya Sauti</string>
   <string name="reading_text_size_activity_title">Ukubwa wa Maandishi ya Kusoma</string>
-  <string name="title_reading_text_size">Ukubwa wa Maandishi ya Kusoma</string>
-  <string name="story_text_will_look_like_this">Nakala ya hadithi itaonekana hivi.</string>
-  <string name="constant_string_for_text_size">A</string>
   <string name="option_activity_audio_language_text" fuzzy="true">Sauti Chaguomsingi</string>
   <string name="option_activity_app_language_text">Lugha ya Programu</string>
   <string name="option_activity_reading_text_size">Ukubwa wa Maandishi ya Kusoma</string>
@@ -323,9 +314,7 @@
   <string name="option_activity_reading_text_size_medium">Kati</string>
   <string name="option_activity_reading_text_size_large">Kubwa</string>
   <string name="option_activity_reading_text_size_extra_large">Kubwa Zaidi</string>
-  <string name="slide_seekbar_to_control_text_size">Telezesha upau wa utafutaji ili kudhibiti ukubwa wa maandishi.</string>
   <string name="profile_progress_activity_profile_title">Wasifu</string>
-  <string name="story_count_text_view">Hadithi 2</string>
   <string name="profile_progress_activity_topics_in_progress_text">Mada zinazoendelea</string>
   <string name="profile_progress_activity_topic_in_progress_text">Mada zinazoendelea</string>
   <string name="profile_progress_activity_stories_completed_text">Hadithi Zimekamilika</string>
@@ -364,7 +353,6 @@
   <string name="profile_last_visited">%s %s</string>
   <string name="topic_fragment_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
   <string name="ongoing_topic_list_fragment_recycler_view_tag">Inaendelea_kuchakata tena_mtazamo_tag</string>
-  <string name="item_selection_text" fuzzy="true">Tafadhali chagua angalau chaguo moja.</string>
   <string name="unsupported_app_version_dialog_title" fuzzy="true">Toleo la programu lisilotumika</string>
   <string name="unsupported_app_version_dialog_message" fuzzy="true">Toleo hili la programu halitumiki tena. Tafadhali isasishe kupitia hifadhi ya michezo.</string>
   <string name="unsupported_app_version_dialog_close_button_text" fuzzy="true">Funga programu</string>
@@ -382,7 +370,6 @@
   <string name="state_fragment_correct_submitted_answer">Jibu sahihi lililowasilishwa</string>
   <string name="state_fragment_correct_submitted_answer_with_append">Jibu sahihi lililowasilishwa: %s</string>
   <string name="state_fragment_incorrect_submitted_answer">Jibu lililowasilishwa lisilo sahihi</string>
-  <string name="incorrect_submitted_answer_with_append">Jibu lililowasilishwa lisilo sahihi: %s</string>
   <string name="third_party_dependency_list_activity_title">Tegemeo ya mhusika wa tatu</string>
   <string name="third_party_dependency_version_formatter">toleo %s</string>
   <string name="license_list_activity_title">Leseni za Hakimiliki</string>
