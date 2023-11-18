@@ -7,11 +7,11 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.MyDownloadsFragmentBinding
+import javax.inject.Inject
 
 /** The presenter for [MyDownloadsFragment]. */
 @FragmentScope
@@ -49,8 +49,9 @@ class MyDownloadsFragmentPresenter @Inject constructor(
         0 -> tab.text = resourceHandler.getStringInLocale(
           R.string.my_downloads_fragment_tab_download_text
         )
-        1 -> tab.text =
-          resourceHandler.getStringInLocale(R.string.my_downloads_fragment_tab_updates_text)
+        1 ->
+          tab.text =
+            resourceHandler.getStringInLocale(R.string.my_downloads_fragment_tab_updates_text)
       }
     }.attach()
   }
