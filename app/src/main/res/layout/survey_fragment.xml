@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/component_color_shared_activity_toolbar_color"
-        android:contentDescription="@string/survey_exit_button_description"
+        android:contentDescription="@string/survey_activity_exit_dialog_exit_button_description"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationIcon="@drawable/ic_close_white_24dp">
@@ -120,7 +120,7 @@
           style="@style/SurveyPreviousButton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/survey_previous_button"
+          android:text="@string/survey_fragment_previous_button"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent" />
 

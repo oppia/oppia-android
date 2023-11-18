@@ -787,7 +787,7 @@ class AdministratorControlsActivityTest {
         R.id.profile_list_admin_text
       )
     ).check(
-      matches(withText(context.resources.getString(R.string.profile_chooser_activity_admin_text)))
+      matches(withText(context.resources.getString(R.string.profile_chooser_fragment_admin_text)))
     )
   }
 

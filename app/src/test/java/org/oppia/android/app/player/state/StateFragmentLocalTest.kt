@@ -44,6 +44,11 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.IOException
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -177,11 +182,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
-import java.io.IOException
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -191,23 +191,45 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StateFragmentLocalTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StateFragmentLocalTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   private val AUDIO_URL_1 =
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var editTextInputAction: EditTextInputAction
-  @Inject lateinit var accessibilityManager: FakeAccessibilityService
-  @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
-  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
+  @field:[Inject BackgroundDispatcher]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+
+  @Inject
+  lateinit var accessibilityManager: FakeAccessibilityService
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
@@ -2076,7 +2098,13 @@ class StateFragmentLocalTest {
       closeHintsAndSolutionsDialog()
 
       onView(withId(R.id.hint_bulb))
-        .check(matches(withContentDescription(R.string.state_fragment_hint_bulb_content_description)))
+        .check(
+          matches(
+            withContentDescription(
+              R.string.state_fragment_hint_bulb_content_description
+            )
+          )
+        )
     }
   }
 
@@ -2117,7 +2145,13 @@ class StateFragmentLocalTest {
       submitFractionAnswer("1/2")
 
       onView(withId(R.id.open_hint_dialog_arrow))
-        .check(matches(withContentDescription(R.string.state_fragment_open_hint_content_description)))
+        .check(
+          matches(
+            withContentDescription(
+              R.string.state_fragment_open_hint_content_description
+            )
+          )
+        )
     }
   }
 

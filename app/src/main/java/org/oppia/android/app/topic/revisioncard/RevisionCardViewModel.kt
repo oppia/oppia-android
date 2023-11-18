@@ -107,11 +107,11 @@ class RevisionCardViewModel private constructor(
   fun computeContentDescriptionText(subtopicLiveData: LiveData<EphemeralSubtopic>): String {
     return when (subtopicLiveData) {
       previousSubtopicLiveData -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
-        R.string.previous_subtopic_talkback_text,
+        R.string.topic_fragment_revision_previous_subtopic_talkback_text,
         computeTitleText(previousSubtopicLiveData.value)
       )
       nextSubtopicLiveData -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
-        R.string.next_subtopic_talkback_text,
+        R.string.topic_fragment_revision_next_subtopic_talkback_text,
         computeTitleText(nextSubtopicLiveData.value)
       )
       else -> ""

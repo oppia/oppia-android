@@ -41,13 +41,13 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           app:srcCompat="@drawable/ic_language_icon_grey_24dp"
-          android:contentDescription="@string/language_icon_content_description" />
+          android:contentDescription="@string/profile_chooser_fragment_language_icon_description" />
 
         <TextView
           style="@style/Subtitle1ViewCenter"
           android:minHeight="48dp"
           android:paddingTop="20dp"
-          android:text="@string/profile_chooser_activity_language_text"
+          android:text="@string/profile_chooser_fragment_language_text"
           android:textColor="@color/component_color_profile_chooser_activity_secondary_options_color"
           android:visibility="gone"
           app:layout_constraintEnd_toStartOf="@+id/profile_chooser_language_icon"
@@ -60,7 +60,7 @@
           android:layout_marginStart="@dimen/profile_chooser_profile_select_text_margin_start"
           android:layout_marginTop="80dp"
           android:fontFamily="sans-serif"
-          android:text="@string/profile_chooser_activity_select_text"
+          android:text="@string/profile_chooser_fragment_select_text"
           android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="36sp"
           app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +111,7 @@
         style="@style/Heading1ViewCenter"
         android:layout_marginBottom="@dimen/profile_chooser_administrator_controls_margin_bottom"
         android:minHeight="48dp"
-        android:text="@string/profile_chooser_activity_administrator_controls_text"
+        android:text="@string/profile_chooser_fragment_administrator_controls_text"
         android:textColor="@color/component_color_profile_chooser_activity_secondary_options_color" />
 
       <ImageView
@@ -121,7 +121,7 @@
         android:layout_marginEnd="@dimen/profile_chooser_setting_icon_margin_end"
         android:padding="8dp"
         app:srcCompat="@drawable/ic_settings_grey_48dp"
-        android:contentDescription="@string/setting_icon_content_description" />
+        android:contentDescription="@string/profile_chooser_fragment_setting_icon_description" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

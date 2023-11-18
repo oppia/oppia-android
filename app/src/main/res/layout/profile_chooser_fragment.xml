@@ -37,13 +37,13 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           app:srcCompat="@drawable/ic_language_icon_grey_24dp"
-          android:contentDescription="@string/language_icon_content_description" />
+          android:contentDescription="@string/profile_chooser_fragment_language_icon_description" />
 
         <TextView
           style="@style/Subtitle1ViewCenter"
           android:minHeight="48dp"
           android:paddingTop="20dp"
-          android:text="@string/profile_chooser_activity_language_text"
+          android:text="@string/profile_chooser_fragment_language_text"
           android:textColor="@color/component_color_profile_chooser_activity_secondary_options_color"
           android:visibility="gone"
           app:layout_constraintEnd_toStartOf="@+id/profile_chooser_language_icon"
@@ -55,7 +55,7 @@
           android:layout_marginStart="36dp"
           android:layout_marginTop="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
           android:layout_marginEnd="36dp"
-          android:text="@string/profile_chooser_activity_select_text"
+          android:text="@string/profile_chooser_fragment_select_text"
           android:textColor="@color/component_color_shared_secondary_4_text_color"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -103,7 +103,7 @@
         style="@style/Subtitle1ViewCenter"
         android:layout_marginBottom="24dp"
         android:minHeight="48dp"
-        android:text="@string/profile_chooser_activity_administrator_controls_text"
+        android:text="@string/profile_chooser_fragment_administrator_controls_text"
         android:textColor="@color/component_color_profile_chooser_activity_secondary_options_color" />
 
       <ImageView
@@ -117,7 +117,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="12dp"
         app:srcCompat="@drawable/ic_settings_grey_48dp"
-        android:contentDescription="@string/setting_icon_content_description" />
+        android:contentDescription="@string/profile_chooser_fragment_setting_icon_description" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

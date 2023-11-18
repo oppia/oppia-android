@@ -38,7 +38,7 @@ class SurveyOutroDialogFragmentPresenter @Inject constructor(
 
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     binding.surveyOnboardingText.text = resourceHandler.getStringInLocaleWithWrapping(
-      R.string.survey_thank_you_message_text, appName
+      R.string.survey_activity_outer_dialog_thank_you_message, appName
     )
 
     binding.finishSurveyButton.setOnClickListener {

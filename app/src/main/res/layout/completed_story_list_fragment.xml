@@ -56,7 +56,7 @@
         android:paddingEnd="@dimen/completed_story_list_fragment_recyclerview_padding_end"
         android:paddingBottom="@dimen/completed_story_list_fragment_recyclerview_padding_bottom"
         android:scrollbars="none"
-        android:tag="@string/completed_story_list_recyclerview_tag"
+        android:tag="@string/completed_story_list_fragment_recyclerview_tag"
         app:data="@{viewModel.completedStoryListLiveData}" />
 
       <View

@@ -170,13 +170,13 @@
     <item quantity="other">Masomo %s</item>
   </plurals>
   <string name="profile_chooser_activity_title">Ukurasa wa kuchagua wasifu</string>
-  <string name="profile_chooser_activity_admin_text">Msimamizi</string>
-  <string name="profile_chooser_activity_select_text">Chagua wasifu wako</string>
-  <string name="profile_chooser_activity_add_text">Ongeza Wasifu</string>
-  <string name="profile_chooser_activity_set_up_multiple_profiles">Weka Wasifu Nyingi</string>
-  <string name="profile_chooser_activity_add_profile_description_text">Ongeza hadi watumiaji 10 kwenye akaunti yako. Nzuri sana kwa familia na madarasa.</string>
-  <string name="profile_chooser_activity_administrator_controls_text">Udhibiti vya Msimamizi</string>
-  <string name="profile_chooser_activity_language_text">Lugha</string>
+  <string name="profile_chooser_fragment_admin_text">Msimamizi</string>
+  <string name="profile_chooser_fragment_select_text">Chagua wasifu wako</string>
+  <string name="profile_chooser_fragment_add_text">Ongeza Wasifu</string>
+  <string name="profile_chooser_fragment_set_up_multiple_profiles">Weka Wasifu Nyingi</string>
+  <string name="profile_chooser_fragment_add_profile_description_text">Ongeza hadi watumiaji 10 kwenye akaunti yako. Nzuri sana kwa familia na madarasa.</string>
+  <string name="profile_chooser_fragment_administrator_controls_text">Udhibiti vya Msimamizi</string>
+  <string name="profile_chooser_fragment_language_text">Lugha</string>
   <string name="admin_auth_activity_title">Vidhibiti vya Msimamizi</string>
   <string name="admin_auth_activity_add_profiles_title">Idhinisha kuongeza wasifu</string>
   <string name="admin_auth_activity_access_controls_title">Idhinisha kufikia Vidhibiti vya Msimamizi</string>
@@ -362,16 +362,14 @@
   <string name="state_fragment_drag_drop_interaction_up_button_disabled">Juu</string>
   <string name="state_fragment_drag_drop_interaction_down_button_disabled">Chini</string>
   <string name="profile_last_visited">%s %s</string>
-  <string name="topic_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
-  <string name="ongoing_recycler_view_tag">Inaendelea_kuchakata tena_mtazamo_tag</string>
+  <string name="topic_fragment_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
+  <string name="ongoing_topic_list_fragment_recycler_view_tag">Inaendelea_kuchakata tena_mtazamo_tag</string>
   <string name="item_selection_text" fuzzy="true">Tafadhali chagua angalau chaguo moja.</string>
   <string name="unsupported_app_version_dialog_title" fuzzy="true">Toleo la programu lisilotumika</string>
   <string name="unsupported_app_version_dialog_message" fuzzy="true">Toleo hili la programu halitumiki tena. Tafadhali isasishe kupitia hifadhi ya michezo.</string>
   <string name="unsupported_app_version_dialog_close_button_text" fuzzy="true">Funga programu</string>
   <string name="ratio_content_description_separator" fuzzy="true">kwa</string>
   <string name="ratio_default_hint_text" fuzzy="true">Weka uwiano katika fomu x:y.</string>
-  <string name="smallest_text_size_content_description">Maandishi madogo zaidi</string>
-  <string name="largest_text_size_content_description">Maandishi kubwa zaidi</string>
   <string name="coming_soon">Inakuja Hivi Karibuni</string>
   <string name="recommended_stories">Hadithi Zinazopendekezwa</string>
   <string name="stories_for_you">Hadithi Kwa Ajili Yako</string>
@@ -381,9 +379,9 @@
   <string name="audio_fragment_language_icon_content_description">Badilisha lugha</string>
   <string name="exploration_activity_audio_player_on_text">Sauti, IMEWASHWA</string>
   <string name="exploration_activity_audio_player_off_text">Sauti, IMEZIMWA</string>
-  <string name="correct_submitted_answer">Jibu sahihi lililowasilishwa</string>
-  <string name="correct_submitted_answer_with_append">Jibu sahihi lililowasilishwa: %s</string>
-  <string name="incorrect_submitted_answer">Jibu lililowasilishwa lisilo sahihi</string>
+  <string name="state_fragment_correct_submitted_answer">Jibu sahihi lililowasilishwa</string>
+  <string name="state_fragment_correct_submitted_answer_with_append">Jibu sahihi lililowasilishwa: %s</string>
+  <string name="state_fragment_incorrect_submitted_answer">Jibu lililowasilishwa lisilo sahihi</string>
   <string name="incorrect_submitted_answer_with_append">Jibu lililowasilishwa lisilo sahihi: %s</string>
   <string name="third_party_dependency_list_activity_title">Tegemeo ya mhusika wa tatu</string>
   <string name="third_party_dependency_version_formatter">toleo %s</string>
@@ -393,8 +391,8 @@
   <string name="help_activity_third_party_dependencies_text">orodha ya tegemezi ya mhusika wa tatu</string>
   <string name="help_activity_copyright_licenses_text">orodha ya leseni za hakimiliki</string>
   <string name="resume_lesson_activity_title">Rejesha Somo</string>
-  <string name="resume_lesson_button">Endelea</string>
-  <string name="start_over_lesson_button">Anza tena</string>
+  <string name="resume_lessons_fragment_continue_button_text">Endelea</string>
+  <string name="resume_lessons_fragment_start_over_button_text">Anza tena</string>
   <string name="home_activity_good_morning_greeting_text">Habari ya asubuhi,</string>
   <string name="home_activity_good_afternoon_greeting_text">Habari ya mchana,</string>
   <string name="home_activity_good_evening_greeting_text">Habari ya jioni,</string>

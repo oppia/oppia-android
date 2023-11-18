@@ -180,7 +180,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_is_admin_text,
-        stringToMatch = context.getString(R.string.profile_chooser_activity_admin_text)
+        stringToMatch = context.getString(R.string.profile_chooser_fragment_admin_text)
       )
       scrollToPosition(position = 1)
       verifyTextOnProfileListItemAtPosition(
@@ -199,7 +199,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 4,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.profile_chooser_activity_add_text)
+        stringToMatch = context.getString(R.string.profile_chooser_fragment_add_text)
       )
     }
   }
@@ -399,7 +399,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 1,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.profile_chooser_activity_set_up_multiple_profiles)
+        stringToMatch = context.getString(R.string.profile_chooser_fragment_set_up_multiple_profiles)
       )
     }
   }
@@ -427,7 +427,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 4,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.profile_chooser_activity_add_text)
+        stringToMatch = context.getString(R.string.profile_chooser_fragment_add_text)
       )
     }
   }

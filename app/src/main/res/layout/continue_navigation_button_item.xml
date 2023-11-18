@@ -46,7 +46,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:tint="@color/component_color_shared_back_forward_arrow_button_color"
-      android:contentDescription="@string/previous_state_navigation_button_content_description" />
+      android:contentDescription="@string/state_fragment_previous_navigation_button_description" />
 
     <org.oppia.android.app.customview.ContinueButtonView
       android:id="@+id/continue_navigation_button"

@@ -104,7 +104,7 @@ class MarketFitItemsViewModel @Inject constructor(
         when (marketFitAnswer) {
           MarketFitAnswer.VERY_DISAPPOINTED -> MultipleChoiceOptionContentViewModel(
             resourceHandler.getStringInLocale(
-              R.string.market_fit_answer_very_disappointed
+              R.string.survey_fragment_market_fit_answer_very_disappointed
             ),
             index,
             this
@@ -112,7 +112,7 @@ class MarketFitItemsViewModel @Inject constructor(
 
           MarketFitAnswer.DISAPPOINTED -> MultipleChoiceOptionContentViewModel(
             resourceHandler.getStringInLocale(
-              R.string.market_fit_answer_somewhat_disappointed
+              R.string.survey_fragment_market_fit_answer_somewhat_disappointed
             ),
             index,
             this
@@ -120,7 +120,7 @@ class MarketFitItemsViewModel @Inject constructor(
 
           MarketFitAnswer.NOT_DISAPPOINTED -> MultipleChoiceOptionContentViewModel(
             resourceHandler.getStringInLocale(
-              R.string.market_fit_answer_not_disappointed
+              R.string.survey_fragment_market_fit_answer_not_disappointed
             ),
             index,
             this
@@ -129,7 +129,7 @@ class MarketFitItemsViewModel @Inject constructor(
           MarketFitAnswer.NOT_APPLICABLE_WONT_USE_OPPIA_ANYMORE ->
             MultipleChoiceOptionContentViewModel(
               resourceHandler.getStringInLocaleWithWrapping(
-                R.string.market_fit_answer_wont_use_oppia,
+                R.string.survey_fragment_market_fit_answer_wont_use_oppia,
                 appName
               ),
               index,

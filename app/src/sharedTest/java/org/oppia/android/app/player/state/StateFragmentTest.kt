@@ -777,7 +777,7 @@ class StateFragmentTest {
       onView(withId(R.id.submitted_answer_recycler_view_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.incorrect_submitted_answer)
+            context.getString(R.string.state_fragment_incorrect_submitted_answer)
           )
         )
       )
@@ -807,7 +807,7 @@ class StateFragmentTest {
       onView(withId(R.id.submitted_answer_recycler_view_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.correct_submitted_answer)
+            context.getString(R.string.state_fragment_correct_submitted_answer)
           )
         )
       )

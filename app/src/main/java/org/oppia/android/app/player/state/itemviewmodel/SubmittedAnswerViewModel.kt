@@ -54,11 +54,11 @@ class SubmittedAnswerViewModel(
     val answer = if (accessibleAnswer.isNullOrBlank()) submittedAnswer else accessibleAnswer
     return if (isCorrectAnswer) {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.correct_submitted_answer_with_append, answer
+        R.string.state_fragment_correct_submitted_answer_with_append, answer
       )
     } else {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.incorrect_submitted_answer_with_append, answer
+        R.string.state_fragment_incorrect_submitted_answer, answer
       )
     }
   }

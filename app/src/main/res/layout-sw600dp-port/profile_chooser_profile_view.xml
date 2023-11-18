@@ -89,7 +89,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="4dp"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
-          android:text="@string/profile_chooser_activity_admin_text"
+          android:text="@string/profile_chooser_fragment_admin_text"
           android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
       </LinearLayout>
