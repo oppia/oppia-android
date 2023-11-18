@@ -24,6 +24,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -112,8 +114,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * TODO(#59): Make this test work with Espresso.
@@ -370,7 +370,15 @@ class AudioFragmentTest {
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_fragment_play_description))))
+        .check(
+          matches(
+            withContentDescription(
+              context.getString(
+                R.string.audio_fragment_play_description
+              )
+            )
+          )
+        )
       onView(withId(R.id.audio_progress_seek_bar)).check(matches(withSeekBarPosition(0)))
     }
   }

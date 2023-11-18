@@ -262,6 +262,7 @@ class NavigationDrawerActivityDebugTest {
             )
           )
         )
+      )
     }
   }
 

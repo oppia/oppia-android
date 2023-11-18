@@ -47,7 +47,9 @@ class DragDropInteractionContentViewModel(
         R.string.state_fragment_drag_drop_interaction_move_item_up_content_description,
         itemIndex.toString()
       )
-    } else resourceHandler.getStringInLocale(R.string.state_fragment_drag_drop_interaction_up_button_disabled)
+    } else resourceHandler.getStringInLocale(
+      R.string.state_fragment_drag_drop_interaction_up_button_disabled
+    )
   }
 
   fun computeDragDropMoveDownItemContentDescription(): String {
