@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -17,7 +18,6 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.math.FractionParser
-import javax.inject.Inject
 
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel private constructor(
@@ -123,8 +123,12 @@ class FractionInteractionViewModel private constructor(
       customPlaceholder1.isNotEmpty() -> customPlaceholder1
       customPlaceholder2.isNotEmpty() -> customPlaceholder2
       !allowNonzeroIntegerPart ->
-        resourceHandler.getStringInLocale(R.string.state_fragment_fraction_input_interaction_no_integer_hint)
-      else -> resourceHandler.getStringInLocale(R.string.state_fragment_fraction_input_interaction_hint)
+        resourceHandler.getStringInLocale(
+          R.string.state_fragment_fraction_input_interaction_no_integer_hint
+        )
+      else -> resourceHandler.getStringInLocale(
+        R.string.state_fragment_fraction_input_interaction_hint
+      )
     }
   }
 

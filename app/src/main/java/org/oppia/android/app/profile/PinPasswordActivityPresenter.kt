@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import javax.inject.Inject
+import kotlin.system.exitProcess
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ProfileId
@@ -18,8 +20,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
-import kotlin.system.exitProcess
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -32,7 +32,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<PinPasswordViewModel>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  @Inject lateinit var accessibilityService: AccessibilityService
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
   private val pinViewModel by lazy {
     getPinPasswordViewModel()
   }
@@ -182,7 +183,9 @@ class PinPasswordActivityPresenter @Inject constructor(
     alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.pin_password_activity_dialog_forgot_title)
       .setMessage(
-        resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_activity_dialog_forgot_message, appName)
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.pin_password_activity_dialog_forgot_message, appName
+        )
       )
       .setNegativeButton(R.string.admin_settings_dialog_cancel_button_text) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
@@ -210,11 +213,15 @@ class PinPasswordActivityPresenter @Inject constructor(
           R.string.pin_password_activity_reset_dialog_message, appName
         )
       )
-      .setNegativeButton(R.string.pin_password_activity_reset_dialog_negative_button_text) { dialog, _ ->
+      .setNegativeButton(
+        R.string.pin_password_activity_reset_dialog_negative_button_text
+      ) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.pin_password_activity_reset_dialog_postive_button_text) { dialog, _ ->
+      .setPositiveButton(
+        R.string.pin_password_activity_reset_dialog_postive_button_text
+      ) { dialog, _ ->
         profileManagementController.deleteAllProfiles().toLiveData().observe(
           activity,
           {

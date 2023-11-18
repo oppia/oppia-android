@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -84,7 +85,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -107,7 +107,9 @@ class TopicRevisionSpanTest {
     val revisionFragment = activity
       .supportFragmentManager
       .findFragmentByTag(TopicRevisionFragment.TOPIC_REVISION_FRAGMENT_TAG)
-    val recyclerviewTag = activity.resources.getString(R.string.topic_fragment_revision_recyclerview_tag)
+    val recyclerviewTag = activity.resources.getString(
+      R.string.topic_fragment_revision_recyclerview_tag
+    )
     val recyclerView =
       revisionFragment?.view?.findViewWithTag<RecyclerView>(recyclerviewTag)
     return (recyclerView?.layoutManager as GridLayoutManager).spanCount

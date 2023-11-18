@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -32,7 +33,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
 
@@ -79,10 +79,14 @@ class AddProfileActivityPresenter @Inject constructor(
     }
     val toolbar = activity.findViewById<View>(R.id.add_profile_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar?.title = resourceHandler.getStringInLocale(R.string.add_profile_activity_text)
+    activity.supportActionBar?.title = resourceHandler.getStringInLocale(
+      R.string.add_profile_activity_text
+    )
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
-    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_activity_tool_bar_content_desc)
+    activity.supportActionBar?.setHomeActionContentDescription(
+      R.string.admin_auth_activity_tool_bar_content_desc
+    )
 
     uploadImageView = binding.addProfileActivityUserImageView
     Glide.with(activity)

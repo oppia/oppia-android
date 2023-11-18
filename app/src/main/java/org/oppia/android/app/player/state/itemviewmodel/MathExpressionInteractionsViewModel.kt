@@ -5,9 +5,11 @@ import android.text.TextWatcher
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.OppiaLanguage
@@ -47,10 +49,6 @@ import org.oppia.android.util.math.MathParsingError.TermDividedByZeroError
 import org.oppia.android.util.math.MathParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.MathParsingError.UnnecessarySymbolsError
 import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionError
-import org.oppia.android.util.math.toPlainText
-import org.oppia.android.util.math.toRawLatex
-import javax.inject.Inject
-import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 
 /**
  * [StateItemViewModel] for input for numeric expressions, algebraic expressions, and math
@@ -123,17 +121,17 @@ class MathExpressionInteractionsViewModel private constructor(
         val mathContentValue = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$answerAsLatex&amp;quot;}"
         htmlAnswer =
           "<oppia-noninteractive-math render-type=\"block\"" +
-          " math_content-with-value=\"$mathContentValue\" />"
+            " math_content-with-value=\"$mathContentValue\" />"
       } else plainAnswer = answerTextString
 
       contentDescription =
         interactionType.computeHumanReadableString(
-        answerTextString,
-        useFractionsForDivision,
-        allowedVariables,
-        mathExpressionAccessibilityUtil,
-        this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
-      ) ?: answerTextString
+          answerTextString,
+          useFractionsForDivision,
+          allowedVariables,
+          mathExpressionAccessibilityUtil,
+          this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
+        ) ?: answerTextString
 
       this.writtenTranslationContext =
         this@MathExpressionInteractionsViewModel.writtenTranslationContext
@@ -464,12 +462,14 @@ class MathExpressionInteractionsViewModel private constructor(
             }
             is InvalidFunctionInUseError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.state_fragment_math_expression_unsupported_function_error, error.functionName
+                R.string.state_fragment_math_expression_unsupported_function_error,
+                error.functionName
               )
             }
             is MultipleRedundantParenthesesError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.state_fragment_math_expression_multiple_redundant_parentheses_error, error.rawExpression
+                R.string.state_fragment_math_expression_multiple_redundant_parentheses_error,
+                error.rawExpression
               )
             }
             NestedExponentsError -> {
@@ -562,7 +562,8 @@ class MathExpressionInteractionsViewModel private constructor(
             }
             is SingleRedundantParenthesesError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.state_fragment_math_expression_single_redundant_parentheses_error, error.rawExpression
+                R.string.state_fragment_math_expression_single_redundant_parentheses_error,
+                error.rawExpression
               )
             }
             SpacesBetweenNumbersError -> {
@@ -594,7 +595,8 @@ class MathExpressionInteractionsViewModel private constructor(
             }
             is UnnecessarySymbolsError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.state_fragment_math_expression_unnecessary_symbols_error, error.invalidSymbol
+                R.string.state_fragment_math_expression_unnecessary_symbols_error,
+                error.invalidSymbol
               )
             }
             VariableInNumericExpressionError -> {

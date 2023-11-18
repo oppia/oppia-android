@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
@@ -23,7 +24,6 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
@@ -99,7 +99,9 @@ class TopicFragmentPresenter @Inject constructor(
             val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
             val revisionTabSpotlightTarget = SpotlightTarget(
               revisionTabView!!,
-              resourceHandler.getStringInLocale(R.string.topic_fragment_revision_tab_spotlight_hint),
+              resourceHandler.getStringInLocale(
+                R.string.topic_fragment_revision_tab_spotlight_hint
+              ),
               SpotlightShape.RoundedRectangle,
               Spotlight.FeatureCase.TOPIC_REVISION_TAB
             )

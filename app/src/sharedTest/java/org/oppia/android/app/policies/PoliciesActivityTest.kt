@@ -22,6 +22,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.reflect.KClass
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
@@ -104,9 +107,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.reflect.KClass
 
 /** Tests for [PoliciesActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -171,7 +171,11 @@ class PoliciesActivityTest {
 
         // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
         // correct string when it's read out.
-        assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.policy_activity_privacy_policy_title))
+        assertThat(titleToolbar.title).isEqualTo(
+          context.getString(
+            R.string.policy_activity_privacy_policy_title
+          )
+        )
       }
     }
   }
@@ -222,7 +226,9 @@ class PoliciesActivityTest {
 
         // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
         // correct string when it's read out.
-        assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.policy_activity_terms_of_service_title))
+        assertThat(titleToolbar.title).isEqualTo(
+          context.getString(R.string.policy_activity_terms_of_service_title)
+        )
       }
     }
   }

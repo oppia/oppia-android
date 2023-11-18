@@ -13,6 +13,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -92,8 +94,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -146,7 +146,11 @@ class BottomSheetOptionsMenuTest {
   fun bottomSheetOptionsMenu_selectClose_closesBottomSheet() {
     launchBottomSheetOptionsMenuTestActivity {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.exploration_activity_options_menu_close_text)).inRoot(isDialog()).perform(click())
+      onView(
+        withText(
+          R.string.exploration_activity_options_menu_close_text
+        )
+      ).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
     }
