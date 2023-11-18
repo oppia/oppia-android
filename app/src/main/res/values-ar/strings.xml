@@ -216,13 +216,13 @@
     <item quantity="other">%s موضوع في تقدم</item>
   </plurals>
   <string name="profile_chooser_activity_title">صفحة اختيار الملف الشخصي</string>
-  <string name="profile_chooser_activity_admin_text">المشرف</string>
-  <string name="profile_chooser_activity_select_text">اختر الملف الشخصي</string>
-  <string name="profile_chooser_activity_add_text">إضافة ملف شخصي</string>
-  <string name="profile_chooser_activity_set_up_multiple_profiles">إعداد العديد من الملفات الشخصية</string>
-  <string name="profile_chooser_activity_add_profile_description_text">أضف حتى 10 مستخدمين إلى حسابك. مثالي للعائلات والفصول الدراسية.</string>
-  <string name="profile_chooser_activity_administrator_controls_text">أدوات تحكم المشرف</string>
-  <string name="profile_chooser_activity_language_text">اللغة</string>
+  <string name="profile_chooser_fragment_admin_text">المشرف</string>
+  <string name="profile_chooser_fragment_select_text">اختر الملف الشخصي</string>
+  <string name="profile_chooser_fragment_add_text">إضافة ملف شخصي</string>
+  <string name="profile_chooser_fragment_set_up_multiple_profiles">إعداد العديد من الملفات الشخصية</string>
+  <string name="profile_chooser_fragment_add_profile_description_text">أضف حتى 10 مستخدمين إلى حسابك. مثالي للعائلات والفصول الدراسية.</string>
+  <string name="profile_chooser_fragment_administrator_controls_text">أدوات تحكم المشرف</string>
+  <string name="profile_chooser_fragment_language_text">اللغة</string>
   <string name="admin_auth_activity_title">أدوات تحكم المشرف</string>
   <string name="admin_auth_activity_add_profiles_title">أمّن الحساب لإضافة ملفات شخصية</string>
   <string name="admin_auth_activity_access_controls_title">أمّن الحساب للوصول إلى أدوات تحكم المشرف</string>
@@ -420,8 +420,8 @@
   <string name="state_fragment_drag_drop_interaction_up_button_disabled">أعلى</string>
   <string name="state_fragment_drag_drop_interaction_down_button_disabled">أسفل</string>
   <string name="profile_last_visited">%s %s</string>
-  <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
-  <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
+  <string name="topic_fragment_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
+  <string name="ongoing_topic_list_fragment_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>
   <string name="unsupported_app_version_dialog_title" fuzzy="true">إصدار تطبيق غير مدعوم</string>
   <string name="unsupported_app_version_dialog_message" fuzzy="true">هذا الإصدار من التطبيق لم يعد مدعومًا. من فضلك قم بتحديث التطبيق من خلال متجر بلاي (Play Store)</string>
@@ -439,9 +439,7 @@
   <string name="general_availability_notice_dialog_close_button_text">نعم</string>
   <string name="ratio_content_description_separator" fuzzy="true">إلى</string>
   <string name="ratio_default_hint_text" fuzzy="true">أدخل نسبة في الصيغة س:ص.</string>
-  <string name="text_input_default_hint_text">انقر هنا لإدخال نص.</string>
-  <string name="smallest_text_size_content_description">أصغر حجمًا للنص</string>
-  <string name="largest_text_size_content_description">أكبر حجمًا للنص</string>
+  <string name="state_fragment_text_input_default_hint_text">انقر هنا لإدخال نص.</string>
   <string name="coming_soon">قريباً</string>
   <string name="recommended_stories">قصص موصّى بها</string>
   <string name="stories_for_you">قصص من أجلك</string>
@@ -451,9 +449,9 @@
   <string name="audio_fragment_language_icon_content_description">تغيير اللغة</string>
   <string name="exploration_activity_audio_player_on_text">الصوت مشغل</string>
   <string name="exploration_activity_audio_player_off_text">الصوت متوقف</string>
-  <string name="correct_submitted_answer">إجابة مقدمة صحيحة</string>
-  <string name="correct_submitted_answer_with_append">إجابة مقدمة صحيحة: %s</string>
-  <string name="incorrect_submitted_answer">إجابة مقدمة غير صحيحة</string>
+  <string name="state_fragment_correct_submitted_answer">إجابة مقدمة صحيحة</string>
+  <string name="state_fragment_correct_submitted_answer_with_append">إجابة مقدمة صحيحة: %s</string>
+  <string name="state_fragment_incorrect_submitted_answer">إجابة مقدمة غير صحيحة</string>
   <string name="incorrect_submitted_answer_with_append">إجابة مقدمة غير صحيحة: %s</string>
   <string name="third_party_dependency_list_activity_title">مكتبات برمجية (Third-party Dependencies)</string>
   <string name="third_party_dependency_version_formatter">إصدار %s</string>
@@ -463,8 +461,8 @@
   <string name="help_activity_third_party_dependencies_text">قائمة تبعيات الطرف الثالث</string>
   <string name="help_activity_copyright_licenses_text">قائمة تراخيص حقوق النشر</string>
   <string name="resume_lesson_activity_title">استئناف الدرس</string>
-  <string name="resume_lesson_button">تابع</string>
-  <string name="start_over_lesson_button">ابدأ من جديد</string>
+  <string name="resume_lessons_fragment_continue_button_text">تابع</string>
+  <string name="resume_lessons_fragment_start_over_button_text">ابدأ من جديد</string>
   <string name="home_activity_good_morning_greeting_text">صباح الخير</string>
   <string name="home_activity_good_afternoon_greeting_text">مساء الخير</string>
   <string name="home_activity_good_evening_greeting_text">مساء الخير،</string>
@@ -490,9 +488,9 @@
   <string name="faq_answer_6">&lt;p&gt;إذا لم يتم تحميل مشغل الاستكشاف&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;&lt;p&gt; &lt;ul&gt; &lt;li&gt; انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;اطلب من المشرف التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; اطلب من المشرف استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
   <string name="faq_answer_7">&lt;p&gt;إذا لم يتم تشغيل الصوت الخاص بك&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. قد يتسبب الإنترنت البطيء في تحميل الصوت بشكل غير منتظم ، مما يجعل من الصعب تشغيله.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;اطلب من المسؤول التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;اطلب من المسؤول استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org.&lt;/li&gt;&lt;/ul&gt;</string>
   <string name="faq_answer_9">&lt;p&gt; إذا لم تتمكن من العثور على سؤالك أو كنت ترغب في الإبلاغ عن خطأ ، فاتصل بنا على admin@oppia.org. &lt;/p&gt;</string>
-  <string name="profile_edit_fragment_test_activity_label">نشاط اختبار جزء تحرير ملف التعريف</string>
-  <string name="administrator_controls_fragment_test_activity_label">يتحكم المسؤول في نشاط اختبار التجزئة</string>
-  <string name="revision_navigation_cards_header">أكمل دراستك</string>
+  <string name="profile_edit_fragment_test_activity_title">نشاط اختبار جزء تحرير ملف التعريف</string>
+  <string name="administrator_controls_fragment_test_activity_title">يتحكم المسؤول في نشاط اختبار التجزئة</string>
+  <string name="revision_card_fragment_continue_studying_text">أكمل دراستك</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">انتقل إلى الجزء السفلي من الشاشة للحصول على تلميح.</string>
   <string name="state_fragment_item_selection_no_items_selected_hint_text">اختر كل الإجابات الصحيحة من فضلك.</string>
   <string name="state_fragment_item_selection_some_items_selected_hint_text">يمكنك أن تختار المزيد من الخيارات</string>

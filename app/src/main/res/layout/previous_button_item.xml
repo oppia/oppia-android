@@ -45,6 +45,6 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:tint="@color/component_color_shared_back_forward_arrow_button_color"
-      android:contentDescription="@string/previous_button_content_description" />
+      android:contentDescription="@string/state_fragment_previous_button_description" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

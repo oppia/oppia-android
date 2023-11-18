@@ -21,6 +21,6 @@
     android:paddingEnd="@dimen/topic_revision_fragment_padding_end"
     android:paddingBottom="@dimen/topic_revision_fragment_padding_bottom"
     android:scrollbars="none"
-    android:tag="@string/topic_revision_recyclerview_tag"
+    android:tag="@string/topic_fragment_revision_recyclerview_tag"
     app:data="@{viewModel.subtopicLiveData}" />
 </layout>

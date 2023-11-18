@@ -3,6 +3,7 @@ package org.oppia.android.app.administratorcontrols
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -16,7 +17,6 @@ import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
 
 /** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
@@ -146,7 +146,9 @@ class AdministratorControlsActivity :
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     administratorControlsActivityPresenter
       .setExtraControlsTitle(
-        resourceHandler.getStringInLocale(R.string.administrator_controls_fragment_edit_profiles_text)
+        resourceHandler.getStringInLocale(
+          R.string.administrator_controls_fragment_edit_profiles_text
+        )
       )
     administratorControlsActivityPresenter.loadProfileList()
   }

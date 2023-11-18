@@ -30,7 +30,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.AdministratorControlsFragmentTestActivity"
-      android:label="@string/administrator_controls_fragment_test_activity_label"
+      android:label="@string/administrator_controls_fragment_test_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.SpotlightFragmentTestActivity"
@@ -233,7 +233,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.ProfileEditFragmentTestActivity"
-      android:label="@string/profile_edit_fragment_test_activity_label"
+      android:label="@string/profile_edit_fragment_test_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.StateAssemblerMarginBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />

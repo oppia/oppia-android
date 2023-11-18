@@ -104,14 +104,14 @@ class UserTypeItemsViewModel @Inject constructor(
           UserTypeAnswer.LEARNER ->
             MultipleChoiceOptionContentViewModel(
               resourceHandler.getStringInLocale(
-                R.string.user_type_answer_learner
+                R.string.survey_fragment_user_type_answer_learner
               ),
               index,
               this
             )
           UserTypeAnswer.TEACHER -> MultipleChoiceOptionContentViewModel(
             resourceHandler.getStringInLocale(
-              R.string.user_type_answer_teacher
+              R.string.survey_fragment_user_type_answer_teacher
             ),
             index,
             this
@@ -120,7 +120,7 @@ class UserTypeItemsViewModel @Inject constructor(
           UserTypeAnswer.PARENT ->
             MultipleChoiceOptionContentViewModel(
               resourceHandler.getStringInLocale(
-                R.string.user_type_answer_parent
+                R.string.survey_fragment_user_type_answer_parent
               ),
               index,
               this
@@ -129,7 +129,7 @@ class UserTypeItemsViewModel @Inject constructor(
           UserTypeAnswer.OTHER ->
             MultipleChoiceOptionContentViewModel(
               resourceHandler.getStringInLocale(
-                R.string.user_type_answer_other
+                R.string.survey_fragment_user_type_answer_other
               ),
               index,
               this

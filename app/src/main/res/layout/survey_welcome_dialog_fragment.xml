@@ -9,7 +9,7 @@
     <TextView
       android:id="@+id/survey_onboarding_title_text"
       style="@style/SurveyPopupHeaderStyle"
-      android:text="@string/survey_onboarding_title_text"
+      android:text="@string/survey_activity_welcome_dialog_onboarding_title_text"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +39,7 @@
       style="@style/SurveyPopupMessageStyle"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      android:text="@string/survey_onboarding_message_text"
+      android:text="@string/survey_activity_exit_dialog_onboarding_text"
       app:layout_constraintTop_toTopOf="@id/survey_onboarding_center_guide" />
 
     <Button
@@ -47,7 +47,7 @@
       style="@style/SurveyPrimaryButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/survey_begin_survey_button"
+      android:text="@string/survey_activity_welcome_dialog_begin_survey_button"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/survey_onboarding_text"
@@ -59,7 +59,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
-      android:text="@string/survey_maybe_later_button"
+      android:text="@string/survey_activity_welcome_dialog_maybe_later_button"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/begin_survey_button" />

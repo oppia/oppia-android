@@ -195,13 +195,13 @@
     <item quantity="other">%s Topics in Progress</item>
   </plurals>
   <string name="profile_chooser_activity_title">Page to select profile</string>
-  <string name="profile_chooser_activity_admin_text">Administrator</string>
-  <string name="profile_chooser_activity_select_text">Select your profile</string>
-  <string name="profile_chooser_activity_add_text">Add Profile</string>
-  <string name="profile_chooser_activity_set_up_multiple_profiles">Set up Plenty Profiles</string>
-  <string name="profile_chooser_activity_add_profile_description_text">Add up to 10 users to your account. Perfect for families and classrooms.</string>
-  <string name="profile_chooser_activity_administrator_controls_text">Administrator Controls</string>
-  <string name="profile_chooser_activity_language_text">Language</string>
+  <string name="profile_chooser_fragment_admin_text">Administrator</string>
+  <string name="profile_chooser_fragment_select_text">Select your profile</string>
+  <string name="profile_chooser_fragment_add_text">Add Profile</string>
+  <string name="profile_chooser_fragment_set_up_multiple_profiles">Set up Plenty Profiles</string>
+  <string name="profile_chooser_fragment_add_profile_description_text">Add up to 10 users to your account. Perfect for families and classrooms.</string>
+  <string name="profile_chooser_fragment_administrator_controls_text">Administrator Controls</string>
+  <string name="profile_chooser_fragment_language_text">Language</string>
   <string name="admin_auth_activity_title">Administrator Controls</string>
   <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
   <string name="admin_auth_activity_access_controls_title">Authorise to access Administrator Controls</string>
@@ -407,8 +407,8 @@
   <string name="state_fragment_drag_drop_interaction_up_button_disabled">Up</string>
   <string name="state_fragment_drag_drop_interaction_down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
-  <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
-  <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
+  <string name="topic_fragment_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
+  <string name="ongoing_topic_list_fragment_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">Abeg select all di correct choices.</string>
   <string name="unsupported_app_version_dialog_title" fuzzy="true">Unsupported app version</string>
   <string name="unsupported_app_version_dialog_message" fuzzy="true">Dis version of di app no longer dey supported. Abeg update am from di Play Store.</string>
@@ -426,9 +426,7 @@
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
   <string name="ratio_content_description_separator" fuzzy="true">to</string>
   <string name="ratio_default_hint_text" fuzzy="true">Enter a ratio in di form x:y.</string>
-  <string name="text_input_default_hint_text">Tap here to put text.</string>
-  <string name="smallest_text_size_content_description">Smallest text size</string>
-  <string name="largest_text_size_content_description">Largest text size</string>
+  <string name="state_fragment_text_input_default_hint_text">Tap here to put text.</string>
   <string name="coming_soon">Coming Soon</string>
   <string name="recommended_stories">Recommended Stories</string>
   <string name="stories_for_you">Stories For You</string>
@@ -438,9 +436,9 @@
   <string name="audio_fragment_language_icon_content_description">Change language</string>
   <string name="exploration_activity_audio_player_on_text">Audio, ON</string>
   <string name="exploration_activity_audio_player_off_text">Audio, OFF</string>
-  <string name="correct_submitted_answer">Correct submitted ansa</string>
-  <string name="correct_submitted_answer_with_append">Correct submitted ansa: %s</string>
-  <string name="incorrect_submitted_answer">Incorrect submitted ansa</string>
+  <string name="state_fragment_correct_submitted_answer">Correct submitted ansa</string>
+  <string name="state_fragment_correct_submitted_answer_with_append">Correct submitted ansa: %s</string>
+  <string name="state_fragment_incorrect_submitted_answer">Incorrect submitted ansa</string>
   <string name="incorrect_submitted_answer_with_append">Incorrect submitted ansa: %s</string>
   <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
   <string name="third_party_dependency_version_formatter">version %s</string>
@@ -450,8 +448,8 @@
   <string name="help_activity_third_party_dependencies_text">third-party dependencies list</string>
   <string name="help_activity_copyright_licenses_text">copyright licenses list</string>
   <string name="resume_lesson_activity_title">Resume Lesson</string>
-  <string name="resume_lesson_button">Continue</string>
-  <string name="start_over_lesson_button">Start Over</string>
+  <string name="resume_lessons_fragment_continue_button_text">Continue</string>
+  <string name="resume_lessons_fragment_start_over_button_text">Start Over</string>
   <string name="home_activity_good_morning_greeting_text">Good morning,</string>
   <string name="home_activity_good_afternoon_greeting_text">Good afternoon,</string>
   <string name="home_activity_good_evening_greeting_text">Good evening,</string>
@@ -477,9 +475,9 @@
   <string name="faq_answer_6">&lt;p&gt;If di Exploration Player no dey load&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check to see if di app dey up to date:&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt; Go to di Play Store and make sure sey di app dey updated to di latest version &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; If your internet connection dey slow, try re-connecting to your Wi-Fi network or connecting to a different network. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Ask di Administrator to check their device and internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Get di Administrator to troubleshoot using di steps above &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Let us know if you still dey get issues with loading:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Report a problem by contacting us at admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
   <string name="faq_answer_7">&lt;p&gt;If your audio no dey play&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check to see if di app dey up to date:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Go to di Play Store and make sure sey di app dey updated to di latest version &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; If your internet connection dey slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet fit cause di audio to load irregularly, and go make am difficult to play. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Ask di Administrator to check their device and internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Get di Administrator to troubleshoot using di steps for up&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Let us know if you still dey get issues with loading:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Report a problem by contacting us at admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
   <string name="faq_answer_9">&lt;p&gt;If you no fit find your question or you go like to report a bug, contact us for admin@oppia.org.&lt;/p&gt;</string>
-  <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
-  <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
-  <string name="revision_navigation_cards_header">Continue Studying</string>
+  <string name="profile_edit_fragment_test_activity_title">Profile Edit Fragment Test Activity</string>
+  <string name="administrator_controls_fragment_test_activity_title">Administrator Controls Fragment Test Activity</string>
+  <string name="revision_card_fragment_continue_studying_text">Continue Studying</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">Go di bottom of di screen for a hint.</string>
   <string name="state_fragment_item_selection_no_items_selected_hint_text">Abeg select all di correct choices.</string>
   <string name="state_fragment_item_selection_some_items_selected_hint_text">You fit select more choices.</string>

@@ -183,7 +183,7 @@ class SurveyFragmentTest {
       createSurveyActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withContentDescription(R.string.survey_exit_button_description))
+      onView(withContentDescription(R.string.survey_activity_exit_dialog_exit_button_description))
         .check(
           matches(
             withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
@@ -234,7 +234,7 @@ class SurveyFragmentTest {
       createSurveyActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.user_type_question))
+      onView(withText(R.string.survey_fragment_user_type_question))
         .check(matches(isDisplayed()))
       onView(withId(R.id.survey_next_button))
         .check(matches(isDisplayed()))
@@ -254,7 +254,7 @@ class SurveyFragmentTest {
         RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
-      ).check(matches(hasDescendant(withText(R.string.user_type_answer_learner))))
+      ).check(matches(hasDescendant(withText(R.string.survey_fragment_user_type_answer_learner))))
     }
   }
 
@@ -265,7 +265,7 @@ class SurveyFragmentTest {
       createSurveyActivityIntent()
     ).use {
       onView(withContentDescription(R.string.navigate_up_text)).perform(click())
-      onView(withText(context.getString(R.string.survey_exit_confirmation_text)))
+      onView(withText(context.getString(R.string.survey_activity_exit_dialog_confirmation_text)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -292,7 +292,7 @@ class SurveyFragmentTest {
         RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
-      ).check(matches(hasDescendant(withText(R.string.market_fit_answer_very_disappointed))))
+      ).check(matches(hasDescendant(withText(R.string.survey_fragment_market_fit_answer_very_disappointed))))
     }
   }
 
@@ -346,7 +346,7 @@ class SurveyFragmentTest {
       // Select and submit NpsAnswer
       selectNpsAnswerAndMoveToNextQuestion(3)
 
-      onView(withText(R.string.nps_detractor_feedback_question))
+      onView(withText(R.string.survey_fragment_nps_detractor_feedback_question))
         .check(matches(isDisplayed()))
       onView(withId(R.id.submit_button))
         .check(matches(isDisplayed()))
@@ -374,7 +374,7 @@ class SurveyFragmentTest {
       // Select and submit NpsAnswer
       selectNpsAnswerAndMoveToNextQuestion(8)
 
-      onView(withText(R.string.nps_passive_feedback_question))
+      onView(withText(R.string.survey_fragment_nps_passive_feedback_question))
         .check(matches(isDisplayed()))
       onView(withId(R.id.submit_button))
         .check(matches(isDisplayed()))
@@ -450,7 +450,7 @@ class SurveyFragmentTest {
           position = 0,
           targetViewId = R.id.multiple_choice_content_text_view
         )
-      ).check(matches(withText(R.string.user_type_answer_learner)))
+      ).check(matches(withText(R.string.survey_fragment_user_type_answer_learner)))
     }
   }
 
@@ -491,7 +491,7 @@ class SurveyFragmentTest {
           position = 0,
           targetViewId = R.id.multiple_choice_content_text_view
         )
-      ).check(matches(withText(R.string.market_fit_answer_very_disappointed)))
+      ).check(matches(withText(R.string.survey_fragment_market_fit_answer_very_disappointed)))
 
       // Move back to UserType question
       moveToPreviousQuestion()
@@ -514,7 +514,7 @@ class SurveyFragmentTest {
           position = 0,
           targetViewId = R.id.multiple_choice_content_text_view
         )
-      ).check(matches(withText(R.string.user_type_answer_learner)))
+      ).check(matches(withText(R.string.survey_fragment_user_type_answer_learner)))
     }
   }
 

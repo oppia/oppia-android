@@ -3,6 +3,8 @@
   <!-- AdministratorControlActivity -->
   <string name="administrator_controls_activity_title">Administrator Controls</string>
   <string name="administrator_controls_activity_learner_analytics_text">Learner Study Analytics</string>
+  <!-- AdministratorControlsFragmentTestActivity -->
+  <string name="administrator_controls_fragment_test_activity_title">Administrator Controls Fragment Test Activity</string>
   <!-- AdminAuthActivity -->
   <string name="admin_auth_activity_title">Administrator Controls</string>
   <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
@@ -38,10 +40,11 @@
   <string name="administrator_controls_fragment_app_version_text">App Version</string>
   <string name="administrator_controls_fragment_account_actions_text">Account Actions</string>
   <string name="administrator_controls_fragment_log_out_text">Log Out</string>
-  <!-- AppVersionFragment -->
+  <!-- AppVersionActivity -->
+  <string name="app_version_activity_title">App Version</string>
+  <string name="app_version_fragment_app_info_icon_description">App Info</string>
   <string name="app_version_fragment_version_name_text">App Version %s</string>
   <string name="app_version_fragment_last_update_date_text">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
-  <string name="app_version_activity_title">App Version</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_activity_text">Add Profile</string>
   <string name="add_profile_activity_input_name_hint">Name</string>
@@ -102,6 +105,7 @@
   <string name="concept_card_test_activity_two_button_text">Concept Card 2</string>
   <!-- CompletedStoryListActivity -->
   <string name="completed_story_list_activity_title">Stories Completed</string>
+  <string name="completed_story_list_fragment_recyclerview_tag">completed_story_list_recyclerview_tag</string>
   <!-- ExplorationActivity -->
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="exploration_activity_audio_player_on_text">Audio, ON</string>
@@ -144,6 +148,11 @@
   <string name="faq_answer_6"><![CDATA[<p>If the Exploration Player is not loading</p><p><br></p><p>Check to see if the app is up to date:</p><p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. </li></ul><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above </li></ul><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
   <string name="faq_answer_7"><![CDATA[<p>If your audio is not playing</p><p><br></p><p>Check to see if the app is up to date:</p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet may cause the audio to load irregularly, making it difficult to play. </li></ul><p><br></p><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above</li></ul><p><br></p><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
   <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
+  <!-- ForcedAppDeprecationNoticeDialogFragment -->
+  <string name="forced_app_update_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">App update required</string>
+  <string name="forced_app_update_dialog_message" description="The main message of the dialog shown when a user's app has expired.">A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.</string>
+  <string name="forced_app_update_dialog_update_button_text" description="The update button text of the dialog shown when a user's pre-release app has expired.">Update</string>
+  <string name="forced_app_update_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
   <!-- GeneralAvailabilityUpgradeNoticeDialogFragment -->
   <string name="general_availability_notice_dialog_title">General Availability Notice</string>
   <string name="general_availability_notice_dialog_message">Hello! Your app is now being updated to the General Availability version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
@@ -248,13 +257,56 @@
   <string name="state_fragment_drag_drop_interaction_move_item_up_content_description">Move item up to %s</string>
   <string name="state_fragment_drag_drop_interaction_up_button_disabled">Up</string>
   <string name="state_fragment_drag_drop_interaction_down_button_disabled">Down</string>
-
+  <string name="state_fragment_text_input_default_hint_text">Tap here to enter text.</string>
+  <string name="state_fragment_correct_submitted_answer">Correct submitted answer</string>
+  <string name="state_fragment_correct_submitted_answer_with_append">Correct submitted answer: %s</string>
+  <string name="state_fragment_incorrect_submitted_answer">Incorrect submitted answer</string>
+  <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
+  <string name="state_fragment_item_selection_no_items_selected_hint_text">Please select all correct choices.</string>
+  <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
+  <string name="state_fragment_item_selection_max_items_selected_hint_text">No more than %s choices may be selected.</string>
+  <string name="state_fragment_previous_navigation_button_description">Previous State Navigation Button</string>
+  <string name="state_fragment_previous_button_description">Previous Button</string>
+  <string name="state_fragment_next_button_description">Next Button</string>
   <!-- StoryActivity -->
   <string name="story_activity_title">Chapter List</string>
+  <string name="story_fragment_lock_icon_content_description">Lock Icon</string>
   <!-- SplashActivity -->
   <string name="splash_activity_build_developer_label">Developer Build</string>
   <string name="splash_activity_build_alpha_label">Alpha</string>
   <string name="splash_activity_build_beta_label">Beta</string>
+  <!-- SurveyActivity -->
+  <string name="survey_activity_title">Survey</string>
+  <string name="survey_fragment_previous_button">Previous</string>
+  <string name="survey_fragment_submit_button">Submit</string>
+  <string name="survey_fragment_free_form_text">Leave your feedback here</string>
+  <string name="survey_activity_exit_dialog_continue_button">Continue Survey</string>
+  <string name="survey_activity_exit_dialog_exit_button">Exit</string>
+  <string name="survey_activity_exit_dialog_exit_button_description">Exit Survey</string>
+  <string name="survey_activity_exit_dialog_confirmation_text">Are you sure you want to exit the survey?</string>
+  <string name="survey_activity_exit_dialog_onboarding_text">Your feedback helps us serve learners like you better. Would you like to complete a short survey about your experience?</string>
+  <string name="survey_activity_welcome_dialog_begin_survey_button">Begin Survey</string>
+  <string name="survey_activity_welcome_dialog_maybe_later_button">Maybe Later</string>
+  <string name="survey_activity_outer_dialog_thank_you_message">Thank you for completing the survey. We hope you\'ve enjoyed using %s!</string>
+  <string name="survey_activity_outer_dialog_finish_button">Exit survey</string>
+  <string name="survey_activity_welcome_dialog_onboarding_title_text">We\'d love your feedback!</string>
+  <string name="survey_activity_outer_dialog_onboarding_title_text">Thank you</string>
+  <string name="survey_activity_nps_score_not_likely_text">0 - Not at all likely</string>
+  <string name="survey_activity_nps_score_extremely_likely_text">10 - Extremely likely</string>
+  <string name="survey_fragment_user_type_question">Please select one of the following:</string>
+  <string name="survey_fragment_user_type_answer_learner">I am a learner</string>
+  <string name="survey_fragment_user_type_answer_teacher">I am a teacher</string>
+  <string name="survey_fragment_user_type_answer_parent">I am a parent</string>
+  <string name="survey_fragment_user_type_answer_other">Other</string>
+  <string name="survey_fragment_market_fit_question">How would you feel if you could no longer use %s?</string>
+  <string name="survey_fragment_market_fit_answer_very_disappointed">Very disappointed</string>
+  <string name="survey_fragment_market_fit_answer_somewhat_disappointed">Somewhat disappointed</string>
+  <string name="survey_fragment_market_fit_answer_not_disappointed">Not disappointed</string>
+  <string name="survey_fragment_market_fit_answer_wont_use_oppia">N/A - I don\’t use %s anymore</string>
+  <string name="survey_fragment_nps_promoter_feedback_question">We are glad you have enjoyed your experience with %s. Please share what helped you the most:</string>
+  <string name="survey_fragment_nps_passive_feedback_question">Thanks for responding! How can we provide a better experience?</string>
+  <string name="survey_fragment_nps_detractor_feedback_question">Help us improve your experience! Please share  the primary reason for your score:</string>
+  <string name="survey_fragment_nps_score_question">On a scale from 0–10, how likely are you to recommend %s to a friend or colleague?</string>
   <!-- TopicFragment -->
   <string name="topic_activity_title">Topic page</string>
   <string name="topic_fragment_lessons_chapter_play_index">%s</string>
@@ -293,7 +345,10 @@
   <string name="topic_fragment_lessons_story_status_completed">Completed</string>
   <string name="topic_fragment_lessons_show_chapter_list">Show chapter list</string>
   <string name="topic_fragment_lessons_hide_chapter_list">Hide chapter list</string>
-
+  <string name="topic_fragment_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
+  <string name="topic_fragment_revision_previous_subtopic_talkback_text">The previous subtopic is %s</string>
+  <string name="topic_fragment_revision_next_subtopic_talkback_text">The next subtopic is %s</string>
+  <string name="topic_fragment_info_download_status_image_description">Download Status</string>
   <!-- ThirdPartyDependencyListActivity -->
   <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
   <string name="third_party_dependency_version_formatter">version %s</string>
@@ -316,8 +371,12 @@
   <string name="navigation_drawer_fragment_bar_separator_text">\u0020|\u0020</string>
   <string name="navigation_drawer_fragment_switch_profile">Switch Profile</string>
   <string name="navigation_drawer_fragment_developer_options">Developer Options</string>
+  <string name="navigation_drawer_fragment_developer_options_icon_description">Developer Options Icon</string>
+  <string name="navigation_drawer_fragment_administrator_controls_icon_description">Administrator Controls Icon</string>
+
   <!-- OngoingListActivity -->
   <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
+  <string name="ongoing_topic_list_fragment_recycler_view_tag">ongoing_recycler_view_tag</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_activity_title">Introduction</string>
   <string name="onboarding_activity_slide_0_title">Welcome to %s!</string>
@@ -344,7 +403,15 @@
   <string name="option_activity_reading_text_size_medium">Medium</string>
   <string name="option_activity_reading_text_size_large">Large</string>
   <string name="option_activity_reading_text_size_extra_large">Extra Large</string>
-
+  <!-- OptionalAppDeprecationNoticeDialogFragment -->
+  <string name="optional_app_update_dialog_title" description="The title of the dialog shown when an optional app update is available.">New update available</string>
+  <string name="optional_app_update_dialog_message" description="The main message of the dialog shown when an optional app update is available.">A new version of %s is now available. We recommend that you update the app for bug fixes and a better learning experience.</string>
+  <string name="optional_app_update_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an optional app update is available.">Dismiss</string>
+  <string name="optional_app_update_dialog_update_button_text" description="The update button text of the dialog shown when an optional app update is available.">Update</string>
+  <!-- OsDeprecationNoticeDialogFragment -->
+  <string name="os_deprecation_dialog_title" description="The title of the dialog shown when an the OS the user is using is no longer supported.">Update your Android OS</string>
+  <string name="os_deprecation_dialog_message" description="The main message of the dialog shown when an the OS the user is using is no longer supported.">We recommend updating your Android OS to take advantage of %s\'s new features and lessons.\n\nVisit your phone\'s Settings app to update your OS.</string>
+  <string name="os_deprecation_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an the OS the user is using is no longer supported.">Dismiss</string>
   <!-- ProfileProgressActivity -->
   <string name="profile_progress_activity_title">Profile Progress Page</string>
   <string name="profile_progress_activity_profile_title">Profile</string>
@@ -352,21 +419,23 @@
   <string name="profile_progress_activity_topic_in_progress_text">Topic in Progress</string>
   <string name="profile_progress_activity_stories_completed_text">Stories Completed</string>
   <string name="profile_progress_activity_story_completed_text">Story Completed</string>
-
   <!-- ProfileChooserFragment -->
   <string name="profile_chooser_activity_title">Profile selection page</string>
-  <string name="profile_chooser_activity_admin_text">Administrator</string>
-  <string name="profile_chooser_activity_select_text">Select your profile</string>
-  <string name="profile_chooser_activity_add_text">Add Profile</string>
-  <string name="profile_chooser_activity_set_up_multiple_profiles">Set up Multiple Profiles</string>
-  <string name="profile_chooser_activity_add_profile_description_text">Add up to 10 users to your account. Perfect for families and classrooms.</string>
-  <string name="profile_chooser_activity_administrator_controls_text">Administrator Controls</string>
-  <string name="profile_chooser_activity_language_text">Language</string>
+  <string name="profile_chooser_fragment_admin_text">Administrator</string>
+  <string name="profile_chooser_fragment_select_text">Select your profile</string>
+  <string name="profile_chooser_fragment_add_text">Add Profile</string>
+  <string name="profile_chooser_fragment_set_up_multiple_profiles">Set up Multiple Profiles</string>
+  <string name="profile_chooser_fragment_add_profile_description_text">Add up to 10 users to your account. Perfect for families and classrooms.</string>
+  <string name="profile_chooser_fragment_administrator_controls_text">Administrator Controls</string>
+  <string name="profile_chooser_fragment_language_text">Language</string>
+  <string name="profile_chooser_fragment_language_icon_description">Language Icon</string>
+  <string name="profile_chooser_fragment_setting_icon_description">Setting Icon</string>
+
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfilePictureActivity -->
   <string name="profile_picture_activity_title">Profile Picture</string>
-
+  <string name="profile_picture_activity_profile_picture_description">Profile Picture Image View</string>
   <!-- ProfileResetPinActivity -->
   <string name="profile_reset_pin_activity_title">Reset PIN</string>
   <string name="profile_reset_pin_fragment_reset_pin_main_text">Enter a new PIN for the user to enter when accessing their profile.</string>
@@ -376,7 +445,8 @@
   <string name="profile_reset_pin_fragment_admin_confirm_text">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_fragment_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_fragment_error_admin_pin_length">Your PIN should be 5 digits long.</string>
-
+  <!-- ProfileEditFragmentTestActivity -->
+  <string name="profile_edit_fragment_test_activity_title">Profile Edit Fragment Test Activity</string>
 
   <!-- PinPasswordActivity -->
   <string name="pin_password_activity_title">PIN verification</string>
@@ -456,14 +526,26 @@
 
 
   <!-- QuestionPlayerActivity -->
+  <string name="question_player_activity_title">Practice Mode</string>
   <string name="question_player_activity_new_hint_available_text">New hint available</string>
+  <!-- RevisionCardActivity -->
+  <string name="revision_card_activity_title">Skill revision page</string>
+  <string name="revision_card_fragment_continue_studying_text">Continue Studying</string>
 
+  <!-- ResumeLessonActivity -->
+  <string name="resume_lesson_activity_title">Resume Lesson</string>
+  <string name="resume_lessons_fragment_continue_button_text">Continue</string>
+  <string name="resume_lessons_fragment_start_over_button_text">Start Over</string>
 
   <!-- SharedStrings -->
   <string name="menu_options_text">Options</string>
   <string name="menu_help_text">Help</string>
   <string name="navigate_up_text">Navigate up</string>
   <string name="next_text">Next</string>
+  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">Unsupported app version</string>
+  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">This version of the app is no longer supported. Please update it through the Play Store.</string>
+  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
+  <string name="options_menu_content_description">Options Menu</string>
 
   <!-- StopExplorationDialogFragment -->
   <string name="stop_exploration_dialog_progress_full_title">Maximum storage capacity reached</string>
@@ -474,9 +556,13 @@
 
   <!-- InputInteractionViewTestActivity -->
   <string name="input_interaction_view_test_activity_submit_button">Submit</string>
+  <string name="input_interaction_view_test_activity_number_input_hint">Write the digit here.</string>
+  <string name="input_interaction_view_test_activity_text_input_hint">Write here.</string>
+  <!-- SpotlightFragment -->
+  <string name="spotlight_fragment_overlay_arrow_content_description">Spotlight Overlay Arrow</string>
+  <string name="spotlight_fragment_close_button_content_description">Close Spotlight Button</string>
   <!-- SpotlightFragmentTest -->
   <string name="spotlight_fragment_test_sample_view_text">This is a sample text view</string>
-
   <!-- GeneralStrings -->
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
@@ -490,9 +576,14 @@
   <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">Your answer has two colons (:) next to each other.</string>
   <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">Number of terms is not equal to the required terms.</string>
   <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">Ratios cannot have 0 as an element.</string>
+  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">\u0020to\u0020</string>
+  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">Enter a ratio in the form x:y.</string>
   <string name="profile_last_visited">%s %s</string>
   <string name="yesterday">yesterday</string>
   <string name="last_logged_in_recently">recently</string>
+  <string name="coming_soon">Coming Soon</string>
+  <string name="recommended_stories">Recommended Stories</string>
+  <string name="stories_for_you">Stories For You</string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%s Bytes</string>
   <string name="size_kb">%s KB</string>
@@ -501,6 +592,7 @@
   <string name="correct">Correct!</string>
   <string name="just_now">just now</string>
   <string name="welcome_profile_name">%s %s!</string>
+  <string name="font_scale_html_content_text">html Content</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
@@ -540,125 +632,4 @@
     <item quantity="one">a day ago</item>
     <item quantity="other">%s days ago</item>
   </plurals>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!-- ViewTags -->
-  <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
-  <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
-  <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
-  <string name="item_selection_text">Please select all correct choices.</string>
-
-
-  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">Unsupported app version</string>
-  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">This version of the app is no longer supported. Please update it through the Play Store.</string>
-  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
-  <string name="forced_app_update_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">App update required</string>
-  <string name="forced_app_update_dialog_message" description="The main message of the dialog shown when a user's app has expired.">A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.</string>
-  <string name="forced_app_update_dialog_update_button_text" description="The update button text of the dialog shown when a user's pre-release app has expired.">Update</string>
-  <string name="forced_app_update_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
-  <string name="optional_app_update_dialog_title" description="The title of the dialog shown when an optional app update is available.">New update available</string>
-  <string name="optional_app_update_dialog_message" description="The main message of the dialog shown when an optional app update is available.">A new version of %s is now available. We recommend that you update the app for bug fixes and a better learning experience.</string>
-  <string name="optional_app_update_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an optional app update is available.">Dismiss</string>
-  <string name="optional_app_update_dialog_update_button_text" description="The update button text of the dialog shown when an optional app update is available.">Update</string>
-  <string name="os_deprecation_dialog_title" description="The title of the dialog shown when an the OS the user is using is no longer supported.">Update your Android OS</string>
-  <string name="os_deprecation_dialog_message" description="The main message of the dialog shown when an the OS the user is using is no longer supported.">We recommend updating your Android OS to take advantage of %s\'s new features and lessons.\n\nVisit your phone\'s Settings app to update your OS.</string>
-  <string name="os_deprecation_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an the OS the user is using is no longer supported.">Dismiss</string>
-
-
-
-  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">\u0020to\u0020</string>
-  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">Enter a ratio in the form x:y.</string>
-  <string name="text_input_default_hint_text">Tap here to enter text.</string>
-  <string name="test_number_input_interaction_hint">Write the digit here.</string>
-  <string name="test_text_input_interaction_hint">Write here.</string>
-  <string name="smallest_text_size_content_description">Smallest text size</string>
-  <string name="largest_text_size_content_description">Largest text size</string>
-  <string name="coming_soon">Coming Soon</string>
-  <string name="recommended_stories">Recommended Stories</string>
-  <string name="stories_for_you">Stories For You</string>
-  <string name="question_player_activity_title">Practice Mode</string>
-  <string name="revision_card_activity_title">Skill revision page</string>
-
-
-  <string name="correct_submitted_answer">Correct submitted answer</string>
-  <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
-  <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
-  <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
-
-  <!-- ResumeLessonActivity -->
-  <string name="resume_lesson_activity_title">Resume Lesson</string>
-  <string name="resume_lesson_button">Continue</string>
-  <string name="start_over_lesson_button">Start Over</string>
-
-
-  <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
-  <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
-  <string name="revision_navigation_cards_header">Continue Studying</string>
-  <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
-  <string name="state_fragment_item_selection_no_items_selected_hint_text">Please select all correct choices.</string>
-  <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
-  <string name="state_fragment_item_selection_max_items_selected_hint_text">No more than %s choices may be selected.</string>
-  <string name="survey_activity_title">Survey</string>
-  <string name="survey_previous_button">Previous</string>
-  <string name="survey_submit_button">Submit</string>
-  <string name="survey_free_form_text_hint">Leave your feedback here</string>
-  <string name="survey_continue_survey_button">Continue Survey</string>
-  <string name="survey_exit_button">Exit</string>
-  <string name="survey_exit_button_description">Exit Survey</string>
-  <string name="survey_exit_confirmation_text">Are you sure you want to exit the survey?</string>
-  <string name="survey_onboarding_message_text">Your feedback helps us serve learners like you better. Would you like to complete a short survey about your experience?</string>
-  <string name="survey_begin_survey_button">Begin Survey</string>
-  <string name="survey_maybe_later_button">Maybe Later</string>
-  <string name="survey_thank_you_message_text">Thank you for completing the survey. We hope you\'ve enjoyed using %s!</string>
-  <string name="survey_exit_survey_button">Exit survey</string>
-  <string name="survey_onboarding_title_text">We\'d love your feedback!</string>
-  <string name="survey_thank_you_title_text">Thank you</string>
-  <string name="survey_nps_not_at_all_likely_label">0 - Not at all likely</string>
-  <string name="survey_nps_extremely_likely_label">10 - Extremely likely</string>
-  <string name="user_type_question">Please select one of the following:</string>
-  <string name="user_type_answer_learner">I am a learner</string>
-  <string name="user_type_answer_teacher">I am a teacher</string>
-  <string name="user_type_answer_parent">I am a parent</string>
-  <string name="user_type_answer_other">Other</string>
-  <string name="market_fit_question">How would you feel if you could no longer use %s?</string>
-  <string name="market_fit_answer_very_disappointed">Very disappointed</string>
-  <string name="market_fit_answer_somewhat_disappointed">Somewhat disappointed</string>
-  <string name="market_fit_answer_not_disappointed">Not disappointed</string>
-  <string name="market_fit_answer_wont_use_oppia">N/A - I don\’t use %s anymore</string>
-  <string name="nps_promoter_feedback_question">We are glad you have enjoyed your experience with %s. Please share what helped you the most:</string>
-  <string name="nps_passive_feedback_question">Thanks for responding! How can we provide a better experience?</string>
-  <string name="nps_detractor_feedback_question">Help us improve your experience! Please share  the primary reason for your score:</string>
-  <string name="nps_score_question">On a scale from 0–10, how likely are you to recommend %s to a friend or colleague?</string>
-  <string name="previous_subtopic_talkback_text">The previous subtopic is %s</string>
-  <string name="next_subtopic_talkback_text">The next subtopic is %s</string>
-
-  <string name="app_info_icon_content_description">App Info</string>
-  <string name="spotlight_overlay_arrow_content_description">Spotlight Overlay Arrow</string>
-  <string name="close_spotlight_button_content_description">Close Spotlight Button</string>
-  <string name="previous_state_navigation_button_content_description">Previous State Navigation Button</string>
-  <string name="developer_options_icon_content_description">Developer Options Icon</string>
-  <string name="administrator_controls_icon_content_description">Administrator Controls Icon</string>
-  <string name="options_menu_content_description">Options Menu</string>
-  <string name="previous_button_content_description">Previous Button</string>
-  <string name="next_button_content_description">Next Button</string>
-  <string name="language_icon_content_description">Language Icon</string>
-  <string name="setting_icon_content_description">Setting Icon</string>
-  <string name="profile_picture_image_view_content_description">Profile Picture Image View</string>
-  <string name="lock_icon_content_description">Lock Icon</string>
-  <string name="download_status_image_content_description">Download Status</string>
-  <string name="font_scale_html_content_text">html Content</string>
 </resources>

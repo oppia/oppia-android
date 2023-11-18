@@ -3,11 +3,11 @@ package org.oppia.android.app.drawer
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import javax.inject.Inject
 
 private const val DEFAULT_ONGOING_TOPIC_COUNT = 0
 private const val DEFAULT_COMPLETED_STORY_COUNT = 0
@@ -49,7 +49,9 @@ class NavigationDrawerHeaderViewModel @Inject constructor(
     )
   }
 
-  fun getBarSeparator() = resourceHandler.getStringInLocale(R.string.navigation_drawer_fragment_bar_separator_text)
+  fun getBarSeparator() = resourceHandler.getStringInLocale(
+    R.string.navigation_drawer_fragment_bar_separator_text
+  )
 
   private fun computeProfileTopicProgressText(): String {
     return resourceHandler.getQuantityStringInLocaleWithWrapping(

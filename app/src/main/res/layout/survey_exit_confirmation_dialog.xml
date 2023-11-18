@@ -13,7 +13,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/survey_question_text_margin"
       android:layout_marginEnd="@dimen/survey_question_text_margin"
-      android:text="@string/survey_exit_confirmation_text"
+      android:text="@string/survey_activity_exit_dialog_confirmation_text"
       app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -21,7 +21,7 @@
       style="@style/SurveySecondaryButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/survey_continue_survey_button"
+      android:text="@string/survey_activity_exit_dialog_continue_button"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/exit_survey_confirmation_text" />
@@ -31,7 +31,7 @@
       style="@style/SurveyPrimaryButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/survey_exit_button"
+      android:text="@string/survey_activity_exit_dialog_exit_button"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

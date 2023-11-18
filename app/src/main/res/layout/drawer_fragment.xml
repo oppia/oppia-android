@@ -68,7 +68,7 @@
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_baseline_code_24"
             android:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_image_color : @color/component_color_shared_primary_dark_text_color}"
-            android:contentDescription="@string/developer_options_icon_content_description" />
+            android:contentDescription="@string/navigation_drawer_fragment_developer_options_icon_description" />
 
           <TextView
             android:layout_width="match_parent"
@@ -100,7 +100,7 @@
             android:layout_gravity="center_vertical"
             android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_image_color : @color/component_color_shared_primary_dark_text_color}"
             app:srcCompat="@drawable/ic_admin_settings_icon_brown_24dp"
-            android:contentDescription="@string/administrator_controls_icon_content_description" />
+            android:contentDescription="@string/navigation_drawer_fragment_administrator_controls_icon_description" />
 
           <TextView
             android:layout_width="match_parent"
