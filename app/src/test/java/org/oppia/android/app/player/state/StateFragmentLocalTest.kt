@@ -178,7 +178,7 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
 import java.io.IOException
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
