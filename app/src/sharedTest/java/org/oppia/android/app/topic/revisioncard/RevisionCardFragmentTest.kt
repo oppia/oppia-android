@@ -380,7 +380,7 @@ class RevisionCardFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.topic_fragment_lessons_revision_card_title))
+      onView(withId(R.id.revision_card_toolbar_title))
         .check(matches(withText("What is a Fraction?")))
     }
   }
@@ -523,7 +523,7 @@ class RevisionCardFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.topic_fragment_lessons_revision_card_title))
+      onView(withId(R.id.revision_card_toolbar_title))
         .check(matches(withText("What is a Fraction?")))
     }
   }

@@ -563,7 +563,6 @@
   <string name="topic_fragment_lessons_chapter_prerequisite_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="topic_fragment_lessons_chapter_locked_prerequisite_label">Chapter %s: %s is currently locked. Please complete chapter %s: %s to unlock this chapter.</string>
   <string name="topic_fragment_lessons_without_chapter_prerequisite_label">Complete the previous chapter to unlock this chapter.</string>
-  <string name="topic_fragment_lessons_revision_card_title">Revision Card</string>
   <string name="topic_fragment_practice_master_skills_text">Master These Skills</string>
   <string name="topic_fragment_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_fragment_practice_start_button">Start</string>
