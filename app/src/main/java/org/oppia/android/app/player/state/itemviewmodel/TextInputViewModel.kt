@@ -4,7 +4,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -15,6 +14,7 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandle
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
+import javax.inject.Inject
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel private constructor(

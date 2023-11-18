@@ -2,7 +2,6 @@ package org.oppia.android.app.topic.info
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
@@ -11,6 +10,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import javax.inject.Inject
 
 /** [ViewModel] for showing topic info details. */
 @FragmentScope

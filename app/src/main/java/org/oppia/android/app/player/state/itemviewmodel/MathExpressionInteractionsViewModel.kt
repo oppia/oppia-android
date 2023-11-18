@@ -5,11 +5,9 @@ import android.text.TextWatcher
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.OppiaLanguage
@@ -49,6 +47,8 @@ import org.oppia.android.util.math.MathParsingError.TermDividedByZeroError
 import org.oppia.android.util.math.MathParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.MathParsingError.UnnecessarySymbolsError
 import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionError
+import javax.inject.Inject
+import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 
 /**
  * [StateItemViewModel] for input for numeric expressions, algebraic expressions, and math
@@ -121,17 +121,17 @@ class MathExpressionInteractionsViewModel private constructor(
         val mathContentValue = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$answerAsLatex&amp;quot;}"
         htmlAnswer =
           "<oppia-noninteractive-math render-type=\"block\"" +
-            " math_content-with-value=\"$mathContentValue\" />"
+          " math_content-with-value=\"$mathContentValue\" />"
       } else plainAnswer = answerTextString
 
       contentDescription =
         interactionType.computeHumanReadableString(
-          answerTextString,
-          useFractionsForDivision,
-          allowedVariables,
-          mathExpressionAccessibilityUtil,
-          this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
-        ) ?: answerTextString
+        answerTextString,
+        useFractionsForDivision,
+        allowedVariables,
+        mathExpressionAccessibilityUtil,
+        this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
+      ) ?: answerTextString
 
       this.writtenTranslationContext =
         this@MathExpressionInteractionsViewModel.writtenTranslationContext
