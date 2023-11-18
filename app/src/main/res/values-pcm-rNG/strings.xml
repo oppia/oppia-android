@@ -33,7 +33,6 @@
   <string name="cellular_audio_dialog_checkboxes_text">No show this message again</string>
   <string name="concept_card_fragment_title">Concept Card</string>
   <string name="concept_card_test_activity_one_button_text">Concept Card 1</string>
-  <string name="topic_fragment_lessons_revision_card_title">Revision Card</string>
   <string name="unsaved_exploration_dialog_title">Comot go the topic page?</string>
   <string name="unsaved_exploration_dialog_description">Wetin you don do before no go save</string>
   <string name="unsaved_exploration_dialog_leave_button_text">Comot</string>

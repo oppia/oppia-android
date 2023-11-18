@@ -179,7 +179,7 @@ class AppVersionActivityTest {
       onView(
         withText(
           String.format(
-            context.resources.getString(R.string.app_version_name),
+            context.resources.getString(R.string.app_version_fragment_version_name_text),
             context.getVersionName()
           )
         )
@@ -210,7 +210,7 @@ class AppVersionActivityTest {
         matches(
           withText(
             String.format(
-              context.resources.getString(R.string.app_version_name),
+              context.resources.getString(R.string.app_version_fragment_version_name_text),
               context.getVersionName()
             )
           )

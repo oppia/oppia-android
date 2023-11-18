@@ -34,7 +34,6 @@
   <string name="cellular_audio_dialog_description">تشغيل الصوت عبر الإنترنت قد يستخدم الكثير من بيانات الهاتف.</string>
   <string name="cellular_audio_dialog_checkboxes_text">لا تُظهِر هذه الرسالة مُجددًا</string>
   <string name="concept_card_fragment_title">بطاقة المفهوم</string>
-  <string name="topic_fragment_lessons_revision_card_title">بطاقة المراجعة</string>
   <string name="unsaved_exploration_dialog_title">هل تريد المغادرة إلى صفحة الموضوع؟</string>
   <string name="unsaved_exploration_dialog_description">لن يتم حفظ تقدمك.</string>
   <string name="unsaved_exploration_dialog_leave_button_text">مغادرة</string>
