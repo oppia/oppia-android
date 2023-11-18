@@ -36,6 +36,20 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
+      <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/audio_fragment_voiceover_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="@{viewModel.playStatusLiveData == UiAudioPlayStatus.LOADING ? View.VISIBLE : View.GONE}"
+        app:indicatorColor="@color/component_color_audio_fragment_voiceover_progressbar_color"
+        app:indicatorSize="@dimen/audio_fragment_progress_indicator_size"
+        app:trackThickness="@dimen/audio_fragment_progress_indicator_track_thickness"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/play_pause_audio_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
       <ImageView
         android:id="@+id/play_pause_audio_icon"
         android:layout_width="52dp"
@@ -44,6 +58,7 @@
         android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
         android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_fragment_pause_description : @string/audio_fragment_play_description}"
         android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
+        android:visibility="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING ? View.VISIBLE : View.INVISIBLE}"
         android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
