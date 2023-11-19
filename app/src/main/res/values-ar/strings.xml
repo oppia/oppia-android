@@ -450,6 +450,7 @@
   <string name="state_fragment_correct_submitted_answer">إجابة مقدمة صحيحة</string>
   <string name="state_fragment_correct_submitted_answer_with_append">إجابة مقدمة صحيحة: %s</string>
   <string name="state_fragment_incorrect_submitted_answer">إجابة مقدمة غير صحيحة</string>
+  <string name="state_fragment_incorrect_submitted_answer_with_append">إجابة مقدمة غير صحيحة: %s</string>
   <string name="third_party_dependency_list_activity_title">مكتبات برمجية (Third-party Dependencies)</string>
   <string name="third_party_dependency_version_formatter">إصدار %s</string>
   <string name="license_list_activity_title">رخص حقوق النسخ</string>

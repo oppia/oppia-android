@@ -58,7 +58,7 @@ class SubmittedAnswerViewModel(
       )
     } else {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.state_fragment_incorrect_submitted_answer, answer
+        R.string.state_fragment_incorrect_submitted_answer_with_append, answer
       )
     }
   }
