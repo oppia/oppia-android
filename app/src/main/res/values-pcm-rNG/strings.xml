@@ -427,6 +427,7 @@
   <string name="state_fragment_correct_submitted_answer">Correct submitted ansa</string>
   <string name="state_fragment_correct_submitted_answer_with_append">Correct submitted ansa: %s</string>
   <string name="state_fragment_incorrect_submitted_answer">Incorrect submitted ansa</string>
+  <string name="state_fragment_incorrect_submitted_answer_with_append">Incorrect submitted ansa: %s</string>
   <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
   <string name="third_party_dependency_version_formatter">version %s</string>
   <string name="license_list_activity_title">Copyright Licenses</string>

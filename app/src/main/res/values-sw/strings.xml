@@ -369,6 +369,7 @@
   <string name="state_fragment_correct_submitted_answer">Jibu sahihi lililowasilishwa</string>
   <string name="state_fragment_correct_submitted_answer_with_append">Jibu sahihi lililowasilishwa: %s</string>
   <string name="state_fragment_incorrect_submitted_answer">Jibu lililowasilishwa lisilo sahihi</string>
+  <string name="state_fragment_incorrect_submitted_answer_with_append">Jibu lililowasilishwa lisilo sahihi: %s</string>
   <string name="third_party_dependency_list_activity_title">Tegemeo ya mhusika wa tatu</string>
   <string name="third_party_dependency_version_formatter">toleo %s</string>
   <string name="license_list_activity_title">Leseni za Hakimiliki</string>

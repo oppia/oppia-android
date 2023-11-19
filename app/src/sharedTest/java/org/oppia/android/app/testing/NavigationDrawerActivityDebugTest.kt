@@ -216,15 +216,13 @@ class NavigationDrawerActivityDebugTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withText(
-            R.string.navigation_drawer_fragment_developer_options,
-            isDescendantOfA(withId(R.id.developer_options_linear_layout))
-          )
-        ).check(
-          matches(
-            hasTextColor(
-              R.color.component_color_drawer_fragment_developer_options_selected_text_color
-            )
+          withText(R.string.navigation_drawer_fragment_developer_options),
+          isDescendantOfA(withId(R.id.developer_options_linear_layout))
+        )
+      ).check(
+        matches(
+          hasTextColor(
+            R.color.component_color_drawer_fragment_developer_options_selected_text_color
           )
         )
       )
@@ -251,15 +249,13 @@ class NavigationDrawerActivityDebugTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withText(
-            R.string.navigation_drawer_fragment_developer_options,
-            isDescendantOfA(withId(R.id.developer_options_linear_layout))
-          )
-        ).check(
-          matches(
-            hasTextColor(
-              R.color.component_color_drawer_fragment_developer_options_selected_text_color
-            )
+          withText(R.string.navigation_drawer_fragment_developer_options),
+          isDescendantOfA(withId(R.id.developer_options_linear_layout))
+        )
+      ).check(
+        matches(
+          hasTextColor(
+            R.color.component_color_drawer_fragment_developer_options_selected_text_color
           )
         )
       )

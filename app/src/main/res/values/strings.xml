@@ -503,6 +503,7 @@
   <string name="state_fragment_correct_submitted_answer">Correct submitted answer</string>
   <string name="state_fragment_correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="state_fragment_incorrect_submitted_answer">Incorrect submitted answer</string>
+  <string name="state_fragment_incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
   <string name="state_fragment_item_selection_no_items_selected_hint_text">Please select all correct choices.</string>
   <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
