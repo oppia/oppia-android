@@ -25,5 +25,3 @@ bazel-*
 .bazelproject
 .aswb
 *.pb
-gradle.properties
-gradle-wrapper.properties
