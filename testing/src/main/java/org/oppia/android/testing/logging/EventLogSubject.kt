@@ -52,6 +52,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_A
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -1046,6 +1047,18 @@ class EventLogSubject private constructor(
     hasBeginSurveyContextThat().block()
   }
 
+  fun hasFeatureFlagContextThat(): FeatureFlagContextSubject {
+    return FeatureFlagContextSubject.assertThat(
+      actual.context.featureFlagContext
+    )
+  }
+
+  fun hasFeatureFlagContextThat(
+    block: FeatureFlagContextSubject.() -> Unit
+  ) {
+    hasFeatureFlagContextThat().block()
+  }
+
   /**
    * Truth subject for verifying properties of [AppLanguageSelection]s.
    *
@@ -1941,6 +1954,42 @@ class EventLogSubject private constructor(
        */
       fun assertThat(actual: EventLog.SurveyContext): SurveyContextSubject =
         assertAbout(::SurveyContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.SurveyContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.SurveyContext] proto can be verified through inherited methods.
+   *
+   * Call [SurveyContextSubject.assertThat] to create the subject.
+   */
+  class FeatureFlagContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.FeatureFlagContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [StringSubject] to test [EventLog.SurveyContext.getExplorationId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSessionIdThat(): StringSubject = assertThat(actual.sessionId)
+
+    fun hasFeatureEnabledStateThat(): BooleanSubject =
+      assertThat(actual.getFeatureFlag(0).flagEnabledState)
+
+    fun hasSyncStatusThat(): ComparableSubject<PlatformParameter.SyncStatus> =
+      assertThat(actual.getFeatureFlag(0).flagSyncStatus)
+
+    companion object {
+      /**
+       * Returns a new [SurveyContextSubject] to verify aspects of the specified
+       * [EventLog.SurveyContext] value.
+       */
+      fun assertThat(actual: EventLog.FeatureFlagContext): FeatureFlagContextSubject =
+        assertAbout(::FeatureFlagContextSubject).that(actual)
     }
   }
 
