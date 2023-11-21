@@ -38,6 +38,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
+  private val featureFlagsLogger: FeatureFlagsLogger,
   private val performanceMetricsController: PerformanceMetricsController,
   private val cpuPerformanceSnapshotter: CpuPerformanceSnapshotter,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
@@ -83,6 +84,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     application.registerActivityLifecycleCallbacks(this)
     logApplicationStartupMetrics()
+    logCurrentFeatureFlags()
     cpuPerformanceSnapshotter.initialiseSnapshotter()
   }
 
@@ -159,6 +161,22 @@ class ApplicationLifecycleObserver @Inject constructor(
         oppiaLogger.e(
           "ActivityLifecycleObserver",
           "Encountered error while trying to log app's performance metrics.",
+          failure
+        )
+      }
+    }
+  }
+
+  private fun logCurrentFeatureFlags() {
+    CoroutineScope(backgroundDispatcher).launch {
+      val sessionId = loggingIdentifierController.getSessionIdFlow().value
+
+      featureFlagsLogger.logAllFeatureFlags(sessionId)
+    }.invokeOnCompletion { failure ->
+      if (failure != null) {
+        oppiaLogger.e(
+          "ActivityLifecycleObserver",
+          "Encountered error while trying to log app's feature flags.",
           failure
         )
       }

@@ -30,6 +30,7 @@ class ViewEventLogsViewModel @Inject constructor(
 
   private fun processEventLogsList(): List<EventLogItemViewModel> {
     return eventList.map {
+      println("Event Log Details: $it")
       EventLogItemViewModel(it, machineLocale, resourceHandler)
     }.reversed()
   }

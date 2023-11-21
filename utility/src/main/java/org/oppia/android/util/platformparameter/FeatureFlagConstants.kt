@@ -108,7 +108,7 @@ const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false
 annotation class EnablePerformanceMetricsCollection
 
 /** Name of the feature flag that controls whether to record performance metrics. */
-const val ENABLE_PERFORMANCE_METRICS_COLLECTION = "enable_performance_metrics_collection"
+const val PERFORMANCE_METRICS_COLLECTION = "performance_metrics_collection"
 
 /** Default value for whether to record performance metrics. */
 const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false

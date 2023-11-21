@@ -16,7 +16,6 @@ import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
@@ -51,6 +50,7 @@ import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
 import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
@@ -167,7 +167,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(
-      ENABLE_PERFORMANCE_METRICS_COLLECTION
+      PERFORMANCE_METRICS_COLLECTION
     ) ?: PlatformParameterValue.createDefaultParameter(
       ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
     )

@@ -19,7 +19,7 @@ interface PlatformParameterValue<T> {
      */
     fun <T> createDefaultParameter(
       defaultValue: T,
-      defaultIsSynced: SyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+      defaultIsSynced: SyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
     ): PlatformParameterValue<T> {
       return object : PlatformParameterValue<T> {
         override val value = defaultValue

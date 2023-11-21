@@ -5,6 +5,7 @@ package model;
 import "languages.proto";
 import "profile.proto";
 import "survey.proto";
+import "platform_parameter.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -175,6 +176,9 @@ message EventLog {
 
       // The event being logged is related to the response to the optional survey question.
       OptionalSurveyResponseContext optional_response = 42;
+
+      // The event being logged contains the feature flags and their current enabled and sync state
+      FeatureFlagContext feature_flag_context = 43;
     }
   }
 
@@ -366,6 +370,30 @@ message EventLog {
 
     // The ID of the Oppia profile currently logged in, responding to the survey.
     string profile_id = 2;
+  }
+
+  // Structure of a feature flag context.
+  message FeatureFlagContext {
+    // The unique UUID of the user.
+    string uuid = 1;
+
+    // The session id for the current session.
+    string session_id = 2;
+
+    // List of Feature Flag items
+    repeated FeatureFlagItem feature_flag = 3;
+
+    // Structure for the feature flag log item
+    message FeatureFlagItem {
+      // The name of the feature flag or sync status flag
+      string flag_name = 1;
+
+      // The enabled state of the feature flag
+      bool flag_enabled_state = 2;
+
+      // The status of the feature flag or sync status flag
+      PlatformParameter.SyncStatus flag_sync_status = 3;
+    }
   }
 
   // Supported priority of events for event logging

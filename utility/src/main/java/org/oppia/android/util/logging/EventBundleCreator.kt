@@ -17,6 +17,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_RE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
@@ -91,6 +92,7 @@ import org.oppia.android.app.model.EventLog.AbandonSurveyContext as AbandonSurve
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
+import org.oppia.android.app.model.EventLog.FeatureFlagContext as FeatureFlagEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
@@ -223,6 +225,8 @@ class EventBundleCreator @Inject constructor(
       ABANDON_SURVEY -> AbandonSurveyContext(activityName, abandonSurvey)
       MANDATORY_RESPONSE -> MandatorySurveyResponseContext(activityName, mandatoryResponse)
       OPTIONAL_RESPONSE -> OptionalSurveyResponseContext(activityName, optionalResponse)
+      FEATURE_FLAG_CONTEXT ->
+        EventActivityContext.FeatureFlagContext(activityName, featureFlagContext)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
@@ -555,6 +559,18 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
         store.putSensitiveValue("profile_id", surveyDetails.profileId)
         store.putNonSensitiveValue("question_name", questionName)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [FeatureFlagEventContext]s.  */
+    class FeatureFlagContext(
+      activityName: String,
+      value: FeatureFlagEventContext
+    ) : EventActivityContext<FeatureFlagEventContext>(activityName, value) {
+      override fun EventLog.FeatureFlagContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("uuid", uuid)
+        store.putNonSensitiveValue("session_id", sessionId)
+        store.putNonSensitiveValue("feature_flags", featureFlagList)
       }
     }
   }
