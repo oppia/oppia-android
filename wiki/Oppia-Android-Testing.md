@@ -112,17 +112,22 @@ public class MyActivityTest {
 ```
 
 ### Running Robolectric tests
-1. Go to **Edit Configuration** in Android Studio
-<img width="425" alt="Screenshot 2020-04-13 at 2 51 02 PM" src="https://user-images.githubusercontent.com/9396084/79109714-83525980-7d96-11ea-99d7-f83ea81a8a50.png">
+1. Go to **Edit Configuration** in Android Studio (Bumblebee | 2021.1.1 Patch 3)
+   ![](https://user-images.githubusercontent.com/9396084/79109714-83525980-7d96-11ea-99d7-f83ea81a8a50.png)
 
-2. Add **Android JUnit** 
-<img width="1070" alt="Screenshot 2020-04-13 at 2 51 31 PM" src="https://user-images.githubusercontent.com/9396084/79109717-851c1d00-7d96-11ea-92c1-2e8a9c6ef88f.png">
+2. Click on Add(+) -> **JUnit**
+   ![](https://github.com/oppia/oppia-android/assets/76530270/87caf3fc-37d9-472d-92fd-b8ec49fb6b49)
 
-3. Enter following information - (a.) **Name** (Normally class name) (b.)**Use classpath of module** (c.) **Class**
-<img width="1074" alt="Screenshot 2020-04-13 at 3 18 39 PM" src="https://user-images.githubusercontent.com/9396084/79111450-307aa100-7d9a-11ea-8b9d-81aac26e104d.png">
+3. Enter following information:
+   - a) Name of test. Example: In my case "SplashActivityTest"
+   - b) Make sure select "java 11" and oppia-android.app [**Note:** For "app module test" select `oppia-android.app` similarly for "utility tests" select `oppia-android.utility`, for "domain test" select `oppia-android.domain`, for "model test" select `oppia-android.model`, for "testing" select `oppia-android.testing`]
+   - c) Class path of Test class. Example: In my case "org.oppia.android.app.splash.
+   SplashActivityTest"
+   - d) Press `OK` to select the test.
+   ![](https://github.com/oppia/oppia-android/assets/76530270/5901624a-df76-4b27-8f31-6077a68fcb89)
 
-
-4. Press `OK` to run the test cases in robolectric.
+4. Click on "Run" button to run robolectric test. (In my case "SplashActivityTest")
+   ![](https://github.com/oppia/oppia-android/assets/76530270/75a6b998-90c5-4f0a-8886-78f96970be90)
 
 ## Espresso
 

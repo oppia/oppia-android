@@ -1,21 +1,29 @@
-package org.oppia.android.app.databinding
+package org.oppia.android.app.notice
 
 import android.app.Application
-import android.content.Intent
-import android.graphics.Color
+import android.content.Context
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
+import dagger.BindsInstance
 import dagger.Component
-import org.junit.After
+import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -26,12 +34,12 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
-import org.oppia.android.app.databinding.AppCompatCheckBoxBindingAdapters.setButtonTint
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.notice.testing.OsDeprecationNoticeDialogFragmentTestActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.AppCompatCheckBoxBindingAdaptersTestActivity
+import org.oppia.android.app.splash.DeprecationNoticeActionType
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -51,7 +59,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -65,10 +73,12 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -86,111 +96,158 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Test for [AppCompatCheckBox] binding adapters. */
+/** Tests for [ForcedAppDeprecationNoticeDialogFragment]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
-@LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = AppCompatCheckBoxBindingAdaptersTest.TestApplication::class,
+  application = OsDeprecationNoticeDialogFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class AppCompatCheckBoxBindingAdaptersTest {
-
+@LooperMode(LooperMode.Mode.PAUSED)
+class OsDeprecationNoticeDialogFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
-  var activityRule: ActivityScenarioRule<AppCompatCheckBoxBindingAdaptersTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        ApplicationProvider.getApplicationContext(),
-        AppCompatCheckBoxBindingAdaptersTestActivity::class.java
-      )
-    )
+  val oppiaTestRule = OppiaTestRule()
 
-  private var colorRgb: Int = Color.valueOf(0x10000).toArgb()
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Mock
+  lateinit var mockDeprecationNoticeActionListener: DeprecationNoticeActionListener
+
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    Intents.init()
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   @Test
-  fun testSetButtonTint_hasCorrectButtonColor() {
-    activityRule.scenario.onActivity {
-      val appCompatCheckBox: AppCompatCheckBox = getAppCompatCheckBox(it)
-      setButtonTint(appCompatCheckBox, colorRgb)
-      assertThat(appCompatCheckBox.buttonTintList?.defaultColor).isEqualTo(colorRgb)
+  fun testFragment_hasExpectedTitle() {
+    launchOsDeprecationNoticeDialogFragmentTestActivity {
+      onDialogView(withText(R.string.os_deprecation_dialog_title))
+        .check(matches(isDisplayed()))
     }
   }
 
-  private fun getAppCompatCheckBox(
-    it: AppCompatCheckBoxBindingAdaptersTestActivity
-  ): AppCompatCheckBox {
-    return it.findViewById(R.id.test_check_box)
+  @Test
+  fun testFragment_hasExpectedContentMessageTextUnderTitle() {
+    launchOsDeprecationNoticeDialogFragmentTestActivity {
+      val appName = context.resources.getString(R.string.app_name)
+      val expectedString = context.resources.getString(
+        R.string.os_deprecation_dialog_message,
+        appName
+      )
+      onDialogView(withText(expectedString)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_hasDismissButton() {
+    launchOsDeprecationNoticeDialogFragmentTestActivity {
+      onDialogView(withText(R.string.os_deprecation_dialog_dismiss_button_text))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_clickOnDismissButton_callsCallbackListener_withDismissDeprecationActionType() {
+    launchOsDeprecationNoticeDialogFragmentTestActivity {
+      clickOnDialogView(withText(R.string.os_deprecation_dialog_dismiss_button_text))
+
+      verify(mockDeprecationNoticeActionListener)
+        .onActionButtonClicked(DeprecationNoticeActionType.DISMISS)
+    }
+  }
+
+  private fun launchOsDeprecationNoticeDialogFragmentTestActivity(
+    testBlock: () -> Unit
+  ) {
+    // Launch the test activity, but make sure that it's properly set up & time is given for it to
+    // initialize.
+    ActivityScenario.launch(
+      OsDeprecationNoticeDialogFragmentTestActivity::class.java
+    ).use { scenario ->
+      scenario.onActivity { it.mockCallbackListener = mockDeprecationNoticeActionListener }
+      testCoroutineDispatchers.runCurrent()
+      testBlock()
+    }
+  }
+
+  private fun clickOnDialogView(matcher: Matcher<View>) {
+    onDialogView(matcher).perform(ViewActions.click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  private companion object {
+    private fun onDialogView(matcher: Matcher<View>) = Espresso.onView(matcher)
+      .inRoot(isDialog())
+  }
+
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      RobolectricModule::class, PlatformParameterModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
+      ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
+      NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
+      ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
+      TestImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
+      LogStorageModule::class, PrimeTopicAssetsControllerModule::class,
+      ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
+      RatioInputModule::class, ApplicationStartupListenerModule::class,
+      HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
+      WorkManagerConfigurationModule::class, LogReportWorkerModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
+      NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      PlatformParameterSingletonModule::class, NumericExpressionInputModule::class,
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
+      SplitScreenInteractionModule::class, LoggingIdentifierModule::class,
+      ApplicationLifecycleModule::class, SyncStatusModule::class, TestingBuildFlavorModule::class,
+      CachingTestModule::class, MetricLogSchedulerModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
 
   interface TestApplicationComponent : ApplicationComponent {
-
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
 
-    fun inject(appCompatCheckBoxBindingAdaptersTest: AppCompatCheckBoxBindingAdaptersTest)
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(test: OsDeprecationNoticeDialogFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAppCompatCheckBoxBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerOsDeprecationNoticeDialogFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
-        .build() as TestApplicationComponent
+        .build()
     }
 
-    fun inject(appCompatCheckBoxBindingAdaptersTest: AppCompatCheckBoxBindingAdaptersTest) {
-      component.inject(appCompatCheckBoxBindingAdaptersTest)
-    }
+    fun inject(test: OsDeprecationNoticeDialogFragmentTest) = component.inject(test)
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
