@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.customview.interaction.FractionInputInteractionView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
@@ -23,6 +24,7 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
@@ -35,51 +37,32 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl as MathExpViewModelFactoryFactoryImpl
+import org.oppia.android.databinding.ActivityFractionInputInteractionViewTestBinding
 
 /**
- * This is a dummy activity to test input interaction views.
- * It contains [NumericInputInteractionView],and [TextInputInteractionView].
+ * This is a dummy activity to test [FractionInputInteractionView].
  */
-class InputInteractionViewTestActivity :
+class FractionInputInteractionViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   StateKeyboardButtonListener,
   InteractionAnswerErrorOrAvailabilityCheckReceiver,
   InteractionAnswerReceiver {
-  private lateinit var binding: ActivityInputInteractionViewTestBinding
+  private lateinit var binding: ActivityFractionInputInteractionViewTestBinding
 
   @Inject
-  lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
+  lateinit var fractionInteractionViewModelFactory: FractionInteractionViewModel.FactoryImpl
 
-  @Inject
-  lateinit var textInputViewModelFactory: TextInputViewModel.FactoryImpl
-
-  @Inject
-  lateinit var ratioViewModelFactory: RatioExpressionInputInteractionViewModel.FactoryImpl
-
-  @Inject
-  lateinit var mathExpViewModelFactoryFactory: MathExpViewModelFactoryFactoryImpl
-
-  val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
-
-  val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
-
-  val ratioExpressionInputInteractionViewModel by lazy {
-    ratioViewModelFactory.create<RatioExpressionInputInteractionViewModel>(
-      interaction = Interaction.newBuilder().putCustomizationArgs(
-        "numberOfTerms",
-        SchemaObject.newBuilder().setSignedInt(3).build()
-      ).build()
-    )
+  val fractionInteractionViewModel by lazy {
+    fractionInteractionViewModelFactory.create<FractionInteractionViewModel>()
   }
 
-  lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
   lateinit var writtenTranslationContext: WrittenTranslationContext
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
-      this, R.layout.activity_input_interaction_view_test
+    binding = DataBindingUtil.setContentView<ActivityFractionInputInteractionViewTestBinding>(
+      this, R.layout.activity_fraction_input_interaction_view_test
     )
 
     val params =
@@ -88,51 +71,17 @@ class InputInteractionViewTestActivity :
         InputInteractionViewTestActivityParams.getDefaultInstance()
       )
     writtenTranslationContext = params.writtenTranslationContext
-    when (params.mathInteractionType) {
-      NUMERIC_EXPRESSION -> {
-        mathExpressionViewModel =
-          mathExpViewModelFactoryFactory
-            .createFactoryForNumericExpression()
-            .create(interaction = params.interaction)
-      }
-      ALGEBRAIC_EXPRESSION -> {
-        mathExpressionViewModel =
-          mathExpViewModelFactoryFactory
-            .createFactoryForAlgebraicExpression()
-            .create(interaction = params.interaction)
-      }
-      MATH_EQUATION -> {
-        mathExpressionViewModel =
-          mathExpViewModelFactoryFactory
-            .createFactoryForMathEquation()
-            .create(interaction = params.interaction)
-      }
-      MATH_INTERACTION_TYPE_UNSPECIFIED, UNRECOGNIZED, null -> {
-        // Default to numeric expression arbitrarily (since something needs to be defined).
-        mathExpressionViewModel =
-          mathExpViewModelFactoryFactory
-            .createFactoryForNumericExpression()
-            .create(interaction = params.interaction)
-      }
-    }
-
-    binding.numericInputViewModel = numericInputViewModel
-    binding.textInputViewModel = textInputViewModel
-    binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
-    binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
+    binding.fractionInteractionViewModel = fractionInteractionViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-    ratioExpressionInputInteractionViewModel
-      .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(
     pendingAnswerError: String?,
     inputAnswerAvailable: Boolean
   ) {
-    binding.submitButton.isEnabled = pendingAnswerError == null
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
@@ -148,8 +97,8 @@ class InputInteractionViewTestActivity :
       entityId = "fake_entity_id",
       hasConversationView = false,
       interaction = interaction,
-      interactionAnswerReceiver = this@InputInteractionViewTestActivity,
-      answerErrorReceiver = this@InputInteractionViewTestActivity,
+      interactionAnswerReceiver = this@FractionInputInteractionViewTestActivity,
+      answerErrorReceiver = this@FractionInputInteractionViewTestActivity,
       hasPreviousButton = false,
       isSplitView = false,
       writtenTranslationContext,
@@ -158,13 +107,14 @@ class InputInteractionViewTestActivity :
   }
 
   companion object {
-    private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY = "InputInteractionViewTestActivity.params"
+    private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
+      "FractionInputInteractionViewTestActivity.params"
 
     fun createIntent(
       context: Context,
       extras: InputInteractionViewTestActivityParams
     ): Intent {
-      return Intent(context, InputInteractionViewTestActivity::class.java).also {
+      return Intent(context, FractionInputInteractionViewTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)
       }
     }
