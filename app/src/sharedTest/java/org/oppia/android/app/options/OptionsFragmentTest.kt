@@ -146,7 +146,6 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -370,7 +369,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
 
     launch<OptionsActivity>(
       createOptionActivityIntent(

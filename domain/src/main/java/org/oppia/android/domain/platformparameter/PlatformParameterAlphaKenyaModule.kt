@@ -22,7 +22,6 @@ import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
@@ -91,14 +90,6 @@ class PlatformParameterAlphaKenyaModule {
       SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
     ) ?: PlatformParameterValue.createDefaultParameter(
       SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
-  @EnableLanguageSelectionUi
-  fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
-      ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     )
   }
 

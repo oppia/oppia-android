@@ -113,7 +113,6 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(
       ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     )
@@ -171,7 +170,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageItemIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
 

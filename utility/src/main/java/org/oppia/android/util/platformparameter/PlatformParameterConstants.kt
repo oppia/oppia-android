@@ -75,13 +75,6 @@ const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
  */
 const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12
 
-/** Qualifier for the feature flag corresponding to enabling the language selection UI. */
-@Qualifier
-annotation class EnableLanguageSelectionUi
-
-/** Default value for the feature flag corresponding to [EnableLanguageSelectionUi]. */
-const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = true
-
 /**
  * Qualifier for the feature flag corresponding to enabling the extra topic tabs: practice and info.
  */
