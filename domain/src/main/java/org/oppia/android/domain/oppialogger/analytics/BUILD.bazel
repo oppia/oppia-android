@@ -125,11 +125,11 @@ kt_android_library(
         ":application_lifecycle_listener",
         ":cpu_performance_snapshotter",
         ":dagger",
+        ":feature_flags_logger",
         ":learner_analytics_inactivity_limit_millis",
         ":performance_metrics_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:feature_flags_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_logger",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//model/src/main/proto:screens_java_proto_lite",
@@ -203,6 +203,13 @@ kt_android_library(
         "FeatureFlagsLogger.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
+        "//model/src/main/proto:survey_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
 )
 
 dagger_rules()

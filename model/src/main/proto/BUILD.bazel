@@ -49,6 +49,7 @@ oppia_proto_library(
         ":languages_proto",
         ":profile_proto",
         ":survey_proto",
+        ":platform_parameter_proto",
     ],
 )
 
