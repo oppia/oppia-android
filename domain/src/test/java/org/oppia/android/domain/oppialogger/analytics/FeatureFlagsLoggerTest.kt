@@ -129,9 +129,8 @@ class FeatureFlagsLoggerTest {
   @Singleton
   @Component(
     modules = [
-      PerformanceMetricsLoggerTest.TestModule::class, TestLogReportingModule::class,
-      RobolectricModule::class, TestDispatcherModule::class,
-      PerformanceMetricsLoggerTest.TestLogStorageModule::class,
+      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
+      TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class,

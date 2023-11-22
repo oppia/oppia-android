@@ -27,6 +27,12 @@ import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Convenience logger for feature flags.
+ *
+ * This logger is meant to be used to log the current status of all feature flags once after the app
+ * has been launched.
+ */
 @Singleton
 class FeatureFlagsLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
@@ -53,6 +59,8 @@ class FeatureFlagsLogger @Inject constructor(
 ) {
   /**
    * This method logs all the configured feature flags to firebase.
+   *
+   * @param sessionId denotes the id of the current appInForeground session
    */
   fun logAllFeatureFlags(sessionId: String) {
     analyticsController.logImportantEvent(
@@ -61,6 +69,12 @@ class FeatureFlagsLogger @Inject constructor(
     )
   }
 
+  /**
+   * Collects all the feature flags in the app, creates a FeatureFlagItem for them and adds them to
+   * a list that is returned to the calling object.
+   *
+   * @return a list of [FeatureFlagItem]s
+   */
   private fun compileFeatureFlagsForLogging(): List<FeatureFlagItem> {
     val listOfFlags = arrayListOf<FeatureFlagItem>()
 
@@ -137,12 +151,17 @@ class FeatureFlagsLogger @Inject constructor(
     return listOfFlags
   }
 
+  /**
+   * Creates an [EventLog] context for the feature flags to be logged.
+   *
+   * @param sessionId denotes the session id of the current appInForeground session
+   * @return an [EventLog.Context] for the feature flags to be logged
+   */
   private fun createFeatureFlagContext(sessionId: String): EventLog.Context {
     return EventLog.Context.newBuilder()
       .setFeatureFlagContext(
         FeatureFlagContext.newBuilder()
-          // TODO: Add uuid
-          .setUuid("My UUID")
+          .setUuid("")
           .setSessionId(sessionId)
           .addAllFeatureFlag(
             compileFeatureFlagsForLogging()

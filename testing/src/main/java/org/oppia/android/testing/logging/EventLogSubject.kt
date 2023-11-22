@@ -1047,12 +1047,19 @@ class EventLogSubject private constructor(
     hasBeginSurveyContextThat().block()
   }
 
+  /**
+   * Verifies the [EventLog]'s context and returns a [FeatureFlagContextSubject] to test the
+   * corresponding context.
+   */
   fun hasFeatureFlagContextThat(): FeatureFlagContextSubject {
     return FeatureFlagContextSubject.assertThat(
       actual.context.featureFlagContext
     )
   }
 
+  /**
+   * Verifies the [EventLog]'s context and executes [block].
+   */
   fun hasFeatureFlagContextThat(
     block: FeatureFlagContextSubject.() -> Unit
   ) {
@@ -1958,28 +1965,41 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Truth subject for verifying properties of [EventLog.SurveyContext]s.
+   * Truth subject for verifying properties of [EventLog.FeatureFlagContext]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
-   * [EventLog.SurveyContext] proto can be verified through inherited methods.
+   * [EventLog.FeatureFlagContext] proto can be verified through inherited methods.
    *
-   * Call [SurveyContextSubject.assertThat] to create the subject.
+   * Call [FeatureFlagContextSubject.assertThat] to create the subject.
    */
   class FeatureFlagContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.FeatureFlagContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
-     * Returns a [StringSubject] to test [EventLog.SurveyContext.getExplorationId].
+     * Returns a [StringSubject] to test [EventLog.FeatureFlagContext.getSessionId].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
     fun hasSessionIdThat(): StringSubject = assertThat(actual.sessionId)
 
+    /**
+     * Returns a [BooleanSubject] to test the flagEnabledState of the [EventLog.FeatureFlagContext].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
     fun hasFeatureEnabledStateThat(): BooleanSubject =
       assertThat(actual.getFeatureFlag(0).flagEnabledState)
 
+    /**
+     * Returns a [ComparableSubject] to test the flagSyncStatus of the
+     * [EventLog.FeatureFlagContext].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
     fun hasSyncStatusThat(): ComparableSubject<PlatformParameter.SyncStatus> =
       assertThat(actual.getFeatureFlag(0).flagSyncStatus)
 
