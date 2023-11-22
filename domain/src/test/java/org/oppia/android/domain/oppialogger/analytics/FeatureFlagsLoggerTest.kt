@@ -8,8 +8,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,6 +36,8 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [FeatureFlagsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -129,8 +129,9 @@ class FeatureFlagsLoggerTest {
   @Singleton
   @Component(
     modules = [
-      PerformanceMetricsLoggerTest.TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, PerformanceMetricsLoggerTest.TestLogStorageModule::class,
+      PerformanceMetricsLoggerTest.TestModule::class, TestLogReportingModule::class,
+      RobolectricModule::class, TestDispatcherModule::class,
+      PerformanceMetricsLoggerTest.TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class,
