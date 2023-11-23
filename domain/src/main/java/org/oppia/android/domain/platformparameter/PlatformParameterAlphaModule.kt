@@ -8,7 +8,6 @@ import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
 import org.oppia.android.util.platformparameter.ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
@@ -17,7 +16,6 @@ import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEF
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
-import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
@@ -213,14 +211,6 @@ class PlatformParameterAlphaModule {
   fun provideEnableInteractionConfigChangeStateRetention(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
       ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
-    )
-  }
-
-  @Provides
-  @EnableContinueButtonAnimation
-  fun provideEnableContinueButtonAnimation(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
-      ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
     )
   }
 
