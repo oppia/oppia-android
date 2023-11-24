@@ -38,7 +38,7 @@ const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = true
 annotation class EnableExtraTopicTabsUi
 
 /** Name of the feature flag that controls whether to enable the extra topics tab UI. */
-const val EXTRA_TOPIC_TABS_UI = "extra_topics_tab_ui"
+const val EXTRA_TOPIC_TABS_UI = "extra_topic_tabs_ui"
 
 /** Default value for the feature flag corresponding to [EnableExtraTopicTabsUi]. */
 const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
