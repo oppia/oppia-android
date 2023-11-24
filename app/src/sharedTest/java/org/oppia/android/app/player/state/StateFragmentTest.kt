@@ -4749,7 +4749,6 @@ class StateFragmentTest {
   }
 
   private fun setUpTest() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
