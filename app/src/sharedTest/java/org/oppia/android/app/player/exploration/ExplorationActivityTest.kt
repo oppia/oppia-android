@@ -1099,7 +1099,11 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0
       )
       // waitForTheView(withText("What is a Ratio?"))
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_bar_container)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.play_pause_audio_icon),
