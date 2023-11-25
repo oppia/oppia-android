@@ -1099,7 +1099,7 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0
       )
       // waitForTheView(withText("What is a Ratio?"))
-      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.audio_bar_container)).perform(click())
       onView(
         allOf(
           withId(R.id.play_pause_audio_icon),
