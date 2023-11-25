@@ -1081,13 +1081,8 @@ class ExplorationActivityTest {
   @Test
   // @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
-    getApplicationDependencies(
-      internalProfileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0
-    )
-    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    markAllSpotlightsSeen()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1097,6 +1092,12 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0
+      )
       // waitForTheView(withText("What is a Ratio?"))
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
