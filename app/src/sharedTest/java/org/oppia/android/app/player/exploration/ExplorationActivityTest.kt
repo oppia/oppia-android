@@ -1079,7 +1079,7 @@ class ExplorationActivityTest {
 
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
-  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  // @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
     getApplicationDependencies(
       internalProfileId,
@@ -1097,7 +1097,7 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
-      waitForTheView(withText("What is a Ratio?"))
+      // waitForTheView(withText("What is a Ratio?"))
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
