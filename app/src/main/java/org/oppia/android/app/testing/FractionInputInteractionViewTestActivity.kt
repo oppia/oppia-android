@@ -38,10 +38,12 @@ class FractionInputInteractionViewTestActivity :
   @Inject
   lateinit var fractionInteractionViewModelFactory: FractionInteractionViewModel.FactoryImpl
 
+  /** Gives access to the [FractionInteractionViewModel]. */
   val fractionInteractionViewModel by lazy {
     fractionInteractionViewModelFactory.create<FractionInteractionViewModel>()
   }
 
+  /** Gives access to the translation context. */
   lateinit var writtenTranslationContext: WrittenTranslationContext
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +62,7 @@ class FractionInputInteractionViewTestActivity :
     binding.fractionInteractionViewModel = fractionInteractionViewModel
   }
 
+  /** Checks submit-time errors. */
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
@@ -96,6 +99,7 @@ class FractionInputInteractionViewTestActivity :
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
       "FractionInputInteractionViewTestActivity.params"
 
+    /** Creates an intent to open this activity. */
     fun createIntent(
       context: Context,
       extras: InputInteractionViewTestActivityParams
