@@ -42,6 +42,6 @@ class FAQListViewModel @Inject constructor(
     retrieveQuestionsOrAnswers(resourceHandler.getStringArrayInLocale(R.array.faq_answers))
 
   private companion object {
-    private const val QUESTION_INDEX_WITH_OPPIA_REFERENCE = 3
+    private const val QUESTION_INDEX_WITH_OPPIA_REFERENCE = 1
   }
 }
