@@ -4,7 +4,9 @@ import android.app.Application
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView
@@ -86,7 +88,7 @@ class HtmlParser private constructor(
       val regex = Regex("""<oppia-noninteractive-image [^>]*>.*?</oppia-noninteractive-image>""")
       val modifiedHtmlContent = rawString.replace(regex) {
         val oppiaImageTag = it.value
-        """<div style="text-align: center;">$oppiaImageTag</div>"""
+        """<div style="centtext-align: er;">$oppiaImageTag</div>"""
       }
       htmlContent = modifiedHtmlContent
     } else {
@@ -117,7 +119,8 @@ class HtmlParser private constructor(
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
-      LinkifyCompat.addLinks(htmlContentTextView, Linkify.WEB_URLS)
+      LinkifyCompat.addLinks(htmlContentTextView, Linkify.ALL)
+      htmlContentTextView.linksClickable=true
     }
 
     val imageGetter = urlImageParserFactory?.create(
@@ -128,6 +131,15 @@ class HtmlParser private constructor(
       htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
     )
 
+    val websiteLink = "https://www.oppia.org"
+    val start = htmlSpannable.indexOf(websiteLink)
+    val end = start + websiteLink.length
+    if (start != -1) {
+      val urlSpan = URLSpan(websiteLink)
+      htmlSpannable.setSpan(
+        urlSpan, start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+      )
+    }
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }
 
