@@ -545,20 +545,22 @@
   <string name="agree_to_terms"><![CDATA[By using %s, you agree to our <br> <oppia-noninteractive-policy link="tos">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link="privacy">Privacy Policy</oppia-noninteractive-policy>.]]></string>
   <string name="terms_of_service_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/terms">this page</a> for the latest version of these terms.]]></string>
   <!-- Frequently asked questions & generic app help. -->
-  <string name="faq_question_1">How can I create a new profile?</string>
-  <string name="faq_question_2">How can I delete a profile?</string>
-  <string name="faq_question_3">How can I change my email/phone number?</string>
-  <string name="faq_question_4">What is %s?</string>
-  <string name="faq_question_5">Who is an Administrator?</string>
-  <string name="faq_question_6">Why is the Exploration player not loading?</string>
-  <string name="faq_question_7">Why is my audio not playing?</string>
-  <string name="faq_question_9">I can\'t find my question here. What now?</string>
-  <string name="faq_question_10">Why are there only math lessons?</string>
-  <string name="faq_question_11">Will you be making more lessons?</string>
-  <string name="faq_question_12">I found a bug. How can I report it?</string>
-  <string name="faq_question_13">How do I get the app in my language?</string>
-  <string name="faq_question_14">How do I update the app?</string>
-  <string name="faq_question_15">How do I update my Android OS?</string>
+
+  <string name="faq_question_3">How can I create a new profile?</string>
+  <string name="faq_question_10">How can I delete a profile?</string>
+  <string name="faq_question_11">How can I change my email/phone number?</string>
+  <string name="faq_question_1">What is %s?</string>
+  <string name="faq_question_2">Who is an Administrator?</string>
+  <string name="faq_question_8">Why is the Exploration player not loading?</string>
+  <string name="faq_question_9">Why is my audio not playing?</string>
+  <string name="faq_question_14">I can\'t find my question here. What now?</string>
+
+  <string name="faq_question_6">Why are there only math lessons?</string>
+  <string name="faq_question_7">Will you be making more lessons?</string>
+  <string name="faq_question_5">I found a bug. How can I report it?</string>
+  <string name="faq_question_4">How do I get the app in my language?</string>
+  <string name="faq_question_12">How do I update the app?</string>
+  <string name="faq_question_13">How do I update my Android OS?</string>
 
 
   <string name="faq_answer_1"><![CDATA[<p>If it is your first time creating a profile and you do not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
