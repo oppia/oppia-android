@@ -1,7 +1,6 @@
 package org.oppia.android.app.topic
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
@@ -36,7 +35,6 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
 //      }
 //      topicFragment.arguments = args
 
-
       val topicFragment = TopicFragment()
       val argsBuilder = TopicFragmentArgsOuterClass.TopicFragmentArgs.newBuilder()
         .setProfileId(internalProfileId)
@@ -53,7 +51,6 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
       }
 
       topicFragment.arguments = bundle
-
 
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
