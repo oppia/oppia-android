@@ -204,11 +204,11 @@ class FAQListFragmentTest {
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_4, getAppName())
+            getResources().getString(R.string.faq_question_1, getAppName())
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_4, getAppName())
+            getResources().getString(R.string.faq_answer_1, getAppName())
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
