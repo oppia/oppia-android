@@ -33,8 +33,8 @@
   <string name="cellular_audio_dialog_description">Playing di audio go use plenti mobile data.</string>
   <string name="cellular_audio_dialog_checkboxes_text">No show this message again</string>
   <string name="concept_card_fragment_title">Concept Card</string>
-  <string name="concept_card_test_activity_one_button_text">Concept Card 1</string>
-  <string name="concept_card_test_activity_two_button_text">Concept Card 2</string>
+  <string name="concept_card_test_activity_button_one_text">Concept Card 1</string>
+  <string name="concept_card_test_activity_button_two_text">Concept Card 2</string>
   <string name="unsaved_exploration_dialog_title">Comot go the topic page?</string>
   <string name="unsaved_exploration_dialog_description">Wetin you don do before no go save</string>
   <string name="unsaved_exploration_dialog_leave_button_text">Comot</string>
@@ -206,8 +206,8 @@
   <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
   <string name="admin_auth_activity_access_controls_title">Authorise to access Administrator Controls</string>
   <string name="admin_auth_activity_heading_text">Administrator Authorization Required</string>
-  <string name="admin_auth_activity_subject_text">Enter di Administrator PIN in order to create a new account.</string>
-  <string name="admin_auth_activity_controls_subject_text">Enter di Administrator PIN in order to access Administrator Controls.</string>
+  <string name="admin_auth_activity_subheading_text">Enter di Administrator PIN in order to create a new account.</string>
+  <string name="admin_auth_activity_controls_subheading_text">Enter di Administrator PIN in order to access Administrator Controls.</string>
   <string name="admin_auth_activity_input_pin_hint_text">Administrator\'s PIN</string>
   <string name="admin_auth_activity_incorrect_pin_label">Administrator PIN no correct. Abeg try again.</string>
   <string name="admin_auth_activity_null_pin_input_label">Abeg enter Administrator PIN.</string>
@@ -221,7 +221,7 @@
   <string name="admin_pin_activity_wrong_pin_text">Abeg make sure sey di two PINs match.</string>
   <string name="admin_pin_activity_submit_button_text">Save</string>
   <string name="admin_pin_activity_title">Authorise to add profiles</string>
-  <string name="add_profile_activity_text">Add Profile</string>
+  <string name="add_profile_activity_title">Add Profile</string>
   <string name="add_profile_activity_input_name_hint">Name</string>
   <string name="add_profile_activity_input_pin_hint">3-Digit PIN</string>
   <string name="add_profile_activity_input_confirm_pin_hint">Confirm 3-Digit PIN</string>
@@ -273,7 +273,7 @@
   <string name="pin_password_activity_toolbar_title">Put PIN</string>
   <string name="admin_settings_dialog_input_pin_hint">Administrator\'s PIN</string>
   <string name="admin_settings_dialog_heading">Access to Administrator Settings</string>
-  <string name="admin_settings_dialog_subject_text">You need administrator\'s PIN to change user\'s PIN</string>
+  <string name="admin_settings_dialog_message_text">You need administrator\'s PIN to change user\'s PIN</string>
   <string name="admin_settings_dialog_cancel_button_text">Cancel</string>
   <string name="admin_settings_dialog_submit_button_text">Submit</string>
   <string name="admin_settings_dialog_incorrect_pin_error_text">Administrator PIN no correct. Abeg try again.</string>
@@ -328,9 +328,9 @@
   <string name="administrator_controls_activity_learner_analytics_text">Learner Study Analytics</string>
   <string name="administrator_controls_fragment_general_label">General</string>
   <string name="administrator_controls_fragment_edit_account_text">Edit account</string>
-  <string name="administrator_controls_fragment_profile_management_text">Profile Management</string>
+  <string name="administrator_controls_fragment_profile_management_label">Profile Management</string>
   <string name="administrator_controls_fragment_edit_profiles_text">Edit profiles</string>
-  <string name="administrator_controls_fragment_download_permissions_text">Download Permissions</string>
+  <string name="administrator_controls_fragment_download_permissions_label">Download Permissions</string>
   <string name="administrator_controls_fragment_topic_update_on_wifi_text">Download and update only on Wi-fi</string>
   <string name="administrator_controls_fragment_topic_update_on_wifi_description">Topics go dey downloaded and updated only on Wi-fi. Any downloads or updates of cellular data go dey queue.</string>
   <string name="administrator_controls_fragment_auto_update_topic_text">Automatically update topics</string>

@@ -225,8 +225,8 @@
   <string name="admin_auth_activity_add_profiles_title">أمّن الحساب لإضافة ملفات شخصية</string>
   <string name="admin_auth_activity_access_controls_title">أمّن الحساب للوصول إلى أدوات تحكم المشرف</string>
   <string name="admin_auth_activity_heading_text">إذن المشرف مطلوب</string>
-  <string name="admin_auth_activity_subject_text">أدخل رقم التعريف الشخصي الخاص بالمشرف لكي تُنشئ حسابًا جديدًا.</string>
-  <string name="admin_auth_activity_controls_subject_text">أدخل رقم التعريف الشخصي الخاص بالمشرف لكي تصل إلى أدوات تحكم المشرف.</string>
+  <string name="admin_auth_activity_subheading_text">أدخل رقم التعريف الشخصي الخاص بالمشرف لكي تُنشئ حسابًا جديدًا.</string>
+  <string name="admin_auth_activity_controls_subheading_text">أدخل رقم التعريف الشخصي الخاص بالمشرف لكي تصل إلى أدوات تحكم المشرف.</string>
   <string name="admin_auth_activity_input_pin_hint_text">رقم التعريف الشخصي الخاص بالمشرف</string>
   <string name="admin_auth_activity_incorrect_pin_label">رقم التعريف الشخصي الخاص بالمشرف غير صحيح. من فضلك حاول مجددًا.</string>
   <string name="admin_auth_activity_null_pin_input_label">من فضلك أدخل رقم التعريف الشخصي الخاص بالمشرف.</string>
@@ -240,7 +240,7 @@
   <string name="admin_pin_activity_wrong_pin_text">برجاء التأكد من تطابق رقمي التعريف الشخصي.</string>
   <string name="admin_pin_activity_submit_button_text">حفظ</string>
   <string name="admin_pin_activity_title">أمّن الحساب لإضافة ملفات شخصية</string>
-  <string name="add_profile_activity_text">إضافة ملف شخصي</string>
+  <string name="add_profile_activity_title">إضافة ملف شخصي</string>
   <string name="add_profile_activity_input_name_hint">الاسم</string>
   <string name="add_profile_activity_input_pin_hint">رقم تعريف شخصي مكون من 3 أرقام</string>
   <string name="add_profile_activity_input_confirm_pin_hint">تأكيد رقم التعريف الشخصي المكون من 3 أرقام</string>
@@ -292,7 +292,7 @@
   <string name="pin_password_activity_toolbar_title">أدخل رقم التعريف الشخصي</string>
   <string name="admin_settings_dialog_input_pin_hint">رقم التعريف الشخصي الخاص بالمشرف</string>
   <string name="admin_settings_dialog_heading">الوصول إلى إعدادات المشرف</string>
-  <string name="admin_settings_dialog_subject_text">رقم التعريف الشخصي الخاص بالمشرف مطلوب لتغيير رقم التعريف الشخصي الخاص بالمستخدم</string>
+  <string name="admin_settings_dialog_message_text">رقم التعريف الشخصي الخاص بالمشرف مطلوب لتغيير رقم التعريف الشخصي الخاص بالمستخدم</string>
   <string name="admin_settings_dialog_cancel_button_text">إلغاء</string>
   <string name="admin_settings_dialog_submit_button_text">تقديم</string>
   <string name="admin_settings_dialog_incorrect_pin_error_text">رقم التعريف الشخصي الخاص بالمشرف غير صحيح. من فضلك حاول مجددًا.</string>
@@ -346,9 +346,9 @@
   <string name="next_text">التالي</string>
   <string name="administrator_controls_fragment_general_label">عام</string>
   <string name="administrator_controls_fragment_edit_account_text">تعديل الحساب</string>
-  <string name="administrator_controls_fragment_profile_management_text">إدارة الملف الشخصي</string>
+  <string name="administrator_controls_fragment_profile_management_label">إدارة الملف الشخصي</string>
   <string name="administrator_controls_fragment_edit_profiles_text">تعديل الملفات الشخصية</string>
-  <string name="administrator_controls_fragment_download_permissions_text">أُذونات التنزيل</string>
+  <string name="administrator_controls_fragment_download_permissions_label">أُذونات التنزيل</string>
   <string name="administrator_controls_fragment_topic_update_on_wifi_text">تنزيل وتحديث عن طريق شبكة الوايفاي فقط</string>
   <string name="administrator_controls_fragment_topic_update_on_wifi_description">سيتم تحميل وتحديث المواضيع عن طريق شبكة الوايفاي فقط. أي تنزيلات أو تحديثات عن طريق بيانات الهاتف سيتم وضعها في قائمة الانتظار.</string>
   <string name="administrator_controls_fragment_auto_update_topic_text">تحديث المواضيع تلقائيًا</string>

@@ -438,7 +438,7 @@ class AdminAuthActivityTest {
           matches(
             withText(
               context.resources.getString(
-                R.string.admin_auth_activity_controls_subject_text
+                R.string.admin_auth_activity_controls_subheading_text
               )
             )
           )
@@ -448,7 +448,7 @@ class AdminAuthActivityTest {
         .check(
           matches(
             withText(
-              context.resources.getString(R.string.admin_auth_activity_controls_subject_text)
+              context.resources.getString(R.string.admin_auth_activity_controls_subheading_text)
             )
           )
         )
@@ -489,7 +489,7 @@ class AdminAuthActivityTest {
           matches(
             withText(
               context.resources.getString(
-                R.string.admin_auth_activity_subject_text
+                R.string.admin_auth_activity_subheading_text
               )
             )
           )
@@ -500,7 +500,7 @@ class AdminAuthActivityTest {
           matches(
             withText(
               context.resources.getString(
-                R.string.admin_auth_activity_subject_text
+                R.string.admin_auth_activity_subheading_text
               )
             )
           )

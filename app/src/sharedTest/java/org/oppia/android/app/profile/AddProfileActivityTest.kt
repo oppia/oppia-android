@@ -183,7 +183,7 @@ class AddProfileActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(label).isEqualTo(context.getString(R.string.add_profile_activity_text))
+    assertThat(label).isEqualTo(context.getString(R.string.add_profile_activity_title))
   }
 
   @Test

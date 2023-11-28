@@ -203,7 +203,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_fragment_download_permissions_text
+        stringIdToMatch = R.string.administrator_controls_fragment_download_permissions_label
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 2,

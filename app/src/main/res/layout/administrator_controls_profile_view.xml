@@ -22,7 +22,7 @@
       android:paddingTop="28dp"
       android:paddingEnd="@dimen/administrator_controls_profile_view_profile_management_text_view_padding_end"
       android:paddingBottom="20dp"
-      android:text="@string/administrator_controls_fragment_profile_management_text"
+      android:text="@string/administrator_controls_fragment_profile_management_label"
       android:textColor="@color/component_color_shared_active_text_color"
       app:layout_constraintBottom_toTopOf="@id/edit_profiles_text_view"
       app:layout_constraintEnd_toEndOf="parent"

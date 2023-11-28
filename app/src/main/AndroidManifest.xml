@@ -140,7 +140,7 @@
     <activity android:name=".app.player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".app.profile.AddProfileActivity"
-      android:label="@string/add_profile_activity_text"
+      android:label="@string/add_profile_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBarColorAccentColorPrimary" />
     <activity
       android:name=".app.profile.AdminAuthActivity"
