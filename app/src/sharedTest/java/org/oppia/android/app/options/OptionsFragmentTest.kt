@@ -368,20 +368,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-
-    launch<OptionsActivity>(
-      createOptionActivityIntent(
-        internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.app_language_text_view)).check(doesNotExist())
-    }
-  }
-
-  @Test
   fun testOptionsFragment_defaultAudioLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
