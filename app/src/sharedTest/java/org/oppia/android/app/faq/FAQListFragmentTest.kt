@@ -197,7 +197,7 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 4
+          position = 0
         )
       ).perform(click())
       intended(
