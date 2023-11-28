@@ -177,8 +177,8 @@
   <string name="admin_auth_activity_add_profiles_title">Idhinisha kuongeza wasifu</string>
   <string name="admin_auth_activity_access_controls_title">Idhinisha kufikia Vidhibiti vya Msimamizi</string>
   <string name="admin_auth_activity_heading_text">Idhini ya Msimamizi Inahitajika</string>
-  <string name="admin_auth_activity_subject_text">Weka Nambari ya Siri ya Msimamizi ili kuunda akaunti mpya.</string>
-  <string name="admin_auth_activity_controls_subject_text">Weka Nambari ya Siri ya Msimamizi ili kufikia Vidhibiti vya Msimamizi.</string>
+  <string name="admin_auth_activity_subheading_text">Weka Nambari ya Siri ya Msimamizi ili kuunda akaunti mpya.</string>
+  <string name="admin_auth_activity_controls_subheading_text">Weka Nambari ya Siri ya Msimamizi ili kufikia Vidhibiti vya Msimamizi.</string>
   <string name="admin_auth_activity_input_pin_hint_text">Nambari ya Siri ya Msimamizi</string>
   <string name="admin_auth_activity_incorrect_pin_label">Nambari ya Siri ya Msimamizi si Sahihi. Tafadhali jaribu tena.</string>
   <string name="admin_auth_activity_null_pin_input_label">Tafadhali weka Nambari ya Siri ya Msimamizi.</string>
@@ -192,7 +192,7 @@
   <string name="admin_pin_activity_wrong_pin_text">Tafadhali hakikisha kwamba Nambari za Siri zote mbili zinalingana.</string>
   <string name="admin_pin_activity_submit_button_text">Hifadhi</string>
   <string name="admin_pin_activity_title">Idhinisha kuongeza wasifu</string>
-  <string name="add_profile_activity_text">Ongeza Wasifu</string>
+  <string name="add_profile_activity_title">Ongeza Wasifu</string>
   <string name="add_profile_activity_input_name_hint" fuzzy="true">Jina</string>
   <string name="add_profile_activity_input_pin_hint" fuzzy="true">Nambari ya Siri ya tarakimu 3</string>
   <string name="add_profile_activity_input_confirm_pin_hint">Thibitisha Nambari ya Siri ya tarakimu 3</string>
@@ -239,7 +239,7 @@
   <string name="pin_password_activity_toolbar_title">Weka Nambari ya Siri</string>
   <string name="admin_settings_dialog_input_pin_hint">Nambari ya Siri ya Msimamizi</string>
   <string name="admin_settings_dialog_heading">Ufikiaji wa mipangilio ya msimamizi</string>
-  <string name="admin_settings_dialog_subject_text">Nambari ya Siri ya Msimamizi inahitajika ili kubadilisha Nambari ya Siri ya mtumiaji</string>
+  <string name="admin_settings_dialog_message_text">Nambari ya Siri ya Msimamizi inahitajika ili kubadilisha Nambari ya Siri ya mtumiaji</string>
   <string name="admin_settings_dialog_cancel_button_text">Ghairi</string>
   <string name="admin_settings_dialog_submit_button_text">Wasilisha</string>
   <string name="admin_settings_dialog_incorrect_pin_error_text">Nambari ya Siri ya msimamizi si Sahihi. Tafadhali jaribu tena.</string>
@@ -286,9 +286,9 @@
   <string name="next_text">Inayofuata</string>
   <string name="administrator_controls_fragment_general_label">Jumla</string>
   <string name="administrator_controls_fragment_edit_account_text">Hariri akaunti</string>
-  <string name="administrator_controls_fragment_profile_management_text">Usimamizi wa Wasifu</string>
+  <string name="administrator_controls_fragment_profile_management_label">Usimamizi wa Wasifu</string>
   <string name="administrator_controls_fragment_edit_profiles_text">Hariri wasifu</string>
-  <string name="administrator_controls_fragment_download_permissions_text">Ruhusa ya kupakua</string>
+  <string name="administrator_controls_fragment_download_permissions_label">Ruhusa ya kupakua</string>
   <string name="administrator_controls_fragment_topic_update_on_wifi_text">Pakua na usasishe kwenye Wi-fi pekee</string>
   <string name="administrator_controls_fragment_topic_update_on_wifi_description">Mada zitapakuliwa na kusasishwa kwenye Wi-fi pekee. Vipakuliwa au masasisho yoyote ya data ya mtandao wa simu yatawekwa kwenye foleni.</string>
   <string name="administrator_controls_fragment_auto_update_topic_text">Sasisha mada moja kwa moja</string>

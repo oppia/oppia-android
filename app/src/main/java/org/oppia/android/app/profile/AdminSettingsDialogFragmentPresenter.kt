@@ -60,7 +60,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.admin_settings_dialog_heading)
       .setView(binding.root)
-      .setMessage(R.string.admin_settings_dialog_subject_text)
+      .setMessage(R.string.admin_settings_dialog_message_text)
       .setPositiveButton(R.string.admin_settings_dialog_submit_button_text, null)
       .setNegativeButton(R.string.admin_settings_dialog_cancel_button_text) { dialog, _ ->
         dialog.dismiss()

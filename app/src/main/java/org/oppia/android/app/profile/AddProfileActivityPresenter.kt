@@ -80,7 +80,7 @@ class AddProfileActivityPresenter @Inject constructor(
     val toolbar = activity.findViewById<View>(R.id.add_profile_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar?.title = resourceHandler.getStringInLocale(
-      R.string.add_profile_activity_text
+      R.string.add_profile_activity_title
     )
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)

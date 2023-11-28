@@ -3,6 +3,20 @@
   <!-- AdministratorControlActivity -->
   <string name="administrator_controls_activity_title">Administrator Controls</string>
   <string name="administrator_controls_activity_learner_analytics_text">Learner Study Analytics</string>
+  <!-- AdministratorControlsFragment -->
+  <string name="administrator_controls_fragment_general_label">General</string>
+  <string name="administrator_controls_fragment_edit_account_text">Edit account</string>
+  <string name="administrator_controls_fragment_profile_management_label">Profile Management</string>
+  <string name="administrator_controls_fragment_edit_profiles_text">Edit profiles</string>
+  <string name="administrator_controls_fragment_download_permissions_label">Download Permissions</string>
+  <string name="administrator_controls_fragment_topic_update_on_wifi_text">Download and update only on Wi-fi</string>
+  <string name="administrator_controls_fragment_topic_update_on_wifi_description">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
+  <string name="administrator_controls_fragment_auto_update_topic_text">Automatically update topics</string>
+  <string name="administrator_controls_fragment_auto_update_topic_description">Downloaded topics that have new content available will automatically update.</string>
+  <string name="administrator_controls_fragment_app_information_text">App Information</string>
+  <string name="administrator_controls_fragment_app_version_text">App Version</string>
+  <string name="administrator_controls_fragment_account_actions_text">Account Actions</string>
+  <string name="administrator_controls_fragment_log_out_text">Log Out</string>
   <!-- AdministratorControlsFragmentTestActivity -->
   <string name="administrator_controls_fragment_test_activity_title">Administrator Controls Fragment Test Activity</string>
   <!-- AdminAuthActivity -->
@@ -10,8 +24,8 @@
   <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
   <string name="admin_auth_activity_access_controls_title">Authorise to access Administrator Controls</string>
   <string name="admin_auth_activity_heading_text">Administrator Authorization Required</string>
-  <string name="admin_auth_activity_subject_text">Enter the Administrator PIN in order to create a new account.</string>
-  <string name="admin_auth_activity_controls_subject_text">Enter the Administrator PIN in order to access Administrator Controls.</string>
+  <string name="admin_auth_activity_subheading_text">Enter the Administrator PIN in order to create a new account.</string>
+  <string name="admin_auth_activity_controls_subheading_text">Enter the Administrator PIN in order to access Administrator Controls.</string>
   <string name="admin_auth_activity_input_pin_hint_text">Administrator\'s PIN</string>
   <string name="admin_auth_activity_incorrect_pin_label">Incorrect Administrator PIN. Please try again.</string>
   <string name="admin_auth_activity_null_pin_input_label">Please enter Administrator PIN.</string>
@@ -26,22 +40,8 @@
   <string name="admin_pin_activity_pin_length_error">Your PIN should be 5 digits long.</string>
   <string name="admin_pin_activity_wrong_pin_text">Please make sure that both PINs match.</string>
   <string name="admin_pin_activity_submit_button_text">Save</string>
-  <!-- AdministratorControlsFragment -->
-  <string name="administrator_controls_fragment_general_label">General</string>
-  <string name="administrator_controls_fragment_edit_account_text">Edit account</string>
-  <string name="administrator_controls_fragment_profile_management_text">Profile Management</string>
-  <string name="administrator_controls_fragment_edit_profiles_text">Edit profiles</string>
-  <string name="administrator_controls_fragment_download_permissions_text">Download Permissions</string>
-  <string name="administrator_controls_fragment_topic_update_on_wifi_text">Download and update only on Wi-fi</string>
-  <string name="administrator_controls_fragment_topic_update_on_wifi_description">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
-  <string name="administrator_controls_fragment_auto_update_topic_text">Automatically update topics</string>
-  <string name="administrator_controls_fragment_auto_update_topic_description">Downloaded topics that have new content available will automatically update.</string>
-  <string name="administrator_controls_fragment_app_information_text">App Information</string>
-  <string name="administrator_controls_fragment_app_version_text">App Version</string>
-  <string name="administrator_controls_fragment_account_actions_text">Account Actions</string>
-  <string name="administrator_controls_fragment_log_out_text">Log Out</string>
   <!-- AddProfileActivity -->
-  <string name="add_profile_activity_text">Add Profile</string>
+  <string name="add_profile_activity_title">Add Profile</string>
   <string name="add_profile_activity_input_name_hint">Name</string>
   <string name="add_profile_activity_input_pin_hint">3-Digit PIN</string>
   <string name="add_profile_activity_input_confirm_pin_hint">Confirm 3-Digit PIN</string>
@@ -63,7 +63,7 @@
   <!-- AdminSettingsDialogFragment -->
   <string name="admin_settings_dialog_input_pin_hint">Administrator\'s PIN</string>
   <string name="admin_settings_dialog_heading">Access to Administrator Settings</string>
-  <string name="admin_settings_dialog_subject_text">Administrator\'s PIN required to change user\'s PIN</string>
+  <string name="admin_settings_dialog_message_text">Administrator\'s PIN required to change user\'s PIN</string>
   <string name="admin_settings_dialog_cancel_button_text">Cancel</string>
   <string name="admin_settings_dialog_submit_button_text">Submit</string>
   <string name="admin_settings_dialog_incorrect_pin_error_text">Incorrect Administrator PIN. Please try again.</string>
@@ -100,8 +100,8 @@
   <string name="cellular_audio_dialog_checkboxes_text">Don\'t show this message again</string>
   <!-- ConceptCardFragment -->
   <string name="concept_card_fragment_title">Concept Card</string>
-  <string name="concept_card_test_activity_one_button_text">Concept Card 1</string>
-  <string name="concept_card_test_activity_two_button_text">Concept Card 2</string>
+  <string name="concept_card_test_activity_button_one_text">Concept Card 1</string>
+  <string name="concept_card_test_activity_button_two_text">Concept Card 2</string>
   <!-- CompletedStoryListActivity -->
   <string name="completed_story_list_activity_title">Stories Completed</string>
   <string name="completed_story_list_fragment_recyclerview_tag">completed_story_list_recyclerview_tag</string>
@@ -145,75 +145,6 @@
   <string name="general_availability_notice_dialog_message">Hello! Your app is now being updated to the General Availability version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
-  <!-- GeneralStrings -->
-  <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
-  <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
-  <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
-  <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
-  <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
-  <string name="number_error_invalid_format">Please enter a valid number.</string>
-  <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
-  <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).</string>
-  <string name="ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">Please enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
-  <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">Your answer has two colons (:) next to each other.</string>
-  <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">Number of terms is not equal to the required terms.</string>
-  <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">Ratios cannot have 0 as an element.</string>
-  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">\u0020to\u0020</string>
-  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">Enter a ratio in the form x:y.</string>
-  <string name="profile_last_visited">%s %s</string>
-  <string name="yesterday">yesterday</string>
-  <string name="last_logged_in_recently">recently</string>
-  <string name="coming_soon">Coming Soon</string>
-  <string name="recommended_stories">Recommended Stories</string>
-  <string name="stories_for_you">Stories For You</string>
-  <string name="unknown_size">Unknown size</string>
-  <string name="size_bytes">%s Bytes</string>
-  <string name="size_kb">%s KB</string>
-  <string name="size_mb">%s MB</string>
-  <string name="size_gb">%s GB</string>
-  <string name="correct">Correct!</string>
-  <string name="just_now">just now</string>
-  <string name="welcome_profile_name">%s %s!</string>
-  <string name="font_scale_html_content_text">html Content</string>
-  <plurals name="chapter_count">
-    <item quantity="one">1 Chapter</item>
-    <item quantity="other">%s Chapters</item>
-  </plurals>
-  <plurals name="story_count">
-    <item quantity="one">1 Story</item>
-    <item quantity="other">%s Stories</item>
-  </plurals>
-  <plurals name="story_total_chapters">
-    <item quantity="one">%s of %s Chapter Completed</item>
-    <item quantity="other">%s of %s Chapters Completed</item>
-  </plurals>
-  <plurals name="lesson_count">
-    <item quantity="one">1 Lesson</item>
-    <item quantity="other">%s Lessons</item>
-  </plurals>
-  <plurals name="completed_story_count">
-    <item quantity="one">1 Story Completed</item>
-    <item quantity="other">%s Stories Completed</item>
-    <item quantity="zero">%s Stories Completed</item>
-  </plurals>
-  <plurals name="ongoing_topic_count">
-    <item quantity="one">1 Topic in Progress</item>
-    <item quantity="other">%s Topics in Progress</item>
-    <item quantity="zero">%s Topics in Progress</item>
-  </plurals>
-  <plurals name="minutes_ago">
-    <item quantity="zero">0 minutes ago</item>
-    <item quantity="one">a minute ago</item>
-    <item quantity="other">%s minutes ago</item>
-  </plurals>
-  <plurals name="hours_ago">
-    <item quantity="one">an hour ago</item>
-    <item quantity="other">%s hours ago</item>
-  </plurals>
-  <plurals name="days_ago">
-    <item quantity="one">a day ago</item>
-    <item quantity="other">%s days ago</item>
-  </plurals>
   <!-- HelpActivity -->
   <string name="help_activity_title">Help</string>
   <string name="help_activity_faq_text">Frequently Asked Questions (FAQs)</string>
@@ -419,15 +350,6 @@
   <string name="resume_lesson_activity_title">Resume Lesson</string>
   <string name="resume_lessons_fragment_continue_button_text">Continue</string>
   <string name="resume_lessons_fragment_start_over_button_text">Start Over</string>
-  <!-- SharedStrings -->
-  <string name="menu_options_text">Options</string>
-  <string name="menu_help_text">Help</string>
-  <string name="navigate_up_text">Navigate up</string>
-  <string name="next_text">Next</string>
-  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">Unsupported app version</string>
-  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">This version of the app is no longer supported. Please update it through the Play Store.</string>
-  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
-  <string name="options_menu_content_description">Options Menu</string>
   <!-- SplashActivity -->
   <string name="splash_activity_build_developer_label">Developer Build</string>
   <string name="splash_activity_build_alpha_label">Alpha</string>
@@ -613,4 +535,82 @@
   <string name="walkthrough_activity_pick_different_topic_text">Pick a \ndifferent topic.</string>
   <string name="walkthrough_activity_are_you_interested_text">Are you interested in:\n%s?</string>
   <string name="walkthrough_activity_back_button_text">Back Button</string>
+  <!-- GeneralStrings -->
+  <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
+  <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
+  <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
+  <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
+  <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
+  <string name="number_error_invalid_format">Please enter a valid number.</string>
+  <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
+  <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">Please enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">Your answer has two colons (:) next to each other.</string>
+  <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">Number of terms is not equal to the required terms.</string>
+  <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">Ratios cannot have 0 as an element.</string>
+  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">\u0020to\u0020</string>
+  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">Enter a ratio in the form x:y.</string>
+  <string name="profile_last_visited">%s %s</string>
+  <string name="yesterday">yesterday</string>
+  <string name="last_logged_in_recently">recently</string>
+  <string name="coming_soon">Coming Soon</string>
+  <string name="recommended_stories">Recommended Stories</string>
+  <string name="stories_for_you">Stories For You</string>
+  <string name="unknown_size">Unknown size</string>
+  <string name="size_bytes">%s Bytes</string>
+  <string name="size_kb">%s KB</string>
+  <string name="size_mb">%s MB</string>
+  <string name="size_gb">%s GB</string>
+  <string name="correct">Correct!</string>
+  <string name="just_now">just now</string>
+  <string name="welcome_profile_name">%s %s!</string>
+  <string name="font_scale_html_content_text">html Content</string>
+  <plurals name="chapter_count">
+    <item quantity="one">1 Chapter</item>
+    <item quantity="other">%s Chapters</item>
+  </plurals>
+  <plurals name="story_count">
+    <item quantity="one">1 Story</item>
+    <item quantity="other">%s Stories</item>
+  </plurals>
+  <plurals name="story_total_chapters">
+    <item quantity="one">%s of %s Chapter Completed</item>
+    <item quantity="other">%s of %s Chapters Completed</item>
+  </plurals>
+  <plurals name="lesson_count">
+    <item quantity="one">1 Lesson</item>
+    <item quantity="other">%s Lessons</item>
+  </plurals>
+  <plurals name="completed_story_count">
+    <item quantity="one">1 Story Completed</item>
+    <item quantity="other">%s Stories Completed</item>
+    <item quantity="zero">%s Stories Completed</item>
+  </plurals>
+  <plurals name="ongoing_topic_count">
+    <item quantity="one">1 Topic in Progress</item>
+    <item quantity="other">%s Topics in Progress</item>
+    <item quantity="zero">%s Topics in Progress</item>
+  </plurals>
+  <plurals name="minutes_ago">
+    <item quantity="zero">0 minutes ago</item>
+    <item quantity="one">a minute ago</item>
+    <item quantity="other">%s minutes ago</item>
+  </plurals>
+  <plurals name="hours_ago">
+    <item quantity="one">an hour ago</item>
+    <item quantity="other">%s hours ago</item>
+  </plurals>
+  <plurals name="days_ago">
+    <item quantity="one">a day ago</item>
+    <item quantity="other">%s days ago</item>
+  </plurals>
+  <!-- SharedStrings -->
+  <string name="menu_options_text">Options</string>
+  <string name="menu_help_text">Help</string>
+  <string name="navigate_up_text">Navigate up</string>
+  <string name="next_text">Next</string>
+  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">Unsupported app version</string>
+  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">This version of the app is no longer supported. Please update it through the Play Store.</string>
+  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
+  <string name="options_menu_content_description">Options Menu</string>
 </resources>

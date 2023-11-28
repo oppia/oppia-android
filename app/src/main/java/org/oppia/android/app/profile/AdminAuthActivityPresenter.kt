@@ -112,17 +112,17 @@ class AdminAuthActivityPresenter @Inject constructor(
         binding?.adminAuthHeadingTextview?.text =
           resourceHandler.getStringInLocale(R.string.admin_auth_activity_heading_text)
         binding?.adminAuthSubText?.text =
-          resourceHandler.getStringInLocale(R.string.admin_auth_activity_controls_subject_text)
+          resourceHandler.getStringInLocale(R.string.admin_auth_activity_controls_subheading_text)
       }
       AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
         activity.title =
           resourceHandler.getStringInLocale(R.string.admin_auth_activity_add_profiles_title)
         binding?.adminAuthToolbar?.title =
-          resourceHandler.getStringInLocale(R.string.add_profile_activity_text)
+          resourceHandler.getStringInLocale(R.string.add_profile_activity_title)
         binding?.adminAuthHeadingTextview?.text =
           resourceHandler.getStringInLocale(R.string.admin_auth_activity_heading_text)
         binding?.adminAuthSubText?.text =
-          resourceHandler.getStringInLocale(R.string.admin_auth_activity_subject_text)
+          resourceHandler.getStringInLocale(R.string.admin_auth_activity_subheading_text)
       }
     }
   }
