@@ -29,9 +29,9 @@ class FAQListViewModel @Inject constructor(
   private fun retrieveQuestionsOrAnswers(questionsOrAnswers: List<String>): List<String> {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     return questionsOrAnswers.mapIndexed { index, questionOrAnswer ->
-//      if (index == QUESTION_INDEX_WITH_OPPIA_REFERENCE) {
+      if (index == QUESTION_INDEX_WITH_OPPIA_REFERENCE) {
         resourceHandler.formatInLocaleWithWrapping(questionOrAnswer, appName)
-//      } else questionOrAnswer
+      } else questionOrAnswer
     }
   }
 
