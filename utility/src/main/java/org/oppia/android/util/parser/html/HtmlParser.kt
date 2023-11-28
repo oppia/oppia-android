@@ -120,7 +120,7 @@ class HtmlParser private constructor(
     if (supportsLinks) {
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
       LinkifyCompat.addLinks(htmlContentTextView, Linkify.ALL)
-      htmlContentTextView.linksClickable=true
+      htmlContentTextView.linksClickable = true
     }
 
     val imageGetter = urlImageParserFactory?.create(
