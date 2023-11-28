@@ -1,6 +1,7 @@
 package org.oppia.android.app.topic
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
@@ -26,14 +27,34 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     activity.setContentView(R.layout.topic_activity)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     if (getTopicFragment() == null) {
+//      val topicFragment = TopicFragment()
+//      val args = Bundle()
+//      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+//      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+//      if (storyId != null) {
+//        args.putString(STORY_ID_ARGUMENT_KEY, storyId)
+//      }
+//      topicFragment.arguments = args
+
+
       val topicFragment = TopicFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+      val argsBuilder = TopicFragmentArgsOuterClass.TopicFragmentArgs.newBuilder()
+        .setProfileId(internalProfileId)
+        .setTopicId(topicId)
+
       if (storyId != null) {
-        args.putString(STORY_ID_ARGUMENT_KEY, storyId)
+        argsBuilder.setStoryId(storyId)
       }
-      topicFragment.arguments = args
+
+      val args = argsBuilder.build()
+
+      val bundle = Bundle().apply {
+        putByteArray("args", args.toByteArray())
+      }
+
+      topicFragment.arguments = bundle
+
+
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
         topicFragment, TOPIC_FRAGMENT_TAG
