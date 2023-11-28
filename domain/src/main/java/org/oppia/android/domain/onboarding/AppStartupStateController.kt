@@ -1,16 +1,25 @@
 package org.oppia.android.domain.onboarding
 
+import android.os.Build
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
+import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.BuildConfig
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,7 +32,16 @@ class AppStartupStateController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val expirationMetaDataRetriever: ExpirationMetaDataRetriever,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val currentBuildFlavor: BuildFlavor
+  private val currentBuildFlavor: BuildFlavor,
+  private val deprecationController: DeprecationController,
+  @EnableAppAndOsDeprecation
+  private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
+  @OptionalAppUpdateVersionCode
+  private val optionalAppUpdateVersionCode: PlatformParameterValue<Int>,
+  @ForcedAppUpdateVersionCode
+  private val forcedAppUpdateVersionCode: PlatformParameterValue<Int>,
+  @LowestSupportedApiLevel
+  private val lowestSupportedApiLevel: PlatformParameterValue<Int>
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -116,11 +134,51 @@ class AppStartupStateController @Inject constructor(
   }
 
   private fun computeAppStartupMode(onboardingState: OnboardingState): StartupMode {
-    return when {
-      hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
-      onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
-      else -> StartupMode.USER_NOT_YET_ONBOARDED
+    // Return old logic if app and os feature flag is not enabled
+    if (!enableAppAndOsDeprecation.value) {
+      return when {
+        hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
+        onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
+        else -> StartupMode.USER_NOT_YET_ONBOARDED
+      }
     }
+
+    val deprecationDataProvider = deprecationController.getDeprecationDatabase()
+
+    var deprecationDatabase = DeprecationResponseDatabase.newBuilder().build()
+
+    runBlocking {
+      deprecationDataProvider.retrieveData().transform {
+        deprecationDatabase = it
+      }
+    }
+
+    val appVersionCode = BuildConfig.VERSION_CODE
+
+    val osIsDeprecated = lowestSupportedApiLevel.value > Build.VERSION.SDK_INT &&
+      deprecationDatabase.osDeprecationResponse.deprecatedVersion != Build.VERSION.SDK_INT
+    val appUpdateIsAvailable = optionalAppUpdateVersionCode.value > appVersionCode ||
+      forcedAppUpdateVersionCode.value > appVersionCode
+
+    if (onboardingState.alreadyOnboardedApp) {
+      if (osIsDeprecated) {
+        return StartupMode.OS_IS_DEPRECATED
+      }
+
+      if (appUpdateIsAvailable) {
+        if (forcedAppUpdateVersionCode.value > appVersionCode) {
+          return StartupMode.APP_IS_DEPRECATED
+        }
+
+        if (deprecationDatabase.appDeprecationResponse.deprecatedVersion !=
+          optionalAppUpdateVersionCode.value
+        ) {
+          return StartupMode.OPTIONAL_UPDATE_AVAILABLE
+        }
+      }
+
+      return StartupMode.USER_IS_ONBOARDED
+    } else return StartupMode.USER_NOT_YET_ONBOARDED
   }
 
   private fun computeBuildNoticeMode(

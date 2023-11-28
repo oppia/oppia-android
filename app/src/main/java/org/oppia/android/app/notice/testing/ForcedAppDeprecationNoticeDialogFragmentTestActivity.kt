@@ -2,8 +2,8 @@ package org.oppia.android.app.notice.testing
 
 import android.os.Bundle
 import org.oppia.android.app.notice.DeprecationNoticeActionListener
+import org.oppia.android.app.notice.DeprecationNoticeActionType
 import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
-import org.oppia.android.app.splash.DeprecationNoticeActionType
 import org.oppia.android.app.testing.activity.TestActivity
 
 /** [TestActivity] for setting up a test environment for testing the beta notice dialog. */

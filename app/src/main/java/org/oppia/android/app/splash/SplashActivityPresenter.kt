@@ -15,7 +15,11 @@ import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
+import org.oppia.android.app.notice.DeprecationNoticeActionType
+import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
+import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
+import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
@@ -31,11 +35,16 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
+private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
 private const val BETA_NOTICE_DIALOG_FRAGMENT_TAG = "beta_notice_dialog"
 private const val GA_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG = "general_availability_update_notice_dialog"
+private const val OPTIONAL_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG = "optional_update_notice_dialog"
+private const val OS_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG = "os_update_notice_dialog"
 private const val SPLASH_INIT_STATE_DATA_PROVIDER_ID = "splash_init_state_data_provider"
 
 /** The presenter for [SplashActivity]. */
@@ -49,7 +58,9 @@ class SplashActivityPresenter @Inject constructor(
   private val localeController: LocaleController,
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val currentBuildFlavor: BuildFlavor
+  private val currentBuildFlavor: BuildFlavor,
+  @EnableAppAndOsDeprecation
+  private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
 ) {
   lateinit var startupMode: StartupMode
 
@@ -67,6 +78,14 @@ class SplashActivityPresenter @Inject constructor(
     subscribeToOnboardingFlow()
   }
 
+  fun handleOnDeprecationNoticeActionClicked(noticeType: DeprecationNoticeActionType) {
+    when (noticeType) {
+      DeprecationNoticeActionType.CLOSE -> handleOnDeprecationNoticeCloseAppButtonClicked()
+      DeprecationNoticeActionType.DISMISS -> handleOnDeprecationNoticeUpdateButtonClicked()
+      DeprecationNoticeActionType.UPDATE -> handleOnDeprecationNoticeDialogDismissed()
+    }
+  }
+
   /** Handles cases where the user clicks the close app option on a deprecation notice dialog. */
   fun handleOnDeprecationNoticeCloseAppButtonClicked() {
     // If the app close button is clicked for the deprecation notice, finish the activity to close
@@ -75,7 +94,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   /** Handles cases where the user clicks the update option on a deprecation notice dialog. */
-  fun handleOnDeprecationNoticeUpdateButtonClicked() {
+  private fun handleOnDeprecationNoticeUpdateButtonClicked() {
     // If the Update button is clicked for the deprecation notice, launch the Play Store and open
     // the Oppia app's page.
     val packageName = activity.packageName
@@ -100,7 +119,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   /** Handles cases where the user dismisses the deprecation notice dialog. */
-  fun handleOnDeprecationNoticeDialogDismissed() {
+  private fun handleOnDeprecationNoticeDialogDismissed() {
     // If the Dismiss button is clicked for the deprecation notice, the dialog is automatically
     // dismissed. Navigate to profile chooser activity.
     activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
@@ -200,6 +219,43 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun processStartupMode() {
+    if (enableAppAndOsDeprecation.value) {
+      when (startupMode) {
+        StartupMode.USER_IS_ONBOARDED -> {
+          activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+          activity.finish()
+        }
+        StartupMode.APP_IS_DEPRECATED -> {
+          showDialog(
+            FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
+            ForcedAppDeprecationNoticeDialogFragment::newInstance
+          )
+        }
+        StartupMode.OPTIONAL_UPDATE_AVAILABLE -> {
+          showDialog(
+            OPTIONAL_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
+            OptionalAppDeprecationNoticeDialogFragment::newInstance
+          )
+        }
+        StartupMode.OS_IS_DEPRECATED -> {
+          showDialog(
+            OS_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
+            OsDeprecationNoticeDialogFragment::newInstance
+          )
+        }
+        else -> {
+          // In all other cases (including errors when the startup state fails to load or is
+          // defaulted), assume the user needs to be onboarded.
+          activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+          activity.finish()
+        }
+      }
+    } else {
+      processLegacyStartupMode()
+    }
+  }
+
+  private fun processLegacyStartupMode() {
     when (startupMode) {
       StartupMode.USER_IS_ONBOARDED -> {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))

@@ -4,7 +4,6 @@ import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.splash.DeprecationNoticeActionType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
