@@ -1,18 +1,9 @@
 package org.oppia.android.app.policies
 
-import android.content.Intent
-import android.net.Uri
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.text.HtmlCompat
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PoliciesFragmentArguments
@@ -47,20 +38,18 @@ class PoliciesFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-    private fun setUpContentForTextViews(
-  policyPage: PolicyPage,
-  binding: PoliciesFragmentBinding
+  private fun setUpContentForTextViews(
+    policyPage: PolicyPage,
+    binding: PoliciesFragmentBinding
   ) {
     var policyDescription = ""
     var policyWebLink = ""
 
     if (policyPage == PolicyPage.PRIVACY_POLICY) {
-      policyDescription =
-        resourceHandler.getStringInLocale(R.string.privacy_policy_content)
+      policyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
       policyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
     } else if (policyPage == PolicyPage.TERMS_OF_SERVICE) {
-      policyDescription =
-        resourceHandler.getStringInLocale(R.string.terms_of_service_content)
+      policyDescription = resourceHandler.getStringInLocale(R.string.terms_of_service_content)
       policyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
     }
 
