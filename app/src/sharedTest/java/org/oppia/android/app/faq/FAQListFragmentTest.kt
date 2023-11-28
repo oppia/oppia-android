@@ -197,18 +197,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 0
+          position = 4
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1, getAppName())
+            getResources().getString(R.string.faq_question_4, getAppName())
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1, getAppName())
+            getResources().getString(R.string.faq_answer_4, getAppName())
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
