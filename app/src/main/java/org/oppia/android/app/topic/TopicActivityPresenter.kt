@@ -5,14 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.TopicFragmentArguments
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
 const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 const val STORY_ID_ARGUMENT_KEY = "story_id"
+const val TOPIC_FRAGMENT_ARGUMENTS_KEY = "TopicFragment.Arguments"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
@@ -26,32 +29,19 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     activity.setContentView(R.layout.topic_activity)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     if (getTopicFragment() == null) {
-//      val topicFragment = TopicFragment()
-//      val args = Bundle()
-//      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-//      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-//      if (storyId != null) {
-//        args.putString(STORY_ID_ARGUMENT_KEY, storyId)
-//      }
-//      topicFragment.arguments = args
-
       val topicFragment = TopicFragment()
-      val argsBuilder = TopicFragmentArgsOuterClass.TopicFragmentArgs.newBuilder()
-        .setProfileId(internalProfileId)
-        .setTopicId(topicId)
-
-      if (storyId != null) {
-        argsBuilder.setStoryId(storyId)
+      val arguments = Bundle().apply {
+        val args = TopicFragmentArguments.newBuilder().apply {
+          this.profileId = internalProfileId
+          this.topicId = topicId
+          if (storyId != null) {
+            this.storyId = storyId
+          }
+        }.build()
+        putProto(TOPIC_FRAGMENT_ARGUMENTS_KEY, args)
       }
 
-      val args = argsBuilder.build()
-
-      val bundle = Bundle().apply {
-        putByteArray("args", args.toByteArray())
-      }
-
-      topicFragment.arguments = bundle
-
+      topicFragment.arguments = arguments
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
         topicFragment, TOPIC_FRAGMENT_TAG

@@ -314,3 +314,9 @@ message SurveyActivityParams {
   // The ID of the triggering exploration.
   string exploration_id = 3;
 }
+
+message TopicFragmentArguments {
+  int32 profileId = 1;
+  string topicId = 2;
+  string storyId = 3;
+}

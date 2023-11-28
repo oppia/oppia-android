@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-message TopicFragmentArgs {
-  int32 profileId = 1;
-  string topicId = 2;
-  string storyId = 3;
-}
