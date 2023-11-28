@@ -11,8 +11,6 @@ import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -25,12 +23,14 @@ class ContinueButtonView @JvmOverloads constructor(
   defStyleAttr: Int = R.style.StateButtonActive
 ) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr) {
 
-  @field:[Inject EnableContinueButtonAnimation]
-  lateinit var enableContinueButtonAnimation: PlatformParameterValue<Boolean>
-  @Inject lateinit var fragment: Fragment
-  @Inject lateinit var oppiaClock: OppiaClock
-  @Inject lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
-  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var fragment: Fragment
+  @Inject
+  lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
 
   private var shouldAnimateContinueButtonLateinit: Boolean? = null
   private val shouldAnimateContinueButton: Boolean
@@ -119,13 +119,11 @@ class ContinueButtonView @JvmOverloads constructor(
 
   private fun startAnimating() {
     val animation = AnimationUtils.loadAnimation(context, R.anim.wobble_button_animation)
-    if (enableContinueButtonAnimation.value) {
-      startAnimation(animation)
-      // Repeat the animation after a fixed interval.
-      lifecycleSafeTimerFactory.createTimer(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS)
-        .observe(fragment) {
-          startAnimating()
-        }
-    }
+    startAnimation(animation)
+    // Repeat the animation after a fixed interval.
+    lifecycleSafeTimerFactory.createTimer(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS)
+      .observe(fragment) {
+        startAnimating()
+      }
   }
 }

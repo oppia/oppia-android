@@ -85,7 +85,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/administrator_controls_guideline"
-        app:layout_constraintTop_toBottomOf="@id/extra_controls_title" />
+        app:layout_constraintTop_toBottomOf="@id/extra_controls_title"
+        tools:ignore="InconsistentLayout" />
 
       <View
         android:id="@+id/administrator_controls_toolbar_shadow_view"
