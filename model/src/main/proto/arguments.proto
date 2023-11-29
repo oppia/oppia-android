@@ -316,9 +316,9 @@ message SurveyActivityParams {
 }
 
 message TopicFragmentArguments {
-  int32 profileId = 1;
-  string topicId = 2;
-  string storyId = 3;
+  int32 profile_id = 1;
+  string topic_id = 2;
+  string story_id = 3;
 }
 
 message AdministratorControlActivityStateBundle {
