@@ -29,7 +29,6 @@ class FAQListViewModel @Inject constructor(
 
   private fun retrieveQuestionsOrAnswers(questionsOrAnswers: List<String>): List<String> {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
-    val placeholderRegex = Regex("""%([0-9]+\$)?[a-zA-Z]""")
 
     return questionsOrAnswers.map {
       if (it.containsPlaceholderRegex()) resourceHandler.formatInLocaleWithWrapping(it, appName) else it
