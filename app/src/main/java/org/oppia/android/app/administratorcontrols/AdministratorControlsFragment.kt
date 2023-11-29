@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import javax.inject.Inject
 import org.oppia.android.app.model.AdministratorControlsFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import javax.inject.Inject
 
 const val ADMINISTRATOR_CONTROL_FRAGMENT_ARGUMENTS_KEY = "AdministratorControlsFragment.Arguments"
 
