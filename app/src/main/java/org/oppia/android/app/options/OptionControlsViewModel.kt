@@ -110,10 +110,10 @@ class OptionControlsViewModel @Inject constructor(
 
   private fun createAppLanguageViewModel(language: OppiaLanguage): OptionsAppLanguageViewModel? {
     return OptionsAppLanguageViewModel(
-        routeToAppLanguageListListener,
-        loadAppLanguageListListener,
-        language,
-        resourceHandler.computeLocalizedDisplayName(language)
+      routeToAppLanguageListListener,
+      loadAppLanguageListListener,
+      language,
+      resourceHandler.computeLocalizedDisplayName(language)
     )
   }
 
