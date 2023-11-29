@@ -1077,9 +1077,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
-  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
-  // @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
     markAllSpotlightsSeen()
     setUpAudio()
