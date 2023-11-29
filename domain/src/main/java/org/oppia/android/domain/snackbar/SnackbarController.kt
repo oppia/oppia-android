@@ -2,13 +2,13 @@ package org.oppia.android.domain.snackbar
 
 import androidx.annotation.StringRes
 import com.google.common.util.concurrent.SettableFuture
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val GET_CURRENT_SNACKBAR_REQUEST_PROVIDER_ID =
   "get_current_snackbar_request_provider_id"
@@ -40,7 +40,6 @@ class SnackbarController @Inject constructor(
     }
 
 //    if ()
-
   }
 
   fun enqueueSnackbar(request: ShowSnackbarRequest) {
@@ -53,7 +52,6 @@ class SnackbarController @Inject constructor(
     CurrentSnackbarState.NotShowing
 
 //    val showFuture = onShow.await()
-
   }
 
   private fun notifyPotentialSnackbarChange() {

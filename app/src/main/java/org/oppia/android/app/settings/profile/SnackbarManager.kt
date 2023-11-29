@@ -32,12 +32,9 @@ class SnackbarManager @Inject constructor(
 //            if (request.snackbarId != currentShowingSnackbarId){
 //              snackbarController.snackbarRequestQueue.peek()?.let { showSnackbar(contentView, it) }
 //            }
-
           }
 
-          is SnackbarController.CurrentSnackbarState.NotShowing -> {
-
-          }
+          is SnackbarController.CurrentSnackbarState.NotShowing -> {}
 
           is SnackbarController.CurrentSnackbarState.WaitingToShow -> {
             val showSnackbar = showSnackbar(contentView, request.nextRequest)
@@ -47,11 +44,9 @@ class SnackbarManager @Inject constructor(
               showSnackbar.second
             )
           }
-
         }
         else -> {}
       }
-
       // Show a new snackbar if the current state is "showing snackbar" with an ID different than currentShowingSnackbarId.
       // Note that this should automatically handle the case of a new activity being opened before a previous snackbar finished (it should be reshown).
       // Need to call back into SnackbarController via notifySnackbarShowing() to indicate that it's now showing.
