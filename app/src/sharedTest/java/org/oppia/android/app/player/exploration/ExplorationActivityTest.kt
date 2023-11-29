@@ -1179,7 +1179,7 @@ class ExplorationActivityTest {
 
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
-  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  // @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
     /*{
       onView(withId(R.id.text_input_interaction_view)).perform(
