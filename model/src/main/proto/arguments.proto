@@ -332,3 +332,6 @@ message AdministratorControlsFragmentArguments {
   bool is_multipane = 1;
 }
 
+message CompletedStoryListActivityArguments {
+  int32 profile_id=1;
+}
