@@ -327,3 +327,8 @@ message AdministratorControlActivityStateBundle {
   bool is_profile_deletion_dialog_visible = 3;
   int32 selected_profile_id = 4;
 }
+
+message AdministratorControlsFragmentArguments {
+  bool is_multipane = 1;
+}
+
