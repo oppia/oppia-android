@@ -1098,25 +1098,18 @@ class ExplorationActivityTest {
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
       )
-      // waitForTheView(withText("What is a Ratio?"))
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_bar_container)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.play_pause_audio_icon),
-          withEffectiveVisibility(Visibility.VISIBLE)
-        )
-      )
-      onView(allOf(withId(R.id.audio_language_icon), withEffectiveVisibility(Visibility.VISIBLE)))
+      onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
+
       waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
       onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
-          withDrawable(
-            R.drawable.ic_pause_circle_filled_white_24dp
-          )
+          withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
         )
       )
     }
