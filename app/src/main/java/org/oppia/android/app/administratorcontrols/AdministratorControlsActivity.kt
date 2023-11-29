@@ -124,7 +124,6 @@ class AdministratorControlsActivity :
   companion object {
     /** Returns an [Intent] to start this activity. */
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
-      Log.e("#", "------kik>" + profileId)
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
