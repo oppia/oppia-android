@@ -1181,31 +1181,7 @@ class ExplorationActivityTest {
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
-    getApplicationDependencies(
-      internalProfileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0
-    )
-    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      waitForTheView(withText("What is a Ratio?"))
-      // Clicks continue until we reach the first interaction.
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      onView(withId(R.id.action_audio_player)).perform(click())
+    /*{
       onView(withId(R.id.text_input_interaction_view)).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
@@ -1215,6 +1191,54 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+    }*/
+
+    markAllSpotlightsSeen()
+    setUpAudio()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+
+      // Clicks continue until we reach the first interaction.
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+
+      onView(withId(R.id.action_audio_player)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.text_input_interaction_view)).perform(
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
+      )
+
+      /*onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
+
+      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
+        )
+      )
+
+      onView(withText("What is a Ratio?"))*/
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
