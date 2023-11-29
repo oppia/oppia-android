@@ -6,7 +6,8 @@ import kotlinx.coroutines.Deferred
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import java.util.*
+import java.util.LinkedList
+import java.util.Queue
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,8 +39,6 @@ class SnackbarController @Inject constructor(
         return@createInMemoryDataProvider CurrentSnackbarState.NotShowing
       }
     }
-
-//    if ()
   }
 
   fun enqueueSnackbar(request: ShowSnackbarRequest) {
