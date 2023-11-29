@@ -1112,6 +1112,8 @@ class ExplorationActivityTest {
           withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
         )
       )
+
+      onView(withText("What is a Ratio?"))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
