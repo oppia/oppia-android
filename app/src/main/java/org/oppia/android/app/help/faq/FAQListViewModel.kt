@@ -8,6 +8,7 @@ import org.oppia.android.app.help.faq.faqItemViewModel.FAQItemViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
+import org.oppia.android.util.extensions.containsPlaceholderRegex
 
 /** View model in [FAQListFragment]. */
 class FAQListViewModel @Inject constructor(
@@ -28,10 +29,10 @@ class FAQListViewModel @Inject constructor(
 
   private fun retrieveQuestionsOrAnswers(questionsOrAnswers: List<String>): List<String> {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
-    return questionsOrAnswers.mapIndexed { index, questionOrAnswer ->
-      if (index == QUESTION_INDEX_WITH_OPPIA_REFERENCE) {
-        resourceHandler.formatInLocaleWithWrapping(questionOrAnswer, appName)
-      } else questionOrAnswer
+    val placeholderRegex = Regex("""%([0-9]+\$)?[a-zA-Z]""")
+
+    return questionsOrAnswers.map {
+      if (it.containsPlaceholderRegex()) resourceHandler.formatInLocaleWithWrapping(it, appName) else it
     }
   }
 
@@ -40,8 +41,4 @@ class FAQListViewModel @Inject constructor(
 
   private fun retrieveAnswers(): List<String> =
     retrieveQuestionsOrAnswers(resourceHandler.getStringArrayInLocale(R.array.faq_answers))
-
-  private companion object {
-    private const val QUESTION_INDEX_WITH_OPPIA_REFERENCE = 0
-  }
 }
