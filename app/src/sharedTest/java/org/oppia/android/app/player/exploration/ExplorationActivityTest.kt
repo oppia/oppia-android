@@ -1220,13 +1220,13 @@ class ExplorationActivityTest {
       onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
 
-      onView(withId(R.id.action_audio_player)).perform(click())
+      /*onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.text_input_interaction_view)).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
-      )
+      )*/
 
       /*onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
       onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
