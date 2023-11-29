@@ -12,6 +12,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
+/** Argument key  for  Administrator Controls Fragment. */
 const val ADMINISTRATOR_CONTROL_FRAGMENT_ARGUMENTS_KEY = "AdministratorControlsFragment.Arguments"
 
 /** Fragment that contains Administrator Controls of the application. */

@@ -46,6 +46,7 @@ const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 /** Argument key used to identify [ProfileAndDeviceIdFragment] in the backstack. */
 const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 
+/** Argument key  for  Administrator Controls Activity saved state. */
 const val ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY = "ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY"
 
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
