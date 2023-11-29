@@ -3,6 +3,7 @@ package org.oppia.android.app.administratorcontrols
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -17,6 +18,8 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.AdministratorControlActivityStateBundle
+import org.oppia.android.util.extensions.getProto
 
 /** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
@@ -45,6 +48,8 @@ const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 /** Argument key used to identify [ProfileAndDeviceIdFragment] in the backstack. */
 const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 
+const val ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY = "ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY"
+
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
 class AdministratorControlsActivity :
   InjectableAutoLocalizedAppCompatActivity(),
@@ -68,17 +73,24 @@ class AdministratorControlsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val extraControlsTitle =
-      savedInstanceState?.getStringFromBundle(SELECTED_CONTROLS_TITLE_SAVED_KEY)
+
+    val args = savedInstanceState?.getProto(
+      ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY,
+      AdministratorControlActivityStateBundle.getDefaultInstance()
+    )
+
+    val extraControlsTitle = args?.selectedControlsTitle
+
     isProfileDeletionDialogVisible =
-      savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY) ?: false
+      args?.isProfileDeletionDialogVisible ?: false
     lastLoadedFragment = if (savedInstanceState != null) {
-      savedInstanceState.getStringFromBundle(LAST_LOADED_FRAGMENT_EXTRA_KEY) as String
+      args?.lastLoadedFragment as String
     } else {
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    val selectedProfileId = savedInstanceState?.getInt(SELECTED_PROFILE_ID_SAVED_KEY) ?: -1
+    val selectedProfileId = args?.selectedProfileId ?: -1
+
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
       lastLoadedFragment,
@@ -113,6 +125,7 @@ class AdministratorControlsActivity :
   companion object {
     /** Returns an [Intent] to start this activity. */
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
+      Log.e("#", "------kik>" + profileId)
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)

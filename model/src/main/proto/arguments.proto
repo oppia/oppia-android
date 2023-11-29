@@ -320,3 +320,10 @@ message TopicFragmentArguments {
   string topicId = 2;
   string storyId = 3;
 }
+
+message AdministratorControlActivityStateBundle {
+  string selected_controls_title = 1;
+  string last_loaded_fragment = 2;
+  bool is_profile_deletion_dialog_visible = 3;
+  int32 selected_profile_id = 4;
+}

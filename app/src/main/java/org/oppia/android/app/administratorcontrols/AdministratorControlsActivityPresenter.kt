@@ -1,6 +1,7 @@
 package org.oppia.android.app.administratorcontrols
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,6 +17,8 @@ import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
 import javax.inject.Inject
+import org.oppia.android.app.model.AdministratorControlActivityStateBundle
+import org.oppia.android.util.extensions.putProto
 
 /** The presenter for [AdministratorControlsActivity]. */
 @ActivityScope
@@ -202,13 +205,18 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   /** Saves the state of the views on configuration changes. */
   fun handleOnSaveInstanceState(outState: Bundle) {
     val titleTextView = binding.extraControlsTitle
-    if (titleTextView != null) {
-      outState.putString(SELECTED_CONTROLS_TITLE_SAVED_KEY, titleTextView.text.toString())
-    }
-    outState.putString(LAST_LOADED_FRAGMENT_EXTRA_KEY, lastLoadedFragment)
-    isProfileDeletionDialogVisible?.let {
-      outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, it)
-    }
-    selectedProfileId?.let { outState.putInt(SELECTED_PROFILE_ID_SAVED_KEY, it) }
+    val args = AdministratorControlActivityStateBundle.newBuilder()
+      .apply {
+        if (titleTextView != null) {
+          selectedControlsTitle = titleTextView.text.toString()
+        }
+        lastLoadedFragment = this@AdministratorControlsActivityPresenter.lastLoadedFragment
+        this@AdministratorControlsActivityPresenter.isProfileDeletionDialogVisible?.let {
+          isProfileDeletionDialogVisible = it
+        }
+        selectedProfileId = this@AdministratorControlsActivityPresenter.selectedProfileId
+      }
+      .build()
+    outState.putProto(ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY, args)
   }
 }
