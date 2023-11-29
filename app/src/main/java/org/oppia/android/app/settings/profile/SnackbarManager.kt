@@ -29,15 +29,6 @@ private const val GET_CURRENT_SNACKBAR_STATUS_PROVIDER_ID =
 class SnackbarManager @Inject constructor(private val activity: AppCompatActivity, private val snackbarController: SnackbarController) {
   private var currentShowingSnackbarId: String? = null
 
-
-  fun showSnackbar(@StringRes messageStringId: Int, duration: SnackbarController.SnackbarDuration){
-    currentShowingSnackbarId = UUID.randomUUID().toString()
-
-    showSnackbar(contentView, showRequest)
-
-
-  }
-
   // Must be called by activities wishing to show snackbars.
   fun enableShowingSnackbars(contentView: View) {
     snackbarController.getCurrentSnackbarState().toLiveData().observe(activity) { result ->
@@ -57,14 +48,12 @@ class SnackbarManager @Inject constructor(private val activity: AppCompatActivit
           }
 
           is SnackbarController.CurrentSnackbarState.WaitingToShow -> {
-
-            snackbarController.notifySnackbarShowing(
-
+            val showSnackbar = showSnackbar(contentView, request.nextRequest)
+            snackbarController.notifySnackbarShowing(request.snackbarId, showSnackbar.first, showSnackbar.second)
           }
 
         }
         else -> {
-
 
         }
       }
@@ -86,19 +75,18 @@ class SnackbarManager @Inject constructor(private val activity: AppCompatActivit
 
     val showFuture = SettableFuture.create<Unit>()
     val dismissFuture = SettableFuture.create<Unit>()
+
     Snackbar.make(activityView, showRequest.messageStringId, duration)
       .addCallback(object : Snackbar.Callback() {
         override fun onShown(snackbar: Snackbar) {
-//          snackbarController.notifySnackbarShowing()
           showFuture.set(Unit)
         }
 
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
           dismissFuture.set(Unit)
-
         }
-      })
-      .show()
+      }).show()
+
     // See: https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-guava/kotlinx.coroutines.guava/as-deferred.html.
     return showFuture as Deferred<Unit> to dismissFuture as Deferred<Unit>
   }

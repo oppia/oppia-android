@@ -22,7 +22,6 @@ class SnackbarController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
 ) {
 
-  private var showFuture: Deferred<Unit>? = null
   val dismissFuture = SettableFuture.create<Unit>()
   private val _snackbarRequestQueue: Queue<ShowSnackbarRequest> = LinkedList()
 
@@ -54,8 +53,9 @@ class SnackbarController @Inject constructor(
 
   fun notifySnackbarShowing(snackbarId: Int, onShow: Deferred<Unit>, onDismiss: Deferred<Unit>) {
     // onDismiss is resolved when the snackbar by unique ID snackbarId is no longer showing.
+    CurrentSnackbarState.NotShowing
 
-    showFuture = onShow
+//    val showFuture = onShow.await()
 
   }
 
