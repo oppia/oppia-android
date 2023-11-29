@@ -2,15 +2,13 @@ package org.oppia.android.domain.snackbar
 
 import androidx.annotation.StringRes
 import com.google.common.util.concurrent.SettableFuture
-import org.oppia.android.util.data.AsyncDataSubscriptionManager
-import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
-import java.util.LinkedList
-import java.util.Queue
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
-import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.AsyncDataSubscriptionManager
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
 
 private const val GET_CURRENT_SNACKBAR_REQUEST_PROVIDER_ID =
   "get_current_snackbar_request_provider_id"
@@ -31,13 +29,12 @@ class SnackbarController @Inject constructor(
 
   val currentState = CurrentSnackbarState.NotShowing
 
-
   fun getCurrentSnackbarState(): DataProvider<CurrentSnackbarState> {
 
     val currentRequest = _snackbarRequestQueue.peek()
 
-    if (_snackbarRequestQueue.isEmpty()){
-      return dataProviders.createInMemoryDataProvider(CurrentSnackbarState.NotShowing){
+    if (_snackbarRequestQueue.isEmpty()) {
+      return dataProviders.createInMemoryDataProvider(CurrentSnackbarState.NotShowing) {
         return@createInMemoryDataProvider CurrentSnackbarState.NotShowing
       }
     }

@@ -1,40 +1,32 @@
 package org.oppia.android.app.settings.profile
 
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.common.util.concurrent.FutureCallback
-import com.google.common.util.concurrent.Futures
-import com.google.common.util.concurrent.Futures.immediateFuture
-import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
-import java.util.*
-import java.util.concurrent.Executor
-import java.util.concurrent.Future
-import org.oppia.android.domain.oppialogger.OppiaLogger
+import kotlinx.coroutines.Deferred
 import org.oppia.android.domain.snackbar.SnackbarController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import kotlinx.coroutines.Deferred
-import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
 
 private const val TAG = "SnackbarManager"
 private const val ERROR_MESSAGE = "can't be shown--no activity UI"
 private const val GET_CURRENT_SNACKBAR_STATUS_PROVIDER_ID =
   "get_current_snackbar_status_provider_id"
 
-class SnackbarManager @Inject constructor(private val activity: AppCompatActivity, private val snackbarController: SnackbarController) {
+class SnackbarManager @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val snackbarController: SnackbarController
+) {
   private var currentShowingSnackbarId: String? = null
 
   // Must be called by activities wishing to show snackbars.
   fun enableShowingSnackbars(contentView: View) {
     snackbarController.getCurrentSnackbarState().toLiveData().observe(activity) { result ->
 
-      when(result){
-        is AsyncResult.Success -> when(val request = result.value) {
+      when (result) {
+        is AsyncResult.Success -> when (val request = result.value) {
 
           is SnackbarController.CurrentSnackbarState.Showing -> {
 //            if (request.snackbarId != currentShowingSnackbarId){
@@ -49,13 +41,15 @@ class SnackbarManager @Inject constructor(private val activity: AppCompatActivit
 
           is SnackbarController.CurrentSnackbarState.WaitingToShow -> {
             val showSnackbar = showSnackbar(contentView, request.nextRequest)
-            snackbarController.notifySnackbarShowing(request.snackbarId, showSnackbar.first, showSnackbar.second)
+            snackbarController.notifySnackbarShowing(
+              request.snackbarId,
+              showSnackbar.first,
+              showSnackbar.second
+            )
           }
 
         }
-        else -> {
-
-        }
+        else -> {}
       }
 
       // Show a new snackbar if the current state is "showing snackbar" with an ID different than currentShowingSnackbarId.
