@@ -114,7 +114,7 @@ class OptionControlsViewModel @Inject constructor(
         loadAppLanguageListListener,
         language,
         resourceHandler.computeLocalizedDisplayName(language)
-      )
+    )
   }
 
   private fun createAudioLanguageViewModel(profile: Profile): OptionsAudioLanguageViewModel {
