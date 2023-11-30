@@ -1199,9 +1199,6 @@ class ExplorationActivityTest {
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
-
-      // Clicks continue until we reach the first interaction.
-
       onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
@@ -1213,6 +1210,13 @@ class ExplorationActivityTest {
         )
       )
 
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+
+      // Clicks continue until we reach the first interaction.
       onView(withId(R.id.continue_interaction_button)).perform(click())
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
