@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.MarkChaptersCompletedFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to display all chapters and provide functionality to mark them completed. */
@@ -15,6 +18,8 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
   lateinit var markChaptersCompletedFragmentPresenter: MarkChaptersCompletedFragmentPresenter
 
   companion object {
+    private const val MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS_KEY =
+      "MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS"
     private const val PROFILE_ID_ARGUMENT_KEY = "MarkChaptersCompletedFragment.profile_id"
     private const val SHOW_CONFIRMATION_NOTICE_ARGUMENT_KEY =
       "MarkChaptersCompletedFragment.show_confirmation_notice"
@@ -28,12 +33,16 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
       internalProfileId: Int,
       showConfirmationNotice: Boolean
     ): MarkChaptersCompletedFragment {
-      val markChaptersCompletedFragment = MarkChaptersCompletedFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putBoolean(SHOW_CONFIRMATION_NOTICE_ARGUMENT_KEY, showConfirmationNotice)
-      markChaptersCompletedFragment.arguments = args
-      return markChaptersCompletedFragment
+      return MarkChaptersCompletedFragment().apply {
+        arguments = Bundle().apply {
+          val args = MarkChaptersCompletedFragmentArguments.newBuilder().apply {
+            this.profileId = internalProfileId
+            this.showConfirmationNotice = showConfirmationNotice
+          }
+            .build()
+          putProto(MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
@@ -47,11 +56,14 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
+    val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkChaptersCompletedFragment" }
-    val internalProfileId = args.getInt(PROFILE_ID_ARGUMENT_KEY, /* defaultValue= */ -1)
-    val showConfirmationNotice =
-      args.getBoolean(SHOW_CONFIRMATION_NOTICE_ARGUMENT_KEY, /* defaultValue= */ false)
+    val args = arguments.getProto(
+      MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS_KEY,
+      MarkChaptersCompletedFragmentArguments.getDefaultInstance()
+    )
+    val internalProfileId = args?.profileId ?: -1
+    val showConfirmationNotice = args?.showConfirmationNotice ?: false
     return markChaptersCompletedFragmentPresenter.handleCreateView(
       inflater,
       container,

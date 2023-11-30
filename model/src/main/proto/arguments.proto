@@ -349,3 +349,8 @@ message MarkChaptersCompletedActivityArguments{
   int32 profile_id = 1;
   bool show_confirmation_notice = 2;
 }
+
+message MarkChaptersCompletedFragmentArguments{
+  int32 profile_id = 1;
+  bool show_confirmation_notice = 2;
+}
