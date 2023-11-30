@@ -1214,11 +1214,11 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       // Clicks continue until we reach the first interaction.
+      /*onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())*/
 
       /*onView(withId(R.id.action_audio_player)).perform(click())
 
