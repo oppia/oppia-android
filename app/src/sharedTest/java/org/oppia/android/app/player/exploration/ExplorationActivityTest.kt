@@ -1201,7 +1201,6 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       // Clicks continue until we reach the first interaction.
-      // waitForTheView(withId(R.id.continue_interaction_button)).perform(click())
 
       onView(withId(R.id.action_audio_player)).perform(click())
 
@@ -1213,6 +1212,8 @@ class ExplorationActivityTest {
           withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
         )
       )
+
+      onView(withId(R.id.continue_interaction_button)).perform(click())
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
