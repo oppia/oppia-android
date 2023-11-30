@@ -23,16 +23,13 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    var internalProfileId: Int = -1
 
-    intent.getBundleExtra(COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY)?.apply {
-      this.getProto(
+    val args = intent.getBundleExtra(COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY)
+      ?.getProto(
         COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY,
         CompletedStoryListActivityArguments.getDefaultInstance()
-      ).apply {
-        internalProfileId = this.profileId
-      }
-    }
+      )
+    val internalProfileId: Int = args?.profileId ?: -1
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
