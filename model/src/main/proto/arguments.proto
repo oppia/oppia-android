@@ -339,3 +339,8 @@ message CompletedStoryListActivityArguments {
 message CompletedStoryListFragmentArguments{
   int32 profile_id = 1;
 }
+
+message MarkChaptersCompletedTestActivityArguments{
+  int32 profile_id = 1;
+  bool show_confirmation_notice = 2;
+}

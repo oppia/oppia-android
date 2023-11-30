@@ -7,6 +7,9 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
+import org.oppia.android.app.model.MarkChaptersCompletedTestActivityArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 
 /** The activity for testing [MarkChaptersCompletedFragment]. */
 class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActivity() {
@@ -16,9 +19,13 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_chapters_completed_activity)
-    val internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, /* default= */ -1)
-    val showConfirmationNotice =
-      intent.getBooleanExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, /* default= */ false)
+    val args = intent.getBundleExtra(MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY)?.getProto(
+      MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY,
+      MarkChaptersCompletedTestActivityArguments.getDefaultInstance()
+    )
+
+    val internalProfileId = args?.profileId ?: -1
+    val showConfirmationNotice = args?.showConfirmationNotice ?: false
     if (getMarkChaptersCompletedFragment() == null) {
       val markChaptersCompletedFragment =
         MarkChaptersCompletedFragment.newInstance(internalProfileId, showConfirmationNotice)
@@ -38,6 +45,8 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
     private const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedTestActivity.profile_id"
     private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
       "MarkChaptersCompletedTestActivity.show_confirmation_notice"
+    private const val MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY =
+      "MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT"
 
     /** Returns an [Intent] for [MarkChaptersCompletedTestActivity]. */
     fun createMarkChaptersCompletedTestIntent(
@@ -46,8 +55,15 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
       showConfirmationNotice: Boolean
     ): Intent {
       val intent = Intent(context, MarkChaptersCompletedTestActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
-      intent.putExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, showConfirmationNotice)
+      val bundle = Bundle().apply {
+        val args = MarkChaptersCompletedTestActivityArguments.newBuilder().apply {
+          this.profileId = internalProfileId
+          this.showConfirmationNotice = showConfirmationNotice
+        }
+          .build()
+        putProto(MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY, args)
+      }
+      intent.putExtra(MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY, bundle)
       return intent
     }
   }
