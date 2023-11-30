@@ -4,9 +4,12 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.app.utility.getVersionCode
+import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
+import org.oppia.android.util.platformparameter.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.util.platformparameter.ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
@@ -15,6 +18,7 @@ import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
@@ -30,6 +34,7 @@ import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSO
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
@@ -57,6 +62,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
@@ -67,8 +73,12 @@ import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 class PlatformParameterAlphaModule {
   @Provides
   @EnableDownloadsSupport
-  fun provideEnableDownloadsSupport(): PlatformParameterValue<Boolean> =
-    PlatformParameterValue.createDefaultParameter(ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE)
+  fun provideEnableDownloadsSupport(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE)
+  }
 
   @Provides
   @SplashScreenWelcomeMsg
@@ -101,8 +111,12 @@ class PlatformParameterAlphaModule {
 
   @Provides
   @EnableEditAccountsOptionsUi
-  fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
+  fun provideEnableEditAccountsOptionsUi(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(
+      EDIT_ACCOUNTS_OPTIONS_UI
+    ) ?: PlatformParameterValue.createDefaultParameter(
       ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     )
   }
@@ -195,31 +209,46 @@ class PlatformParameterAlphaModule {
 
   @Provides
   @EnableSpotlightUi
-  fun provideEnableSpotlightUi(): PlatformParameterValue<Boolean> =
-    PlatformParameterValue.createDefaultParameter(true) // Enable spotlights for alpha users.
+  fun provideEnableSpotlightUi(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(SPOTLIGHT_UI)
+      ?: PlatformParameterValue.createDefaultParameter(true) // Enable spotlights for alpha users.
+  }
 
   @Provides
   @EnableExtraTopicTabsUi
-  fun provideEnableExtraTopicTabsUi(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
+  fun provideEnableExtraTopicTabsUi(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(
+      EXTRA_TOPIC_TABS_UI
+    ) ?: PlatformParameterValue.createDefaultParameter(
       ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
     )
   }
 
   @Provides
   @EnableInteractionConfigChangeStateRetention
-  fun provideEnableInteractionConfigChangeStateRetention(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
+  fun provideEnableInteractionConfigChangeStateRetention(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(
+      INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+    ) ?: PlatformParameterValue.createDefaultParameter(
       ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
     )
   }
 
   @Provides
   @EnableAppAndOsDeprecation
-  fun provideEnableAppAndOsDeprecation(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
-      ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
-    )
+  fun provideEnableAppAndOsDeprecation(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
+      ?: PlatformParameterValue.createDefaultParameter(
+        ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
+      )
   }
 
   @Provides
