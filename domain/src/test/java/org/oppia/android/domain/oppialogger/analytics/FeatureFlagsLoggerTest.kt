@@ -48,7 +48,7 @@ import javax.inject.Singleton
 class FeatureFlagsLoggerTest {
   private companion object {
     private const val TEST_SESSION_ID = "test_session_id"
-    private val INITIAL_SYNC_STATUS = PlatformParameter.SyncStatus.SYNC_STATUS_UNSPECIFIED
+    private val INITIAL_SYNC_STATUS = PlatformParameter.SyncStatus.NOT_SYNCED_FROM_SERVER
   }
 
   @Inject

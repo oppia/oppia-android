@@ -58,7 +58,7 @@ class FeatureFlagsLogger @Inject constructor(
   private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>
 ) {
   /**
-   * This method logs all the configured feature flags to firebase.
+   * This method logs the name, enabled status and sync status of all feature flags to Firebase.
    *
    * @param sessionId denotes the id of the current appInForeground session
    */
@@ -76,8 +76,6 @@ class FeatureFlagsLogger @Inject constructor(
    * @return a list of [FeatureFlagItem]s
    */
   private fun compileFeatureFlagsForLogging(): List<FeatureFlagItem> {
-    val listOfFlags = arrayListOf<FeatureFlagItem>()
-
     val enableDownloadsSupportFlagItem = FeatureFlagItem.newBuilder()
       .setFlagName(DOWNLOADS_SUPPORT)
       .setFlagEnabledState(enableDownloadsSupport.value)
@@ -138,17 +136,13 @@ class FeatureFlagsLogger @Inject constructor(
       .setFlagSyncStatus(enableAppAndOsDeprecation.syncStatus)
       .build()
 
-    listOfFlags.addAll(
-      listOf(
-        enableDownloadsSupportFlagItem, enableExtraTopicTabsUiFlagItem,
-        enableLearnerStudyAnalyticsFlagItem, enableFastLanguageSwitchingInLessonFlagItem,
-        enableLoggingLearnerStudyIdsFlagItem, enableEditAccountsOptionsUiFlagItem,
-        enablePerformanceMetricsCollectionFlagItem, enableSpotlightUiFlagItem,
-        enableInteractionConfigChangeStateRetentionFlagItem, enableAppAndOsDeprecationFlagItem
-      )
+    return listOf(
+      enableDownloadsSupportFlagItem, enableExtraTopicTabsUiFlagItem,
+      enableLearnerStudyAnalyticsFlagItem, enableFastLanguageSwitchingInLessonFlagItem,
+      enableLoggingLearnerStudyIdsFlagItem, enableEditAccountsOptionsUiFlagItem,
+      enablePerformanceMetricsCollectionFlagItem, enableSpotlightUiFlagItem,
+      enableInteractionConfigChangeStateRetentionFlagItem, enableAppAndOsDeprecationFlagItem
     )
-
-    return listOfFlags
   }
 
   /**

@@ -1985,7 +1985,8 @@ class EventLogSubject private constructor(
     fun hasSessionIdThat(): StringSubject = assertThat(actual.sessionId)
 
     /**
-     * Returns a [BooleanSubject] to test the flagEnabledState of the [EventLog.FeatureFlagContext].
+     * Returns a [BooleanSubject] to test the flagEnabledState of the first item on the feature flag
+     * list in the [EventLog.FeatureFlagContext].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
