@@ -1201,7 +1201,18 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       // Clicks continue until we reach the first interaction.
-      waitForTheView(withId(R.id.continue_interaction_button)).perform(click())
+      // waitForTheView(withId(R.id.continue_interaction_button)).perform(click())
+
+      onView(withId(R.id.action_audio_player)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
+        )
+      )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
