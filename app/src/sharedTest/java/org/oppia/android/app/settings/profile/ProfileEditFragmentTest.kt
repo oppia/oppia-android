@@ -2,6 +2,7 @@ package org.oppia.android.app.settings.profile
 
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -44,6 +45,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
+import org.oppia.android.app.model.MarkChaptersCompletedActivityArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -98,6 +100,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -121,14 +124,21 @@ import javax.inject.Singleton
 @Config(application = ProfileEditFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class ProfileEditFragmentTest {
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -348,9 +358,16 @@ class ProfileEditFragmentTest {
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
+      val bundle = Bundle().apply {
+        val args = MarkChaptersCompletedActivityArguments.newBuilder().apply {
+          this.profileId = 0
+          this.showConfirmationNotice = true
+        }
+          .build()
+        putProto("MarkChaptersCompletedActivity.Arguments", args)
+      }
       intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
-      intended(hasExtra("MarkChaptersCompletedActivity.profile_id", 0))
-      intended(hasExtra("MarkChaptersCompletedActivity.show_confirmation_notice", true))
+      intended(hasExtra("MarkChaptersCompletedActivity.Arguments", bundle))
     }
   }
 
