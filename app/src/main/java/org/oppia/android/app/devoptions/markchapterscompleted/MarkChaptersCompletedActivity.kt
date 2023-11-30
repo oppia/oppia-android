@@ -7,8 +7,11 @@ import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.MarkChaptersCompletedActivityArguments
 import org.oppia.android.app.model.ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
@@ -24,9 +27,15 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, /* defaultValue= */ -1)
-    val showConfirmationNotice =
-      intent.getBooleanExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, /* defaultValue= */ false)
+
+    val args = intent.getBundleExtra(MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS)
+      ?.getProto(
+        MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS,
+        MarkChaptersCompletedActivityArguments.getDefaultInstance()
+      )
+
+    val internalProfileId = args?.profileId ?: -1
+    val showConfirmationNotice = args?.showConfirmationNotice ?: false
     markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId, showConfirmationNotice)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
   }
@@ -39,9 +48,8 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
   }
 
   companion object {
-    private const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedActivity.profile_id"
-    private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
-      "MarkChaptersCompletedActivity.show_confirmation_notice"
+    private const val MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS =
+      "MarkChaptersCompletedActivity.Arguments"
 
     /** Returns an [Intent] to start this activity. */
     fun createMarkChaptersCompletedIntent(
@@ -49,11 +57,18 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
       internalProfileId: Int,
       showConfirmationNotice: Boolean
     ): Intent {
-      return Intent(context, MarkChaptersCompletedActivity::class.java).apply {
-        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
-        putExtra(SHOW_CONFIRMATION_NOTICE_EXTRA_KEY, showConfirmationNotice)
-        decorateWithScreenName(MARK_CHAPTERS_COMPLETED_ACTIVITY)
+      val intent = Intent(context, MarkChaptersCompletedActivity::class.java)
+      val bundle = Bundle().apply {
+        val args = MarkChaptersCompletedActivityArguments.newBuilder().apply {
+          this.profileId = internalProfileId
+          this.showConfirmationNotice = showConfirmationNotice
+        }
+          .build()
+        putProto(MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS, args)
       }
+      intent.putExtra(MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS, bundle)
+      intent.decorateWithScreenName(MARK_CHAPTERS_COMPLETED_ACTIVITY)
+      return intent
     }
   }
 }
