@@ -1188,7 +1188,7 @@ class ExplorationActivityTest {
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     } */
 
-    markAllSpotlightsSeen()
+    /* markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1234,6 +1234,42 @@ class ExplorationActivityTest {
       )
 
       onView(withText("What is a Ratio?")) */
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false) */
+
+    markAllSpotlightsSeen()
+    setUpAudio()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
+
+      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
+        )
+      )
+
+      onView(withText("What is a Ratio?"))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
