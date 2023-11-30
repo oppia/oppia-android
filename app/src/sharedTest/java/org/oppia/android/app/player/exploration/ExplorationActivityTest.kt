@@ -1199,6 +1199,13 @@ class ExplorationActivityTest {
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
+
+      // Clicks continue until we reach the first interaction.
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
