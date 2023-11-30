@@ -18,7 +18,6 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
@@ -43,6 +42,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import java.io.IOException
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
@@ -166,10 +169,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.IOException
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -1181,7 +1180,7 @@ class ExplorationActivityTest {
   @Test
   // @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
-    /*{
+    /* {
       onView(withId(R.id.text_input_interaction_view)).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
@@ -1191,7 +1190,7 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
-    }*/
+    } */
 
     markAllSpotlightsSeen()
     setUpAudio()
@@ -1214,21 +1213,21 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       // Clicks continue until we reach the first interaction.
-      /*onView(withId(R.id.continue_interaction_button)).perform(click())
+      /* onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())*/
+      onView(withId(R.id.continue_interaction_button)).perform(click()) */
 
-      /*onView(withId(R.id.action_audio_player)).perform(click())
+      /* onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.text_input_interaction_view)).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
-      )*/
+      ) */
 
-      /*onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
+      /* onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
       onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
 
       waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
@@ -1238,7 +1237,7 @@ class ExplorationActivityTest {
         )
       )
 
-      onView(withText("What is a Ratio?"))*/
+      onView(withText("What is a Ratio?")) */
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
