@@ -354,3 +354,8 @@ message MarkChaptersCompletedFragmentArguments{
   int32 profile_id = 1;
   bool show_confirmation_notice = 2;
 }
+
+message MarkChaptersCompletedFragmentStateBundle{
+  repeated string exploration_id_list = 1;
+  repeated string exploration_title_list = 2;
+}

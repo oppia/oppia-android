@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.MarkChaptersCompletedFragmentArguments
+import org.oppia.android.app.model.MarkChaptersCompletedFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -20,6 +21,8 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
   companion object {
     private const val MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS_KEY =
       "MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS"
+    private const val MARKCHAPTERSCOMPLETED_FRAGMENT_STATE_KEY =
+      "MARKCHAPTERSCOMPLETED_FRAGMENT_STATE"
     private const val PROFILE_ID_ARGUMENT_KEY = "MarkChaptersCompletedFragment.profile_id"
     private const val SHOW_CONFIRMATION_NOTICE_ARGUMENT_KEY =
       "MarkChaptersCompletedFragment.show_confirmation_notice"
@@ -64,25 +67,35 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
     )
     val internalProfileId = args?.profileId ?: -1
     val showConfirmationNotice = args?.showConfirmationNotice ?: false
+
+    val savedStateArgs = savedInstanceState?.getProto(
+      MARKCHAPTERSCOMPLETED_FRAGMENT_STATE_KEY,
+      MarkChaptersCompletedFragmentStateBundle.getDefaultInstance()
+    )
     return markChaptersCompletedFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
       showConfirmationNotice,
-      savedInstanceState?.getStringArrayList(EXPLORATION_ID_LIST_ARGUMENT_KEY) ?: listOf(),
-      savedInstanceState?.getStringArrayList(EXPLORATION_TITLE_LIST_ARGUMENT_KEY) ?: listOf()
+      savedStateArgs?.explorationIdListList ?: listOf(),
+      savedStateArgs?.explorationTitleListList ?: listOf()
     )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putStringArrayList(
-      EXPLORATION_ID_LIST_ARGUMENT_KEY,
-      markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
-    )
-    outState.putStringArrayList(
-      EXPLORATION_TITLE_LIST_ARGUMENT_KEY,
-      markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
-    )
+
+    outState.apply {
+      val args = MarkChaptersCompletedFragmentStateBundle.newBuilder().apply {
+        addAllExplorationIdList(
+          markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+        )
+        addAllExplorationTitleList(
+          markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
+        )
+      }
+        .build()
+      putProto(MARKCHAPTERSCOMPLETED_FRAGMENT_STATE_KEY, args)
+    }
   }
 }
