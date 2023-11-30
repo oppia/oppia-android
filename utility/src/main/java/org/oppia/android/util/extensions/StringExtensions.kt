@@ -19,7 +19,6 @@ fun String.removeWhitespace(): String {
 /**
  *Checks if the string contains a placeholder in the form of "%s" or "%1$s".
  * The placeholder may include an optional number followed by a '$' symbol.
- *
  * @return `true` if the string contains a placeholder, `false` otherwise.
  */
 fun String.containsPlaceholderRegex(): Boolean {
