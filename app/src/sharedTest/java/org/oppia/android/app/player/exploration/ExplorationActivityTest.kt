@@ -1218,7 +1218,15 @@ class ExplorationActivityTest {
       onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
 
-      scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+
+      onView(withId(R.id.submit_answer_button))
+
+      // scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON)
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
