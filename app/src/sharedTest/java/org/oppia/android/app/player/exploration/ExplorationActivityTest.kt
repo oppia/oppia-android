@@ -1223,7 +1223,9 @@ class ExplorationActivityTest {
         )
       )
 
-      onView(withId(R.id.text_input_interaction_view))
+      onView(withId(R.id.text_input_interaction_view)).perform(
+        editTextInputAction.appendText("123")
+      )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
