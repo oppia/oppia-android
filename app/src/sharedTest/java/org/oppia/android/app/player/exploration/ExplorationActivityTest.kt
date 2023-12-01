@@ -18,6 +18,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
@@ -1202,7 +1203,6 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-
       waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
 
       onView(withId(R.id.state_recycler_view)).perform(
@@ -1224,9 +1224,13 @@ class ExplorationActivityTest {
         )
       )
 
-      onView(withId(R.id.text_input_interaction_view))
+      testCoroutineDispatchers.runCurrent()
+      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
 
-      // scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.text_input_interaction_view)).perform(
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
+      )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
