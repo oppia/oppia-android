@@ -1206,7 +1206,7 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
+          (recyclerView.adapter?.itemCount ?: 1) - 1
         )
       )
 
@@ -1218,6 +1218,8 @@ class ExplorationActivityTest {
       onView(withId(R.id.continue_interaction_button)).perform(click())
 
       onView(withId(R.id.text_input_interaction_view))
+
+      onView(withText("What is a Ratio?"))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
