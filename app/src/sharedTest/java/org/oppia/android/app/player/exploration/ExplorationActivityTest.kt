@@ -1224,7 +1224,7 @@ class ExplorationActivityTest {
         )
       )
 
-      onView(withId(R.id.submit_answer_button))
+      onView(withId(R.id.text_input_interaction_view))
 
       // scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON)
     }
