@@ -169,7 +169,6 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.player.state.StateFragmentLocalTest
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -2466,7 +2465,7 @@ class ExplorationActivityTest {
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
-    return scrollToHolder(StateFragmentLocalTest.StateViewHolderTypeMatcher(viewType))
+    return scrollToHolder(StateViewHolderTypeMatcher(viewType))
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
