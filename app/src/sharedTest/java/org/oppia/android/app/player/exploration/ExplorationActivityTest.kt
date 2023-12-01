@@ -1224,9 +1224,7 @@ class ExplorationActivityTest {
         )
       )
 
-      onView(withId(R.id.text_input_interaction_view)).perform(
-        typeText("123")
-      )
+      onView(withId(R.id.text_input_interaction_view))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
