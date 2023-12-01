@@ -3,7 +3,6 @@ package org.oppia.android.app.devoptions.marktopicscompleted
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
@@ -36,7 +35,6 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
       MarkTopicsCompletedActivityArguments.getDefaultInstance()
     )
     internalProfileId = args?.profileId ?: -1
-    Log.e("#", internalProfileId.toString())
     markTopicsCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_topics_completed_activity_title)
   }
@@ -58,7 +56,6 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
     fun createMarkTopicsCompletedIntent(context: Context, internalProfileId: Int): Intent {
-      Log.e("#", internalProfileId.toString())
       return Intent(context, MarkTopicsCompletedActivity::class.java).apply {
         val args = MarkTopicsCompletedActivityArguments.newBuilder().apply {
           profileId = internalProfileId
