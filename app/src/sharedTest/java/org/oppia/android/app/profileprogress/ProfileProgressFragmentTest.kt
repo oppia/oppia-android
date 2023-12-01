@@ -59,10 +59,12 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
+import org.oppia.android.app.completedstorylist.CompletedStoryListActivity.Companion.COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity.Companion.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY
+import org.oppia.android.app.model.CompletedStoryListActivityArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
@@ -816,11 +818,14 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.completed_stories_container)
+      val args = CompletedStoryListActivityArguments.newBuilder().apply {
+        profileId = internalProfileId
+      }.build()
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
       intended(
-        hasExtra(
-          CompletedStoryListActivity.PROFILE_ID_EXTRA_KEY,
-          internalProfileId
+        hasProtoExtra(
+          COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY,
+          args
         )
       )
     }

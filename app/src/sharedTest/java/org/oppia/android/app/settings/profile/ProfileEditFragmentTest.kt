@@ -49,6 +49,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS
 import org.oppia.android.app.model.MarkChaptersCompletedActivityArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -373,7 +374,7 @@ class ProfileEditFragmentTest {
       }
         .build()
       intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
-      intended(hasProtoExtra("MarkChaptersCompletedActivity.Arguments", args))
+      intended(hasProtoExtra(MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS, args))
     }
   }
 

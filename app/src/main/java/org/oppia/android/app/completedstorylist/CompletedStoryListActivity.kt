@@ -13,7 +13,6 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** The arguments key  for [CompletedStoryListActivity]. */
-const val COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY = "CompletedStoryListActivity.arguments"
 
 /** Activity for completed stories. */
 class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -35,6 +34,7 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY = "CompletedStoryListActivity.arguments"
     const val PROFILE_ID_EXTRA_KEY =
       "CompletedStoryListActivity.profile_id"
 
