@@ -1223,7 +1223,7 @@ class ExplorationActivityTest {
         )
       )
 
-      onView(withId(R.id.text_input_interaction_view))
+      onView(withId(R.id.text_input_interaction_view)).perform(click())
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
