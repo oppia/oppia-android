@@ -1210,44 +1210,15 @@ class ExplorationActivityTest {
           1
         )
       )
+
+      // Clicks continue until we reach the first interaction.
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
 
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      /*// Clicks continue until we reach the first interaction.
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())*/
-
-      scrollToViewType(StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION)
+      scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON)
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
