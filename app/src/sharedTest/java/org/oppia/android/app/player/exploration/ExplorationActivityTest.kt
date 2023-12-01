@@ -1205,11 +1205,18 @@ class ExplorationActivityTest {
 
       waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
 
-      clickContinueButton()
-      clickContinueButton()
-      clickContinueButton()
-      clickContinueButton()
-      clickContinueButton()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+
+      // Clicks continue until we reach the first interaction.
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
 
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -1218,6 +1225,8 @@ class ExplorationActivityTest {
       )
 
       onView(withId(R.id.submit_answer_button))
+
+      // scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON)
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
