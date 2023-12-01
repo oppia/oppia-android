@@ -47,6 +47,7 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
   }
 
   companion object {
+    /** Argument key for [MarkChaptersCompletedActivity]. */
     const val MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS =
       "MarkChaptersCompletedActivity.Arguments"
 
