@@ -2,7 +2,6 @@ package org.oppia.android.app.settings.profile
 
 import android.app.Application
 import android.content.Context
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -45,7 +44,6 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
-import org.oppia.android.app.model.MarkChaptersCompletedActivityArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -100,7 +98,6 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -358,16 +355,11 @@ class ProfileEditFragmentTest {
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
-      val bundle = Bundle().apply {
-        val args = MarkChaptersCompletedActivityArguments.newBuilder().apply {
-          this.profileId = 0
-          this.showConfirmationNotice = true
-        }
-          .build()
-        putProto("MarkChaptersCompletedActivity.Arguments", args)
-      }
+//      val bundle = MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(context,0,false)
+
       intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
-      intended(hasExtra("MarkChaptersCompletedActivity.Arguments", bundle))
+      intended(hasExtra("MarkChaptersCompletedActivity.Arguments.profileId", 0))
+      intended(hasExtra("MarkChaptersCompletedActivity.Arguments.showConfirmationNotice", true))
     }
   }
 

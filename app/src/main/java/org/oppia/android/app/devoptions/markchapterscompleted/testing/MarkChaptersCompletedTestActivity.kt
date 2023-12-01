@@ -8,8 +8,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.model.MarkChaptersCompletedTestActivityArguments
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 
 /** The activity for testing [MarkChaptersCompletedFragment]. */
 class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActivity() {
@@ -19,7 +19,8 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_chapters_completed_activity)
-    val args = intent.getBundleExtra(MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY)?.getProto(
+
+    val args = intent.getProtoExtra(
       MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY,
       MarkChaptersCompletedTestActivityArguments.getDefaultInstance()
     )
@@ -55,15 +56,14 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
       showConfirmationNotice: Boolean
     ): Intent {
       val intent = Intent(context, MarkChaptersCompletedTestActivity::class.java)
-      val bundle = Bundle().apply {
-        val args = MarkChaptersCompletedTestActivityArguments.newBuilder().apply {
-          this.profileId = internalProfileId
-          this.showConfirmationNotice = showConfirmationNotice
-        }
-          .build()
-        putProto(MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY, args)
+
+      val args = MarkChaptersCompletedTestActivityArguments.newBuilder().apply {
+        this.profileId = internalProfileId
+        this.showConfirmationNotice = showConfirmationNotice
       }
-      intent.putExtra(MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY, bundle)
+        .build()
+
+      intent.putProtoExtra(MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY, args)
       return intent
     }
   }

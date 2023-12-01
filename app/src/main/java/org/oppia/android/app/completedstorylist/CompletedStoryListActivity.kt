@@ -7,8 +7,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.CompletedStoryListActivityArguments
 import org.oppia.android.app.model.ScreenName.COMPLETED_STORY_LIST_ACTIVITY
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
@@ -24,11 +24,11 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val args = intent.getBundleExtra(COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY)
-      ?.getProto(
-        COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY,
-        CompletedStoryListActivityArguments.getDefaultInstance()
-      )
+    val args = intent.getProtoExtra(
+      COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY,
+      CompletedStoryListActivityArguments.getDefaultInstance()
+    )
+
     val internalProfileId: Int = args?.profileId ?: -1
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
   }
@@ -41,13 +41,11 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
     /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */
     fun createCompletedStoryListActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, CompletedStoryListActivity::class.java)
-      val bundle = Bundle().apply {
-        val args = CompletedStoryListActivityArguments.newBuilder().apply {
-          profileId = internalProfileId
-        }.build()
-        putProto(COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY, args)
-      }
-      intent.putExtra(COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY, bundle)
+      val args = CompletedStoryListActivityArguments.newBuilder().apply {
+        profileId = internalProfileId
+      }.build()
+
+      intent.putProtoExtra(COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY, args)
       intent.decorateWithScreenName(COMPLETED_STORY_LIST_ACTIVITY)
       return intent
     }
