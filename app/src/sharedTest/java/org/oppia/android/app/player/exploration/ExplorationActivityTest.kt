@@ -169,6 +169,7 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.player.state.StateFragmentLocalTest
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -1223,7 +1224,7 @@ class ExplorationActivityTest {
         )
       )
 
-      onView(withId(R.id.text_input_interaction_view))
+      submitTextInput("123")
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -2441,6 +2442,31 @@ class ExplorationActivityTest {
         targetViewId = R.id.content_text_view
       )
     ).check(matches(withText(containsString(expectedHtml))))
+  }
+
+  private fun submitTextInput(text: String) {
+    typeTextInput(text)
+    clickSubmitAnswerButton()
+  }
+
+  private fun typeTextInput(text: String) {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(TEXT_INPUT_INTERACTION))
+    typeTextIntoInteraction(text, interactionViewId = R.id.text_input_interaction_view)
+  }
+
+  private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
+    onView(withId(interactionViewId)).perform(editTextInputAction.appendText(text))
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickSubmitAnswerButton() {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
+    return scrollToHolder(StateFragmentLocalTest.StateViewHolderTypeMatcher(viewType))
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
