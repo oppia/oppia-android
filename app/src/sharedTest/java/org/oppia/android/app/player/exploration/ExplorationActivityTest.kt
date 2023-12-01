@@ -1206,7 +1206,7 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          (recyclerView.adapter?.itemCount ?: 1) - 1
+          1
         )
       )
 
