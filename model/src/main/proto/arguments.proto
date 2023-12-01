@@ -375,3 +375,19 @@ message MarkStoriesCompletedFragmentArguments {
 message MarkStoriesCompletedFragmentStateBundle{
   repeated string story_id_list=1;
 }
+
+message MarkTopicsCompletedTestActivityArguments {
+  int32 profile_id = 1;
+}
+
+message MarkTopicsCompletedActivityArguments {
+  int32 profile_id = 1;
+}
+
+message MarkTopicsCompletedFragmentArguments {
+  int32 profile_id = 1;
+}
+
+message MarkTopicsCompletedFragmentStateBundle {
+  repeated string topic_id_list=1;
+}

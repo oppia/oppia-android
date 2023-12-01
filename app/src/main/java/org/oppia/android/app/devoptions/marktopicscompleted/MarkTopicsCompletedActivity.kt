@@ -3,6 +3,7 @@ package org.oppia.android.app.devoptions.marktopicscompleted
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
@@ -12,6 +13,9 @@ import org.oppia.android.app.model.ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.MarkTopicsCompletedActivityArguments
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 
 /** Activity for Mark Topics Completed. */
 class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -27,7 +31,9 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+    val args=intent.getProtoExtra(MARKTOPICSCOMPLETEDACTIVITY_ARGUMENTS_KEY,MarkTopicsCompletedActivityArguments.getDefaultInstance())
+    internalProfileId = args?.profileId?:-1
+    Log.e("#",internalProfileId.toString())
     markTopicsCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_topics_completed_activity_title)
   }
@@ -43,10 +49,18 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
     /** [String] key value for mapping to InternalProfileId in [Bundle]. */
     const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedActivity.profile_id"
 
+    /** Argument key for MarkTopicsCompletedActivity.. */
+    const val MARKTOPICSCOMPLETEDACTIVITY_ARGUMENTS_KEY =
+      "MarkTopicsCompletedActivity.Arguments"
+
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
     fun createMarkTopicsCompletedIntent(context: Context, internalProfileId: Int): Intent {
+      Log.e("#",internalProfileId.toString())
       return Intent(context, MarkTopicsCompletedActivity::class.java).apply {
-        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        val args= MarkTopicsCompletedActivityArguments.newBuilder().apply {
+          profileId=internalProfileId
+        }.build()
+        putProtoExtra(MARKTOPICSCOMPLETEDACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(MARK_TOPICS_COMPLETED_ACTIVITY)
       }
     }

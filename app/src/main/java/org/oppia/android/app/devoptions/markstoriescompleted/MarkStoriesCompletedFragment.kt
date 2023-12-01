@@ -19,7 +19,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
   lateinit var markStoriesCompletedFragmentPresenter: MarkStoriesCompletedFragmentPresenter
 
   companion object {
-    /**Argument key for MarkStoriesCompletedActivity.. */
+    /** Argument key for MarkStoriesCompletedActivity.. */
     const val MARKSTORIESCOMPLETEDFRAGMENT_ARGUMENTS_KEY = "MarkStoriesCompletedFragment.Arguments"
 
     const val MARKSTORIESCOMPLETEDFRAGMENT_STATE_KEY = "MarkStoriesCompletedFragment.State"
