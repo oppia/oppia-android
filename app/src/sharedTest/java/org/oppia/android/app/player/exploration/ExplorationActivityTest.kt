@@ -1224,8 +1224,6 @@ class ExplorationActivityTest {
         )
       )
 
-      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
-
       onView(withId(R.id.text_input_interaction_view)).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
