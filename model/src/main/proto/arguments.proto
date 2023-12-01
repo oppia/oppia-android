@@ -359,3 +359,19 @@ message MarkChaptersCompletedFragmentStateBundle{
   repeated string exploration_id_list = 1;
   repeated string exploration_title_list = 2;
 }
+
+message MarkStoriesCompletedTestActivityArguments {
+  int32 profile_id = 1;
+}
+
+message MarkStoriesCompletedActivityArguments {
+  int32 profile_id = 1;
+}
+
+message MarkStoriesCompletedFragmentArguments {
+  int32 profile_id = 1;
+}
+
+message MarkStoriesCompletedFragmentStateBundle{
+  repeated string story_id_list=1;
+}
