@@ -1219,11 +1219,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
 
-      scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION)
-      onView(withId(R.id.text_input_interaction_view)).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
+      scrollToViewType(StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION)
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
