@@ -45,7 +45,8 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/multipane_guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="InconsistentLayout" />
 
       <FrameLayout
         android:id="@+id/multipane_options_container"
@@ -55,7 +56,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/multipane_guideline"
-        app:layout_constraintTop_toBottomOf="@id/options_activity_selected_options_title" />
+        app:layout_constraintTop_toBottomOf="@id/options_activity_selected_options_title"
+        tools:ignore="InconsistentLayout" />
 
       <androidx.constraintlayout.widget.Guideline
         android:id="@+id/multipane_guideline"

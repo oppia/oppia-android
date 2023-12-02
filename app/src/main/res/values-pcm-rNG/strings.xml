@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Authors:
 * Busayo
+* Confidence
 * Osetiemoria
+* Yigakpoa
 -->
 <resources>
   <string name="nav_header_desc">Navigation header</string>
@@ -9,6 +11,7 @@
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Lesson Player</string>
+  <string name="play_exploration_button_text">play exploration</string>
   <string name="help_activity_title">Help</string>
   <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Change Profile</string>
@@ -19,18 +22,20 @@
   <string name="audio_play_description">Play di audio</string>
   <string name="audio_pause_description">Pause di audio</string>
   <string name="audio_unavailable_in_selected_language">%s audio no dey available.</string>
-  <string name="audio_language_select_dialog_okay_button" fuzzy="true">OK</string>
+  <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel am</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="audio_dialog_offline_title">You dey offline</string>
   <string name="audio_dialog_offline_message">Make sure sey Wi-Fi or mobile data dey on, den try am again.</string>
-  <string name="audio_dialog_offline_positive" fuzzy="true">OK</string>
-  <string name="cellular_data_alert_dialog_okay_button" fuzzy="true">OK</string>
+  <string name="audio_dialog_offline_positive">OK</string>
+  <string name="cellular_data_alert_dialog_okay_button">OK</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel am</string>
   <string name="cellular_data_alert_dialog_title">Na your data you dey use now</string>
   <string name="cellular_data_alert_dialog_description">Playing di audio go use plenti mobile data.</string>
   <string name="cellular_data_alert_dialog_checkbox">No show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="concept_card_one_button_text">Concept Card 1</string>
+  <string name="concept_card_two_button_text">Concept Card 2</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
   <string name="unsaved_exploration_dialog_title">Comot go the topic page?</string>
   <string name="unsaved_exploration_dialog_description">Wetin you don do before no go save</string>
@@ -64,6 +69,7 @@
   <string name="previous_state_description">Go di former card</string>
   <string name="next_state_description">Go di next card</string>
   <string name="state_submit_button">Submit</string>
+  <string name="submit_button_text">Submit</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Di Topic</string>
   <string name="previous_responses_header">Former reply (%s)</string>
@@ -71,6 +77,7 @@
   <string name="state_learn_again_button">Learn Am Again</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
+  <string name="sample_text_view_text">This na sample text view</string>
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
@@ -91,6 +98,7 @@
   <string name="chapter_completed">Chapter %s with title %s don complete</string>
   <string name="chapter_in_progress">Chapter %s with title %s dey in progress</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock dis chapter.</string>
+  <string name="chapter_locked_prerequisite_title_label">Chapter %s: %s dey locked currently. Abeg complete chapter %s: %s to fit unlock dis chapter.</string>
   <string name="chapter_prerequisite_title_label_without_chapter_title">Finish the chapter wey dey before to fit open dis chapter</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter fraction wey dey in di form x/x, or mixed nomba wey dey in di form x x/x.</string>
@@ -164,11 +172,11 @@
   <string name="number_error_starting_with_floating_point">Abeg start your ansa with nomba (e.g.,”0” for 0.5).</string>
   <string name="number_error_invalid_format">Abeg put correct nomba.</string>
   <string name="number_error_larger_than_fifteen_characters">Di ansa fit get at most 15 digits (0–9) or sign (. or -).</string>
-  <string name="ratio_error_invalid_chars" fuzzy="true">Abeg write a ratio wey get nomba separated by colons (e.g. 1:2 or 1:2:3).</string>
-  <string name="ratio_error_invalid_format" fuzzy="true">Abeg enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
-  <string name="ratio_error_invalid_colons" fuzzy="true">Your ansa get two colons (:) next to each other.</string>
-  <string name="ratio_error_invalid_size" fuzzy="true">Nomba of terms no dey equal to di required terms.</string>
-  <string name="ratio_error_includes_zero" fuzzy="true">Ratios no suppose get 0 as an element.</string>
+  <string name="ratio_error_invalid_chars">Abeg write a ratio wey get nomba separated by colons (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_format">Abeg enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_colons">Your ansa get two colons (:) next to each other.</string>
+  <string name="ratio_error_invalid_size">Nomba of terms no dey equal to di required terms.</string>
+  <string name="ratio_error_includes_zero">Ratios no suppose get 0 as an element.</string>
   <string name="unknown_size">Size wey dey no know</string>
   <string name="size_bytes">%s Bytes</string>
   <string name="size_kb">%s KB</string>
@@ -176,11 +184,11 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">You get am!</string>
   <string name="topic_prefix">Topic: %s</string>
-  <plurals name="chapter_count" fuzzy="true">
+  <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
   </plurals>
-  <plurals name="story_count" fuzzy="true">
+  <plurals name="story_count">
     <item quantity="one">1 Story</item>
     <item quantity="other">%s Stories</item>
   </plurals>
@@ -188,16 +196,16 @@
     <item quantity="one">%s of %s Chapter Completed</item>
     <item quantity="other">%s of %s Chapters Completed</item>
   </plurals>
-  <plurals name="lesson_count" fuzzy="true">
+  <plurals name="lesson_count">
     <item quantity="one">1 Lesson</item>
     <item quantity="other">%s Lessons</item>
   </plurals>
-  <plurals name="completed_story_count" fuzzy="true">
+  <plurals name="completed_story_count">
     <item quantity="one">1 Story Completed</item>
     <item quantity="zero">%s Stories Completed</item>
     <item quantity="other">%s Stories Completed</item>
   </plurals>
-  <plurals name="ongoing_topic_count" fuzzy="true">
+  <plurals name="ongoing_topic_count">
     <item quantity="one">1 Topic in Progress</item>
     <item quantity="zero">%s Topics in Progress</item>
     <item quantity="other">%s Topics in Progress</item>
@@ -324,7 +332,7 @@
   <string name="profile_picture_edit_alert_dialog_choose_from_library">Choose From Library</string>
   <string name="profile_rename_activity_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
-  <string name="profile_rename_save" fuzzy="true">save</string>
+  <string name="profile_rename_save">Save</string>
   <string name="profile_reset_pin_activity_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Put new PIN for di user to put wan dey wan enter deir profile.</string>
   <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>
@@ -337,6 +345,7 @@
   <string name="add_profile_required">Required</string>
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
+  <string name="learner_analytics_label_text">Learner Study Analytics</string>
   <string name="administrator_controls_general_label">General</string>
   <string name="administrator_controls_edit_account">Edit account</string>
   <string name="administrator_controls_profile_management_label">Profile Management</string>
@@ -357,12 +366,12 @@
   <string name="app_last_update_date">Di last update install on %s. Use di version nomba for up to send feedback about bugs.</string>
   <string name="app_version_activity_title">App Version</string>
   <string name="app_language_activity_title">App Language</string>
-  <string name="audio_language_activity_title" fuzzy="true">Default Audio Language</string>
+  <string name="audio_language_activity_title">Preferred Audio Language</string>
   <string name="reading_text_size_activity_title">Reading Text Size</string>
   <string name="title_reading_text_size">Reading Text Size</string>
   <string name="story_text_will_look_like_this">Story text go look like dis.</string>
   <string name="constant_string_for_text_size">A</string>
-  <string name="audio_language" fuzzy="true">Default Audio</string>
+  <string name="audio_language">Preferred Audio Language</string>
   <string name="app_language">App Language</string>
   <string name="reading_text_size">Reading Text Size</string>
   <string name="reading_text_size_small">Small</string>
@@ -392,7 +401,7 @@
   <string name="no_new_hint_available">No new hint dey</string>
   <string name="show_hints_and_solution">Show hints and solution</string>
   <string name="hint_list_item_number">Hint %s</string>
-  <string name="hints_and_solution_close_icon_description" fuzzy="true">Go up</string>
+  <string name="hints_and_solution_close_icon_description">Close</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="show_solution">Show solution</string>
   <string name="reveal_solution">Show Solution</string>
@@ -418,12 +427,36 @@
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
+  <plurals name="minutes_ago">
+    <item quantity="zero">0 minutes ago</item>
+    <item quantity="one">a minute ago</item>
+    <item quantity="other">%s minutes ago</item>
+  </plurals>
+  <plurals name="hours_ago">
+    <item quantity="one">an hour ago</item>
+    <item quantity="other">%s hours ago</item>
+  </plurals>
+  <plurals name="days_ago">
+    <item quantity="one">a day ago</item>
+    <item quantity="other">%s days ago</item>
+  </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">Abeg select all di correct choices.</string>
-  <string name="unsupported_app_version_dialog_title" fuzzy="true">Unsupported app version</string>
-  <string name="unsupported_app_version_dialog_message" fuzzy="true">Dis version of di app no longer dey supported. Abeg update am from di Play Store.</string>
-  <string name="unsupported_app_version_dialog_close_button_text" fuzzy="true">Close app</string>
+  <string name="unsupported_app_version_dialog_title">Unsupported app version</string>
+  <string name="unsupported_app_version_dialog_message">Dis version of di app no longer dey supported. Abeg update am from di Play Store.</string>
+  <string name="unsupported_app_version_dialog_close_button_text">Close app</string>
+  <string name="forced_app_update_dialog_title">App update required</string>
+  <string name="forced_app_update_dialog_message">A new version of %s don dey available. The new version dey more secure, and dey make your learning sweet.\n\nThis version no dey supported again. To continue to use the app, abeg update am to the latest version.</string>
+  <string name="forced_app_update_dialog_update_button_text">Update</string>
+  <string name="forced_app_update_dialog_close_button_text">Close app</string>
+  <string name="optional_app_update_dialog_title">New update available</string>
+  <string name="optional_app_update_dialog_message">A new version of %s don dey available. We go advise sey you update the app for bug fixes so that you go fit learn well.</string>
+  <string name="optional_app_update_dialog_dismiss_button_text">Dismiss</string>
+  <string name="optional_app_update_dialog_update_button_text">Update</string>
+  <string name="os_deprecation_dialog_title">Update your Android OS</string>
+  <string name="os_deprecation_dialog_message">We go advise make you update your Android OS to fit enjoy %s\'s new features and lessons.\n\nGo your phone\'s Settings app to update your OS.</string>
+  <string name="os_deprecation_dialog_dismiss_button_text">Dismiss</string>
   <string name="splash_screen_developer_label">Developer Build</string>
   <string name="splash_screen_alpha_label">Alpha</string>
   <string name="splash_screen_beta_label">Beta</string>
@@ -435,9 +468,11 @@
   <string name="general_availability_notice_dialog_message">Hello! Your app don dey update to di General Availability version. If you experience any problems while you dey use di app, or get any questions, abeg contact us at android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">No show dis message again</string>
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
-  <string name="ratio_content_description_separator" fuzzy="true">to</string>
-  <string name="ratio_default_hint_text" fuzzy="true">Enter a ratio in di form x:y.</string>
+  <string name="ratio_content_description_separator">to</string>
+  <string name="ratio_default_hint_text">Enter a ratio in di form x:y.</string>
   <string name="text_input_default_hint_text">Tap here to put text.</string>
+  <string name="test_number_input_interaction_hint">Write the digit for here.</string>
+  <string name="test_text_input_interaction_hint">Write here.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>
@@ -472,22 +507,22 @@
   <string name="terms_of_service_title">Terms of Service</string>
   <string name="agree_to_terms">By using %s, you dey agree to our &lt;br&gt; &lt;oppia-noninteractive-policy link=\"tos\"&gt;Terms of Service&lt;/oppia-noninteractive-policy&gt; and &lt;oppia-noninteractive-policy link=\"privacy\"&gt;Privacy Policy&lt;/oppia-noninteractive-policy&gt;.</string>
   <string name="terms_of_service_web_link">Abeg visit &lt;a href=\"https://www.oppia.org/terms\"&gt;dis page&lt;/a&gt; for di latest version of dese terms.</string>
-  <string name="faq_question_1">How I go fit create a new profile?</string>
-  <string name="faq_question_2">How I go delete a profile?</string>
-  <string name="faq_question_3">How I go take change my email/phone nomba?</string>
-  <string name="faq_question_4">Wetin be %s?</string>
-  <string name="faq_question_5">Who be Administrator?</string>
-  <string name="faq_question_6">Why di Exploration player no dey load?</string>
-  <string name="faq_question_7">Why my audio no dey play?</string>
-  <string name="faq_question_9">I no dey find my question here. What now?</string>
-  <string name="faq_answer_1">&lt;p&gt;If na your first time creating a profile and not have a PIN:&lt;ol&gt;&lt;li&gt;From di Profile Chooser, tap on &lt;strong&gt;Set up Multiple Profiles&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Create a PIN and &lt;strong&gt;Save&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Fill in all boxes for di profile.&lt;ol&gt;&lt;li&gt;(Optional) Upload a photo.&lt;/li&gt;&lt;li&gt;Enter a name.&lt;/li&gt;&lt;li&gt;(Optional) Assign a 3-digit PIN.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Create&lt;/strong&gt;. Dis profile go add to your Profile Chooser!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt; If you don create a profile before and you get a PIN:&lt;ol&gt;&lt;li&gt;From di Profile Chooser, tap on &lt;strong&gt;Add Profile&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Enter your PIN and tap &lt;strong&gt;Submit&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Fill in all boxes for di profile.&lt;ol&gt;&lt;li&gt; (Optional) Upload a photo. &lt;/li&gt;&lt;li&gt; Enter a name. &lt;/li&gt;&lt;li&gt; (Optional) Assign a 3-digit PIN. &lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Create&lt;/strong&gt;. Dis profile go add to your Profile Chooser!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;br&gt;&lt;p&gt;Note: Only di &lt;u&gt;Administrator&lt;/u&gt; go dey able to manage profiles.&lt;/p&gt;</string>
-  <string name="faq_answer_2">&lt;p&gt;Once profile don delete:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Di profile no fit dey recovered. &lt;/li&gt;&lt;li&gt; Profile information such as name, photos, and progress go permanently delete. &lt;/li&gt;&lt;/ol&gt;&lt;p&gt;To delete a profile (excluding the &lt;u&gt;Administrator\'s&lt;/u&gt;):&lt;/p&gt;&lt;ol&gt;&lt;li&gt; From di Administrator\'s Home Page, tap on di menu button on di top left. &lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Administrator Controls&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Edit Profiles&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Tap on di Profile wey you wan delete. &lt;/li&gt;&lt;li&gt;For di bottom of di screen, tap &lt;strong&gt;Profile Deletion&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Delete&lt;/strong&gt; to confirm deletion. &lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Note: Only di &lt;u&gt;Administrator&lt;/u&gt; go dey able to manage profiles.&lt;/p&gt;</string>
-  <string name="faq_answer_3">&lt;p&gt;To change your email/phone nomba:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;From di Administrator\'s Home Page, tap on di menu button for di top left.&lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Administrator Controls&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Edit Account&lt;/strong&gt;.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;If you wan change your email:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Enter your new email and tap &lt;strong&gt;Save&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;A confirmation link go send to confirm your new email. Di link go expire after 24 hours and you must click on am to be associated with your account.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;If you dey change your phone nomba:&lt;/p&gt;&lt;ol&gt;&lt;li&gt; Enter your new phone nomba and tap &lt;strong&gt;Verify&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt; A code go send to confirm your new nomba. Di code go expire after 5 minutes and you must be enter am in for di new screen to be associated with your account.&lt;/li&gt;&lt;/ol&gt;</string>
-  <string name="faq_answer_4">&lt;p&gt;%1$s &lt;i&gt;\"O-pee-yah\"&lt;/i&gt; (Finnish) - \"to learn\"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$s\'s mission na to help anyone learn anything dey want in an effective and enjoyable way.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;By creating a set of free, high-quality, demonstrably effective lessons with di help of educators from around di world, %1$s dey aim to provide students with quality education — regardless of where dem dey or di traditional resources wey dem get access to.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;As a student, you fit start your learning adventure by browsing di topics listed on di Home Page!&lt;/p&gt;</string>
-  <string name="faq_answer_5">&lt;p&gt;An Administrator na di main user wey dey manage profiles and settings for every profile on top their account. They fit be your parent, teacher, or guardian wey don create dis profile for you. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Administrators get di ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions fit dey required for some features such as changing your PIN, and more. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;To see who your Administrator be, go di Profile Chooser. Di first profile fot di list and get \"Administrator\" written under their name na di Administrator. &lt;/p&gt;</string>
-  <string name="faq_answer_6">&lt;p&gt;If di Exploration Player no dey load&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check to see if di app dey up to date:&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt; Go to di Play Store and make sure sey di app dey updated to di latest version &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; If your internet connection dey slow, try re-connecting to your Wi-Fi network or connecting to a different network. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Ask di Administrator to check their device and internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Get di Administrator to troubleshoot using di steps above &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Let us know if you still dey get issues with loading:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Report a problem by contacting us at admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
-  <string name="faq_answer_7">&lt;p&gt;If your audio no dey play&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check to see if di app dey up to date:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Go to di Play Store and make sure sey di app dey updated to di latest version &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; If your internet connection dey slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet fit cause di audio to load irregularly, and go make am difficult to play. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Ask di Administrator to check their device and internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Get di Administrator to troubleshoot using di steps for up&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Let us know if you still dey get issues with loading:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Report a problem by contacting us at admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
-  <string name="faq_answer_9">&lt;p&gt;If you no fit find your question or you go like to report a bug, contact us for admin@oppia.org.&lt;/p&gt;</string>
+  <string name="faq_question_3">How I go fit create a new profile?</string>
+  <string name="faq_question_10">How I go delete a profile?</string>
+  <string name="faq_question_11">How I go take change my email/phone nomba?</string>
+  <string name="faq_question_1">Wetin be %s?</string>
+  <string name="faq_question_2">Who be Administrator?</string>
+  <string name="faq_question_8">Why di Exploration player no dey load?</string>
+  <string name="faq_question_9">Why my audio no dey play?</string>
+  <string name="faq_question_14">I no dey find my question here. What now?</string>
+  <string name="faq_answer_3">&lt;p&gt;If na your first time creating a profile and not have a PIN:&lt;ol&gt;&lt;li&gt;From di Profile Chooser, tap on &lt;strong&gt;Set up Multiple Profiles&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Create a PIN and &lt;strong&gt;Save&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Fill in all boxes for di profile.&lt;ol&gt;&lt;li&gt;(Optional) Upload a photo.&lt;/li&gt;&lt;li&gt;Enter a name.&lt;/li&gt;&lt;li&gt;(Optional) Assign a 3-digit PIN.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Create&lt;/strong&gt;. Dis profile go add to your Profile Chooser!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt; If you don create a profile before and you get a PIN:&lt;ol&gt;&lt;li&gt;From di Profile Chooser, tap on &lt;strong&gt;Add Profile&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Enter your PIN and tap &lt;strong&gt;Submit&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Fill in all boxes for di profile.&lt;ol&gt;&lt;li&gt; (Optional) Upload a photo. &lt;/li&gt;&lt;li&gt; Enter a name. &lt;/li&gt;&lt;li&gt; (Optional) Assign a 3-digit PIN. &lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Create&lt;/strong&gt;. Dis profile go add to your Profile Chooser!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;br&gt;&lt;p&gt;Note: Only di &lt;u&gt;Administrator&lt;/u&gt; go dey able to manage profiles.&lt;/p&gt;</string>
+  <string name="faq_answer_10">&lt;p&gt;Once profile don delete:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Di profile no fit dey recovered. &lt;/li&gt;&lt;li&gt; Profile information such as name, photos, and progress go permanently delete. &lt;/li&gt;&lt;/ol&gt;&lt;p&gt;To delete a profile (excluding the &lt;u&gt;Administrator\'s&lt;/u&gt;):&lt;/p&gt;&lt;ol&gt;&lt;li&gt; From di Administrator\'s Home Page, tap on di menu button on di top left. &lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Administrator Controls&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Edit Profiles&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Tap on di Profile wey you wan delete. &lt;/li&gt;&lt;li&gt;For di bottom of di screen, tap &lt;strong&gt;Profile Deletion&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Delete&lt;/strong&gt; to confirm deletion. &lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Note: Only di &lt;u&gt;Administrator&lt;/u&gt; go dey able to manage profiles.&lt;/p&gt;</string>
+  <string name="faq_answer_11">&lt;p&gt;To change your email/phone nomba:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;From di Administrator\'s Home Page, tap on di menu button for di top left.&lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Administrator Controls&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Edit Account&lt;/strong&gt;.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;If you wan change your email:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Enter your new email and tap &lt;strong&gt;Save&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;A confirmation link go send to confirm your new email. Di link go expire after 24 hours and you must click on am to be associated with your account.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;If you dey change your phone nomba:&lt;/p&gt;&lt;ol&gt;&lt;li&gt; Enter your new phone nomba and tap &lt;strong&gt;Verify&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt; A code go send to confirm your new nomba. Di code go expire after 5 minutes and you must be enter am in for di new screen to be associated with your account.&lt;/li&gt;&lt;/ol&gt;</string>
+  <string name="faq_answer_1">&lt;p&gt;%1$s &lt;i&gt;\"O-pee-yah\"&lt;/i&gt; (Finnish) - \"to learn\"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$s\'s mission na to help anyone learn anything dey want in an effective and enjoyable way.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;By creating a set of free, high-quality, demonstrably effective lessons with di help of educators from around di world, %1$s dey aim to provide students with quality education — regardless of where dem dey or di traditional resources wey dem get access to.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;As a student, you fit start your learning adventure by browsing di topics listed on di Home Page!&lt;/p&gt;</string>
+  <string name="faq_answer_2">&lt;p&gt;An Administrator na di main user wey dey manage profiles and settings for every profile on top their account. They fit be your parent, teacher, or guardian wey don create dis profile for you. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Administrators get di ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions fit dey required for some features such as changing your PIN, and more. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;To see who your Administrator be, go di Profile Chooser. Di first profile fot di list and get \"Administrator\" written under their name na di Administrator. &lt;/p&gt;</string>
+  <string name="faq_answer_8">&lt;p&gt;If di Exploration Player no dey load&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check to see if di app dey up to date:&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt; Go to di Play Store and make sure sey di app dey updated to di latest version &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; If your internet connection dey slow, try re-connecting to your Wi-Fi network or connecting to a different network. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Ask di Administrator to check their device and internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Get di Administrator to troubleshoot using di steps above &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Let us know if you still dey get issues with loading:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Report a problem by contacting us at admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
+  <string name="faq_answer_9">&lt;p&gt;If your audio no dey play&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check to see if di app dey up to date:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Go to di Play Store and make sure sey di app dey updated to di latest version &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; If your internet connection dey slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet fit cause di audio to load irregularly, and go make am difficult to play. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Ask di Administrator to check their device and internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Get di Administrator to troubleshoot using di steps for up&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Let us know if you still dey get issues with loading:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Report a problem by contacting us at admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
+  <string name="faq_answer_14">&lt;p&gt;If you no fit find your question or you go like to report a bug, contact us for admin@oppia.org.&lt;/p&gt;</string>
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
@@ -495,4 +530,52 @@
   <string name="state_fragment_item_selection_no_items_selected_hint_text">Abeg select all di correct choices.</string>
   <string name="state_fragment_item_selection_some_items_selected_hint_text">You fit select more choices.</string>
   <string name="state_fragment_item_selection_max_items_selected_hint_text">No more dan %s choices go dey selected.</string>
+  <string name="survey_activity_title">Survey</string>
+  <string name="survey_previous_button">Previous</string>
+  <string name="survey_submit_button">Submit</string>
+  <string name="survey_free_form_text_hint">Leave your feedback for here</string>
+  <string name="survey_continue_survey_button">Continue Survey</string>
+  <string name="survey_exit_button">Exit</string>
+  <string name="survey_exit_button_description">Exit Survey</string>
+  <string name="survey_exit_confirmation_text">You sure sey you wan exit the survey?</string>
+  <string name="survey_onboarding_message_text">Your feedback go help us serve learners like you well-well. You go like complete a short survey about your experience?</string>
+  <string name="survey_begin_survey_button">Begin Survey</string>
+  <string name="survey_maybe_later_button">Maybe Later</string>
+  <string name="survey_thank_you_message_text">Thank you for completing the survey. We hope sey you don enjoy using %s!</string>
+  <string name="survey_exit_survey_button">Exit survey</string>
+  <string name="survey_onboarding_title_text">We go like hear how you feel!</string>
+  <string name="survey_thank_you_title_text">Thank you</string>
+  <string name="survey_nps_not_at_all_likely_label">0 - Not at all likely</string>
+  <string name="survey_nps_extremely_likely_label">10 - Extremely likely</string>
+  <string name="user_type_question">Abeg select one of the following:</string>
+  <string name="user_type_answer_learner">I be learner</string>
+  <string name="user_type_answer_teacher">I be teacher</string>
+  <string name="user_type_answer_parent">I be parent</string>
+  <string name="user_type_answer_other">Other</string>
+  <string name="market_fit_question">How you go feel if you no fit use %s again?</string>
+  <string name="market_fit_answer_very_disappointed">Very disappointed</string>
+  <string name="market_fit_answer_somewhat_disappointed">Somewhat disappointed</string>
+  <string name="market_fit_answer_not_disappointed">Not disappointed</string>
+  <string name="market_fit_answer_wont_use_oppia">N/A - I no dey use %s again</string>
+  <string name="nps_promoter_feedback_question">We dey happy sey you don enjoy your experience with %s. Abeg share wetin help you the most:</string>
+  <string name="nps_passive_feedback_question">Thanks for responding! How we go fit provide better experience for you?</string>
+  <string name="nps_detractor_feedback_question">Abeg help us improve your experience! Tell us the primary reason for your score:</string>
+  <string name="nps_score_question">On a scale from 0–10, how likely you dey to recommend %s to a friend or colleague?</string>
+  <string name="previous_subtopic_talkback_text">The previous subtopic na %s</string>
+  <string name="next_subtopic_talkback_text">The next subtopic na %s</string>
+  <string name="app_info_icon_content_description">App Info</string>
+  <string name="spotlight_overlay_arrow_content_description">Spotlight Overlay Arrow</string>
+  <string name="close_spotlight_button_content_description">Close Spotlight Button</string>
+  <string name="previous_state_navigation_button_content_description">Previous State Navigation Button</string>
+  <string name="developer_options_icon_content_description">Developer Options Icon</string>
+  <string name="administrator_controls_icon_content_description">Administrator Controls Icon</string>
+  <string name="options_menu_content_description">Options Menu</string>
+  <string name="previous_button_content_description">Previous Button</string>
+  <string name="next_button_content_description">Next Button</string>
+  <string name="language_icon_content_description">Language Icon</string>
+  <string name="setting_icon_content_description">Setting Icon</string>
+  <string name="profile_picture_image_view_content_description">Profile Picture Image View</string>
+  <string name="lock_icon_content_description">Lock Icon</string>
+  <string name="download_status_image_content_description">Download Status</string>
+  <string name="font_scale_html_content_text">html Content</string>
 </resources>
