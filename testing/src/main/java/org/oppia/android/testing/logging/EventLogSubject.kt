@@ -2006,8 +2006,8 @@ class EventLogSubject private constructor(
 
     companion object {
       /**
-       * Returns a new [SurveyContextSubject] to verify aspects of the specified
-       * [EventLog.SurveyContext] value.
+       * Returns a new [FeatureFlagContextSubject] to verify aspects of the specified
+       * [EventLog.FeatureFlagContext] value.
        */
       fun assertThat(actual: EventLog.FeatureFlagContext): FeatureFlagContextSubject =
         assertAbout(::FeatureFlagContextSubject).that(actual)

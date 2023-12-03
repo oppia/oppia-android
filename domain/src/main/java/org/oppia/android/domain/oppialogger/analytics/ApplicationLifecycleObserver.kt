@@ -84,7 +84,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     application.registerActivityLifecycleCallbacks(this)
     logApplicationStartupMetrics()
-    logCurrentFeatureFlags()
+    logAllFeatureFlags()
     cpuPerformanceSnapshotter.initialiseSnapshotter()
   }
 
@@ -167,7 +167,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     }
   }
 
-  private fun logCurrentFeatureFlags() {
+  private fun logAllFeatureFlags() {
     CoroutineScope(backgroundDispatcher).launch {
       val sessionId = loggingIdentifierController.getSessionIdFlow().value
 

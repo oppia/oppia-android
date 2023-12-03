@@ -377,21 +377,21 @@ message EventLog {
     // The unique UUID of the user.
     string uuid = 1;
 
-    // The session id for the current session.
+    // The id of the current session.
     string session_id = 2;
 
     // List of Feature Flag items
     repeated FeatureFlagItem feature_flag = 3;
 
-    // Structure for the feature flag log item
+    // Structure for the feature flag log item.
     message FeatureFlagItem {
-      // The name of the feature flag or sync status flag
+      // The name of the feature flag or sync status flag.
       string flag_name = 1;
 
-      // The enabled state of the feature flag
+      // The enabled state of the feature flag.
       bool flag_enabled_state = 2;
 
-      // The status of the feature flag or sync status flag
+      // The sync status of the feature flag or sync status flag.
       PlatformParameter.SyncStatus flag_sync_status = 3;
     }
   }
@@ -404,7 +404,7 @@ message EventLog {
     // but can be removed if they're the only ones there and size limit exceeds.
     ESSENTIAL = 1;
     // The priority of events whose logs can be removed from the storage if the size exceeds a
-    // certain limit
+    // certain limit.
     OPTIONAL = 2;
   }
 }

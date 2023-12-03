@@ -66,7 +66,7 @@ class FeatureFlagsLoggerTest {
   }
 
   @Test
-  fun testLogFeatureFlags_logsFeatureFlagsWithCorrectValues() {
+  fun testLogFeatureFlags_logsFeatureFlagsWithCorrectDefaultValues() {
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
 

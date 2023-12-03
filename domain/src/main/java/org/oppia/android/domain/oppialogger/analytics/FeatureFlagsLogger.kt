@@ -30,8 +30,9 @@ import javax.inject.Singleton
 /**
  * Convenience logger for feature flags.
  *
- * This logger is meant to be used to log the current status of all feature flags once after the app
- * has been launched.
+ * This logger is meant to be used for feature flag-related logging on every app launch. It is
+ * primarily used within the ApplicationLifeCycleObserver to log the status of feature flags in a
+ * given app session.
  */
 @Singleton
 class FeatureFlagsLogger @Inject constructor(

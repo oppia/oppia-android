@@ -299,7 +299,6 @@ oppia_android_test(
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:feature_flags_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/survey:survey_events_logger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/logging:event_log_subject",
