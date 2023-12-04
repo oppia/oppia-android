@@ -17,6 +17,9 @@ import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersComple
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
+import org.oppia.android.app.model.DeveloperOptionsTestActivityArguments
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 
 /** Activity for testing [DeveloperOptionsFragment]. */
 class DeveloperOptionsTestActivity :
@@ -33,7 +36,11 @@ class DeveloperOptionsTestActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     setContentView(R.layout.developer_options_activity)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+    val args = intent.getProtoExtra(
+      DEVELOPEROPTIONSTESTACTIVITY_ARGUMENTS_KEY,
+      DeveloperOptionsTestActivityArguments.getDefaultInstance()
+    )
+    internalProfileId = args?.profileId ?: -1
     if (getDeveloperOptionsFragment() == null) {
       supportFragmentManager.beginTransaction().add(
         R.id.developer_options_fragment_placeholder,
@@ -81,10 +88,18 @@ class DeveloperOptionsTestActivity :
   companion object {
     const val PROFILE_ID_EXTRA_KEY = "DeveloperOptionsTestActivity.profile_id"
 
+    /** Argument key for DeveloperOptionsTestActivity */
+    const val DEVELOPEROPTIONSTESTACTIVITY_ARGUMENTS_KEY = "DeveloperOptionsTestActivity.Arguments"
+
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        .apply {
+          val args = DeveloperOptionsTestActivityArguments.newBuilder().apply {
+            profileId = internalProfileId
+          }.build()
+          putProtoExtra(DEVELOPEROPTIONSTESTACTIVITY_ARGUMENTS_KEY, args)
+        }
       return intent
     }
   }

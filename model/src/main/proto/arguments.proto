@@ -373,7 +373,7 @@ message MarkStoriesCompletedFragmentArguments {
 }
 
 message MarkStoriesCompletedFragmentStateBundle{
-  repeated string story_id_list=1;
+  repeated string story_id_list = 1;
 }
 
 message MarkTopicsCompletedTestActivityArguments {
@@ -389,5 +389,19 @@ message MarkTopicsCompletedFragmentArguments {
 }
 
 message MarkTopicsCompletedFragmentStateBundle {
-  repeated string topic_id_list=1;
+  repeated string topic_id_list = 1;
 }
+
+message DeveloperOptionsTestActivityArguments {
+  int32 profile_id = 1;
+}
+
+message DeveloperOptionsActivityArguments {
+  int32 profile_id = 1;
+}
+
+message FAQSingleActivityArguments {
+  string question=1;
+  string answer=2;
+}
+

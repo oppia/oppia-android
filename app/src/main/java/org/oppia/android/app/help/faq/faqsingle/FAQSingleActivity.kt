@@ -5,7 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.FAQSingleActivityArguments
 import org.oppia.android.app.model.ScreenName.FAQ_SINGLE_ACTIVITY
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
@@ -17,11 +20,17 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
     (activityComponent as ActivityComponentImpl).inject(this)
-    val question = checkNotNull(intent.getStringExtra(FAQ_SINGLE_ACTIVITY_QUESTION)) {
+    val args = intent.getProtoExtra(
+      FAQSINGLEACTIVITY_ARGUMENTS_KEY,
+      FAQSingleActivityArguments.getDefaultInstance()
+    )
+
+    val question = checkNotNull(args?.question) {
       "Expected $FAQ_SINGLE_ACTIVITY_QUESTION to be in intent extras."
     }
-    val answer = checkNotNull(intent.getStringExtra(FAQ_SINGLE_ACTIVITY_ANSWER)) {
+    val answer = checkNotNull(args?.answer) {
       "Expected $FAQ_SINGLE_ACTIVITY_ANSWER to be in intent extras."
     }
     faqSingleActivityPresenter.handleOnCreate(question, answer)
@@ -32,11 +41,19 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
     const val FAQ_SINGLE_ACTIVITY_QUESTION = "FAQSingleActivity.question"
     const val FAQ_SINGLE_ACTIVITY_ANSWER = "FAQSingleActivity.answer"
 
+    /** Argument key for FAQSingleActivity */
+    const val FAQSINGLEACTIVITY_ARGUMENTS_KEY = "FAQSingleActivity.Arguments"
+
     fun createFAQSingleActivityIntent(context: Context, question: String, answer: String): Intent {
-      val intent = Intent(context, FAQSingleActivity::class.java)
-      intent.putExtra(FAQ_SINGLE_ACTIVITY_QUESTION, question)
-      intent.putExtra(FAQ_SINGLE_ACTIVITY_ANSWER, answer)
-      intent.decorateWithScreenName(FAQ_SINGLE_ACTIVITY)
+
+      val intent = Intent(context, FAQSingleActivity::class.java).apply {
+        val args = FAQSingleActivityArguments.newBuilder().apply {
+          this.question = question
+          this.answer = answer
+        }.build()
+        putProtoExtra(FAQSINGLEACTIVITY_ARGUMENTS_KEY, args)
+        decorateWithScreenName(FAQ_SINGLE_ACTIVITY)
+      }
       return intent
     }
   }
