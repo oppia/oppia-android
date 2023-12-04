@@ -41,7 +41,7 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
     const val FAQ_SINGLE_ACTIVITY_QUESTION = "FAQSingleActivity.question"
     const val FAQ_SINGLE_ACTIVITY_ANSWER = "FAQSingleActivity.answer"
 
-    /** Argument key for FAQSingleActivity */
+    /** Argument key for FAQSingleActivity. */
     const val FAQSINGLEACTIVITY_ARGUMENTS_KEY = "FAQSingleActivity.Arguments"
 
     fun createFAQSingleActivityIntent(context: Context, question: String, answer: String): Intent {

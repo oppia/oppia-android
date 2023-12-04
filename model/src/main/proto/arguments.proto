@@ -401,7 +401,26 @@ message DeveloperOptionsActivityArguments {
 }
 
 message FAQSingleActivityArguments {
-  string question=1;
-  string answer=2;
+  string question = 1;
+  string answer = 2;
+}
+
+message LicenseListActivityArguments {
+  int32 dependency_index = 1;
+}
+
+message LicenseListFragmentArguments {
+  int32 dependency_index = 1;
+  bool is_multipane = 2;
+}
+
+message LicenseTextViewerActivityArguments {
+  int32 dependency_index = 1;
+  int32 license_index = 2;
+}
+
+message LicenseTextViewerFragmentArguments{
+  int32 dependency_index = 1;
+  int32 license_index = 2;
 }
 

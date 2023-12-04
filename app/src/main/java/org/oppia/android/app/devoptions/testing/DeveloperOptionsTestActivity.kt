@@ -88,7 +88,7 @@ class DeveloperOptionsTestActivity :
   companion object {
     const val PROFILE_ID_EXTRA_KEY = "DeveloperOptionsTestActivity.profile_id"
 
-    /** Argument key for DeveloperOptionsTestActivity */
+    /** Argument key for DeveloperOptionsTestActivity. */
     const val DEVELOPEROPTIONSTESTACTIVITY_ARGUMENTS_KEY = "DeveloperOptionsTestActivity.Arguments"
 
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */

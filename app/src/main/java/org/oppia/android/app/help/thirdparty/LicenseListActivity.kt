@@ -3,11 +3,15 @@ package org.oppia.android.app.help.thirdparty
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.LICENSE_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.LicenseListActivityArguments
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 
 /** The activity that will show list of licenses corresponding to a third-party dependency. */
 class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToLicenseTextListener {
@@ -18,22 +22,32 @@ class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToL
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val dependencyIndex = intent.getIntExtra(THIRD_PARTY_DEPENDENCY_INDEX, 0)
+    val args = intent.getProtoExtra(
+      LICENSELISTACTIVITY_ARGUMENTS_KEY,
+      LicenseListActivityArguments.getDefaultInstance()
+    )
+    val dependencyIndex = args?.dependencyIndex ?: 0
     licenseListActivityPresenter.handleOnCreate(dependencyIndex, false)
   }
 
   companion object {
     private const val THIRD_PARTY_DEPENDENCY_INDEX = "LicenseListActivity.dependency_index"
 
+    /** Argument key for LicenseListActivity. */
+    private const val LICENSELISTACTIVITY_ARGUMENTS_KEY = "LicenseListActivity.Arguments"
+
     /** Returns [Intent] for [LicenseListActivity]. */
     fun createLicenseListActivityIntent(
       context: Context,
       dependencyIndex: Int
     ): Intent {
-      val intent = Intent(context, LicenseListActivity::class.java)
-      intent.putExtra(THIRD_PARTY_DEPENDENCY_INDEX, dependencyIndex)
-      intent.decorateWithScreenName(LICENSE_LIST_ACTIVITY)
-      return intent
+      return Intent(context, LicenseListActivity::class.java).apply {
+        val args = LicenseListActivityArguments.newBuilder().apply {
+          this.dependencyIndex = dependencyIndex
+        }.build()
+        putProtoExtra(LICENSELISTACTIVITY_ARGUMENTS_KEY, args)
+        decorateWithScreenName(LICENSE_LIST_ACTIVITY)
+      }
     }
   }
 
