@@ -1210,12 +1210,34 @@ class ExplorationActivityTest {
           1
         )
       )
+      onView(withId(R.id.continue_interaction_button)).perform(click())
 
-      // Clicks continue until we reach the first interaction.
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(withId(R.id.continue_interaction_button)).perform(click())
+
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(withId(R.id.continue_interaction_button)).perform(click())
+
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
+
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(withId(R.id.continue_interaction_button)).perform(click())
 
       onView(withHint("Enter your answer as X to Y")).perform(
