@@ -185,20 +185,20 @@
   <string name="correct">Correto!</string>
   <string name="topic_prefix">Tópico: %s</string>
   <plurals name="chapter_count" fuzzy="true">
-    <item quantity="one">%d Capítulo\n    </item>
-    <item quantity="other">\n      %s Capítulos\n    </item>
+    <item quantity="one">%d Capítulo</item>
+    <item quantity="other">%s Capítulos</item>
   </plurals>
   <plurals name="story_count" fuzzy="true">
-    <item quantity="one">%d História\n    </item>
-    <item quantity="other">\n      %s Histórias\n    </item>
+    <item quantity="one">%d História</item>
+    <item quantity="other">%s Histórias</item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="one">%s de %s Capítulo Concluído</item>
     <item quantity="other">%s de %s Capítulos Concluídos</item>
   </plurals>
   <plurals name="lesson_count" fuzzy="true">
-    <item quantity="one">%d Lição\n    </item>
-    <item quantity="other">\n      %s Lições\n    </item>
+    <item quantity="one">%d Lição</item>
+    <item quantity="other">%s Lições</item>
   </plurals>
   <plurals name="completed_story_count" fuzzy="true">
     <item quantity="one">%d história concluída</item>
