@@ -134,7 +134,8 @@ annotation class EnableInteractionConfigChangeStateRetention
  * Name of the feature flag that controls whether input interaction state is correctly retained
  * across configuration changes.
  */
-const val INTERACTION_CONFIG_CHANGE_STATE_RETENTION = "android_enable_interaction_config_change_state_retention"
+const val INTERACTION_CONFIG_CHANGE_STATE_RETENTION =
+  "android_enable_interaction_config_change_state_retention"
 
 /**
  * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
