@@ -67,6 +67,7 @@
             android:contentDescription="@string/edit_profile_picture_content_description"
             android:elevation="4dp"
             android:paddingStart="12dp"
+            android:paddingEnd="0dp"
             android:paddingTop="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"

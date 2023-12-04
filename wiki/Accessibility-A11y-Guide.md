@@ -95,7 +95,7 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
   * [Presentation Slides](https://docs.google.com/presentation/d/17SeKJLKT-rUNa_Yupe97bMFSsjTNzp83jX-lZPKEtnQ/edit?usp=sharing)
 
 ## Using AccessibilityTestRule in Espresso Tests
-[AccessibilityTestRule](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/AccessibilityTestRule.kt) is a JUnit rule to enable `AccessibilityChecks` in all Espresso Tests. This rule covers all errors shown by Accessibility Scanner and more but only for all those UI elements which are getting used in the test case.
+[AccessibilityTestRule](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt) is a JUnit rule to enable `AccessibilityChecks` in all Espresso Tests. This rule covers all errors shown by Accessibility Scanner and more but only for all those UI elements which are getting used in the test case.
 
 (**Note: If this file is not available then it has been merged with OppiaTestRule as per #3351**)
 

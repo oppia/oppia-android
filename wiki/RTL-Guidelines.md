@@ -51,5 +51,4 @@ The screen will look something like this:
 
 # Reference Documentation
 * [Oppia-Android RTL Issues](https://docs.google.com/document/d/1Fl1ar5vcdLvay7ZIJLUFQro1wEf1yUEicwF-CKcvwJ0/edit#)
-* [RTL Support Milestone](https://github.com/oppia/oppia-android/milestone/40) 
 * [Guidelines for RTL](https://material.io/design/usability/bidirectionality.html)
