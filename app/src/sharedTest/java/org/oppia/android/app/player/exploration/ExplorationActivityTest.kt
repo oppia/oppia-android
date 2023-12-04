@@ -1217,7 +1217,9 @@ class ExplorationActivityTest {
       onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.continue_interaction_button)).perform(click())
 
-      onView(withId(R.id.text_input_interaction_view))
+      onView(withId(R.id.ratio_input_interaction_view)).perform(
+        editTextInputAction.appendText("123")
+      )
 
       onView(withText("What is a Ratio?"))
     }
