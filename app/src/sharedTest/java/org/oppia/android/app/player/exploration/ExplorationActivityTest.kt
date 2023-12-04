@@ -1205,46 +1205,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
 
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-
-      onView(withHint("Enter your answer as X to Y")).perform(
-        editTextInputAction.appendText("123")
-      )
-
-      onView(withText("What is a Ratio?"))
+      clickContinueButton()
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
