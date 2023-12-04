@@ -2,6 +2,7 @@ package org.oppia.android.app.faq
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -101,6 +103,12 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity.Companion.FAQSINGLEACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.model.FAQSingleActivityArguments
+import org.oppia.android.util.extensions.getProtoExtra
 
 /** Tests for [FAQListFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -149,16 +157,14 @@ class FAQListFragmentTest {
           position = 1
         )
       ).perform(click())
+      val args = FAQSingleActivityArguments.newBuilder().apply {
+        this.question =  getResources().getString(R.string.faq_question_1)
+        this.answer =   getResources().getString(R.string.faq_answer_1)
+      }.build()
+
       intended(
         allOf(
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1)
-          ),
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1)
-          ),
+         hasProtoExtra(FAQSINGLEACTIVITY_ARGUMENTS_KEY,args),
           hasComponent(FAQSingleActivity::class.java.name)
         )
       )
@@ -175,16 +181,13 @@ class FAQListFragmentTest {
           position = 1
         )
       ).perform(click())
+      val args = FAQSingleActivityArguments.newBuilder().apply {
+        this.question =  getResources().getString(R.string.faq_question_1)
+        this.answer =   getResources().getString(R.string.faq_answer_1)
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1)
-          ),
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1)
-          ),
+          hasProtoExtra(FAQSINGLEACTIVITY_ARGUMENTS_KEY,args),
           hasComponent(FAQSingleActivity::class.java.name)
         )
       )
@@ -200,19 +203,31 @@ class FAQListFragmentTest {
           position = 4
         )
       ).perform(click())
+
+      val args = FAQSingleActivityArguments.newBuilder().apply {
+        this.question =  getResources().getString(R.string.faq_question_4)
+        this.answer =   getResources().getString(R.string.faq_answer_4)
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_4, getAppName())
-          ),
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_4, getAppName())
-          ),
+          hasProtoExtra(FAQSINGLEACTIVITY_ARGUMENTS_KEY,args),
           hasComponent(FAQSingleActivity::class.java.name)
         )
       )
+    }
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
     }
   }
 
