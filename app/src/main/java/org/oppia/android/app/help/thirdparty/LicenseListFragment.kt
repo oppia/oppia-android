@@ -2,16 +2,15 @@ package org.oppia.android.app.help.thirdparty
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import javax.inject.Inject
 import org.oppia.android.app.model.LicenseListFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import javax.inject.Inject
 
 /** Fragment that contains list of licenses for a third-party dependency in the app. */
 class LicenseListFragment : InjectableFragment() {

@@ -3,15 +3,14 @@ package org.oppia.android.app.help.thirdparty
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ScreenName.LICENSE_LIST_ACTIVITY
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
 import org.oppia.android.app.model.LicenseListActivityArguments
+import org.oppia.android.app.model.ScreenName.LICENSE_LIST_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** The activity that will show list of licenses corresponding to a third-party dependency. */
 class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToLicenseTextListener {
