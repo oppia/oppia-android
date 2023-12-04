@@ -185,11 +185,11 @@
   <string name="correct">Correto!</string>
   <string name="topic_prefix">Tópico: %s</string>
   <plurals name="chapter_count" fuzzy="true">
-    <item quantity="one">1 Capítulo\n    </item>
+    <item quantity="one">%d Capítulo\n    </item>
     <item quantity="other">\n      %s Capítulos\n    </item>
   </plurals>
   <plurals name="story_count" fuzzy="true">
-    <item quantity="one">1 História\n    </item>
+    <item quantity="one">%d História\n    </item>
     <item quantity="other">\n      %s Histórias\n    </item>
   </plurals>
   <plurals name="story_total_chapters">
@@ -197,16 +197,16 @@
     <item quantity="other">%s de %s Capítulos Concluídos</item>
   </plurals>
   <plurals name="lesson_count" fuzzy="true">
-    <item quantity="one">1 Lição\n    </item>
+    <item quantity="one">%d Lição\n    </item>
     <item quantity="other">\n      %s Lições\n    </item>
   </plurals>
   <plurals name="completed_story_count" fuzzy="true">
-    <item quantity="one">1 história concluída</item>
+    <item quantity="one">%d história concluída</item>
     <item quantity="zero">%s Histórias concluídas</item>
     <item quantity="other">%s Histórias concluídas</item>
   </plurals>
   <plurals name="ongoing_topic_count" fuzzy="true">
-    <item quantity="one">1 Tópico em andamento</item>
+    <item quantity="one">%d Tópico em andamento</item>
     <item quantity="zero">%s Tópicos em andamento</item>
     <item quantity="other">%s Tópicos em andamento</item>
   </plurals>
