@@ -29,7 +29,7 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val args = intent.getProtoExtra(
-      MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS,
+      MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS,
       MarkChaptersCompletedActivityArguments.getDefaultInstance()
     )
 
@@ -48,8 +48,8 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
 
   companion object {
     /** Argument key for [MarkChaptersCompletedActivity]. */
-    const val MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS =
-      "MarkChaptersCompletedActivity.Arguments"
+    const val MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS =
+      "MarkChaptersCompletedActivity.arguments"
 
     /** Returns an [Intent] to start this activity. */
     fun createMarkChaptersCompletedIntent(
@@ -65,7 +65,7 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
       }
         .build()
 
-      intent.putProtoExtra(MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS, args)
+      intent.putProtoExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS, args)
       intent.decorateWithScreenName(MARK_CHAPTERS_COMPLETED_ACTIVITY)
       return intent
     }

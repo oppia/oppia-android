@@ -19,10 +19,6 @@ class CompletedStoryListFragment : InjectableFragment() {
     /** Key for accessing [CompletedStoryListFragment]. */
     const val COMPLETED_STORY_LIST_FRAGMENT_TAG = "COMPLETED_STORY_LIST_FRAGMENT_TAG"
 
-    /** [String] key for mapping internalProfileId in [Bundle]. */
-    internal const val COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY =
-      "CompletedStoryListFragment.profile_id"
-
     /** Argument key for [CompletedStoryListFragment]. */
     const val COMPLETED_STORY_LIST_FRAGMENT_ARGUMENT_KEY =
       "COMPLETED_STORY_LIST_FRAGMENT_ARGUMENT_KEY"

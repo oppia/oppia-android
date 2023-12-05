@@ -15,7 +15,7 @@ const val TOPIC_FRAGMENT_TAG = "TopicFragment"
 const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 const val STORY_ID_ARGUMENT_KEY = "story_id"
-const val TOPIC_FRAGMENT_ARGUMENTS_KEY = "TopicFragment.Arguments"
+const val TOPIC_FRAGMENT_ARGUMENTS_KEY = "TopicFragment.arguments"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope

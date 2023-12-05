@@ -23,7 +23,7 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     (activityComponent as ActivityComponentImpl).inject(this)
     val args = intent.getProtoExtra(
-      FAQSINGLEACTIVITY_ARGUMENTS_KEY,
+      FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY,
       FAQSingleActivityArguments.getDefaultInstance()
     )
 
@@ -42,7 +42,7 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
     const val FAQ_SINGLE_ACTIVITY_ANSWER = "FAQSingleActivity.answer"
 
     /** Argument key for FAQSingleActivity. */
-    const val FAQSINGLEACTIVITY_ARGUMENTS_KEY = "FAQSingleActivity.Arguments"
+    const val FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY = "FAQSingleActivity.arguments"
 
     fun createFAQSingleActivityIntent(context: Context, question: String, answer: String): Intent {
 
@@ -51,7 +51,7 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
           this.question = question
           this.answer = answer
         }.build()
-        putProtoExtra(FAQSINGLEACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(FAQ_SINGLE_ACTIVITY)
       }
       return intent

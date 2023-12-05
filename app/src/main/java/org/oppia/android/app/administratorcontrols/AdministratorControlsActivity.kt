@@ -19,26 +19,11 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
-/** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
-const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
-  "AdministratorControlsActivity.selected_controls_title"
-
-/** Argument key for of selected profile for selected controls in [AdministratorControlsActivity]. */
-const val SELECTED_PROFILE_ID_SAVED_KEY =
-  "AdministratorControlsActivity.selected_profile_id"
-
-/** Argument key for last loaded fragment in [AdministratorControlsActivity]. */
-const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
-
 /** Argument key used to identify [ProfileListFragment] in the backstack. */
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 
 /** Argument key used to identify [ProfileEditFragment] in the backstack. */
 const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
-
-/** Argument key for the Profile deletion confirmation in [ProfileEditActivity]. */
-const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
-  "ProfileEditActivity.is_profile_deletion_dialog_visible"
 
 /** Argument key used to identify [AppVersionFragment] in the backstack. */
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
@@ -46,8 +31,8 @@ const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 /** Argument key used to identify [ProfileAndDeviceIdFragment] in the backstack. */
 const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 
-/** Argument key  for  Administrator Controls Activity saved state. */
-const val ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY = "ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY"
+/** Argument key for Administrator Controls Activity saved state. */
+const val ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY = "ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY"
 
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
 class AdministratorControlsActivity :
@@ -74,7 +59,7 @@ class AdministratorControlsActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val args = savedInstanceState?.getProto(
-      ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY,
+      ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY,
       AdministratorControlActivityStateBundle.getDefaultInstance()
     )
 

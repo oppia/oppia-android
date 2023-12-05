@@ -22,7 +22,7 @@ class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToL
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val args = intent.getProtoExtra(
-      LICENSELISTACTIVITY_ARGUMENTS_KEY,
+      LICENSE_LIST_ACTIVITY_ARGUMENTS_KEY,
       LicenseListActivityArguments.getDefaultInstance()
     )
     val dependencyIndex = args?.dependencyIndex ?: 0
@@ -30,10 +30,8 @@ class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToL
   }
 
   companion object {
-    private const val THIRD_PARTY_DEPENDENCY_INDEX = "LicenseListActivity.dependency_index"
-
     /** Argument key for LicenseListActivity. */
-    private const val LICENSELISTACTIVITY_ARGUMENTS_KEY = "LicenseListActivity.Arguments"
+    private const val LICENSE_LIST_ACTIVITY_ARGUMENTS_KEY = "LicenseListActivity.arguments"
 
     /** Returns [Intent] for [LicenseListActivity]. */
     fun createLicenseListActivityIntent(
@@ -44,7 +42,7 @@ class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToL
         val args = LicenseListActivityArguments.newBuilder().apply {
           this.dependencyIndex = dependencyIndex
         }.build()
-        putProtoExtra(LICENSELISTACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(LICENSE_LIST_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(LICENSE_LIST_ACTIVITY)
       }
     }

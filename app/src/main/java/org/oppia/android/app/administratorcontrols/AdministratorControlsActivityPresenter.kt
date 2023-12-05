@@ -216,6 +216,6 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         selectedProfileId = this@AdministratorControlsActivityPresenter.selectedProfileId
       }
       .build()
-    outState.putProto(ADMINISTRATOR_CONTROL_ACTIVITY_STATE_KEY, args)
+    outState.putProto(ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY, args)
   }
 }

@@ -24,12 +24,12 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
     private const val TOPIC_ID_LIST_ARGUMENT_KEY = "MarkTopicsCompletedFragment.topic_id_list"
 
     /** Argument key for MarkTopicsCompletedFragment.. */
-    const val MARKTOPICSCOMPLETEDFRAGMENT_ARGUMENTS_KEY =
-      "MarkTopicsCompletedFragment.Arguments"
+    const val MARK_TOPICS_COMPLETED_FRAGMENT_ARGUMENTS_KEY =
+      "MarkTopicsCompletedFragment.arguments"
 
     /** State key for MarkTopicsCompletedFragment.. */
-    const val MARKTOPICSCOMPLETEDFRAGMENT_STATE_KEY =
-      "MarkTopicsCompletedFragment.State"
+    const val MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY =
+      "MarkTopicsCompletedFragment.state"
 
     /** Returns a new [MarkTopicsCompletedFragment]. */
     fun newInstance(internalProfileId: Int): MarkTopicsCompletedFragment {
@@ -38,7 +38,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
           val args = MarkTopicsCompletedFragmentArguments.newBuilder().apply {
             profileId = internalProfileId
           }.build()
-          putProto(MARKTOPICSCOMPLETEDFRAGMENT_ARGUMENTS_KEY, args)
+          putProto(MARK_TOPICS_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
         }
       }
     }
@@ -58,7 +58,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
       checkNotNull(arguments) { "Expected arguments to be passed to MarkTopicsCompletedFragment" }
 
     val args = arguments.getProto(
-      MARKTOPICSCOMPLETEDFRAGMENT_ARGUMENTS_KEY,
+      MARK_TOPICS_COMPLETED_FRAGMENT_ARGUMENTS_KEY,
       MarkTopicsCompletedFragmentArguments.getDefaultInstance()
     )
 
@@ -67,7 +67,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
     if (savedInstanceState != null) {
 
       val stateArgs = savedInstanceState.getProto(
-        MARKTOPICSCOMPLETEDFRAGMENT_STATE_KEY,
+        MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY,
         MarkTopicsCompletedFragmentStateBundle.getDefaultInstance()
       )
       selectedTopicIdList = stateArgs?.topicIdListList?.let { ArrayList(it) }!!
@@ -86,7 +86,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
       val args = MarkTopicsCompletedFragmentStateBundle.newBuilder().apply {
         addAllTopicIdList(markTopicsCompletedFragmentPresenter.selectedTopicIdList)
       }.build()
-      putProto(MARKTOPICSCOMPLETEDFRAGMENT_STATE_KEY, args)
+      putProto(MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY, args)
     }
   }
 }

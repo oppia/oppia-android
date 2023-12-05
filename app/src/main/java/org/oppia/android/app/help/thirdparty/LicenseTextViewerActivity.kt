@@ -22,7 +22,7 @@ class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val args = intent.getProtoExtra(
-      LICENSETEXTVIEWERACTIVITY_ARGUMENTS_KEY,
+      LICENSE_TEXT_VIEWER_ACTIVITY_ARGUMENTS_KEY,
       LicenseTextViewerFragmentArguments.getDefaultInstance()
     )
     val dependencyIndex = args?.dependencyIndex ?: 0
@@ -31,14 +31,9 @@ class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    private const val LICENSE_TEXT_VIEWER_ACTIVITY_DEP_INDEX =
-      "LicenseTextViewerActivity.dependency_index"
-    private const val LICENSE_TEXT_VIEWER_ACTIVITY_LICENSE_INDEX =
-      "LicenseTextViewerActivity.license_index"
-
     /** Argument key for LicenseTextViewerActivity. */
-    private const val LICENSETEXTVIEWERACTIVITY_ARGUMENTS_KEY =
-      "LicenseTextViewerActivity.Arguments"
+    private const val LICENSE_TEXT_VIEWER_ACTIVITY_ARGUMENTS_KEY =
+      "LicenseTextViewerActivity.arguments"
 
     /** Returns [Intent] for [LicenseTextViewerActivity]. */
     fun createLicenseTextViewerActivityIntent(
@@ -51,7 +46,7 @@ class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
           this.dependencyIndex = dependencyIndex
           this.licenseIndex = licenseIndex
         }.build()
-        putProtoExtra(LICENSETEXTVIEWERACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(LICENSE_TEXT_VIEWER_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(LICENSE_TEXT_VIEWER_ACTIVITY)
       }
     }

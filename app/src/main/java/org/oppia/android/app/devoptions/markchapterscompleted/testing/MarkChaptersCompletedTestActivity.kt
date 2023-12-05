@@ -21,7 +21,7 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
     setContentView(R.layout.mark_chapters_completed_activity)
 
     val args = intent.getProtoExtra(
-      MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY,
+      MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_ARGUMENT_KEY,
       MarkChaptersCompletedTestActivityArguments.getDefaultInstance()
     )
 
@@ -46,7 +46,7 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
     private const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedTestActivity.profile_id"
     private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
       "MarkChaptersCompletedTestActivity.show_confirmation_notice"
-    private const val MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY =
+    private const val MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_ARGUMENT_KEY =
       "MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT"
 
     /** Returns an [Intent] for [MarkChaptersCompletedTestActivity]. */
@@ -63,7 +63,7 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
       }
         .build()
 
-      intent.putProtoExtra(MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT_KEY, args)
+      intent.putProtoExtra(MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_ARGUMENT_KEY, args)
       return intent
     }
   }

@@ -18,12 +18,8 @@ class LicenseListFragment : InjectableFragment() {
   lateinit var licenseListFragmentPresenter: LicenseListFragmentPresenter
 
   companion object {
-    private const val LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX =
-      "LicenseListFragment.dependency_index"
-    private const val IS_MULTIPANE_KEY = "LicenseListFragment.is_multipane"
-
     /** Argument key for LicenseListFragment. */
-    private const val LICENSELISTFRAGMENT_ARGUMENTS_KEY = "LicenseListFragment.Arguments"
+    private const val LICENSE_LIST_FRAGMENT_ARGUMENTS_KEY = "LicenseListFragment.arguments"
 
     /** Returns an instance of [LicenseListFragment]. */
     fun newInstance(dependencyIndex: Int, isMultipane: Boolean): LicenseListFragment {
@@ -33,7 +29,7 @@ class LicenseListFragment : InjectableFragment() {
             this.dependencyIndex = dependencyIndex
             this.isMultipane = isMultipane
           }.build()
-          putProto(LICENSELISTFRAGMENT_ARGUMENTS_KEY, args)
+          putProto(LICENSE_LIST_FRAGMENT_ARGUMENTS_KEY, args)
         }
         arguments = bundle
       }
@@ -54,7 +50,7 @@ class LicenseListFragment : InjectableFragment() {
       "Expected arguments to be passed to LicenseListFragment"
     }
     val args = arguments.getProto(
-      LICENSELISTFRAGMENT_ARGUMENTS_KEY,
+      LICENSE_LIST_FRAGMENT_ARGUMENTS_KEY,
       LicenseListFragmentArguments.getDefaultInstance()
     )
     val dependencyIndex = args.dependencyIndex

@@ -12,8 +12,8 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-/** Argument key  for  Administrator Controls Fragment. */
-const val ADMINISTRATOR_CONTROL_FRAGMENT_ARGUMENTS_KEY = "AdministratorControlsFragment.Arguments"
+/** Argument key for Administrator Controls Fragment. */
+const val ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY = "AdministratorControlsFragment.arguments"
 
 /** Fragment that contains Administrator Controls of the application. */
 class AdministratorControlsFragment : InjectableFragment() {
@@ -29,7 +29,7 @@ class AdministratorControlsFragment : InjectableFragment() {
           val args = AdministratorControlsFragmentArguments.newBuilder().apply {
             this.isMultipane = isMultipane
           }.build()
-          putProto(ADMINISTRATOR_CONTROL_FRAGMENT_ARGUMENTS_KEY, args)
+          putProto(ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY, args)
         }
       }
     }
@@ -50,7 +50,7 @@ class AdministratorControlsFragment : InjectableFragment() {
         "Expected arguments to be passed to AdministratorControlsFragment"
       }
     val args = arguments.getProto(
-      ADMINISTRATOR_CONTROL_FRAGMENT_ARGUMENTS_KEY,
+      ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY,
       AdministratorControlsFragmentArguments.getDefaultInstance()
     )
     val isMultipane = args.isMultipane

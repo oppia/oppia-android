@@ -31,7 +31,7 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val args = intent.getProtoExtra(
-      MARKSTORIESCOMPLETEDACTIVITY_ARGUMENTS_KEY,
+      MARK_STORIES_COMPLETED_ACTIVITY_ARGUMENTS_KEY,
       MarkStoriesCompletedActivityArguments.getDefaultInstance()
     )
     internalProfileId = args?.profileId ?: -1
@@ -49,7 +49,7 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
   companion object {
 
     /** Argument key for MarkStoriesCompletedActivity.. */
-    const val MARKSTORIESCOMPLETEDACTIVITY_ARGUMENTS_KEY = "MarkStoriesCompletedActivity.Arguments"
+    const val MARK_STORIES_COMPLETED_ACTIVITY_ARGUMENTS_KEY = "MarkStoriesCompletedActivity.arguments"
 
     /** [String] key value for mapping to InternalProfileId in [Bundle]. */
     const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedActivity.profile_id"
@@ -60,7 +60,7 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
         val args = MarkStoriesCompletedActivityArguments.newBuilder().apply {
           profileId = internalProfileId
         }.build()
-        putProtoExtra(MARKSTORIESCOMPLETEDACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(MARK_STORIES_COMPLETED_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(MARK_STORIES_COMPLETED_ACTIVITY)
       }
     }

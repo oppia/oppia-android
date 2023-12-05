@@ -24,7 +24,7 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val args = intent.getProtoExtra(
-      COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY,
+      COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY,
       CompletedStoryListActivityArguments.getDefaultInstance()
     )
 
@@ -34,9 +34,7 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY = "CompletedStoryListActivity.arguments"
-    const val PROFILE_ID_EXTRA_KEY =
-      "CompletedStoryListActivity.profile_id"
+    const val COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY = "CompletedStoryListActivity.arguments"
 
     /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */
     fun createCompletedStoryListActivityIntent(context: Context, internalProfileId: Int): Intent {
@@ -45,7 +43,7 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
         profileId = internalProfileId
       }.build()
 
-      intent.putProtoExtra(COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY, args)
+      intent.putProtoExtra(COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY, args)
       intent.decorateWithScreenName(COMPLETED_STORY_LIST_ACTIVITY)
       return intent
     }

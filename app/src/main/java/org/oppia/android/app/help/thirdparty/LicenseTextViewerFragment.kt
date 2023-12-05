@@ -18,14 +18,9 @@ class LicenseTextViewerFragment : InjectableFragment() {
   lateinit var licenseTextViewerFragmentPresenter: LicenseTextViewerFragmentPresenter
 
   companion object {
-    private const val LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX =
-      "LicenseTextViewerFragment.dependency_index"
-    private const val LICENSE_TEXT_VIEWER_FRAGMENT_LICENSE_INDEX =
-      "LicenseTextViewerFragment.license_index"
-
     /** Argument key for LicenseTextViewerFragment. */
-    private const val LICENSETEXTVIEWERFRAGMENT_ARGUMENTS_KEY =
-      "LicenseTextViewerFragment.Arguments"
+    private const val LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY =
+      "LicenseTextViewerFragment.arguments"
 
     /** Returns an instance of [LicenseTextViewerFragment]. */
     fun newInstance(dependencyIndex: Int, licenseIndex: Int): LicenseTextViewerFragment {
@@ -35,7 +30,7 @@ class LicenseTextViewerFragment : InjectableFragment() {
             this.dependencyIndex = dependencyIndex
             this.licenseIndex = licenseIndex
           }.build()
-          putProto(LICENSETEXTVIEWERFRAGMENT_ARGUMENTS_KEY, args)
+          putProto(LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY, args)
         }
         arguments = bundle
       }
@@ -55,7 +50,7 @@ class LicenseTextViewerFragment : InjectableFragment() {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to LicenseTextViewerFragment" }
     val args = arguments.getProto(
-      LICENSETEXTVIEWERFRAGMENT_ARGUMENTS_KEY,
+      LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY,
       LicenseTextViewerFragmentArguments.getDefaultInstance()
     )
     val dependencyIndex = args.dependencyIndex

@@ -37,7 +37,7 @@ class DeveloperOptionsTestActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     setContentView(R.layout.developer_options_activity)
     val args = intent.getProtoExtra(
-      DEVELOPEROPTIONSTESTACTIVITY_ARGUMENTS_KEY,
+      DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY,
       DeveloperOptionsTestActivityArguments.getDefaultInstance()
     )
     internalProfileId = args?.profileId ?: -1
@@ -86,10 +86,8 @@ class DeveloperOptionsTestActivity :
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "DeveloperOptionsTestActivity.profile_id"
-
     /** Argument key for DeveloperOptionsTestActivity. */
-    const val DEVELOPEROPTIONSTESTACTIVITY_ARGUMENTS_KEY = "DeveloperOptionsTestActivity.Arguments"
+    const val DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY = "DeveloperOptionsTestActivity.arguments"
 
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
@@ -98,7 +96,7 @@ class DeveloperOptionsTestActivity :
           val args = DeveloperOptionsTestActivityArguments.newBuilder().apply {
             profileId = internalProfileId
           }.build()
-          putProtoExtra(DEVELOPEROPTIONSTESTACTIVITY_ARGUMENTS_KEY, args)
+          putProtoExtra(DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY, args)
         }
       return intent
     }

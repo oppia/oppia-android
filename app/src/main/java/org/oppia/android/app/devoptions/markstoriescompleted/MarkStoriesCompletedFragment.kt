@@ -20,9 +20,9 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
 
   companion object {
     /** Argument key for MarkStoriesCompletedActivity.. */
-    const val MARKSTORIESCOMPLETEDFRAGMENT_ARGUMENTS_KEY = "MarkStoriesCompletedFragment.Arguments"
+    const val MARK_STORIES_COMPLETED_FRAGMENT_ARGUMENTS_KEY = "MarkStoriesCompletedFragment.arguments"
 
-    const val MARKSTORIESCOMPLETEDFRAGMENT_STATE_KEY = "MarkStoriesCompletedFragment.State"
+    const val MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY = "MarkStoriesCompletedFragment.state"
 
     internal const val PROFILE_ID_ARGUMENT_KEY = "MarkStoriesCompletedFragment.profile_id"
 
@@ -35,7 +35,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
           val args = MarkStoriesCompletedFragmentArguments.newBuilder().apply {
             profileId = internalProfileId
           }.build()
-          putProto(MARKSTORIESCOMPLETEDFRAGMENT_ARGUMENTS_KEY, args)
+          putProto(MARK_STORIES_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
         }
       }
     }
@@ -55,7 +55,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
       checkNotNull(arguments) { "Expected arguments to be passed to MarkStoriesCompletedFragment" }
 
     val args = arguments.getProto(
-      MARKSTORIESCOMPLETEDFRAGMENT_ARGUMENTS_KEY,
+      MARK_STORIES_COMPLETED_FRAGMENT_ARGUMENTS_KEY,
       MarkStoriesCompletedFragmentArguments.getDefaultInstance()
     )
 
@@ -64,7 +64,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
     if (savedInstanceState != null) {
 
       val stateArgs = savedInstanceState.getProto(
-        MARKSTORIESCOMPLETEDFRAGMENT_STATE_KEY,
+        MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY,
         MarkStoriesCompletedFragmentStateBundle.getDefaultInstance()
       )
       selectedStoryIdList = ArrayList(stateArgs?.storyIdListList)
@@ -84,7 +84,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
         addAllStoryIdList(markStoriesCompletedFragmentPresenter.selectedStoryIdList)
       }
         .build()
-      putProto(MARKSTORIESCOMPLETEDFRAGMENT_STATE_KEY, args)
+      putProto(MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY, args)
     }
   }
 }

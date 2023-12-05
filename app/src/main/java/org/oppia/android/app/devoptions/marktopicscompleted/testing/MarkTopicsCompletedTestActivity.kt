@@ -23,7 +23,7 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_topics_completed_activity)
     val args = intent.getProtoExtra(
-      MARKTOPICSCOMPLETEDTESTACTIVITY_ARGUMENTS_KEY,
+      MARK_TOPICS_COMPLETED_TEST_ACTIVITY_ARGUMENTS_KEY,
       MarkTopicsCompletedTestActivityArguments.getDefaultInstance()
     )
     internalProfileId = args?.profileId ?: -1
@@ -45,8 +45,8 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
     const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedTestActivity.profile_id"
 
     /** Argument key for MarkTopicsCompletedTestActivity.. */
-    const val MARKTOPICSCOMPLETEDTESTACTIVITY_ARGUMENTS_KEY =
-      "MarkTopicsCompletedTestActivity.Arguments"
+    const val MARK_TOPICS_COMPLETED_TEST_ACTIVITY_ARGUMENTS_KEY =
+      "MarkTopicsCompletedTestActivity.arguments"
 
     /** Returns an [Intent] for [MarkTopicsCompletedTestActivity]. */
     fun createMarkTopicsCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
@@ -54,7 +54,7 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
         val args = MarkTopicsCompletedTestActivityArguments.newBuilder().apply {
           profileId = internalProfileId
         }.build()
-        putProtoExtra(MARKTOPICSCOMPLETEDTESTACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(MARK_TOPICS_COMPLETED_TEST_ACTIVITY_ARGUMENTS_KEY, args)
       }
       return intent
     }

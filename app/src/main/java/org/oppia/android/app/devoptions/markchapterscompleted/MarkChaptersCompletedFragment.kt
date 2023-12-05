@@ -19,9 +19,9 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
   lateinit var markChaptersCompletedFragmentPresenter: MarkChaptersCompletedFragmentPresenter
 
   companion object {
-    private const val MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS_KEY =
+    private const val MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY =
       "MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS"
-    private const val MARKCHAPTERSCOMPLETED_FRAGMENT_STATE_KEY =
+    private const val MARK_CHAPTERS_COMPLETED_FRAGMENT_STATE_KEY =
       "MARKCHAPTERSCOMPLETED_FRAGMENT_STATE"
     private const val PROFILE_ID_ARGUMENT_KEY = "MarkChaptersCompletedFragment.profile_id"
     private const val SHOW_CONFIRMATION_NOTICE_ARGUMENT_KEY =
@@ -43,7 +43,7 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
             this.showConfirmationNotice = showConfirmationNotice
           }
             .build()
-          putProto(MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
+          putProto(MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
         }
       }
     }
@@ -62,14 +62,14 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkChaptersCompletedFragment" }
     val args = arguments.getProto(
-      MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS_KEY,
+      MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY,
       MarkChaptersCompletedFragmentArguments.getDefaultInstance()
     )
     val internalProfileId = args?.profileId ?: -1
     val showConfirmationNotice = args?.showConfirmationNotice ?: false
 
     val savedStateArgs = savedInstanceState?.getProto(
-      MARKCHAPTERSCOMPLETED_FRAGMENT_STATE_KEY,
+      MARK_CHAPTERS_COMPLETED_FRAGMENT_STATE_KEY,
       MarkChaptersCompletedFragmentStateBundle.getDefaultInstance()
     )
     return markChaptersCompletedFragmentPresenter.handleCreateView(
@@ -95,7 +95,7 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
         )
       }
         .build()
-      putProto(MARKCHAPTERSCOMPLETED_FRAGMENT_STATE_KEY, args)
+      putProto(MARK_CHAPTERS_COMPLETED_FRAGMENT_STATE_KEY, args)
     }
   }
 }
