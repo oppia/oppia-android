@@ -77,73 +77,32 @@ class FeatureFlagsLogger @Inject constructor(
    * @return a list of [FeatureFlagItem]s
    */
   private fun compileFeatureFlagsForLogging(): List<FeatureFlagItem> {
-    val enableDownloadsSupportFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(DOWNLOADS_SUPPORT)
-      .setFlagEnabledState(enableDownloadsSupport.value)
-      .setFlagSyncStatus(enableDownloadsSupport.syncStatus)
-      .build()
-
-    val enableExtraTopicTabsUiFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(EXTRA_TOPIC_TABS_UI)
-      .setFlagEnabledState(enableExtraTopicTabsUi.value)
-      .setFlagSyncStatus(enableExtraTopicTabsUi.syncStatus)
-      .build()
-
-    val enableLearnerStudyAnalyticsFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(LEARNER_STUDY_ANALYTICS)
-      .setFlagEnabledState(enableLearnerStudyAnalytics.value)
-      .setFlagSyncStatus(enableLearnerStudyAnalytics.syncStatus)
-      .build()
-
-    val enableFastLanguageSwitchingInLessonFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(FAST_LANGUAGE_SWITCHING_IN_LESSON)
-      .setFlagEnabledState(enableFastLanguageSwitchingInLesson.value)
-      .setFlagSyncStatus(enableFastLanguageSwitchingInLesson.syncStatus)
-      .build()
-
-    val enableLoggingLearnerStudyIdsFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(LOGGING_LEARNER_STUDY_IDS)
-      .setFlagEnabledState(enableLoggingLearnerStudyIds.value)
-      .setFlagSyncStatus(enableLoggingLearnerStudyIds.syncStatus)
-      .build()
-
-    val enableEditAccountsOptionsUiFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(EDIT_ACCOUNTS_OPTIONS_UI)
-      .setFlagEnabledState(enableEditAccountsOptionsUi.value)
-      .setFlagSyncStatus(enableEditAccountsOptionsUi.syncStatus)
-      .build()
-
-    val enablePerformanceMetricsCollectionFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(PERFORMANCE_METRICS_COLLECTION)
-      .setFlagEnabledState(enablePerformanceMetricsCollection.value)
-      .setFlagSyncStatus(enablePerformanceMetricsCollection.syncStatus)
-      .build()
-
-    val enableSpotlightUiFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(SPOTLIGHT_UI)
-      .setFlagEnabledState(enableSpotlightUi.value)
-      .setFlagSyncStatus(enableSpotlightUi.syncStatus)
-      .build()
-
-    val enableInteractionConfigChangeStateRetentionFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(INTERACTION_CONFIG_CHANGE_STATE_RETENTION)
-      .setFlagEnabledState(enableInteractionConfigChangeStateRetention.value)
-      .setFlagSyncStatus(enableInteractionConfigChangeStateRetention.syncStatus)
-      .build()
-
-    val enableAppAndOsDeprecationFlagItem = FeatureFlagItem.newBuilder()
-      .setFlagName(APP_AND_OS_DEPRECATION)
-      .setFlagEnabledState(enableAppAndOsDeprecation.value)
-      .setFlagSyncStatus(enableAppAndOsDeprecation.syncStatus)
-      .build()
-
-    return listOf(
-      enableDownloadsSupportFlagItem, enableExtraTopicTabsUiFlagItem,
-      enableLearnerStudyAnalyticsFlagItem, enableFastLanguageSwitchingInLessonFlagItem,
-      enableLoggingLearnerStudyIdsFlagItem, enableEditAccountsOptionsUiFlagItem,
-      enablePerformanceMetricsCollectionFlagItem, enableSpotlightUiFlagItem,
-      enableInteractionConfigChangeStateRetentionFlagItem, enableAppAndOsDeprecationFlagItem
+    val featureFlagItemMap = mapOf(
+      DOWNLOADS_SUPPORT to enableDownloadsSupport,
+      EXTRA_TOPIC_TABS_UI to enableExtraTopicTabsUi,
+      LEARNER_STUDY_ANALYTICS to enableLearnerStudyAnalytics,
+      FAST_LANGUAGE_SWITCHING_IN_LESSON to enableFastLanguageSwitchingInLesson,
+      LOGGING_LEARNER_STUDY_IDS to enableLoggingLearnerStudyIds,
+      EDIT_ACCOUNTS_OPTIONS_UI to enableEditAccountsOptionsUi,
+      PERFORMANCE_METRICS_COLLECTION to enablePerformanceMetricsCollection,
+      SPOTLIGHT_UI to enableSpotlightUi,
+      INTERACTION_CONFIG_CHANGE_STATE_RETENTION to enableInteractionConfigChangeStateRetention,
+      APP_AND_OS_DEPRECATION to enableAppAndOsDeprecation,
     )
+
+    val featureFlagItemList = mutableListOf<FeatureFlagItem>()
+
+    for (entry in featureFlagItemMap) {
+      featureFlagItemList.add(
+        FeatureFlagItem.newBuilder()
+          .setFlagName(entry.key)
+          .setFlagEnabledState(entry.value.value)
+          .setFlagSyncStatus(entry.value.syncStatus)
+          .build()
+      )
+    }
+
+    return featureFlagItemList
   }
 
   /**
