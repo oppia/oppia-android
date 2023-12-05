@@ -41,11 +41,11 @@ class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
       dependencyIndex: Int,
       licenseIndex: Int
     ): Intent {
+      val args = LicenseTextViewerFragmentArguments.newBuilder().apply {
+        this.dependencyIndex = dependencyIndex
+        this.licenseIndex = licenseIndex
+      }.build()
       return Intent(context, LicenseTextViewerActivity::class.java).apply {
-        val args = LicenseTextViewerFragmentArguments.newBuilder().apply {
-          this.dependencyIndex = dependencyIndex
-          this.licenseIndex = licenseIndex
-        }.build()
         putProtoExtra(LICENSE_TEXT_VIEWER_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(LICENSE_TEXT_VIEWER_ACTIVITY)
       }

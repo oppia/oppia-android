@@ -40,7 +40,7 @@ class DeveloperOptionsTestActivity :
       DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY,
       DeveloperOptionsTestActivityArguments.getDefaultInstance()
     )
-    internalProfileId = args?.profileId ?: -1
+    internalProfileId = args?.internalProfileId ?: -1
     if (getDeveloperOptionsFragment() == null) {
       supportFragmentManager.beginTransaction().add(
         R.id.developer_options_fragment_placeholder,
@@ -92,11 +92,11 @@ class DeveloperOptionsTestActivity :
 
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
+      val args =
+        DeveloperOptionsTestActivityArguments.newBuilder().setInternalProfileId(internalProfileId)
+          .build()
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
         .apply {
-          val args = DeveloperOptionsTestActivityArguments.newBuilder().apply {
-            profileId = internalProfileId
-          }.build()
           putProtoExtra(DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY, args)
         }
       return intent

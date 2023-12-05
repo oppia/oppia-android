@@ -32,7 +32,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
       return MarkStoriesCompletedFragment().apply {
         arguments = Bundle().apply {
           val args = MarkStoriesCompletedFragmentArguments.newBuilder().apply {
-            profileId = internalProfileId
+            this.internalProfileId = internalProfileId
           }.build()
           putProto(MARK_STORIES_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
         }
@@ -58,7 +58,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
       MarkStoriesCompletedFragmentArguments.getDefaultInstance()
     )
 
-    val internalProfileId = args?.profileId ?: -1
+    val internalProfileId = args?.internalProfileId ?: -1
     var selectedStoryIdList = ArrayList<String>()
     if (savedInstanceState != null) {
 
@@ -78,11 +78,11 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
+    val args = MarkStoriesCompletedFragmentStateBundle.newBuilder().apply {
+      addAllStoryIdList(markStoriesCompletedFragmentPresenter.selectedStoryIdList)
+    }
+      .build()
     outState.apply {
-      val args = MarkStoriesCompletedFragmentStateBundle.newBuilder().apply {
-        addAllStoryIdList(markStoriesCompletedFragmentPresenter.selectedStoryIdList)
-      }
-        .build()
       putProto(MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY, args)
     }
   }

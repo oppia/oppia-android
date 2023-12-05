@@ -316,7 +316,7 @@ message SurveyActivityParams {
 }
 
 message TopicFragmentArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
   string topic_id = 2;
   string story_id = 3;
 }
@@ -333,25 +333,25 @@ message AdministratorControlsFragmentArguments {
 }
 
 message CompletedStoryListActivityArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message CompletedStoryListFragmentArguments{
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message MarkChaptersCompletedTestActivityArguments{
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
   bool show_confirmation_notice = 2;
 }
 
 message MarkChaptersCompletedActivityArguments{
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
   bool show_confirmation_notice = 2;
 }
 
 message MarkChaptersCompletedFragmentArguments{
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
   bool show_confirmation_notice = 2;
 }
 
@@ -361,15 +361,15 @@ message MarkChaptersCompletedFragmentStateBundle{
 }
 
 message MarkStoriesCompletedTestActivityArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message MarkStoriesCompletedActivityArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message MarkStoriesCompletedFragmentArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message MarkStoriesCompletedFragmentStateBundle{
@@ -377,15 +377,15 @@ message MarkStoriesCompletedFragmentStateBundle{
 }
 
 message MarkTopicsCompletedTestActivityArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message MarkTopicsCompletedActivityArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message MarkTopicsCompletedFragmentArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message MarkTopicsCompletedFragmentStateBundle {
@@ -393,11 +393,11 @@ message MarkTopicsCompletedFragmentStateBundle {
 }
 
 message DeveloperOptionsTestActivityArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message DeveloperOptionsActivityArguments {
-  int32 profile_id = 1;
+  int32 internal_profile_id = 1;
 }
 
 message FAQSingleActivityArguments {

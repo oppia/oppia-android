@@ -32,7 +32,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
       val topicFragment = TopicFragment()
       val arguments = Bundle().apply {
         val args = TopicFragmentArguments.newBuilder().apply {
-          this.profileId = internalProfileId
+          this.internalProfileId = internalProfileId
           this.topicId = topicId
           if (storyId != null) {
             this.storyId = storyId

@@ -24,11 +24,10 @@ class AdministratorControlsFragment : InjectableFragment() {
 
     /** Creates a new instance of [AdministratorControlsFragment]. */
     fun newInstance(isMultipane: Boolean): AdministratorControlsFragment {
+      val args =
+        AdministratorControlsFragmentArguments.newBuilder().setIsMultipane(isMultipane).build()
       return AdministratorControlsFragment().apply {
         arguments = Bundle().apply {
-          val args = AdministratorControlsFragmentArguments.newBuilder().apply {
-            this.isMultipane = isMultipane
-          }.build()
           putProto(ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY, args)
         }
       }

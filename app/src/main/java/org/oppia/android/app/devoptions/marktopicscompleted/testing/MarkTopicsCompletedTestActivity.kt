@@ -26,7 +26,7 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
       MARK_TOPICS_COMPLETED_TEST_ACTIVITY_ARGUMENTS_KEY,
       MarkTopicsCompletedTestActivityArguments.getDefaultInstance()
     )
-    internalProfileId = args?.profileId ?: -1
+    internalProfileId = args?.internalProfileId ?: -1
     if (getMarkTopicsCompletedFragment() == null) {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(internalProfileId)
       supportFragmentManager.beginTransaction().add(
@@ -49,9 +49,8 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
     /** Returns an [Intent] for [MarkTopicsCompletedTestActivity]. */
     fun createMarkTopicsCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, MarkTopicsCompletedTestActivity::class.java).apply {
-        val args = MarkTopicsCompletedTestActivityArguments.newBuilder().apply {
-          profileId = internalProfileId
-        }.build()
+        val args = MarkTopicsCompletedTestActivityArguments.newBuilder()
+          .setInternalProfileId(internalProfileId).build()
         putProtoExtra(MARK_TOPICS_COMPLETED_TEST_ACTIVITY_ARGUMENTS_KEY, args)
       }
       return intent

@@ -34,7 +34,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
       return MarkTopicsCompletedFragment().apply {
         arguments = Bundle().apply {
           val args = MarkTopicsCompletedFragmentArguments.newBuilder().apply {
-            profileId = internalProfileId
+            this.internalProfileId = internalProfileId
           }.build()
           putProto(MARK_TOPICS_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
         }
@@ -60,7 +60,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
       MarkTopicsCompletedFragmentArguments.getDefaultInstance()
     )
 
-    val internalProfileId = args?.profileId ?: -1
+    val internalProfileId = args?.internalProfileId ?: -1
     var selectedTopicIdList = ArrayList<String>()
     if (savedInstanceState != null) {
 
@@ -80,10 +80,10 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
+    val args = MarkTopicsCompletedFragmentStateBundle.newBuilder().apply {
+      addAllTopicIdList(markTopicsCompletedFragmentPresenter.selectedTopicIdList)
+    }.build()
     outState.apply {
-      val args = MarkTopicsCompletedFragmentStateBundle.newBuilder().apply {
-        addAllTopicIdList(markTopicsCompletedFragmentPresenter.selectedTopicIdList)
-      }.build()
       putProto(MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY, args)
     }
   }

@@ -33,7 +33,7 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
       MarkChaptersCompletedActivityArguments.getDefaultInstance()
     )
 
-    val internalProfileId = args?.profileId ?: -1
+    val internalProfileId = args?.internalProfileId ?: -1
     val showConfirmationNotice = args?.showConfirmationNotice ?: false
     markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId, showConfirmationNotice)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
@@ -60,7 +60,7 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
       val intent = Intent(context, MarkChaptersCompletedActivity::class.java)
 
       val args = MarkChaptersCompletedActivityArguments.newBuilder().apply {
-        this.profileId = internalProfileId
+        this.internalProfileId = internalProfileId
         this.showConfirmationNotice = showConfirmationNotice
       }
         .build()

@@ -25,7 +25,7 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
       MarkChaptersCompletedTestActivityArguments.getDefaultInstance()
     )
 
-    val internalProfileId = args?.profileId ?: -1
+    val internalProfileId = args?.internalProfileId ?: -1
     val showConfirmationNotice = args?.showConfirmationNotice ?: false
     if (getMarkChaptersCompletedFragment() == null) {
       val markChaptersCompletedFragment =
@@ -58,7 +58,7 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
       val intent = Intent(context, MarkChaptersCompletedTestActivity::class.java)
 
       val args = MarkChaptersCompletedTestActivityArguments.newBuilder().apply {
-        this.profileId = internalProfileId
+        this.internalProfileId = internalProfileId
         this.showConfirmationNotice = showConfirmationNotice
       }
         .build()

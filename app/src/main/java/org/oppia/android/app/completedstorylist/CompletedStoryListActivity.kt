@@ -28,7 +28,7 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
       CompletedStoryListActivityArguments.getDefaultInstance()
     )
 
-    val internalProfileId: Int = args?.profileId ?: -1
+    val internalProfileId: Int = args?.internalProfileId ?: -1
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
@@ -39,10 +39,9 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
     /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */
     fun createCompletedStoryListActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, CompletedStoryListActivity::class.java)
-      val args = CompletedStoryListActivityArguments.newBuilder().apply {
-        profileId = internalProfileId
-      }.build()
-
+      val args =
+        CompletedStoryListActivityArguments.newBuilder().setInternalProfileId(internalProfileId)
+          .build()
       intent.putProtoExtra(COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY, args)
       intent.decorateWithScreenName(COMPLETED_STORY_LIST_ACTIVITY)
       return intent

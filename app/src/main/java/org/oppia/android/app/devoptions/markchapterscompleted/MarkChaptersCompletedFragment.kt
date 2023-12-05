@@ -29,13 +29,13 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
       internalProfileId: Int,
       showConfirmationNotice: Boolean
     ): MarkChaptersCompletedFragment {
+      val args = MarkChaptersCompletedFragmentArguments.newBuilder().apply {
+        this.internalProfileId = internalProfileId
+        this.showConfirmationNotice = showConfirmationNotice
+      }
+        .build()
       return MarkChaptersCompletedFragment().apply {
         arguments = Bundle().apply {
-          val args = MarkChaptersCompletedFragmentArguments.newBuilder().apply {
-            this.profileId = internalProfileId
-            this.showConfirmationNotice = showConfirmationNotice
-          }
-            .build()
           putProto(MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
         }
       }
@@ -58,7 +58,7 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
       MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY,
       MarkChaptersCompletedFragmentArguments.getDefaultInstance()
     )
-    val internalProfileId = args?.profileId ?: -1
+    val internalProfileId = args?.internalProfileId ?: -1
     val showConfirmationNotice = args?.showConfirmationNotice ?: false
 
     val savedStateArgs = savedInstanceState?.getProto(

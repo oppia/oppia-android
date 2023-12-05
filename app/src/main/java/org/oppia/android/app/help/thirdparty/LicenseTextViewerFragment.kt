@@ -24,12 +24,12 @@ class LicenseTextViewerFragment : InjectableFragment() {
 
     /** Returns an instance of [LicenseTextViewerFragment]. */
     fun newInstance(dependencyIndex: Int, licenseIndex: Int): LicenseTextViewerFragment {
+      val args = LicenseTextViewerFragmentArguments.newBuilder().apply {
+        this.dependencyIndex = dependencyIndex
+        this.licenseIndex = licenseIndex
+      }.build()
       return LicenseTextViewerFragment().apply {
         val bundle = Bundle().apply {
-          val args = LicenseTextViewerFragmentArguments.newBuilder().apply {
-            this.dependencyIndex = dependencyIndex
-            this.licenseIndex = licenseIndex
-          }.build()
           putProto(LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY, args)
         }
         arguments = bundle

@@ -38,10 +38,9 @@ class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToL
       context: Context,
       dependencyIndex: Int
     ): Intent {
+      val args =
+        LicenseListActivityArguments.newBuilder().setDependencyIndex(dependencyIndex).build()
       return Intent(context, LicenseListActivity::class.java).apply {
-        val args = LicenseListActivityArguments.newBuilder().apply {
-          this.dependencyIndex = dependencyIndex
-        }.build()
         putProtoExtra(LICENSE_LIST_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(LICENSE_LIST_ACTIVITY)
       }

@@ -23,12 +23,12 @@ class LicenseListFragment : InjectableFragment() {
 
     /** Returns an instance of [LicenseListFragment]. */
     fun newInstance(dependencyIndex: Int, isMultipane: Boolean): LicenseListFragment {
+      val args = LicenseListFragmentArguments.newBuilder().apply {
+        this.dependencyIndex = dependencyIndex
+        this.isMultipane = isMultipane
+      }.build()
       return LicenseListFragment().apply {
         val bundle = Bundle().apply {
-          val args = LicenseListFragmentArguments.newBuilder().apply {
-            this.dependencyIndex = dependencyIndex
-            this.isMultipane = isMultipane
-          }.build()
           putProto(LICENSE_LIST_FRAGMENT_ARGUMENTS_KEY, args)
         }
         arguments = bundle

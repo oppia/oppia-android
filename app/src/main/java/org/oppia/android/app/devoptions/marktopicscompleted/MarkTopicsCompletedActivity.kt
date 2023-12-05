@@ -34,7 +34,7 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
       MARK_TOPICS_COMPLETED_ACTIVITY_ARGUMENTS_KEY,
       MarkTopicsCompletedActivityArguments.getDefaultInstance()
     )
-    internalProfileId = args?.profileId ?: -1
+    internalProfileId = args?.internalProfileId ?: -1
     markTopicsCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_topics_completed_activity_title)
   }
@@ -54,9 +54,9 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
     fun createMarkTopicsCompletedIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, MarkTopicsCompletedActivity::class.java).apply {
-        val args = MarkTopicsCompletedActivityArguments.newBuilder().apply {
-          profileId = internalProfileId
-        }.build()
+        val args =
+          MarkTopicsCompletedActivityArguments.newBuilder().setInternalProfileId(internalProfileId)
+            .build()
         putProtoExtra(MARK_TOPICS_COMPLETED_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(MARK_TOPICS_COMPLETED_ACTIVITY)
       }

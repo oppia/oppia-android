@@ -32,7 +32,7 @@ class TopicFragment : InjectableFragment() {
       TOPIC_FRAGMENT_ARGUMENTS_KEY,
       TopicFragmentArguments.getDefaultInstance()
     )
-    val internalProfileId = args?.profileId ?: -1
+    val internalProfileId = args?.internalProfileId ?: -1
     val topicId = args?.topicId ?: TEST_TOPIC_ID_0
     val storyId = args?.storyId ?: ""
 
