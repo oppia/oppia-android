@@ -335,9 +335,9 @@
   <string name="administrator_controls_fragment_topic_update_on_wifi_description">Topics go dey downloaded and updated only on Wi-fi. Any downloads or updates of cellular data go dey queue.</string>
   <string name="administrator_controls_fragment_auto_update_topic_text">Automatically update topics</string>
   <string name="administrator_controls_fragment_auto_update_topic_description">Downloaded topics wey get new content available go automatically update.</string>
-  <string name="administrator_controls_fragment_app_information_text">App Information</string>
+  <string name="administrator_controls_fragment_app_information_label">App Information</string>
   <string name="administrator_controls_fragment_app_version_text">App Version</string>
-  <string name="administrator_controls_fragment_account_actions_text">Account Actions</string>
+  <string name="administrator_controls_fragment_account_actions_label">Account Actions</string>
   <string name="administrator_controls_fragment_log_out_text">Log Out</string>
   <string name="log_out_dialog_cancel_button_text">Cancel</string>
   <string name="log_out_dialog_okay_button_text">Ok</string>

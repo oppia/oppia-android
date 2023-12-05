@@ -335,9 +335,9 @@
   <string name="administrator_controls_fragment_topic_update_on_wifi_description">Os tópicos serão baixados e atualizados apenas com Wi-fi. Quaisquer downloads ou atualizações de dados do celular serão enfileirados.</string>
   <string name="administrator_controls_fragment_auto_update_topic_text">Atualizar tópicos automaticamente</string>
   <string name="administrator_controls_fragment_auto_update_topic_description">Os tópicos baixados com novo conteúdo disponível serão atualizados automaticamente.</string>
-  <string name="administrator_controls_fragment_app_information_text">Informações do Aplicativo</string>
+  <string name="administrator_controls_fragment_app_information_label">Informações do Aplicativo</string>
   <string name="administrator_controls_fragment_app_version_text">Versão do Aplicativo</string>
-  <string name="administrator_controls_fragment_account_actions_text">Ações da Conta</string>
+  <string name="administrator_controls_fragment_account_actions_label">Ações da Conta</string>
   <string name="administrator_controls_fragment_log_out_text">Sair</string>
   <string name="log_out_dialog_cancel_button_text">Cancelar</string>
   <string name="log_out_dialog_okay_button_text">Ok</string>

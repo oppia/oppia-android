@@ -353,9 +353,9 @@
   <string name="administrator_controls_fragment_topic_update_on_wifi_description">سيتم تحميل وتحديث المواضيع عن طريق شبكة الوايفاي فقط. أي تنزيلات أو تحديثات عن طريق بيانات الهاتف سيتم وضعها في قائمة الانتظار.</string>
   <string name="administrator_controls_fragment_auto_update_topic_text">تحديث المواضيع تلقائيًا</string>
   <string name="administrator_controls_fragment_auto_update_topic_description">سيتم تحديث الموضوعات التي تم تنزيلها والتي يتوفر بها محتوى جديد تلقائيًا.</string>
-  <string name="administrator_controls_fragment_app_information_text">معلومات التطبيق</string>
+  <string name="administrator_controls_fragment_app_information_label">معلومات التطبيق</string>
   <string name="administrator_controls_fragment_app_version_text">إصدار التطبيق</string>
-  <string name="administrator_controls_fragment_account_actions_text">إجراءات الحساب</string>
+  <string name="administrator_controls_fragment_account_actions_label">إجراءات الحساب</string>
   <string name="administrator_controls_fragment_log_out_text">تسجيل الخروج</string>
   <string name="log_out_dialog_cancel_button_text">إلغاء</string>
   <string name="log_out_dialog_okay_button_text">حسنا</string>

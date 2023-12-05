@@ -13,9 +13,9 @@
   <string name="administrator_controls_fragment_topic_update_on_wifi_description">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
   <string name="administrator_controls_fragment_auto_update_topic_text">Automatically update topics</string>
   <string name="administrator_controls_fragment_auto_update_topic_description">Downloaded topics that have new content available will automatically update.</string>
-  <string name="administrator_controls_fragment_app_information_text">App Information</string>
+  <string name="administrator_controls_fragment_app_information_label">App Information</string>
   <string name="administrator_controls_fragment_app_version_text">App Version</string>
-  <string name="administrator_controls_fragment_account_actions_text">Account Actions</string>
+  <string name="administrator_controls_fragment_account_actions_label">Account Actions</string>
   <string name="administrator_controls_fragment_log_out_text">Log Out</string>
   <!-- AdministratorControlsFragmentTestActivity -->
   <string name="administrator_controls_fragment_test_activity_title">Administrator Controls Fragment Test Activity</string>

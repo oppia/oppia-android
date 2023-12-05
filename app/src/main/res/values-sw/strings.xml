@@ -293,9 +293,9 @@
   <string name="administrator_controls_fragment_topic_update_on_wifi_description">Mada zitapakuliwa na kusasishwa kwenye Wi-fi pekee. Vipakuliwa au masasisho yoyote ya data ya mtandao wa simu yatawekwa kwenye foleni.</string>
   <string name="administrator_controls_fragment_auto_update_topic_text">Sasisha mada moja kwa moja</string>
   <string name="administrator_controls_fragment_auto_update_topic_description">Mada zilizopakuliwa ambazo zina maudhui mapya zinazopatikana zitasasishwa moja kwa moja.</string>
-  <string name="administrator_controls_fragment_app_information_text">Maelezo ya programu.</string>
+  <string name="administrator_controls_fragment_app_information_label">Maelezo ya programu.</string>
   <string name="administrator_controls_fragment_app_version_text">Toleo la Programu</string>
-  <string name="administrator_controls_fragment_account_actions_text">Vitendo vya akaunti</string>
+  <string name="administrator_controls_fragment_account_actions_label">Vitendo vya akaunti</string>
   <string name="administrator_controls_fragment_log_out_text">Toka</string>
   <string name="log_out_dialog_cancel_button_text">Ghairi</string>
   <string name="log_out_dialog_okay_button_text">Sawa</string>
