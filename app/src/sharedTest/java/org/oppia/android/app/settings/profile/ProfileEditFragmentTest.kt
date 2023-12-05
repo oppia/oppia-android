@@ -49,7 +49,6 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
-import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS
 import org.oppia.android.app.model.MarkChaptersCompletedActivityArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -120,6 +119,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS
 
 /** Tests for [ProfileEditFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -369,12 +369,12 @@ class ProfileEditFragmentTest {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
       val args = MarkChaptersCompletedActivityArguments.newBuilder().apply {
-        this.profileId = 0
+        this.internalProfileId = 0
         this.showConfirmationNotice = true
       }
         .build()
       intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
-      intended(hasProtoExtra(MARKCHAPTERSCOMPLETED_ACTIVITY_ARGUMENTS, args))
+      intended(hasProtoExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS, args))
     }
   }
 

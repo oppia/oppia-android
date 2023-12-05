@@ -423,4 +423,3 @@ message LicenseTextViewerFragmentArguments{
   int32 dependency_index = 1;
   int32 license_index = 2;
 }
-

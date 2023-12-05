@@ -59,7 +59,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
-import org.oppia.android.app.completedstorylist.CompletedStoryListActivity.Companion.COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
@@ -141,6 +140,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.completedstorylist.CompletedStoryListActivity.Companion.COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY
 
 /** Tests for [ProfileProgressFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -819,12 +819,12 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.completed_stories_container)
       val args = CompletedStoryListActivityArguments.newBuilder().apply {
-        profileId = internalProfileId
+        this.internalProfileId = internalProfileId
       }.build()
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
       intended(
         hasProtoExtra(
-          COMPLETEDSTORYLISTACTIVITY_ARGUMENTS_KEY,
+          COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY,
           args
         )
       )
