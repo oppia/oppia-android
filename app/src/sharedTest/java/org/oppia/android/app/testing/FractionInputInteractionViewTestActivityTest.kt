@@ -528,7 +528,7 @@ class FractionInputInteractionViewTestActivityTest {
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
   // will not be used by user
-  fun testFractionInput_noInput_submit_errorIsDisplayed() {
+  fun testFractionInput_emptyInput_submit_errorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToSubmitButton()
