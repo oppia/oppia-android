@@ -87,7 +87,8 @@ class DeveloperOptionsTestActivity :
 
   companion object {
     /** Argument key for DeveloperOptionsTestActivity. */
-    const val DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY = "DeveloperOptionsTestActivity.arguments"
+    const val DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY =
+      "DeveloperOptionsTestActivity.arguments"
 
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {

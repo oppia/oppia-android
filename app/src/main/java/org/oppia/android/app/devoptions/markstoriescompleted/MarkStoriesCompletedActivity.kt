@@ -47,12 +47,9 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
   }
 
   companion object {
-
     /** Argument key for MarkStoriesCompletedActivity.. */
-    const val MARK_STORIES_COMPLETED_ACTIVITY_ARGUMENTS_KEY = "MarkStoriesCompletedActivity.arguments"
-
-    /** [String] key value for mapping to InternalProfileId in [Bundle]. */
-    const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedActivity.profile_id"
+    const val MARK_STORIES_COMPLETED_ACTIVITY_ARGUMENTS_KEY =
+      "MarkStoriesCompletedActivity.arguments"
 
     /** Returns an [Intent] to start this activity. */
     fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {

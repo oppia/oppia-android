@@ -20,13 +20,12 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
 
   companion object {
     /** Argument key for MarkStoriesCompletedActivity.. */
-    const val MARK_STORIES_COMPLETED_FRAGMENT_ARGUMENTS_KEY = "MarkStoriesCompletedFragment.arguments"
+    const val MARK_STORIES_COMPLETED_FRAGMENT_ARGUMENTS_KEY =
+      "MarkStoriesCompletedFragment.arguments"
 
     const val MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY = "MarkStoriesCompletedFragment.state"
 
     internal const val PROFILE_ID_ARGUMENT_KEY = "MarkStoriesCompletedFragment.profile_id"
-
-    private const val STORY_ID_LIST_ARGUMENT_KEY = "MarkStoriesCompletedFragment.story_id_list"
 
     /** Returns a new [MarkStoriesCompletedFragment]. */
     fun newInstance(internalProfileId: Int): MarkStoriesCompletedFragment {

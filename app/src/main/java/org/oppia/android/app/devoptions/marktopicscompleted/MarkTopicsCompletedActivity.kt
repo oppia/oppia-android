@@ -47,9 +47,6 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    /** [String] key value for mapping to InternalProfileId in [Bundle]. */
-    const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedActivity.profile_id"
-
     /** Argument key for MarkTopicsCompletedActivity.. */
     const val MARK_TOPICS_COMPLETED_ACTIVITY_ARGUMENTS_KEY =
       "MarkTopicsCompletedActivity.arguments"

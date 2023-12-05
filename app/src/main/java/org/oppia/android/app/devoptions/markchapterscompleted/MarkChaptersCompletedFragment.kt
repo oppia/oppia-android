@@ -23,13 +23,6 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
       "MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS"
     private const val MARK_CHAPTERS_COMPLETED_FRAGMENT_STATE_KEY =
       "MARKCHAPTERSCOMPLETED_FRAGMENT_STATE"
-    private const val PROFILE_ID_ARGUMENT_KEY = "MarkChaptersCompletedFragment.profile_id"
-    private const val SHOW_CONFIRMATION_NOTICE_ARGUMENT_KEY =
-      "MarkChaptersCompletedFragment.show_confirmation_notice"
-    private const val EXPLORATION_ID_LIST_ARGUMENT_KEY =
-      "MarkChaptersCompletedFragment.exploration_id_list"
-    private const val EXPLORATION_TITLE_LIST_ARGUMENT_KEY =
-      "MarkChaptersCompletedFragment.exploration_title_list"
 
     /** Returns a new [MarkChaptersCompletedFragment]. */
     fun newInstance(

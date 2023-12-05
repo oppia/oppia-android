@@ -42,8 +42,6 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedTestActivity.profile_id"
-
     /** Argument key for MarkTopicsCompletedTestActivity.. */
     const val MARK_TOPICS_COMPLETED_TEST_ACTIVITY_ARGUMENTS_KEY =
       "MarkTopicsCompletedTestActivity.arguments"

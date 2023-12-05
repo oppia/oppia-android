@@ -21,8 +21,6 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
   companion object {
     internal const val PROFILE_ID_ARGUMENT_KEY = "MarkTopicsCompletedFragment.profile_id"
 
-    private const val TOPIC_ID_LIST_ARGUMENT_KEY = "MarkTopicsCompletedFragment.topic_id_list"
-
     /** Argument key for MarkTopicsCompletedFragment.. */
     const val MARK_TOPICS_COMPLETED_FRAGMENT_ARGUMENTS_KEY =
       "MarkTopicsCompletedFragment.arguments"
