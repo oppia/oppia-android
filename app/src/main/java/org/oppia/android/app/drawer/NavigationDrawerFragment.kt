@@ -33,8 +33,8 @@ class NavigationDrawerFragment :
     return navigationDrawerFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
-    navigationDrawerFragmentPresenter.setUpDrawer(drawerLayout, toolbar, menuItemId)
+  fun initializeDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
+    navigationDrawerFragmentPresenter.initializeDrawer(drawerLayout, toolbar, menuItemId)
   }
 
   override fun routeToProfileProgress(profileId: Int) {
