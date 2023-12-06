@@ -187,7 +187,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
                 (
                   HomeActivity.createHomeActivity(
                     activity,
-                    model.profile.id.internalId
+                    model.profile.id
                   )
                   )
               )

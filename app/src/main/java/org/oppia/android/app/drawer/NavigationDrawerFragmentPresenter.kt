@@ -245,7 +245,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
-          val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
+          val intent = HomeActivity.createHomeActivity(activity, profileId)
           fragment.activity!!.startActivity(intent)
           drawerLayout.closeDrawers()
         }
@@ -262,7 +262,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(
-            activity, internalProfileId,
+            activity, profileId,
             /* isFromNavigationDrawer= */ true
           )
           fragment.activity!!.startActivity(intent)

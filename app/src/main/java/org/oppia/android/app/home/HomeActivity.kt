@@ -45,16 +45,16 @@ class HomeActivity :
   companion object {
 
     const val HOME_ACTIVITY_ARGUMENTS_KEY = "HomeActivity.arguments"
-    fun createHomeActivity(context: Context, profileId: Int?): Intent {
+    fun createHomeActivity(context: Context, profileId: ProfileId?): Intent {
 
-      val args =
-        HomeActivityArguments.newBuilder().setInternalProfileId(profileId ?: -1).build()
-      val profileid = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
+//      val args =
+//        HomeActivityArguments.newBuilder().setInternalProfileId(profileId ?: -1).build()
+//      val profileid = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       return Intent(context, HomeActivity::class.java).apply {
-        putProtoExtra(HOME_ACTIVITY_ARGUMENTS_KEY, args)
+//        putProtoExtra(HOME_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(HOME_ACTIVITY)
-        if (profileid != null) {
-          decorateWithUserProfileId(profileid)
+        if (profileId != null) {
+          decorateWithUserProfileId(profileId)
         }
       }
     }

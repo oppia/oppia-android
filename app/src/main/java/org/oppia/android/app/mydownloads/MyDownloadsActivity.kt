@@ -10,6 +10,7 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ScreenName.MY_DOWNLOADS_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 /** The activity for displaying [MyDownloadsFragment]. */
 class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -38,7 +39,8 @@ class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val intent = HomeActivity.createHomeActivity(this, internalProfileId)
+    val profileid=ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val intent = HomeActivity.createHomeActivity(this, profileid )
     startActivity(intent)
     finish()
   }

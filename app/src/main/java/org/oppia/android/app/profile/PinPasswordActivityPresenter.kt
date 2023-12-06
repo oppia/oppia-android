@@ -97,7 +97,8 @@ class PinPasswordActivityPresenter @Inject constructor(
                 activity,
                 {
                   if (it is AsyncResult.Success) {
-                    activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
+                    val profileid=ProfileId.newBuilder().setInternalId(profileId).build()
+                    activity.startActivity((HomeActivity.createHomeActivity(activity, profileid)))
                   }
                 }
               )
