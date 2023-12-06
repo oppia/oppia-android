@@ -7,25 +7,22 @@ import android.util.Log
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
-import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.HelpActivityArguments
+import org.oppia.android.app.model.HelpActivityStateBundle
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.getStringFromBundle
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
-import org.oppia.android.app.model.HelpActivityArguments
-import org.oppia.android.app.model.HelpActivityStateBundle
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
 const val POLICIES_FRAGMENT_TAG = "PoliciesFragment.tag"
@@ -81,7 +78,9 @@ class HelpActivity :
     val internalPolicyPage = policiesActivityParams?.policyPage
     Log.e(
       "#",
-      "state ->  " + selectedHelpOptionsTitle + " " + selectedFragment + " " + selectedDependencyIndex + " " + selectedLicenseIndex + " " + internalPolicyPage
+      "state ->  " + selectedHelpOptionsTitle + " " +
+        selectedFragment + " " + selectedDependencyIndex + " " +
+        selectedLicenseIndex + " " + internalPolicyPage
     )
     helpActivityPresenter.handleOnCreate(
       selectedHelpOptionsTitle,

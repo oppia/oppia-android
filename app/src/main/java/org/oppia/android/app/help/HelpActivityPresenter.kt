@@ -13,10 +13,12 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.help.HelpActivity.Companion.HELP_ACTIVITY_STATE_KEY
 import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
+import org.oppia.android.app.model.HelpActivityStateBundle
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.model.PolicyPage
@@ -24,8 +26,6 @@ import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-import org.oppia.android.app.help.HelpActivity.Companion.HELP_ACTIVITY_STATE_KEY
-import org.oppia.android.app.model.HelpActivityStateBundle
 
 /** The presenter for [HelpActivity]. */
 @ActivityScope
@@ -149,9 +149,9 @@ class HelpActivityPresenter @Inject constructor(
   /** Handles onSavedInstanceState() method for [HelpActivity]. */
   fun handleOnSavedInstanceState(outState: Bundle) {
     val titleTextView = activity.findViewById<TextView>(R.id.help_multipane_options_title_textview)
-   var ll="null"
+    var ll = "null"
     if (titleTextView != null) {
-     ll= titleTextView.text.toString()
+      ll = titleTextView.text.toString()
     }
 
     val policiesActivityParams =
@@ -161,7 +161,9 @@ class HelpActivityPresenter @Inject constructor(
         .build()
     Log.e(
       "#",
-      "state ->  " + ll + " " + selectedFragmentTag + " " + selectedDependencyIndex+" "+selectedLicenseIndex+" "+internalPolicyPage
+      "state ->  " + ll + " " + selectedFragmentTag + " " +
+        selectedDependencyIndex + " " +
+        selectedLicenseIndex + " " + internalPolicyPage
     )
     val args = HelpActivityStateBundle.newBuilder().apply {
       if (titleTextView != null) {
@@ -174,7 +176,6 @@ class HelpActivityPresenter @Inject constructor(
           this.selectedLicenseIndex = it
         }
         this.policiesActivityParams = policiesActivityParams
-
       }
     }.build()
     outState.putProto(HELP_ACTIVITY_STATE_KEY, args)

@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import javax.inject.Inject
 import org.oppia.android.app.model.ThirdPartyDependencyListFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import javax.inject.Inject
 
 private const val IS_MULTIPANE_KEY = "ThirdPartyDependencyListFragment.is_multipane"
 
@@ -28,7 +28,7 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
 
     /** Returns an instance of [ThirdPartyDependencyListFragment]. */
     fun newInstance(isMultipane: Boolean): ThirdPartyDependencyListFragment {
-      Log.e("#","third pa dep"+ isMultipane)
+      Log.e("#", "third pa dep" + isMultipane)
       val args =
         ThirdPartyDependencyListFragmentArguments.newBuilder().setIsMultipane(isMultipane).build()
 
@@ -37,7 +37,6 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
           putProto(THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_ARGUMENTS_KEY, args)
         }
       }
-
     }
   }
 
@@ -54,9 +53,12 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
     val arguments = checkNotNull(arguments) {
       "Expected arguments to be passed to ThirdPartyDependencyListFragment"
     }
-    val args=arguments.getProto(THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_ARGUMENTS_KEY,ThirdPartyDependencyListFragmentArguments.getDefaultInstance())
-    val isMultipane = args?.isMultipane?:false
-    Log.e("#","third pa dep"+ isMultipane)
+    val args = arguments.getProto(
+      THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_ARGUMENTS_KEY,
+      ThirdPartyDependencyListFragmentArguments.getDefaultInstance()
+    )
+    val isMultipane = args?.isMultipane ?: false
+    Log.e("#", "third pa dep" + isMultipane)
     return thirdPartyDependencyListFragmentPresenter.handleCreateView(
       inflater,
       container,
