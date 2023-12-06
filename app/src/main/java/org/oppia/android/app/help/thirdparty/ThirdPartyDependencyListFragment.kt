@@ -2,7 +2,6 @@ package org.oppia.android.app.help.thirdparty
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
 
     /** Returns an instance of [ThirdPartyDependencyListFragment]. */
     fun newInstance(isMultipane: Boolean): ThirdPartyDependencyListFragment {
-      Log.e("#", "third pa dep" + isMultipane)
       val args =
         ThirdPartyDependencyListFragmentArguments.newBuilder().setIsMultipane(isMultipane).build()
 
@@ -58,7 +56,6 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
       ThirdPartyDependencyListFragmentArguments.getDefaultInstance()
     )
     val isMultipane = args?.isMultipane ?: false
-    Log.e("#", "third pa dep" + isMultipane)
     return thirdPartyDependencyListFragmentPresenter.handleCreateView(
       inflater,
       container,

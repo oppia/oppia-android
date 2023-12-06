@@ -13,6 +13,7 @@ import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.model.HelpActivityArguments
 import org.oppia.android.app.model.HelpActivityStateBundle
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
@@ -21,6 +22,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
@@ -105,9 +107,13 @@ class HelpActivity :
         }
         this.isFromNavigationDrawer = isFromNavigationDrawer
       }.build()
+      val profileid = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, HelpActivity::class.java)
       intent.putProtoExtra(HELP_ACTIVITY_ARGUMENTS_KEY, args)
       intent.decorateWithScreenName(HELP_ACTIVITY)
+      if (profileid != null) {
+        intent.decorateWithUserProfileId(profileid)
+      }
       return intent
     }
   }

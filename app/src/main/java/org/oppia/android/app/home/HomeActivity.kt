@@ -22,6 +22,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
@@ -48,10 +49,13 @@ class HomeActivity :
 
       val args =
         HomeActivityArguments.newBuilder().setInternalProfileId(profileId ?: -1).build()
-
+      val profileid = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       return Intent(context, HomeActivity::class.java).apply {
         putProtoExtra(HOME_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(HOME_ACTIVITY)
+        if (profileid != null) {
+          decorateWithUserProfileId(profileid)
+        }
       }
     }
   }

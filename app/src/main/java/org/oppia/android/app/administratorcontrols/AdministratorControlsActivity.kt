@@ -11,6 +11,7 @@ import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDe
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.AdministratorControlActivityArguments
 import org.oppia.android.app.model.AdministratorControlActivityStateBundle
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListActivity
@@ -19,6 +20,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Argument key used to identify [ProfileListFragment] in the backstack. */
@@ -120,9 +122,14 @@ class AdministratorControlsActivity :
           it
         )
       }?.build()
+
+      val profileid = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.putProtoExtra(ADMINISTRATOR_CONTROLS_ACTIVITY_ARGUMENTS_KEY, args!!)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
+      if (profileid != null) {
+        intent.decorateWithUserProfileId(profileid)
+      }
       return intent
     }
 

@@ -1,7 +1,6 @@
 package org.oppia.android.app.help
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageButton
@@ -159,12 +158,6 @@ class HelpActivityPresenter @Inject constructor(
         .newBuilder()
         .setPolicyPage(internalPolicyPage)
         .build()
-    Log.e(
-      "#",
-      "state ->  " + ll + " " + selectedFragmentTag + " " +
-        selectedDependencyIndex + " " +
-        selectedLicenseIndex + " " + internalPolicyPage
-    )
     val args = HelpActivityStateBundle.newBuilder().apply {
       if (titleTextView != null) {
         this.helpOptionsTitle = titleTextView.text.toString()

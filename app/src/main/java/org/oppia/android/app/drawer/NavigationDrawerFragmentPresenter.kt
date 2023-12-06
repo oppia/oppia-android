@@ -17,19 +17,13 @@ import com.google.android.material.navigation.NavigationView
 import com.google.common.base.Optional
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity.Companion.ADMINISTRATOR_CONTROLS_ACTIVITY_ARGUMENTS_KEY
-import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsStarter
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.AdministratorControlActivityArguments
 import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.DeveloperOptionsActivityArguments
 import org.oppia.android.app.model.ExitProfileDialogArguments
-import org.oppia.android.app.model.HelpActivityArguments
 import org.oppia.android.app.model.HighlightItem
-import org.oppia.android.app.model.HomeActivityArguments
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
@@ -45,7 +39,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -78,35 +72,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
     fragment.setHasOptionsMenu(true)
 
-    if (activity is HomeActivity) {
-      val args = activity.intent?.getProtoExtra(
-        HomeActivity.HOME_ACTIVITY_ARGUMENTS_KEY,
-        HomeActivityArguments.getDefaultInstance()
-      )
-      internalProfileId = args?.internalProfileId ?: -1
-    } else if (activity is HelpActivity) {
-      val args =
-        activity.intent.getProtoExtra(
-          HelpActivity.HELP_ACTIVITY_ARGUMENTS_KEY,
-          HelpActivityArguments.getDefaultInstance()
-        )
-      internalProfileId = args?.internalProfileId ?: -1
-    } else if (activity is DeveloperOptionsActivity) {
-      val args = activity.intent.getProtoExtra(
-        DeveloperOptionsActivity.DEVELOPER_OPTIONS_ACTIVITY_AEGUMENTS_KEY,
-        DeveloperOptionsActivityArguments.getDefaultInstance()
-      )
-      internalProfileId = args?.internalProfileId ?: -1
-    } else if (activity is AdministratorControlsActivity) {
-      val args = activity.intent.getProtoExtra(
-        ADMINISTRATOR_CONTROLS_ACTIVITY_ARGUMENTS_KEY,
-        AdministratorControlActivityArguments.getDefaultInstance()
-      )
-      internalProfileId = args?.internalProfileId ?: -1
-    } else {
-      internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
-    }
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = activity.intent.extractCurrentUserProfileId()
+    internalProfileId = profileId.internalId
 
     val headerBinding =
       NavHeaderNavigationDrawerBinding.inflate(

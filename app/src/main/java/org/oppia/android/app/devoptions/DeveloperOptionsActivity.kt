@@ -13,6 +13,7 @@ import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedA
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.model.DeveloperOptionsActivityArguments
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProtoExtra
@@ -94,9 +95,11 @@ class DeveloperOptionsActivity :
       val args =
         DeveloperOptionsActivityArguments.newBuilder().setInternalProfileId(internalProfileId)
           .build()
+      val profileid = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
         putProtoExtra(DEVELOPER_OPTIONS_ACTIVITY_AEGUMENTS_KEY, args)
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
+//        decorateWithUserProfileId(profileid)
       }
     }
   }
