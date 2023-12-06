@@ -1209,6 +1209,8 @@ class ExplorationActivityTest {
       clickContinueButton()
 
       onView(withId(R.id.action_audio_player)).perform(click())
+
+      scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION)
       onView(withId(R.id.text_input_interaction_view)).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
