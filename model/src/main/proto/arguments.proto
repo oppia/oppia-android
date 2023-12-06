@@ -444,3 +444,7 @@ message HelpActivityStateBundle{
 message HelpFragmentArguments {
   bool is_multipane = 1;
 }
+
+message RecentlyPlayedFragmentArguments {
+  int32 internal_profile_id = 1;
+}
