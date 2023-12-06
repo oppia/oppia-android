@@ -9,7 +9,6 @@ import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.BuildConfig
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
@@ -153,10 +152,10 @@ class AppStartupStateController @Inject constructor(
       }
     }
 
-    val appVersionCode = BuildConfig.VERSION_CODE
+    val appVersionCode = Build.VERSION.SDK_INT
 
-    val osIsDeprecated = lowestSupportedApiLevel.value > Build.VERSION.SDK_INT &&
-      deprecationDatabase.osDeprecationResponse.deprecatedVersion != Build.VERSION.SDK_INT
+    val osIsDeprecated = lowestSupportedApiLevel.value > appVersionCode &&
+      deprecationDatabase.osDeprecationResponse.deprecatedVersion != appVersionCode
     val appUpdateIsAvailable = optionalAppUpdateVersionCode.value > appVersionCode ||
       forcedAppUpdateVersionCode.value > appVersionCode
 
