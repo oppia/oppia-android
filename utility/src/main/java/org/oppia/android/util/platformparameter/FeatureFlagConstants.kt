@@ -19,7 +19,7 @@ import javax.inject.Qualifier
 @Qualifier annotation class EnableDownloadsSupport
 
 /** Name of the feature flag that controls whether to enable downloads support. */
-const val DOWNLOADS_SUPPORT = "downloads_support"
+const val DOWNLOADS_SUPPORT = "android_enable_downloads_support"
 
 /** Default value for feature flag corresponding to [EnableDownloadsSupport]. */
 const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
@@ -38,7 +38,7 @@ const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = true
 annotation class EnableExtraTopicTabsUi
 
 /** Name of the feature flag that controls whether to enable the extra topics tab UI. */
-const val EXTRA_TOPIC_TABS_UI = "extra_topic_tabs_ui"
+const val EXTRA_TOPIC_TABS_UI = "android_enable_extra_topic_tabs_ui"
 
 /** Default value for the feature flag corresponding to [EnableExtraTopicTabsUi]. */
 const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
@@ -54,7 +54,7 @@ annotation class EnableLearnerStudyAnalytics
  * Name of the feature flag that controls the visibility of [ProfileAndDeviceIdActivity]
  * and working of learner study related analytics logging.
  */
-const val LEARNER_STUDY_ANALYTICS = "learner_study_analytics"
+const val LEARNER_STUDY_ANALYTICS = "android_enable_learner_study_analytics"
 
 /**
  * Default value of the feature flag that controls the visibility of [ProfileAndDeviceIdActivity]
@@ -72,7 +72,7 @@ const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = false
 @Qualifier annotation class EnableFastLanguageSwitchingInLesson
 
 /** The feature flag name corresponding to [EnableFastLanguageSwitchingInLesson]. */
-const val FAST_LANGUAGE_SWITCHING_IN_LESSON = "fast_language_switching_in_lesson"
+const val FAST_LANGUAGE_SWITCHING_IN_LESSON = "android_enable_fast_language_switching_in_lesson"
 
 /**
  * The default enabled state for the feature corresponding to [EnableFastLanguageSwitchingInLesson].
@@ -88,7 +88,7 @@ const val FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE = false
 @Qualifier annotation class EnableLoggingLearnerStudyIds
 
 /** The feature flag name corresponding to [EnableLoggingLearnerStudyIds]. */
-const val LOGGING_LEARNER_STUDY_IDS = "logging_learner_study_ids"
+const val LOGGING_LEARNER_STUDY_IDS = "android_enable_logging_learner_study_ids"
 
 /** The default enabled state for the feature corresponding to [EnableLoggingLearnerStudyIds]. */
 const val LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE = false
@@ -98,7 +98,7 @@ const val LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE = false
 annotation class EnableEditAccountsOptionsUi
 
 /** Name of the feature flag that controls whether to enable the edit account options UI. */
-const val EDIT_ACCOUNTS_OPTIONS_UI = "edit_accounts_options_ui"
+const val EDIT_ACCOUNTS_OPTIONS_UI = "android_enable_edit_accounts_options_ui"
 
 /** Default value for the feature flag corresponding to [EnableEditAccountsOptionsUi]. */
 const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false
@@ -108,7 +108,7 @@ const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false
 annotation class EnablePerformanceMetricsCollection
 
 /** Name of the feature flag that controls whether to record performance metrics. */
-const val PERFORMANCE_METRICS_COLLECTION = "performance_metrics_collection"
+const val PERFORMANCE_METRICS_COLLECTION = "android_enable_performance_metrics_collection"
 
 /** Default value for whether to record performance metrics. */
 const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
@@ -118,7 +118,7 @@ const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
 annotation class EnableSpotlightUi
 
 /** Name of the feature flag that controls whether to enable the spotlight UI. */
-const val SPOTLIGHT_UI = "spotlight_ui"
+const val SPOTLIGHT_UI = "android_enable_spotlight_ui"
 
 /** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
 const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = false
@@ -134,7 +134,8 @@ annotation class EnableInteractionConfigChangeStateRetention
  * Name of the feature flag that controls whether input interaction state is correctly retained
  * across configuration changes.
  */
-const val INTERACTION_CONFIG_CHANGE_STATE_RETENTION = "interaction_config_change_state_retention"
+const val INTERACTION_CONFIG_CHANGE_STATE_RETENTION =
+  "android_enable_interaction_config_change_state_retention"
 
 /**
  * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
@@ -149,7 +150,7 @@ const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
 annotation class EnableAppAndOsDeprecation
 
 /** Name of the feature flag that controls whether to enable app and os deprecation. */
-const val APP_AND_OS_DEPRECATION = "app_and_os_deprecation"
+const val APP_AND_OS_DEPRECATION = "android_enable_app_and_os_deprecation"
 
 /**
  * Default value for the feature flag corresponding to [EnableAppAndOsDeprecation].
