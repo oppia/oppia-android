@@ -1191,6 +1191,7 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
+      testCoroutineDispatchers.unregisterIdlingResource()
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
         RATIOS_TOPIC_ID,
@@ -1205,6 +1206,19 @@ class ExplorationActivityTest {
       clickContinueButton()
       clickContinueButton()
       clickContinueButton()
+
+      onView(withId(R.id.action_audio_player)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
+
+      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
+        )
+      )
 
       onView(withId(R.id.text_input_interaction_view)).perform(
         editTextInputAction.appendText("123")
@@ -1301,6 +1315,7 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
+      testCoroutineDispatchers.unregisterIdlingResource()
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
         RATIOS_TOPIC_ID,
