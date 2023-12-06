@@ -24,8 +24,8 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
     val parameter = platformParameterMap[platformParameterName] ?: return null
     if (!parameter.valueTypeCase.equals(PlatformParameter.ValueTypeCase.STRING)) return null
     return object : PlatformParameterValue<String> {
-      override val value: String
-        get() = parameter.string
+      override val value = parameter.string
+      override val syncStatus = parameter.syncStatus
     }
   }
 
@@ -36,8 +36,8 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
     val parameter = platformParameterMap[platformParameterName] ?: return null
     if (!parameter.valueTypeCase.equals(PlatformParameter.ValueTypeCase.INTEGER)) return null
     return object : PlatformParameterValue<Int> {
-      override val value: Int
-        get() = parameter.integer
+      override val value = parameter.integer
+      override val syncStatus = parameter.syncStatus
     }
   }
 
@@ -48,8 +48,8 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
     val parameter = platformParameterMap[platformParameterName] ?: return null
     if (!parameter.valueTypeCase.equals(PlatformParameter.ValueTypeCase.BOOLEAN)) return null
     return object : PlatformParameterValue<Boolean> {
-      override val value: Boolean
-        get() = parameter.boolean
+      override val value = parameter.boolean
+      override val syncStatus = parameter.syncStatus
     }
   }
 }
