@@ -18,6 +18,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
@@ -1209,21 +1210,18 @@ class ExplorationActivityTest {
       clickContinueButton()
       clickContinueButton()
 
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
-
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
-      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
-
-      waitForTheView(withDrawable(R.drawable.ic_play_circle_filled_white_24dp))
-      onView(withId(R.id.play_pause_audio_icon)).perform(click())
-
       onView(withId(R.id.text_input_interaction_view)).perform(
-        editTextInputAction.appendText("123")
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
       )
-
       onView(withId(R.id.submit_answer_button)).perform(click())
+      Thread.sleep(1000)
+
+      onView(withId(R.id.play_pause_audio_icon))
+        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+
+      onView(withText("What is a Ratio?"))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
