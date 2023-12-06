@@ -423,3 +423,24 @@ message LicenseTextViewerFragmentArguments{
   int32 dependency_index = 1;
   int32 license_index = 2;
 }
+
+message ThirdPartyDependencyListFragmentArguments {
+  bool is_multipane = 1;
+}
+
+message HelpActivityArguments {
+  int32 internal_profile_id = 1;
+  bool is_from_navigation_drawer = 2;
+}
+
+message HelpActivityStateBundle{
+  string help_options_title = 1;
+  string selected_fragment_tag = 2;
+  int32 selectedDependencyIndex = 3;
+  int32 selectedLicenseIndex = 4;
+  PoliciesActivityParams policies_activity_params = 5;
+}
+
+message HelpFragmentArguments {
+  bool is_multipane = 1;
+}
