@@ -3,7 +3,6 @@ package org.oppia.android.app.help
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -58,7 +57,6 @@ class HelpActivity :
     val args =
       intent.getProtoExtra(HELP_ACTIVITY_ARGUMENTS_KEY, HelpActivityArguments.getDefaultInstance())
     val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
-    Log.e("#", isFromNavigationDrawer.toString())
 
     val stateArgs = savedInstanceState?.getProto(
       HELP_ACTIVITY_STATE_KEY,
@@ -75,13 +73,7 @@ class HelpActivity :
       ?: resourceHandler.getStringInLocale(R.string.faq_activity_title)
 
     val policiesActivityParams = stateArgs?.policiesActivityParams
-    val internalPolicyPage = policiesActivityParams?.policyPage
-    Log.e(
-      "#",
-      "state ->  " + selectedHelpOptionsTitle + " " +
-        selectedFragment + " " + selectedDependencyIndex + " " +
-        selectedLicenseIndex + " " + internalPolicyPage
-    )
+
     helpActivityPresenter.handleOnCreate(
       selectedHelpOptionsTitle,
       isFromNavigationDrawer,
@@ -95,7 +87,7 @@ class HelpActivity :
 
   companion object {
     /** Arguments key for HelpActivity */
-    private const val HELP_ACTIVITY_ARGUMENTS_KEY =
+    const val HELP_ACTIVITY_ARGUMENTS_KEY =
       "HelpActivity.arguments"
 
     /** Arguments key for HelpActivity saved state */
@@ -107,7 +99,6 @@ class HelpActivity :
       profileId: Int?,
       isFromNavigationDrawer: Boolean
     ): Intent {
-      Log.e("#", isFromNavigationDrawer.toString())
       val args = HelpActivityArguments.newBuilder().apply {
         if (profileId != null) {
           this.internalProfileId = profileId

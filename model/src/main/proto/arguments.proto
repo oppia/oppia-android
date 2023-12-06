@@ -321,6 +321,10 @@ message TopicFragmentArguments {
   string story_id = 3;
 }
 
+message AdministratorControlActivityArguments {
+  int32 internal_profile_id = 1;
+}
+
 message AdministratorControlActivityStateBundle {
   string selected_controls_title = 1;
   string last_loaded_fragment = 2;
@@ -446,5 +450,9 @@ message HelpFragmentArguments {
 }
 
 message RecentlyPlayedFragmentArguments {
+  int32 internal_profile_id = 1;
+}
+
+message HomeActivityArguments {
   int32 internal_profile_id = 1;
 }

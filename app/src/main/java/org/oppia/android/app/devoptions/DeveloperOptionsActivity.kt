@@ -12,9 +12,11 @@ import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesComplete
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.model.DeveloperOptionsActivityArguments
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
@@ -40,8 +42,11 @@ class DeveloperOptionsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-
-    internalProfileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    val args = intent.getProtoExtra(
+      DEVELOPER_OPTIONS_ACTIVITY_AEGUMENTS_KEY,
+      DeveloperOptionsActivityArguments.getDefaultInstance()
+    )
+    internalProfileId = args?.internalProfileId ?: -1
     developerOptionsActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.developer_options_activity_title)
   }
@@ -81,10 +86,16 @@ class DeveloperOptionsActivity :
   }
 
   companion object {
+    /** Arguments key for DeveloperOptionsActivity */
+    const val DEVELOPER_OPTIONS_ACTIVITY_AEGUMENTS_KEY = "DeveloperOptionsActivity.arguments"
+
     /** Function to create intent for DeveloperOptionsActivity. */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
+      val args =
+        DeveloperOptionsActivityArguments.newBuilder().setInternalProfileId(internalProfileId)
+          .build()
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+        putProtoExtra(DEVELOPER_OPTIONS_ACTIVITY_AEGUMENTS_KEY, args)
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
       }
     }
