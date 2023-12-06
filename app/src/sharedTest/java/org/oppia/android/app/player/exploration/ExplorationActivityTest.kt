@@ -34,7 +34,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
-import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -1200,12 +1199,18 @@ class ExplorationActivityTest {
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.action_audio_player)).perform(click())
-
-      testCoroutineDispatchers.runCurrent()
-      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
 
       clickContinueButton()
+      clickContinueButton()
+      clickContinueButton()
+      clickContinueButton()
+      clickContinueButton()
+
+      onView(withId(R.id.text_input_interaction_view)).perform(
+        editTextInputAction.appendText("123")
+      )
+
+      onView(withId(R.id.submit_answer_button)).perform(click())
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
