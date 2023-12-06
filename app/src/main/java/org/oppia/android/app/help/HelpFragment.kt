@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.HelpFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 private const val IS_MULTIPANE_KEY = "HelpFragment.bool_is_multipane"
@@ -17,13 +20,15 @@ class HelpFragment : InjectableFragment() {
   lateinit var helpFragmentPresenter: HelpFragmentPresenter
 
   companion object {
+    private const val HELP_FRAGMENT_ARGUMENTS_KEY =
+      "HelpFragment.arguments"
+
     /** Returns instance of [HelpFragment]. */
     fun newInstance(isMultipane: Boolean): HelpFragment {
-      val args = Bundle()
-      args.putBoolean(IS_MULTIPANE_KEY, isMultipane)
-      val fragment = HelpFragment()
-      fragment.arguments = args
-      return fragment
+      val args = HelpFragmentArguments.newBuilder().setIsMultipane(isMultipane).build()
+      return HelpFragment().apply {
+        arguments = Bundle().apply { putProto(HELP_FRAGMENT_ARGUMENTS_KEY, args) }
+      }
     }
   }
 
@@ -37,10 +42,12 @@ class HelpFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args = checkNotNull(arguments) {
+    val arguments = checkNotNull(arguments) {
       "Expected arguments to be passed to HelpFragment"
     }
-    val isMultipane = args.getBoolean(IS_MULTIPANE_KEY)
+    val args =
+      arguments.getProto(HELP_FRAGMENT_ARGUMENTS_KEY, HelpFragmentArguments.getDefaultInstance())
+    val isMultipane = args.isMultipane
     return helpFragmentPresenter.handleCreateView(inflater, container, isMultipane)
   }
 }
