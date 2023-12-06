@@ -1311,7 +1311,6 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
-      testCoroutineDispatchers.unregisterIdlingResource()
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
         RATIOS_TOPIC_ID,
