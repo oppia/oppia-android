@@ -8,6 +8,7 @@ import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
 import org.oppia.android.util.platformparameter.ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
@@ -64,8 +65,12 @@ import javax.inject.Singleton
 class TestPlatformParameterModule {
   @Provides
   @EnableDownloadsSupport
-  fun provideEnableDownloadsSupport(): PlatformParameterValue<Boolean> =
-    PlatformParameterValue.createDefaultParameter(enableDownloadsSupport)
+  fun provideEnableDownloadsSupport(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
+      ?: PlatformParameterValue.createDefaultParameter(enableDownloadsSupport)
+  }
 
   @TestStringParam
   @Provides

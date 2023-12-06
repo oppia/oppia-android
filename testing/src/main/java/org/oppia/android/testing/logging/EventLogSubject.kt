@@ -7,6 +7,7 @@ import com.google.common.truth.IntegerSubject
 import com.google.common.truth.IterableSubject
 import com.google.common.truth.LongSubject
 import com.google.common.truth.StringSubject
+import com.google.common.truth.Subject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoSubject
@@ -52,7 +53,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_A
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -1985,24 +1986,32 @@ class EventLogSubject private constructor(
     fun hasSessionIdThat(): StringSubject = assertThat(actual.sessionId)
 
     /**
-     * Returns a [BooleanSubject] to test the flagEnabledState of the first item on the feature flag
-     * list in the [EventLog.FeatureFlagContext].
-     *
-     * This method never fails since the underlying property defaults to empty string if it's not
-     * defined in the context.
+     * Returns a [Subject] to test the  of the properties of a feature flag with the passed
+     * name in the [EventLog.FeatureFlagContext] list.
      */
-    fun hasFeatureEnabledStateThat(): BooleanSubject =
-      assertThat(actual.getFeatureFlag(0).flagEnabledState)
+    fun hasNamedFeatureFlagThat(name: String): Subject {
+      val filtered = actual.featureFlagList.filter { it.flagName == name }
+
+      return assertThat(filtered[0])
+    }
 
     /**
-     * Returns a [ComparableSubject] to test the flagSyncStatus of the
-     * [EventLog.FeatureFlagContext].
-     *
-     * This method never fails since the underlying property defaults to empty string if it's not
-     * defined in the context.
+     * Returns a [BooleanSubject] to test the flagEnabledState of a feature flag with the passed
+     * name in the [EventLog.FeatureFlagContext] list.
      */
-    fun hasSyncStatusThat(): ComparableSubject<PlatformParameter.SyncStatus> =
-      assertThat(actual.getFeatureFlag(0).flagSyncStatus)
+    fun hasNamedFeatureWithEnabledStateThat(name: String): BooleanSubject {
+      val filtered = actual.featureFlagList.filter { it.flagName == name }
+      return assertThat(filtered[0].flagEnabledState)
+    }
+
+    /**
+     * Returns a [ComparableSubject] with a [SyncStatus] to test the flagSyncStatus of a feature
+     * flag with the passed name in the [EventLog.FeatureFlagContext].
+     */
+    fun hasNamedFeatureWithSyncStatusThat(name: String): ComparableSubject<SyncStatus> {
+      val filtered = actual.featureFlagList.filter { it.flagName == name }
+      return assertThat(filtered[0].flagSyncStatus)
+    }
 
     companion object {
       /**

@@ -91,7 +91,6 @@ class FeatureFlagsLogger @Inject constructor(
     )
 
     val featureFlagItemList = mutableListOf<FeatureFlagItem>()
-
     for (entry in featureFlagItemMap) {
       featureFlagItemList.add(
         FeatureFlagItem.newBuilder()
@@ -115,11 +114,9 @@ class FeatureFlagsLogger @Inject constructor(
     return EventLog.Context.newBuilder()
       .setFeatureFlagContext(
         FeatureFlagContext.newBuilder()
-          .setUuid("")
+          .setUniqueUserUuid("")
           .setSessionId(sessionId)
-          .addAllFeatureFlag(
-            compileFeatureFlagsForLogging()
-          )
+          .addAllFeatureFlag(compileFeatureFlagsForLogging())
           .build()
       )
       .build()

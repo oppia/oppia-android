@@ -11,7 +11,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.model.EventLog.FeatureFlagContext.FeatureFlagItem
+import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -34,6 +35,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -48,21 +50,33 @@ import javax.inject.Singleton
 class FeatureFlagsLoggerTest {
   private companion object {
     private const val TEST_SESSION_ID = "test_session_id"
-    private val INITIAL_SYNC_STATUS = PlatformParameter.SyncStatus.NOT_SYNCED_FROM_SERVER
+    private val INITIAL_SYNC_STATUS = SyncStatus.NOT_SYNCED_FROM_SERVER
+    private val testEnableDownloadsSupportFeatureFlagItem = FeatureFlagItem.newBuilder()
+      .setFlagName(DOWNLOADS_SUPPORT)
+      .setFlagEnabledState(false)
+      .setFlagSyncStatus(INITIAL_SYNC_STATUS)
+      .build()
   }
 
-  @Inject
-  lateinit var featureFlagsLogger: FeatureFlagsLogger
-
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Before
   fun setup() {
     setUpTestApplicationComponent()
+  }
+
+  @Test
+  fun testLogFeatureFlags_logsFeatureFlagsWithCorrectSessionId() {
+    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+    assertThat(eventLog).hasFeatureFlagContextThat {
+      hasSessionIdThat().isEqualTo(TEST_SESSION_ID)
+    }
   }
 
   @Test
@@ -73,21 +87,19 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
 
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasSessionIdThat().isEqualTo(TEST_SESSION_ID)
+      hasNamedFeatureFlagThat(DOWNLOADS_SUPPORT)
+        .isEqualTo(testEnableDownloadsSupportFeatureFlagItem)
     }
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasFeatureEnabledStateThat().isEqualTo(false)
+      hasNamedFeatureWithEnabledStateThat(DOWNLOADS_SUPPORT).isEqualTo(false)
     }
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasSyncStatusThat().isEqualTo(INITIAL_SYNC_STATUS)
+      hasNamedFeatureWithSyncStatusThat(DOWNLOADS_SUPPORT).isEqualTo(INITIAL_SYNC_STATUS)
     }
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFeatureFlagsLoggerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -133,8 +145,7 @@ class FeatureFlagsLoggerTest {
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class,
-      ApplicationLifecycleModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
     ]
   )
 

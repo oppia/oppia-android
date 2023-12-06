@@ -568,7 +568,7 @@ class EventBundleCreator @Inject constructor(
       value: FeatureFlagEventContext
     ) : EventActivityContext<FeatureFlagEventContext>(activityName, value) {
       override fun EventLog.FeatureFlagContext.storeValue(store: PropertyStore) {
-        store.putSensitiveValue("uuid", uuid)
+        store.putSensitiveValue("uuid", uniqueUserUuid)
         store.putSensitiveValue("session_id", sessionId)
         store.putNonSensitiveValue("feature_flags", featureFlagList)
       }

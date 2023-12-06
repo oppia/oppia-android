@@ -375,7 +375,7 @@ message EventLog {
   // Structure of a feature flag context.
   message FeatureFlagContext {
     // The unique UUID of the user.
-    string uuid = 1;
+    string unique_user_uuid = 1;
 
     // The id of the current session.
     string session_id = 2;
