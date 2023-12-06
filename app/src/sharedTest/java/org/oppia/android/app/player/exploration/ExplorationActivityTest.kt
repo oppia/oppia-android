@@ -170,7 +170,6 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.DisableAccessibilityChecks
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -1180,7 +1179,6 @@ class ExplorationActivityTest {
 
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
-  @DisableAccessibilityChecks
   // @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
     markAllSpotlightsSeen()
