@@ -269,7 +269,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       testCoroutineDispatchers.runCurrent()
@@ -339,7 +338,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimHasNotStarted() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -353,7 +351,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testConIntAnim_openProtExp_orientLandAfter30Sec_checkAnimStartsIn15SecAfterOrientChange() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -368,7 +365,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testContNavBtnAnim_openMathExp_checkContNavBtnAnimatesAfter45Seconds() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       onView(withId(R.id.state_recycler_view)).perform(
@@ -391,7 +387,6 @@ class StateFragmentLocalTest {
   @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       onView(withId(R.id.state_recycler_view)).perform(
@@ -424,7 +419,6 @@ class StateFragmentLocalTest {
   @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughTestState1()
