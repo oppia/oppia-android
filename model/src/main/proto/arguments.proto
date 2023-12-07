@@ -431,8 +431,8 @@ message HelpActivityArguments {
 message HelpActivityStateBundle{
   string help_options_title = 1;
   string selected_fragment_tag = 2;
-  int32 selectedDependencyIndex = 3;
-  int32 selectedLicenseIndex = 4;
+  int32 selected_dependency_index = 3;
+  int32 selected_license_index = 4;
   PoliciesActivityParams policies_activity_params = 5;
 }
 
