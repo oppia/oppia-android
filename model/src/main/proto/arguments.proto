@@ -321,10 +321,6 @@ message TopicFragmentArguments {
   string story_id = 3;
 }
 
-message AdministratorControlActivityArguments {
-  int32 internal_profile_id = 1;
-}
-
 message AdministratorControlActivityStateBundle {
   string selected_controls_title = 1;
   string last_loaded_fragment = 2;
@@ -400,10 +396,6 @@ message DeveloperOptionsTestActivityArguments {
   int32 internal_profile_id = 1;
 }
 
-message DeveloperOptionsActivityArguments {
-  int32 internal_profile_id = 1;
-}
-
 message FAQSingleActivityArguments {
   string question = 1;
   string answer = 2;
@@ -433,7 +425,6 @@ message ThirdPartyDependencyListFragmentArguments {
 }
 
 message HelpActivityArguments {
-  int32 internal_profile_id = 1;
   bool is_from_navigation_drawer = 2;
 }
 
@@ -453,6 +444,11 @@ message RecentlyPlayedFragmentArguments {
   int32 internal_profile_id = 1;
 }
 
-message HomeActivityArguments {
-  int32 internal_profile_id = 1;
+message OptionsActivityArguments {
+  bool is_from_navigation_drawer = 1;
+}
+
+message OptionsActivityStateBundle {
+  string selected_options_title = 1;
+  string selected_fragment = 2;
 }

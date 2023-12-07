@@ -27,6 +27,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.security.InvalidParameterException
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
 private const val APP_LANGUAGE_TAG = "OptionsFragmentPresenter"
@@ -73,7 +74,7 @@ class OptionsFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId ?: -1
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     viewModel.setProfileId(profileId)
 
@@ -191,8 +192,10 @@ class OptionsFragmentPresenter @Inject constructor(
   private enum class ViewType {
     /** Represents view type for displaying [ReadingTextSize]. */
     VIEW_TYPE_READING_TEXT_SIZE,
+
     /** Represents view type for displaying [OppiaLanguage]. */
     VIEW_TYPE_APP_LANGUAGE,
+
     /** Represents view type for displaying [AudioLanguage]. */
     VIEW_TYPE_AUDIO_LANGUAGE
   }

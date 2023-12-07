@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.home.HomeActivity.Companion.HOME_ACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
@@ -34,6 +33,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -60,10 +60,7 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    internalProfileId = activity.intent.getProtoExtra(
-      HOME_ACTIVITY_ARGUMENTS_KEY,
-      HomeActivityArguments.getDefaultInstance()
-    ).internalProfileId
+    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
 
     logHomeActivityEvent()
 

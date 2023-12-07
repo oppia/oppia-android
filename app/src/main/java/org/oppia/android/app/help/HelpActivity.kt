@@ -102,12 +102,8 @@ class HelpActivity :
       isFromNavigationDrawer: Boolean
     ): Intent {
       val args = HelpActivityArguments.newBuilder().apply {
-//        if (profileId != null) {
-//          this.internalProfileId = profileId
-//        }
         this.isFromNavigationDrawer = isFromNavigationDrawer
       }.build()
-//      val profileid = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, HelpActivity::class.java)
       intent.putProtoExtra(HELP_ACTIVITY_ARGUMENTS_KEY, args)
       intent.decorateWithScreenName(HELP_ACTIVITY)

@@ -111,24 +111,14 @@ class AdministratorControlsActivity :
   }
 
   companion object {
-    /** Argument key for Administrator Controls Activity. */
-    const val ADMINISTRATOR_CONTROLS_ACTIVITY_ARGUMENTS_KEY =
-      "AdministratorControlsActivity.arguments"
 
     /** Returns an [Intent] to start this activity. */
-    fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
-      val args = profileId?.let {
-        AdministratorControlActivityArguments.newBuilder().setInternalProfileId(
-          it
-        )
-      }?.build()
+    fun createAdministratorControlsActivityIntent(context: Context, profileId: ProfileId?): Intent {
 
-      val profileid = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, AdministratorControlsActivity::class.java)
-      intent.putProtoExtra(ADMINISTRATOR_CONTROLS_ACTIVITY_ARGUMENTS_KEY, args!!)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
-      if (profileid != null) {
-        intent.decorateWithUserProfileId(profileid)
+      if (profileId != null) {
+        intent.decorateWithUserProfileId(profileId)
       }
       return intent
     }

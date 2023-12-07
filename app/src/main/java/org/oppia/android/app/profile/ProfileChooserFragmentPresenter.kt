@@ -30,6 +30,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 private val COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,
@@ -236,10 +237,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
+      val profileId =
+        ProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,
-          chooserViewModel.adminProfileId.internalId
+          profileId
         )
       )
     } else {

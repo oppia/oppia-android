@@ -20,6 +20,9 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.Profile
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :
@@ -43,11 +46,7 @@ class DeveloperOptionsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args = intent.getProtoExtra(
-      DEVELOPER_OPTIONS_ACTIVITY_AEGUMENTS_KEY,
-      DeveloperOptionsActivityArguments.getDefaultInstance()
-    )
-    internalProfileId = args?.internalProfileId ?: -1
+    internalProfileId = intent.extractCurrentUserProfileId().internalId
     developerOptionsActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.developer_options_activity_title)
   }
@@ -87,19 +86,13 @@ class DeveloperOptionsActivity :
   }
 
   companion object {
-    /** Arguments key for DeveloperOptionsActivity */
-    const val DEVELOPER_OPTIONS_ACTIVITY_AEGUMENTS_KEY = "DeveloperOptionsActivity.arguments"
 
     /** Function to create intent for DeveloperOptionsActivity. */
-    fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val args =
-        DeveloperOptionsActivityArguments.newBuilder().setInternalProfileId(internalProfileId)
-          .build()
-      val profileid = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fun createDeveloperOptionsActivityIntent(context: Context, profileId: ProfileId): Intent {
+
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
-        putProtoExtra(DEVELOPER_OPTIONS_ACTIVITY_AEGUMENTS_KEY, args)
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
-//        decorateWithUserProfileId(profileid)
+        decorateWithUserProfileId(profileId)
       }
     }
   }

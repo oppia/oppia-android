@@ -13,6 +13,7 @@ import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextCha
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminAuthActivityBinding
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 /** The presenter for [AdminAuthActivity]. */
 @ActivityScope
@@ -78,11 +79,14 @@ class AdminAuthActivityPresenter @Inject constructor(
       if (inputPin == adminPin) {
         when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
+            val internalId = activity.intent.getIntExtra(ADMIN_AUTH_PROFILE_ID_EXTRA_KEY, -1)
+            val profileId = ProfileId.newBuilder().setInternalId(internalId).build()
             activity.startActivity(
               AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                context, activity.intent.getIntExtra(ADMIN_AUTH_PROFILE_ID_EXTRA_KEY, -1)
+                context, profileId
               )
             )
+
             activity.finish()
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {

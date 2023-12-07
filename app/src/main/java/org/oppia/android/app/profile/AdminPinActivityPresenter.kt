@@ -122,9 +122,11 @@ class AdminPinActivityPresenter @Inject constructor(
           if (it is AsyncResult.Success) {
             when (activity.intent.getIntExtra(ADMIN_PIN_ENUM_EXTRA_KEY, 0)) {
               AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
+                val internalId = activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1)
+                val profileId = ProfileId.newBuilder().setInternalId(internalId).build()
                 activity.startActivity(
                   AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                    context, activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1)
+                    context, profileId
                   )
                 )
                 activity.finish()

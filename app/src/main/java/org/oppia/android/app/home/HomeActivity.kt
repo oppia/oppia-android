@@ -3,6 +3,7 @@ package org.oppia.android.app.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -23,6 +24,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The central activity for all users entering the app. */
 class HomeActivity :
@@ -43,14 +45,9 @@ class HomeActivity :
 
   companion object {
 
-    const val HOME_ACTIVITY_ARGUMENTS_KEY = "HomeActivity.arguments"
     fun createHomeActivity(context: Context, profileId: ProfileId?): Intent {
 
-//      val args =
-//        HomeActivityArguments.newBuilder().setInternalProfileId(profileId ?: -1).build()
-//      val profileid = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       return Intent(context, HomeActivity::class.java).apply {
-//        putProtoExtra(HOME_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(HOME_ACTIVITY)
         if (profileId != null) {
           decorateWithUserProfileId(profileId)
@@ -62,9 +59,8 @@ class HomeActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args =
-      intent?.getProtoExtra(HOME_ACTIVITY_ARGUMENTS_KEY, HomeActivityArguments.getDefaultInstance())
-    internalProfileId = args?.internalProfileId ?: -1
+
+    internalProfileId = intent.extractCurrentUserProfileId().internalId
     homeActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
