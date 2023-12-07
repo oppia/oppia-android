@@ -1192,6 +1192,7 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
+      testCoroutineDispatchers.unregisterIdlingResource()
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
         RATIOS_TOPIC_ID,
@@ -1207,8 +1208,8 @@ class ExplorationActivityTest {
       clickContinueButton()
       clickContinueButton()
 
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
+      testCoroutineDispatchers.runCurrent()
 
       scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION)
       onView(withId(R.id.text_input_interaction_view)).perform(
