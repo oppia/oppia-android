@@ -660,6 +660,7 @@ kt_android_library(
         "//third_party:androidx_core_core-ktx",
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_fragment_fragment",
         "//third_party:circularimageview_circular_image_view",
         "//utility/src/main/java/org/oppia/android/util/accessibility",
         "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",

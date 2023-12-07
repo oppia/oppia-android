@@ -98,7 +98,7 @@
         app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
       android:id="@+id/administrator_controls_activity_fragment_navigation_drawer"
       android:name="org.oppia.android.app.drawer.NavigationDrawerFragment"
       android:layout_width="@dimen/navigation_drawer_width"

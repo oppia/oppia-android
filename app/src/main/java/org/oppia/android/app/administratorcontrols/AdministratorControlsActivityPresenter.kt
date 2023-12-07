@@ -98,7 +98,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.administrator_controls_activity_fragment_navigation_drawer
       ) as NavigationDrawerFragment
-    navigationDrawerFragment.setUpDrawer(
+    navigationDrawerFragment.initializeDrawer(
       binding.administratorControlsActivityDrawerLayout,
       toolbar, /* menuItemId= */ 0
     )
