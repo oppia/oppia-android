@@ -1207,6 +1207,7 @@ class ExplorationActivityTest {
       clickContinueButton()
       clickContinueButton()
 
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
 
       scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION)
