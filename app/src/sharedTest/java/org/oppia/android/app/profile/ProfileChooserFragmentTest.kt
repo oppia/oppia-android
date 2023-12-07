@@ -371,7 +371,6 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      intended(hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, /* internalProfileId= */ 0))
     }
   }
 

@@ -148,10 +148,6 @@ class HelpActivityPresenter @Inject constructor(
   /** Handles onSavedInstanceState() method for [HelpActivity]. */
   fun handleOnSavedInstanceState(outState: Bundle) {
     val titleTextView = activity.findViewById<TextView>(R.id.help_multipane_options_title_textview)
-    var ll = "null"
-    if (titleTextView != null) {
-      ll = titleTextView.text.toString()
-    }
 
     val policiesActivityParams =
       PoliciesActivityParams
