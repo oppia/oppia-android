@@ -2,8 +2,8 @@ package org.oppia.android.app.devoptions
 
 import android.content.Context
 import android.content.Intent
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
+import javax.inject.Inject
 
 /** Binds implementation of DeveloperOptionsStarter. */
 class DeveloperOptionsStarterImpl @Inject constructor() : DeveloperOptionsStarter {

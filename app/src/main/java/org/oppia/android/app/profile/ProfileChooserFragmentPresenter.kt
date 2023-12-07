@@ -18,6 +18,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileChooserAddViewBinding
@@ -30,7 +31,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
 
 private val COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,

@@ -12,17 +12,13 @@ import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesComplete
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
-import org.oppia.android.app.model.DeveloperOptionsActivityArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
-import org.oppia.android.app.model.Profile
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :

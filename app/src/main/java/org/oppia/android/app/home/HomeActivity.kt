@@ -3,7 +3,6 @@ package org.oppia.android.app.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -13,18 +12,16 @@ import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
-import org.oppia.android.app.model.HomeActivityArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import javax.inject.Inject
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
 class HomeActivity :

@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioLanguage
@@ -25,9 +24,9 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import java.security.InvalidParameterException
 import javax.inject.Inject
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
 private const val APP_LANGUAGE_TAG = "OptionsFragmentPresenter"

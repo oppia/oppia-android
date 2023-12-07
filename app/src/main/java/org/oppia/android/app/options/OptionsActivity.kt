@@ -7,27 +7,24 @@ import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OptionsActivityArguments
+import org.oppia.android.app.model.OptionsActivityStateBundle
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName.OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.getStringFromBundle
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
-import org.oppia.android.app.model.OptionsActivityArguments
-import org.oppia.android.app.model.OptionsActivityArgumentsStateBundle
-import org.oppia.android.app.model.OptionsActivityStateBundle
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
 private const val SELECTED_FRAGMENT_SAVED_KEY = "OptionsActivity.selected_fragment"
