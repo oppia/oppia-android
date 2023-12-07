@@ -86,6 +86,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
 
 /** Tests for [OptionsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -133,9 +134,10 @@ class OptionsActivityTest {
   }
 
   private fun createOptionsActivityIntent(): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
-      profileId = 0,
+      profileId = profileId,
       isFromNavigationDrawer = false
     )
   }

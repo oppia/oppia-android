@@ -86,6 +86,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
 
 /** Tests for [HelpActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -133,10 +135,11 @@ class HelpActivityTest {
   }
 
   private fun createHelpActivityIntent(): Intent {
+    val profileId=ProfileId.newBuilder().setInternalId(0).build()
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
       isFromNavigationDrawer = false,
-      profileId = 0
+      profileId =profileId
     )
   }
 

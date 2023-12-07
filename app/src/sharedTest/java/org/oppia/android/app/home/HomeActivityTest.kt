@@ -1853,6 +1853,7 @@ class HomeActivityTest {
   }
 
   private fun createHomeActivityIntent(profileId: Int): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(profileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
   }
 

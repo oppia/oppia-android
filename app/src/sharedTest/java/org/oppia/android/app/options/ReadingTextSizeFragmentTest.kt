@@ -103,6 +103,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
 
 // TODO(#1815): Remove these duplicate values once Screenshot tests are implemented.
 private const val SMALL_TEXT_SIZE_SCALE = 0.8f
@@ -199,9 +200,10 @@ class ReadingTextSizeFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       isFromNavigationDrawer
     )
   }

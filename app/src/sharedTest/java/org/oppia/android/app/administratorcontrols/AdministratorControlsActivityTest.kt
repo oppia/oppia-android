@@ -130,6 +130,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -146,6 +147,8 @@ class AdministratorControlsActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   private val internalProfileId = 0
+
+  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -165,7 +168,7 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControls_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createAdministratorControlsActivityIntent(internalProfileId))
+    activityTestRule.launchActivity(createAdministratorControlsActivityIntent(profileId))
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -196,7 +199,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickEditProfile_opensProfileListActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -209,7 +212,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -231,7 +234,7 @@ class AdministratorControlsActivityTest {
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -250,7 +253,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -270,7 +273,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -286,7 +289,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickAppVersion_opensAppVersionActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -300,7 +303,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       it.openNavigationDrawer()
@@ -315,7 +318,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickLogoutButton_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -331,7 +334,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_configChange_clickLogout_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -349,7 +352,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickLogout_configChange_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -366,7 +369,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogIsDismissed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -383,7 +386,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_defaultTabletConfig_openAppVersion_replacesPreviousFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -433,7 +436,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_defaultTabletConfig_multiPaneBackButtonGone() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       onView(withId(R.id.administrator_controls_multipane_options_back_button))
@@ -446,7 +449,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_tabletConfigChange_multiPaneBackButtonGone() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -460,7 +463,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_defaultTabletConfig_editProfileVisible() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       onView(withId(R.id.extra_controls_title))
@@ -473,7 +476,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_tabletConfigChange_editProfileVisible() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -487,7 +490,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_defaultTabletConfig_profileListIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -504,7 +507,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_tabletConfigChange_profileListIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -523,7 +526,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectProfileAdmin_backButton_selectSecondProfileDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -548,7 +551,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectProfileAdmin_backPressed_selectSecondProfileDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -573,7 +576,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectProfileAdmin_tabletConfigChange_displaysProfileEdit() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -591,7 +594,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectProfileUser_tabletConfigChange_displaysProfileEdit() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -610,7 +613,7 @@ class AdministratorControlsActivityTest {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -629,7 +632,7 @@ class AdministratorControlsActivityTest {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -649,7 +652,7 @@ class AdministratorControlsActivityTest {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -670,7 +673,7 @@ class AdministratorControlsActivityTest {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -687,9 +690,11 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_clickProfileDeletionButton_checkOpensDeletionDialog() {
+    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 1
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -711,9 +716,11 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_configChange_checkOpensDeletionDialog() {
+    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 1
+        profileId = profileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -736,9 +743,11 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_configChange_checkDeletionDialogIsVisible() {
+    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 1
+        profileId = profileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -761,7 +770,9 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createAdministratorControlsActivityIntent(1)
+    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+
+    val screenName = createAdministratorControlsActivityIntent(profileId)
       .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY)
@@ -818,7 +829,8 @@ class AdministratorControlsActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
+  private fun createAdministratorControlsActivityIntent(profileId: ProfileId): Intent {
+
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context = context,
       profileId = profileId

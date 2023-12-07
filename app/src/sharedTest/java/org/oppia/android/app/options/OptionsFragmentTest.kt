@@ -120,6 +120,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -174,9 +175,10 @@ class OptionsFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return OptionsActivity.createOptionsActivity(
       context = ApplicationProvider.getApplicationContext(),
-      profileId = internalProfileId,
+      profileId = profileId,
       isFromNavigationDrawer = isFromNavigationDrawer
     )
   }

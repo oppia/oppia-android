@@ -93,6 +93,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
 
 @RunWith(AndroidJUnit4::class)
 @Config(
@@ -171,6 +172,8 @@ class AdministratorControlsFragmentTest {
   }
 
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(profileId).build()
+
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context,
       profileId

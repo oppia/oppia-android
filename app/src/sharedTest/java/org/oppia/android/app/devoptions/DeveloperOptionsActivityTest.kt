@@ -116,6 +116,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
 
 /** Tests for [DeveloperOptionsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -229,7 +230,8 @@ class DeveloperOptionsActivityTest {
   }
 
   private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, internalProfileId)
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, profileId)
   }
 
   private fun ActivityScenario<DeveloperOptionsActivity>.openNavigationDrawer() {

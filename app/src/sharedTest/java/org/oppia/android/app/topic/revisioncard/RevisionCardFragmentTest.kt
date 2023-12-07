@@ -2,6 +2,7 @@ package org.oppia.android.app.topic.revisioncard
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
@@ -27,6 +28,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.protobuf.MessageLite
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -134,6 +136,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.HelpActivityArguments
+import org.oppia.android.app.model.OptionsActivityArguments
+import org.oppia.android.util.extensions.getProtoExtra
 
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
@@ -299,11 +304,14 @@ class RevisionCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val args = HelpActivityArguments.newBuilder().apply {
+        this.isFromNavigationDrawer = false
+      }.build()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
-        hasExtra(
-          HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
+        hasProtoExtra(
+          HelpActivity.HELP_ACTIVITY_ARGUMENTS_KEY,
+          /* value= */ args
         )
       )
     }
@@ -326,12 +334,14 @@ class RevisionCardFragmentTest {
 
       onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
-
+      val args =
+        OptionsActivityArguments.newBuilder().setIsFromNavigationDrawer(false)
+          .build()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
-        hasExtra(
-          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
+        hasProtoExtra(
+          OptionsActivity.OPTIONS_ACTIVITY_ARGUMENTS_KEY,
+          /* value= */ args
         )
       )
     }
@@ -712,6 +722,20 @@ class RevisionCardFragmentTest {
       override fun perform(uiController: UiController?, view: View?) {
         // The view shouldn't be null if the constraints are being met.
         (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
       }
     }
   }

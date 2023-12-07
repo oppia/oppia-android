@@ -118,6 +118,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -149,9 +150,10 @@ class HelpFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       isFromNavigationDrawer
     )
   }
