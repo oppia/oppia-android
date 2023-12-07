@@ -2283,9 +2283,9 @@ class ExplorationActivityTest {
           .build()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
-        hasExtra(
+        hasProtoExtra(
           OptionsActivity.OPTIONS_ACTIVITY_ARGUMENTS_KEY,
-          /* value= */ false
+          /* value= */ args
         )
       )
     }
