@@ -1177,10 +1177,8 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
-  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @RunOn(TestPlatform.ESPRESSO)
-  // @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
     markAllSpotlightsSeen()
     setUpAudio()
@@ -1193,7 +1191,6 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
-      testCoroutineDispatchers.unregisterIdlingResource()
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
         RATIOS_TOPIC_ID,
