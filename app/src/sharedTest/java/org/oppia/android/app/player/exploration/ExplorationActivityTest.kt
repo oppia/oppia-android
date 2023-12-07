@@ -1111,7 +1111,7 @@ class ExplorationActivityTest {
         )
       )
 
-      onView(withText("What is a Ratio?"))
+      onView(withText("What is a Ratio?")).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -1219,8 +1219,6 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
-
-      onView(withText("What is a Ratio?"))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
