@@ -785,7 +785,7 @@ class NavigationDrawerActivityProdTest {
         .check(matches(isDisplayed())).perform(click())
       val profileId = ProfileId.newBuilder().setInternalId(0).build()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
-//      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
     }
   }
 
