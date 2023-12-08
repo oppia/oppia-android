@@ -46,12 +46,17 @@ class RatioExpressionInputInteractionViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            answerText.isNotEmpty()
+            true
           )
         }
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+
+    errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      null,
+      true
+    )
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -67,23 +72,24 @@ class RatioExpressionInputInteractionViewModel private constructor(
     }
   }.build()
 
-  /** It checks the pending error for the current ratio input, and correspondingly updates the error string based on the specified error category. */
+  /**
+   * It checks the pending error for the current ratio input, and correspondingly
+   * updates the error string based on the specified error category.
+   */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    if (answerText.isNotEmpty()) {
-      when (category) {
-        AnswerErrorCategory.REAL_TIME ->
-          pendingAnswerError =
+    pendingAnswerError = when (category) {
+      AnswerErrorCategory.REAL_TIME ->
+        if (answerText.isNotEmpty())
             stringToRatioParser.getRealTimeAnswerError(answerText.toString())
               .getErrorMessageFromStringRes(resourceHandler)
-        AnswerErrorCategory.SUBMIT_TIME ->
-          pendingAnswerError =
-            stringToRatioParser.getSubmitTimeError(
-              answerText.toString(),
-              numberOfTerms = numberOfTerms
-            ).getErrorMessageFromStringRes(resourceHandler)
-      }
-      errorMessage.set(pendingAnswerError)
+        else null
+      AnswerErrorCategory.SUBMIT_TIME ->
+          stringToRatioParser.getSubmitTimeError(
+            answerText.toString(),
+            numberOfTerms = numberOfTerms
+          ).getErrorMessageFromStringRes(resourceHandler)
     }
+    errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
 
