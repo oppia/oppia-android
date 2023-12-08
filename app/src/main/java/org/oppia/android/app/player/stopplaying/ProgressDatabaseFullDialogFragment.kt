@@ -8,8 +8,10 @@ import androidx.appcompat.view.ContextThemeWrapper
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.model.ProgressDatabaseFullDialogFragmentArguments
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 private const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
@@ -29,6 +31,9 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
   lateinit var resourceHandler: AppLanguageResourceHandler
 
   companion object {
+    const val PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY =
+      "ProgressDatabaseFullDialogFragment.arguments"
+
     /**
      * Responsible for displaying content in DialogFragment.
      *
@@ -37,12 +42,13 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
     fun newInstance(
       oldestSavedExplorationTitle: String
     ): ProgressDatabaseFullDialogFragment {
-      val maximumStorageCapacityReachedDialogFragment =
-        ProgressDatabaseFullDialogFragment()
-      val args = Bundle()
-      args.putString(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY, oldestSavedExplorationTitle)
-      maximumStorageCapacityReachedDialogFragment.arguments = args
-      return maximumStorageCapacityReachedDialogFragment
+      val args = ProgressDatabaseFullDialogFragmentArguments.newBuilder()
+        .setOldSavedExplorationTitle(oldestSavedExplorationTitle).build()
+      return ProgressDatabaseFullDialogFragment().apply {
+        arguments = Bundle().apply {
+          putProto(PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
@@ -52,9 +58,13 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val args = checkNotNull(arguments) { "Expected arguments to be passed to dialog fragment" }
+    val arguments = checkNotNull(arguments) { "Expected arguments to be passed to dialog fragment" }
     val oldestSavedExplorationTitle =
-      args.getStringFromBundle(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY)
+      arguments.getProto(
+        PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+        ProgressDatabaseFullDialogFragmentArguments.getDefaultInstance()
+      )
+        .oldSavedExplorationTitle
         ?: error("Expected exploration title to be passed via arguments")
     val stopStatePlayingSessionListenerWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =

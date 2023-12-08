@@ -474,3 +474,26 @@ message HintsAndSolutionDialogFragmentStateBundle {
   bool is_solution_revealed = 5;
 }
 
+message LanguageDialogFragmentArguments {
+  repeated string language_list = 1;
+  int32 selected_index = 2;
+}
+
+message StateFragmentTestActivityArguments {
+  int32 internal_profile_id = 1;
+  string topic_id = 2;
+  string story_id = 3;
+  string exploration_id = 4;
+  bool should_save_partial_progress = 5;
+}
+
+message StateFragmentArguments {
+  int32 internal_profile_id = 1;
+  string topic_id = 2;
+  string story_id = 3;
+  string exploration_id = 4;
+}
+
+message ProgressDatabaseFullDialogFragmentArguments {
+  string old_saved_exploration_title=1;
+}

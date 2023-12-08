@@ -109,10 +109,10 @@ class HintsAndSolutionDialogFragment :
         HINT_AND_SOLUTION_DIALOG_FRAGMENT_STATE_KEY,
         HintsAndSolutionDialogFragmentStateBundle.getDefaultInstance()
       )
-      expandedItemsList = ArrayList()
-      for (i in 0 until stateArgs.currentExpandedItemListList.size) {
-        expandedItemsList.add(stateArgs.currentExpandedItemListList.get(i))
-      }
+      expandedItemsList = stateArgs?.currentExpandedItemListList?.let { ArrayList(it) }!!
+//      for (i in 0 until stateArgs.currentExpandedItemListList.size) {
+//        expandedItemsList.add(stateArgs.currentExpandedItemListList.get(i))
+//      }
       index = stateArgs?.hintIndex ?: -1
       if (index == -1) index = null
       isHintRevealed = stateArgs?.isHintRevealed ?: false
