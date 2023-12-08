@@ -44,11 +44,6 @@ class HintsAndSolutionDialogFragment :
 
   companion object {
 
-    internal const val ID_ARGUMENT_KEY = "HintsAndSolutionDialogFragment.id"
-    internal const val STATE_KEY = "HintsAndSolutionDialogFragment.state"
-    internal const val HELP_INDEX_KEY = "HintsAndSolutionDialogFragment.help_index"
-    internal const val WRITTEN_TRANSLATION_CONTEXT_KEY =
-      "HintsAndSolutionDialogFragment.written_translation_context"
     internal const val PROFILE_ID_KEY =
       "HintsAndSolutionDialogFragment.profile_id"
 
