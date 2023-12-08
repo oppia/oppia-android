@@ -452,3 +452,19 @@ message OptionsActivityStateBundle {
   string selected_options_title = 1;
   string selected_fragment = 2;
 }
+
+message HintsAndSolutionDialogFragmentArguments {
+    string id_argument=1;
+    State state=2;
+    HelpIndex help_index=3;
+    WrittenTranslationContext written_translation_context=4;
+}
+
+message HintsAndSolutionDialogFragmentStateBundle {
+    repeated int32 current_expanded_item_list=1;
+    int32 hint_index=2;
+    bool is_hint_revealed=3;
+    int32 solution_index=4;
+    bool is_solution_revealed=5;
+}
+

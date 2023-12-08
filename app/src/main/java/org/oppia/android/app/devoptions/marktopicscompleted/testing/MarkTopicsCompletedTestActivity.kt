@@ -42,7 +42,7 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
   }
 
   companion object {
-    /** Argument key for MarkTopicsCompletedTestActivity */
+    /** Argument key for MarkTopicsCompletedTestActivity. */
     const val MARK_TOPICS_COMPLETED_TEST_ACTIVITY_ARGUMENTS_KEY =
       "MarkTopicsCompletedTestActivity.arguments"
 
