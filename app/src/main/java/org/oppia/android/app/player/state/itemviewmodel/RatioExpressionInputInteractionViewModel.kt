@@ -80,14 +80,14 @@ class RatioExpressionInputInteractionViewModel private constructor(
     pendingAnswerError = when (category) {
       AnswerErrorCategory.REAL_TIME ->
         if (answerText.isNotEmpty())
-            stringToRatioParser.getRealTimeAnswerError(answerText.toString())
-              .getErrorMessageFromStringRes(resourceHandler)
+          stringToRatioParser.getRealTimeAnswerError(answerText.toString())
+            .getErrorMessageFromStringRes(resourceHandler)
         else null
       AnswerErrorCategory.SUBMIT_TIME ->
-          stringToRatioParser.getSubmitTimeError(
-            answerText.toString(),
-            numberOfTerms = numberOfTerms
-          ).getErrorMessageFromStringRes(resourceHandler)
+        stringToRatioParser.getSubmitTimeError(
+          answerText.toString(),
+          numberOfTerms = numberOfTerms
+        ).getErrorMessageFromStringRes(resourceHandler)
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
