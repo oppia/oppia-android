@@ -29,6 +29,7 @@ class StringToRatioParser {
     val normalized = text.normalizeWhitespace()
     val ratio = parseRatioOrNull(normalized)
     return when {
+      normalized.isBlank() -> RatioParsingError.EMPTY_INPUT
       !normalized.matches(invalidRatioRegex) || ratio == null -> RatioParsingError.INVALID_FORMAT
       numberOfTerms != 0 && ratio.ratioComponentCount != numberOfTerms -> {
         RatioParsingError.INVALID_SIZE
