@@ -8,7 +8,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.PinPasswordActivityArguments
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.profile.PinPasswordActivity.Companion.PIN_PASSWORD_ACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
@@ -18,6 +20,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
@@ -32,7 +35,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<PinPasswordViewModel>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  @Inject lateinit var accessibilityService: AccessibilityService
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
   private val pinViewModel by lazy {
     getPinPasswordViewModel()
   }
@@ -41,8 +45,14 @@ class PinPasswordActivityPresenter @Inject constructor(
   private var confirmedDeletion = false
 
   fun handleOnCreate() {
-    val adminPin = activity.intent.getStringExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY)
-    profileId = activity.intent.getIntExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, -1)
+    val args = activity.intent.getProtoExtra(
+      PIN_PASSWORD_ACTIVITY_ARGUMENTS_KEY,
+      PinPasswordActivityArguments.getDefaultInstance()
+    )
+
+    val adminPin = args?.adminPin
+    profileId = args?.internalProfileId ?: -1
+
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
       activity,
       R.layout.pin_password_activity

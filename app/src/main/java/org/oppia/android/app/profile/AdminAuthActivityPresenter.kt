@@ -8,11 +8,14 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.model.AdminAuthActivityArguments
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminAuthActivityBinding
+import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
 /** The presenter for [AdminAuthActivity]. */
@@ -27,6 +30,12 @@ class AdminAuthActivityPresenter @Inject constructor(
   private val authViewModel by lazy {
     getAdminAuthViewModel()
   }
+  private val args by lazy {
+    activity.intent.getProtoExtra(
+      ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY,
+      AdminAuthActivityArguments.getDefaultInstance()
+    )
+  }
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
@@ -37,7 +46,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     binding.adminAuthToolbar.setNavigationOnClickListener {
       (activity as AdminAuthActivity).finish()
     }
-    val adminPin = checkNotNull(activity.intent.getStringExtra(ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY)) {
+    val adminPin = checkNotNull(args?.adminPin) {
       "Expected $ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY to be in intent extras."
     }
     binding.apply {
@@ -77,9 +86,9 @@ class AdminAuthActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
       if (inputPin == adminPin) {
-        when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
+        when (args?.adminPinEnum ?: 0) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-            val internalId = activity.intent.getIntExtra(ADMIN_AUTH_PROFILE_ID_EXTRA_KEY, -1)
+            val internalId = args?.internalProfileId ?: -1
             val profileId = ProfileId.newBuilder().setInternalId(internalId).build()
             activity.startActivity(
               AdministratorControlsActivity.createAdministratorControlsActivityIntent(
@@ -92,7 +101,7 @@ class AdminAuthActivityPresenter @Inject constructor(
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
             activity.startActivity(
               AddProfileActivity.createAddProfileActivityIntent(
-                context, activity.intent.getIntExtra(ADMIN_AUTH_COLOR_RGB_EXTRA_KEY, -10710042)
+                context, args?.colorRgb ?: -10710042
               )
             )
             activity.finish()
@@ -107,7 +116,7 @@ class AdminAuthActivityPresenter @Inject constructor(
   }
 
   private fun setTitleAndSubTitle(binding: AdminAuthActivityBinding?) {
-    when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
+    when (args?.adminPinEnum ?: 0) {
       AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
         activity.title =
           resourceHandler.getStringInLocale(R.string.admin_auth_activity_access_controls_title)

@@ -7,13 +7,11 @@ import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.AdminPinActivityArguments
 import org.oppia.android.app.model.ScreenName.ADMIN_PIN_ACTIVITY
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-
-const val ADMIN_PIN_PROFILE_ID_EXTRA_KEY = "AdminPinActivity.admin_pin_profile_id"
-const val ADMIN_PIN_COLOR_RGB_EXTRA_KEY = "AdminPinActivity.admin_pin_color_rgb"
-const val ADMIN_PIN_ENUM_EXTRA_KEY = "AdminPinActivity.admin_pin_enum"
 
 /** Activity that sets the admin's PIN. */
 class AdminPinActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -21,16 +19,21 @@ class AdminPinActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
 
   companion object {
+    /** Arguments key for AdminPinActivity. */
+    const val ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY = "AdminPinActivity.arguments"
     fun createAdminPinActivityIntent(
       context: Context,
       profileId: Int,
       colorRgb: Int,
       adminPinEnum: Int
     ): Intent {
+      val args = AdminPinActivityArguments.newBuilder().apply {
+        this.internalProfileId = profileId
+        this.colorRgb = colorRgb
+        this.adminPinEnum = adminPinEnum
+      }.build()
       return Intent(context, AdminPinActivity::class.java).apply {
-        putExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, profileId)
-        putExtra(ADMIN_PIN_COLOR_RGB_EXTRA_KEY, colorRgb)
-        putExtra(ADMIN_PIN_ENUM_EXTRA_KEY, adminPinEnum)
+        putProtoExtra(ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(ADMIN_PIN_ACTIVITY)
       }
     }

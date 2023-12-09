@@ -495,5 +495,37 @@ message StateFragmentArguments {
 }
 
 message ProgressDatabaseFullDialogFragmentArguments {
-  string old_saved_exploration_title=1;
+  string old_saved_exploration_title = 1;
+}
+
+message AddProfileActivityArguments {
+  int32 color_rgb = 1;
+}
+
+message AdminAuthActivityArguments {
+  string admin_pin=1;
+  int32 internal_profile_id=2;
+  int32 color_rgb=3;
+  int32 admin_pin_enum=4;
+
+}
+
+message AdminPinActivityArguments {
+  int32 internal_profile_id=1;
+  int32 color_rgb=2;
+  int32 admin_pin_enum=3;
+}
+
+message AdminSettingsDialogFragmentArguments {
+  string admin_pin=1;
+}
+
+message PinPasswordActivityArguments {
+  int32 internal_profile_id=1;
+  string admin_pin=2;
+}
+
+message ResetPinDialogFragmentArguments {
+  int32 internal_profile_id=1;
+  string name=2;
 }

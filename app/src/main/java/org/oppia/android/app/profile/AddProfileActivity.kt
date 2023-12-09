@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.AddProfileActivityArguments
 import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-
-const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
 
 /** Activity that allows users to create new profiles. */
 class AddProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -17,9 +17,12 @@ class AddProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
 
   companion object {
+    /** Arguments key for AddProfileActivity. */
+    const val ADD_PROFILE_ACTIVITY_ARGUMENTS_KEY = "AddProfileActivity.arguments"
     fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
+      val args = AddProfileActivityArguments.newBuilder().setColorRgb(colorRgb).build()
       return Intent(context, AddProfileActivity::class.java).apply {
-        putExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, colorRgb)
+        putProtoExtra(ADD_PROFILE_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(ADD_PROFILE_ACTIVITY)
       }
     }
