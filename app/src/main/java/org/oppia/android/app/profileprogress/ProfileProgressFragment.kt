@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that displays profile progress in the app. */
@@ -18,9 +21,10 @@ class ProfileProgressFragment :
 
     /** Returns a new [ProfileProgressFragment] to display the progress for a specified profile ID. */
     fun newInstance(internalProfileId: Int): ProfileProgressFragment {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val profileProgressFragment = ProfileProgressFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       profileProgressFragment.arguments = args
       return profileProgressFragment
     }
@@ -41,7 +45,7 @@ class ProfileProgressFragment :
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileProgressFragment" }
-    val internalProfileId = args.getInt(PROFILE_ID_ARGUMENT_KEY, -1)
+    val internalProfileId = args.extractCurrentUserProfileId()?.internalId ?: -1
     return profileProgressFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 
