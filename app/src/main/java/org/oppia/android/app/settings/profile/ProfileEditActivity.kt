@@ -5,7 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileEditActivityArguments
 import org.oppia.android.app.model.ScreenName.PROFILE_EDIT_ACTIVITY
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
@@ -25,15 +28,22 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
 
   companion object {
+
+    /** Arguments key for ProfileEditActivity. */
+    const val PROFILE_EDIT_ACTIVITY_ARGUMENTS_KEY = "ProfileEditActivity.arguments"
+
     /** Returns an [Intent] for opening the [ProfileEditActivity]. */
     fun createProfileEditActivity(
       context: Context,
       profileId: Int,
       isMultipane: Boolean = false
     ): Intent {
+      val args = ProfileEditActivityArguments.newBuilder().apply {
+        this.internalProfileId = profileId
+        this.isMultipane = isMultipane
+      }.build()
       return Intent(context, ProfileEditActivity::class.java).apply {
-        putExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, profileId)
-        putExtra(IS_MULTIPANE_EXTRA_KEY, isMultipane)
+        putProtoExtra(PROFILE_EDIT_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(PROFILE_EDIT_ACTIVITY)
       }
     }
@@ -46,7 +56,11 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val isMultipane = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
+    val args = intent.getProtoExtra(
+      PROFILE_EDIT_ACTIVITY_ARGUMENTS_KEY,
+      ProfileEditActivityArguments.getDefaultInstance()
+    )
+    val isMultipane = args?.isMultipane ?: false
     if (isMultipane) {
       super.onBackPressed()
     } else {

@@ -529,3 +529,27 @@ message ResetPinDialogFragmentArguments {
   int32 internal_profile_id=1;
   string name=2;
 }
+
+message ProfileEditActivityArguments {
+  int32 internal_profile_id=1;
+  bool is_multipane = 2;
+}
+
+message ProfileEditFragmentArguments {
+  int32 internal_profile_id=1;
+  bool is_multipane = 2;
+}
+
+message ProfileListFragmentArguments {
+  bool is_multipane = 1;
+}
+
+message ProfileResetPinActivityArguments {
+  int32 internal_profile_id=1;
+  bool is_admin=2;
+}
+
+message ProfileResetPinFragmentArguments {
+  int32 internal_profile_id=1;
+  bool is_admin=2;
+}

@@ -8,6 +8,9 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** [DialogFragment] that gives option to delete profile. */
 class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
@@ -20,9 +23,10 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
     /** Creates new instance of the fragment [ProfileEditFragment]. */
     fun newInstance(internalProfileId: Int): ProfileEditDeletionDialogFragment {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val profileEditDeletionDialog = ProfileEditDeletionDialogFragment()
       val args = Bundle()
-      args.putInt(PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY, internalProfileId)
+      args.decorateWithUserProfileId(profileId)
       profileEditDeletionDialog.arguments = args
       return profileEditDeletionDialog
     }
@@ -42,8 +46,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
         "Expected arguments to be pass to ProfileEditDeletionDialogFragment"
       }
 
-    val internalProfileId = args.getInt(PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY)
-
+    val internalProfileId = args.extractCurrentUserProfileId().internalId
     profileEditDialogInterface =
       parentFragment as ProfileEditFragment
 
