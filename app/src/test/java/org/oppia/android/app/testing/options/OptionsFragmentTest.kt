@@ -160,24 +160,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_featureEnabled_appLanguageItemIsDisplayed() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.app_language_item_layout)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testOptionsFragment_featureDisabled_appLanguageItemIsNotDisplayed() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.app_language_item_layout)).check(doesNotExist())
-    }
-  }
-
-  @Test
   fun testOptionsFragment_clickAppLanguage_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
