@@ -1,5 +1,7 @@
 package org.oppia.android.domain.oppialogger.analytics
 
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -7,7 +9,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.auth.AuthenticationWrapper
+import org.oppia.android.domain.auth.AuthenticationController
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -17,8 +19,6 @@ import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BlockingDispatcher
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Controller for handling event logging for Firestore-bound data. */
 @Singleton
@@ -29,7 +29,7 @@ class FirestoreDataController @Inject constructor(
   private val eventLogger: FirestoreEventLogger,
   private val exceptionLogger: ExceptionLogger,
   private val oppiaClock: OppiaClock,
-  private val authenticationWrapper: AuthenticationWrapper,
+  private val authenticationController: AuthenticationController,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @FirestoreLogStorageCacheSize private val logStorageCacheSize: Int
 ) {
@@ -93,8 +93,8 @@ class FirestoreDataController @Inject constructor(
   }
 
   private suspend fun authenticateAndUploadToFirestore(eventLog: EventLog) {
-    if (authenticationWrapper.getCurrentSignedInUser() == null) {
-      when (val signInResult = authenticationWrapper.signInAnonymously().await()) {
+    if (authenticationController.currentFirebaseUser == null) {
+      when (val signInResult = authenticationController.signInAnonymouslyWithFirebase().await()) {
         is AsyncResult.Success -> {
           consoleLogger.i("FirestoreDataController", "Sign in succeeded")
           eventLogger.uploadEvent(eventLog)
@@ -106,7 +106,9 @@ class FirestoreDataController @Inject constructor(
           )
           cacheEventForFirestore(eventLog)
         }
-        is AsyncResult.Pending -> {} // no-op
+        is AsyncResult.Pending -> {
+          consoleLogger.i("FirestoreDataController", "Signing in anonymously to Firebase")
+        }
       }
     } else {
       eventLogger.uploadEvent(eventLog)

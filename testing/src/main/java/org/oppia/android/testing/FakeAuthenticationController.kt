@@ -1,23 +1,20 @@
 package org.oppia.android.testing
 
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.CompletableDeferred
-import org.oppia.android.domain.auth.AuthenticationWrapper
-import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CompletableDeferred
+import org.oppia.android.util.data.AsyncResult
 
 /** A test specific fake for the AuthenticationController. */
 @Singleton
-class FakeAuthenticationController @Inject constructor() : AuthenticationWrapper {
+class FakeAuthenticationController @Inject constructor() {
   private var signInIsSuccessful = true
   private var currentUser: FirebaseUser? = null
 
-  override fun getCurrentSignedInUser(): FirebaseUser? {
-    return currentUser
-  }
+  val currentFirebaseUser = currentUser
 
-  override fun signInAnonymously(): CompletableDeferred<AsyncResult<Any?>> {
+  fun signInAnonymouslyWithFirebase(): CompletableDeferred<AsyncResult<Any?>> {
     val deferredResult = CompletableDeferred<AsyncResult<Any?>>()
 
     if (signInIsSuccessful) {

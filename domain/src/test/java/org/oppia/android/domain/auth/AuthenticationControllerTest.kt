@@ -1,12 +1,12 @@
-package org.oppia.android.testing
+package org.oppia.android.domain.auth
 
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.auth.FirebaseUser
-import dagger.Binds
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -21,8 +21,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
-import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -35,20 +35,17 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.auth.FirebaseAuthWrapper
+import org.oppia.android.testing.TestAuthenticationModule
 
-/** Tests for [FakeAuthenticationController]. */
+/** Tests for [AuthenticationController]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = FakeAuthenticationControllerTest.TestApplication::class)
-class FakeAuthenticationControllerTest {
+@Config(application = AuthenticationControllerTest.TestApplication::class)
+class AuthenticationControllerTest {
   @Inject
-  lateinit var fakeAuthenticationController: FakeAuthenticationController
-
-  @Inject
-  lateinit var authenticationWrapper: AuthenticationWrapper
+  lateinit var authenticationController: AuthenticationController
 
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundDispatcher: CoroutineDispatcher
@@ -56,28 +53,32 @@ class FakeAuthenticationControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private lateinit var mockFirebaseUser: FirebaseUser
-
   @Before
   fun setUp() {
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
-    mockFirebaseUser = mock(FirebaseUser::class.java)
   }
 
   @Test
-  fun testAuthentication_getCurrentSignedInUser_returnsInstanceOfFirebaseUser() {
-    fakeAuthenticationController.setSignedInUser(mockFirebaseUser)
-    val user = fakeAuthenticationController.currentFirebaseUser
-
-    assertThat(user).isInstanceOf(FirebaseUser::class.java)
+  fun testAuthentication_getCurrentSignedInUser_noSignedInUser_returnsNull() {
+    authenticationController.signInAnonymouslyWithFirebase()
+    val user = authenticationController.currentFirebaseUser
+    
+    assertThat(user).isEqualTo(null)
   }
 
   @Test
-  fun testFakeController_signInAnonymously_succeeds() {
-    fakeAuthenticationController.setSignInSuccessStatus(true)
-
+  fun testAuthentication_signInAnonymously_success_returnsSuccessAsyncResult() {
+    val authResult = authenticationController.signInAnonymouslyWithFirebase()
+    testCoroutineDispatchers.runCurrent()
+    assertThat(authResult).isInstanceOf(AsyncResult.Success::class.java)
     // A successful result is returned
-    runSynchronously { fakeAuthenticationController.signInAnonymouslyWithFirebase().await() }
+    runSynchronously { authenticationController.signInAnonymouslyWithFirebase().await() }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>()
+      .inject(this)
   }
 
   private fun runSynchronously(operation: suspend () -> Unit) =
@@ -110,11 +111,6 @@ class FakeAuthenticationControllerTest {
   private fun <T> StateFlow<T>.waitForLatestValue(): T =
     also { testCoroutineDispatchers.runCurrent() }.value
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
-  }
-
   @Module
   class TestModule {
     @Provides
@@ -124,20 +120,20 @@ class FakeAuthenticationControllerTest {
     }
   }
 
-  @Module
-  interface TestAuthModule {
-    @Binds
-    fun bindFakeAuthenticationController(
-      fakeAuthenticationController: FakeAuthenticationController
-    ): FirebaseAuthWrapper
-  }
+/*  @Module
+  class AuthenticationModule {
+    @Provides
+    @Singleton
+    fun provideAuthenticationController():
+      AuthenticationWrapper = AuthenticationController(mock(FirebaseAuth::class.java))
+  }*/
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class, TestAuthModule::class,
+      ApplicationLifecycleModule::class, TestDispatcherModule::class, TestAuthenticationModule::class,
       TestLogReportingModule::class,
     ]
   )
@@ -150,17 +146,17 @@ class FakeAuthenticationControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: FakeAuthenticationControllerTest)
+    fun inject(test: AuthenticationControllerTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFakeAuthenticationControllerTest_TestApplicationComponent.builder()
+      DaggerAuthenticationControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: FakeAuthenticationControllerTest) {
+    fun inject(test: AuthenticationControllerTest) {
       component.inject(test)
     }
 
