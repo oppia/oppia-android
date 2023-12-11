@@ -16,7 +16,7 @@ import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_NEW_ONBOARDING_FLOW_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
@@ -30,7 +30,7 @@ import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeSta
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.EnableNewOnboardingUi
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
@@ -318,10 +318,10 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @EnableNewOnboardingUi
+  @EnableOnboardingFlowV2
   fun provideEnableNewOnboardingUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      ENABLE_NEW_ONBOARDING_FLOW_DEFAULT_VALUE
+      ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
     )
   }
 }
