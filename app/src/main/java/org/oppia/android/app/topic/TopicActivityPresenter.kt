@@ -9,6 +9,7 @@ import org.oppia.android.app.model.TopicFragmentArguments
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
@@ -32,13 +33,13 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
       val topicFragment = TopicFragment()
       val arguments = Bundle().apply {
         val args = TopicFragmentArguments.newBuilder().apply {
-          this.internalProfileId = internalProfileId
           this.topicId = topicId
           if (storyId != null) {
             this.storyId = storyId
           }
         }.build()
         putProto(TOPIC_FRAGMENT_ARGUMENTS_KEY, args)
+        decorateWithUserProfileId(profileId)
       }
 
       topicFragment.arguments = arguments

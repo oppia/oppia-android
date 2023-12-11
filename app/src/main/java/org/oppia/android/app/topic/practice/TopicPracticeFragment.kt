@@ -2,7 +2,6 @@ package org.oppia.android.app.topic.practice
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ class TopicPracticeFragment : InjectableFragment() {
     /** Returns a new [TopicPracticeFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicPracticeFragment {
 
-      Log.e("#", internalProfileId.toString() + " " + topicId)
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = TopicPracticeFragmentArguments.newBuilder().apply {
         this.topicId = topicId

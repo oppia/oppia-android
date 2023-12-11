@@ -320,7 +320,6 @@ message TopicActivityArguments {
 }
 
 message TopicFragmentArguments {
-  int32 internal_profile_id = 1;
   string topic_id = 2;
   string story_id = 3;
 }
@@ -596,7 +595,7 @@ message TopicPracticeFragmentArguments {
 
 message TopicPracticeFragmentStateBundle {
   repeated int32 sub_topic_id_list = 1;
-  map<int32,  string> skill_id_list=2;
+  map<int32, string> skill_id_list = 2;
 }
 
 message TopicRevisionFragmentArguments {

@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.TopicFragmentArguments
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that contains tabs for Topic. */
@@ -32,7 +33,7 @@ class TopicFragment : InjectableFragment() {
       TOPIC_FRAGMENT_ARGUMENTS_KEY,
       TopicFragmentArguments.getDefaultInstance()
     )
-    val internalProfileId = args?.internalProfileId ?: -1
+    val internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
     val topicId = args?.topicId ?: TEST_TOPIC_ID_0
     val storyId = args?.storyId ?: ""
 

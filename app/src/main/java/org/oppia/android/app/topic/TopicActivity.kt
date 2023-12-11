@@ -13,12 +13,17 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.TOPIC_ACTIVITY
+import org.oppia.android.app.model.TopicActivityArguments
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
@@ -43,8 +48,13 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
-    topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    topicId = checkNotNull(
+      intent?.getProtoExtra(
+        TOPIC_ACTIVITY_ARGUMENTS_KEY,
+        TopicActivityArguments.getDefaultInstance()
+      )?.topicId
+    ) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
@@ -146,6 +156,8 @@ class TopicActivity :
   }
 
   companion object {
+    /** Arguments key for TopicActivity. */
+    const val TOPIC_ACTIVITY_ARGUMENTS_KEY = "TopicActivity.arguments"
 
     fun getProfileIdKey(): String {
       return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
@@ -165,9 +177,11 @@ class TopicActivity :
       internalProfileId: Int,
       topicId: String
     ): Intent {
+      val args = TopicActivityArguments.newBuilder().setTopicId(topicId).build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, TopicActivity::class.java).apply {
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-        putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+        putProtoExtra(TOPIC_ACTIVITY_ARGUMENTS_KEY, args)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(TOPIC_ACTIVITY)
       }
     }
