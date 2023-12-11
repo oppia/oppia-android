@@ -23,7 +23,6 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.BottomLeftOverlayBinding
 import org.oppia.android.databinding.BottomRightOverlayBinding
@@ -35,9 +34,9 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import javax.inject.Inject
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /**
  * Fragment to hold spotlights on elements. This fragment provides a single place for all the
@@ -76,7 +75,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
     internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
-    Log.e("#",internalProfileId.toString())
+    Log.e("#", internalProfileId.toString())
     calculateScreenSize()
   }
 
@@ -386,7 +385,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   companion object {
     /** Returns a new [SpotlightFragment]. */
     fun newInstance(internalProfileId: Int): SpotlightFragment {
-Log.e("#",internalProfileId.toString())
+      Log.e("#", internalProfileId.toString())
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return SpotlightFragment().apply {
         arguments = Bundle().apply {

@@ -11,16 +11,16 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.STORY_ACTIVITY
+import org.oppia.android.app.model.StoryActivityArguments
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
-import org.oppia.android.app.model.StoryActivityArguments
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** Activity for stories. */
 class StoryActivity :
@@ -36,15 +36,18 @@ class StoryActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args=intent.getProtoExtra(STORY_ACTIVITY_ARGUMENTS_KEY,StoryActivityArguments.getDefaultInstance())
-    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId?:-1
+    val args = intent.getProtoExtra(
+      STORY_ACTIVITY_ARGUMENTS_KEY,
+      StoryActivityArguments.getDefaultInstance()
+    )
+    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
     topicId = checkNotNull(args.topicId) {
       "Expected extra topic ID to be included for StoryActivity."
     }
     storyId = checkNotNull(args.storyId) {
       "Expected extra story ID to be included for StoryActivity."
     }
-    Log.e("#",internalProfileId.toString()+ " "+topicId+" "+storyId)
+    Log.e("#", internalProfileId.toString() + " " + topicId + " " + storyId)
     storyActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
   }
 
@@ -105,8 +108,8 @@ class StoryActivity :
       topicId: String,
       storyId: String
     ): Intent {
-      Log.e("#","story ac")
-      Log.e("#",internalProfileId.toString()+ " "+topicId+" "+storyId)
+      Log.e("#", "story ac")
+      Log.e("#", internalProfileId.toString() + " " + topicId + " " + storyId)
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = StoryActivityArguments.newBuilder().apply {
         this.topicId = topicId

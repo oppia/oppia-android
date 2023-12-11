@@ -11,14 +11,12 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.extensions.getStringFromBundle
-import javax.inject.Inject
-import org.oppia.android.app.model.StoryActivityArguments
 import org.oppia.android.app.model.StoryFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 private const val INTERNAL_PROFILE_ID_ARGUMENT_KEY = "StoryFragment.internal_profile_id"
 private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
@@ -64,9 +62,10 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     val arguments = checkNotNull(arguments) {
       "Expected arguments to be passed to StoryFragment"
     }
-    val args=arguments.getProto(STORY_FRAGMENT_ARGUMENTS_KEY,StoryFragmentArguments.getDefaultInstance())
+    val args =
+      arguments.getProto(STORY_FRAGMENT_ARGUMENTS_KEY, StoryFragmentArguments.getDefaultInstance())
 
-    val internalProfileId = arguments.extractCurrentUserProfileId().internalId ?:-1
+    val internalProfileId = arguments.extractCurrentUserProfileId().internalId ?: -1
     val topicId =
       checkNotNull(args.topicId) {
         "Expected topicId to be passed to StoryFragment"
@@ -75,7 +74,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       checkNotNull(args.storyId) {
         "Expected storyId to be passed to StoryFragment"
       }
-    Log.e("#",internalProfileId.toString()+ " "+topicId+" "+storyId)
+    Log.e("#", internalProfileId.toString() + " " + topicId + " " + storyId)
     return storyFragmentPresenter.handleCreateView(
       inflater,
       container,
