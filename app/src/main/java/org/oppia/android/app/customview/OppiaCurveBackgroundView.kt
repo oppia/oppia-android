@@ -11,11 +11,11 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
-import javax.inject.Inject
 
 /**
  * CustomView to add a background to views that require a bezier curve background.
@@ -63,11 +63,11 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
     val width = this.width.toFloat()
     val height = this.height.toFloat()
 
-    val controlPoint1X = width * 0.5f
+    val controlPoint1X = width * 0.4f
     val controlPoint1Y = 0f
 
-    val controlPoint2X = width * 0.5f
-    val controlPoint2Y = height * 0.2f
+    val controlPoint2X = width * 0.6f
+    val controlPoint2Y = height * 0.16f
 
     val controlPoint3X = width * 1f
     val controlPoint3Y = height * 0.1f

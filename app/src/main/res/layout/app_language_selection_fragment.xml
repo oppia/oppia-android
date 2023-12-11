@@ -14,7 +14,7 @@
       android:text="Welcome to Oppia"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="@id/onboarding_language_header_guide" />
 
     <TextView
       android:id="@+id/onboarding_language_subtitle"
@@ -32,12 +32,37 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_subtitle" />
 
+    <ImageView
+      android:id="@+id/onboarding_language_image"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:contentDescription="Otter with glasses"
+      android:elevation="4dp"
+      android:src="@drawable/img_otter"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_language_image_guide" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/onboarding_language_header_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.15" />
+
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/onboarding_language_title_guide"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.3" />
+      app:layout_constraintGuide_percent="0.45" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/onboarding_language_image_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.4" />
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/onboarding_language_center_guide"
@@ -58,17 +83,47 @@
       android:text="@string/onboarding_language_activity_select_label"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@id/onboarding_language_background" />
+      app:layout_constraintTop_toBottomOf="@id/onboarding_language_center_guide" />
 
-    <TextView
-      android:id="@+id/onboarding_language_dropdown"
-      android:layout_width="match_parent"
+    <RelativeLayout
+      android:id="@+id/onboarding_language_dropdown_background"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:spinnerMode="dropdown"
-      android:textAlignment="center"
-      android:textColor="@color/component_color_onboarding_language_white_text_color"
-      app:layout_constraintTop_toBottomOf="@id/onboarding_language_label"
-      tools:text="English" />
+      android:layout_margin="@dimen/onboarding_language_text_margin"
+      android:background="@drawable/dropdown_background"
+      android:elevation="8dp"
+      android:padding="@dimen/onboarding_language_dropdown_padding"
+      app:layout_constraintEnd_toEndOf="@id/onboarding_language_label"
+      app:layout_constraintStart_toStartOf="@id/onboarding_language_label"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_language_label">
+
+      <ImageView
+        android:id="@+id/onboarding_language_dropdown_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Dropdown language icon"
+        android:src="@drawable/ic_language_icon_black_24dp" />
+
+      <Spinner
+        android:id="@+id/onboarding_language_dropdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/onboarding_language_dropdown_icon"
+        android:layout_marginStart="32dp"
+        android:background="@drawable/transparent_background"
+        android:textAlignment="center"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textSize="@dimen/onboarding_language_message_text_size"
+        tools:listheader="English" />
+
+      <ImageView
+        android:id="@+id/onboarding_language_dropdown_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="Dropdown arror icon"
+        android:src="@drawable/ic_arrow_drop_down_black_24dp" />
+    </RelativeLayout>
 
     <TextView
       android:id="@+id/onboarding_language_explanation"
@@ -76,15 +131,15 @@
       android:text="@string/onboarding_language_explanation"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/onboarding_language_dropdown" />
+      app:layout_constraintTop_toBottomOf="@id/onboarding_language_dropdown_background" />
 
     <Button
       android:id="@+id/onboarding_language_lets_go_button"
       style="@style/OnboardingLanguageLetsGoButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/survey_navigation_buttons_margin"
       android:text="@string/onboarding_language_lets_go_button_text"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_explanation" />
