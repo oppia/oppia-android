@@ -553,3 +553,14 @@ message ProfileResetPinFragmentArguments {
   int32 internal_profile_id=1;
   bool is_admin=2;
 }
+
+message StoryActivityArguments {
+  string topic_id=1;
+  string story_id=2;
+}
+
+message StoryFragmentArguments {
+  string topic_id=1;
+  string story_id=2;
+}
+

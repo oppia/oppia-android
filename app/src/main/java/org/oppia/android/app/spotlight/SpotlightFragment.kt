@@ -3,6 +3,7 @@ package org.oppia.android.app.spotlight
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.AccelerateInterpolator
@@ -35,6 +36,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /**
  * Fragment to hold spotlights on elements. This fragment provides a single place for all the
@@ -72,7 +75,8 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-    internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
+    internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    Log.e("#",internalProfileId.toString())
     calculateScreenSize()
   }
 
@@ -368,10 +372,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   private sealed class AnchorPosition {
     /** The position corresponding to the anchor when it is on the top left of the screen. */
     object TopLeft : AnchorPosition()
+
     /** The position corresponding to the anchor when it is on the top right of the screen. */
     object TopRight : AnchorPosition()
+
     /** The position corresponding to the anchor when it is on the bottom left of the screen. */
     object BottomLeft : AnchorPosition()
+
     /** The position corresponding to the anchor when it is on the bottom right of the screen. */
     object BottomRight : AnchorPosition()
   }
@@ -379,11 +386,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   companion object {
     /** Returns a new [SpotlightFragment]. */
     fun newInstance(internalProfileId: Int): SpotlightFragment {
-      val spotlightFragment = SpotlightFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      spotlightFragment.arguments = args
-      return spotlightFragment
+Log.e("#",internalProfileId.toString())
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      return SpotlightFragment().apply {
+        arguments = Bundle().apply {
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 }
