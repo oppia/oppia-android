@@ -18,10 +18,6 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-private const val INTERNAL_PROFILE_ID_ARGUMENT_KEY = "StoryFragment.internal_profile_id"
-private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
-private const val KEY_STORY_ID_ARGUMENT = "STORY_ID"
-
 /** Fragment for displaying a story. */
 class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryFragmentScroller {
   companion object {
@@ -31,7 +27,6 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     /** Returns a new [StoryFragment] to display the story corresponding to the specified story ID. */
     fun newInstance(internalProfileId: Int, topicId: String, storyId: String): StoryFragment {
 
-      Log.e("#", internalProfileId.toString() + " " + topicId + " " + storyId)
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = StoryFragmentArguments.newBuilder().apply {
         this.topicId = topicId
@@ -74,7 +69,6 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       checkNotNull(args.storyId) {
         "Expected storyId to be passed to StoryFragment"
       }
-    Log.e("#", internalProfileId.toString() + " " + topicId + " " + storyId)
     return storyFragmentPresenter.handleCreateView(
       inflater,
       container,

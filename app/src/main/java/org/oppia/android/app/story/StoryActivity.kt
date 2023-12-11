@@ -47,7 +47,6 @@ class StoryActivity :
     storyId = checkNotNull(args.storyId) {
       "Expected extra story ID to be included for StoryActivity."
     }
-    Log.e("#", internalProfileId.toString() + " " + topicId + " " + storyId)
     storyActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
   }
 
@@ -108,9 +107,7 @@ class StoryActivity :
       topicId: String,
       storyId: String
     ): Intent {
-      Log.e("#", "story ac")
-      Log.e("#", internalProfileId.toString() + " " + topicId + " " + storyId)
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = StoryActivityArguments.newBuilder().apply {
         this.topicId = topicId
         this.storyId = storyId
