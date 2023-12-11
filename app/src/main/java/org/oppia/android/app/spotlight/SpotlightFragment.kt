@@ -3,7 +3,6 @@ package org.oppia.android.app.spotlight
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.AccelerateInterpolator
@@ -75,7 +74,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
     internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
-    Log.e("#", internalProfileId.toString())
     calculateScreenSize()
   }
 
@@ -385,7 +383,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   companion object {
     /** Returns a new [SpotlightFragment]. */
     fun newInstance(internalProfileId: Int): SpotlightFragment {
-      Log.e("#", internalProfileId.toString())
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return SpotlightFragment().apply {
         arguments = Bundle().apply {

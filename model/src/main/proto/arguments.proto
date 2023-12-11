@@ -503,40 +503,40 @@ message AddProfileActivityArguments {
 }
 
 message AdminAuthActivityArguments {
-  string admin_pin=1;
-  int32 internal_profile_id=2;
-  int32 color_rgb=3;
-  int32 admin_pin_enum=4;
+  string admin_pin = 1;
+  int32 internal_profile_id = 2;
+  int32 color_rgb = 3;
+  int32 admin_pin_enum = 4;
 
 }
 
 message AdminPinActivityArguments {
-  int32 internal_profile_id=1;
-  int32 color_rgb=2;
-  int32 admin_pin_enum=3;
+  int32 internal_profile_id = 1;
+  int32 color_rgb = 2;
+  int32 admin_pin_enum = 3;
 }
 
 message AdminSettingsDialogFragmentArguments {
-  string admin_pin=1;
+  string admin_pin = 1;
 }
 
 message PinPasswordActivityArguments {
-  int32 internal_profile_id=1;
-  string admin_pin=2;
+  int32 internal_profile_id = 1;
+  string admin_pin = 2;
 }
 
 message ResetPinDialogFragmentArguments {
-  int32 internal_profile_id=1;
-  string name=2;
+  int32 internal_profile_id = 1;
+  string name = 2;
 }
 
 message ProfileEditActivityArguments {
-  int32 internal_profile_id=1;
+  int32 internal_profile_id = 1;
   bool is_multipane = 2;
 }
 
 message ProfileEditFragmentArguments {
-  int32 internal_profile_id=1;
+  int32 internal_profile_id = 1;
   bool is_multipane = 2;
 }
 
@@ -545,22 +545,69 @@ message ProfileListFragmentArguments {
 }
 
 message ProfileResetPinActivityArguments {
-  int32 internal_profile_id=1;
-  bool is_admin=2;
+  int32 internal_profile_id = 1;
+  bool is_admin = 2;
 }
 
 message ProfileResetPinFragmentArguments {
-  int32 internal_profile_id=1;
-  bool is_admin=2;
+  int32 internal_profile_id = 1;
+  bool is_admin = 2;
 }
 
 message StoryActivityArguments {
-  string topic_id=1;
-  string story_id=2;
+  string topic_id = 1;
+  string story_id = 2;
 }
 
 message StoryFragmentArguments {
-  string topic_id=1;
-  string story_id=2;
+  string topic_id = 1;
+  string story_id = 2;
+}
+
+message SurveyFragmentArguments {
+  string topic_id = 1;
+}
+
+message ConceptCardFragmentArguments {
+  string skill_id = 2;
+}
+
+message TopicInfoFragmentArguments {
+  string topic_id = 1;
+}
+
+message TopicLessonsFragmentArguments {
+  string topic_id = 1;
+  string story_id = 2;
+}
+
+message TopicLessonsFragmentStateBundle {
+  int32 current_expanded_chapter_list_index = 1;
+  bool is_default_story_expanded = 2;
+}
+
+message TopicPracticeFragmentArguments {
+  string topic_id = 1;
+}
+
+message TopicPracticeFragmentStateBundle {
+  repeated int32 sub_topic_id_list = 1;
+  map<int32,  string> skill_id_list=2;
+}
+
+message TopicRevisionFragmentArguments {
+  string topic_id = 1;
+}
+
+message RevisionCardActivityArguments {
+  string topic_id = 1;
+  int32 sub_topic_id = 2;
+  int32 sub_topic_list_size = 3;
+}
+
+message RevisionCardFragmentArguments {
+  string topic_id = 1;
+  int32 sub_topic_id = 2;
+  int32 sub_topic_list_size = 3;
 }
 

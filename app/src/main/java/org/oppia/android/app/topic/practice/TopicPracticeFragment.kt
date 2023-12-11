@@ -2,30 +2,43 @@ package org.oppia.android.app.topic.practice
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.TopicPracticeFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
   companion object {
+    /** Arguments key for TopicPracticeFragment. */
+    const val TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY = "TopicPracticeFragment.arguments"
+
     internal const val SUBTOPIC_ID_LIST_ARGUMENT_KEY = "TopicPracticeFragment.subtopic_id_list"
     internal const val SKILL_ID_LIST_ARGUMENT_KEY = "TopicPracticeFragment.skill_id_list"
 
     /** Returns a new [TopicPracticeFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicPracticeFragment {
-      val topicPracticeFragment = TopicPracticeFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-      topicPracticeFragment.arguments = args
-      return topicPracticeFragment
+
+      Log.e("#", internalProfileId.toString() + " " + topicId)
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val args = TopicPracticeFragmentArguments.newBuilder().apply {
+        this.topicId = topicId
+      }.build()
+      return TopicPracticeFragment().apply {
+        arguments = Bundle().apply {
+          putProto(TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 
@@ -49,10 +62,15 @@ class TopicPracticeFragment : InjectableFragment() {
       selectedSkillId = savedInstanceState
         .getSerializable(SKILL_ID_LIST_ARGUMENT_KEY)!! as HashMap<Int, MutableList<String>>
     }
-    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
+    val args = arguments?.getProto(
+      TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
+      TopicPracticeFragmentArguments.getDefaultInstance()
+    )
+    val internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }
+
     return topicPracticeFragmentPresenter.handleCreateView(
       inflater,
       container,
