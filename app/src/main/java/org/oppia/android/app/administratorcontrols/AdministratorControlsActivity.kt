@@ -8,7 +8,6 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.AdministratorControlActivityStateBundle
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY
@@ -119,11 +118,6 @@ class AdministratorControlsActivity :
         intent.decorateWithUserProfileId(profileId)
       }
       return intent
-    }
-
-    /** Returns the argument key used to specify the user's internal profile ID. */
-    fun getIntentKey(): String {
-      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
   }
 

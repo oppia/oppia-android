@@ -75,7 +75,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     setUpDrawer(drawerLayout, toolbar, menuItemId)
 
     fragment.setHasOptionsMenu(true)
-
     profileId = activity.intent.extractCurrentUserProfileId()
     internalProfileId = profileId.internalId
 
