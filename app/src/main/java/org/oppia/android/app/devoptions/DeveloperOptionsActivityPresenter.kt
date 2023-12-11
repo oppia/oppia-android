@@ -41,7 +41,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.developer_options_activity_fragment_navigation_drawer
       ) as NavigationDrawerFragment
-    navigationDrawerFragment.setUpDrawer(
+    navigationDrawerFragment.initializeDrawer(
       binding.developerOptionsActivityDrawerLayout,
       toolbar, menuItemId = -1
     )

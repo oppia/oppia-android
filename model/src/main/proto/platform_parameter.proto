@@ -18,6 +18,19 @@ message PlatformParameter {
     // Indicates a string-typed platform parameter.
     string string = 4;
   }
+  // Indicates the sync status of the platform parameter.
+  SyncStatus sync_status = 5;
+
+  enum SyncStatus {
+    // Indicates that the sync status isn't yet known.
+    SYNC_STATUS_UNSPECIFIED = 0;
+
+    // Indicates that the parameter isn't yet synced with the remote server.
+    NOT_SYNCED_FROM_SERVER = 1;
+
+    // Indicates the parameter's value has been synced with the remote server.
+    SYNCED_FROM_SERVER = 2;
+  }
 }
 
 // Format of platform parameters stored on disk. It closely resembles the JSON response in cache.

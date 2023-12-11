@@ -3,9 +3,9 @@ package org.oppia.android.util.parser.svg
 import android.graphics.Picture
 import android.graphics.RectF
 import android.text.TextPaint
-import com.caverock.androidsvg.RenderOptions
-import com.caverock.androidsvg.SVG
-import com.caverock.androidsvg.utils.RenderOptionsBase
+import com.caverock.androidsvg.androidrendering.RenderOptions
+import com.caverock.androidsvg.androidrendering.RenderOptionsBase
+import com.caverock.androidsvg.androidrendering.SVG
 import org.oppia.android.util.parser.image.ImageTransformation
 
 /**
@@ -39,18 +39,14 @@ class ScalableVectorGraphic {
   }
 
   /**
-   * Returns the [SvgSizeSpecs] corresponding to this SVG, based on the specified [textPaint]. If a
-   * [TextPaint] is supplied, the returns specs will include text-based adjustments (for in-line
-   * images). Otherwise, the returned specs will be arranged for rendering the SVG in a standalone
-   * manner.
+   * Returns the [SvgSizeSpecs] corresponding to this SVG.
+   *
+   * The returned specs will be arranged for rendering the SVG in a standalone manner.
    */
-  fun computeSizeSpecs(textPaint: TextPaint?): SvgSizeSpecs {
-    val options = RenderOptionsBase().also { if (textPaint != null) it.textPaint(textPaint) }
+  fun computeSizeSpecs(): SvgSizeSpecs {
+    val options = RenderOptionsBase()
     val documentWidth = parsedSvg.value.getDocumentWidthOrNull(options)
     val documentHeight = parsedSvg.value.getDocumentHeightOrNull(options)
-    val verticalAlignment = if (textPaint != null) {
-      adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options))
-    } else 0f
 
     val viewBox: RectF? = parsedSvg.value.documentViewBox
     val viewBoxWidth = viewBox?.width()
@@ -75,8 +71,46 @@ class ScalableVectorGraphic {
       intrinsicHeight,
       renderedWidth = imageFileNameWidth ?: intrinsicWidth,
       renderedHeight = imageFileNameHeight ?: intrinsicHeight,
+      verticalAlignment = 0f
+    )
+  }
+
+  /**
+   * Returns the [SvgSizeSpecs] corresponding to this SVG, based on the specified [textPaint].
+   * Based on the supplied [TextPaint], the returned specs will include text-based adjustments
+   * (for in-line images).
+   */
+  fun computeSizeSpecsForTextPicture(textPaint: TextPaint?): SvgSizeSpecs {
+    val options = textPaint?.let { RenderOptionsBase().textPaint(it) } ?: RenderOptionsBase()
+    val documentWidth = parsedSvg.value.getDocumentWidthOrNull(options)
+    val documentHeight = parsedSvg.value.getDocumentHeightOrNull(options)
+
+    val imageFileNameWidth = extractedWidth?.toFloat()
+    val imageFileNameHeight = extractedHeight?.toFloat()
+
+    val fontMetrics = textPaint?.fontMetrics
+    val fontHeight = fontMetrics?.descent?.minus(fontMetrics.ascent) ?: 0f
+
+    val adjustedWidth =
+      imageFileNameWidth?.convertExToPx(fontHeight) ?: documentWidth ?: DEFAULT_SIZE_PX
+    val adjustedHeight =
+      imageFileNameHeight?.convertExToPx(fontHeight) ?: documentHeight ?: DEFAULT_SIZE_PX
+
+    val verticalAlignment = textPaint?.let {
+      adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options))
+    } ?: 0f
+
+    return SvgSizeSpecs(
+      adjustedWidth,
+      adjustedHeight,
+      renderedWidth = adjustedWidth,
+      renderedHeight = adjustedHeight,
       verticalAlignment
     )
+  }
+
+  private fun Float.convertExToPx(fontHeight: Float): Float {
+    return this * fontHeight * 0.5f
   }
 
   /**
@@ -84,7 +118,7 @@ class ScalableVectorGraphic {
    * line of text whose size and style is configured by the provided [textPaint].
    */
   fun renderToTextPicture(textPaint: TextPaint): Picture {
-    return computeSizeSpecs(textPaint).let { (width, height, _) ->
+    return computeSizeSpecsForTextPicture(textPaint).let { (width, height, _) ->
       val options =
         RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
       parsedSvg.value.renderToPicture(options)
