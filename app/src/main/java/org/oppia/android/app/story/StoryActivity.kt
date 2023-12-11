@@ -3,7 +3,6 @@ package org.oppia.android.app.story
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
@@ -107,7 +106,7 @@ class StoryActivity :
       topicId: String,
       storyId: String
     ): Intent {
-     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = StoryActivityArguments.newBuilder().apply {
         this.topicId = topicId
         this.storyId = storyId
