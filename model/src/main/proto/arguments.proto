@@ -315,6 +315,10 @@ message SurveyActivityParams {
   string exploration_id = 3;
 }
 
+message TopicActivityArguments {
+  string topic_id = 1;
+}
+
 message TopicFragmentArguments {
   int32 internal_profile_id = 1;
   string topic_id = 2;
