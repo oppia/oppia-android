@@ -8,8 +8,6 @@
   <dimen name="answer_tick_margin">12dp</dimen>
   <integer name="fade_in_duration_ms">1000</integer>
   <integer name="fade_out_duration_ms">1000</integer>
-  <dimen name="audio_fragment_corner_radius">8dp</dimen>
-  <dimen name="audio_fragment_margin">28dp</dimen>
   <dimen name="cellular_data_dialog_padding">24dp</dimen>
   <dimen name="state_previous_next_button_radius">4dp</dimen>
   <dimen name="train_checkbox_padding">18dp</dimen>
@@ -769,6 +767,12 @@
   <dimen name="resume_lesson_chapter_flexbox_margin_end">28dp</dimen>
   <dimen name="resume_lesson_chapter_flexbox_margin_top">32dp</dimen>
   <dimen name="resume_lesson_start_over_button_margin">8dp</dimen>
+
+  <!--  AudioFragment-->
+  <dimen name="audio_fragment_corner_radius">8dp</dimen>
+  <dimen name="audio_fragment_margin">28dp</dimen>
+  <dimen name="audio_fragment_progress_indicator_size">20dp</dimen>
+  <dimen name="audio_fragment_progress_indicator_track_thickness">3dp</dimen>
 
   <!-- Onboarding App Language -->
   <dimen name="onboarding_language_button_margin">28dp</dimen>

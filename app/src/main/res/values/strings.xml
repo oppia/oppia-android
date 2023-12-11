@@ -201,12 +201,10 @@
   <plurals name="completed_story_count">
     <item quantity="one">1 Story Completed</item>
     <item quantity="other">%s Stories Completed</item>
-    <item quantity="zero">%s Stories Completed</item>
   </plurals>
   <plurals name="ongoing_topic_count">
     <item quantity="one">1 Topic in Progress</item>
     <item quantity="other">%s Topics in Progress</item>
-    <item quantity="zero">%s Topics in Progress</item>
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
@@ -454,7 +452,6 @@
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes_ago">
-    <item quantity="zero">0 minutes ago</item>
     <item quantity="one">a minute ago</item>
     <item quantity="other">%s minutes ago</item>
   </plurals>
@@ -472,48 +469,20 @@
   <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
   <string name="item_selection_text">Please select all correct choices.</string>
   <!-- SplashActivity -->
-  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
-    Unsupported app version
-  </string>
-  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">
-    This version of the app is no longer supported. Please update it through the Play Store.
-  </string>
-  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
-    Close app
-  </string>
-  <string name="forced_app_update_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
-    App update required
-  </string>
-  <string name="forced_app_update_dialog_message" description="The main message of the dialog shown when a user's app has expired.">
-    A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.
-  </string>
-  <string name="forced_app_update_dialog_update_button_text" description="The update button text of the dialog shown when a user's pre-release app has expired.">
-    Update
-  </string>
-  <string name="forced_app_update_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
-    Close app
-  </string>
-  <string name="optional_app_update_dialog_title" description="The title of the dialog shown when an optional app update is available.">
-    New update available
-  </string>
-  <string name="optional_app_update_dialog_message" description="The main message of the dialog shown when an optional app update is available.">
-    A new version of %s is now available. We recommend that you update the app for bug fixes and a better learning experience.
-  </string>
-  <string name="optional_app_update_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an optional app update is available.">
-    Dismiss
-  </string>
-  <string name="optional_app_update_dialog_update_button_text" description="The update button text of the dialog shown when an optional app update is available.">
-    Update
-  </string>
-  <string name="os_deprecation_dialog_title" description="The title of the dialog shown when an the OS the user is using is no longer supported.">
-    Update your Android OS
-  </string>
-  <string name="os_deprecation_dialog_message" description="The main message of the dialog shown when an the OS the user is using is no longer supported.">
-    We recommend updating your Android OS to take advantage of %s\'s new features and lessons.\n\nVisit your phone\'s Settings app to update your OS.
-  </string>
-  <string name="os_deprecation_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an the OS the user is using is no longer supported.">
-    Dismiss
-  </string>
+  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">Unsupported app version</string>
+  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">This version of the app is no longer supported. Please update it through the Play Store.</string>
+  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
+  <string name="forced_app_update_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">App update required</string>
+  <string name="forced_app_update_dialog_message" description="The main message of the dialog shown when a user's app has expired.">A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.</string>
+  <string name="forced_app_update_dialog_update_button_text" description="The update button text of the dialog shown when a user's pre-release app has expired.">Update</string>
+  <string name="forced_app_update_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
+  <string name="optional_app_update_dialog_title" description="The title of the dialog shown when an optional app update is available.">New update available</string>
+  <string name="optional_app_update_dialog_message" description="The main message of the dialog shown when an optional app update is available.">A new version of %s is now available. We recommend that you update the app for bug fixes and a better learning experience.</string>
+  <string name="optional_app_update_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an optional app update is available.">Dismiss</string>
+  <string name="optional_app_update_dialog_update_button_text" description="The update button text of the dialog shown when an optional app update is available.">Update</string>
+  <string name="os_deprecation_dialog_title" description="The title of the dialog shown when an the OS the user is using is no longer supported.">Update your Android OS</string>
+  <string name="os_deprecation_dialog_message" description="The main message of the dialog shown when an the OS the user is using is no longer supported.">We recommend updating your Android OS to take advantage of %s\'s new features and lessons.\n\nVisit your phone\'s Settings app to update your OS.</string>
+  <string name="os_deprecation_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an the OS the user is using is no longer supported.">Dismiss</string>
   <string name="splash_screen_developer_label">Developer Build</string>
   <string name="splash_screen_alpha_label">Alpha</string>
   <string name="splash_screen_beta_label">Beta</string>
@@ -573,22 +542,37 @@
   <string name="agree_to_terms"><![CDATA[By using %s, you agree to our <br> <oppia-noninteractive-policy link="tos">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link="privacy">Privacy Policy</oppia-noninteractive-policy>.]]></string>
   <string name="terms_of_service_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/terms">this page</a> for the latest version of these terms.]]></string>
   <!-- Frequently asked questions & generic app help. -->
-  <string name="faq_question_1">How can I create a new profile?</string>
-  <string name="faq_question_2">How can I delete a profile?</string>
-  <string name="faq_question_3">How can I change my email/phone number?</string>
-  <string name="faq_question_4">What is %s?</string>
-  <string name="faq_question_5">Who is an Administrator?</string>
-  <string name="faq_question_6">Why is the Exploration player not loading?</string>
-  <string name="faq_question_7">Why is my audio not playing?</string>
-  <string name="faq_question_9">I can\'t find my question here. What now?</string>
-  <string name="faq_answer_1"><![CDATA[<p>If it is your first time creating a profile and not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
-  <string name="faq_answer_2"><![CDATA[<p>Once a profile is deleted:</p><ol><li>The profile cannot be recovered. </li><li> Profile information such as name, photos, and progress will be permanently deleted. </li></ol><p>To delete a profile (excluding the <u>Administrator\'s</u>):</p><ol><li> From the Administrator\'s Home Page, tap on the menu button on the top left. </li><li>Tap on <strong>Administrator Controls</strong>. </li><li>Tap on <strong>Edit Profiles</strong>. </li><li>Tap on the Profile you would like to delete. </li><li>At the bottom of the screen, tap <strong>Profile Deletion</strong>. </li><li>Tap <strong>Delete</strong> to confirm deletion. </li></ol><p><br></p><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
-  <string name="faq_answer_3"><![CDATA[<p>To change your email/phone number:</p><ol><li>From the Administrator\'s Home Page, tap on the menu button on the top left.</li><li>Tap on <strong>Administrator Controls</strong>.</li><li>Tap on <strong>Edit Account</strong>.</li></ol><p><br></p> <p>If you want to change your email:</p><ol><li>Enter your new email and tap <strong>Save</strong>.</li><li>A confirmation link is sent to confirm your new email. The link will expire after 24 hours and must be clicked on to be associated with your account.</li></ol><p><br></p> <p>If changing your phone number:</p><ol><li> Enter your new phone number and tap <strong>Verify</strong>.</li><li> A code is sent to confirm your new number. The code will expire after 5 minutes and must be entered in the new screen to be associated with your account.</li></ol>]]></string>
-  <string name="faq_answer_4"><![CDATA[<p>%1$s <i>"O-pee-yah"</i> (Finnish) - "to learn"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
-  <string name="faq_answer_5"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has "Administrator" written under their name is the Administrator. </p>]]></string>
-  <string name="faq_answer_6"><![CDATA[<p>If the Exploration Player is not loading</p><p><br></p><p>Check to see if the app is up to date:</p><p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. </li></ul><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above </li></ul><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
-  <string name="faq_answer_7"><![CDATA[<p>If your audio is not playing</p><p><br></p><p>Check to see if the app is up to date:</p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet may cause the audio to load irregularly, making it difficult to play. </li></ul><p><br></p><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above</li></ul><p><br></p><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
-  <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
+
+  <string name="faq_question_1">What is %s?</string>
+  <string name="faq_question_2">Who is an Administrator?</string>
+  <string name="faq_question_3">How can I create a new profile?</string>
+  <string name="faq_question_4">How do I get the app in my language?</string>
+  <string name="faq_question_5">I found a bug. How can I report it?</string>
+  <string name="faq_question_6">Why are there only math lessons?</string>
+  <string name="faq_question_7">Will you be making more lessons?</string>
+  <string name="faq_question_8">Why is the Exploration player not loading?</string>
+  <string name="faq_question_9">Why is my audio not playing?</string>
+  <string name="faq_question_10">How can I delete a profile?</string>
+  <string name="faq_question_11">How can I change my email/phone number?</string>
+  <string name="faq_question_12">How do I update the app?</string>
+  <string name="faq_question_13">How do I update my Android OS?</string>
+  <string name="faq_question_14">I can\'t find my question here. What now?</string>
+
+  <string name="faq_answer_1"><![CDATA[<p>%1$s <i>"O-pee-yah"</i> (Finnish) - "to learn"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
+  <string name="faq_answer_2"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has "Administrator" written under their name is the Administrator. </p>]]></string>
+  <string name="faq_answer_3"><![CDATA[<p>If it is your first time creating a profile and you do not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
+  <string name="faq_answer_4"><![CDATA[<p>The %s app currently supports English, Brazilian Portuguese, Arabic, and Nigerian Pidgin. Choose one of these languages in the menu, under Options. To request the app in your language, please contact us at email address.</p>]]></string>
+  <string name="faq_answer_5"><![CDATA[<p><ol><li>From your %s app home screen, tap the menu in the top left corner.</li><li>Tap <strong>Share feedback</strong>.</li><li>Follow the instructions to report the bug or share feedback.</p>]]></string>
+  <string name="faq_answer_6"><![CDATA[<p>%1$s’s mission is to help learners gain necessary life skills. Math is an essential skill in everyday life. %1$s will be offering new lessons on science and other subjects soon!</p>]]></string>
+  <string name="faq_answer_7"><![CDATA[<p>Yes, %s will be offering new lessons on science and other subjects soon. Please check back for updates!</p>]]></string>
+  <string name="faq_answer_8"><![CDATA[<p>If the Exploration Player is not loading</p><p><br></p><p>Check to see if the app is up to date:</p><p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. </li></ul><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above </li></ul><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
+  <string name="faq_answer_9"><![CDATA[<p>If your audio is not playing</p><p><br></p><p>Check to see if the app is up to date:</p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet may cause the audio to load irregularly, making it difficult to play. </li></ul><p><br></p><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above</li></ul><p><br></p><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
+  <string name="faq_answer_10"><![CDATA[<p>Once a profile is deleted:</p><ol><li>The profile cannot be recovered. </li><li> Profile information such as name, photos, and progress will be permanently deleted. </li></ol><p>To delete a profile (excluding the <u>Administrator\'s</u>):</p><ol><li> From the Administrator\'s Home Page, tap on the menu button on the top left. </li><li>Tap on <strong>Administrator Controls</strong>. </li><li>Tap on <strong>Edit Profiles</strong>. </li><li>Tap on the Profile you would like to delete. </li><li>At the bottom of the screen, tap <strong>Profile Deletion</strong>. </li><li>Tap <strong>Delete</strong> to confirm deletion. </li></ol><p><br></p><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
+  <string name="faq_answer_11"><![CDATA[<p>To change your email/phone number:</p><ol><li>From the Administrator\'s Home Page, tap on the menu button on the top left.</li><li>Tap on <strong>Administrator Controls</strong>.</li><li>Tap on <strong>Edit Account</strong>.</li></ol><p><br></p> <p>If you want to change your email:</p><ol><li>Enter your new email and tap <strong>Save</strong>.</li><li>A confirmation link is sent to confirm your new email. The link will expire after 24 hours and must be clicked on to be associated with your account.</li></ol><p><br></p> <p>If changing your phone number:</p><ol><li> Enter your new phone number and tap <strong>Verify</strong>.</li><li> A code is sent to confirm your new number. The code will expire after 5 minutes and must be entered in the new screen to be associated with your account.</li></ol>]]></string>
+  <string name="faq_answer_12"><![CDATA[<p><ol><li>Open the Google Play Store app.</li><li>Search for the %s app.</li><li>Tap Update.</p>]]></string>
+  <string name="faq_answer_13"><![CDATA[<p><ol><li>Tap your phone\'s Settings app.</li><li>Tap System updates.</li><li>Tap System updates and follow the instructions to update your Android operating system.</p>]]></string>
+  <string name="faq_answer_14"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at <strong>admin@oppia.org.<strong></p>]]></string>
+
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
