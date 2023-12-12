@@ -6,10 +6,10 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ReadingTextSize
-import javax.inject.Inject
 import org.oppia.android.app.model.TestFontScaleConfigurationUtilActivityArguments
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import javax.inject.Inject
 
 /** Test activity used for testing font scale. */
 class TestFontScaleConfigurationUtilActivity : InjectableAutoLocalizedAppCompatActivity() {

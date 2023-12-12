@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.testing.activity.TestActivity
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** Test activity used for testing [SpotlightFragment]. */
 class SpotlightFragmentTestActivity : TestActivity() {
