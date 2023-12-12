@@ -129,6 +129,9 @@ class EventBundleCreator @Inject constructor(
   private val appVersionCode by lazy { context.getVersionCode() }
   private val appVersionName by lazy { context.getVersionName() }
   private val eventCount by lazy { AtomicInteger() }
+  private val screenDensity by lazy {
+    context.resources.displayMetrics.densityDpi
+  }
 
   /**
    * Fills the specified [bundle] with a logging-ready representation of [eventLog] and returns a
@@ -149,6 +152,9 @@ class EventBundleCreator @Inject constructor(
     )
     bundle.putString(
       "oppia_audio_lang", eventLog.audioTranslationLanguageSelection.toAnalyticsText()
+    )
+    bundle.putInt(
+      "screen_density", screenDensity
     )
     return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
